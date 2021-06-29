@@ -10,6 +10,7 @@
 
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
+  * [Step-by-Step](/howto/step-by-step.md)
 
 * [TIPS](/tips.md)
   * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
