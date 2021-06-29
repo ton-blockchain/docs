@@ -2,11 +2,11 @@
 * [HOME](/)
   
 * [DOCS](/docs.md)
-  * [TON](https://ton.org/ton.pdf)
-  * [TON Virtual Machine](https://ton.org/tvm.pdf)
-  * [TON Blockchain](https://ton.org/tblkch.pdf)
-  * [Fift Programming Language](https://ton.org/fiftbase.pdf)
-  * [Catchain Consensus Protocol](https://ton.org/catchain.pdf)
+  * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
+  * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
+  * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
+  * [Fift Programming Language](https://newton-blockchain.github.io/docs/fiftbase.pdf)
+  * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
   
 * [CONFIGS](configs.md)
   * [Mainnet Config](https://newton-blockchain.github.io/global.config.json)
