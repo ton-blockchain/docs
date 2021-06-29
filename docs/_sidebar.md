@@ -9,6 +9,7 @@
   * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
 
 * [HOWTO](/howto/)
+  * [Getting Started](/howto/getting-started.md)
 
 * [TIPS](/tips.md)
   * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
