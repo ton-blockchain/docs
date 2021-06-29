@@ -30,13 +30,19 @@ BASIC COMPILATION AND INSTALLATION INSTRUCTIONS
     cmake --build . --target func
     ```
 
-4) Download the newest configuration file from https://newton-blockchain.github.io/global.config.json :
+4) Download the newest configuration file from https://newton-blockchain.github.io/global.config.json for mainnet:
 
     ```
     wget https://newton-blockchain.github.io/global.config.json
     ```
+    
+    or from https://newton-blockchain.github.io/testnet-global.config.json for testnet
 
-5) Run the Lite Client:
+    ```
+    wget https://newton-blockchain.github.io/testnet-global.config.json
+    ```
+
+5) Run the Lite Client with config:
 
     ```
     ./lite-client/lite-client -C global.config.json
