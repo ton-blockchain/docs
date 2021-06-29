@@ -7,7 +7,11 @@
   * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
   * [Fift Programming Language](https://newton-blockchain.github.io/docs/fiftbase.pdf)
   * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
-  
+
+* [TIPS](/tips.md)
+  * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
+  * [Bridge](https://github.com/newton-blockchain/TIPs/issues/24)
+
 * [CONFIGS](configs.md)
   * [Mainnet Config](https://newton-blockchain.github.io/global.config.json)
   * [Testnet Config](https://newton-blockchain.github.io/testnet-global.config.json)
