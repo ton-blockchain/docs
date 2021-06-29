@@ -82,3 +82,4 @@ To accept payments basing on account, service should
 5. Form [Action](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl#L149) which contains set of outgoing messages.
 6. Use create [createQuery](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl#L255) and send [sendQuery](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl#L260) query to send outgoing payment.
 7. Service should regularly poll getTransactions method for `wallet` contract. Matching confirmed transactions with outgoing payments by (`destination_address`, `value`, `comment`) allows to mark payment as finished; detect and show user corresponding transaction hash and lt (logical time).
+8. Requests to `v3` of `high-load` wallets has expiration time equal 60 seconds by default. After that time unprocessed requests can be safely resent to the network (see steps 3-6).
