@@ -8,6 +8,8 @@
   * [Fift Programming Language](https://newton-blockchain.github.io/docs/fiftbase.pdf)
   * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
 
+* [HOWTO](/howto/)
+
 * [TIPS](/tips.md)
   * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
   * [Bridge](https://github.com/newton-blockchain/TIPs/issues/24)
