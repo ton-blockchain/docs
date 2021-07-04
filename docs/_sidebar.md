@@ -13,6 +13,7 @@
   * [Step-by-Step](/howto/step-by-step.md)
   * [POW Givers](/howto/pow-givers.md)
   * [DNS](/howto/dns.md)
+  * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
 
 * [TIPS](/tips.md)
   * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
