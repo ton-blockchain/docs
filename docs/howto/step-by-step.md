@@ -66,6 +66,8 @@ or
 
 You will see something like this:
 
+> Please note here and further that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
+
 ```
 got account state for -1 : FCB91A3A3816D0F7B8C2C76108B8A9BC5A6B7A55BD79F8AB101C52DB29232260 with respect to blocks (-1,8000000000000000,2075):BFE876CE2085274FEDAF1BD80F3ACE50F42B5A027DF230AD66DCED1F09FB39A7:522C027A721FABCB32574E3A809ABFBEE6A71DE929C1FA2B1CD0DDECF3056505
 account state is (account
@@ -115,8 +117,6 @@ We can see that `x{FF0020DD20...}` is the code of this smart contract. If we con
 We can also see that `x{00009A15}` (the actual value you see may be different) is the persistent data of this smart contract. It is actually an unsigned 32-bit integer, used by the smart contract as the counter of operations performed so far. Notice that this value is big-endian (i.e., 3 is encoded as `x{00000003}`, not as `x{03000000}`), as are all integers inside the TON Blockchain. In this case the counter is equal to `0x9A15` = `39445`.
 
 The current balance of the smart contract is easily seen in the pretty-printed portion of the output. In this case, we see `... balance:(currencies:(grams:(nanograms:(... value:1000000000000000...))))`, which is the balance of the account in (test) nanotons (a million test TON Coins in this example; the actual number you see may be smaller). If you study the TL-B scheme provided in `crypto/block/scheme.tlb`, you will be able to find this number (10^15) in binary big-endian form in the raw dump portion as well (it is located near the end of the data bits of the root cell).
-
-> Please note that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
 
 ## 3. Compiling a new smart contract
 
