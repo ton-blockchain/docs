@@ -25,3 +25,7 @@
 * [CONFIGS](configs.md)
   * [Mainnet Config](https://newton-blockchain.github.io/global.config.json)
   * [Testnet Config](https://newton-blockchain.github.io/testnet-global.config.json)
+
+* SDK
+  * [JavaScript](https://github.com/toncenter/tonweb)
+  * [Golang](https://github.com/newton-blockchain/tonlib-go)
