@@ -37,7 +37,7 @@
 
 * **Smart Contract Guidelines**
 
-  Guidelines and best practices related to implementation of TON Blockchain smart contracts.* 
+  Guidelines and best practices related to implementation of TON Blockchain smart contracts. 
   
 * **Payment Processing**
 
