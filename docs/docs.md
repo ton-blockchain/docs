@@ -21,3 +21,5 @@
 * **Catchain Consensus Protocol**
   
   Description of Byzantine Fault Tolerant (BFT) Consensus protocol employed by TON Blockchain while creating new blocks.
+
+> Note that the code may contain parameters and methods named gram / nanogram / etc. This is a legacy of the original TON code, gram cryptocurrency was never launched. The coins of the current TON mainnet are TON Coins and the coins of the current TON testnet are test TON Coins.
