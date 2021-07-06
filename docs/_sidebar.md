@@ -11,6 +11,7 @@
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
   * [Step-by-Step](/howto/step-by-step.md)
+  * [Full Node](/howto/full-node.md)
   * [POW Givers](/howto/pow-givers.md)
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
