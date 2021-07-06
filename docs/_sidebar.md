@@ -13,9 +13,10 @@
   * [Step-by-Step](/howto/step-by-step.md)
   * [Full Node](/howto/full-node.md)
   * [Validator](/howto/validator.md)
-  * [POW Givers](/howto/pow-givers.md)
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
+  * [Config Params](/howto/config-params.md)
+  * [POW Givers](/howto/pow-givers.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
 
 * [TIPS](/tips.md)
