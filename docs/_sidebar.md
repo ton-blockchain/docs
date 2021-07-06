@@ -18,6 +18,7 @@
   * [Config Params](/howto/config-params.md)
   * [POW Givers](/howto/pow-givers.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
+  * [Payment Processing](/howto/payment-processing.md)
 
 * [TIPS](/tips.md)
   * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
