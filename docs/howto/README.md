@@ -39,6 +39,6 @@
 
   Guidelines and best practices related to implementation of TON Blockchain smart contracts.* 
   
-**Payment Processing**
+* **Payment Processing**
 
   Overview and specific details which explain how to process (send and accept) digital assets on TON network. Useful for exchanges, exchangers, etc.
