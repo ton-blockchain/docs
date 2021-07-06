@@ -22,4 +22,4 @@
   
   Description of Byzantine Fault Tolerant (BFT) Consensus protocol employed by TON Blockchain while creating new blocks.
 
-> Note that the code may contain parameters and methods named gram / nanogram / etc. This is a legacy of the original TON code, gram cryptocurrency was never launched. The coins of the current TON mainnet are TON Coins and the coins of the current TON testnet are test TON Coins.
+> Please note that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.

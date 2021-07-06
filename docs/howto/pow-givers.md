@@ -134,7 +134,7 @@ last transaction lt = 7720869000001 hash = 83C15CDED025970FEF7521206E82D2396B462
 account balance is 100000000000ng
 ```
 
-> Note that the code may contain parameters and methods named gram / nanogram / etc. This is a legacy of the original TON code, gram cryptocurrency was never launched. The coins of the current TON mainnet are TON Coins and the coins of the current TON testnet are test TON Coins.
+> Please note that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
 
 If nobody has sent a valid proof of work with this `seed` and `complexity` before you, the proof-of-work giver will accept your proof of work and this will be reflected in the balance of your wallet (10 or 20 seconds may elapse after sending the external message before this happens; be sure to make several attempts and type `last` each time before checking the balance of your wallet to refresh the LiteClient state). In the case of success, you will see that the balance has been increased (and even that your wallet has been created in uninitialized state if it did not exist before). In the case of failure, you will have to obtain the new `seed` and `complexity` and repeat the mining process from the very beginning.
 

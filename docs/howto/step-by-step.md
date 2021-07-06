@@ -116,7 +116,7 @@ We can also see that `x{00009A15}` (the actual value you see may be different) i
 
 The current balance of the smart contract is easily seen in the pretty-printed portion of the output. In this case, we see `... balance:(currencies:(grams:(nanograms:(... value:1000000000000000...))))`, which is the balance of the account in (test) nanotons (a million test TON Coins in this example; the actual number you see may be smaller). If you study the TL-B scheme provided in `crypto/block/scheme.tlb`, you will be able to find this number (10^15) in binary big-endian form in the raw dump portion as well (it is located near the end of the data bits of the root cell).
 
-> Note that the code may contain parameters and methods named gram / nanogram / etc. This is a legacy of the original TON code, gram cryptocurrency was never launched. The coins of the current TON mainnet are TON Coins and the coins of the current TON testnet are test TON Coins.
+> Please note that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
 
 ## 3. Compiling a new smart contract
 
