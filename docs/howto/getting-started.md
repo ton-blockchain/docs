@@ -10,7 +10,7 @@ BASIC COMPILATION AND INSTALLATION INSTRUCTIONS
 
     ```
     git clone https://github.com/newton-blockchain/ton.git
-    git submodule update
+    git submodule update --init
     ```
 
 2) Install the newest versions of make, cmake (version 3.0.2 or later), OpenSSL (including C header files), and g++ or clang (or another C++14-compatible compiler as appropriate for your operating system). We strongly recommend installing OpenSSL version 1.1.1 or later for better performance, especially if you intend to run a Full Node or a Validator as well.
