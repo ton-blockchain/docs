@@ -25,7 +25,7 @@ To start mining right away:
 4. Check your hardware and [expected mining income](#faq-emi) by running `emi` command within `mytonctrl`
 5. If you do not yet have one: create `wallet address` using one of the [wallets](https://www.ton.org/wallets)
 6. Define your `wallet address` as mining target by executing `set minerAddr "..."` in `mytonctrl`
-7. Set automatic selection of PoW giver by executing `set powAddr "auto"` in `mytonctrl`
+7. Chose giver contract from the list available on [tonmine.xyz](https://tonmine.xyz) and set your miner to mine it by executing `set powAddr "..."` in `mytonctrl`
 8. Start mining by executing `mon` in `mytonctrl`
 9. Check CPU load on your machine, process called `pow-miner` should use most of your CPU
 10. Wait to get lucky, output of step 4 should have told you approximately what are your chances to mine a block.
@@ -68,7 +68,7 @@ See [can I use ASIC/GPU?](#faq-hw-asic)
 Many people mine using AWS or Google compute cloud machines. As outlined in the specs above what really matters is CPU, thus we advise AWS [c5a.24xlarge](https://aws.amazon.com/ec2/instance-types/c5/) or Google [n2d-highcpu-224](https://cloud.google.com/compute/vm-instance-pricing) instances.
 
 ### <a id="hardware-estimates"></a>Income estimates
-The formula for income calculation is quite simple: `($total_bleed / $total_hashrate) * $your_hashrate`. This will give you **current** estimate. You can find out the variables on [tonmine.xyz](https://tonmine.xyz) or use estimated mining income calculator in `mytonctrl` (`emi` command), here is sample output made on 7th of August 2021 using i5-11400F CPU:
+The formula for income calculation is quite simple: `($total_bleed / $total_hashrate) * $your_hashrate`. This will give you **current** estimate. You can find out the variables on [tonmine.xyz](https://tonmine.xyz) or use estimated mining income calculator (`emi` command) in `mytonctrl`, here is sample output made on 7th of August 2021 using i5-11400F CPU:
 ```
 Mining income estimations
 -----------------------------------------------------------------
@@ -107,15 +107,19 @@ We cannot say this, all we know is total hashrate of all miners on the network. 
 No, you do not, anyone can start mining without owning a single TON Coin
 #### <a id="faq-mining-noincome"></a>I mine for hours, why my wallet total does not increase, not even by 1 TON?
 TONs are mined in blocks of 100, you either guess a block and receive 100 TON or receive nothing. please see [basics](#basics)
+#### <a id="faq-mining-noblocks"></a>I mine for days and I see no results, why?
+Did you check your current [Income estimates](#hardware-estimates)? If field `Est. 24h chance to mine a block` is less then 100% then you need to be patient. Also please do note that a 50% chance to mine a block within 24h does not automatically mean that you will mine one within 2 days, 50% applies to each day individually.
 #### <a id="faq-mining-pools"></a>Are there mining pools?
 No, As of now there are no implementations of mining pools, everyone mines for himself.
+#### <a id="faq-mining-giver"></a>Which giver should I mine?
+It does not really matter which giver you choose, difficulty tends to fluctuate on each giver, so current easiest giver on [tonmine.xyz](https://tonmine.xyz) might become most complex within an hour, same applies in opposite direction.
 ### <a id="faq-hw"></a>Hardware
 #### <a id="faq-hw-machine"></a>Will faster machine always win?
 No, all miners take different roads to finding solution, faster machine has higher probability of success but it is not guaranteed a victory!
 #### <a id="faq-hw-machine"></a>How much income will my machine generate?
 Please see [Income estimates](#hardware-estimates)
 #### <a id="faq-hw-asic"></a>Can I use my GPU or BTC | ETH rig to mine TON?
-No, TON uses single SHA256 hashing method which is different from BTC/ETH and others, ASICS build for BTC will not help. We have also not seen a single successful GPU acceleration attempt that would exceed performance of modern CPUs.
+No, TON uses single SHA256 hashing method which is different from BTC,ETH and others. ASICS build for mining other cryptos will not help. We have also not seen a single successful GPU acceleration attempt that would exceed performance of modern CPUs.
 #### <a id="faq-hw-svsm"></a>What is better, single fast machine or several slow ones?
 This is a controversial question, there are indications that single machine will mine slightly faster then multiple machines with same total hashrate. So if you have access to supercomputer you could be king of the hill.
 #### <a id="faq-hw-mc"></a>If I run many machines, will they cooperate?
