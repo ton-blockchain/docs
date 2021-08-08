@@ -111,7 +111,7 @@ TONs are mined in blocks of 100, you either guess a block and receive 100 TON or
 No, As of now there are no implementations of mining pools, everyone mines for himself.
 ### <a id="faq-hw"></a>Hardware
 #### <a id="faq-hw-machine"></a>Will faster machine always win?
-No, mining is game of chance, all miners take different roads to finding solution, faster machine has higher probability of success but it is not guaranteed a victory!
+No, all miners take different roads to finding solution, faster machine has higher probability of success but it is not guaranteed a victory!
 #### <a id="faq-hw-machine"></a>How much income will my machine generate?
 Please see [Income estimates](#hardware-estimates)
 #### <a id="faq-hw-asic"></a>Can I use my GPU or BTC | ETH rig to mine TON?
