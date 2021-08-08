@@ -16,6 +16,7 @@
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
   * [Config Params](/howto/config-params.md)
+  * [Mining](/howto/mining.md)
   * [POW Givers](/howto/pow-givers.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
   * [Payment Processing](/howto/payment-processing.md)
