@@ -1,12 +1,15 @@
 <!-- docs/_sidebar.md -->
 * [HOME](/)
-  
+
 * [DOCS](/docs.md)
   * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
   * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
   * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
   * [Fift Programming Language](https://newton-blockchain.github.io/docs/fiftbase.pdf)
   * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
+  * [FunC Programming Language](/func.md)
+    * [Overview](/func/overview.md)
+    * [Types](/func/types.md)
 
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
