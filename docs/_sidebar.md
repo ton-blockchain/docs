@@ -10,6 +10,8 @@
   * [FunC Programming Language](/func.md)
     * [Overview](/func/overview.md)
     * [Types](/func/types.md)
+    * [Comments](/func/comments.md)
+    * [Literals and identifiers](/func/literals_identifiers.md)
 
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
