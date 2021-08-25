@@ -14,6 +14,7 @@
     * [Literals and identifiers](/func/literals_identifiers.md)
     * [Functions](/func/functions.md)
     * [Global variables](/func/global_variables.md)
+    * [Statements](/func/statements.md)
 
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)

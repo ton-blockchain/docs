@@ -18,7 +18,7 @@ is a simple program that writes to a global functional variable `op` the additio
 
 Internally global variables are stored in the c7 control register of TVM.
 
-Type of a global variable can be omitted. If so, it will be inferred by the use of the variable. For example, we can rewrite the program as:
+Type of a global variable can be omitted. If so, it will be inferred by the usage of the variable. For example, we can rewrite the program as:
 ```
 global op;
 
@@ -41,3 +41,23 @@ global C;
 ```
 global int A, cell B, C;
 ```
+
+It is not allowed to declare some local variable with the same name as an already declared global variable. For example, this code wouldn't compile:
+```
+global cell C;
+
+int main() {
+  int C = 3;
+  return C;
+}
+```
+Note that this code is correct:
+```
+global int C;
+
+int main() {
+  int C = 3;
+  return C;
+}
+```
+but here `int C = 3;` is equivalent to `C = 3;`, i.e. that is an assignment to global variable `C`, not a declaration of local variable `C` (you can find some explanation of this effect in [statements](/func/statements.md?id=variable-declaration)).

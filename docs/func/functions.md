@@ -33,7 +33,7 @@ As said before, any function declaration or definition starts with a common patt
 where `[ ... ]` correspond to an optional entry.
 
 ### Function name
-Function name can be any [identifier](/func/literals_identifiers?id=identifiers) and also it can start with `.` or `~` symbols. The meaning of those symbols will be explained later in statements section.
+Function name can be any [identifier](/func/literals_identifiers?id=identifiers) and also it can start with `.` or `~` symbols. The meaning of those symbols is [explained](func/statements?id=methods-calls) in statements section.
 
 For example, `udict_add_builder?`, `dict_set` and `~dict_set` are valid and different function names (they are defined in stdlib.fc).
 

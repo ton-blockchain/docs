@@ -21,7 +21,7 @@ For example, those are valid identifier:
 - `message_found?`
 - `get_pubkeys&signatures`
 - `dict::udict_set_builder`
-- `+1` (think about function `int -> int`, which adds `1`)
+- `_+_` (the standard addition operator of type `(int, int) -> int` in prefix notation, although it is already defined)
 - `fatal!`
 
 `'` at the end of the name of a variable is conventionally used when some modified version of the old value is introduced. For example, almost all modifying built-in primitives for hashmap manipulation (except ones with prefix `~`) take a hashmap and return a new version of the hashmap along with some other data, if necessary. It is convenient to name those values with the same name suffixed by `'`.
