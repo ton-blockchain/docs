@@ -14,11 +14,13 @@ Note that any of the types above occupy only a single entry in the TVM stack.
 ## Hole type
 FunC has support for type inference. Types `_` and `var` represent type "holes", which can later be filled with some actual type during type checking. For example, `var x = 2;` is a definition of variable `x` equal to `2`. Type-checker can infer that `x` has type `int`, because `2` has type `int`, and left and right sides of an assignment must have equal types.
 
-## Combined types
-Types can be combined in more complex ones.
+## Composite types
+Types can be composed in more complex ones.
 
 ### Functional type
 Types of the form `A -> B` represent functions with specified domain and codomain. For example, `int -> cell` is the type of functions of one integer argument, which return a TVM cell.
+
+Internally values of such types are represented as continuations.
 
 ### Tensor types
 Types of the form `(A, B, ...)` essentially represent ordered collections of values of types `A`, `B`, `...`, which all together occupy more than one TVM stack entry.
@@ -27,7 +29,7 @@ For example, if a function `foo` has type `int -> (int, int)`, it means that the
 
 A call of this function may look like `(int a, int b) = foo(42);`. Internally the function consumes one stack entry and leaves two of them.
 
-Note that although in low-level perspective value `(2, (3, 9))` of type `(int, (int, int))` and value `(2, 3, 9)` of type `(int, int, int)` are represented in the same way as three stack entries `2`, `3` and `9`, for FunC type-checker they are **different** values: for example, code `(int a, int b, int c) = (2, (3, 9));` wouldn't be compiled.
+Note that although in low-level perspective value `(2, (3, 9))` of type `(int, (int, int))` and value `(2, 3, 9)` of type `(int, int, int)` are represented in the same way as three stack entries `2`, `3` and `9`, for FunC type-checker they are values of **different** types: for example, code `(int a, int b, int c) = (2, (3, 9));` wouldn't be compiled.
 
 Special case of tensor type is the **unit type** `()`. It is usually used for representing the fact that a function doesn't return any value, or has no arguments. For example, a function `print_int` would have type `int -> ()` and the function `random` has type `() -> int`. It has unique inhabitant `()`, which occupy 0 stack entries.
 
@@ -37,11 +39,20 @@ Type of form `(A)` is considered by type-checker as the same type as `A`.
 Types of the form `[A, B, ...]` represent TVM tuples with concrete length and types of components, known in compile time. For example, `[int, cell]` is the type of TVM tuples, having length exactly 2, which first component is an integer, and the second is a cell. `[]` is the type of empty tuples (having the unique inhabitant – the empty tuple). Note that in contrast to unit type `()`, the value of `[]` occupy 1 stack entry.
 
 ## Polymorphism with type variables
-FunC has Miller-Rabin type system with support for polymorphic functions. For example, function `forall X -> (X, X) duplicate(X value) { return (value, value); }` is a polymorphic function which takes a (single stack entry) value and returns two copies of this value. `duplicate(6)` will produce values `6 6`, and `duplicate([])` will produce two copies `[] []` of empty tuple.
+FunC has Miller-Rabin type system with support for polymorphic functions. For example, function
+```
+forall X -> (X, X) duplicate(X value) {
+  return (value, value);
+}
+```
+is a polymorphic function which takes a (single stack entry) value and returns two copies of this value. `duplicate(6)` will produce values `6 6`, and `duplicate([])` will produce two copies `[] []` of empty tuple.
 
 In this example `X` is a type variable.
 
-See more info on this topic in the `functions` section.
+See more info on this topic in the [functions](/func/functions.md) section.
 
 ## User-defined types
 Currently FunC has no support for defining types except for type constructions described above.
+
+## Type width
+As you may have noticed, every value of a type occupies some number of stack entries. If it is the same number for all values of the type, this number is called **type width**. Polymorphic functions currently can be defined only for types with fixed and known in advance type width.

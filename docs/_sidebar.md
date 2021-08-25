@@ -12,6 +12,7 @@
     * [Types](/func/types.md)
     * [Comments](/func/comments.md)
     * [Literals and identifiers](/func/literals_identifiers.md)
+    * [Functions](/func/functions.md)
 
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
