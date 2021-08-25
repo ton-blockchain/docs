@@ -1,5 +1,5 @@
 # Functions
-FunC program is essentially a list of function declarations/definitions and global variable declarations. This section covers the first thing.
+FunC program is essentially a list of function declarations/definitions and global variable declarations. This section covers the first topic.
 
 Any function declaration or definition starts with a common pattern, and then one of the three things follows:
 - single `;`, which means that the function is declared, but not defined yet. It may be defined later in the same file, or in some other file, which is passed before the current one to the FunC compiler.
@@ -36,6 +36,17 @@ where `[ ... ]` correspond to an optional entry.
 Function name can be any [identifier](/func/literals_identifiers?id=identifiers) and also it can start with `.` or `~` symbols. The meaning of those symbols will be explained later in statements section.
 
 For example, `udict_add_builder?`, `dict_set` and `~dict_set` are valid and different function names (they are defined in stdlib.fc).
+
+#### Special function names
+FunC (actually Fift assembler) has several reserved function names with predefined [ids](/func/functions.md?id=method_id).
+- `main` and `recv_internal` have id = 0
+- `recv_external` has id = -1
+- `run_ticktock` has id = -2
+
+Every program must have a function with id 0, that is `main` or `recv_internal` function.
+
+`recv_internal` is called when smartcontract receives an inbound internal message, `recv_external` is for inbound external messages and `run_ticktock` is called in ticktock transactions of special smartcontracts.
+
 
 ### Return type
 Return type can be any atomic or composite type, as [types](/func/types.md) section describes. For example,
