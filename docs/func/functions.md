@@ -35,7 +35,7 @@ where `[ ... ]` correspond to an optional entry.
 ### Function name
 Function name can be any [identifier](/func/literals_identifiers?id=identifiers) and also it can start with `.` or `~` symbols. The meaning of those symbols is [explained](func/statements?id=methods-calls) in statements section.
 
-For example, `udict_add_builder?`, `dict_set` and `~dict_set` are valid and different function names (they are defined in stdlib.fc).
+For example, `udict_add_builder?`, `dict_set` and `~dict_set` are valid and different function names (they are defined in [stdlib.fc](/func/stdlib.md)).
 
 #### Special function names
 FunC (actually Fift assembler) has several reserved function names with predefined [ids](/func/functions.md?id=method_id).
@@ -92,7 +92,7 @@ There are three types of specifiers: `impure`, `inline`/`inline_ref` and `method
 
 If `impure` is not specified and the result of the function call is not used, then FunC compiler may and will delete this function call.
 
-For example, in stdlib.fc function
+For example, in [stdlib.fc](/func/stdlib.md) function
 ```
 int random() impure asm "RANDU256";
 ```
@@ -132,9 +132,9 @@ is a function that takes a tuple of length exactly 2, but with values of any (si
 
 `pair_swap([2, 3])` will produce `[3, 2]` and `pair_swap([1, [2, 3, 4]])` will produce `[[2, 3, 4], 1]`.
 
-In this example `X` and `Y` are type variables. When the function is called, type variables are substituted with actual types and the code of the function is executed. Note that although the function is polymorphic, the actual assembler code for it is the same for every type substitution. It is achieved essentially by polymorphism of stack manipulation primitives. Currently other forms of polymorphism (like ad-hoc polymorphism with type classes) are not supported.
+In this example `X` and `Y` are [type variables](/func/types?id=polymorphism-with-type-variables). When the function is called, type variables are substituted with actual types and the code of the function is executed. Note that although the function is polymorphic, the actual assembler code for it is the same for every type substitution. It is achieved essentially by polymorphism of stack manipulation primitives. Currently other forms of polymorphism (like ad-hoc polymorphism with type classes) are not supported.
 
-Also it is worth noticing that the type width of `X` and `Y` is supposed to be equal to 1, that is, the values of `X` or `Y` must occupy single stack entry. So you actually can't call the function `pair_swap` on a tuple of type `[(int, int), int]`, because type `(int, int)` has width 2, that is it occupies 2 stack entries.
+Also it is worth noticing that the type width of `X` and `Y` is supposed to be equal to 1, that is, the values of `X` or `Y` must occupy single stack entry. So you actually can't call the function `pair_swap` on a tuple of type `[(int, int), int]`, because type `(int, int)` has width 2, i.e. it occupies 2 stack entries.
 
 ## Assembler function body definition
 As mentioned above, function can be defined by assembler code. The syntax is an `asm` keyword followed by one or several assembler commands, represented as strings.

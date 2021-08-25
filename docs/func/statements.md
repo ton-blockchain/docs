@@ -133,3 +133,163 @@ int z = x.inc();
 The first call will modify x, the second and the third won't.
 
 In summary, when a function with name `foo` is called as non-modifying or modifying method (i.e. with `.foo` or `~foo` syntax), FunC compiler use the definition of `.foo` or `~foo` correspondingly if such definition is presented, and if not, it uses the definition of `foo`.
+
+### Operators
+#### Unary operators
+There are two unary operators:
+- `~` is bitwise not (priority 75).
+- `-` is integer negation (priority 20).
+
+They should be separated from the argument.
+- `- x` is ok.
+- `-x` is not ok (it's a single identifier).
+
+#### Binary operators
+With priority 30 (left-associative):
+- `*` is integer multiplication
+- `/` is integer division (rounding ??)
+- `~/` is integer division (rounding ??)
+- `^/` is integer division (rounding ??)
+- `%` is integer reduction by modulo
+- `~%` is integer reduction by modulo
+- `^%` is integer reduction by modulo
+- `/%` returns the quotient and the remainder
+- `&` is bitwise AND
+
+With priority 20 (left-associative):
+- `+` is integer addition
+- `-` is integer subtraction
+- `|` is bitwise OR
+- `^` is bitwise XOR
+
+With priority 17 (left-associative):
+- `<<` is bitwise left shift
+- `>>` is bitwise right shift
+- `~>>` is bitwise right shift (rounding ??)
+- `^>>` is bitwise right shift (rounding ??)
+
+With priority 15 (left-associative):
+- `==` is integer equality check
+- `!=` is integer inequality check
+- `<` is integer comparison
+- `<=` is integer comparison
+- `>` is integer comparison
+- `>=` is integer comparison
+- `<=>` is integer comparison (returns -1, 0 or 1)
+
+They also should be separated from the argument:
+- `x + y` is ok.
+- `x+y` is not ok (it's a single identifier).
+
+#### Conditional operator
+Has the usual syntax:
+```
+<condition> ? <consequence> : <alternative>
+```
+For example,
+```
+x > 0 ? x * fac(x - 1) : 1;
+```
+It has priority 13.
+
+#### Assignments
+Priority 10.
+
+Simple assignment `=` and counterparts of binary operations: `+=`, `-=`, `*=`, `/=`, `~/=`, `^/=`, `%=`, `~%=`, `^%=`, `<<=`, `>>=`, `~>>=`, `^>>=`, `&=`, `|=`, `^=`.
+
+## Loops
+FunC supports `repeat`, `while` and `do { ... } until` loops. `for` loop is not supported.
+### Repeat loop
+The syntax is a `repeat` keyword followed by an expression. Repeats the code for specified number of times. Examples:
+```
+int x = 1;
+repeat(10) {
+  x *= 2;
+}
+;; x = 1024
+```
+```
+int x = 1, y = 10;
+repeat(y + 6) {
+  x *= 2;
+}
+;; x = 65536
+```
+```
+int x = 1;
+repeat(-1) {
+  x *= 2;
+}
+;; x = 1
+```
+If the number of times is less than `-2^31` or greater than `2^31 - 1`, range check exception is thrown.
+### While loop
+Has the usual syntax. Example:
+```
+int x = 2;
+while (x < 100) {
+  x = x * x;
+}
+;; x = 256
+```
+### Until loop
+Has the following syntax:
+```
+int x = 0;
+do {
+  x += 3;
+} until (x % 17 == 0);
+;; x = 51
+```
+## If statements
+Examples:
+```
+;; usual if
+if (flag) {
+  do_something();
+}
+```
+```
+;; equivalent to if (~ flag)
+ifnot (flag) {
+  do_something();
+}
+```
+```
+;; usual if-else
+if (flag) {
+  do_something();
+}
+else {
+  do_alternative();
+}
+```
+```
+;; Some specific features
+if (flag1) {
+  do_something1();
+} elseif (flag2) {
+  do_alternative2();
+} elseifnot (flag3) {
+  do_alternative3();
+} else {
+  do_alternative4();
+}
+```
+The curly brackets are necessary. That code wouldn't be compiled:
+```
+if (flag1)
+  do_something();
+```
+
+## Block statements
+Block statements are also allowed. They open a new nested scope:
+```
+int x = 1;
+builder b = begin_cell();
+{
+  builder x = begin_cell().store_uint(0, 8);
+  b = x;
+}
+x += 1;
+```
