@@ -17,6 +17,7 @@
     * [Statements](/func/statements.md)
     * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
+    * [FAQ](/func/FAQ.md)
 
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
