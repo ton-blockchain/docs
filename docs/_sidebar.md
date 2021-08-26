@@ -15,6 +15,7 @@
     * [Functions](/func/functions.md)
     * [Global variables](/func/global_variables.md)
     * [Statements](/func/statements.md)
+    * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
 
 * [HOWTO](/howto/)

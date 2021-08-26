@@ -161,12 +161,20 @@ builder store_ref(builder b, cell c) asm(c b) "STREF";
 builder store_slice(builder b, slice s) asm "STSLICER";
 builder store_grams(builder b, int x) asm "STGRAMS";
 builder store_dict(builder b, cell c) asm(c b) "STDICT";
+
+builder store_maybe_ref(builder b, cell c) asm(c b) "STOPTREF";
 ```
 ### Builder size primitives
 ```
 int builder_refs(builder b) asm "BREFS";
 int builder_bits(builder b) asm "BBITS";
 int builder_depth(builder b) asm "BDEPTH";
+```
+
+## Cell primitives
+```
+int cell_depth(cell c) asm "CDEPTH";
+int cell_null?(cell c) asm "ISNULL";
 ```
 
 ## Dictionaries primitives
@@ -254,7 +262,7 @@ int dict_empty?(cell c) asm "DICTEMPTY";
 ```
 forall X -> X null() asm "PUSHNULL";
 ```
-By the TVM type `null` FunC represents absence of a value of some atomic type. So `null` can actually have any atomic type.
+By the TVM type `Null` FunC represents absence of a value of some atomic type. So `null` can actually have any atomic type.
 ### Impure touch
 ```
 forall X -> (X, ()) ~impure_touch(X x) impure asm "NOP";
@@ -267,6 +275,4 @@ int min(int x, int y) asm "MIN";
 int max(int x, int y) asm "MAX";
 (int, int) minmax(int x, int y) asm "MINMAX";
 int abs(int x) asm "ABS";
-
-int cell_null?(cell c) asm "ISNULL";
 ```
