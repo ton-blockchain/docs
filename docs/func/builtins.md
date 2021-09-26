@@ -4,6 +4,8 @@ This section describes some language constructions which are less fundamental th
 ## Throwing exceptions
 Exceptions can be thrown by conditional primitives `throw_if` and `throw_unless` and by unconditional `throw`. The first argument is the error code, the second is the condition (`throw` has only one argument).
 
+Currently FunC doesn't support catching exceptions, unless an exception handler is set with low-level TVM primitives. The primary purpose of described primitives is reverting transactions which don't satisfy some mandatory conditions (like `require` and `revert` in Solidity programming language).
+
 ## Booleans
 - `true` is alias for `-1`
 - `false` is alias for `0`

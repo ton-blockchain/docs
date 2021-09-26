@@ -118,7 +118,7 @@ Suppose we want to use `inc` as non-modifying method too. We can write something
 But it is possible to override the definition of `inc` as modifying method:
 ```
 int inc(int x) {
-  return x;
+  return x + 1;
 }
 (int, ()) ~inc(int x) {
   return (x + 1, ());
@@ -135,6 +135,7 @@ The first call will modify x, the second and the third won't.
 In summary, when a function with name `foo` is called as non-modifying or modifying method (i.e. with `.foo` or `~foo` syntax), FunC compiler use the definition of `.foo` or `~foo` correspondingly if such definition is presented, and if not, it uses the definition of `foo`.
 
 ### Operators
+Note that currently all of unary and binary operators are integer operators. Logical operators are represented as bitwise integer operators  (cf. [absene of boolean type](/func/types?id=absence-of-boolean-type)).
 #### Unary operators
 There are two unary operators:
 - `~` is bitwise not (priority 75).
@@ -200,7 +201,7 @@ Simple assignment `=` and counterparts of binary operations: `+=`, `-=`, `*=`, `
 ## Loops
 FunC supports `repeat`, `while` and `do { ... } until` loops. `for` loop is not supported.
 ### Repeat loop
-The syntax is a `repeat` keyword followed by an expression. Repeats the code for specified number of times. Examples:
+The syntax is a `repeat` keyword followed by an expression of type `int`. Repeats the code for specified number of times. Examples:
 ```
 int x = 1;
 repeat(10) {
@@ -232,6 +233,8 @@ while (x < 100) {
 }
 ;; x = 256
 ```
+Note that the truth value of condition `x < 100` is of type `int` (cf. [absene of boolean type](/func/types?id=absence-of-boolean-type)).
+
 ### Until loop
 Has the following syntax:
 ```

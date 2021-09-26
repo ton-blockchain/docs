@@ -1,6 +1,6 @@
 # Literals and Identifiers
 ## Number literals
-FunC allows decimal and hexadecimal integer literals (leading zeros is allowed).
+FunC allows decimal and hexadecimal integer literals (leading zeros are allowed).
 
 For example, `0`, `123`, `-17`, `00987`, `0xef`, `0xEF`, `0x0`, `-0xfFAb`, `0x0001`, `-0`, `-0x0` are valid number literals.
 
