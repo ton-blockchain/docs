@@ -14,6 +14,11 @@ Note that any of the types above occupy only a single entry in the TVM stack.
 ### Absence of boolean type
 In FunC booleans are represented as integers: `false` is represented as `0` and `true` is represented as `-1` (257 ones in binary notation). Logical operations are done as bitwise operations. When a condition is checked, every non-zero integer is considered as `true` value.
 
+### Null values
+By the value `null` of TVM type `Null` FunC represents absence of a value of some atomic type. Some primitives from the standard library may be typed as ones returning an atomic type and actually return `null`s in some cases. Others may be typed as ones excepting a value of an atomic type, but work fine with `null` values too. Such behavior is explicitly stated in the primitive specification. By default `null` values are prohibited and lead to a run-time exception.
+
+In such a way, an atomic type `A` may be implicitly transformed into type `A^?` a.k.a. `Maybe A` (type-checker is agnostic to such a transformation).
+
 ## Hole type
 FunC has support for type inference. Types `_` and `var` represent type "holes", which can later be filled with some actual type during type checking. For example, `var x = 2;` is a definition of variable `x` equal to `2`. Type-checker can infer that `x` has type `int`, because `2` has type `int`, and left and right sides of an assignment must have equal types.
 
