@@ -50,6 +50,11 @@ Total network hashrate of TON mining is very high, miners need high performance 
 #### CPU
 Modern CPU that supports [Intel SHA Extension](https://en.wikipedia.org/wiki/Intel_SHA_extensions) is a **must**. Most miners use AMD EPYC or Threadripper based machines with at least 32 cores / 64 threads.
 
+#### GPU
+Yes! You can mine TON using GPU, there is a version of pow-miner that is capable to use both Nvidia and AMD GPUs, you can find the code as well as instructions how to use it in the [POW Miner GPU](https://github.com/tontechio/pow-miner-gpu/blob/main/crypto/util/pow-miner-howto.md) repository.
+
+For now one needs to be tech savvy to use this but we are working on a more user friendly solution.
+
 #### Memory
 Almost entire mining process happens in L2 cache of the CPU. That means that memory speed and size play no role in mining performance. A dual AMD EPYC system with single dimm on one memory channel will mine just as fast as one with 16 dimms occupying all channels.
 
@@ -61,8 +66,8 @@ Plain miner run in lite mode uses minimal space and does not store any data on s
 #### Network
 Plain miner needs ability to open outgoing connections to internet.
 
-#### GPU
-See [can I use ASIC/GPU?](#faq-hw-asic)
+#### FPGA / ASIC
+See [can I use FPGA / ASICs?](#faq-hw-asic)
 
 ### <a id="hardware-cloud"></a>Cloud machines
 Many people mine using AWS or Google compute cloud machines. As outlined in the specs above what really matters is CPU, thus we advise AWS [c5a.24xlarge](https://aws.amazon.com/ec2/instance-types/c5/) or Google [n2d-highcpu-224](https://cloud.google.com/compute/vm-instance-pricing) instances.
@@ -118,12 +123,14 @@ It does not really matter which giver you choose, difficulty tends to fluctuate 
 No, all miners take different roads to finding solution, faster machine has higher probability of success but it is not guaranteed a victory!
 #### <a id="faq-hw-machine"></a>How much income will my machine generate?
 Please see [Income estimates](#hardware-estimates)
-#### <a id="faq-hw-asic"></a>Can I use my GPU or BTC | ETH rig to mine TON?
-No, TON uses single SHA256 hashing method which is different from BTC,ETH and others. ASICS build for mining other cryptos will not help. We have also not seen a single successful GPU acceleration attempt that would exceed performance of modern CPUs.
+#### <a id="faq-hw-asic"></a>Can I use my BTC | ETH rig to mine TON?
+No, TON uses single SHA256 hashing method which is different from BTC,ETH and others. ASICS or FPGAs build for mining other cryptos will not help. 
 #### <a id="faq-hw-svsm"></a>What is better, single fast machine or several slow ones?
-This is a controversial question, there are indications that single machine will mine slightly faster then multiple machines with same total hashrate. So if you have access to supercomputer you could be king of the hill.
+This is controversial, see: miner software launches threads for each core on the system and each core get's it's own set of keys to process, so if you have one machine capable to run 64 threads and 4 x machines capable to run 16 threads each then they will be exactly as succesful assuming that speed of each thread is the same.
+
+In real world hovewer CPUs with lower core count are usually clocked higher, so you will probably have better success with mutiple machines.
 #### <a id="faq-hw-mc"></a>If I run many machines, will they cooperate?
-No, they will not. Each machine mines on its own but solution finding process is random, no machine will take the same path, thus, their hashrates add up in your favor without direct cooperation.
+No, they will not. Each machine mines on its own but solution finding process is random, no machine, not even a single thread (see above) will take the same path, thus, their hashrates add up in your favor without direct cooperation.
 #### <a id="faq-hw-cpu"></a>Can I mine using ARM CPUs?
 Depends on CPU, AWS Graviton2 instances are very capable miners indeed and are able to hold price/performance ratio alongside AMD EPYC based instances.
 ### <a id="faq-software"></a>Software
