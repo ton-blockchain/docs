@@ -89,4 +89,4 @@ To generate link to transaction in explorer, service need to get lt (logic time)
 
 `https://ton.cx/tx/{lt as int}:{txhash as base64url}:{account address}`
 
-` https://explorer.toncoin.org/transaction?account={account address}&lt={lt as int}&hash={txhash as base64url}`
+`https://explorer.toncoin.org/transaction?account={account address}&lt={lt as int}&hash={txhash as base64url}`
