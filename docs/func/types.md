@@ -2,7 +2,7 @@
 FunC has the following built-in types:
 
 ## Atomic types
-- `int` is the type of 257-bit signed integers. By default, overflow checks are enabled and lead to integer overflow exception.
+- `int` is the type of 257-bit signed integers. By default, overflow checks are enabled and lead to integer overflow exceptions.
 - `cell` is the type of TVM cells. All persistent data in TON Blockchain is stored in trees of cells. Every cell has up to 1023 bits of arbitrary data in it and up to 4 references to other cells. Cells play a role of memory in stack-based TVM.
 - `slice` is the type of cell slices. Cell can be transformed to a slice, and then the data bits and references to other cells from the cell can be obtained by loading them from the slice.
 - `builder` is the type of cell builders. Data bits and references to other cells can be stored into a builder, and then the builder can be finalized to a new cell.
@@ -47,7 +47,7 @@ Type of form `(A)` is considered by type-checker as the same type as `A`.
 Types of the form `[A, B, ...]` represent TVM tuples with concrete length and types of components, known in compile time. For example, `[int, cell]` is the type of TVM tuples, having length exactly 2, which first component is an integer, and the second is a cell. `[]` is the type of empty tuples (having the unique inhabitant – the empty tuple). Note that in contrast to unit type `()`, the value of `[]` occupy 1 stack entry.
 
 ## Polymorphism with type variables
-FunC has Miller-Rabin type system with support for polymorphic functions. For example, function
+FunC has Miller-Rabin-type system with support for polymorphic functions. For example, function
 ```
 forall X -> (X, X) duplicate(X value) {
   return (value, value);

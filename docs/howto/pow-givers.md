@@ -1,10 +1,10 @@
 The aim of this text is to describe how to interact with Proof-of-Work Giver smart contracts to obtain TON Coins. We assume familiarity with the TON Blockchain LiteClient as explained in the `Getting Started`, and with the procedure required to compile the LiteClient and other software. For obtaining larger amount of TON Coins required for running a validator, we also assume acquaintance with the `Full Node` and `Validator` pages. You will also need a dedicated server powerful enough for running a Full Node in order to obtain the larger amount of TON Coins. Obtaining small amounts of TON Coins does not require a dedicated server and may be done in several minutes on a home computer.
 
-> Note that at the moment, due to the large number of miners, large resources are required for any mining
+> Note that at the moment, due to a large number of miners, large resources are required for any mining
 
 ## 1. Proof-of-Work Giver smart contracts
 
-In order to prevent a small number of malicious parties to collect all TON Coins, a special kind of "Proof-of-Work Giver" smart contracts have been deployed in the masterchain of the network. The addresses of these smart contacts are:
+In order to prevent a small number of malicious parties to collect all TON Coins, a special kind of "Proof-of-Work Giver" smart contract have been deployed in the masterchain of the network. The addresses of these smart contacts are:
 
 Small givers (deliver from 10 to 100 TON Coins every several minutes):
 
@@ -36,13 +36,13 @@ Large givers (deliver 10000 TON Coins at least once a day):
 
 The first ten smart contracts enable a user willing to obtain a small amount of TON Coins to obtain some without spending too much computing power (typically, several minutes of work of a home computer should suffice). The remaining smart contracts are for obtaining larger amounts of TON Coins required for running a validator in the network; typically, a day of work of a dedicated server powerful enough to run a validator should suffice to obtain the necessary amount.
 
-> Note that at the moment, due to the large number of miners, large resources are required for mining small givers 
+> Note that at the moment, due to a large number of miners, large resources are required for mining small givers 
 
 You should randomly choose one of these "proof-of-work giver" smart contracts (from one of these two lists depending on your purpose) and obtain TON Coins from this smart contract by a procedure similar to "mining". Essentially, you have to present an external message containing the proof of work and the address of your wallet to the chosen "proof-of-work giver" smart contract, and then the necessary amount will be sent to you.
 
 ## 2. The "mining" process
 
-In order to create an external message containing the "proof of work", you should run a special "mining" utility, compiled from the TON sources located in the GitHub repository. The utility is located in file `./crypto/pow-miner` with respect to the build directory, and can be compiled by typing `make pow-miner` in the build directory.
+In order to create an external message containing the "proof of work", you should run a special "mining" utility, compiled from the TON sources located in the GitHub repository. The utility is located in file `./crypto/pow-miner` with respect to the build directory and can be compiled by typing `make pow-miner` in the build directory.
 
 However, before running `pow-miner`, you need to know the actual values of `seed` and `complexity` parameters of the chosen "proof-of-work giver" smart contract. This can be done by invoking get-method `get_pow_params` of this smart contract. For instance, if you use giver smart contract `kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN`, you can simply type
 
@@ -50,7 +50,7 @@ However, before running `pow-miner`, you need to know the actual values of `seed
 > runmethod kf-kkdY_B7p-77TLn2hUhM6QidWrrsl8FYWCIvBMpZKprBtN get_pow_params
 ```
 
-in the LiteClient console and obtain output like
+in the LiteClient console and obtain an output like
 
 ``` ...
     arguments:  [ 101616 ] 
@@ -71,7 +71,7 @@ Here:
 * `<timeout-in-sec>`: is the maximal amount of seconds that the miner would run before admitting failure.
 * `<your-wallet-address>` is the address of your wallet (possibly not initialized yet), either in the masterchain or in the workchain (note that you need a masterchain wallet to control a validator).
 * `<seed>` and `<complexity>` are the most recent values obtained by running get-method `get-pow-params`,
-* `<pow-giver-address>` is the address of the chosen proof-of-work giver smartcontract.
+* `<pow-giver-address>` is the address of the chosen proof-of-work giver smart contract.
 * `<boc-filename>` is the filename of the output file where the external message with the proof of work will be saved in the case of success.
 
 For example, if your wallet address is `kQBWkNKqzCAwA9vjMwRmg7aY75Rf8lByPA9zKXoqGkHi8SM7`, you might run
@@ -104,12 +104,12 @@ Then you can use the LiteClient to send external message from file `mined.boc` t
 
 ```
 > sendfile mined.boc
-...	external message status is 1
+... external message status is 1
 ```
 
 You can wait for several seconds and check the state of your wallet:
 
-> Please note here and further that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
+> Please note here and further that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
 
 ```
 > last
@@ -142,7 +142,7 @@ If you have been lucky and the balance of your wallet has been increased, you ma
 
 ```
 > sendfile new-wallet-query.boc
-...	external message status is 1
+... external message status is 1
 > last
 > getaccount kQBWkNKqzCAwA9vjMwRmg7aY75Rf8lByPA9zKXoqGkHi8SM7
 ...

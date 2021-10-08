@@ -42,7 +42,7 @@ and
 
 in the "user-friendly" form (to be displayed by user-friendly clients). Notice that both forms (base64 and base64url) are valid and must be accepted.
 
-Incidentally, other binary data related to the TON Blockchain have similar "armored" base64 representations, differing by their first bytes. For example, the ubiquitious 256-bit Ed25519 public keys are represented by first creating a 36-byte sequence as follows:
+Incidentally, other binary data related to the TON Blockchain have similar "armored" base64 representations, differing by their first bytes. For example, the ubiquitous 256-bit Ed25519 public keys are represented by first creating a 36-byte sequence as follows:
 - one tag byte 0x3E, meaning that this is a public key
 - one tag byte 0xE6, meaning that this is a Ed25519 public key
 - 32 bytes containing the standard binary representation of the Ed25519 public key
@@ -112,7 +112,7 @@ The `account state is (account ... ` line begins the pretty-printed deserialized
 
 Finally, the last several lines beginning with `x{CFF...` (the "raw dump") contain the same information displayed as a tree of cells. In this case, we have one root cell containing the data bits `CFF...34_` (the underscore means that the last binary one and all subsequent binary zeroes are to be removed, so hexadecimal `4_` corresponds to binary `0`), and two cells that are its children (displayed with one-space indentation).
 
-We can see that `x{FF0020DD20...}` is the code of this smart contract. If we consult the Appendix A of the TON Virtual Machine documentation, we can even disassemble this code: `FF00` is `SETCP 0`, `20` is `DUP`, `DD` is `IFNOTRET`, `20` is `DUP`, and so on. (Incidentally, you can find the source code of this smartcontract in the source file `crypto/block/new-testgiver.fif`)
+We can see that `x{FF0020DD20...}` is the code of this smart contract. If we consult the Appendix A of the TON Virtual Machine documentation, we can even disassemble this code: `FF00` is `SETCP 0`, `20` is `DUP`, `DD` is `IFNOTRET`, `20` is `DUP`, and so on. (Incidentally, you can find the source code of this smart contract in the source file `crypto/block/new-testgiver.fif`)
 
 We can also see that `x{00009A15}` (the actual value you see may be different) is the persistent data of this smart contract. It is actually an unsigned 32-bit integer, used by the smart contract as the counter of operations performed so far. Notice that this value is big-endian (i.e., 3 is encoded as `x{00000003}`, not as `x{03000000}`), as are all integers inside the TON Blockchain. In this case the counter is equal to `0x9A15` = `39445`.
 
@@ -383,7 +383,7 @@ We will see some output:
 ... external message status is 1
 ```
 
-which means that the external message has been delivered to the collator pool. Afterwards one of the collators might choose to include this external message in a block, creating a transaction for the test giver smart contract to process this external message. We can check whether the state of the test giver has changed:
+which means that the external message has been delivered to the collator pool. Afterward one of the collators might choose to include this external message in a block, creating a transaction for the test giver smart contract to process this external message. We can check whether the state of the test giver has changed:
 
 ```
 > last

@@ -31,7 +31,7 @@ Result for domain 'test.ton' category 1
 raw data: x{AD011B3CBBE404F47FFEF92D0D7894C5C6F215F677732A49E544F16D1E75643D46AB00}
 
 category #1 : (dns_adnl_address adnl_addr:x1B3CBBE404F47FFEF92D0D7894C5C6F215F677732A49E544F16D1E75643D46AB flags:0)
-	adnl address 1B3CBBE404F47FFEF92D0D7894C5C6F215F677732A49E544F16D1E75643D46AB = UNTZO7EAT2H77XZFUGXRFGFY3ZBL5TXOMVETZKE6FWR45LEHVDKXAUY
+  adnl address 1B3CBBE404F47FFEF92D0D7894C5C6F215F677732A49E544F16D1E75643D46AB = UNTZO7EAT2H77XZFUGXRFGFY3ZBL5TXOMVETZKE6FWR45LEHVDKXAUY
 ```
 
 In this case, the TON DNS record for `test.ton` is a `dns_adnl_address` record containing ADNL address `UNTZO7EAT2H77XZFUGXRFGFY3ZBL5TXOMVETZKE6FWR45LEHVDKXAUY`.
@@ -61,7 +61,7 @@ In general, you would need to contact the owner of the higher-level domain and a
 category #-1 : (dns_next_resolver
   resolver:(addr_std
     anycast:nothing workchain_id:0 address:x190BD756F6C0E7948DC26CB47968323177FB20344F8F9A50918CAF87ECB34B79))
-	next resolver 0:190BD756F6C0E7948DC26CB47968323177FB20344F8F9A50918CAF87ECB34B79 = EQAZC9dW9sDnlI3CbLR5aDIxd_sgNE-PmlCRjK-H7LNLeUXN
+  next resolver 0:190BD756F6C0E7948DC26CB47968323177FB20344F8F9A50918CAF87ECB34B79 = EQAZC9dW9sDnlI3CbLR5aDIxd_sgNE-PmlCRjK-H7LNLeUXN
 ```
 
 We see that the address of this automatic DNS smart contract is `EQAZC9dW9sDnlI3CbLR5aDIxd_sgNE-PmlCRjK-H7LNLeUXN`. We can run several get methods to compute the required price for registering a subdomain, and to learn the period for which the subdomain will be registered:
@@ -150,8 +150,8 @@ B5EE9C72410207010001170001CF8800039D928061472B84894922CFBD2A5AD2C2419C9649B904FA
 
 ```
 > sendfile wallet-query.boc 
-[ 1][t 1][!testnode]	sending query from file wallet-query.boc
-[ 3][t 1][!query]	external message status is 1
+[ 1][t 1][!testnode]  sending query from file wallet-query.boc
+[ 3][t 1][!query] external message status is 1
 ```
 
 If all works correctly, you'll obtain some change from the automatic DNS smart contract in a confirmation message (it will charge only the storage fees for your subdomain and processing fees for running the smart contract and sending messages, and return the rest), and your new domain will be registered:
@@ -163,7 +163,7 @@ If all works correctly, you'll obtain some change from the automatic DNS smart c
 ...
 Result for domain 'mysite.temp.ton' category 1
 category #1 : (dns_adnl_address adnl_addr:x45061C1D4EC44A937D0318589E13C73D151D1CEF5D3C0E53AFBCF56A6C2FE2BD flags:0)
-	adnl address 45061C1D4EC44A937D0318589E13C73D151D1CEF5D3C0E53AFBCF56A6C2FE2BD = vcqmha5j3ceve35ammfrhqty46rkhi455otydstv66pk2tmf7rl25f3
+  adnl address 45061C1D4EC44A937D0318589E13C73D151D1CEF5D3C0E53AFBCF56A6C2FE2BD = vcqmha5j3ceve35ammfrhqty46rkhi455otydstv66pk2tmf7rl25f3
 ```
 
 You can modify or prolong this domain in essentially the same manner, by first creating a request in file `dns-msg-body.boc` by means of `auto-dns.fif`, using such actions as `update` or `prolong`, and then embedding this request into a message from your wallet to the automatic DNS smart contract using `wallet.fif` or a similar script with command-line argument `-B dns-msg-body.boc`.

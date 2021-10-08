@@ -5,7 +5,7 @@ FunC allows decimal and hexadecimal integer literals (leading zeros are allowed)
 For example, `0`, `123`, `-17`, `00987`, `0xef`, `0xEF`, `0x0`, `-0xfFAb`, `0x0001`, `-0`, `-0x0` are valid number literals.
 
 ## String literals
-Strings in FunC are quoted in double quotes `"` like `"this is a string"`. Special symbols like `\n` and multi-line stings are not supported. String are used only in asm functions definitions.
+Strings in FunC are quoted in double-quotes `"` like `"this is a string"`. Special symbols like `\n` and multi-line strings are not supported. String are used only in asm functions definitions.
 
 
 ## Identifiers

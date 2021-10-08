@@ -48,7 +48,7 @@ If you have done everything correctly, the Proxy will not terminate, but it will
 
 Now suppose that you have a running instance of the RLDP-HTTP Proxy running on your computer and listening on `localhost:8080` for inbound TCP connections, as explained above in Section 2.
 
-A simple test that everything is working property may be performed using programs such as `curl` or `wget`. For example,
+A simple test that everything is working properly may be performed using programs such as `curl` or `wget`. For example,
 
 ```
 curl -x 127.0.0.1:8080 http://test.ton
@@ -83,7 +83,7 @@ Once you have set up `localhost:8080` as the HTTP proxy to be used in your brows
 
 Most people will need just to access existing TON Sites, not to create new ones. However, if you want to create one, you'll need to run RLDP-HTTP Proxy on your server, along with the usual web server software such as Apache or Nginx.
 
-We suppose that you know already how to set up an ordinary web site, and that you have already configured one on your server, accepting incoming HTTP connections on TCP port `<your-server-ip>:80`, and defining the required TON Network domain name, say, `example.ton`, as the main domain name or an alias for your web site in the configuration of your web server.
+We suppose that you know already how to set up an ordinary website, and that you have already configured one on your server, accepting incoming HTTP connections on TCP port `<your-server-ip>:80`, and defining the required TON Network domain name, say, `example.ton`, as the main domain name or an alias for your web site in the configuration of your web server.
 
 After that, you first need to generate a persistent ADNL address for your server:
 

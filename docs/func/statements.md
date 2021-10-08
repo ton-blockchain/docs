@@ -24,7 +24,7 @@ int x = 2;
 int y = x + 1;
 int x = 3;
 ```
-Actually the second occurrence of `int x` is not a declaration, but just a compile-time ensurance that `x` has type `int`. So the third line is essentially equivalent to simple assignment `x = 3;`.
+Actually the second occurrence of `int x` is not a declaration, but just a compile-time insurance that `x` has type `int`. So the third line is essentially equivalent to simple assignment `x = 3;`.
 
 And in nested scopes a variable can be truly redeclared just like in C language. For example, consider the code:
 ```
@@ -69,7 +69,7 @@ int y = foo (1) (2) (3); ;; ok
 Lambda expressions are not supported yet.
 ### Methods calls
 #### Non-modifying methods
-If a function has at least one argument, it can be called as non-modifying method. For example, `store_uint` has type `(builder, int, int) -> builder` (the second argument is value to store, and the third is the bit length). `begin_cell` is a function that creates a new builder. The following codes are equivalent:
+If a function has at least one argument, it can be called a non-modifying method. For example, `store_uint` has type `(builder, int, int) -> builder` (the second argument is value to store, and the third is the bit length). `begin_cell` is a function that creates a new builder. The following codes are equivalent:
 ```
 builder b = begin_cell();
 b = store_uint(b, 239, 8);
@@ -99,7 +99,7 @@ If the first argument of a function has type `A` and return value of the functio
 ```
 int x = cs~load_uint(8);
 ```
-In some cases we want to use a function as modifying method that doesn't return any value – only modifies the first argument. In can be done using unit type as following: suppose we want to define function `inc` of type `int -> int`, which increment an integer, and use it as modifying method. Then we should define `inc` as a function of type `int -> (int, ())`:
+In some cases we want to use a function as modifying method that doesn't return any value – only modifies the first argument. It can be done using unit type as following: suppose we want to define function `inc` of type `int -> int`, which increment an integer, and use it as modifying method. Then we should define `inc` as a function of type `int -> (int, ())`:
 ```
 (int, ()) inc(int x) {
   return (x + 1, ());

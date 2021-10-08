@@ -26,7 +26,7 @@ Therefore, the structure of such parameters is determined in source file `crypto
 
 We see that configuration parameter `#8` contains a Cell with no references and exactly 104 data bits. The first four bits must be `11000100`, then 32 bits with the currently enabled "global version" are stored, and 64-bit integer with flags corresponding to currently enabled capabilities follow. A more detailed description of all configuration parameters will be provided in an appendix to the TON Blockchain documentation; for now, one can inspect the TL-B scheme in `crypto/block/block.tlb` and check how different parameters are used in the validator sources.
 
-In contrast with configuration parameters with non-negative indices, configuration parameters with negative indices can contain arbitrary values. At least, no restrictions on their values are enforced by the validators. Therefore, they can be used to store important information (such as the Unixtime when certain smart contracts must start operating) that is not crucial for the block generation, but is used by some of the fundamental smart contracts.
+In contrast with configuration parameters with non-negative indices, configuration parameters with negative indices can contain arbitrary values. At least, no restrictions on their values are enforced by the validators. Therefore, they can be used to store important information (such as the Unix time when certain smart contracts must start operating) that is not crucial for the block generation, but is used by some of the fundamental smart contracts.
 
 #### 2. Changing configuration parameters
 
@@ -46,7 +46,7 @@ We would like to describe the second way of changing configuration parameters in
 A new **configuration proposal** contains the following data:
 - the index of the configuration parameter to be changed
 - the new value of the configuration parameter (or Null, if it is to be deleted)
-- the expiration Unixtime of the proposal
+- the expiration Unix time of the proposal
 - a flag indicating whether the proposal is **critical** or not
 - an optional **old value hash** with the cell hash of the current value (the proposal can be activated only if the current value has indicated hash)
 
@@ -150,7 +150,7 @@ B5EE9C7241010301002C0001216E5650525E838CB0000000085E9455904001010BF300000008A002
 (Saved to file config-msg-body.boc)
 ```
 
-We have obtained the body of an internal message to be sent to the configuration smart contract with a suitable amount of TON Coins from any (wallet) smartcontract residing in the masterchain. The address of the configuration smart contract may be obtained by typing `getconfig 0` in the lite-client:
+We have obtained the body of an internal message to be sent to the configuration smart contract with a suitable amount of TON Coins from any (wallet) smart contract residing in the masterchain. The address of the configuration smart contract may be obtained by typing `getconfig 0` in the lite-client:
 ```
 > getconfig 0
 ConfigParam(0) = ( config_addr:x5555555555555555555555555555555555555555555555555555555555555555)
@@ -206,18 +206,18 @@ After waiting for some time, we can inspect the incoming messages of our wallet 
 arguments:  [ 107394 ] 
 result:  [ ([64654898543692093106630260209820256598623953458404398631153796624848083036321 [1586779536 0 [8 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} -1] 112474791597373109254579258586921297140142226044620228506108869216416853782998 () 864691128455135209 3 0 0]]) ] 
 remote result (not to be trusted):  [ ([64654898543692093106630260209820256598623953458404398631153796624848083036321 [1586779536 0 [8 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} -1] 112474791597373109254579258586921297140142226044620228506108869216416853782998 () 864691128455135209 3 0 0]]) ] 
-...	caching cell FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC
+... caching cell FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC
 ```
 
 We see that the list of all active configuration proposals consists of exactly one entry, represented by pair
 ```
 [6465...6321 [1586779536 0 [8 C{FDCD...} -1] 1124...2998 () 8646...209 3 0 0]]
 ```
-Here the first number `6465..6321` is the unique identifier of the configuration proposal, equal to its 256-bit hash. The second component of this pair is a Tuple describing the status of this configuration proposal. The first component of this Tuple is the expiration Unixtime of the configuration proposal (`1586779546`). The second component (`0`) is the criticality flag. Next comes the configuration proposal proper, described by triple `[8 C{FDCD...} -1]`, where `8` is the index of the configuration parameter to be modified, `C{FDCD...}` is the cell with the new value (represented by the hash of this cell), and `-1` is the optional hash of the old value of this parameter (`-1` means that this hash has not been specified). Next we see a large number `1124...2998` representing the identifier of the current validator set, then an empty list `()` representing the set of all currently active validators that have voted for this proposal so far, then `weight_remaining` equal to `8646...209` - a number that is positive if the proposal has not yet collected enough validator votes in this round, and negative otherwise. Then we see three numbers `3 0 0`. These numbers are `rounds_remaining` (this proposal will survive at most three rounds, i.e., changes of the current validator set), `wins` (the count of rounds where the proposal collected votes of more than 3/4 of all validators by weight) and `losses` (the count of rounds where the proposal failed to collect 3/4 of all validator votes).
+Here the first number `6465..6321` is the unique identifier of the configuration proposal, equal to its 256-bit hash. The second component of this pair is a Tuple describing the status of this configuration proposal. The first component of this Tuple is the expiration Unix time of the configuration proposal (`1586779546`). The second component (`0`) is the criticality flag. Next comes the configuration proposal proper, described by triple `[8 C{FDCD...} -1]`, where `8` is the index of the configuration parameter to be modified, `C{FDCD...}` is the cell with the new value (represented by the hash of this cell), and `-1` is the optional hash of the old value of this parameter (`-1` means that this hash has not been specified). Next we see a large number `1124...2998` representing the identifier of the current validator set, then an empty list `()` representing the set of all currently active validators that have voted for this proposal so far, then `weight_remaining` equal to `8646...209` - a number that is positive if the proposal has not yet collected enough validator votes in this round, and negative otherwise. Then we see three numbers `3 0 0`. These numbers are `rounds_remaining` (this proposal will survive at most three rounds, i.e., changes of the current validator set), `wins` (the count of rounds where the proposal collected votes of more than 3/4 of all validators by weight) and `losses` (the count of rounds where the proposal failed to collect 3/4 of all validator votes).
 
 We can inspect the proposed value for configuration parameter `#8` by asking the lite-client to expand cell `C{FDCD...}` using its hash `FDCD...` or a sufficiently long prefix of this hash to uniquely identify the cell in question:
 ```
-> dumpcell FDC
+> dump cell FDC
 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} =
   x{C400000001000000000000000E}
 ```
@@ -288,7 +288,7 @@ in validator-engine-console to create `vote-msg-body.boc` with the body of the i
 
 #### 6. Upgrading the code of configuration smart contract and the elector smart contract
 
-It may happen that the code of the configuration smart contract itself or the code of the elector smart contract has to be upgraded. To this end, the same mechanism as described above is used. The new code is to be stored into the only reference of a value cell, and this value cell has to be proposed as the new value of configuration parameter `-1000` (for upgrading the configuration smart contract) or `-1001` (for upgrading the elector smart contract). These parameters pretend to be critical, so a lot of validator votes is needed to change the configuration smart contract (this is akin to adopting a new constitution). We expect that such changes will involve first testing them in a test network, and discussing the proposed changes in public forums before each validator operator decides to vote for or against proposed changes.
+It may happen that the code of the configuration smart contract itself or the code of the elector smart contract has to be upgraded. To this end, the same mechanism as described above is used. The new code is to be stored into the only reference of a value cell, and this value cell has to be proposed as the new value of configuration parameter `-1000` (for upgrading the configuration smart contract) or `-1001` (for upgrading the elector smart contract). These parameters pretend to be critical, so a lot of validator votes are needed to change the configuration smart contract (this is akin to adopting a new constitution). We expect that such changes will involve first testing them in a test network, and discussing the proposed changes in public forums before each validator operator decides to vote for or against proposed changes.
 
 Alternatively, critical configuration parameters `0` (the address of the configuration smart contract) or `1` (the address of the elector smart contract) can be changed to other values, that must correspond to already existing and correctly initialized smart contracts. In particular, the new configuration smart contract must contain a valid configuration dictionary in the first reference of its persistent data. Since it is not so easy to correctly transfer changing data (such as the list of active configuration proposals, or the previous and current participant lists of validator elections) between different smart contracts, in most cases it is better to upgrade the code of existing smart contract rather than to change the configuration smart contract address.
 

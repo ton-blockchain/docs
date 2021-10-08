@@ -45,7 +45,7 @@ FunC (actually Fift assembler) has several reserved function names with predefin
 
 Every program must have a function with id 0, that is `main` or `recv_internal` function.
 
-`recv_internal` is called when smartcontract receives an inbound internal message, `recv_external` is for inbound external messages and `run_ticktock` is called in ticktock transactions of special smartcontracts.
+`recv_internal` is called when smart contract receives an inbound internal message, `recv_external` is for inbound external messages and `run_ticktock` is called in ticktock transactions of special smart contracts.
 
 
 ### Return type
@@ -86,9 +86,9 @@ Function arguments are separated by commas. Valid declarations of an argument ar
   is a valid function definition of type `int -> int`. The `int` type of `x` is inferred by type-checker.
 
 ### Specifiers
-There are three types of specifiers: `impure`, `inline`/`inline_ref` and `method_id`. One, several or none of them can be putted in function declaration, but currently they must be presented in the right order: for example, it is not allowed to put `impure` after `inline`.
+There are three types of specifiers: `impure`, `inline`/`inline_ref` and `method_id`. One, several or none of them can be put in function declaration, but currently they must be presented in the right order: for example, it is not allowed to put `impure` after `inline`.
 #### Impure specifier
-`impure` specifier means that the function can have some side-effects which can't be ignored. For example, we should put `impure` specifier if the function can modify contract storage, send messages or throw an exception when some data is invalid and the function is intended to validate this data.
+`impure` specifier means that the function can have some side effects which can't be ignored. For example, we should put `impure` specifier if the function can modify contract storage, send messages or throw an exception when some data is invalid and the function is intended to validate this data.
 
 If `impure` is not specified and the result of the function call is not used, then FunC compiler may and will delete this function call.
 
@@ -101,7 +101,7 @@ is defined. `impure` is used because `RANDU256` changes the internal state of th
 #### Inline specifier
 If function has `inline` specifier, its code is actually substituted in every place where the function is called. Needless to say that recursive calls of inlined function are impossible.
 #### Inline_ref specifier
-Code of a function with `inline_ref` specifier is putted into a separated cell and every time when the function is called a `CALLREF` command is executed by TVM. So it's similar to `inline`, but because a cell can be reused in several places without duplicating it, it is almost always more efficient in code size to use `inline_ref` specifier instead of `inline` unless the function is called exactly once. Recursive calls of `inline_ref`'ed functions are still impossible, because there is no cyclic references in TVM cells.
+Code of a function with `inline_ref` specifier is put into a separated cell and every time when the function is called a `CALLREF` command is executed by TVM. So it's similar to `inline`, but because a cell can be reused in several places without duplicating it, it is almost always more efficient in code size to use `inline_ref` specifier instead of `inline` unless the function is called exactly once. Recursive calls of `inline_ref`'ed functions are still impossible, because there is no cyclic references in TVM cells.
 #### method_id
 Every function in TVM program has an internal integer id by which it can be called. Ordinary functions are usually numbered by subsequent integers starting from 1, but get-methods of the contract are numbered by crc16 hashes of their name. `method_id(<some_number>)` specifier allows to set id of a function to specified value, and `method_id` uses the default value `(crc16(<function_name>) & 0xffff) | 0x10000`. If a function has `method_id` specifier, then it can be called in lite-client or ton-explorer as a get-method by its name.
 
@@ -148,7 +148,7 @@ int inc_then_negate'(int x) asm "INC NEGATE";
 ```
 `INC NEGATE` will be considered by FunC as one assembler command, but it is OK, because Fift assembler knows that it is 2 separate commands.
 ### Rearranging stack entries
-In some cases we want to pass arguments to assembler function in not exactly the same order as assembler command requires or/and take the result in different stack entries order than the command returns. We could manually rearrange the stack by adding corresponding stack primitives, but FunC can do it automatically.
+In some cases we want to pass arguments to assembler function is not exactly the same order as assembler command requires or/and take the result in different stack entries order than the command returns. We could manually rearrange the stack by adding corresponding stack primitives, but FunC can do it automatically.
 
 For example, suppose that assembler command `STUXQ` takes integer, builder and integer and returns builder along with integer flag, indicating success or failure of the operation.
 We may define a function

@@ -10,7 +10,7 @@ These are convenient, tested and secure wallets.
 
 * Make sure you have your recovery words backed up. If not, click on "Back up wallet" and make a backup.
 
-* Make sure that config url is https://ton.org/global-config-wallet.json and blockchain ID is **mainnet** in Settings of your wallet.
+* Make sure that config URL is https://ton.org/global-config-wallet.json and blockchain ID is **mainnet** in Settings of your wallet.
 
 * If your settings are different, enter the correct values.
 
@@ -26,7 +26,7 @@ These are convenient, tested and secure wallets.
 
 * Make sure your wallet is downloaded from https://ton.org/wallets.
 
-* In wallet Settings in config url enter https://ton.org/global-config-archive.json and **mainnet** in blockchain ID. Apply settings.
+* In wallet Settings in config URL enter https://ton.org/global-config-archive.json and **mainnet** in blockchain ID. Apply settings.
 
-* After the wallet is successfully synchronized - put in settings in config url https://ton.org/global-config-wallet.json again.
+* After the wallet is successfully synchronized - put in settings in config URL https://ton.org/global-config-wallet.json again.
 
