@@ -85,7 +85,7 @@ Blockchain explorer - https://ton.sh
 
 For technical support, more detailed information about transactions may be required, in this case, you can use https://ton.cx (in the active stage of development).
 
-To generate link to transaction in explorer, service need to get lt (logic time), transaction hash and account address (account address for which lt and txhash was retrieved via getTransactions method). https://ton.cx and https://explorer.ton.org may then show page for that tx in the following format:
+To generate link to transaction in explorer, service need to get lt (logic time), transaction hash and account address (account address for which lt and txhash was retrieved via getTransactions method). https://ton.cx and https://explorer.tonсoin.org may then show page for that tx in the following format:
 
 `https://ton.cx/tx/{lt as int}:{txhash as base64url}:{account address}`
 
