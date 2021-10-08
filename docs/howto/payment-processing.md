@@ -67,11 +67,6 @@ To accept payments basing on attached comments, service should
 3. Users should be instructed to send TON coins to service's `wallet` contract with attached `invoice` as comment.
 4. Service should regularly poll getTransactions method for `wallet` contract.
 5. For new transactions incoming message should be extracted, `comment` matched against database and value (see **Incoming message value** paragraph) deposited to user account.
-### Account-based approach
-To accept payments basing on account, service should
-1. Generate `wallet` for each user. Note that using v3 wallet version, all wallets may share the same public key and differ only by `wallet_id`.
-2. Poll transactions on wallets regularly or on-demand basis.
-3. For new transactions incoming message should be extracted, value (see **Incoming message value** paragraph) deposited to corresponding user account.
 
 ## Sending payments
 
@@ -83,3 +78,9 @@ To accept payments basing on account, service should
 6. Use create [createQuery](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl#L255) and send [sendQuery](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl#L260) query to send outgoing payment.
 7. Service should regularly poll getTransactions method for `wallet` contract. Matching confirmed transactions with outgoing payments by (`destination_address`, `value`, `comment`) allows to mark payment as finished; detect and show user corresponding transaction hash and lt (logical time).
 8. Requests to `v3` of `high-load` wallets have expiration time equal to 60 seconds by default. After that time unprocessed requests can be safely resent to the network (see steps 3-6).
+
+## Explorers
+
+Blockchain explorer - https://ton.sh
+
+For technical support, more detailed information about transactions may be required, in this case, you can use https://ton.cx (in the active stage of development).
