@@ -43,4 +43,6 @@
 
 * SDK
   * [JavaScript](https://github.com/toncenter/tonweb)
-  * [Golang](https://github.com/newton-blockchain/tonlib-go)
+  * [Golang](https://github.com/ton-blockchain/tonlib-go)
+  * [Java](https://github.com/ton-blockchain/tonlib-java)
+  * [C++](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
