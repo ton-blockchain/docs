@@ -50,10 +50,20 @@ Underscore `_` is used when a value is not needed. For example, suppose a functi
 (int fst, _, _) = foo(42);
 ```
 ### Function application
-A call of a function is the same as in conventional languages. Arguments of the function call are listed after the function name, separated by commas.
+A call of a function looks like as such in a conventional language: arguments of the function call are listed after the function name, separated by commas.
 ```
 ;; suppose foo has type (int, int, int) -> int
 int x = foo(1, 2, 3);
+```
+
+But notice that `foo` is actually a function of **one** argument of type `(int, int, int)`. To see the difference, suppose `bar` is a function of type `int -> (int, int, int)`. Unlike in conventional languages, you can compose the functions like that:
+```
+int x = foo(bar(42));
+```
+instead of equivalent, but more lengthy form:
+```
+(int a, int b, int c) = bar(42);
+int x = foo(a, b, c);
 ```
 
 Also Haskell-style calls are possible, but not always (to be fixed later):
