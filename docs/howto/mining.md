@@ -1,7 +1,7 @@
 ## TON mining guide
 ### Table of contents
 1. [Introduction](#introduction)
-2. [Quick start](#quickStart)
+2. [Quick start](#quick-start)
 3. [Basics](#basics)
 4. [Advanced](#advanced)
 5. [Miner hardware](#hardware)
@@ -16,7 +16,7 @@
 ## <a id="introduction"></a>Introduction
 This document provides introduction into process of mining TON Coins using PoW givers. Please visit [tonmine.xyz](https://tonmine.xyz) for up to date status of TON mining.
 
-## <a id="quickStart"></a>Quick start
+## <a id="quick-start"></a>Quick start
 To start mining right away:
 
 1. Get a [computer suitable for mining](#hardware)
