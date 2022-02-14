@@ -562,7 +562,7 @@ Decomposes `slice s` containing a valid `MsgAddress` into a `tuple t` with separ
 ```
 (int, int) parse_std_addr(slice s) asm "REWRITESTDADDR";
 ```
-Parses slice `s` containing a valid `MsgAddressInt` (usually a `msg_addr_std`), applies to rewrite from the `anycast` (if present) to the same-length prefix of the address, and returns both the workchain and the 256-bit address as integers. If the address is not 256-bit, or if `s` is not a valid serialization of `MsgAddressInt`, throws a cell `deserialization` exception.
+Parses slice `s` containing a valid `MsgAddressInt` (usually a `msg_addr_std`), applies rewriting from the `anycast` (if present) to the same-length prefix of the address, and returns both the workchain and the 256-bit address as integers. If the address is not 256-bit, or if `s` is not a valid serialization of `MsgAddressInt`, throws a cell `deserialization` exception.
 #### parse_var_addr
 ```
 (int, slice) parse_var_addr(slice s) asm "REWRITEVARADDR";

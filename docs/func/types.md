@@ -47,7 +47,7 @@ Type of form `(A)` is considered by type-checker as the same type as `A`.
 Types of the form `[A, B, ...]` represent TVM tuples with concrete length and types of components, known in compile time. For example, `[int, cell]` is the type of TVM tuples, having length exactly 2, which first component is an integer, and the second is a cell. `[]` is the type of empty tuples (having the unique inhabitant – the empty tuple). Note that in contrast to unit type `()`, the value of `[]` occupy 1 stack entry.
 
 ## Polymorphism with type variables
-FunC has Miller-Rabin-type system with support for polymorphic functions. For example, function
+FunC has Miller-Rabin type system with support for polymorphic functions. For example, function
 ```
 forall X -> (X, X) duplicate(X value) {
   return (value, value);

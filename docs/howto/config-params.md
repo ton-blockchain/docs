@@ -217,7 +217,7 @@ Here the first number `6465..6321` is the unique identifier of the configuration
 
 We can inspect the proposed value for configuration parameter `#8` by asking the lite-client to expand cell `C{FDCD...}` using its hash `FDCD...` or a sufficiently long prefix of this hash to uniquely identify the cell in question:
 ```
-> dump cell FDC
+> dumpcell FDC
 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} =
   x{C400000001000000000000000E}
 ```

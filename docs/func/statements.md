@@ -69,7 +69,7 @@ int y = foo (1) (2) (3); ;; ok
 Lambda expressions are not supported yet.
 ### Methods calls
 #### Non-modifying methods
-If a function has at least one argument, it can be called a non-modifying method. For example, `store_uint` has type `(builder, int, int) -> builder` (the second argument is value to store, and the third is the bit length). `begin_cell` is a function that creates a new builder. The following codes are equivalent:
+If a function has at least one argument, it can be called as a non-modifying method. For example, `store_uint` has type `(builder, int, int) -> builder` (the second argument is value to store, and the third is the bit length). `begin_cell` is a function that creates a new builder. The following codes are equivalent:
 ```
 builder b = begin_cell();
 b = store_uint(b, 239, 8);
