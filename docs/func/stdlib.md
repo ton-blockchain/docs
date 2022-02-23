@@ -1,5 +1,5 @@
 # FunC standard library
-This section discuss the stdlib.fc library.
+This section discuss the stdlib.func library.
 
 Currently the library is just a wrapper for most common assembler TVM commands, which aren't built-ins. Description of every TVM command used in the library can be found in [TVM documentation](https://newton-blockchain.github.io/docs/tvm.pdf) (Appendix A). Some of the descriptions were borrowed into this document.
 
