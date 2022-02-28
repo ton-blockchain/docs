@@ -7,13 +7,9 @@
   * [C++ TonLib ](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
   * [Golang TonLib Wrapper](https://github.com/ton-blockchain/tonlib-go)
   * [Java TonLib Wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
-  
-* [DOCS](/docs.md)
-  * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
-  * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
-  * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
-  * [Fift Programming Language](https://newton-blockchain.github.io/docs/fiftbase.pdf)
-  * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
+ 
+* Smart Contracts
+  * [Overview](/smart-contracts/)
   * [FunC Programming Language](/func.md)
     * [Overview](/func/overview.md)
     * [Types](/func/types.md)
@@ -25,7 +21,14 @@
     * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
     * [FAQ](/func/FAQ.md)
+  * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
 
+* [DOCS](/docs.md)
+  * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
+  * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
+  * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
+  * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
+  
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
   * [Step-by-Step](/howto/step-by-step.md)
@@ -36,7 +39,6 @@
   * [Config Params](/howto/config-params.md)
   * [Mining](/howto/mining.md)
   * [POW Givers](/howto/pow-givers.md)
-  * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
   * [Payment Processing](/howto/payment-processing.md)
   * [Wallets](/howto/wallets.md)
 
