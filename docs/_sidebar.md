@@ -1,6 +1,4 @@
 <!-- docs/_sidebar.md -->
-* [HOME](/)
-
 * APIs
   * [APIs](/apis/)
   * [JavaScript](https://github.com/toncenter/tonweb)
@@ -23,6 +21,13 @@
     * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
 
+* Payment Processing
+  * [Payment Processing](/howto/payment-processing.md)
+  
+* Nodes
+  * [TON Node Types](/nodes/node-types.md)
+  * [Running your own Full Node/Validator](/nodes/run-node.md)
+
 * Whitepapers
   * [Overview](/docs.md)
   * [TON](https://ton-blockchain.github.io/docs/ton.pdf)
@@ -30,23 +35,20 @@
   * [TON Blockchain](https://ton-blockchain.github.io/docs/tblkch.pdf)
   * [Catchain Consensus Protocol](https://ton-blockchain.github.io/docs/catchain.pdf)
   
-* [HOWTO](/howto/)
-  * [Getting Started](/howto/getting-started.md)
-  * [Step-by-Step](/howto/step-by-step.md)
-  * [Full Node](/howto/full-node.md)
-  * [Validator](/howto/validator.md)
+* Mining
+  * [Mining](/howto/mining.md)
+
+* Low Level
+  * [Lite client](/howto/getting-started.md)
+  * [Smart contracts](/howto/step-by-step.md)
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
   * [Config Params](/howto/config-params.md)
-  * [Mining](/howto/mining.md)
   * [POW Givers](/howto/pow-givers.md)
-  * [Payment Processing](/howto/payment-processing.md)
+
+* Support
   * [Wallets](/howto/wallets.md)
 
-* [TIPS](/tips.md)
-  * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
-  * [Bridge](https://github.com/newton-blockchain/TIPs/issues/24)
-
-* [CONFIGS](configs.md)
+* Configs
   * [Mainnet Config](https://ton.org/global-config.json)
   * [Testnet Config](https://newton-blockchain.github.io/testnet-global.config.json)
