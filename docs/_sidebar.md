@@ -1,6 +1,13 @@
 <!-- docs/_sidebar.md -->
 * [HOME](/)
 
+* APIs
+  * [APIs](/apis/)
+  * [JavaScript](https://github.com/toncenter/tonweb)
+  * [C++ TonLib ](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
+  * [Golang TonLib Wrapper](https://github.com/ton-blockchain/tonlib-go)
+  * [Java TonLib Wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
+  
 * [DOCS](/docs.md)
   * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
   * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
@@ -38,11 +45,5 @@
   * [Bridge](https://github.com/newton-blockchain/TIPs/issues/24)
 
 * [CONFIGS](configs.md)
-  * [Mainnet Config](https://newton-blockchain.github.io/global.config.json)
+  * [Mainnet Config](https://ton.org/global-config.json)
   * [Testnet Config](https://newton-blockchain.github.io/testnet-global.config.json)
-
-* SDK
-  * [JavaScript](https://github.com/toncenter/tonweb)
-  * [Golang](https://github.com/ton-blockchain/tonlib-go)
-  * [Java](https://github.com/ton-blockchain/tonlib-java)
-  * [C++](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
