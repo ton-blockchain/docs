@@ -6,7 +6,7 @@ TON smart contracts are executed on their own TON Virtual Machine (TVM).
 
 TVM is built on the stack principle, which makes it efficient and easy to implement.
 
-[TVM specification](https://newton-blockchain.github.io/docs/tvm.pdf)
+[TVM specification](https://ton-blockchain.github.io/docs/tvm.pdf)
 
 [TVM C++ implementation](https://github.com/newton-blockchain/ton/tree/master/crypto/vm)
 
@@ -40,7 +40,7 @@ Messages to smart contracts are binary data. To construct such messages, you can
 
 Since Fift is close to TVM opcodes, it also helps to know the limits of your brain.
 
-[Fift documentation](https://newton-blockchain.github.io/docs/fiftbase.pdf)
+[Fift documentation](https://ton-blockchain.github.io/docs/fiftbase.pdf)
 
 [Fift scripts for standard smart contracts](https://github.com/newton-blockchain/ton/tree/master/crypto/smartcont)
 

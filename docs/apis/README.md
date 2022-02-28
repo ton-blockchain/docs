@@ -16,7 +16,7 @@ At the moment, two API options are available for interacting with TON:
 
    Since it checks Merkle proofs, you can even use untrusted lite servers.
 
-   Read more about Merkle proofs at [TON Whitepaper](https://newton-blockchain.github.io/docs/ton.pdf) 2.3.10, 2.3.11.
+   Read more about Merkle proofs at [TON Whitepaper](https://ton-blockchain.github.io/docs/ton.pdf) 2.3.10, 2.3.11.
 
    👍 - Ultra secure API with Merkle proofs. 
 

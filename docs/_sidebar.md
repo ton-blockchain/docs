@@ -25,10 +25,10 @@
 
 * Whitepapers
   * [Overview](/docs.md)
-  * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
-  * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
-  * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
-  * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
+  * [TON](https://ton-blockchain.github.io/docs/ton.pdf)
+  * [TON Virtual Machine](https://ton-blockchain.github.io/docs/tvm.pdf)
+  * [TON Blockchain](https://ton-blockchain.github.io/docs/tblkch.pdf)
+  * [Catchain Consensus Protocol](https://ton-blockchain.github.io/docs/catchain.pdf)
   
 * [HOWTO](/howto/)
   * [Getting Started](/howto/getting-started.md)
