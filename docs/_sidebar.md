@@ -23,7 +23,8 @@
     * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
 
-* [DOCS](/docs.md)
+* Whitepapers
+  * [Overview](/docs.md)
   * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
   * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
   * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)

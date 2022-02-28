@@ -10,19 +10,19 @@ TVM is built on the stack principle, which makes it efficient and easy to implem
 
 [TVM C++ implementation](https://github.com/newton-blockchain/ton/tree/master/crypto/vm)
 
-## Func
+## FunC
 
-High-level language Func is used to program smart contracts on TON.
+High-level language FunC is used to program smart contracts on TON.
 
-[Func documentation](https://ton.org/docs/#/func/overview.md)
+[FunC documentation](https://ton.org/docs/#/func/overview.md)
 
-[Func compiler](https://github.com/newton-blockchain/ton/tree/master/crypto/func)
+[FunC compiler](https://github.com/newton-blockchain/ton/tree/master/crypto/func)
 
 **Toolkit**
 
 [TON IDEA plugin](https://plugins.jetbrains.com/plugin/18541-ton-development)
 
-[Func Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
+[FunC Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
 
 ## Standard Smart Contracts
 
@@ -57,4 +57,4 @@ Since Fift is close to TVM opcodes, it also helps to know the limits of your bra
 
    No, you can't write on Solidity for TON. 
 
-   But if you add asynchronous messages to Solidity syntax and the ability to interact with data at a low level, then you get Func. Func has a familiar syntax similar to most modern programming languages and is designed specifically for TON.
+   But if you add asynchronous messages to Solidity syntax and the ability to interact with data at a low level, then you get FunC. FunC has a familiar syntax similar to most modern programming languages and is designed specifically for TON.

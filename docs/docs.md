@@ -1,29 +1,21 @@
-# Docs
+# Whitepapers
 
-> This section presents the original documentation written by Dr. Nikolai Durov along with FunC language description written by the community, which describes in full all the parts of the TON.
+This section presents the original documentation written by Dr. Nikolai Durov, which describes in full all the parts of the TON.
 
-> Please note here and further that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is TON Coin and the currency of TON testnet is Test TON Coin.
+> Please note here and further that the code, comments and/or documentation may contain parameters, methods and definitions “gram”, “nanogram”, etc. That is a legacy of the original TON code, developed by the Telegram. Gram cryptocurrency was never issued. The currency of TON is Toncoin and the currency of TON testnet is Test Toncoin.
 
-* **TON**
+* [TON](https://newton-blockchain.github.io/docs/ton.pdf)
 
   TON Whitepaper – a general description of TON Network and TON Blockchain.
 
-* **TON Virtual Machine**
+* [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
 
   TON Virtual Machine description.
 
-* **TON Blockchain**
+* [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
 
   TON Blockchain description (may include outdated information).
 
-* **Fift programming language**
-
-  A brief introduction to the Fift programming language.
-
-* **Catchain Consensus Protocol**
+* [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
 
   Description of Byzantine Fault Tolerant (BFT) Consensus protocol employed by TON Blockchain while creating new blocks.
-
-* **FunC Programming language**
-
-  A brief introduction to the FunC programming language.
