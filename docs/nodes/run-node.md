@@ -10,14 +10,14 @@ Download and run installation script.
 
 Ubuntu:
 ```bash
-wget https://raw.githubusercontent.com/igroman787/mytonctrl/master/scripts/install.sh 
-sudo bash install.sh -m full                        
+wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
+sudo bash install.sh -m full        
 ```
 
 Debian:
 ```bash
-wget https://raw.githubusercontent.com/igroman787/mytonctrl/master/scripts/install.sh 
-su root -c 'bash install.sh -m full'                        
+wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
+su root -c 'bash install.sh -m full'
 ```
 
 Installation description:
