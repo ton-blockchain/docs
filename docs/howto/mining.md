@@ -14,7 +14,7 @@
     * [Software](#faq-software)
 
 ## <a id="introduction"></a>Introduction
-This document provides introduction into process of mining TON Coins using PoW givers. Please visit [tonmine.xyz](https://tonmine.xyz) for up to date status of TON mining.
+This document provides introduction into process of mining TON Coins using PoW givers. Please visit [ton.org/mining](https://ton.org/mining) for up to date status of TON mining.
 
 ## <a id="quickStart"></a>Quick start
 To start mining right away:
@@ -25,7 +25,7 @@ To start mining right away:
 4. Check your hardware and [expected mining income](#faq-emi) by running `emi` command within `mytonctrl`
 5. If you do not yet have one: create `wallet address` using one of the [wallets](https://www.ton.org/wallets)
 6. Define your `wallet address` as mining target by executing `set minerAddr "..."` in `mytonctrl`
-7. Chose giver contract from the list available on [tonmine.xyz](https://tonmine.xyz) and set your miner to mine it by executing `set powAddr "..."` in `mytonctrl`
+7. Chose giver contract from the list available on [ton.org/mining](https://ton.org/mining) and set your miner to mine it by executing `set powAddr "..."` in `mytonctrl`
 8. Start mining by executing `mon` in `mytonctrl`
 9. Check CPU load on your machine, process called `pow-miner` should use most of your CPU
 10. Wait to get lucky, output of step 4 should have told you approximately what are your chances to mine a block.
@@ -73,7 +73,7 @@ See [can I use FPGA / ASICs?](#faq-hw-asic)
 Many people mine using AWS or Google compute cloud machines. As outlined in the specs above what really matters is CPU, thus we advise AWS [c5a.24xlarge](https://aws.amazon.com/ec2/instance-types/c5/) or Google [n2d-highcpu-224](https://cloud.google.com/compute/vm-instance-pricing) instances.
 
 ### <a id="hardware-estimates"></a>Income estimates
-The formula for income calculation is quite simple: `($total_bleed / $total_hashrate) * $your_hashrate`. This will give you **current** estimate. You can find out the variables on [tonmine.xyz](https://tonmine.xyz) or use estimated mining income calculator (`emi` command) in `mytonctrl`, here is sample output made on 7th of August 2021 using i5-11400F CPU:
+The formula for income calculation is quite simple: `($total_bleed / $total_hashrate) * $your_hashrate`. This will give you **current** estimate. You can find out the variables on [ton.org/mining](https://ton.org/mining) or use estimated mining income calculator (`emi` command) in `mytonctrl`, here is sample output made on 7th of August 2021 using i5-11400F CPU:
 ```
 Mining income estimations
 -----------------------------------------------------------------
@@ -95,7 +95,7 @@ TON Blockchain uses the Proof-of-Stake consensus and mining is not required to g
 Well, the reason is that the initial issue of 5bn TON Coins was transferred to ad hoc Proof-of-Work Giver smart contracts.
 Mining is used to obtain TON Coins from this smart contract.
 #### <a id="faq-general-supply"></a>How many coins are left for mining?
-The most actual information is available on [tonmine.xyz](https://tonmine.xyz), see `bleed` graphs. PoW Giver contracts have their limits and will dry out once users mine all available TON Coins.
+The most actual information is available on [ton.org/mining](https://ton.org/mining), see `bleed` graphs. PoW Giver contracts have their limits and will dry out once users mine all available TON Coins.
 #### <a id="faq-general-mined"></a>How many coins have been mined already?
 As of August 2021, about 4.9BN TON Coins have been mined.
 #### <a id="faq-general-whomined"></a>Who has mined those coins?
@@ -105,9 +105,9 @@ Not at all, all you need is [adequate hardware](#hardware) and to follow steps o
 #### <a id="faq-general-pissed"></a>Is there another way to mine?
 Yes, there is a 3rd party app [TON Miner Bot](https://t.me/TonMinerBot)
 #### <a id="faq-general-stats"></a>Where can I see mining statistics?
-[tonmine.xyz](https://tonmine.xyz)
+[ton.org/mining](https://ton.org/mining)
 #### <a id="faq-general-howmany"></a>How many miners are out there?
-We cannot say this, all we know is total hashrate of all miners on the network. There are however graphs on [tonmine.xyz](https://tonmine.xyz) that attempt to estimate quantity of machines of certan type needed to provide aproximate total hashrate.
+We cannot say this, all we know is total hashrate of all miners on the network. There are however graphs on [ton.org/mining](https://ton.org/mining) that attempt to estimate quantity of machines of certan type needed to provide aproximate total hashrate.
 #### <a id="faq-general-noincome"></a>Do i need TON coins to start mining?
 No, you do not, anyone can start mining without owning a single TON Coin
 #### <a id="faq-mining-noincome"></a>I mine for hours, why my wallet total does not increase, not even by 1 TON?
@@ -117,7 +117,7 @@ Did you check your current [Income estimates](#hardware-estimates)? If field `Es
 #### <a id="faq-mining-pools"></a>Are there mining pools?
 No, As of now there are no implementations of mining pools, everyone mines for himself.
 #### <a id="faq-mining-giver"></a>Which giver should I mine?
-It does not really matter which giver you choose, difficulty tends to fluctuate on each giver, so current easiest giver on [tonmine.xyz](https://tonmine.xyz) might become most complex within an hour, same applies in opposite direction.
+It does not really matter which giver you choose, difficulty tends to fluctuate on each giver, so current easiest giver on [ton.org/mining](https://ton.org/mining) might become most complex within an hour, same applies in opposite direction.
 ### <a id="faq-hw"></a>Hardware
 #### <a id="faq-hw-machine"></a>Will faster machine always win?
 No, all miners take different roads to find solution, the faster machine has higher probability of success but it is not guaranteed a victory!

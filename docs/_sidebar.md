@@ -1,12 +1,13 @@
 <!-- docs/_sidebar.md -->
-* [HOME](/)
-
-* [DOCS](/docs.md)
-  * [TON](https://newton-blockchain.github.io/docs/ton.pdf)
-  * [TON Virtual Machine](https://newton-blockchain.github.io/docs/tvm.pdf)
-  * [TON Blockchain](https://newton-blockchain.github.io/docs/tblkch.pdf)
-  * [Fift Programming Language](https://newton-blockchain.github.io/docs/fiftbase.pdf)
-  * [Catchain Consensus Protocol](https://newton-blockchain.github.io/docs/catchain.pdf)
+* APIs
+  * [APIs](/apis/)
+  * [JavaScript](https://github.com/toncenter/tonweb)
+  * [C++ TonLib ](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
+  * [Golang TonLib Wrapper](https://github.com/ton-blockchain/tonlib-go)
+  * [Java TonLib Wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
+ 
+* Smart Contracts
+  * [Overview](/smart-contracts/)
   * [FunC Programming Language](/func.md)
     * [Overview](/func/overview.md)
     * [Types](/func/types.md)
@@ -18,31 +19,36 @@
     * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
     * [FAQ](/func/FAQ.md)
+  * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
 
-* [HOWTO](/howto/)
-  * [Getting Started](/howto/getting-started.md)
-  * [Step-by-Step](/howto/step-by-step.md)
-  * [Full Node](/howto/full-node.md)
-  * [Validator](/howto/validator.md)
+* Payment Processing
+  * [Payment Processing](/howto/payment-processing.md)
+  
+* Nodes
+  * [TON Node Types](/nodes/node-types.md)
+  * [Running your own Full Node/Validator](/nodes/run-node.md)
+
+* Whitepapers
+  * [Overview](/docs.md)
+  * [TON](https://ton-blockchain.github.io/docs/ton.pdf)
+  * [TON Virtual Machine](https://ton-blockchain.github.io/docs/tvm.pdf)
+  * [TON Blockchain](https://ton-blockchain.github.io/docs/tblkch.pdf)
+  * [Catchain Consensus Protocol](https://ton-blockchain.github.io/docs/catchain.pdf)
+  
+* Mining
+  * [Mining](/howto/mining.md)
+
+* Low Level
+  * [Lite client](/howto/getting-started.md)
+  * [Smart contracts](/howto/step-by-step.md)
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
   * [Config Params](/howto/config-params.md)
-  * [Mining](/howto/mining.md)
   * [POW Givers](/howto/pow-givers.md)
-  * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
-  * [Payment Processing](/howto/payment-processing.md)
+
+* Support
   * [Wallets](/howto/wallets.md)
 
-* [TIPS](/tips.md)
-  * [Slashing](https://github.com/newton-blockchain/TIPs/issues/13)
-  * [Bridge](https://github.com/newton-blockchain/TIPs/issues/24)
-
-* [CONFIGS](configs.md)
-  * [Mainnet Config](https://newton-blockchain.github.io/global.config.json)
+* Configs
+  * [Mainnet Config](https://ton.org/global-config.json)
   * [Testnet Config](https://newton-blockchain.github.io/testnet-global.config.json)
-
-* SDK
-  * [JavaScript](https://github.com/toncenter/tonweb)
-  * [Golang](https://github.com/ton-blockchain/tonlib-go)
-  * [Java](https://github.com/ton-blockchain/tonlib-java)
-  * [C++](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
