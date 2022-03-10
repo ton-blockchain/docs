@@ -85,6 +85,8 @@ Function arguments are separated by commas. Valid declarations of an argument ar
   ```
   is a valid function definition of type `int -> int`. The `int` type of `x` is inferred by type-checker.
 
+Note that although a function may look like a function of several arguments, it's actually a function of one [tensor-type](/func/types?id=tensor-types) argument. To see the difference, please refer to [function application](/func/statements?id=function-application). Nevertheless, the components of the argument tensor are conventionally called function arguments.
+
 ### Specifiers
 There are three types of specifiers: `impure`, `inline`/`inline_ref` and `method_id`. One, several or none of them can be putted in function declaration, but currently they must be presented in the right order: for example, it is not allowed to put `impure` after `inline`.
 #### Impure specifier
