@@ -6,6 +6,8 @@ TON smart contracts are executed on their own TON Virtual Machine (TVM).
 
 TVM is built on the stack principle, which makes it efficient and easy to implement.
 
+[Bird's-eye overview](/smart-contracts/tvm_overview.md)
+
 [TVM specification](https://ton-blockchain.github.io/docs/tvm.pdf)
 
 [TVM C++ implementation](https://github.com/newton-blockchain/ton/tree/master/crypto/vm)
