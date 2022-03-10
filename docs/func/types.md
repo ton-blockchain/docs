@@ -2,7 +2,7 @@
 FunC has the following built-in types:
 
 ## Atomic types
-- `int` is the type of 257-bit signed integers. By default, overflow checks are enabled and lead to integer overflow exception.
+- `int` is the type of 257-bit signed integers. By default, overflow checks are enabled and lead to integer overflow exceptions.
 - `cell` is the type of TVM cells. All persistent data in TON Blockchain is stored in trees of cells. Every cell has up to 1023 bits of arbitrary data in it and up to 4 references to other cells. Cells play a role of memory in stack-based TVM.
 - `slice` is the type of cell slices. Cell can be transformed to a slice, and then the data bits and references to other cells from the cell can be obtained by loading them from the slice.
 - `builder` is the type of cell builders. Data bits and references to other cells can be stored into a builder, and then the builder can be finalized to a new cell.

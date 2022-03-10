@@ -5,13 +5,13 @@
 3. [Basics](#basics)
 4. [Advanced](#advanced)
 5. [Miner hardware](#hardware)
-	* [General](#hardware)
-	* [Cloud instances](#hardware-cloud)
-	* [Income estimates](#hardware-estimates)
+    * [General](#hardware)
+    * [Cloud instances](#hardware-cloud)
+    * [Income estimates](#hardware-estimates)
 6. [FAQ](#faq)
-	* [General](#faq-general)
-	* [Hardware](#faq-hw)
-	* [Software](#faq-software)
+    * [General](#faq-general)
+    * [Hardware](#faq-hw)
+    * [Software](#faq-software)
 
 ## <a id="introduction"></a>Introduction
 This document provides introduction into process of mining TON Coins using PoW givers. Please visit [ton.org/mining](https://ton.org/mining) for up to date status of TON mining.
@@ -31,32 +31,32 @@ To start mining right away:
 10. Wait to get lucky, output of step 4 should have told you approximately what are your chances to mine a block.
 
 ## <a id="basics"></a>Basics
-TON Coins are distributed by so-called `PoW Givers` which are smart contracts with certain amount of TONs assigned to them. Currently there are 10 active PoW givers on TON network. Givers hand out coins in blocks of 100 TON each. In order to receive such block your computer needs to solve complex mathematical challenge issued by a giver and do that as fast as possible: you compete against other miners for the reward of 100 TON. If someone manages to solve the problem before you, all the work your machine has done is in vain and new round / race begins.
+TON Coins are distributed by so-called `PoW Givers` which are smart contracts with certain amount of TONs assigned to them. Currently, there are 10 active PoW givers on TON network. Givers hand out coins in blocks of 100 TON each. In order to receive such block your computer needs to solve complex mathematical challenge issued by a giver and do that as fast as possible: you compete against other miners for the reward of 100 TON. If someone manages to solve the problem before you, all the work your machine has done is in vain and new round/race begins.
 
 It is important to understand that profits from mining do not "trickle in" as your machine does the works, they come in batches of 100 TON for every successful solution of giver challenge. This means that if your machine has a 10% chance to calculate block within 24h (see step 4 of [Quick start](#quickStart)) then you will probably need to wait for ~10 days before you will get a 100 TON reward.
 
-The process of mining is largely automated by `mytonctrl`, detailed information about mining process can be found in [PoW givers](https://www.ton.org/docs/#/howto/pow-givers) document.
+The process of mining is largely automated by `mytonctrl`, detailed information about the mining process can be found in [PoW givers](https://www.ton.org/docs/#/howto/pow-givers) document.
 
 ## <a id="advanced"></a>Advanced
-If you are serious about mining and wish to operate more than one machine / mining farm then you really need to learn TON and how mining works, please see [HOWTO](https://ton.org/docs/#/howto/) section for in depth information. Here is some general advise:
+If you are serious about mining and wish to operate more than one machine/mining farm then you really need to learn TON and how mining works, please see [HOWTO](https://ton.org/docs/#/howto/) section for in-depth information. Here is some general advise:
 
 * **DO** run your own node / liteServer on separate machine, this will ensure that your mining farm does not depend on external liteServers that can go down or not process your queries in timely fashion.
 * **DO NOT** bombard public liteServers with `get_pow_params` queries, if you have custom scripts that poll givers status in high frequency you **must** use your own liteServer. Clients that violate this rule risk blacklisting of their IPs on public liteServers.
 * **DO** try to understand how [mining process](https://www.ton.org/docs/#/howto/pow-givers) works, most larger miners use their own scripts that offer many advantages over `mytonctrl` in environments with multiple mining machines.
 
 ## <a id="hardware"></a>Miner hardware
-Total network hashrate of TON mining is very high, miners need high performance machines if they wish to succeed. Mining on standard home computers and notebooks is futile and we advise against such attempts.
+The total network hashrate of TON mining is very high, miners need high-performance machines if they wish to succeed. Mining on standard home computers and notebooks is futile and we advise against such attempts.
 
 #### CPU
 Modern CPU that supports [Intel SHA Extension](https://en.wikipedia.org/wiki/Intel_SHA_extensions) is a **must**. Most miners use AMD EPYC or Threadripper based machines with at least 32 cores / 64 threads.
 
 #### GPU
-Yes! You can mine TON using GPU, there is a version of pow-miner that is capable to use both Nvidia and AMD GPUs, you can find the code as well as instructions how to use it in the [POW Miner GPU](https://github.com/tontechio/pow-miner-gpu/blob/main/crypto/util/pow-miner-howto.md) repository.
+Yes! You can mine TON using GPU, there is a version of pow-miner that is capable to use both Nvidia and AMD GPUs, you can find the code as well as instructions on how to use it in the [POW Miner GPU](https://github.com/tontechio/pow-miner-gpu/blob/main/crypto/util/pow-miner-howto.md) repository.
 
-For now one needs to be tech savvy to use this but we are working on a more user friendly solution.
+For now one needs to be tech-savvy to use this but we are working on a more user-friendly solution.
 
 #### Memory
-Almost entire mining process happens in L2 cache of the CPU. That means that memory speed and size play no role in mining performance. A dual AMD EPYC system with single dimm on one memory channel will mine just as fast as one with 16 dimms occupying all channels.
+Almost entire mining process happens in L2 cache of the CPU. That means that memory speed and size play no role in mining performance. A dual AMD EPYC system with single DIMM on one memory channel will mine just as fast as one with 16 DIMMs occupying all channels.
 
 Please do note that this applies to plain mining process **only**, if your machine also runs full node or other processes then things change! But this is out of scope of this guide.
 
@@ -84,7 +84,7 @@ Est. 24h chance to mine a block:    15%
 Est. monthly income:                437.7 TON
 ```
 
-**Important**: Please do note that the information provided is based on *network hashrate at the moment of execution* your actual income over time will depend on many factors such as changing network hashrate, chosen giver and good portion of luck.
+**Important**: Please do note that the information provided is based on *network hashrate at the moment of execution* your actual income over time will depend on many factors such as changing network hashrate, chosen giver, and good portion of luck.
 
 
 ## <a id="faq"></a>FAQ
@@ -113,25 +113,25 @@ No, you do not, anyone can start mining without owning a single TON Coin
 #### <a id="faq-mining-noincome"></a>I mine for hours, why my wallet total does not increase, not even by 1 TON?
 TONs are mined in blocks of 100, you either guess a block and receive 100 TON or receive nothing. please see [basics](#basics)
 #### <a id="faq-mining-noblocks"></a>I mine for days and I see no results, why?
-Did you check your current [Income estimates](#hardware-estimates)? If field `Est. 24h chance to mine a block` is less then 100% then you need to be patient. Also please do note that a 50% chance to mine a block within 24h does not automatically mean that you will mine one within 2 days, 50% applies to each day individually.
+Did you check your current [Income estimates](#hardware-estimates)? If field `Est. 24h chance to mine a block` is less than 100% then you need to be patient. Also please do note that a 50% chance to mine a block within 24h does not automatically mean that you will mine one within 2 days, 50% applies to each day individually.
 #### <a id="faq-mining-pools"></a>Are there mining pools?
 No, As of now there are no implementations of mining pools, everyone mines for himself.
 #### <a id="faq-mining-giver"></a>Which giver should I mine?
 It does not really matter which giver you choose, difficulty tends to fluctuate on each giver, so current easiest giver on [ton.org/mining](https://ton.org/mining) might become most complex within an hour, same applies in opposite direction.
 ### <a id="faq-hw"></a>Hardware
 #### <a id="faq-hw-machine"></a>Will faster machine always win?
-No, all miners take different roads to finding solution, faster machine has higher probability of success but it is not guaranteed a victory!
+No, all miners take different roads to find solution, the faster machine has higher probability of success but it is not guaranteed a victory!
 #### <a id="faq-hw-machine"></a>How much income will my machine generate?
 Please see [Income estimates](#hardware-estimates)
 #### <a id="faq-hw-asic"></a>Can I use my BTC | ETH rig to mine TON?
-No, TON uses single SHA256 hashing method which is different from BTC,ETH and others. ASICS or FPGAs build for mining other cryptos will not help. 
+No, TON uses single SHA256 hashing method which is different from BTC, ETH and others. ASICS or FPGAs build for mining other cryptos will not help. 
 #### <a id="faq-hw-svsm"></a>What is better, single fast machine or several slow ones?
-This is controversial, see: miner software launches threads for each core on the system and each core get's it's own set of keys to process, so if you have one machine capable to run 64 threads and 4 x machines capable to run 16 threads each then they will be exactly as succesful assuming that speed of each thread is the same.
+This is controversial, see: miner software launches threads for each core on the system and each core get's its own set of keys to process, so if you have one machine capable to run 64 threads and 4 x machines capable to run 16 threads each then they will be exactly as successful assuming that speed of each thread is the same.
 
-In real world hovewer CPUs with lower core count are usually clocked higher, so you will probably have better success with mutiple machines.
+In real-world however CPUs with lower core count are usually clocked higher, so you will probably have better success with multiple machines.
 #### <a id="faq-hw-mc"></a>If I run many machines, will they cooperate?
 No, they will not. Each machine mines on its own but solution finding process is random, no machine, not even a single thread (see above) will take the same path, thus, their hashrates add up in your favor without direct cooperation.
-#### <a id="faq-hw-cpu"></a>Can I mine using ARM CPUs?
+#### <a id="faq-hw-CPU"></a>Can I mine using ARM CPUs?
 Depends on CPU, AWS Graviton2 instances are very capable miners indeed and are able to hold price/performance ratio alongside AMD EPYC based instances.
 ### <a id="faq-software"></a>Software
 #### <a id="faq-software-os"></a>Can I mine using Windows / xBSD / some other OS?

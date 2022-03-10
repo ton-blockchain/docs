@@ -385,7 +385,7 @@ int check_data_signature(slice data, slice signature, int public_key) asm "CHKSI
 Checks whether `signature` is a valid Ed25519-signature of the data portion of `slice data` using `public_key`, similarly to `check_signature`. If the bit length of `data` is not divisible by eight, throws a cell underflow exception. The verification of Ed25519 signatures is the standard one, with sha256 used to reduce `data` to the 256-bit number that is actually signed.
 
 ### Computation of boc size
-The primitives below may be useful for computing storage fees of user provided data.
+The primitives below may be useful for computing storage fees of user-provided data.
 #### compute_data_size?
 ```
 (int, int, int, int) compute_data_size?(cell c, int max_cells) asm "CDATASIZEQ NULLSWAPIFNOT2 NULLSWAPIFNOT";
@@ -427,7 +427,7 @@ Usually `c3` has a continuation initialized by the whole code of the contract. I
 ```
 () set_c3(cont c) impure asm "c3 POP";
 ```
-Updates the current value of `c3`. Usually it is used for updating smartcontract code in run-time. Note that after execution of this primitive the current code (and the stack of recursive function calls) won't change, but any other function call will use a function from the new code.
+Updates the current value of `c3`. Usually, it is used for updating smart contract code in run-time. Note that after execution of this primitive the current code (and the stack of recursive function calls) won't change, but any other function call will use a function from the new code.
 #### bless
 ```
 cont bless(slice s) impure asm "BLESS";
@@ -461,7 +461,7 @@ Computes the amount of gas that can be bought for `gram` nanotoncoins, and sets 
 ```
 () raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
 ```
-Creates an output action which would reserve exactly `amount` nanotoncoins (if `mode = 0`), at most `amount` nanotoncoins (if `y = 2`), or all but `amount` nanotoncoins (if `mode = 1` or `mode = 3`), from the remaining balance of the account. It is roughly equivalent to creating an outbound message carrying `amount` nanotoncoins (or `b − amount` nanotoncoins, where `b` is the remaining balance) to oneself, so that the subsequent output actions would not be able to spend more money than the remainder. Bit +2 in `mode` means that the external action does not fail if the specified amount cannot be reserved; instead, all remaining balance is reserved. Bit +8 in `mode` means `amount <- -amount` before performing any further actions. Bit +4 in `mode` means that `amount` is increased by the original balance of the current account (before the compute phase), including all extra currencies, before performing any other checks and actions. Currently `amount` must be a non-negative integer, and `mode` must be in the range `0..15`.
+Creates an output action which would reserve exactly `amount` nanotoncoins (if `mode = 0`), at most `amount` nanotoncoins (if `y = 2`), or all but `amount` nanotoncoins (if `mode = 1` or `mode = 3`), from the remaining balance of the account. It is roughly equivalent to creating an outbound message carrying `amount` nanotoncoins (or `b − amount` nanotoncoins, where `b` is the remaining balance) to oneself, so that the subsequent output actions would not be able to spend more money than the remainder. Bit +2 in `mode` means that the external action does not fail if the specified amount cannot be reserved; instead, all remaining balance is reserved. Bit +8 in `mode` means `amount <- -amount` before performing any further actions. Bit +4 in `mode` means that `amount` is increased by the original balance of the current account (before the compute phase), including all extra currencies, before performing any other checks and actions. Currently, `amount` must be a non-negative integer, and `mode` must be in the range `0..15`.
 #### raw_reserve_extra
 ```
 () raw_reserve_extra(int amount, cell extra_amount, int mode) impure asm "RAWRESERVEX";
@@ -471,7 +471,7 @@ Similar to `raw_reserve`, but also accepts a dictionary `extra_amount` (represen
 ```
 () send_raw_message(cell msg, int mode) impure asm "SENDRAWMSG";
 ```
-Sends a raw message contained in `msg`, which should contain a correctly serialized object Message X, with the only exception that the source address is allowed to have dummy value `addr_none` (to be automatically replaced with the current smartcontract address), and `ihr_fee`, `fwd_fee`, `created_lt` and `created_at` fields can have arbitrary values (to be rewritten with correct values during the action phase of the current transaction). Integer parameter `mode` contains the flags. Currently `mode = 0` is used for ordinary messages;
+Sends a raw message contained in `msg`, which should contain a correctly serialized object Message X, with the only exception that the source address is allowed to have dummy value `addr_none` (to be automatically replaced with the current smart contract address), and `ihr_fee`, `fwd_fee`, `created_lt` and `created_at` fields can have arbitrary values (to be rewritten with correct values during the action phase of the current transaction). Integer parameter `mode` contains the flags. Currently `mode = 0` is used for ordinary messages;
 `mode = 128` is used for messages that are to carry all the remaining balance of the current smart contract (instead of the value originally indicated in the message); `mode = 64` is used for messages that carry all the remaining value of the inbound message in addition to the value initially indicated in the new message (if bit 0 is not set, the gas fees are deducted from this amount); `mode' = mode + 1` means that the sender wants to pay transfer fees separately; `mode' = mode + 2` means that any errors arising while processing this message during the action phase should be ignored. Finally, `mode' = mode + 32` means that the current account must be destroyed if its resulting balance is zero. This flag is usually employed together with +128.
 
 #### set_code
@@ -587,7 +587,9 @@ Unless otherwise stated, loading and preloading primitives read the data from a 
 ```
 slice begin_parse(cell c) asm "CTOS";
 ```
+
 Converts a `cell` into a `slice`. Notice that `c` must be either an ordinary cell, or an exotic cell (see [TVM.pdf](https://ton-blockchain.github.io/docs/tvm.pdf), 3.1.2) which is automatically loaded to yield an ordinary cell `c'`, converted into a `slice` afterwards.
+
 #### end_parse
 ```
 () end_parse(slice s) impure asm "ENDS";
@@ -996,6 +998,7 @@ Checks whether a dictionary is empty. Equivalent to `cell_null?`.
 
 ## Prefix dictionaries primitives
 TVM also support dictionaries with non-fixed length keys which form a prefix code (i.e. there is no key that is a prefix of another key). Learn more about them in [TVM.pdf](https://ton-blockchain.github.io/docs/tvm.pdf).
+
 #### pfxdict_get?
 ```
 (slice, slice, slice, int) pfxdict_get?(cell dict, int key_len, slice key) asm(key dict key_len) "PFXDICTGETQ" "NULLSWAPIFNOT2";
