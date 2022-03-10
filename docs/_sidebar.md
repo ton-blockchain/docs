@@ -21,6 +21,7 @@
     * [FunC standard library](/func/stdlib.md)
     * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
+  * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
 
 * Payment Processing
   * [Payment Processing](/howto/payment-processing.md)
