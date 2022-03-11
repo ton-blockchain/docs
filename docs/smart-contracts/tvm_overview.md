@@ -27,6 +27,7 @@ TVM is last-input-first-output stack machine. There are 7 types of variable whic
 * Integer - Signed 257-bit integers
 * Tuple - ordered collection of up to 255 elements having arbitrary value types, possibly distinct.
 * Null
+
 And four distinct flavours of cells
 * Cell - basic (possible nested) opaque structure used by TON blockchain for storing all data
 * Slice - special object which allows to read from cell
@@ -63,5 +64,7 @@ For ordinary transactions caused by message the initial state is as follows:
 Besides of exit_code and consumed gas data, TVM indirectly outputs the following data:
 * c4 register - the cell which will be stored as new `data` of the smart-contract (if execution will not be reverted on this or later phases)
 * c5 register - (list of output actions) the cell with last action in the list and reference to the cell with prev action (recursively)
+
 All other register values will be neglected.
+
 Note, that since there is limitation on max cell-depth `<1024`, and particularly limitation on c4 and c5 depth `<=512`. Besides there is limitation on number of output actions in one tx `<=255`. If contract need to send more than that it may send message with request `continue_sending` to himself and send all necessary messages in a few subsequent transactions.
