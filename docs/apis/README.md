@@ -2,7 +2,34 @@
 
 At the moment, two API options are available for interacting with TON:
 
-## 1. TON API
+## 1. HTTP API
+
+Usual HTTP JSON RPC like in most blockchains.
+
+Clients connect to the [ton-http-api](https://github.com/toncenter/ton-http-api) server, which proxies requests to the lite server (node) using TonLib.
+
+You can connect to public [toncenter.com](https://toncenter.com) or run your own http-api instance.
+
+👍 - Habitual. Suitable for a quick start.
+
+👎 - You cannot fully trust the server's responses (however, as in most other blockchains), since its responses do not contain proofs.
+
+**API reference**
+
+[https://toncenter.com/api/v2/](https://toncenter.com/api/v2/)
+
+**SDK**:
+
+- [JavaScript TonWeb](https://github.com/toncenter/tonweb)
+
+**Examples of using:**
+
+- [Standard web wallet](https://github.com/toncenter/ton-wallet) (Plain JS)
+
+- [Bridge frontend](https://github.com/ton-blockchain/bridge) (Vue.js)
+
+
+## 2. TON API
 
    Client connect directly to lite servers (nodes) using a binary protocol.
 
@@ -38,31 +65,10 @@ At the moment, two API options are available for interacting with TON:
    
    **Examples of using:**
 
-   - [Desktop](https://github.com/newton-blockchain/wallet-desktop), [Android](https://github.com/trm-dev/wallet-android) and [iOS](https://github.com/trm-dev/wallet-ios) standard wallets.
+   - [Desktop standard wallet](https://github.com/newton-blockchain/wallet-desktop) (C++ and Qt)
 
+   - [Android standard wallet](https://github.com/trm-dev/wallet-android) (Java)  
 
-## 2. HTTP API
+   - [iOS standard wallet](https://github.com/trm-dev/wallet-ios) (Swift)
 
-   Usual HTTP JSON RPC like in most blockchains.
-
-   Clients connect to the [ton-http-api](https://github.com/toncenter/ton-http-api) server, which proxies requests to the lite server (node) using TonLib.
-
-   You can connect to public [toncenter.com](https://toncenter.com) or run your own http-api instance.
-
-   👍 - Habitual. Suitable for a quick start.
-
-   👎 - You cannot fully trust the server's responses (however, as in most other blockchains), since its responses do not contain proofs.
-
-   **API reference**
-
-   [https://toncenter.com/api/v2/](https://toncenter.com/api/v2/)
-
-   **SDK**:
-
-   - [JavaScript TonWeb](https://github.com/toncenter/tonweb)
- 
-   **Examples of using:**
-
-   - [Standard web wallet](https://github.com/toncenter/ton-wallet)
-   
-   - [Bridge frontend](https://github.com/ton-blockchain/bridge)
+   - [TonLib CLI](https://github.com/newton-blockchain/ton/blob/master/tonlib/tonlib/tonlib-cli.cpp) (C++)

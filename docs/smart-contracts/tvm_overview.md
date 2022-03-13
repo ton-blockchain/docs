@@ -43,8 +43,8 @@ And four distinct flavours of cells
 * c5 — Contains the output actions. This value is a Cell.
 * c7 — Contains the root of temporary data. It is a Tuple.
 
-## Initialisation of TVM
-So when transaction excetuion gets to Computation phase, TVM initialises and then executes commands (op-codes) from _Current continuation_ until there is no more commands to execute (and no continuation for return jumps).
+## Initialization of TVM
+So when transaction execution gets to Computation phase, TVM initialises and then executes commands (op-codes) from _Current continuation_ until there is no more commands to execute (and no continuation for return jumps).
 
 Detailed description of initialisation can be find in [Ton-blockchain 4.4](https://ton-blockchain.github.io/docs/tblkch.pdf).
 For ordinary transactions caused by message the initial state is as follows:
