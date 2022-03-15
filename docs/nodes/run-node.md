@@ -6,6 +6,8 @@ Use the [mytonctrl](https://github.com/ton-blockchain/mytonctrl) to install and 
 
 ## Installation
 
+[Setup Node/Validator video instruction](https://github.com/ton-blockchain/docs/raw/master/docs/nodes/setup_validator.mp4 ':include controls :type=video width=100% height=400px')
+
 Download and run installation script.
 
 Ubuntu:
