@@ -10,8 +10,8 @@ allowed by this version of TVM
 * `5` - integer out of expected range.
 * `6` - Invalid opcode. Instruction in unknown to current TVM version
 * `7` - Type check error. An argument to a primitive is of incorrect value type. <sup>1</sup>
-* `8` - Cell underflow. Read from slice primitive tried to read more bits or references than there are.
-* `9` - Cell overflow. Writing to builder is not possible since after operation there would be more than 1023 bits or 4 references.
+* `8` - Cell overflow. Writing to builder is not possible since after operation there would be more than 1023 bits or 4 references.
+* `9` - Cell underflow. Read from slice primitive tried to read more bits or references than there are.
 * `10` - Dictionary error. Error during manipulation with dictionary (hashmaps).
 * `13` - Out of gas error. Thrown by TVM when the remaining gas becomes negative.
 * `32` - Action list is invalid. Set during action phase if c5 register after execution contains unparsable object.

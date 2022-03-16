@@ -56,7 +56,7 @@ For ordinary transactions caused by message the initial state is as follows:
     * The function selector s, an Integer: `0` for tx caused by internal messages, `-1` for external, etc. Generally speaking it is the integer which tells what event caused transaction
  * Current continuation : continuation converted from the `code` section of smart contract
  * Registers initialise as follows: c0, c1, c2 and c3 are empty. c4 contain the cell from `data` section of smart contract. c5 contains empty list (it is serialized as cell which contain last action in list plus reference to prev one) of output actions. c7 is initialised as tuple with some basic blockchain context data such as time, global config, block_data etc see [Ton-blockchain 4.4.10](https://ton-blockchain.github.io/docs/tblkch.pdf)
- * Current codepage = 0
+ * Current codepage is set to default value (cp=0)
  * Gas limits are initialised in accordance to Credit phase results
  * Library context is initialised as result of merging this smart contract library collection, masterchain global library collection and incoming (if any) message library collection
 
