@@ -5,10 +5,7 @@
   * [C++ TonLib ](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
   * [Golang TonLib Wrapper](https://github.com/ton-blockchain/tonlib-go)
   * [Java TonLib Wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
- 
-* Testnet
-  * [Testnet](/testnet/)
-
+  
 * Basic concepts
   * [TON blockchains](/overviews/TON_blockchain_overview.md)
   * [Cells](/overviews/Cells.md)
@@ -33,6 +30,10 @@
 
 * Payment Processing
   * [Payment Processing](/howto/payment-processing.md)
+  * [Create a key pair and a wallet](/payment-processing/common.md)
+  * [Accepting deposits to a single wallet](/payment-processing/deposits-single-wallet.md)
+  * [Accepting deposits to multiple wallets](/payment-processing/deposits-multi-wallet.md)
+  * [Withdrawal processing](/payment-processing/withdrawals.md)
   
 * Nodes
   * [TON Node Types](/nodes/node-types.md)
@@ -50,19 +51,22 @@
   * [Lite Client](/compile.md)
   * [FunC](/compile.md#FunC)
   * [Fift](/compile.md#Fift)
-
+  
 * Low Level
   * [Smart contracts](/howto/step-by-step.md)
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
   * [Config Params](/howto/config-params.md)
   * [POW Givers](/howto/pow-givers.md)
-
+  
 * Mining
   * [Mining](/howto/mining.md)
   
 * Support
   * [Wallets](/howto/wallets.md)
+
+* Testnet
+  * [Testnet](/testnet/)
 
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)
