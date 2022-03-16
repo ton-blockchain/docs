@@ -1,4 +1,17 @@
 <!-- docs/_sidebar.md -->
+* Basic concepts
+  * [TON blockchains](/overviews/TON_blockchain_overview.md)
+  * [Cells](/overviews/Cells.md)
+  * [TL-B](/overviews/TL-B.md)
+  * [TVM](/smart-contracts/tvm_overview.md)
+
+* Whitepapers
+  * [Overview](/docs.md)
+  * [TON](https://ton-blockchain.github.io/docs/ton.pdf)
+  * [TON Virtual Machine](https://ton-blockchain.github.io/docs/tvm.pdf)
+  * [TON Blockchain](https://ton-blockchain.github.io/docs/tblkch.pdf)
+  * [Catchain Consensus Protocol](https://ton-blockchain.github.io/docs/catchain.pdf)
+  
 * APIs
   * [APIs](/apis/)
   * [JavaScript](https://github.com/toncenter/tonweb)
@@ -6,12 +19,6 @@
   * [Golang TonLib Wrapper](https://github.com/ton-blockchain/tonlib-go)
   * [Java TonLib Wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
   
-* Basic concepts
-  * [TON blockchains](/overviews/TON_blockchain_overview.md)
-  * [Cells](/overviews/Cells.md)
-  * [TL-B](/overviews/TL-B.md)
-  * [TVM](/smart-contracts/tvm_overview.md)
-
 * Smart Contracts
   * [Overview](/smart-contracts/)
   * [FunC Programming Language](/func.md)
@@ -39,13 +46,9 @@
   * [TON Node Types](/nodes/node-types.md)
   * [Running your own Full Node/Validator](/nodes/run-node.md)
   * [Local TON](/nodes/local-ton.md)
-
-* Whitepapers
-  * [Overview](/docs.md)
-  * [TON](https://ton-blockchain.github.io/docs/ton.pdf)
-  * [TON Virtual Machine](https://ton-blockchain.github.io/docs/tvm.pdf)
-  * [TON Blockchain](https://ton-blockchain.github.io/docs/tblkch.pdf)
-  * [Catchain Consensus Protocol](https://ton-blockchain.github.io/docs/catchain.pdf)
+  
+* Testnet
+  * [Testnet](/testnet/)
 
 * How to compile
   * [Lite Client](/compile.md)
@@ -64,9 +67,6 @@
   
 * Support
   * [Wallets](/howto/wallets.md)
-
-* Testnet
-  * [Testnet](/testnet/)
 
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)
