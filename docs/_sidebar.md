@@ -9,6 +9,12 @@
 * Testnet
   * [Testnet](/testnet/)
 
+* Basic concepts
+  * [TON blockchains](/overviews/TON_blockchain_overview.md)
+  * [Cells](/overviews/Cells.md)
+  * [TL-B](/overviews/TL-B.md)
+  * [TVM](/smart-contracts/tvm_overview.md)
+
 * Smart Contracts
   * [Overview](/smart-contracts/)
   * [FunC Programming Language](/func.md)
@@ -23,9 +29,7 @@
     * [FunC standard library](/func/stdlib.md)
     * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
-  * TVM
-    * [TVM Overview](/smart-contracts/tvm_overview.md)
-    * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
+  * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
 
 * Payment Processing
   * [Payment Processing](/howto/payment-processing.md)
