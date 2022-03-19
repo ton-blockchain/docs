@@ -2,7 +2,7 @@
 TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)serialization of objects to [Cells](/overviews/Cells.md). There are detailed and complete TL-B scheme for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
 
 ## Scheme
-TL-B scheme consist of declarations. Each declaration describes _constructor_ for some _class_. For instance _class_ Bool may has two _constructors_ for `true` and `false` values.
+TL-B scheme consist of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may has two _constructors_ for `true` and `false` values.
 
 Typical TL-B declarations are shown below:
 ```
@@ -23,9 +23,9 @@ Each TL-B declaration consist of
 * Constructor: _constructor name_ immediately followed by an optional _constructor tag_
 * list of explicit and implicit field definitions separated by whitespaces (`" "`, `"\n"`, etc)
 * sign `=`
-* (optionally parametrized) _Class name_
+* (optionally parametrized) _Type name_
 
-Example: two constructors (with different binary prefixes) for `Bool` class.
+Example: two constructors (with different binary prefixes) for `Bool` type.
 ```
 bool_false$0 = Bool;
 bool_true$1 = Bool;
@@ -39,7 +39,7 @@ Constructor is declared in the form of `constructor_name[separator,tag]`.
 After constructor name, a `separator` may be presented. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in in hexadecimal form, the latter means binary `tag`.
 After both separators, a undercore symbol `_` may present, which means that tag is empty.
 
-There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for given class.
+There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for given type.
 
 Below you can find table with possible tags definitions.
 
@@ -76,10 +76,10 @@ nothing$0 {X:Type} = Maybe X;
 just$1 {X:Type} value:X = Maybe X;
 ```
 
-means the following: some other constructor may define field `var:(Maybe #)`. In that case, variable will be serialized either as `1` bit and serialization of `#` (uint32) if `var` is presents, or as `0` bit if `var` absents. That way `Maybe` is declared as C++-like _template_ class for arbitrary type X. However if `Maybe` would be declared as `nothing$0 {X:#} = Maybe X;`, that will mean that `Maybe` is declared for arbitrary number (not totally arbitrary type X).
+means the following: some other constructor may define field `var:(Maybe #)`. In that case, variable will be serialized either as `1` bit and serialization of `#` (uint32) if `var` is presents, or as `0` bit if `var` absents. That way `Maybe` is declared as C++-like _template_ type for arbitrary type X. However if `Maybe` would be declared as `nothing$0 {X:#} = Maybe X;`, that will mean that `Maybe` is declared for arbitrary number (not totally arbitrary type X).
 
-### Class definition
-Class name consist of `[A-z0-9_]` letters. By convention it is CamelCase name.
+### Type definition
+Type name consist of `[A-z0-9_]` letters. By convention it is CamelCase name.
 
 It can be parametrized by one or more parameters.
 
@@ -108,9 +108,9 @@ hml_same$11 {m:#} v:Bit n:(#<= m) = HmLabel ~n m;
 ## (De)serialization
 Given the TL-B scheme any object can be serialized to builder and deserialized from slice.
 In particular, when we deserialize object we need to start with determination of corresponding constructor by tag and then deserialize variables one by one from left to right (recursively jumping to serialization of variable which are TL-B objects themselves).
-During serialization we going the other way, by finding and writing to the builder `tag` which corresponds to given object of the class and then continue from left to write with each variable.
+During serialization we going the other way, by finding and writing to the builder `tag` which corresponds to given object of the type and then continue from left to write with each variable.
 
-For parsers, It is recommended to read scheme once and generate serializator and deserializator for each class, instead of referring to the scheme on the fly.
+For parsers, It is recommended to read scheme once and generate serializator and deserializator for each type, instead of referring to the scheme on the fly.
 ## BNF Grammar
 **Backus–Naur form** can be found in [TlbParser.bnf](https://github.com/andreypfau/intellij-ton/blob/main/src/main/grammars/TlbParser.bnf), thanks to [@andreypfau](https://github.com/andreypfau).
 
