@@ -9,7 +9,7 @@ TON consists of different blockchains with a masterchain to rule them all. You c
 
 Learn more on how to build with TON.
 
-[Smart contracts entrypoint](/smart-contract).
+[Smart contracts entrypoint](/smart-contracts/).
 [Standard smart contracts](https://github.com/newton-blockchain/ton/tree/master/crypto/smartcont) is the best way to study how FunC works.
 
 ## Whitepapers
@@ -26,6 +26,7 @@ TON can't work without payments, testnet and nodes required to be the backbone f
   * [Local TON](/nodes/local-ton.md)
   
 ### Testnet
+
   * [Testnet](/testnet/)
 
 ### Payment Processing
