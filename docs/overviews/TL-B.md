@@ -105,6 +105,19 @@ hml_long$10 {m:#} n:(#<= m) s:(n * Bit) = HmLabel ~n m;
 hml_same$11 {m:#} v:Bit n:(#<= m) = HmLabel ~n m;
 ```
 
+## Comments
+TL-B schemas support C-like comments:
+```
+/* 
+This is a
+multiline
+comment 
+*/
+
+// This is one line comment
+```
+
+
 ## (De)serialization
 Given the TL-B scheme any object can be serialized to builder and deserialized from slice.
 In particular, when we deserialize object we need to start with determination of corresponding constructor by tag and then deserialize variables one by one from left to right (recursively jumping to serialization of variable which are TL-B objects themselves).
@@ -114,9 +127,9 @@ For parsers, It is recommended to read scheme once and generate serializator and
 ## BNF Grammar
 **Backus–Naur form** can be found in [TlbParser.bnf](https://github.com/andreypfau/intellij-ton/blob/main/src/main/grammars/TlbParser.bnf), thanks to [@andreypfau](https://github.com/andreypfau).
 
-TL-B is also by [intellij-ton plugin](https://github.com/andreypfau/intellij-ton).
+TL-B is also supported by [intellij-ton plugin](https://github.com/andreypfau/intellij-ton).
 
-Docs on TL-B can be found in [TVM whitepaper](https://ton.org/tvm.pdf) and in collected form [here](https://github.com/tonstack/TL-B-docs).
+Docs on TL-B can be found in [TVM whitepaper](https://ton.org/tvm.pdf) and in concise (collected in one place) form [here](https://github.com/tonstack/TL-B-docs).
 ## Generator of serializators and deserializators
 Example of generator, used by TON node itself can be found in [Ton node sources](https://github.com/newton-blockchain/ton/blob/master/crypto/tl/tlbc.cpp).
 
