@@ -48,7 +48,7 @@
   * [Running your own Full Node/Validator](/nodes/run-node.md)
   * [Local TON](/nodes/local-ton.md)
   
-* Testnet
+* Use testnet for experiments
   * [Testnet](/testnet/)
 
 * How to compile
