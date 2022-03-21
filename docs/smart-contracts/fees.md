@@ -17,10 +17,12 @@ where:
 # Computation fees
 
 ## Gas
-All computation costs are nominated in gas units. Price of gas units is determined by this chain config and may be changed only by consensus of validator. Note, unlike in other systems, user can not set his own gas price and there is no fee market.
+All computation costs are nominated in gas units. Price of gas units is determined by this chain config (Config 20 for masterchain and Config 21 for basechain) and may be changed only by consensus of validator. Note, unlike in other systems, user can not set his own gas price and there is no fee market.
+
+Current settings in basechain are as follows: 1 gas unit costs 1000 of nanoTONs.
 
 ## TVM instructions cost
-On the lowest-level (TVM instruction execution) the gas price for most primitives 
+On the lowest-level (TVM instruction execution) the gas price for most primitives
 equals the _basic gas price_, computed as `P_b := 10 + b + 5r`,
 where `b` is the instruction length in bits and `r` is the
 number of cell references included in the instruction.
@@ -40,9 +42,9 @@ Almost all functions used in funC are defined in [stdlib.func](https://github.co
 
 However, generally fees related to bit-lengths are minor in comparisson with fees related to cell parsing and creation, as well as jumps and just number of executed instructions.
 
-So, if you try to optimize your code start with architecture optimization, the decreasing number of cell operations, then with decreasing number of jumps.
+So, if you try to optimize your code start with architecture optimization, the decreasing number of cell parsing/creation operations, then with decreasing number of jumps.
 
-### Cell operations
+### Operations with cells
 Just example of how proper cell work may substantially decrease gas costs.
 
 Lets imagine that you want to write some encoded payload to the outgoing message. Straightforward implementation will be as follows:
@@ -100,10 +102,13 @@ builder payload_encoding(int a, int b, int c) {
 By passing bit-string in the another form (builder instead of slice) we substantially decrease computation cost by very slight change in code.
 
 ### Inline and inline_refs
-By default, when you have funC function, it gets it's own `id`, stored in separate leaf of id->function dictionary and when you call it somewhere in program, searching of function in dictionary and subsequent jump occur. Such behavior is justified if your function is used from many places in the code and thus jumps allows to decrease size of the code (by storing function body one time). However if function is only used one or two times it is often much cheaper to declare this function as `inline` or `inline_ref`. `inline` modificator place body of the function right into continuation of the parent function, while `inline_ref` place function code into the reference (still jump to the reference is much cheaper than searching and jumping to dictionary entry).
+By default, when you have funC function, it gets it's own `id`, stored in separate leaf of id->function dictionary and when you call it somewhere in program, searching of function in dictionary and subsequent jump occur. Such behavior is justified if your function is used from many places in the code and thus jumps allows to decrease size of the code (by storing function body one time). However if function is only used one or two times it is often much cheaper to declare this function as `inline` or `inline_ref`. `inline` modificator place body of the function right into the code of the parent function, while `inline_ref` place function code into the reference (still jump to the reference is much cheaper than searching and jumping to dictionary entry).
 
 ### Dictionaries
-Dictionaries in the TON are introduced as trees (DAGs to be precise) of cells. That means that if you search, read or write to dictionary, you need to parse all cells of according branch of the tree. That means that a) dicts operations are not fixed in gas costs (since size and number of nodes in the branch depends on given dictionary and given key); b) it is expedient to optimize dict usage by using special instructions like `replace` instead of `delete` and `add`; c) developer should be aware of iteration operations (like next and prev) as well `min_key`/`max_key` operations to avoid unneccessary iteration through whole dict
+Dictionaries in the TON are introduced as trees (DAGs to be precise) of cells. That means that if you search, read or write to dictionary, you need to parse all cells of according branch of the tree. That means that
+   * a) dicts operations are not fixed in gas costs (since size and number of nodes in the branch depends on given dictionary and given key)
+   * b) it is expedient to optimize dict usage by using special instructions like `replace` instead of `delete` and `add`
+   * c) developer should be aware of iteration operations (like next and prev) as well `min_key`/`max_key` operations to avoid unneccessary iteration through whole dict
 
 ### Stack operations
 Note that funC manipulate stack entries under the hood. That means that code
