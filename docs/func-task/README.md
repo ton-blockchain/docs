@@ -80,6 +80,6 @@ Correct solution:
 
 We added an extra check: `throw_if(34, check_signature(slice_hash(data), signature, public_key))` 
 
-The owner’s signature is used to sign the incoming message. The body of a valid incoming message won’t match the contract data, an error message will not be emitted, and you are free to delete this line.
+The owner’s signature is used to sign the incoming message. The body of a valid incoming message won’t match the contract data, an error will not be emitted, and you are free to delete this line.
 </p>
 </details>
