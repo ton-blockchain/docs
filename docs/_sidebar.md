@@ -34,6 +34,7 @@
     * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
   * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
+  * [Sending messages](/smart-contracts/messages.md)
   * [Transaction fees](/smart-contracts/fees.md)
 
 * Payment Processing
