@@ -281,10 +281,6 @@ else {
 ;; Some specific features
 if (flag1) {
   do_something1();
-} elseif (flag2) {
-  do_alternative2();
-} elseifnot (flag3) {
-  do_alternative3();
 } else {
   do_alternative4();
 }
