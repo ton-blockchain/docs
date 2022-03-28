@@ -24,6 +24,8 @@ High-level language FunC is used to program smart contracts on TON.
 
 **Toolkit**
 
+[toncli](https://github.com/disintar/toncli)
+
 [TON IDEA plugin](https://plugins.jetbrains.com/plugin/18541-ton-development)
 
 [FunC Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
@@ -62,6 +64,8 @@ Since Fift is close to TVM opcodes, it also helps to know the limits of your bra
 - **Is TVM compatible with EVM?**
 
    TVM cannot be compatible with the Ethereum Virtual Machine (EVM) because the TON has a different modern architecture (TON asynchronous, Ethereum synchronous).
+
+   [Read more](https://telegra.ph/Its-time-to-try-something-new-Asynchronous-smart-contracts-03-25).
 
 - **Is it possible to write on Solidity for TON?**
 
