@@ -53,9 +53,9 @@ ext_out_msg_info$11 src:MsgAddress dest:MsgAddressExt
 ```
 
 Let's focus on `int_msg_info` for now.
-It starts with 1bit prefix `0`, then there are three 1-bit flags, namely whether Instant Hypercube Routing disable (currently always true), whether message should be bounced if there are errors during it's processing, whether message itself is result of bounce. Then source and destination address is serialized, then value of the message and four integersl related to message forwarding fees and time.
+It starts with 1bit prefix `0`, then there are three 1-bit flags, namely whether Instant Hypercube Routing disabled (currently always true), whether message should be bounced if there are errors during it's processing, whether message itself is result of bounce. Then source and destination address is serialized, then value of the message and four integers related to message forwarding fees and time.
 
-If message is sent from the smart-contract, some of those fields will be rewrited to correct values. In particular, validator will rewrite `bounced`, `src`, `ihr_fee`, `fwd_fee`, `created_lt` and `created_at`. That means two things: first, another smart-contract during handling message may trust those fields (sender may not forge source address, `bounced` flag, etc); and second, that during serialization we may put to those fields any valid values (anyway those values will be overwritten).
+If message is sent from the smart-contract, some of those fields will be rewritten to correct values. In particular, validator will rewrite `bounced`, `src`, `ihr_fee`, `fwd_fee`, `created_lt` and `created_at`. That means two things: first, another smart-contract during handling message may trust those fields (sender may not forge source address, `bounced` flag, etc); and second, that during serialization we may put to those fields any valid values (anyway those values will be overwritten).
 
 
 Straight-forward serialization of the message would be as follows:
@@ -73,7 +73,7 @@ Straight-forward serialization of the message would be as follows:
     .store_coins(0) ;; ihr_fee
     .store_coins(fwd_value) ;; fwd_fee 
     .store_uint(cur_lt(), 64) ;; lt of transaction
-    .store_uint(now(),32) ;; unixtime of transaction
+    .store_uint(now(), 32) ;; unixtime of transaction
     .store_uint(0,  1) ;; no init-field flag (Maybe)
     .store_uint(0,  1) ;; inplace message body flag (Either)
     .store_slice(msg_body)
@@ -103,7 +103,7 @@ First it put `0x18` value into 6 bits, that is put `0b011000`. What is it?
 * First bit is `0` -  1bit prefix which indicates that it is `int_msg_info`. 
 
 * Then there are 3 bits `1`, `1` and `0`, meaning Instant Hypercube Routing is disabled, message can be bounced and that message is not result of bouncing itself. 
-* Then there should be sender address, however since it anyway will be rewrited with the same effect any valid address may be stored there. The shortest valid address serialization is serialization of `addr_none` and it serializes as two-bit string `00`.
+* Then there should be sender address, however since it anyway will be rewritten with the same effect any valid address may be stored there. The shortest valid address serialization is serialization of `addr_none` and it serializes as two-bit string `00`.
 
 Thus `.store_uint(0x18, 6)` is the optimized way of serializing tag and first 4 fields.
 
@@ -122,7 +122,7 @@ This scheme means that in addtion to TON value, message may carry the dictionary
 
 Indeed, in elector code above we serialize coins amount via `.store_coins(grams)` but then just put string of zeroes with length equal to `1 + 4 + 4 + 64 + 32 + 1 + 1`. What is it? 
 * First bit stands for empty extra-currencies dictionary.
-* Then we have two 4bit long fields. They encode 0 as `VarUInteger 16`. Indeed since `ihr_fee` and `fwd_fee` will be overwrited  we may as well put there zeroes.
+* Then we have two 4bit long fields. They encode 0 as `VarUInteger 16`. Indeed since `ihr_fee` and `fwd_fee` will be overwritten  we may as well put there zeroes.
 * Then we put zero to `created_lt` and `created_at` fields. Those fields will be overwritten as well, however in contrast to fees, these fields have fixed length and thus are encoded as 64 and 32 bit long strings.
 * _(at that moment we alredy serialized message header and pass to init/body)_
 * next zero-bit means that there is no `init` field
@@ -137,9 +137,9 @@ Full scheme of messages layout as well as layout of all constituting fields (as 
 ## Message size
 Note that any Cell may contain up to 1023 bits. If you need to store more data you should split it into chunks and store in reference cells.
 
-That means that if, for instance, your message body size is 900 bits long you have no opportunity to store it in-place.
+That means that if, for instance, your message body size is 900 bits long you can not to store it in the same cell with the message header.
 Indeed, in addition to message header fields, total size of the cell will be more than 1023 bits and during serialization there will be `cell overflow` exception. In this case, instead of `0` that stands for "inplace message body flag (Either)" there should be `1` and message body should be stored in reference cell.
 
 Those things should be handled carefully due to the fact that some fields have variable size.
 
-For instance `MsgAddress` may be represented by 4 constructors `addr_none`, `addr_std`, `addr_extern`, `addr_var` with length from 2 bits ( for `addr_none`) to 586 bits (for `addr_var` in the largest form). The same stands for nanoTON amounts which is serialized as `VarUInteger 16`, that means 4 bits indicating the byte-length of the integer and then bytes for integer itself: that way 0 nanoTONs will be serialized as `0b0000` while 100.000.000 TON (or 100000000000000000 nanoTONs) will be serialized as `0b10000000000101100011010001010111100001011101100010100000000000000000`.
+For instance `MsgAddress` may be represented by 4 constructors `addr_none`, `addr_std`, `addr_extern`, `addr_var` with length from 2 bits ( for `addr_none`) to 586 bits (for `addr_var` in the largest form). The same stands for nanoTON amounts which is serialized as `VarUInteger 16`, that means 4 bits indicating the byte-length of the integer and then indicated earlier bytes for integer itself: that way 0 nanoTONs will be serialized as `0b0000` (4 bits which encode zero-length byte string and then zero bytes), while 100.000.000 TON (or 100000000000000000 nanoTONs) will be serialized as `0b10000000000101100011010001010111100001011101100010100000000000000000` (`0b1000` stands for 8 bytes and then 8 bytes themselves).
