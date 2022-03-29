@@ -158,9 +158,9 @@ They should be separated from the argument.
 #### Binary operators
 With priority 30 (left-associative):
 - `*` is integer multiplication
-- `/` is integer division (rounding ??)
-- `~/` is integer division (rounding ??)
-- `^/` is integer division (rounding ??)
+- `/` is integer division (rounding down) (exmp. `return 24 / 10; ;; 2`)
+- `~/` is integer division (rounding classic) (exmp. `return 24 ~/ 10; ;; 2`)
+- `^/` is integer division (rounding up) (exmp. `return 24 ^/ 10; ;; 3`)
 - `%` is integer reduction by modulo
 - `~%` is integer reduction by modulo
 - `^%` is integer reduction by modulo
