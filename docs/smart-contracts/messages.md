@@ -34,7 +34,7 @@ message$_ {X:Type} info:CommonMsgInfoRelaxed
   body:(Either X ^X) = MessageRelaxed X;
 ```
 
-Lets put it into words. Serialization of any message consist of three fields: info (header of some sort, which describe source, destination and othe metadata), init (field which is only required for initialisation of messages) and body (message payload).
+Lets put it into words. Serialization of any message consist of three fields: info (header of some sort, which describe source, destination and other metadata), init (field which is only required for initialisation of messages) and body (message payload).
 
 `Maybe` and `Either` and other type expressions mean as following: 
 * when we have field `info:CommonMsgInfoRelaxed` it means that serialization of `CommonMsgInfoRelaxed` is injected directly to the serialization cell
