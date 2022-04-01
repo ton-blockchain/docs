@@ -1,6 +1,6 @@
 # Cell
 Everything in TON is stored in cells.
-Cell is a data sctructure which contains up to 1023 bits (! not bytes) of data and up to 4 references to other cells. Bits and references are not intermixed (stored separately). Circular references are forbidden: for any cell none of it's descendant cell can has this cell as reference. In this way, all cells constitute a directed acyclic graph (DAG).
+Cell is a data structure which contains up to 1023 bits (! not bytes) of data and up to 4 references to other cells. Bits and references are not intermixed (stored separately). Circular references are forbidden: for any cell none of it's descendant cell can has this cell as reference. In this way, all cells constitute a directed acyclic graph (DAG).
 
 ## Cell types
 Currently there are 5 types of cells: _ordinary_ and 4 _exotic_.
