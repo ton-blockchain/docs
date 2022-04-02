@@ -34,10 +34,10 @@ bool_true$1 = Bool;
 ### Constructor
 Constructor is declared in the form of `constructor_name[separator,tag]`.
 
-`constructor_name` consist of `[A-z0-9_]` letters. By convention it is a snake_case name.
+`constructor_name` consist of `[A-z0-9_]` symbols. By convention it is a snake_case name.
 
-After constructor name, a `separator` may be presented. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in in hexadecimal form, the latter means binary `tag`.
-After both separators, a undercore symbol `_` may present, which means that tag is empty.
+After constructor name, a `separator` may be presented. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in a hexadecimal form, the latter means binary `tag`.
+After both separators, an undercore symbol `_` may present, which means that tag is empty.
 
 There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for given type.
 
@@ -79,7 +79,7 @@ just$1 {X:Type} value:X = Maybe X;
 means the following: some other constructor may define field `var:(Maybe #)`. In that case, variable will be serialized either as `1` bit and serialization of `#` (uint32) if `var` is presents, or as `0` bit if `var` absents. That way `Maybe` is declared as C++-like _template_ type for arbitrary type X. However if `Maybe` would be declared as `nothing$0 {X:#} = Maybe X;`, that will mean that `Maybe` is declared for arbitrary number (not totally arbitrary type X).
 
 ### Type definition
-Type name consist of `[A-z0-9_]` letters. By convention it is CamelCase name.
+Type name consist of `[A-z0-9_]` symbols. By convention it is CamelCase name.
 
 It can be parametrized by one or more parameters.
 
