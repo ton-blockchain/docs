@@ -23,12 +23,12 @@ In any moment TVM state is fully determined by 6 state properties:
 * Library context - the hashmap of libraries which can be called by TVM 
 
 ## TVM is stack machine
-TVM is last-input-first-output stack machine. There are 7 types of variable which may be stored in stack:
+TVM is last-input-first-output stack machine. There are 7 types of variables which may be stored in stack:
 * Integer - Signed 257-bit integers
 * Tuple - ordered collection of up to 255 elements having arbitrary value types, possibly distinct.
 * Null
 
-And four distinct flavours of cells
+And four distinct flavours of cells:
 * Cell - basic (possible nested) opaque structure used by TON blockchain for storing all data
 * Slice - special object which allows to read from cell
 * Builder - special object which allows to create new cells
@@ -46,19 +46,19 @@ And four distinct flavours of cells
 ## Initialization of TVM
 So when transaction execution gets to Computation phase, TVM initialises and then executes commands (op-codes) from _Current continuation_ until there is no more commands to execute (and no continuation for return jumps).
 
-Detailed description of initialisation can be find in [Ton-blockchain 4.4](https://ton-blockchain.github.io/docs/tblkch.pdf).
+Detailed description of initialization can be find in [Ton-blockchain 4.4](https://ton-blockchain.github.io/docs/tblkch.pdf).
 For ordinary transactions caused by message the initial state is as follows:
 * stack: 5 elements are put to the stack
     * The balance of the smart contract (after crediting the value of the inbound message) is passed as an Integer amount of nanoTONs.
-    * The balance of inbound message m is passed as an Integer amount of nanoTONs.
+    * The balance of inbound message `m` is passed as an Integer amount of nanoTONs.
     * The inbound message is passed as a cell, which contains a serialized value of type Message X, where X is the type of the message body.
-    * The body of the inbound message, equal to the value of field body of m, is passed as a cell slice
-    * The function selector s, an Integer: `0` for tx caused by internal messages, `-1` for external, etc. Generally speaking it is the integer which tells what event caused transaction
+    * The body of the inbound message, equal to the value of field body of `m`, is passed as a cell slice
+    * The function selector `s`, an Integer: `0` for tx caused by internal messages, `-1` for external, etc. Generally speaking it is the integer which tells what event caused transaction
  * Current continuation : continuation converted from the `code` section of smart contract
- * Registers initialise as follows: c0, c1, c2 and c3 are empty. c4 contain the cell from `data` section of smart contract. c5 contains empty list (it is serialized as cell which contain last action in list plus reference to prev one) of output actions. c7 is initialised as tuple with some basic blockchain context data such as time, global config, block_data etc see [Ton-blockchain 4.4.10](https://ton-blockchain.github.io/docs/tblkch.pdf)
+ * Registers initialise as follows: c0, c1, c2 and c3 are empty. c4 contain the cell from `data` section of smart contract. c5 contains empty list (it is serialized as cell which contain last action in list plus reference to prev one) of output actions. c7 is initialized as tuple with some basic blockchain context data such as time, global config, block_data, etc. See [Ton-blockchain 4.4.10](https://ton-blockchain.github.io/docs/tblkch.pdf)
  * Current codepage is set to default value (cp=0)
- * Gas limits are initialised in accordance to Credit phase results
- * Library context is initialised as result of merging this smart contract library collection, masterchain global library collection and incoming (if any) message library collection
+ * Gas limits are initialized in accordance to Credit phase results
+ * Library context is initialized as result of merging this smart contract library collection, masterchain global library collection and incoming (if any) message library collection
 
 ## Result of TVM execution
 Besides of exit_code and consumed gas data, TVM indirectly outputs the following data:
