@@ -2,7 +2,7 @@
 TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)serialization of objects to [Cells](/overviews/Cells.md). There are detailed and complete TL-B scheme for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
 
 ## Scheme
-TL-B scheme consist of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may has two _constructors_ for `true` and `false` values.
+TL-B scheme consist of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may have two _constructors_ for `true` and `false` values.
 
 Typical TL-B declarations are shown below:
 ```
@@ -37,7 +37,7 @@ Constructor is declared in the form of `constructor_name[separator,tag]`.
 `constructor_name` consist of `[A-z0-9_]` symbols. By convention it is a snake_case name.
 
 After constructor name, a `separator` may be presented. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in a hexadecimal form, the latter means binary `tag`.
-After both separators, an undercore symbol `_` may present, which means that tag is empty.
+After both separators, an underscore symbol `_` may present, which means that tag is empty.
 
 There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for given type.
 

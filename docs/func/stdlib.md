@@ -740,12 +740,12 @@ Stores a reference to cell `c` into builder `b`.
 ```
 ;; builder store_uint(builder b, int x, int len) asm(x b len) "STUX";
 ```
-Stores an unsigned `l`-bit integer `x` into `b` for `0 ≤ l ≤ 256`.
+Stores an unsigned `len`-bit integer `x` into `b` for `0 ≤ len ≤ 256`.
 #### store_int
 ```
 ;; builder store_int(builder b, int x, int len) asm(x b len) "STIX";
 ```
-Stores a signed `l`-bit integer `x` into `b` for `0 ≤ l ≤ 257`.
+Stores a signed `len`-bit integer `x` into `b` for `0 ≤ len ≤ 257`.
 #### store_slice
 ```
 builder store_slice(builder b, slice s) asm "STSLICER";
