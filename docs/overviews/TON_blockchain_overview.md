@@ -5,10 +5,11 @@
 Lets consider one smart contract. In TON it is a _thing_, that has propeties like `address`, `code`, `data`, `balance` and some others. In other words it is an object which has some _storage_ and _behavior_.
 That behaviour is as follows:
 * something happens (most common situation contract gets a message)
-* contract handles that event in accordance to it's own properites by executin it's `code` in TON Virtual Machine.
+* contract handles that event in accordance to it's own properites by execution it's `code` in TON Virtual Machine.
 * contract modifies it's own properties (`code`, `data` and others)
 * contract optionally generates ougoing messages
 * contract falls asleep till next event
+
 Combination of that steps is called **transaction**. It is important that events are handled one by one, thus _transactions_ are strictly ordered and can not interrupt each other.
 
 This behavior pattern is well known and called Actor.
@@ -41,4 +42,4 @@ Aggregation of all shards which contain all accounts behaving by one set of rule
 In TON there can be many sets of rules and thus many blockchains which operate simultaneously and can interact with each other by sending messages crosschain the same way how accounts of one chain interacts with each other.
 
 ### Masterchain
-There is necessity of synchronisation of message routing and transaction execution. In other words nodes in the network need a way to fix some 'point' in multichain state and reach a consensus about that state. In TON for that pupose a special chain **MasterChain** is used. Blocks of _masterchain_ contains additional information (latest block hashes) about all other chains in the system, thus any observer unambigously determine state of all multichain system at some masterchain block.
+There is necessity of synchronisation of message routing and transaction execution. In other words nodes in the network need a way to fix some 'point' in multichain state and reach a consensus about that state. In TON for that purpose a special chain **MasterChain** is used. Blocks of _masterchain_ contains additional information (latest block hashes) about all other chains in the system, thus any observer unambigously determine state of all multichain system at some masterchain block.
