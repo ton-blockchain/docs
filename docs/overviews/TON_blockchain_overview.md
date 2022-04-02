@@ -7,7 +7,7 @@ That behaviour is as follows:
 * something happens (most common situation contract gets a message)
 * contract handles that event in accordance to it's own properites by execution it's `code` in TON Virtual Machine.
 * contract modifies it's own properties (`code`, `data` and others)
-* contract optionally generates ougoing messages
+* contract optionally generates outgoing messages
 * contract falls asleep till next event
 
 Combination of that steps is called **transaction**. It is important that events are handled one by one, thus _transactions_ are strictly ordered and can not interrupt each other.
@@ -32,7 +32,7 @@ Analogously, if some shards became too unocupied they can be **merged** into one
 
 There are obviously two limiting cases: when shard contains only one account (and thus can not be split further) and when shard contains all accounts.
 
-Accounts can interact with each other by sending messages. There is a special mechanism of routing which move messages from ougoing queues to corresponding incoming queues and ensures that 1) all messages will be delivered 2) messages will be delivered consequently (the message sent earlier will reach destination earlier).
+Accounts can interact with each other by sending messages. There is a special mechanism of routing which move messages from outgoing queues to corresponding incoming queues and ensures that 1) all messages will be delivered 2) messages will be delivered consequently (the message sent earlier will reach destination earlier).
 
 _Side note:_ to make splitting and merging deterministic, aggregation of accountchains into shards is based on bit-representation of account addresses. That way all accounts in shardchain will have exactly the same binary prefix (for instance all addresses will starts with `0b00101`).
 
