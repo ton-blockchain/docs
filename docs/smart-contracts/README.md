@@ -30,6 +30,8 @@ High-level language FunC is used to program smart contracts on TON.
 
 [FunC Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
 
+[VS Code plugin](https://marketplace.visualstudio.com/items?itemName=tonwhales.func-vscode)
+
 [MyLocalTON](/nodes/local-ton.md)
 
 [Testnet](/testnet/)
