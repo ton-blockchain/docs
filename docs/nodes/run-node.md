@@ -1,8 +1,8 @@
 # Running your own Full Node/Validator
 
-To install and manage your own node, use **[Mytonctrl](https://github.com/ton-blockchain/mytonctrl)** open source tool developed by TON Foundation.
+To install and manage your own node, use **[mytonctrl](https://github.com/ton-blockchain/mytonctrl)** open source tool developed by TON Foundation.
 
-The manjority of TON nodes use reliable and tested **Mytonctrl**.
+The majority of TON nodes use reliable and tested **mytonctrl**.
 
 ## Installation
 
@@ -22,7 +22,7 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 su root -c 'bash install.sh -m full'
 ```
 
-Check the **Mycontrol** installation procedure at:
+Check the **mycontrol** installation procedure at:
 
 https://github.com/ton-blockchain/mytonctrl/blob/master/docs/en/manual-ubuntu.md
 
@@ -33,8 +33,8 @@ To use your full node as an endpoint, skip everything about the validator functi
 
 To become a validator, send Toncoins to your wallet. 
 
-**Mytonctrl** automatically joins validation from the next next election round.
+**mytonctrl** automatically joins validation from the next next election round.
 
-Description:
+Check the manual here:
 
 https://github.com/ton-blockchain/mytonctrl/blob/master/docs/en/manual-ubuntu.md
