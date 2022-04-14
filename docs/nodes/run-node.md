@@ -22,7 +22,7 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 su root -c 'bash install.sh -m full'
 ```
 
-Installation procedure:
+Check the installation procedure at:
 
 https://github.com/ton-blockchain/mytonctrl/blob/master/docs/en/manual-ubuntu.md
 
