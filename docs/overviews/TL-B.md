@@ -32,11 +32,11 @@ bool_true$1 = Bool;
 ```
 
 ### Constructor
-Constructor is declared in the form of `constructor_name[separator,tag]`.
+Constructor is declared via a `constructor_name[separator,tag]`.
 
-`constructor_name` consist of `[A-z0-9_]` symbols. By convention it is a snake_case name.
+A `constructor_name` consists of `[A-z0-9_]` symbols. snake_case names are conventionally used.
 
-After constructor name, a `separator` may be presented. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in a hexadecimal form, the latter means binary `tag`.
+A constructor name can be followed by a `separator`. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in a hexadecimal form, the latter means binary `tag`.
 After both separators, an undercore symbol `_` may present, which means that tag is empty.
 
 There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for given type.
