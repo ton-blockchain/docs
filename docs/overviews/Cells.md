@@ -1,16 +1,16 @@
 # Cell
 Everything in TON is stored in cells.
-Cell is a data structure which contains up to 1023 bits (! not bytes) of data and up to 4 references to other cells. Bits and references are not intermixed (stored separately). Circular references are forbidden: for any cell none of it's descendant cell can has this cell as reference. In this way, all cells constitute a directed acyclic graph (DAG).
+Cell is a data structure containing up to 1023 bits (! not bytes) of data and up to 4 references to other cells. Bits and references are not intermixed (stored separately). Circular references are forbidden: for any cell none of its descendant cell can have this cell as reference. Thus, all cells constitute a directed acyclic graph (DAG).
 
 ## Cell types
-Currently there are 5 types of cells: _ordinary_ and 4 _exotic_.
-Exotic types include the following:
+Currently, there are 5 types of cells: _ordinary_ and 4 _exotic_.
+Exotic types are the following:
 * Pruned branch cell
 * Library reference cell
 * Merkle proof cell
 * Merkle update cell
 
-More info on exotic cells can be found in [TVM Whitepaper, section 3](https://ton.org/tvm.pdf).
+More on exotic cells: [TVM Whitepaper, section 3](https://ton.org/tvm.pdf).
 
 ## Cell flavors
 Cell by itself is an opaque object which is optimized for compact storage. In particular it deduplicates data: if there are a few eqivalent sub-cells referenced in different branches, the content of such cells is stored only once. 
