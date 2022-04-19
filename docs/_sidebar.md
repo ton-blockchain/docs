@@ -36,6 +36,7 @@
   * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
   * [Sending messages](/smart-contracts/messages.md)
   * [Transaction fees](/smart-contracts/fees.md)
+  * [Governance Smart Contracts](/smart-contracts/governance.md)
 
 * Payment Processing
   * [Payment Processing](/howto/payment-processing.md)
