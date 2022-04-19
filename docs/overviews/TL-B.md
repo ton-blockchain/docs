@@ -1,8 +1,8 @@
 # TL-B
-TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)serialization of objects to [Cells](/overviews/Cells.md). There are detailed and complete TL-B scheme for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
+TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)serialization of objects to [Cells](/overviews/Cells.md). There are detailed and complete TL-B schemes for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
 
 ## Scheme
-TL-B scheme consist of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may has two _constructors_ for `true` and `false` values.
+Each TL-B scheme consists of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may have two _constructors_ for `true` and `false` values.
 
 Typical TL-B declarations are shown below:
 ```
@@ -19,9 +19,9 @@ acc_trans#5 account_addr:bits256
 ```
 
 
-Each TL-B declaration consist of
+Each TL-B declaration consist of:
 * Constructor: _constructor name_ immediately followed by an optional _constructor tag_
-* list of explicit and implicit field definitions separated by whitespaces (`" "`, `"\n"`, etc)
+* list of explicit and implicit field definitions are separated by whitespaces (`" "`, `"\n"`, etc)
 * sign `=`
 * (optionally parametrized) _Type name_
 
