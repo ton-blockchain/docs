@@ -1,18 +1,18 @@
 # APIs
 
-At the moment, two API options are available for interacting with TON:
+At the moment, two API options are available to interact with TON:
 
 ## 1. HTTP API
 
-Usual HTTP JSON RPC like in most blockchains.
+Standard HTTP JSON RPC similar to many blockchains.
 
-Clients connect to the [ton-http-api](https://github.com/toncenter/ton-http-api) server, which proxies requests to the lite server (node) using TonLib.
+Clients connect to the [ton-http-api](https://github.com/toncenter/ton-http-api) server that proxies requests to the lite server (node) using TonLib.
 
 You can connect to public [toncenter.com](https://toncenter.com) or run your own http-api instance.
 
 👍 - Habitual. Suitable for a quick start.
 
-👎 - You cannot fully trust the server's responses (however, as in most other blockchains), since its responses do not contain proofs.
+👎 - Like in most blockchains, you cannot fully trust server responses, because its responses do not contain proofs.
 
 **API reference**
 
@@ -22,7 +22,7 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
 - [JavaScript TonWeb](https://github.com/toncenter/tonweb)
 
-**Examples of using:**
+**Usage examples:**
 
 - [Standard web wallet](https://github.com/toncenter/ton-wallet) (Plain JS)
 
@@ -31,13 +31,13 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
 ## 2. TON API
 
-   Client connect directly to lite servers (nodes) using a binary protocol.
+   Clients connect directly to lite servers (nodes) using a binary protocol.
 
-   The client downloads keyblocks, the current state of the account and their **Merkle proofs**, which guarantees the validity of the received data.
+   The client downloads keyblocks, the current state of the account and their **Merkle proofs**, which guarantees validity of the received data.
 
    Read operations (like get-method calls) are made by launching a local TVM with a downloaded and verified state.
 
-   The client does not need to download the full state of blockchain, it only downloads what is needed for the operation, so it is efficient. Calling local TVM is also lightweight.
+   There is no need to download the full state of blockchain, the client only downloads what is needed for the operation. Calling local TVM is also lightweight.
 
    You can connect to public lite servers from the global config ([mainnet](https://ton.org/global-config.json) or [testnet](https://newton-blockchain.github.io/testnet-global.config.json)) or run your own lite server.
 
@@ -51,7 +51,7 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
   **API reference**
 
-  Requests and responses to the server are described by a TL schema, which allows you to generate a typed interface for a specific programming language.
+  Requests and responses to the server are described by a TL schema that allows you to generate a typed interface for a specific programming language.
 
   [TonLib TL Schema](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl)
 
@@ -63,7 +63,7 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
    
    - [Java TonLib wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
    
-   **Examples of using:**
+   **Usage example:**
 
    - [Desktop standard wallet](https://github.com/newton-blockchain/wallet-desktop) (C++ and Qt)
 
