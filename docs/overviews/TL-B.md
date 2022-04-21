@@ -55,7 +55,7 @@ The table below displays possible tag definitions.
 Note that pregenerated tages are not usually used; explicitly declared are preferred.
 ### Field definitions
 #### Explicit
-Each field definition has the _ident : type-expr_, where _ident_ format that has an identifier with the name of the field (replaced by an underscore `_` for anonymous fields), and _type-expr_ is the field type. The type provided here is a type expression, which may include simple types or parametrized types with suitable parameters. Variables — i.e., the (identifiers of the) previously defined fields of types `#` (natural numbers) or `Type` (type of types) — may be used as parameters for the parametrized types.
+Each field definition has the _ident : type-expr_, where _ident_ is an identifier with the name of the field (replaced by an underscore `_` for anonymous fields), and _type-expr_ is the field type. The type provided here is a type expression, which may include simple types or parametrized types with suitable parameters. Variables — i.e., the (identifiers of the) previously defined fields of types `#` (natural numbers) or `Type` (type of types) — may be used as parameters for the parametrized types.
 
 There is a few predefined _types_:
 * `#` - means unsigned 32-bit number
