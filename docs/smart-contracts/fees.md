@@ -1,7 +1,7 @@
 This document provides general idea of transaction fees in TON and particularly computation fees for funC code. There is also the [detailed specification](https://ton-blockchain.github.io/docs/tvm.pdf).
 
 # Transactions and phases
-As was described in [TVM overview](/smart-contracts/tvm_overview.md) transaction execution consist of a few phases. Druing those phases corresponding fees may be deducted.
+As was described in [TVM overview](/smart-contracts/tvm_overview.md) transaction execution consist of a few phases. During those phases corresponding fees may be deducted.
 
 Generally:
 ```
@@ -38,7 +38,7 @@ Apart from that basic fees, the following fees appear:
 
 ## FunC constructions gas fees
 
-Almost all functions used in funC are defined in [stdlib.func](https://github.com/newton-blockchain/ton/blob/master/crypto/smartcont/stdlib.fc) which maps funC functions to Fift assembler instructions. In turn Fift assembler instructions are mapped to bit-sequence instructions in [asm.fif](https://github.com/newton-blockchain/ton/blob/master/crypto/fift/lib/Asm.fif). So if you want to exactly understand how much instuction call will cost you need to find `asm` representation in `stdlib.func`, then find bit-sequence in `asm.fif` and calculate instruction length in bits.
+Almost all functions used in funC are defined in [stdlib.func](https://github.com/newton-blockchain/ton/blob/master/crypto/smartcont/stdlib.fc) which maps funC functions to Fift assembler instructions. In turn Fift assembler instructions are mapped to bit-sequence instructions in [asm.fif](https://github.com/newton-blockchain/ton/blob/master/crypto/fift/lib/Asm.fif). So if you want to understand how much exactly instruction call will cost you, you need to find `asm` representation in `stdlib.func`, then find bit-sequence in `asm.fif` and calculate instruction length in bits.
 
 However, generally fees related to bit-lengths are minor in comparisson with fees related to cell parsing and creation, as well as jumps and just number of executed instructions.
 

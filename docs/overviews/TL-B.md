@@ -4,6 +4,7 @@ TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)
 ## Scheme
 Each TL-B scheme consists of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may have two _constructors_ for `true` and `false` values.
 
+
 Typical TL-B declarations are shown below:
 ```
 bool_false$0 = Bool;
@@ -38,6 +39,7 @@ A `constructor_name` consists of `[A-z0-9_]` symbols. snake_case names are conve
 
 A constructor name can be followed by a `separator`. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations. If `separator` is present, it can take two values `#` and `$`. The former means that a `tag` will be given in a hexadecimal form, the latter means a binary `tag`.
 After both separators, an undercore symbol `_` may come standing for an empty tag.
+
 
 There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for a given type.
 
