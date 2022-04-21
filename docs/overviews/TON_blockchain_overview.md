@@ -1,20 +1,20 @@
 # Actors chains
 ## Single actor
-*We use here and below terms 'smart contract', 'account' and 'actor' interchangably for describing an entity on blockchain.*
+*Terms 'smart contract', 'account' and 'actor' are used interchangably in this document to define a blockchain entity.*
 
-Lets consider one smart contract. In TON it is a _thing_, that has propeties like `address`, `code`, `data`, `balance` and some others. In other words it is an object which has some _storage_ and _behavior_.
-That behaviour is as follows:
-* something happens (most common situation contract gets a message)
-* contract handles that event in accordance to it's own properites by execution it's `code` in TON Virtual Machine.
-* contract modifies it's own properties (`code`, `data` and others)
+Lets consider one smart contract. In TON it is a _thing_, with propeties like `address`, `code`, `data`, `balance` and other. In other words, it is an object which has some _storage_ and _behavior_.
+That behaviour has the following pattern:
+* something happens (most common situation is that a contract gets a message)
+* contract handles that event according to its own properites by executing its `code` in TON Virtual Machine.
+* contract modifies its own properties (`code`, `data` and others)
 * contract optionally generates outgoing messages
-* contract falls asleep till next event
+* contract goes to the standby mode till the next event
 
-Combination of that steps is called **transaction**. It is important that events are handled one by one, thus _transactions_ are strictly ordered and can not interrupt each other.
+Combination of these steps is called **transaction**. It is important that events are handled one by one, thus _transactions_ are strictly ordered and cannot interrupt each other.
 
 This behavior pattern is well known and called Actor.
 
-Sequence of _transactions_ `Tx1 -> Tx2 -> Tx3 -> ....` may be called **chain**. And in considered case it is called **AccountChain** to emphasize that it is _chain_ of a single account transactions.
+Sequence of _transactions_ `Tx1 -> Tx2 -> Tx3 -> ....` may be called **chain**. And in the considered case it is called **AccountChain** to emphasize that it is _chain_ of a single account transactions.
 
 Now, since nodes which process transactions need from time to time coordinate state of smart contract (to reach a _consensus_ about the state) those _transactions_ are batched.
 `[Tx1 -> Tx2] -> [Tx3 -> Tx4 -> Tx5] -> [] -> [Tx6]`

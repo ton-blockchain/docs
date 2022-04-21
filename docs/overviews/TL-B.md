@@ -1,8 +1,9 @@
 # TL-B
-TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)serialization of objects to [Cells](/overviews/Cells.md). There are detailed and complete TL-B scheme for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
+TL-B stands for "Typed Language - Binary". It is used to describe scheme of (de)serialization of objects to [Cells](/overviews/Cells.md). There are detailed and complete TL-B schemes for all objects in TON: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb.
 
 ## Scheme
-TL-B scheme consist of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may have two _constructors_ for `true` and `false` values.
+Each TL-B scheme consists of declarations. Each declaration describes _constructor_ for some _type_. For instance _type_ Bool may have two _constructors_ for `true` and `false` values.
+
 
 Typical TL-B declarations are shown below:
 ```
@@ -19,9 +20,9 @@ acc_trans#5 account_addr:bits256
 ```
 
 
-Each TL-B declaration consist of
+Each TL-B declaration consist of:
 * Constructor: _constructor name_ immediately followed by an optional _constructor tag_
-* list of explicit and implicit field definitions separated by whitespaces (`" "`, `"\n"`, etc)
+* list of explicit and implicit field definitions are separated by whitespaces (`" "`, `"\n"`, etc)
 * sign `=`
 * (optionally parametrized) _Type name_
 
@@ -32,16 +33,17 @@ bool_true$1 = Bool;
 ```
 
 ### Constructor
-Constructor is declared in the form of `constructor_name[separator,tag]`.
+Constructor is declared via a `constructor_name[separator,tag]`.
 
-`constructor_name` consist of `[A-z0-9_]` symbols. By convention it is a snake_case name.
+A `constructor_name` consists of `[A-z0-9_]` symbols. snake_case names are conventionally used.
 
-After constructor name, a `separator` may be presented. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations.  If `separator` presents it can take two values `#` and `$`. The former means that `tag` will be given in a hexadecimal form, the latter means binary `tag`.
-After both separators, an underscore symbol `_` may present, which means that tag is empty.
+A constructor name can be followed by a `separator`. Absence of `separator` means that `tag` will be calculated automatically as 32bit  `crc32`-sum of constructor declarations. If `separator` is present, it can take two values `#` and `$`. The former means that a `tag` will be given in a hexadecimal form, the latter means a binary `tag`.
+After both separators, an undercore symbol `_` may come standing for an empty tag.
 
-There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for given type.
 
-Below you can find table with possible tags definitions.
+There is also a special constructor_name `_` (called anonymous constructor) that means that there is only one unnamed constructor with empty tag for a given type.
+
+The table below displays possible tag definitions.
 
 | Constructor | tag |
 | ----------- | ----------- |
@@ -52,10 +54,10 @@ Below you can find table with possible tags definitions.
 |  `some#_`     | empty tag      |
 |  `some$_`     | empty tag      |
 
-Note, however, that usually automatically calculated tags are not used and instead are explicitly provided.
+Note that pregenerated tages are not usually used; explicitly declared are preferred.
 ### Field definitions
 #### Explicit
-Each field definition is of the form _ident : type-expr_, where _ident_ is an identifier with the name of the field (replaced by an underscore `_` for anonymous fields), and _type-expr_ is the field’s type. The type provided here is a type expression, which may include simple types or parametrized types with suitable parameters. Variables — i.e., the (identifiers of the) previously defined fields of types `#` (natural numbers) or `Type` (type of types) — may be used as parameters for the parametrized types.
+Each field definition has the _ident : type-expr_, where _ident_ is an identifier with the name of the field (replaced by an underscore `_` for anonymous fields), and _type-expr_ is the field type. The type provided here is a type expression, which may include simple types or parametrized types with suitable parameters. Variables — i.e., the (identifiers of the) previously defined fields of types `#` (natural numbers) or `Type` (type of types) — may be used as parameters for the parametrized types.
 
 There is a few predefined _types_:
 * `#` - means unsigned 32-bit number
