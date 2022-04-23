@@ -440,11 +440,15 @@ Transforms a `slice s` into a simple ordinary continuation `c`, with `c.code = s
 () accept_message() impure asm "ACCEPT";
 ```
 Sets current gas limit `gl` to its maximal allowed value `gm`, and resets the gas credit `gc` to zero, decreasing the value of `gr` by `gc` in the process. In other words, the current smart contract agrees to buy some gas to finish the current transaction. This action is required to process external messages, which bring no value (hence no gas) with themselves.
+
+For more details check [accept_message effects](/smart-contracts/accept)
 #### set_gas_limit
 ```
 () set_gas_limit(int limit) impure asm "SETGASLIMIT";
 ```
 Sets current gas limit `gl` to the minimum of `limit` and `gm`, and resets the gas credit `gc` to zero. If the gas consumed so far (including the present instruction) exceeds the resulting value of `gl`, an (unhandled) out of gas exception is thrown before setting new gas limits. Notice that `set_gas_limit` with an argument `limit ≥ 2^63 − 1` is equivalent to `accept_message`.
+
+For more details check [accept_message effects](/smart-contracts/accept)
 #### commit
 ```
 () commit() impure asm "COMMIT";
