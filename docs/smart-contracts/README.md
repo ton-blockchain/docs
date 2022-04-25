@@ -23,16 +23,16 @@ High-level language FunC is used to program smart contracts on TON.
 [FunC compiler source code](https://github.com/newton-blockchain/ton/tree/master/crypto/func) (read [how to compile](/compile.md#FunC) FunC compiler from sources).
 
 **Toolkit**
+- Development and Testing
+   * [toncli](https://github.com/disintar/toncli)
+   * [ton-contract-executor](https://github.com/Naltox/ton-contract-executor)
+   * [MyLocalTON](/nodes/local-ton.md)
 
-[toncli](https://github.com/disintar/toncli)
+- IDE plugins
+   * [TON IDEA plugin](https://plugins.jetbrains.com/plugin/18541-ton-development)
+   * [FunC Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
+   * [VS Code plugin](https://marketplace.visualstudio.com/items?itemName=tonwhales.func-vscode)
 
-[TON IDEA plugin](https://plugins.jetbrains.com/plugin/18541-ton-development)
-
-[FunC Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
-
-[VS Code plugin](https://marketplace.visualstudio.com/items?itemName=tonwhales.func-vscode)
-
-[MyLocalTON](/nodes/local-ton.md)
 
 [Testnet](/testnet/)
 
