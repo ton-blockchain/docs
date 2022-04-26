@@ -35,11 +35,14 @@ with open(args.instructions_csv, "r") as f:
                     if s not in cmd_to_name:
                         cmd_to_name[s] = row["name"]
 
+def name_to_id(s):
+    return "instr-" + s.lower().replace("_", "-").replace("#", "SHARP")
+
 def make_link(text, cmd):
     if cmd not in cmd_to_name:
         return text
     name = cmd_to_name[cmd]
-    return "[%s](#instr-%s)" % (text, name)
+    return "[%s](#%s)" % (text, name_to_id(name))
 
 def gen_links(text):
     return re.sub("`([^ `][^`]* )?([A-Z0-9#-]+)`", lambda m: make_link(m.group(0), m.group(2)), text)
@@ -75,7 +78,7 @@ def make_table(cat):
             gas = "`" + gas + "`"
 
         desc = gen_links(desc)
-        desc = "<div id='instr-%s'>" % row["name"] + desc
+        desc = "<div id='%s'>" % name_to_id(row["name"]) + desc
 
         table.append("| %s | %s | %s | %s | %s |" % (opcode, fift, stack, desc, gas))
 

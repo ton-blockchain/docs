@@ -133,13 +133,13 @@ NULLSWAPIF,,#6FA0,tuple,6FA0,NULLSWAPIF,x - x or null x,26,"Pushes a _Null_ unde
 NULLSWAPIFNOT,,#6FA1,tuple,6FA1,NULLSWAPIFNOT,x - x or null x,26,"Pushes a _Null_ under the topmost _Integer_ `x`, but only if `x=0`. May be used for stack alignment after quiet primitives such as `PLDUXQ`."
 NULLROTRIF,,#6FA2,tuple,6FA2,NULLROTRIF,x y - x y or null x y,26,"Pushes a _Null_ under the second stack entry from the top, but only if the topmost _Integer_ `y` is non-zero."
 NULLROTRIFNOT,,#6FA3,tuple,6FA3,NULLROTRIFNOT,x y - x y or null x y,26,"Pushes a _Null_ under the second stack entry from the top, but only if the topmost _Integer_ `y` is zero. May be used for stack alignment after quiet primitives such as `LDUXQ`."
-NULLSWAPIF2,,#6FA4,tuple,6FA4,NULLSWAPIF2,x - x or null null x,26,"Pushes two _Null_s under the topmost _Integer_ `x`, but only if `x!=0`.
+NULLSWAPIF2,,#6FA4,tuple,6FA4,NULLSWAPIF2,x - x or null null x,26,"Pushes two nulls under the topmost _Integer_ `x`, but only if `x!=0`.
 Equivalent to `NULLSWAPIF` `NULLSWAPIF`."
-NULLSWAPIFNOT2,,#6FA5,tuple,6FA5,NULLSWAPIFNOT2,x - x or null null x,26,"Pushes two _Null_s under the topmost _Integer_ `x`, but only if `x=0`.
+NULLSWAPIFNOT2,,#6FA5,tuple,6FA5,NULLSWAPIFNOT2,x - x or null null x,26,"Pushes two nulls under the topmost _Integer_ `x`, but only if `x=0`.
 Equivalent to `NULLSWAPIFNOT` `NULLSWAPIFNOT`."
-NULLROTRIF2,,#6FA6,tuple,6FA6,NULLROTRIF2,x y - x y or null null x y,26,"Pushes two _Null_s under the second stack entry from the top, but only if the topmost _Integer_ `y` is non-zero.
+NULLROTRIF2,,#6FA6,tuple,6FA6,NULLROTRIF2,x y - x y or null null x y,26,"Pushes two nulls under the second stack entry from the top, but only if the topmost _Integer_ `y` is non-zero.
 Equivalent to `NULLROTRIF` `NULLROTRIF`."
-NULLROTRIFNOT2,,#6FA7,tuple,6FA7,NULLROTRIFNOT2,x y - x y or null null x y,26,"Pushes two _Null_s under the second stack entry from the top, but only if the topmost _Integer_ `y` is zero.
+NULLROTRIFNOT2,,#6FA7,tuple,6FA7,NULLROTRIFNOT2,x y - x y or null null x y,26,"Pushes two nulls under the second stack entry from the top, but only if the topmost _Integer_ `y` is zero.
 Equivalent to `NULLROTRIFNOT` `NULLROTRIFNOT`."
 INDEX2,,#6FB i:uint2 j:uint2,tuple,6FBij,[i] [j] INDEX2,t - x,26,"Recovers `x=(t_{i+1})_{j+1}` for `0 <= i,j <= 3`.
 Equivalent to `[i] INDEX` `[j] INDEX`."
@@ -388,7 +388,7 @@ STREFR,,#CF14,cell_build,CF14,STREFR,b c - b',26,Equivalent to `SWAP` `STREF`.
 STBREFR_ALT,,#CF15,cell_build,CF15,STBREFR_l,b b' - b'',526,A longer encoding of `STBREFR`.
 STSLICER,,#CF16,cell_build,CF16,STSLICER,b s - b',26,Equivalent to `SWAP` `STSLICE`.
 STBR,,#CF17,cell_build,CF17,"STBR
-BCONCAT",b b' - b'',26,"Concatenates two _Builder_s
+BCONCAT",b b' - b'',26,"Concatenates two builders.
 Equivalent to `SWAP` `STB`."
 STREFQ,,#CF18,cell_build,CF18,STREFQ,c b - c b -1 or b' 0,26,Quiet version of `STREF`.
 STBREFQ,,#CF19,cell_build,CF19,STBREFQ,b' b - b' b -1 or b'' 0,526,Quiet version of `STBREF`.
@@ -569,7 +569,7 @@ CONDSEL,,#E304,cont_conditional,E304,CONDSEL,f x y - x or y,26,"If integer `f` i
 CONDSELCHK,,#E305,cont_conditional,E305,CONDSELCHK,f x y - x or y,26,"Same as `CONDSEL`, but first checks whether `x` and `y` have the same type."
 IFRETALT,,#E308,cont_conditional,E308,IFRETALT,f -,26,Performs `RETALT` if integer `f!=0`.
 IFNOTRETALT,,#E309,cont_conditional,E309,IFNOTRETALT,f -,26,Performs `RETALT` if integer `f=0`.
-IFREFELSE,,#E30D c:^Cell,cont_conditional,E30D,[ref] IFREFELSE,f c -,26/126/51,"Equivalent to `PUSHREFCONT` `SWAP` `IFELSE`, with the optimization that the cell reference is not actually loaded into a _Slice_ and then converted into an ordinary _Continuation_ if `f=0`. Similar remarks apply to the next two primitives: _Cell_s are converted into _Continuation_s only when necessary."
+IFREFELSE,,#E30D c:^Cell,cont_conditional,E30D,[ref] IFREFELSE,f c -,26/126/51,"Equivalent to `PUSHREFCONT` `SWAP` `IFELSE`, with the optimization that the cell reference is not actually loaded into a _Slice_ and then converted into an ordinary _Continuation_ if `f=0`. Similar remarks apply to the next two primitives: cells are converted into continuations only when necessary."
 IFELSEREF,,#E30E c:^Cell,cont_conditional,E30E,[ref] IFELSEREF,f c -,26/126/51,Equivalent to `PUSHREFCONT` `IFELSE`.
 IFREFELSEREF,,#E30F c1:^Cell c2:^Cell,cont_conditional,E30F,[ref] [ref] IFREFELSEREF,f -,126/51,Equivalent to `PUSHREFCONT` `PUSHREFCONT` `IFELSE`.
 IFBITJMP,,#E39_ n:uint5,cont_conditional,E39_n,[n] IFBITJMP,x c - x,26,"Checks whether bit `0 <= n <= 31` is set in integer `x`, and if so, performs `JMPX` to continuation `c`. Value `x` is left in the stack."
@@ -853,7 +853,7 @@ PFXDICTGET,,#F4A9,dict_special,F4A9,PFXDICTGET,s D n - s' x s'',,"Similar to `PF
 PFXDICTGETJMP,,#F4AA,dict_special,F4AA,PFXDICTGETJMP,s D n - s' s'' or s,,"Similar to `PFXDICTGETQ`, but on success `BLESS`es the value `x` into a _Continuation_ and transfers control to it as if by a `JMPX`. On failure, returns `s` unchanged and continues execution."
 PFXDICTGETEXEC,,#F4AB,dict_special,F4AB,PFXDICTGETEXEC,s D n - s' s'',,"Similar to `PFXDICTGETJMP`, but `EXEC`utes the continuation found instead of jumping to it. On failure, throws a cell deserialization exception."
 PFXDICTCONSTGETJMP,,#F4AE_ d:^Cell n:uint10,dict_special,F4AE_n,"[ref] [n] PFXDICTCONSTGETJMP
-[ref] [n] PFXDICTSWITCH",s - s' s'' or s,,Combines `DICTPUSHCONST n` for `0 <= n <= 1023` with `PFXDICTGETJMP`.
+[ref] [n] PFXDICTSWITCH",s - s' s'' or s,,Combines `[n] DICTPUSHCONST` for `0 <= n <= 1023` with `PFXDICTGETJMP`.
 DICTIGETJMPZ,,#F4BC,dict_special,F4BC,DICTIGETJMPZ,i D n - i or nothing,,A variant of `DICTIGETJMP` that returns index `i` on failure.
 DICTUGETJMPZ,,#F4BD,dict_special,F4BD,DICTUGETJMPZ,i D n - i or nothing,,A variant of `DICTUGETJMP` that returns index `i` on failure.
 DICTIGETEXECZ,,#F4BE,dict_special,F4BE,DICTIGETEXECZ,i D n - i or nothing,,A variant of `DICTIGETEXEC` that returns index `i` on failure.
@@ -916,20 +916,20 @@ CDATASIZE,,#F941,app_misc,F941,CDATASIZE,c n - x y z,,A non-quiet version of `CD
 SDATASIZEQ,,#F942,app_misc,F942,SDATASIZEQ,s n - x y z -1 or 0,,"Similar to `CDATASIZEQ`, but accepting a _Slice_ `s` instead of a _Cell_. The returned value of `x` does not take into account the cell that contains the slice `s` itself; however, the data bits and the cell references of `s` are accounted for in `y` and `z`."
 SDATASIZE,,#F943,app_misc,F943,SDATASIZE,s n - x y z,,A non-quiet version of `SDATASIZEQ` that throws a cell overflow exception (8) on failure.
 LDGRAMS,,#FA00,app_currency,FA00,"LDGRAMS
-LDVARUINT16",s - x s',26,"Loads (deserializes) a `Gram` or `VarUInteger 16` amount from _CellSlice_ `s`, and returns the amount as _Integer_ `x` along with the remainder `s'` of `s`. The expected serialization of `x` consists of a 4-bit unsigned big-endian integer `l`, followed by an `8l`-bit unsigned big-endian representation of `x`.
+LDVARUINT16",s - x s',26,"Loads (deserializes) a `Gram` or `VarUInteger 16` amount from _Slice_ `s`, and returns the amount as _Integer_ `x` along with the remainder `s'` of `s`. The expected serialization of `x` consists of a 4-bit unsigned big-endian integer `l`, followed by an `8l`-bit unsigned big-endian representation of `x`.
 The net effect is approximately equivalent to `4 LDU` `SWAP` `3 LSHIFT#` `LDUX`."
 LDVARINT16,,#FA01,app_currency,FA01,LDVARINT16,s - x s',26,"Similar to `LDVARUINT16`, but loads a _signed_ _Integer_ `x`.
 Approximately equivalent to `4 LDU` `SWAP` `3 LSHIFT#` `LDIX`."
 STGRAMS,,#FA02,app_currency,FA02,"STGRAMS
 STVARUINT16",b x - b',26,"Stores (serializes) an _Integer_ `x` in the range `0...2^120-1` into _Builder_ `b`, and returns the resulting _Builder_ `b'`. The serialization of `x` consists of a 4-bit unsigned big-endian integer `l`, which is the smallest integer `l>=0`, such that `x<2^(8l)`, followed by an `8l`-bit unsigned big-endian representation of `x`. If `x` does not belong to the supported range, a range check exception is thrown."
 STVARINT16,,#FA03,app_currency,FA03,STVARINT16,b x - b',26,"Similar to `STVARUINT16`, but serializes a _signed_ _Integer_ `x` in the range `-2^119...2^119-1`."
-LDMSGADDR,,#FA40,app_addr,FA40,LDMSGADDR,s - s' s'',26,"Loads from _CellSlice_ `s` the only prefix that is a valid `MsgAddress`, and returns both this prefix `s'` and the remainder `s''` of `s` as _CellSlice_s."
+LDMSGADDR,,#FA40,app_addr,FA40,LDMSGADDR,s - s' s'',26,"Loads from _Slice_ `s` the only prefix that is a valid `MsgAddress`, and returns both this prefix `s'` and the remainder `s''` of `s` as slices."
 LDMSGADDRQ,,#FA41,app_addr,FA41,LDMSGADDRQ,s - s' s'' -1 or s 0,26,"A quiet version of `LDMSGADDR`: on success, pushes an extra `-1`; on failure, pushes the original `s` and a zero."
-PARSEMSGADDR,,#FA42,app_addr,FA42,PARSEMSGADDR,s - t,26,"Decomposes _CellSlice_ `s` containing a valid `MsgAddress` into a _Tuple_ `t` with separate fields of this `MsgAddress`. If `s` is not a valid `MsgAddress`, a cell deserialization exception is thrown."
+PARSEMSGADDR,,#FA42,app_addr,FA42,PARSEMSGADDR,s - t,26,"Decomposes _Slice_ `s` containing a valid `MsgAddress` into a _Tuple_ `t` with separate fields of this `MsgAddress`. If `s` is not a valid `MsgAddress`, a cell deserialization exception is thrown."
 PARSEMSGADDRQ,,#FA43,app_addr,FA43,PARSEMSGADDRQ,s - t -1 or 0,26,A quiet version of `PARSEMSGADDR`: returns a zero on error instead of throwing an exception.
-REWRITESTDADDR,,#FA44,app_addr,FA44,REWRITESTDADDR,s - x y,26,"Parses _CellSlice_ `s` containing a valid `MsgAddressInt` (usually a `msg_addr_std`), applies rewriting from the `anycast` (if present) to the same-length prefix of the address, and returns both the workchain `x` and the 256-bit address `y` as _Integer_s. If the address is not 256-bit, or if `s` is not a valid serialization of `MsgAddressInt`, throws a cell deserialization exception."
+REWRITESTDADDR,,#FA44,app_addr,FA44,REWRITESTDADDR,s - x y,26,"Parses _Slice_ `s` containing a valid `MsgAddressInt` (usually a `msg_addr_std`), applies rewriting from the `anycast` (if present) to the same-length prefix of the address, and returns both the workchain `x` and the 256-bit address `y` as integers. If the address is not 256-bit, or if `s` is not a valid serialization of `MsgAddressInt`, throws a cell deserialization exception."
 REWRITESTDADDRQ,,#FA45,app_addr,FA45,REWRITESTDADDRQ,s - x y -1 or 0,26,A quiet version of primitive `REWRITESTDADDR`.
-REWRITEVARADDR,,#FA46,app_addr,FA46,REWRITEVARADDR,s - x s',26,"A variant of `REWRITESTDADDR` that returns the (rewritten) address as a _Slice_ s, even if it is not exactly 256 bit long (represented by a `msg_addr_var`)."
+REWRITEVARADDR,,#FA46,app_addr,FA46,REWRITEVARADDR,s - x s',26,"A variant of `REWRITESTDADDR` that returns the (rewritten) address as a _Slice_ `s`, even if it is not exactly 256 bit long (represented by a `msg_addr_var`)."
 REWRITEVARADDRQ,,#FA47,app_addr,FA47,REWRITEVARADDRQ,s - x s' -1 or 0,26,A quiet version of primitive `REWRITEVARADDR`.
 SENDRAWMSG,,#FB00,app_actions,FB00,SENDRAWMSG,c x - ,526,"Sends a raw message contained in _Cell `c`_, which should contain a correctly serialized object `Message X`, with the only exception that the source address is allowed to have dummy value `addr_none` (to be automatically replaced with the current smart-contract address), and `ihr_fee`, `fwd_fee`, `created_lt` and `created_at` fields can have arbitrary values (to be rewritten with correct values during the action phase of the current transaction). Integer parameter `x` contains the flags. Currently `x=0` is used for ordinary messages; `x=128` is used for messages that are to carry all the remaining balance of the current smart contract (instead of the value originally indicated in the message); `x=64` is used for messages that carry all the remaining value of the inbound message in addition to the value initially indicated in the new message (if bit 0 is not set, the gas fees are deducted from this amount); `x'=x+1` means that the sender wants to pay transfer fees separately; `x'=x+2` means that any errors arising while processing this message during the action phase should be ignored. Finally, `x'=x+32` means that the current account must be destroyed if its resulting balance is zero. This flag is usually employed together with `+128`."
 RAWRESERVE,,#FB02,app_actions,FB02,RAWRESERVE,x y - ,526,"Creates an output action which would reserve exactly `x` nanograms (if `y=0`), at most `x` nanograms (if `y=2`), or all but `x` nanograms (if `y=1` or `y=3`), from the remaining balance of the account. It is roughly equivalent to creating an outbound message carrying `x` nanograms (or `b-x` nanograms, where `b` is the remaining balance) to oneself, so that the subsequent output actions would not be able to spend more money than the remainder. Bit `+2` in `y` means that the external action does not fail if the specified amount cannot be reserved; instead, all remaining balance is reserved. Bit `+8` in `y` means `x:=-x` before performing any further actions. Bit `+4` in `y` means that `x` is increased by the original balance of the current account (before the compute phase), including all extra currencies, before performing any other checks and actions. Currently `x` must be a non-negative integer, and `y` must be in the range `0...15`."

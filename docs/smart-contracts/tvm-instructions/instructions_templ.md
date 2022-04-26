@@ -1,61 +1,61 @@
 # TVM Instructions
 
 ## Contents
-1. [**Introduction**](#1-introduction)
-   1. [**Gas prices**](#11-gas-prices)
-   2. [**CSV table**](#12-csv-table)
-2. [**Stack manipulation primitives**](#2-stack-manipulation-primitives)
-   1. [**Basic stack manipulation primitives**](#21-basic-stack-manipulation-primitives)
-   2. [**Complex stack manipulation primitives**](#22-complex-stack-manipulation-primitives)
-3. [**Tuple, List, and Null primitives**](#3-tuple-list-and-null-primitives)
-4. [**Constant, or literal primitives**](#4-constant-or-literal-primitives)
-   1. [**Integer and boolean constants**](#41-integer-and-boolean-constants)
-   2. [**Constant slices, continuations, cells, and references**](#42-constant-slices-continuations-cells-and-references)
-5. [**Arithmetic primitives**](#5-arithmetic-primitives)
-   1. [**Addition, subtraction, multiplication**](#51-addition-subtraction-multiplication)
-   2. [**Division**](#52-division)
-   3. [**Shifts, logical operations**](#53-shifts-logical-operations)
-   4. [**Quiet arithmetic primitives**](#54-quiet-arithmetic-primitives)
-6. [**Comparison primitives**](#6-comparison-primitives)
-   1. [**Integer comparison**](#61-integer-comparison)
-   2. [**Other comparison**](#62-other-comparison)
-7. [**Cell primitives**](#7-cell-primitives)
-   1. [**Cell serialization primitives**](#71-cell-serialization-primitives)
-   2. [**Cell deserialization primitives**](#72-cell-deserialization-primitives)
-8. [**Continuation and control flow primitives**](#8-continuation-and-control-flow-primitives)
-   1. [**Unconditional control flow primitives**](#81-unconditional-control-flow-primitives)
-   2. [**Conditional control flow primitives**](#82-conditional-control-flow-primitives)
-   3. [**Control flow primitives: loops**](#83-control-flow-primitives-loops)
-   4. [**Manipulating the stack of continuations**](#84-manipulating-the-stack-of-continuations)
-   5. [**Creating simple continuations and closures**](#85-creating-simple-continuations-and-closures)
-   6. [**Operations with continuation savelists and control registers**](#86-operations-with-continuation-savelists-and-control-registers)
-   7. [**Dictionary subroutine calls and jumps**](#87-dictionary-subroutine-calls-and-jumps)
-9. [**Exception generating and handling primitives**](#9-exception-generating-and-handling-primitives)
-10. [**Dictionary manipulation primitives**](#10-dictionary-manipulation-primitives)
-    1. [**Dictionary creation**](#101-dictionary-creation)
-    2. [**Dictionary serialization and deserialization**](#102-dictionary-serialization-and-deserialization)
-    3. [**Get dictionary operations**](#103-get-dictionary-operations)
-    4. [**Set/Replace/Add dictionary operations**](#104-setreplaceadd-dictionary-operations)
-    5. [**Builder-accepting variants of Set dictionary operations**](#105-builder-accepting-variants-of-set-dictionary-operations)
-    6. [**Delete dictionary operations**](#106-delete-dictionary-operations)
-    7. [**"Maybe reference" dictionary operations**](#107-maybe-reference-dictionary-operations)
-    8. [**Prefix code dictionary operations**](#108-prefix-code-dictionary-operations)
-    9. [**Variants of GetNext and GetPrev operations**](#109-variants-of-getnext-and-getprev-operations)
-    10. [**GetMin, GetMax, RemoveMin, RemoveMax operations**](#1010-getmin-getmax-removemin-removemax-operations)
-    11. [**Special Get dictionary and prefix code dictionary operations, and constant dictionaries**](#1011-special-get-dictionary-and-prefix-code-dictionary-operations-and-constant-dictionaries)
-    12. [**SubDict dictionary operations**](#1012-subdict-dictionary-operations)
-11. [**Application-specific primitives**](#11-application-specific-primitives)
-    1. [**Gas-related primitives**](#111-gas-related-primitives)
-    2. [**Pseudo-random number generator primitives**](#112-pseudo-random-number-generator-primitives)
-    3. [**Configuration primitives**](#113-configuration-primitives)
-    4. [**Global variable primitives**](#114-global-variable-primitives)
-    5. [**Hashing and cryptography primitives**](#115-hashing-and-cryptography-primitives)
-    6. [**Miscellaneous primitives**](#116-miscellaneous-primitives)
-    7. [**Currency manipulation primitives**](#117-currency-manipulation-primitives)
-    8. [**Message and address manipulation primitives**](#118-message-and-address-manipulation-primitives)
-    9. [**Outbound message and output action primitives**](#119-outbound-message-and-output-action-primitives)
-12. [**Debug primitives**](#12-debug-primitives)
-13. [**Codepage primitives**](#13-codepage-primitives)
+1. [**Introduction**](#_1-introduction)
+   1. [**Gas prices**](#_11-gas-prices)
+   2. [**CSV table**](#_12-csv-table)
+2. [**Stack manipulation primitives**](#_2-stack-manipulation-primitives)
+   1. [**Basic stack manipulation primitives**](#_21-basic-stack-manipulation-primitives)
+   2. [**Complex stack manipulation primitives**](#_22-complex-stack-manipulation-primitives)
+3. [**Tuple, List, and Null primitives**](#_3-tuple-list-and-null-primitives)
+4. [**Constant, or literal primitives**](#_4-constant-or-literal-primitives)
+   1. [**Integer and boolean constants**](#_41-integer-and-boolean-constants)
+   2. [**Constant slices, continuations, cells, and references**](#_42-constant-slices-continuations-cells-and-references)
+5. [**Arithmetic primitives**](#_5-arithmetic-primitives)
+   1. [**Addition, subtraction, multiplication**](#_51-addition-subtraction-multiplication)
+   2. [**Division**](#_52-division)
+   3. [**Shifts, logical operations**](#_53-shifts-logical-operations)
+   4. [**Quiet arithmetic primitives**](#_54-quiet-arithmetic-primitives)
+6. [**Comparison primitives**](#_6-comparison-primitives)
+   1. [**Integer comparison**](#_61-integer-comparison)
+   2. [**Other comparison**](#_62-other-comparison)
+7. [**Cell primitives**](#_7-cell-primitives)
+   1. [**Cell serialization primitives**](#_71-cell-serialization-primitives)
+   2. [**Cell deserialization primitives**](#_72-cell-deserialization-primitives)
+8. [**Continuation and control flow primitives**](#_8-continuation-and-control-flow-primitives)
+   1. [**Unconditional control flow primitives**](#_81-unconditional-control-flow-primitives)
+   2. [**Conditional control flow primitives**](#_82-conditional-control-flow-primitives)
+   3. [**Control flow primitives: loops**](#_83-control-flow-primitives-loops)
+   4. [**Manipulating the stack of continuations**](#_84-manipulating-the-stack-of-continuations)
+   5. [**Creating simple continuations and closures**](#_85-creating-simple-continuations-and-closures)
+   6. [**Operations with continuation savelists and control registers**](#_86-operations-with-continuation-savelists-and-control-registers)
+   7. [**Dictionary subroutine calls and jumps**](#_87-dictionary-subroutine-calls-and-jumps)
+9. [**Exception generating and handling primitives**](#_9-exception-generating-and-handling-primitives)
+10. [**Dictionary manipulation primitives**](#_10-dictionary-manipulation-primitives)
+    1. [**Dictionary creation**](#_101-dictionary-creation)
+    2. [**Dictionary serialization and deserialization**](#_102-dictionary-serialization-and-deserialization)
+    3. [**Get dictionary operations**](#_103-get-dictionary-operations)
+    4. [**Set/Replace/Add dictionary operations**](#_104-setreplaceadd-dictionary-operations)
+    5. [**Builder-accepting variants of Set dictionary operations**](#_105-builder-accepting-variants-of-set-dictionary-operations)
+    6. [**Delete dictionary operations**](#_106-delete-dictionary-operations)
+    7. [**"Maybe reference" dictionary operations**](#_107-maybe-reference-dictionary-operations)
+    8. [**Prefix code dictionary operations**](#_108-prefix-code-dictionary-operations)
+    9. [**Variants of GetNext and GetPrev operations**](#_109-variants-of-getnext-and-getprev-operations)
+    10. [**GetMin, GetMax, RemoveMin, RemoveMax operations**](#_1010-getmin-getmax-removemin-removemax-operations)
+    11. [**Special Get dictionary and prefix code dictionary operations, and constant dictionaries**](#_1011-special-get-dictionary-and-prefix-code-dictionary-operations-and-constant-dictionaries)
+    12. [**SubDict dictionary operations**](#_1012-subdict-dictionary-operations)
+11. [**Application-specific primitives**](#_11-application-specific-primitives)
+    1. [**Gas-related primitives**](#_111-gas-related-primitives)
+    2. [**Pseudo-random number generator primitives**](#_112-pseudo-random-number-generator-primitives)
+    3. [**Configuration primitives**](#_113-configuration-primitives)
+    4. [**Global variable primitives**](#_114-global-variable-primitives)
+    5. [**Hashing and cryptography primitives**](#_115-hashing-and-cryptography-primitives)
+    6. [**Miscellaneous primitives**](#_116-miscellaneous-primitives)
+    7. [**Currency manipulation primitives**](#_117-currency-manipulation-primitives)
+    8. [**Message and address manipulation primitives**](#_118-message-and-address-manipulation-primitives)
+    9. [**Outbound message and output action primitives**](#_119-outbound-message-and-output-action-primitives)
+12. [**Debug primitives**](#_12-debug-primitives)
+13. [**Codepage primitives**](#_13-codepage-primitives)
 
 ## 1 Introduction
 This document provides a list of TVM instrucions, their opcodes and mnemonics.
@@ -112,6 +112,7 @@ Here `0 <= i,j,k <= 15` if not stated otherwise.
 Quiet operations return `NaN` instead of throwing exceptions if one of their arguments is a `NaN`, or in case of integer overflow.
 Quiet operations has a prefix `Q` as shown below. Another way to make an operation quiet is to add `QUIET` before it (i.e. one can write `QUIET ADD` instead of `QADD`).
 Quiet versions of integer comparison primitives are also available (`QUIET SGN`, `QUIET LESS` etc).
+
 {{Table: arithm_quiet}}
 
 ## 6 Comparison primitives
@@ -119,6 +120,7 @@ Quiet versions of integer comparison primitives are also available (`QUIET SGN`,
 {{Table: compare_int}}
 ### 6.2 Other comparison
 Most of these "other comparison" primitives actually compare the data portions of _Slices_ as bitstrings (ignoring references if not stated otherwise).
+
 {{Table: compare_other}}
 
 ## 7 Cell primitives
@@ -136,6 +138,7 @@ Most of these "other comparison" primitives actually compare the data portions o
 {{Table: cont_loops}}
 ### 8.4 Manipulating the stack of continuations
 Here `s"` is the [fee for moving stack elements between continuations](#11-gas-prices). It is equal to the size of the resulting stack minus 32 (or 0 if the stack is smaller than 32).
+
 {{Table: cont_stack}}
 ### 8.5 Creating simple continuations and closures
 {{Table: cont_create}}
@@ -159,15 +162,18 @@ Gas consumption of most of the dictionary operations is not fixed, it depends on
 {{Table: dict_set}}
 ### 10.5 Builder-accepting variants of Set dictionary operations
 The following primitives accept the new value as a _Builder_ `b` instead of a _Slice_ `x`.
+
 {{Table: dict_set_builder}}
 ### 10.6 Delete dictionary operations
 {{Table: dict_delete}}
 ### 10.7 "Maybe reference" dictionary operations
 The following operations assume that a dictionary is used to store values `c?` of type _Maybe Cell_.  The representation is as follows: if `c?` is a _Cell_ , it is stored as a value with no data bits and exactly one reference to this _Cell_.  If `c?` is _Null_, then the corresponding key must be absent from the dictionary.
+
 {{Table: dict_mayberef}}
 ### 10.8 Prefix code dictionary operations
 These are some basic operations for constructing prefix code dictionaries.
 These primitives are completely similar to their non-prefix code counterparts (`DICTSET` etc), with the obvious difference that even a _Set_ may fail in a prefix code dictionary, so a success flag must be returned by `PFXDICTSET` as well.
+
 {{Table: dict_prefix}}
 ### 10.9 Variants of GetNext and GetPrev operations
 {{Table: dict_next}}
@@ -205,6 +211,7 @@ However, when invoked in a TVM instance with debug mode enabled, these primitive
 
 `DEBUG` and `DEBUGSTR` are the two debug primitives, they cover all opcodes that start with `FE`.
 Other primitives listed here have opcodes from the same set. When debug is enabled, they have their specified effects. When debug is disabled, they behave as `NOP`.
+
 {{Table: debug}}
 
 ## 13 Codepage primitives
