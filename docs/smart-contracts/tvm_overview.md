@@ -60,6 +60,9 @@ For ordinary transactions caused by message the initial state is as follows:
  * Gas limits are initialized in accordance to Credit phase results
  * Library context is initialized as result of merging this smart contract library collection, masterchain global library collection and incoming (if any) message library collection
 
+## TVM instructions
+The list of TVM instructions can be found here: [TVM instructions](/smart-contracts/tvm-instructions/instructions.md).
+
 ## Result of TVM execution
 Besides of exit_code and consumed gas data, TVM indirectly outputs the following data:
 * c4 register - the cell which will be stored as new `data` of the smart-contract (if execution will not be reverted on this or later phases)
