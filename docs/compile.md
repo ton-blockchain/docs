@@ -30,6 +30,11 @@ The software is likely to compile and work properly on most Linux systems. It sh
 cmake --build . --target lite-client
 ```
 
+If running on M1 Mac run the following command:
+```
+grep -rl 'march=native' . | LC_ALL=C xargs sed -i '' 's/march=native/mcpu=apple-a12/g'
+```
+
 Download the newest configuration file from https://newton-blockchain.github.io/global.config.json for mainnet:
 
 ```
