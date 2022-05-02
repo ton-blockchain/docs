@@ -13,7 +13,7 @@ Learn more on how to build with TON.
 
 [Smart contracts entrypoint](/smart-contracts/).
 
-[Standard smart contracts](https://github.com/newton-blockchain/ton/tree/master/crypto/smartcont) is the best way to study how FunC works.
+[Standard smart contracts](https://github.com/ton-blockchain/ton/tree/master/crypto/smartcont) is the best way to study how FunC works.
 
 [API & SDK](/apis/).
 

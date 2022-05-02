@@ -133,5 +133,5 @@ TL-B is also supported by [intellij-ton plugin](https://github.com/andreypfau/in
 
 Docs on TL-B can be found in [TVM whitepaper](https://ton.org/tvm.pdf) and in concise (collected in one place) form [here](https://github.com/tonstack/TL-B-docs).
 ## Generator of serializators and deserializators
-Example of generator, used by TON node itself can be found in [Ton node sources](https://github.com/newton-blockchain/ton/blob/master/crypto/tl/tlbc.cpp).
+Example of generator, used by TON node itself can be found in [Ton node sources](https://github.com/ton-blockchain/ton/blob/master/crypto/tl/tlbc.cpp).
 

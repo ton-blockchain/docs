@@ -80,7 +80,7 @@ Straight-forward serialization of the message would be as follows:
   .end_cell();
 ```
 
-However, instead of step by step serialization of all fields, usually developers use short-cuts. Thus lets consider how message can be sent from the smart-contract on example from [elector-code](https://github.com/newton-blockchain/ton/blob/master/crypto/smartcont/elector-code.fc#L153)
+However, instead of step by step serialization of all fields, usually developers use short-cuts. Thus lets consider how message can be sent from the smart-contract on example from [elector-code](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/elector-code.fc#L153)
 ```
 () send_message_back(addr, ans_tag, query_id, body, grams, mode) impure inline_ref {
   ;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 011000
@@ -132,7 +132,7 @@ Indeed, in elector code above we serialize coins amount via `.store_coins(grams)
 That way instead of individual serialization of 14 parameters, we execute 4 serialization primitives.
 
 ## Full scheme
-Full scheme of messages layout as well as layout of all constituting fields (as well as scheme of ALL objects in TON) is presented in [block.tlb](https://github.com/newton-blockchain/ton/blob/master/crypto/block/block.tlb).
+Full scheme of messages layout as well as layout of all constituting fields (as well as scheme of ALL objects in TON) is presented in [block.tlb](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb).
 
 ## Message size
 Note that any Cell may contain up to 1023 bits. If you need to store more data you should split it into chunks and store in reference cells.

@@ -6,7 +6,7 @@ In order to access existing and create new TON Sites one needs special gateways 
 
 ## 1. Compiling RLDP-HTTP Proxy
 
-The RLDP-HTTP Proxy is a special utility specially designed for accessing and creating TON Sites. Its current (alpha) version is a part of the general TON Blockchain source tree, available at GitHub repository https://github.com/newton-blockchain/ton. In order to compile the RLDP-HTTP Proxy, follow the instructions outlined in **Getting Started** and **Validator**. The Proxy binary will be located as
+The RLDP-HTTP Proxy is a special utility specially designed for accessing and creating TON Sites. Its current (alpha) version is a part of the general TON Blockchain source tree, available at GitHub repository https://github.com/ton-blockchain/ton. In order to compile the RLDP-HTTP Proxy, follow the instructions outlined in **Getting Started** and **Validator**. The Proxy binary will be located as
 
 ```
 rldp-http-proxy/rldp-http-proxy
@@ -34,10 +34,10 @@ or
 rldp-http-proxy/rldp-http-proxy -p 8080 -a <your_public_ip>:3333 -C global.config.json
 ```
 
-where `<your_public_ip>` is your public IPv4 address, provided you have one on your home computer. The TON Network global configuration file `global.config.json` can be downloaded at https://newton-blockchain.github.io/global.config.json :
+where `<your_public_ip>` is your public IPv4 address, provided you have one on your home computer. The TON Network global configuration file `global.config.json` can be downloaded at https://ton-blockchain.github.io/global.config.json :
 
 ```
-wget https://newton-blockchain.github.io/global.config.json
+wget https://ton-blockchain.github.io/global.config.json
 ```
 
 In the above example, 8080 is the TCP port that will be listened to at localhost for incoming HTTP queries, and 3333 is the UDP port that will be used for all outbound and inbound RLDP and ADNL activity, i.e., for connecting to the TON Sites via the TON Network.

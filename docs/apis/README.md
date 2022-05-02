@@ -39,7 +39,7 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
    There is no need to download the full state of blockchain, the client only downloads what is needed for the operation. Calling local TVM is also lightweight.
 
-   You can connect to public lite servers from the global config ([mainnet](https://ton.org/global-config.json) or [testnet](https://newton-blockchain.github.io/testnet-global.config.json)) or run your own lite server.
+   You can connect to public lite servers from the global config ([mainnet](https://ton.org/global-config.json) or [testnet](https://ton-blockchain.github.io/testnet-global.config.json)) or run your own lite server.
 
    Since it checks Merkle proofs, you can even use untrusted lite servers.
 
@@ -53,11 +53,11 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
   Requests and responses to the server are described by a TL schema that allows you to generate a typed interface for a specific programming language.
 
-  [TonLib TL Schema](https://github.com/newton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl)
+  [TonLib TL Schema](https://github.com/ton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl)
 
    **SDK:**
    
-   - [C++ TonLib](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
+   - [C++ TonLib](https://github.com/ton-blockchain/ton/tree/master/example/cpp)
 
    - [Golang TonLib wrapper](https://github.com/ton-blockchain/tonlib-go)
    
@@ -71,4 +71,4 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
    - [iOS standard wallet](https://github.com/trm-dev/wallet-ios) (Swift)
 
-   - [TonLib CLI](https://github.com/newton-blockchain/ton/blob/master/tonlib/tonlib/tonlib-cli.cpp) (C++)
+   - [TonLib CLI](https://github.com/ton-blockchain/ton/blob/master/tonlib/tonlib/tonlib-cli.cpp) (C++)

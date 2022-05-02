@@ -4,7 +4,7 @@ Note that you need a machine with a public IP address and a high-bandwidth netwo
 
 ## 0. Downloading and compiling
 
-The complete TON Blockchain Library and Validator software is downloaded and compiled similarly to the Lite Client. This process is outlined in the Getting Started page. The most important difference is that you have to download the complete sources from public GitHub repository https://github.com/newton-blockchain/ton (e.g., by running `git clone https://github.com/newton-blockchain/ton` and `git submodule update --init` afterward) instead of downloading the smaller Lite Client source archive. You should also build all goals defined in `CMakeLists.txt` (e.g. by running `cmake <path-to-source-directory>` and `make` in your build directory), not only those specifically related to the Lite Client (which is also included in the larger distribution; you don't have to download and build it separately). We strongly recommend building a "release" or a "release with debug information" version of the TON Blockchain Library and especially of the Validator/Full Node bypassing `-DCMAKE_BUILD_TYPE=Release` or `-DCMAKE_BUILD_TYPE=RelWithDebInfo` as an extra argument to `cmake` during its first run (if you forgot to do this, you can later delete file `CMakeCache.txt` from your build directory and re-run `cmake` with the appropriate options).
+The complete TON Blockchain Library and Validator software is downloaded and compiled similarly to the Lite Client. This process is outlined in the Getting Started page. The most important difference is that you have to download the complete sources from public GitHub repository https://github.com/ton-blockchain/ton (e.g., by running `git clone https://github.com/ton-blockchain/ton` and `git submodule update --init` afterward) instead of downloading the smaller Lite Client source archive. You should also build all goals defined in `CMakeLists.txt` (e.g. by running `cmake <path-to-source-directory>` and `make` in your build directory), not only those specifically related to the Lite Client (which is also included in the larger distribution; you don't have to download and build it separately). We strongly recommend building a "release" or a "release with debug information" version of the TON Blockchain Library and especially of the Validator/Full Node bypassing `-DCMAKE_BUILD_TYPE=Release` or `-DCMAKE_BUILD_TYPE=RelWithDebInfo` as an extra argument to `cmake` during its first run (if you forgot to do this, you can later delete file `CMakeCache.txt` from your build directory and re-run `cmake` with the appropriate options).
 
 ## 1. Full Node binaries
 
@@ -36,10 +36,10 @@ An approximate layout of the working directory of the TON Blockchain Full Node s
 
 In order to set up your Full Node, you'll need a special JSON file called the "global configuration (file)". It is called this because it is the same for all full nodes, and even nodes participating in different instances of the TON Blockchain (e.g., "testnet" vs. "mainnet") share an almost identical global configuration.
 
-The "mainnet" global configuration can be downloaded at https://newton-blockchain.github.io/global.config.json as follows:
+The "mainnet" global configuration can be downloaded at https://ton-blockchain.github.io/global.config.json as follows:
 
 ```
-$ wget https://newton-blockchain.github.io/global.config.json
+$ wget https://ton-blockchain.github.io/global.config.json
 ```
 
 You may wish to put this file into `/var/ton-work/etc/ton-global.config.json` .
@@ -58,7 +58,7 @@ Once the global configuration file is downloaded, it can be used to create the i
 $ validator-engine -C /var/ton-work/etc/ton-global.config.json --db /var/ton-work/db/ --ip <IP>:<PORT> -l /var/ton-work/log
 ```
 
-Here `/var/ton-work/log` is the log directory of `validator-engine`, where it will create its log files. The argument to the `-C` command-line option is the global configuration file downloaded from https://newton-blockchain.github.io/ as explained above, and `/var/ton-work/db/` is the working directory `${DB_ROOT}`. Finally, `<IP>:<PORT>` are the global IP address of this full node (you need to indicate a public IPv4 address here) and the UDP port used to run TON Network protocols such as ADNL and RLDP. Make sure that your firewall is configured to pass UDP packets with source or destination `<IP>:<PORT>` at least for the `validator-engine` binary.
+Here `/var/ton-work/log` is the log directory of `validator-engine`, where it will create its log files. The argument to the `-C` command-line option is the global configuration file downloaded from https://ton-blockchain.github.io/ as explained above, and `/var/ton-work/db/` is the working directory `${DB_ROOT}`. Finally, `<IP>:<PORT>` are the global IP address of this full node (you need to indicate a public IPv4 address here) and the UDP port used to run TON Network protocols such as ADNL and RLDP. Make sure that your firewall is configured to pass UDP packets with source or destination `<IP>:<PORT>` at least for the `validator-engine` binary.
 
 When validator-engine is invoked as above, and `${DB_ROOT}/config.json` does not exist, it creates a new local configuration file `${DB_ROOT}/config.json` using the information from the global configuration file and from the command-line options such as `--ip`, and then exits. If `${DB_ROOT}/config.json` already exists, it is not rewritten; instead validator-engine starts up as a daemon using both the local and the global configuration.
 

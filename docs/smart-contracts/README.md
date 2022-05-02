@@ -10,7 +10,7 @@ TVM is built on the stack principle, which makes it efficient and easy to implem
 
 [TVM specification](https://ton-blockchain.github.io/docs/tvm.pdf)
 
-[TVM C++ implementation](https://github.com/newton-blockchain/ton/tree/master/crypto/vm)
+[TVM C++ implementation](https://github.com/ton-blockchain/ton/tree/master/crypto/vm)
 
 ## FunC
 
@@ -18,9 +18,9 @@ High-level language FunC is used to program smart contracts on TON.
 
 [FunC documentation](https://ton.org/docs/#/func/overview.md)
 
-**FunC compiler binaries** for Windows, MacOS (Intel), Ubuntu can be downloaded from [TON Auto Builds](https://github.com/newton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted).
+**FunC compiler binaries** for Windows, MacOS (Intel), Ubuntu can be downloaded from [TON Auto Builds](https://github.com/ton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted).
 
-[FunC compiler source code](https://github.com/newton-blockchain/ton/tree/master/crypto/func) (read [how to compile](/compile.md#FunC) FunC compiler from sources).
+[FunC compiler source code](https://github.com/ton-blockchain/ton/tree/master/crypto/func) (read [how to compile](/compile.md#FunC) FunC compiler from sources).
 
 **Toolkit**
 - Development and Testing
@@ -40,7 +40,7 @@ High-level language FunC is used to program smart contracts on TON.
 
 Standard basic smart contracts like wallets, elector (manages validation on TON), multi-signature wallet, etc. can be a reference when studying.
 
-[Standard smart contracts](https://github.com/newton-blockchain/ton/tree/master/crypto/smartcont)
+[Standard smart contracts](https://github.com/ton-blockchain/ton/tree/master/crypto/smartcont)
 
 ## Smart Contract Guidelines
 
@@ -54,11 +54,11 @@ Since Fift is close to TVM opcodes, it also helps to know the limits of your bra
 
 [Fift documentation](https://ton-blockchain.github.io/docs/fiftbase.pdf)
 
-**Fift compiler binaries** for Windows, MacOS (Intel), Ubuntu can be downloaded from [TON Auto Builds](https://github.com/newton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted).
+**Fift compiler binaries** for Windows, MacOS (Intel), Ubuntu can be downloaded from [TON Auto Builds](https://github.com/ton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted).
 
-[Fift compiler source code](https://github.com/newton-blockchain/ton/tree/master/crypto/fift) (read [how to compile](/compile.md#Fift) Fift compiler from sources).
+[Fift compiler source code](https://github.com/ton-blockchain/ton/tree/master/crypto/fift) (read [how to compile](/compile.md#Fift) Fift compiler from sources).
 
-[Fift scripts for standard smart contracts](https://github.com/newton-blockchain/ton/tree/master/crypto/smartcont)
+[Fift scripts for standard smart contracts](https://github.com/ton-blockchain/ton/tree/master/crypto/smartcont)
 
 
 ## FAQ

@@ -15,7 +15,7 @@
 * APIs
   * [APIs](/apis/)
   * [JavaScript](https://github.com/toncenter/tonweb)
-  * [C++ TonLib ](https://github.com/newton-blockchain/ton/tree/master/example/cpp)
+  * [C++ TonLib ](https://github.com/ton-blockchain/ton/tree/master/example/cpp)
   * [Golang TonLib Wrapper](https://github.com/ton-blockchain/tonlib-go)
   * [Java TonLib Wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
   
@@ -74,4 +74,4 @@
 
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)
-  * [Testnet Config](https://newton-blockchain.github.io/testnet-global.config.json)
+  * [Testnet Config](https://ton-blockchain.github.io/testnet-global.config.json)

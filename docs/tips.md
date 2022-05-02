@@ -2,7 +2,7 @@
 
 > This section presents the most useful TON Improvement Proposals
 
-TON Improvement Proposals (TIPs) are located in the https://github.com/newton-blockchain/TIPs repo.
+TON Improvement Proposals (TIPs) are located in the https://github.com/ton-blockchain/TIPs repo.
 
 * **Slashing**
   

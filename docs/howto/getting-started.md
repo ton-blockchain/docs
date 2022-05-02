@@ -6,10 +6,10 @@ The software is likely to compile and work properly on most Linux systems. It sh
 
 BASIC COMPILATION AND INSTALLATION INSTRUCTIONS
 
-1) Download the newest version of the TON blockchain sources, available at GitHub repository https://github.com/newton-blockchain/ton/ :
+1) Download the newest version of the TON blockchain sources, available at GitHub repository https://github.com/ton-blockchain/ton/ :
 
     ```
-    git clone https://github.com/newton-blockchain/ton.git
+    git clone https://github.com/ton-blockchain/ton.git
     git submodule update --init
     ```
 
@@ -30,16 +30,16 @@ BASIC COMPILATION AND INSTALLATION INSTRUCTIONS
     cmake --build . --target func
     ```
 
-4) Download the newest configuration file from https://newton-blockchain.github.io/global.config.json for mainnet:
+4) Download the newest configuration file from https://ton-blockchain.github.io/global.config.json for mainnet:
 
     ```
-    wget https://newton-blockchain.github.io/global.config.json
+    wget https://ton-blockchain.github.io/global.config.json
     ```
     
-    or from https://newton-blockchain.github.io/testnet-global.config.json for testnet
+    or from https://ton-blockchain.github.io/testnet-global.config.json for testnet
 
     ```
-    wget https://newton-blockchain.github.io/testnet-global.config.json
+    wget https://ton-blockchain.github.io/testnet-global.config.json
     ```
 
 5) Run the Lite Client with config:

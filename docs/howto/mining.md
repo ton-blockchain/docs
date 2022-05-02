@@ -135,7 +135,7 @@ No, they will not. Each machine mines on its own but solution finding process is
 Depends on CPU, AWS Graviton2 instances are very capable miners indeed and are able to hold price/performance ratio alongside AMD EPYC based instances.
 ### <a id="faq-software"></a>Software
 #### <a id="faq-software-os"></a>Can I mine using Windows / xBSD / some other OS?
-Of course, [TON source code](https://github.com/newton-blockchain/ton) has been known to build on Windows, xBSD and other OSes. However, there is no comfortable automated installation as under Linux with `mytonctrl`, you will need to install the software by hand and create your own scripts. For FreeBSD there is a [port](https://github.com/sonofmom/freebsd_ton_port) source code that allows quick installation.
+Of course, [TON source code](https://github.com/ton-blockchain/ton) has been known to build on Windows, xBSD and other OSes. However, there is no comfortable automated installation as under Linux with `mytonctrl`, you will need to install the software by hand and create your own scripts. For FreeBSD there is a [port](https://github.com/sonofmom/freebsd_ton_port) source code that allows quick installation.
 #### <a id="faq-software-node1"></a>Will my mining become faster if I run mytonctrl in full node mode?
 Calculation process by itself will not be faster but you will gain some stability and most importantly flexibility if you operate your own full node / liteServer.
 #### <a id="faq-software-node2"></a>What do I need to / how can I operate full node?

@@ -4,7 +4,7 @@ Use TON test network for development and testing.
 
 > Coins in test network have no value, the test network can be reset.
 
-Testnet global config: https://newton-blockchain.github.io/testnet-global.config.json
+Testnet global config: https://ton-blockchain.github.io/testnet-global.config.json
 
 You can get free test coins in https://t.me/testgiver_ton_bot.
 
