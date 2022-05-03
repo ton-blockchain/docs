@@ -59,6 +59,8 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
    
    - [C++ TonLib](https://github.com/ton-blockchain/ton/tree/master/example/cpp)
 
+   - [Python TonLib wrapper](https://github.com/toncenter/pytonlib)
+
    - [Golang TonLib wrapper](https://github.com/ton-blockchain/tonlib-go)
    
    - [Java TonLib wrapper (JNI)](https://github.com/ton-blockchain/tonlib-java)
