@@ -29,6 +29,7 @@
     * [Literals and identifiers](/func/literals_identifiers.md)
     * [Functions](/func/functions.md)
     * [Global variables](/func/global_variables.md)
+    * [Compiler directives](/func/compiler_directives.md)
     * [Statements](/func/statements.md)
     * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
