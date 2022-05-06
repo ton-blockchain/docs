@@ -24,9 +24,10 @@ High-level language FunC is used to program smart contracts on TON.
 
 **Toolkit**
 - Development and Testing
-   * [toncli](https://github.com/disintar/toncli)
-   * [ton-contract-executor](https://github.com/Naltox/ton-contract-executor)
-   * [MyLocalTON](/nodes/local-ton.md)
+   * [toncli](https://github.com/disintar/toncli) - Comfy CLI to build, deploy and test funC contracts
+   * [ton-contract-executor](https://github.com/Naltox/ton-contract-executor) - Library for running contracts locally
+   * [tonstarter-contracts](https://github.com/ton-defi-org/tonstarter-contracts) - All-in-one templates to build, deploy and test (in js) funC contracts
+   * [MyLocalTON](/nodes/local-ton.md) - Run your private TON blockchain
 
 - IDE plugins
    * [TON IDEA plugin](https://plugins.jetbrains.com/plugin/18541-ton-development)
