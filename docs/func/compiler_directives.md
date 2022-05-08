@@ -1,8 +1,19 @@
 # Compiler directives
 Those are keywords that start with `#` and instruct compiler to do some actions, checks or adjust parameters.
 
+Those directives can be used only at the outermost level (not inside any function definition).
+
+## #include
+The `#include` directive allows to include another FunC source code file that will be parsed at the place of include.
+
+Syntax is `#include "filename.fc";`. Files are automatically checked against re-inclusion and attempting to include
+a file more than once would be silently ignored by default, with warning if verbosity level is no lower than 2.
+
+If an error happens during parsing of included file additionally a stack of inclusions is printed with locations
+of each include in chain.
+
 ## #pragma
-The '#pragma' directive is the method for providing additional information to the compiler, beyond what is conveyed
+The `#pragma` directive is the method for providing additional information to the compiler, beyond what is conveyed
 in the language itself.
 
 ### #pragma version
