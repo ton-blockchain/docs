@@ -71,3 +71,23 @@ Also FunC has special type of identifiers, which quoted in back quotes `` ` ``.
 In the quotes any symbols are allowed except for `\n` and the quotes themself.
 
 For example, `` `I'm a variable too` `` is a valid identifier, as well as `` `any symbols ; ~ () are allowed here...` ``
+
+## Constants
+FunC allows to define compile-time constants that are substituted and precalculated during compilation.
+
+Constants are defined as `const optional-type identifier = value-or-expression;`
+
+`optional-type` can be used to force a specific type of constant and for better readability.
+
+As of now `int` and `slice` types are supported.
+
+`value-or-expression` can be a literal or a pre-computable expression of literals and constants.
+
+For example, constants can be defined as following:
+* `const int101 = 101;` defines `int101` constant that is equivalent to numeric literal `101`,
+* `const str1 = "const1", str2 = "aabbcc"s;` defines two constants that are equal to their corresponding strings,
+* `const int int240 = ((int1 + int2) * 10) << 3;` defines `int240` constant that equals to the result of calculation,
+* `const slice str2r = str2;` defines `str2r` constant that is equal to value of `str2` constant.
+
+Since numeric constants are substituted during compilation all optimization and pre-computations performed during
+compilation are successfully performed (unlike old method defining constants via inline asm `PUSHINT`s).
