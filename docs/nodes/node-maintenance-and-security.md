@@ -48,7 +48,7 @@ Easies and most efficient way to backup the validator is to copy crucial node co
 * Node configuration file: `/var/ton-work/db/config.json`
 * Node private keyring: `/var/ton-work/db/keyring`
 * Node public keys: `/var/ton-work/keys`
-* Mytonctrl configuration: `$HOME/.local/share/myton*` where $HOME is home directory of user you started installation of mytonctrl from.
+* Mytonctrl configuration: `$HOME/.local/share/myton*` where $HOME is home directory of user you started installation of mytonctrl from. **OR** `/usr/local/bin/mytoncore` if you installed mytonctrl as root.
 
 This set is everything you need to perform recovery of your node from scratch.
 
