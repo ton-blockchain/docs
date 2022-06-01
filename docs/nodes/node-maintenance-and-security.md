@@ -151,6 +151,9 @@ Status: active
 
 Please note that LiteServer port should not be exposed to public on a validator.
 
+#### More information on UFW
+See this excellent **[ufw tutorial](https://www.digitalocean.com/community/tutorials/ufw-essentials-common-firewall-rules-and-commands)** from Digital Ocean for more ufw magic.
+
 ### <a id="ip-switch"></a>IP Switch
 If you feel that your node is under attack then you should consider swithing IP Address. The way to achieve the switch depends on your hosting provider you might preorder second address, clone your **stopped** VM into another instance or setup a new instance by performing **[disaster recovery](#disaster-recovery)** process.
 
