@@ -147,7 +147,7 @@ Status: active
 ```
 
 #### Expose LiteServer port
-    sudo ufw allow proto udp from any to any port `sudo jq -r '.liteservers[0].port' /var/ton-work/db/config.json`
+    sudo ufw allow proto tcp from any to any port `sudo jq -r '.liteservers[0].port' /var/ton-work/db/config.json`
 
 Please note that LiteServer port should not be exposed to public on a validator.
 
