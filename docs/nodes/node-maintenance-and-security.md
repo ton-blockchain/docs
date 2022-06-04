@@ -18,28 +18,33 @@ This document assumes that validator is installed using configuration and tools 
 
 ## <a id="maintenance"></a>Maintenance
 ### <a id="database-grooming"></a>Database grooming
-TON node/validator keeps it's database under `/var/ton-work/db` path, this directory is created and managed by the node but it is recommended to perform a database grooming / cleanup task once in a month to remove some artefacts.
+TON node/validator keeps it's database under the path specified by `--db` flag of `validator-engine`, usually `/var/ton-work/db`, this directory is created and managed by the node but it is recommended to perform a database grooming / cleanup task once in a month to remove some artefacts.
 
-**Important**: You **must** stop validator process before performing the steps outlined below, failure to do that will likely cause database corruption with unexpected consequences.
+**Important**: You **must** stop validator process before performing the steps outlined below, failure to do that will likely cause database corruption.
 
 The procedure takes ~5 minutes to complete and will not cause major service disruption.
 
 #### Switch to root
-    sudo -s
-
+```sh
+sudo -s
+```
 #### Stop validator service
-    systemctl stop validator
-
+```sh
+systemctl stop validator
+```
 #### Verify that validator is not running
-    systemctl status validator
-
+```sh
+systemctl status validator
+```
 #### Perform database cleanup
-    find /var/ton-work/db -name 'LOG.old*' -exec rm {} +
-	rm -r /var/ton-work/db/files/packages/temp.archive.*
-
+```sh
+find /var/ton-work/db -name 'LOG.old*' -exec rm {} +
+rm -r /var/ton-work/db/files/packages/temp.archive.*
+```
 #### Start validator service
-    systemctl start validator
-
+```sh
+systemctl start validator
+```
 Verify that validator process is running by analysing the processes and log. Validator should re-sync with the network within few minutes.
 
 ### <a id="backups"></a>Backups
@@ -48,7 +53,7 @@ Easies and most efficient way to backup the validator is to copy crucial node co
 * Node configuration file: `/var/ton-work/db/config.json`
 * Node private keyring: `/var/ton-work/db/keyring`
 * Node public keys: `/var/ton-work/keys`
-* Mytonctrl configuration: `$HOME/.local/share/myton*` where $HOME is home directory of user you started installation of mytonctrl from. **OR** `/usr/local/bin/mytoncore` if you installed mytonctrl as root.
+* Mytonctrl configuration and wallets: `$HOME/.local/share/myton*` where $HOME is home directory of user you started installation of mytonctrl from. **OR** `/usr/local/bin/mytoncore` if you installed mytonctrl as root.
 
 This set is everything you need to perform recovery of your node from scratch.
 
@@ -66,12 +71,14 @@ To perform recovery of your node on a new machine:
 For fastest node initialization add `-d` switch to invocation of installation script.
 
 #### Switch to root user
-    sudo -s
-
+```sh
+sudo -s
+```
 #### Stop mytoncore and validator processes
-    systemctl stop validator
-    systemctl stop mytoncore
-
+```sh
+systemctl stop validator
+systemctl stop mytoncore
+```
 #### Apply backed up node configuration files
 * Node configuration file: `/var/ton-work/db/config.json`
 * Node private keyring: `/var/ton-work/db/keyring`
@@ -81,15 +88,17 @@ For fastest node initialization add `-d` switch to invocation of installation sc
 If your new node has a different IP address then you must edit node configuration file `/var/ton-work/db/config.json` and set the leaf `.addrs[0].ip` to **decimal** representation of new IP address. You can use **[this](https://github.com/sonofmom/ton-tools/blob/master/node/ip2dec.py)** python script to convert your IP to decimal.
 
 #### Ensure proper database permissions
-    chown -R validator:validator /var/ton-work/db
-
+```sh
+chown -R validator:validator /var/ton-work/db
+```
 #### Apply backed up mytonctrl configuration files
 Replace `$HOME/.local/share/myton*` where $HOME is home directory of user you started installation of mytonctrl from with backed up content, make sure that the user is owner of all files you copy.
 
 #### Start mytoncore and validator processes
-    systemctl start validator
-    systemctl start mytoncore
-
+```sh
+systemctl start validator
+systemctl start mytoncore
+```
 ## <a id="security"></a>Security
 ### <a id="host-security"></a>Host level security
 Host level security is huge topic that lies outside of the scope of this document, we do however advise to never install mytonctrl under root user, do use service account to ensure priveledge separation.
@@ -106,33 +115,39 @@ As a node operator you need to retain full control and access to machine, in ord
 We also advise to setup a small "jumpstation" VPS with fixed IP Address that can be used by you to access your locked down machine(s) if you do not have fixed IP at home/office or to add alternative way to access secured machines should you lose your primary IP address.
 
 #### Install ufw and jq1
-    sudo apt install -y ufw jq
-
+```sh
+sudo apt install -y ufw jq
+```
 #### Basic lockdown of ufw ruleset
-    sudo ufw default deny incoming; sudo ufw default allow outgoing
-
+```sh
+sudo ufw default deny incoming; sudo ufw default allow outgoing
+```
 #### Disable automated ICMP echo request accept
-    sudo sed -i 's/-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT/#-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT/g' /etc/ufw/before.rules
-
+```sh
+sudo sed -i 's/-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT/#-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT/g' /etc/ufw/before.rules
+```
 #### Enable all access from management network(s)
-    sudo ufw insert 1 allow from <MANAGEMENT_NETWORK>
-
+```sh
+sudo ufw insert 1 allow from <MANAGEMENT_NETWORK>
+```
 repeat the above command for each management network / address.
 
 #### Expose node / validator UDP port to public
-    sudo ufw allow proto udp from any to any port `sudo jq -r '.addrs[0].port' /var/ton-work/db/config.json`
-
+```sh
+sudo ufw allow proto udp from any to any port `sudo jq -r '.addrs[0].port' /var/ton-work/db/config.json`
+```
 #### Doublecheck your management networks
 <mark>Important</mark>: before enabling firewall, please do doublecheck that you added correct management addresses!!
 
 #### Enable ufw firewall
-    sudo ufw enable
-
+```sh
+sudo ufw enable
+```
 #### Checking status
 To check firewall status use following command:
-
+```sh
     sudo ufw status numbered
-
+```
 Here is example output of locked down node with two manegement networks / addresses:
 
 ```
@@ -147,8 +162,9 @@ Status: active
 ```
 
 #### Expose LiteServer port
-    sudo ufw allow proto tcp from any to any port `sudo jq -r '.liteservers[0].port' /var/ton-work/db/config.json`
-
+```sh
+sudo ufw allow proto tcp from any to any port `sudo jq -r '.liteservers[0].port' /var/ton-work/db/config.json`
+```
 Please note that LiteServer port should not be exposed to public on a validator.
 
 #### More information on UFW
