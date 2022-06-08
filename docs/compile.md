@@ -85,3 +85,17 @@ To run Fift script:
 ```
 fift -s script.fif script_param0 script_param1 ..
 ```
+
+## Storage Cli
+To build Storage Cli from source code do [common part](/compile.md#Common) described above and then:
+
+```
+cmake --build . --target storage-cli
+```
+
+Run the Storage Cli with config:
+
+```
+IP="$(curl ifconfig.me)"
+storage-cli -C global.config.json -I $IP:8734
+```
