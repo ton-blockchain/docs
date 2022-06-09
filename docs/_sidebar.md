@@ -75,5 +75,5 @@
   * [Wallets](/howto/wallets.md)
 
 * Configs
-  * [Mainnet Config](https://ton.org/global-config.json)
+  * [Mainnet Config](https://ton-blockchain.github.io/global.config.json)
   * [Testnet Config](https://ton-blockchain.github.io/testnet-global.config.json)
