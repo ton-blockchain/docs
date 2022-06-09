@@ -129,7 +129,7 @@ Prepare the file you want to share, let me call it `demofile` and store it in `~
 
 
 ### Load file.
-`creat` command of `storage-cli`
+`create` command of `storage-cli`
 
 Let `storage-cli` load the `demofile` where you expect to generate seeds.`storage-cli` will number the load files one by one. If it is the first file load, it will be numbered `#0` there.
 
