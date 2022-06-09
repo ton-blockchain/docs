@@ -165,7 +165,7 @@ seed `<id>`	Start torrent uploading
 ```
 
 start `<id>`	Start torrent downloading/uploading
-```
+```bash
 > load demoseed
   Torrent #0 created
 > start 0
@@ -182,7 +182,7 @@ Please put the seed in the `~/storage-cli` path.
 
 Enter the `storage-cli` interactive terminal. 
 At this point, the `storage-cli` interactive terminal loads the seed `demoseed` . and marked as #0.
-```
+```bash
 > load demoseed
   Torrent #0 created
 > start 0
@@ -194,7 +194,7 @@ If all goes well, you can see the `demofile` in the `~/storage-cli` path.
 ## Check the status of the file or torrent.
 
 In the `storage-cli` interactive terminal, you can view the status of the seed/file through the `info` command.
-```
+```bash
 > info 0
   Node 1 1	0B/s	outq 0
   #0 demofile	100%%  5309B/5309B	 priority=1
