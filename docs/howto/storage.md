@@ -1,5 +1,5 @@
 # TON Storage
-TON Storage. An example of such a service is given by TON Storage. In its simplest form, it allows users to store files off-chain, by keeping on-chain only a hash of the file to be stored, and possibly a smart contract where some other parties agree to keep the file in question for a given period of time for a pre-negotiated fee. In fact, the file may be subdivided into chunks of some small size (e.g., 1 kilobyte), augmented by an erasure code such as a Reed-Solomon or a fountain code,a Merkle tree hash may be onstructed for the augmented sequence of chunks, and this Merkle tree hash might be published in the smart contract instead of or along with the usual hash of the file. This is somewhat reminiscent of the way files are stored in a torrent.[Quoted from chapter 4.1.7 of the ton white paper.]
+TON Storage. An example of such a service is given by TON Storage. In its simplest form, it allows users to store files off-chain, by keeping on-chain only a hash of the file to be stored, and possibly a smart contract where some other parties agree to keep the file in question for a given period of time for a pre-negotiated fee. The file may be subdivided into chunks of some small size (e.g., 1 kilobyte), augmented by an erasure code such as a Reed-Solomon or a fountain code, a Merkle tree hash may be constructed for the augmented sequence of chunks, and this Merkle tree hash might be published in the smart contract instead of or along with the usual hash of the file. This is somewhat reminiscent of the way files are stored in a torrent.[Quoted from chapter 4.1.7 of the ton white paper.]
 
 ## Compile storage-cli
 
@@ -142,14 +142,14 @@ Enter the `storage-cli` interactive terminal.
 ```
 
 ### Generate seeds
-With the `save` command of `storage-cli`, we first specify the number, and then specify the name of the generated seed.
+With the `save` command of `storage-cli`, we first specify the number and then specify the name of the generated seed.
 
 Enter the `storage-cli` interactive terminal. 
 ```bash 
 > save 0 demoseed
   Torrent #0 saved
 ```
-Then you will find the `demofile` seed `demoseed` in the `~/storage-cli` path. Ok now you can share the seed `demoseed` with your friends.
+Then you will find the `demofile` seed `demoseed` in the `~/storage-cli` path. Ok, now you can share the seed `demoseed` with your friends.
 
 
 ### Start sharing.
@@ -175,9 +175,8 @@ start `<id>`	Start torrent downloading/uploading
 
 ps. By the way, because ton storage is similar in architecture to torrent. So you cannot close your `storage-cli` when you are the only torrent.
 
-
 ## Download files via seeds
-In the above steps you learned how to create seeds. Now you have received a seed. 
+In the above steps, you learned how to create seeds. Now you have received a seed. 
 Please put the seed in the `~/storage-cli` path.
 
 Enter the `storage-cli` interactive terminal. 
@@ -188,8 +187,6 @@ At this point, the `storage-cli` interactive terminal loads the seed `demoseed` 
 > start 0
 ```
 If all goes well, you can see the `demofile` in the `~/storage-cli` path.
-
-
 
 ## Check the status of the file or torrent.
 
