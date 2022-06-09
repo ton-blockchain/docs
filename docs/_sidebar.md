@@ -65,6 +65,7 @@
   * [Smart contracts](/howto/step-by-step.md)
   * [TON Sites](/howto/ton-sites.md)
   * [TON DNS](/howto/dns.md)
+  * [TON Storage](howto/storage.md)
   * [Config Params](/howto/config-params.md)
   * [POW Givers](/howto/pow-givers.md)
   
