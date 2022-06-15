@@ -101,7 +101,7 @@ systemctl start mytoncore
 ```
 ## <a id="security"></a>Security
 ### <a id="host-security"></a>Host level security
-Host level security is huge topic that lies outside of the scope of this document, we do however advise to never install mytonctrl under root user, do use service account to ensure priveledge separation.
+Host level security is huge topic that lies outside of the scope of this document, we do however advise to never install mytonctrl under root user, do use service account to ensure privilege separation.
 
 ### <a id="network-security"></a>Network level security
 TON validators are high value assets that should be protected against external threats, one of the first steps you should take is make your node as invisible as possible, this means locking down all network connections. On a validator node only UDP Port used for node operations should be exposed to the internet.
@@ -148,7 +148,7 @@ To check firewall status use following command:
 ```sh
     sudo ufw status numbered
 ```
-Here is example output of locked down node with two manegement networks / addresses:
+Here is example output of locked down node with two management networks / addresses:
 
 ```
 Status: active
@@ -171,6 +171,6 @@ Please note that LiteServer port should not be exposed to public on a validator.
 See this excellent **[ufw tutorial](https://www.digitalocean.com/community/tutorials/ufw-essentials-common-firewall-rules-and-commands)** from Digital Ocean for more ufw magic.
 
 ### <a id="ip-switch"></a>IP Switch
-If you feel that your node is under attack then you should consider swithing IP Address. The way to achieve the switch depends on your hosting provider you might preorder second address, clone your **stopped** VM into another instance or setup a new instance by performing **[disaster recovery](#disaster-recovery)** process.
+If you feel that your node is under attack then you should consider switching IP Address. The way to achieve the switch depends on your hosting provider you might preorder second address, clone your **stopped** VM into another instance or setup a new instance by performing **[disaster recovery](#disaster-recovery)** process.
 
 In any case, please do make sure that you **[set your new ip address](#set-node-ip)** in node configuration file!
