@@ -15,7 +15,7 @@ const address: Address = await tonweb.dns.getWalletAddress('test.ton');
 
 // or 
 
-const address: Address = await tonweb.dns.dnsresolve('test.ton', TonWeb.dns.DNS_CATEGORY_WALLET);
+const address: Address = await tonweb.dns.resolve('test.ton', TonWeb.dns.DNS_CATEGORY_WALLET);
 ```
 
 Also `lite-client` and `tonlib-cli` is supported DNS queries.
@@ -36,7 +36,7 @@ This could change in the future. Adding a new first-level domain will require ne
 
 .ton domains resolver implements NFT collection interface and .ton domain implements NFT item interface.
 
-Primary sale of *.ton domains is available at a decentralized open auction https://dns.ton.org.
+Primary sale of *.ton domains is available at a decentralized open auction https://dns.ton.org. Source code - https://github.com/ton-blockchain/dns.
 
 ## Subdomains
 
