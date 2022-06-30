@@ -47,7 +47,13 @@
   * [Accepting deposits to a single wallet](/payment-processing/deposits-single-wallet.md)
   * [Accepting deposits to multiple wallets](/payment-processing/deposits-multi-wallet.md)
   * [Withdrawal processing](/payment-processing/withdrawals.md)
-  
+
+* Web3
+  * [TON DNS](/web3/dns.md)
+  * TON Proxy [2022 Q3]
+  * TON Sites [2022 Q3]
+  * TON Storage [2022 Q4]
+
 * Nodes
   * [TON Node Types](/nodes/node-types.md)
   * [Running your own Full Node/Validator](/nodes/run-node.md)
@@ -64,7 +70,6 @@
 * Low Level
   * [Smart contracts](/howto/step-by-step.md)
   * [TON Sites](/howto/ton-sites.md)
-  * [TON DNS](/howto/dns.md)
   * [Config Params](/howto/config-params.md)
   * [POW Givers](/howto/pow-givers.md)
   
