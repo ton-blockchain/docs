@@ -72,10 +72,6 @@
   * [Smart contracts](/howto/step-by-step.md)
   * [TON Sites](/howto/ton-sites.md)
   * [Config Params](/howto/config-params.md)
-  * [POW Givers](/howto/pow-givers.md)
-  
-* Mining
-  * [Mining](/howto/mining.md)
   
 * Support
   * [Wallets](/howto/wallets.md)
