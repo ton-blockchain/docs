@@ -13,7 +13,7 @@ Exotic types are the following:
 More on exotic cells: [TVM Whitepaper, section 3](https://ton.org/tvm.pdf).
 
 ## Cell flavors
-Cell is an opaque object optimized for compact storage. In particular, it deduplicates data: if there are several eqivalent sub-cells referenced in different branches, their content is only stored once. However, opaqueness means that a cell can not be modified or read. Thus, there are 2 additional flavors of the cells:
+Cell is an opaque object optimized for compact storage. In particular, it deduplicates data: if there are several eqivalent sub-cells referenced in different branches, their content is only stored once. However, opaqueness means that a cell can not be modified or read directly. Thus, there are 2 additional flavors of the cells:
 * _Builder_ for partially constructed cells, for which fast operations for appending bitstrings, integers, other cells, and references to other cells can be defined.
 * _Slice_ for 'dissected' cells representing either the remainder of a partially parsed cell, or a value (subcell) residing inside such a cell and extracted from it by a parsing instruction.
 
