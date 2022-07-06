@@ -57,6 +57,7 @@
 * Nodes
   * [TON Node Types](/nodes/node-types.md)
   * [Running your own Full Node/Validator](/nodes/run-node.md)
+  * [Validator maintenance and security](/nodes/node-maintenance-and-security.md)
   * [Local TON](/nodes/local-ton.md)
   
 * Use testnet for experiments
