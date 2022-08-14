@@ -162,8 +162,6 @@ With priority 30 (left-associative):
 - `~/` is integer division (round)
 - `^/` is integer division (ceil)
 - `%` is integer reduction by modulo
-- `~%` is integer reduction by modulo (MODR)
-- `^%` is integer reduction by modulo (MODC)
 - `/%` returns the quotient and the remainder
 - `&` is bitwise AND
 
