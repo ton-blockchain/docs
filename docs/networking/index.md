@@ -109,7 +109,7 @@ It is expected that the value of key `K` will be stored on `S` Kademlia-nearest 
 
 Kademlia distance = 256-bit key `XOR` 256-bit DHT node address (has nothing to do with geographic location).
 
-`S` is a small parameter, say, `s = 7`, needed to improve reliability of
+`S` is a small parameter, say, `S = 7`, needed to improve reliability of
 the DHT (if we would keep the key only on one node, the nearest one to `K`,
 the value of that key would be lost if that only node goes offline).
 
@@ -143,3 +143,4 @@ new sequence number is larger (to prevent replay attacks).
 
 TON DHT is not only used to store the IP addresses of ADNL nodes, but is also used for other purposes - it can store a list of addresses of nodes storing a specific torrent of TON Storage, a list of addresses of nodes included in an overlay subnetwork, ADNL addresses of TON services or ADNL addresses of accounts of the TON Blockchain, and so on.
 
+Read more about TON DHS in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapters 3.2.
