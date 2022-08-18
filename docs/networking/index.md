@@ -52,6 +52,8 @@ Read more about ADNL in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapters 
 
 ## Overlay subnetworks
 
+Implementation - https://github.com/ton-blockchain/ton/tree/master/overlay.
+
 In a multi-blockchain system like the TON Blockchain, even full nodes would
 normally be interested in obtaining updates (i.e., new blocks) only about
 some shardchains. To this end, a special overlay subnetwork are built
