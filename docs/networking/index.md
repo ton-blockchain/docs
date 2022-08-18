@@ -48,7 +48,7 @@ ADNL allows you to set up point-to-point channels and tunnels (a chain of proxie
 
 A TCP-like stream protocol can be built over ADNL.
 
-Read more about ADNL in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapters 3.1.
+Read more about ADNL in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapter 3.1.
 
 ## Overlay subnetworks
 
@@ -75,7 +75,7 @@ Overlay subnetworks can be public or private.
 
 Overlay subnetworks work according to a special [gossip](https://en.wikipedia.org/wiki/Gossip_protocol) protocol.
 
-Read more about ADNL overlay subnetworks in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapters 3.3.
+Read more about ADNL overlay subnetworks in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapter 3.3.
 
 ## RLDP
 
@@ -143,4 +143,4 @@ new sequence number is larger (to prevent replay attacks).
 
 TON DHT is not only used to store the IP addresses of ADNL nodes, but is also used for other purposes - it can store a list of addresses of nodes storing a specific torrent of TON Storage, a list of addresses of nodes included in an overlay subnetwork, ADNL addresses of TON services or ADNL addresses of accounts of the TON Blockchain, and so on.
 
-Read more about TON DHS in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapters 3.2.
+Read more about TON DHS in [TON Whitepaper](https://ton.org/docs/ton.pdf) chapter 3.2.
