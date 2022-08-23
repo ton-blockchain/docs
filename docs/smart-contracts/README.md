@@ -16,40 +16,17 @@ TVM is built on the stack principle, which makes it efficient and easy to implem
 
 High-level language FunC is used to program smart contracts on TON.
 
-[FunC documentation](/func/overview.md)
+[FunC Overview](/func/overview.md)
 
-**FunC compiler binaries** for Windows, MacOS (Intel), Ubuntu can be downloaded from [TON Auto Builds](https://github.com/ton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted).
+[FunC Compiler](/func/overview.md#Compiler)
 
-[FunC compiler source code](https://github.com/ton-blockchain/ton/tree/master/crypto/func) (read [how to compile](/compile.md#FunC) FunC compiler from sources).
+[FunC Documentation](/func/overview.md#Documentation)
 
-## Toolkit
+[FunC Toolkit](/func/overview.md#Toolkit)
 
-- Development and Testing
-   * [toncli](https://github.com/disintar/toncli) - Comfy CLI to build, deploy and test FunC contracts
-   * [ton-contract-executor](https://github.com/Naltox/ton-contract-executor) - Library for running contracts locally
-   * [tonstarter-contracts](https://github.com/ton-defi-org/tonstarter-contracts) - All-in-one templates to build, deploy and test (in JS) FunC contracts
-   * [MyLocalTON](/nodes/local-ton.md) - Run your private TON blockchain
+[FunC Tutorials](/func/overview.md#Tutorials)
 
-- IDE plugins
-   * [TON IDEA plugin](https://plugins.jetbrains.com/plugin/18541-ton-development)
-   * [FunC Sublime Text plugin](https://github.com/savva425/func_plugin_sublimetext3)
-   * [VS Code plugin](https://marketplace.visualstudio.com/items?itemName=tonwhales.func-vscode)
-
-- [Testnet](/testnet/)
-
-## Tutorials
-
-* [10 FunC Lessons](https://github.com/romanovichim/TonFunClessons_Eng) by [@romanovichim](https://github.com/romanovichim).
-
-* [10 FunC Уроков](https://github.com/romanovichim/TonFunClessons_ru) by [@romanovichim](https://github.com/romanovichim).
-
-* [TON Hello World: Step by step guide for writing your first smart contract in FunC](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func) by [TON Society](https://society.ton.org).
-
-## Standard Smart Contracts
-
-Standard basic smart contracts like wallets, elector (manages validation on TON), multi-signature wallet, etc. can be a reference when studying.
-
-[Standard smart contracts](https://github.com/ton-blockchain/ton/tree/master/crypto/smartcont)
+[FunC Standard Smart Contracts](/func/overview.md#Standard-Smart-Contracts)
 
 ## Smart Contract Guidelines
 
