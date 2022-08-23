@@ -28,7 +28,7 @@
   
 * Smart Contracts
   * [Overview](/smart-contracts/)
-  * [FunC Programming Language](/func.md)
+  * FunC Programming Language
     * [Overview](/func/overview.md)
     * [Types](/func/types.md)
     * [Comments](/func/comments.md)
