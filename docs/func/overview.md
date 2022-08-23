@@ -39,7 +39,7 @@ FunC documentation initially written by [@akifoq](https://github.com/akifoq).
 
 * [10 уроков FunC](https://github.com/romanovichim/TonFunClessons_ru) от **@romanovichim**, используя **toncli** и **toncli**-тесты v1.
 
-* [TON Hello World: Step by step guide for writing your first smart contract in FunC](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func) by [TON Society](https://society.ton.org) using **ton.js**.
+* [TON Hello World](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func): Step by step guide for writing your first smart contract in FunC by **TON Society** using **ton.js**.
 
 ## Contests
 
