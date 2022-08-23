@@ -14,7 +14,7 @@ TVM is built on the stack principle, which makes it efficient and easy to implem
 
 ## FunC
 
-High-level language FunC is used to program smart contracts on TON.
+High-level language **FunC** is used to program smart contracts on TON.
 
 [FunC Overview](/func/overview.md)
 
@@ -31,6 +31,16 @@ High-level language FunC is used to program smart contracts on TON.
 ## Smart Contract Guidelines
 
 TON allows you to do anything, but product smart contracts must be followed [smart contract guidelines](https://ton.org/docs/#/howto/smart-contract-guidelines). 
+
+## Tact
+
+A new **Tact** smart contract programming language for TON is under development.
+
+FunC allows you to work with smart contract data at the lowest level. This can be useful, but it would be more convenient to solve typical problems using a higher-level language.
+
+Tact is such a language, currently in experimental status and under development.
+
+Follow and participate on the project website [https://tact-lang.org](https://tact-lang.org).
 
 ## Fift
 
