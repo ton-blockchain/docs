@@ -23,7 +23,7 @@ FunC documentation initially written by [@akifoq](https://github.com/akifoq).
 - Development and Testing
     * [toncli](https://github.com/disintar/toncli) - Comfy CLI to build, deploy and test FunC contracts
     * [ton-contract-executor](https://github.com/Naltox/ton-contract-executor) - Library for running contracts locally
-    * [tonstarter-contracts](https://github.com/ton-defi-org/tonstarter-contracts) - All-in-one templates to build, deploy and test (in JS) FunC contracts
+    * [tonstarter-contracts](https://github.com/ton-defi-org/tonstarter-contracts) - All-in-one templates to build, deploy and test (by ton.js) FunC contracts
     * [MyLocalTON](/nodes/local-ton.md) - Run your private TON blockchain
 
 - IDE plugins
@@ -35,11 +35,11 @@ FunC documentation initially written by [@akifoq](https://github.com/akifoq).
 
 ## Tutorials
 
-* [10 FunC Lessons](https://github.com/romanovichim/TonFunClessons_Eng) by **@romanovichim** using **toncli** and **toncli** tests.
+* [10 FunC Lessons](https://github.com/romanovichim/TonFunClessons_Eng) by **@romanovichim** using **toncli** and **toncli** tests v1.
 
-* [10 уроков FunC](https://github.com/romanovichim/TonFunClessons_ru) от **@romanovichim**, используя **toncli** и **toncli**-тесты.
+* [10 уроков FunC](https://github.com/romanovichim/TonFunClessons_ru) от **@romanovichim**, используя **toncli** и **toncli**-тесты v1.
 
-* [TON Hello World: Step by step guide for writing your first smart contract in FunC](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func) by [TON Society](https://society.ton.org).
+* [TON Hello World: Step by step guide for writing your first smart contract in FunC](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func) by [TON Society](https://society.ton.org) using **ton.js**.
 
 ## Contests
 
