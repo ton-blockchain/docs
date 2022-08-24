@@ -41,6 +41,10 @@ FunC documentation initially written by [@akifoq](https://github.com/akifoq).
 
 * [TON Hello World](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func): Step by step guide for writing your first smart contract in FunC by **TON Society** using **ton.js**.
 
+* [FunC Quiz](https://t.me/toncontests/60) by **Vadim** - Good for self check. It will take 10-15 minutes, the questions are mainly about FunС with the few questions about TON in general.
+
+* [FunC тест](https://t.me/toncontests/58?comment=14888) от **Vadim** - FunC Quiz на русском.
+
 ## Contests
 
 Participating in [contests](https://t.me/toncontests) is a great way to learn FunC.
@@ -50,11 +54,14 @@ Also, for learning purposes, you can study past contests:
 * TON Smart Challenge #2 (suitable for getting started):
     [Contest Page](https://ton.org/ton-smart-challenge-2),
     [Contest Tasks](https://github.com/ton-blockchain/func-contest2),
-    [Contest Tests](https://github.com/miroslav-tashonov/toncli-contest-tests).
+    [Contest Solutions](https://github.com/ton-blockchain/func-contest2-solutions),
+    [Contest Tests](https://github.com/ton-blockchain/func-contest2-tests).
 
 * TON Smart Challenge #1 (suitable for beginners):
   [Contest Page](https://ton.org/contest),
-  [Contest Tasks](https://github.com/ton-blockchain/func-contest1).
+  [Contest Tasks](https://github.com/ton-blockchain/func-contest1),
+  [Contest Solutions](https://github.com/ton-blockchain/func-contest1-solutions),
+  [Contest Tests](https://github.com/ton-blockchain/func-contest1-tests).
 
 ## Standard Smart Contracts
 
