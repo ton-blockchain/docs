@@ -39,7 +39,6 @@
     * [Statements](/func/statements.md)
     * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
-    * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
   * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
   * [TVM instructions](/smart-contracts/tvm-instructions/instructions.md)
