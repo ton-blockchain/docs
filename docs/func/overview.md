@@ -41,7 +41,7 @@ FunC documentation initially written by [@akifoq](https://github.com/akifoq).
 
 * [TON Hello World](https://society.ton.org/ton-hello-world-step-by-step-guide-for-writing-your-first-smart-contract-in-func): Step by step guide for writing your first smart contract in FunC by **TON Society** using **ton.js**.
 
-* [FunC Quiz](https://t.me/toncontests/60) by **Vadim** - Good for self check. It will take 10-15 minutes, the questions are mainly about FunС with the few questions about TON in general.
+* [FunC Quiz](https://t.me/toncontests/60) by **Vadim** - Good for selfcheck. It will take 10–15 minutes. The questions are mainly about FunС with a few general questions about TON.
 
 * [FunC тест](https://t.me/toncontests/58?comment=14888) от **Vadim** - FunC Quiz на русском.
 
