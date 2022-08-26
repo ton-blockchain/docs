@@ -39,6 +39,8 @@ The software is likely to compile and work properly on most Linux systems. It sh
     cmake ../ton
     ```
 
+> If you are compiling on a computer with low memory (e.g. 1 Gb) don't forget to [create a swap partitions](/compile-swap.md).
+
 ## Lite Client
 
 ```bash
