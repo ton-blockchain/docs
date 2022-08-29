@@ -7,9 +7,7 @@ The software is likely to compile and work properly on most Linux systems. It sh
 1) Download the newest version of the TON blockchain sources, available at GitHub repository https://github.com/ton-blockchain/ton/ :
 
     ```bash
-    git clone https://github.com/ton-blockchain/ton.git
-    cd ton
-    git submodule update --init
+    git clone --recurse-submodules https://github.com/ton-blockchain/ton.git
     ```
 
 2) Install the newest versions of:
