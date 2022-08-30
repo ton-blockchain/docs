@@ -39,11 +39,9 @@ The software is likely to compile and work properly on most Linux systems. It sh
 
 > If you are compiling on a computer with low memory (e.g. 1 Gb) don't forget to [create a swap partitions](/compile-swap.md).
 
-## Lite Client
+## Download Global Config
 
-```bash
-cmake --build . --target lite-client
-```
+For tools like lite-client you need to download the global network config.
 
 Download the newest configuration file from https://ton-blockchain.github.io/global.config.json for mainnet:
 
@@ -55,6 +53,14 @@ or from https://ton-blockchain.github.io/testnet-global.config.json for testnet:
 
 ```bash
 wget https://ton-blockchain.github.io/testnet-global.config.json
+```
+
+## Lite Client
+
+To build lite-client, do [common part](/compile.md#Common), [download the config](/compile.md#Download-Global-Config) and then do:
+
+```bash
+cmake --build . --target lite-client
 ```
 
 Run the Lite Client with config:
@@ -99,4 +105,34 @@ To run Fift script:
 
 ```bash
 fift -s script.fif script_param0 script_param1 ..
+```
+
+## Tonlib-cli
+
+To build tonlib-cli, do [common part](/compile.md#Common), [download the config](/compile.md#Download-Global-Config) and then do:
+
+```bash
+cmake --build . --target tonlib-cli
+```
+
+Run the tonlib-cli with config:
+
+```bash
+./tonlib/tonlib-cli -C global.config.json
+```
+
+Basic help info can be obtained by typing `help` into the tonlib-cli. Type `quit` or press `Ctrl-C` to exit.
+
+## RLDP-HTTP-Proxy
+
+To build rldp-http-proxy, do [common part](/compile.md#Common), [download the config](/compile.md#Download-Global-Config) and then do:
+
+```bash
+cmake --build . --target rldp-http-proxy
+```
+
+The Proxy binary will be located as:
+
+```bash
+rldp-http-proxy/rldp-http-proxy
 ```
