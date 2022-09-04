@@ -53,15 +53,15 @@ Also, for learning purposes, you can study past contests:
 
 * TON Smart Challenge #2 (suitable for getting started):
     [Contest Page](https://ton.org/ton-smart-challenge-2),
-    [Contest Tasks](https://github.com/ton-blockchain/func-contest2),
-    [Contest Solutions](https://github.com/ton-blockchain/func-contest2-solutions),
-    [Contest Tests](https://github.com/ton-blockchain/func-contest2-tests).
+    [Tasks](https://github.com/ton-blockchain/func-contest2),
+    [Solutions](https://github.com/ton-blockchain/func-contest2-solutions),
+    [Tests](https://github.com/ton-blockchain/func-contest2-tests).
 
 * TON Smart Challenge #1 (suitable for beginners):
   [Contest Page](https://ton.org/contest),
-  [Contest Tasks](https://github.com/ton-blockchain/func-contest1),
-  [Contest Solutions](https://github.com/ton-blockchain/func-contest1-solutions),
-  [Contest Tests](https://github.com/ton-blockchain/func-contest1-tests).
+  [Tasks](https://github.com/ton-blockchain/func-contest1),
+  [Solutions](https://github.com/ton-blockchain/func-contest1-solutions),
+  [Tests](https://github.com/ton-blockchain/func-contest1-tests).
 
 ## Standard Smart Contracts
 
