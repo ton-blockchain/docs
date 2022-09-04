@@ -53,6 +53,16 @@
   * [Accepting deposits to multiple wallets](/payment-processing/deposits-multi-wallet.md)
   * [Withdrawal processing](/payment-processing/withdrawals.md)
 
+* DeFi
+  * [Toncoin](/defi/coins.md#Toncoin)
+  * [Extra-currencies](/defi/coins.md#Extra-currencies)
+  * [Jettons](/defi/tokens.md#Jettons)
+  * [NFT](/defi/tokens.md#NFT)
+  * Subscriptions
+  * [Crosschain Bridges](/crosschain.md)
+  * Payment Channels
+  * Payment Network
+
 * Web3
   * [TON DNS](/web3/dns.md)
   * TON Proxy [2022 Q3]
