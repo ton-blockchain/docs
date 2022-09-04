@@ -4,7 +4,7 @@ TON DNS is a service for translating human-readable domain names (such as `test.
 
 ## Standard
 
-[TON DNS Standard](https://github.com/ton-blockchain/TIPs/issues/81) describes the format of domain names, the process of resolving a domain, the interface of DNS smart contracts and the format of DNS records.
+[TON DNS Standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md) describes the format of domain names, the process of resolving a domain, the interface of DNS smart contracts and the format of DNS records.
 
 ## SDK
 

@@ -85,6 +85,9 @@
 * Support
   * [Wallets](/howto/wallets.md)
 
+* Standards
+  * [TEPs](https://github.com/ton-blockchain/TEPs)
+
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)
   * [Testnet Config](https://ton-blockchain.github.io/testnet-global.config.json)
