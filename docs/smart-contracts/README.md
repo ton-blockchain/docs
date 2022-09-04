@@ -32,21 +32,13 @@ High-level language **FunC** is used to program smart contracts on TON.
 
 TON allows you to do anything, but product smart contracts must be followed [smart contract guidelines](https://ton.org/docs/#/howto/smart-contract-guidelines). 
 
-## Tact
-
-A new **Tact** smart contract programming language for TON is under development.
-
-FunC allows you to work with smart contract data at the lowest level. This can be useful, but it would be more convenient to solve typical problems using a higher-level language.
-
-Tact is such a language, currently in experimental status and under development.
-
-Follow and participate on the project website [https://tact-lang.org](https://tact-lang.org).
-
 ## Fift
 
 Messages to smart contracts are binary data. To construct such messages, you can use one of the [SDKs](https://ton.org/docs/#/apis/) **or** the special programming language Fift.
 
 Since Fift is close to TVM opcodes, it also helps to know the limits of your brain.
+
+[Fift overview article](https://society.ton.org/introduction-to-fift) by TON Society.
 
 [Fift documentation](https://ton-blockchain.github.io/docs/fiftbase.pdf)
 
