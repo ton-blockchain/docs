@@ -58,7 +58,7 @@
   * [Extra-currencies](/defi/coins.md#Extra-currencies)
   * [Jettons](/defi/tokens.md#Jettons)
   * [NFT](/defi/tokens.md#NFT)
-  * Subscriptions
+  * [Subscriptions](/defi/subscriptions.md)
   * [Crosschain Bridges](/crosschain.md)
   * Payment Channels
   * Payment Network
