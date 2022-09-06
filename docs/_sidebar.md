@@ -60,8 +60,8 @@
   * [NFT](/defi/tokens.md#NFT)
   * [Subscriptions](/defi/subscriptions.md)
   * [Crosschain Bridges](/crosschain.md)
-  * Payment Channels
-  * Payment Network
+  * [Payment Channels](/defi/ton-payments#payment-channels)
+  * [Payment Network](/defi/ton-payments#payment-channel-network)
 
 * Web3
   * [TON DNS](/web3/dns.md)
