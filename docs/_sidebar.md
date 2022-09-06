@@ -47,7 +47,7 @@
   * [Governance Smart Contracts](/smart-contracts/governance.md)
 
 * Payment Processing
-  * [Payment Processing](/howto/payment-processing.md)
+  * [Payment Processing](/payment-processing/overview.md)
   * [Create a key pair and a wallet](/payment-processing/common.md)
   * [Accepting deposits to a single wallet](/payment-processing/deposits-single-wallet.md)
   * [Accepting deposits to multiple wallets](/payment-processing/deposits-multi-wallet.md)
