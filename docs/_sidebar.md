@@ -62,6 +62,7 @@
   * [Crosschain Bridges](/crosschain.md)
   * [Payment Channels](/defi/ton-payments#payment-channels)
   * [Payment Network](/defi/ton-payments#payment-channel-network)
+  * [Nominator Pools (Staking)](/nominators.md)
 
 * Web3
   * [TON DNS](/web3/dns.md)
