@@ -67,7 +67,7 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
    
    **Usage example:**
 
-   - [Desktop standard wallet](https://github.com/newton-blockchain/wallet-desktop) (C++ and Qt)
+   - [Desktop standard wallet](https://github.com/ton-blockchain/wallet-desktop) (C++ and Qt)
 
    - [Android standard wallet](https://github.com/trm-dev/wallet-android) (Java)  
 
