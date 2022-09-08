@@ -69,8 +69,8 @@ You can connect to public [toncenter.com](https://toncenter.com) or run your own
 
    - [Desktop standard wallet](https://github.com/ton-blockchain/wallet-desktop) (C++ and Qt)
 
-   - [Android standard wallet](https://github.com/trm-dev/wallet-android) (Java)  
+   - [Android standard wallet](https://github.com/ton-blockchain/wallet-android) (Java)  
 
-   - [iOS standard wallet](https://github.com/trm-dev/wallet-ios) (Swift)
+   - [iOS standard wallet](https://github.com/ton-blockchain/wallet-ios) (Swift)
 
    - [TonLib CLI](https://github.com/ton-blockchain/ton/blob/master/tonlib/tonlib/tonlib-cli.cpp) (C++)
