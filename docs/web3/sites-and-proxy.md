@@ -8,9 +8,9 @@ In order to access existing and create new TON Sites one needs special gateways 
 
 For familiarization with TON Sites you can use one of the public entry proxies:
 
-* http://in1.ton.org port 8080
-* http://in2.ton.org port 8080
-* http://in3.ton.org port 8080
+* in1.ton.org port 8080
+* in2.ton.org port 8080
+* in3.ton.org port 8080
 
 You can set them in the settings of a regular browser as HTTP proxy server.
 
