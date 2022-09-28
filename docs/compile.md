@@ -79,7 +79,7 @@ If you indicate a writeable "database" directory as an extra argument to the cli
 Basic help info can be obtained by typing `help` into the Lite Client. Type `quit` or press `Ctrl-C` to exit.
 
 
-## Func
+## FunC
 
 To build FunC compiler from source code do [common part](/compile.md#Common) described above and then: 
 
@@ -135,4 +135,18 @@ The Proxy binary will be located as:
 
 ```bash
 rldp-http-proxy/rldp-http-proxy
+```
+
+## generate-random-id
+
+To build generate-random-id, do [common part](/compile.md#Common) and then do:
+
+```bash
+cmake --build . --target generate-random-id
+```
+
+The binary will be located as:
+
+```bash
+utils/generate-random-id
 ```

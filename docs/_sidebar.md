@@ -65,9 +65,9 @@
   * [Nominator Pools (Staking)](/nominators.md)
 
 * Web3
+  * [Overview](/web3/overview.md)
   * [TON DNS](/web3/dns.md)
-  * TON Proxy [2022 Q3]
-  * TON Sites [2022 Q3]
+  * [TON Sites & TON Proxy](/web3/sites-and-proxy.md)
   * TON Storage [2022 Q4]
 
 * Nodes
@@ -83,10 +83,10 @@
   * [Lite Client](/compile.md)
   * [FunC](/compile.md#FunC)
   * [Fift](/compile.md#Fift)
+  * [Proxy](/compile.md#rldp-http-proxy)
   
 * Low Level
   * [Smart contracts](/howto/step-by-step.md)
-  * [TON Sites](/howto/ton-sites.md)
   * [Config Params](/howto/config-params.md)
   * [POW Givers](/howto/pow-givers.md)
   
