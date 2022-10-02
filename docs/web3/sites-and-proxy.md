@@ -4,6 +4,8 @@ From the technical perspective, TON Sites are very much like the usual Web sites
 
 In order to access existing and create new TON Sites one needs special gateways between the "ordinary" internet and the TON Network. Essentially, TON Sites are accessed with the aid of a HTTP->RLDP proxy running locally on the client's machine, and they are created by means of a reverse RLDP->HTTP proxy running on a remote web server.
 
+[Overview](https://telegra.ph/TON-Sites-TON-WWW-and-TON-Proxy-09-29-2)
+
 ## Public entry proxies
 
 For familiarization with TON Sites you can use one of the public entry proxies:
@@ -30,7 +32,7 @@ In order to access existing TON Sites, you need a running instance of RLDP-HTTP 
     rldp-http-proxy/rldp-http-proxy -p 8080 -c 3333 -C global.config.json
     ```
 
-    In the above example, `8080` is the TCP port that will be listened to at localhost for incoming HTTP queries, and `3333` is the UDP port that will be used for all outbound and inbound RLDP and ADNL activity, i.e., for connecting to the TON Sites via the TON Network. `global.config.name` is filename of TON global config.
+    In the above example, `8080` is the TCP port that will be listened to at localhost for incoming HTTP queries, and `3333` is the UDP port that will be used for all outbound and inbound RLDP and ADNL activity, i.e., for connecting to the TON Sites via the TON Network. `global.config.json` is filename of TON global config.
 
     If you have done everything correctly, the entry proxy will not terminate, but it will continue running in the terminal. It can be used now for accessing TON Sites. When you don't need it anymore, you can terminate it by pressing `Ctrl-C`, or simply by closing the terminal window.
 
@@ -81,7 +83,7 @@ In order to access existing TON Sites, you need a running instance of RLDP-HTTP 
     rldp-http-proxy/rldp-http-proxy -p 8080 -a 777.777.777.777:3333 -C global.config.json -A vcqmha5j3ceve35ammfrhqty46rkhi455otydstv66pk2tmf7rl25f3
     ```
 
-    In the above example, `8080` is the TCP port that will be listened to at localhost for incoming HTTP queries, and `3333` is the UDP port that will be used for all outbound and inbound RLDP and ADNL activity, i.e., for connecting to the TON Sites via the TON Network. `global.config.name` is filename of TON global config.
+    In the above example, `8080` is the TCP port that will be listened to at localhost for incoming HTTP queries, and `3333` is the UDP port that will be used for all outbound and inbound RLDP and ADNL activity, i.e., for connecting to the TON Sites via the TON Network. `global.config.json` is filename of TON global config.
 
     If you have done everything correctly, the Proxy will not terminate, but it will continue running in the terminal. It can be used now for accessing TON Sites. When you don't need it anymore, you can terminate it by pressing `Ctrl-C`, or simply by closing the terminal window. You can run this as a unix service to run permanently.
 
@@ -156,8 +158,12 @@ We suppose that you know already how to set up an ordinary website, and that you
    ```
    mv 45061C1* keyring/
    ```
-   
-5. Run proxy in reverse mode: 
+
+5. Make sure your webserver accepts HTTP requests with .ton and .adnl domains.
+
+   For example if you use nginx with config `server_name example.com;`, you need to change it to `server_name _;` or `server_name example.com example.ton vcqmha5j3ceve35ammfrhqty46rkhi455otydstv66pk2tmf7rl25f3.adnl;`.
+
+6. Run proxy in reverse mode: 
 
     ```
     rldp-http-proxy/rldp-http-proxy -a <your-server-ip>:3333 -L '*' -C global.config.json -A <your-adnl-address> -d -l <log-file>
@@ -176,5 +182,22 @@ We suppose that you know already how to set up an ordinary website, and that you
 
     You can visit TON Site `http://<your-adnl-address>.adnl` (`http://vcqmha5j3ceve35ammfrhqty46rkhi455otydstv66pk2tmf7rl25f3.adnl` in this example) from a browser running on a client machine as explained in Section "Accessing TON Sites" and check whether your TON Site is actually available to the public.
 
-    If you want to, you can register a TON DNS domain, such as 'example.ton', and create a `site` record for this domain pointing to the persistent ADNL address of your TON Site. Then the RLDP-HTTP proxies running in client mode would resolve http://example.ton as pointing to your ADNL address and will access your TON Site. 
+    If you want to, you can [register](/web3/site-domain-management.md#How-to-link-a-TON-site-to-a-domain) a TON DNS domain, such as 'example.ton', and create a `site` record for this domain pointing to the persistent ADNL address of your TON Site. Then the RLDP-HTTP proxies running in client mode would resolve http://example.ton as pointing to your ADNL address and will access your TON Site. 
+
+    You can also run a reverse proxy on a separate server and set your webserver as a remote address. In this case use `-R '*'@<YOUR_WEB_SERVER_HTTP_IP>:<YOUR_WEB_SERVER_HTTP_PORT>` instead of `-L '*'`.
+
+    Example:
+    ```
+    rldp-http-proxy/rldp-http-proxy -a 777.777.777.777:3333 -R '*'@333.333.333.333:80 -C global.config.json -A vcqmha5j3ceve35ammfrhqty46rkhi455otydstv66pk2tmf7rl25f3 -d -l tonsite.log
+    ```
+    
+    In this case your regular webserver should be available on http://333.333.333.333:80 (this IP will not be exposed to the outside).
+
+    **Recommendations**
+ 
+    Since anonymity will only be available in the TON Proxy 2.0, if you do not want to disclose the IP address of your web server, you can do it in two ways:
+
+    * Run a reverse proxy on a separate server with `-R` flag as described above.
+
+    * Make a duplicate server with copy of your website and run reverse proxy locally.
 

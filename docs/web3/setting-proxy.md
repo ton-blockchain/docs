@@ -28,6 +28,10 @@ Follow the instructions for Windows, macOS, Linux, iOS, or Android, depending on
 
 Settings -> WiFi -> Click on currently connected network -> Proxy setting -> Manual
 
+In the "Server" field, enter the address of one of the public entry proxies, in the "Port" field, enter "8080" without quotes.
+
+Click Save.
+
 ## Android
 
 Settings -> WiFi -> Tap and hold the Wi-Fi Network Name -> Modify Network -> Advanced Options -> Manual
