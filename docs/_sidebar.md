@@ -88,10 +88,6 @@
 * Low Level
   * [Smart contracts](/howto/step-by-step.md)
   * [Config Params](/howto/config-params.md)
-  * [POW Givers](/howto/pow-givers.md)
-  
-* Mining
-  * [Mining](/howto/mining.md)
   
 * Support
   * [Wallets](/howto/wallets.md)
@@ -102,3 +98,7 @@
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)
   * [Testnet Config](https://ton-blockchain.github.io/testnet-global.config.json)
+
+* Archived Articles
+  * [TON mining guide](/archived-articles/mining.md)
+  * [Proof-of-Work Giver](/archived-articles/pow-givers.md)
