@@ -1,4 +1,4 @@
-## TON mining guide
+
 ### Table of contents
 1. [Introduction](#introduction)
 2. [Quick start](#quick-start)

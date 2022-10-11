@@ -98,3 +98,7 @@
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)
   * [Testnet Config](https://ton-blockchain.github.io/testnet-global.config.json)
+
+* Archived Articles
+  * [TON mining guide](/archived-articles/mining.md)
+  * [Proof-of-Work Giver](/archived-articles/pow-givers.md)
