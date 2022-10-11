@@ -4,6 +4,12 @@
   * [Cells](/overviews/Cells.md)
   * [TL-B](/overviews/TL-B.md)
   * [TVM](/smart-contracts/tvm_overview.md)
+  * TON Networking
+    * [Overview](/networking/index.md)
+    * [ADNL](/networking/index.md#adnl)
+    * [Overlay subnetworks](/networking/index.md#overlay-subnetworks)
+    * [RLDP](/networking/index.md#rldp)
+    * [TON DHT](/networking/index.md#ton-dht)
 
 * Whitepapers
   * [Overview](/docs.md)
@@ -22,7 +28,7 @@
   
 * Smart Contracts
   * [Overview](/smart-contracts/)
-  * [FunC Programming Language](/func.md)
+  * FunC Programming Language
     * [Overview](/func/overview.md)
     * [Types](/func/types.md)
     * [Comments](/func/comments.md)
@@ -33,7 +39,6 @@
     * [Statements](/func/statements.md)
     * [Built-ins](/func/builtins.md)
     * [FunC standard library](/func/stdlib.md)
-    * [FAQ](/func/FAQ.md)
   * [Smart Contract Guidelines](/howto/smart-contract-guidelines.md)
   * [TVM exit codes](/smart-contracts/tvm_exit_codes.md)
   * [TVM instructions](/smart-contracts/tvm-instructions/instructions.md)
@@ -42,15 +47,33 @@
   * [Governance Smart Contracts](/smart-contracts/governance.md)
 
 * Payment Processing
-  * [Payment Processing](/howto/payment-processing.md)
+  * [Payment Processing](/payment-processing/overview.md)
   * [Create a key pair and a wallet](/payment-processing/common.md)
   * [Accepting deposits to a single wallet](/payment-processing/deposits-single-wallet.md)
   * [Accepting deposits to multiple wallets](/payment-processing/deposits-multi-wallet.md)
   * [Withdrawal processing](/payment-processing/withdrawals.md)
-  
+
+* DeFi
+  * [Toncoin](/defi/coins.md#Toncoin)
+  * [Extra-currencies](/defi/coins.md#Extra-currencies)
+  * [Jettons](/defi/tokens.md#Jettons)
+  * [NFT](/defi/tokens.md#NFT)
+  * [Subscriptions](/defi/subscriptions.md)
+  * [Crosschain Bridges](/crosschain.md)
+  * [Payment Channels](/defi/ton-payments#payment-channels)
+  * [Payment Network](/defi/ton-payments#payment-channel-network)
+  * [Nominator Pools (Staking)](/nominators.md)
+
+* Web3
+  * [Overview](/web3/overview.md)
+  * [TON DNS](/web3/dns.md)
+  * [TON Sites & TON Proxy](/web3/sites-and-proxy.md)
+  * TON Storage [2022 Q4]
+
 * Nodes
   * [TON Node Types](/nodes/node-types.md)
   * [Running your own Full Node/Validator](/nodes/run-node.md)
+  * [Validator maintenance and security](/nodes/node-maintenance-and-security.md)
   * [Local TON](/nodes/local-ton.md)
   
 * Use testnet for experiments
@@ -60,15 +83,17 @@
   * [Lite Client](/compile.md)
   * [FunC](/compile.md#FunC)
   * [Fift](/compile.md#Fift)
+  * [Proxy](/compile.md#rldp-http-proxy)
   
 * Low Level
   * [Smart contracts](/howto/step-by-step.md)
-  * [TON Sites](/howto/ton-sites.md)
-  * [TON DNS](/howto/dns.md)
   * [Config Params](/howto/config-params.md)
   
 * Support
   * [Wallets](/howto/wallets.md)
+
+* Standards
+  * [TEPs](https://github.com/ton-blockchain/TEPs)
 
 * Configs
   * [Mainnet Config](https://ton.org/global-config.json)

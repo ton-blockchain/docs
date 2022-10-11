@@ -158,12 +158,10 @@ They should be separated from the argument.
 #### Binary operators
 With priority 30 (left-associative):
 - `*` is integer multiplication
-- `/` is integer division (rounding ??)
-- `~/` is integer division (rounding ??)
-- `^/` is integer division (rounding ??)
+- `/` is integer division (floor)
+- `~/` is integer division (round)
+- `^/` is integer division (ceil)
 - `%` is integer reduction by modulo
-- `~%` is integer reduction by modulo
-- `^%` is integer reduction by modulo
 - `/%` returns the quotient and the remainder
 - `&` is bitwise AND
 
@@ -176,8 +174,8 @@ With priority 20 (left-associative):
 With priority 17 (left-associative):
 - `<<` is bitwise left shift
 - `>>` is bitwise right shift
-- `~>>` is bitwise right shift (rounding ??)
-- `^>>` is bitwise right shift (rounding ??)
+- `~>>` is bitwise right shift (round)
+- `^>>` is bitwise right shift (ceil)
 
 With priority 15 (left-associative):
 - `==` is integer equality check
