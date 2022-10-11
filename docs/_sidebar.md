@@ -87,6 +87,7 @@
   
 * Low Level
   * [Smart contracts](/howto/step-by-step.md)
+  * [TON Storage](howto/storage.md)
   * [Config Params](/howto/config-params.md)
   * [POW Givers](/howto/pow-givers.md)
   
