@@ -78,6 +78,7 @@
   
 * Use testnet for experiments
   * [Testnet](/testnet/)
+  * [Stateless validation](/testnet/stateless.md)
 
 * How to compile
   * [Lite Client](/compile.md)
