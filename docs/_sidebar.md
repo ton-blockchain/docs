@@ -59,7 +59,7 @@
   * [Jettons](/defi/tokens.md#Jettons)
   * [NFT](/defi/tokens.md#NFT)
   * [Subscriptions](/defi/subscriptions.md)
-  * [Crosschain Bridges](/crosschain.md)
+  * [Crosschain Bridges](/crosschain/overview.md)
   * [Payment Channels](/defi/ton-payments#payment-channels)
   * [Payment Network](/defi/ton-payments#payment-channel-network)
   * [Nominator Pools (Staking)](/nominators.md)
