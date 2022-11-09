@@ -50,7 +50,7 @@ In order to access existing TON Sites, you need a running instance of RLDP-HTTP 
 
    Or you can compile the **generate-random-id** yourself by this [instruction](/compile?id=generate-random-id).
 
-4. Generate a persistent ANDL address for your entry proxy
+4. Generate a persistent ADNL address for your entry proxy
 
    ```
    mkdir keyring
@@ -139,7 +139,7 @@ We suppose that you know already how to set up an ordinary website, and that you
 
    Or you can compile the **generate-random-id** yourself by this [instruction](/compile?id=generate-random-id).
 
-4. Generate a persistent ANDL address for your server
+4. Generate a persistent ADNL address for your server
 
    ```
    mkdir keyring
