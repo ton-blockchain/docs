@@ -15,7 +15,7 @@ Learn more on how to build with TON.
 
 [Standard smart contracts](https://github.com/ton-blockchain/ton/tree/master/crypto/smartcont) is the best way to study how FunC works.
 
-[API & SDK](/apis/).
+[API & SDK](https://github.com/ton-blockchain/docs/tree/master/docs/apis).
 
 ## Whitepapers
 
