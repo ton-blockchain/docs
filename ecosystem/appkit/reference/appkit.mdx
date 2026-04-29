@@ -1,0 +1,33 @@
+---
+title: "AppKit object"
+sidebarTitle: "AppKit"
+icon: cube
+---
+
+`AppKit` is the central runtime object.
+
+## Constructor
+
+### AppKit
+
+Use this constructor to create an AppKit instance.
+
+| Parameter | Type           | Required | Description                                                     |
+| --------- | -------------- | -------- | --------------------------------------------------------------- |
+| `config`  | `AppKitConfig` | Yes      | Networks, connectors, providers, and defaults for this runtime. |
+
+Returns: `AppKit`.
+
+## Common access patterns
+
+| Pattern      | Use                                                              |
+| ------------ | ---------------------------------------------------------------- |
+| Core actions | Pass the instance as the first argument.                         |
+| React        | Pass the instance to `AppKitProvider`.                           |
+| Managers     | Access domain managers such as swap and staking through actions. |
+
+## Related schema
+
+- [AppKitConfig](/ecosystem/appkit/schema/appkit-config)
+- [Network](/ecosystem/appkit/schema/network)
+- [Connector](/ecosystem/appkit/schema/connector)

@@ -1,76 +1,66 @@
 ---
-title: "AppKit: SDK for decentralized applications (dApps)"
+title: "AppKit"
 sidebarTitle: "Overview"
+icon: box
 ---
 
-import { Aside } from '/snippets/aside.jsx';
+AppKit is a TypeScript toolkit for adding TON wallet connection, payments, assets, DeFi flows, and React UI primitives to web applications.
 
-TON Connect's **AppKit** is an open-source SDK that integrates web2 and web3 applications with TON. It enables wallet connection, authorization, balance tracking, asset transfers, and data signing.
+It prepares requests, tracks application state, and connects your interface to wallets and providers. Wallets still sign transactions and data. Your backend still verifies orders, signatures, and business rules.
 
-<Aside
-  type="caution"
->
-  AppKit is currently in a public <Badge size="xs">alpha</Badge> version. Some behaviors and APIs might change in the future.
-</Aside>
+| If you want to...              | Read                                               |
+| ------------------------------ | -------------------------------------------------- |
+| Add AppKit to a new app        | [Quick start](/ecosystem/appkit/start/quick-start) |
+| Understand the moving parts    | [Concepts](/ecosystem/appkit/concepts)             |
+| Build wallet and payment flows | [Build](/ecosystem/appkit/build)                   |
+| Look up functions and types    | [Reference](/ecosystem/appkit/reference)           |
+| Copy a complete flow           | [Examples](/ecosystem/appkit/examples)             |
+| Upgrade safely                 | [Releases](/ecosystem/appkit/releases)             |
 
-## Features
+## What AppKit is
 
-- TON Connect protocol compliance: integrate with the standard wallet infrastructure for TON.
-- Wallet management: access connected TON wallets from registered providers.
-- Asset support: work with Toncoin (TON), jettons (tokens, i.e., USDT), and NFTs.
-- React: use hooks and ready-made UI components for common cases.
-- DeFi: make on-chain Toncoin and jetton swaps through different providers.
+AppKit is the application layer around TON wallet operations. It gives one place to configure networks, connectors, providers, and React integration.
 
-## Use cases
+Use it when your app needs to:
 
-- Web2 apps that need to use TON for authorization, payments, NFT rewards, or other common needs.
-- Web3 apps that need to integrate TON wallets.
-- Telegram Mini Apps that utilize TON Blockchain to provide services for Telegram users.
+- connect a TON wallet;
+- request Toncoin, jetton, NFT, swap, staking, or signing operations;
+- read wallet data and asset balances;
+- reuse the same core logic from plain TypeScript and React.
 
-## Quick start
+## What AppKit includes
 
-<Columns cols={3}>
-  <Card
-    title="Initialize the kit"
-    icon="wrench"
-    horizontal="true"
-    href="/ecosystem/appkit/init"
-  />
+| Area      | What it provides                                                           |
+| --------- | -------------------------------------------------------------------------- |
+| Core      | `AppKit`, network configuration, connectors, managers, actions, and types. |
+| React     | Provider, hooks, UI primitives, transaction progress helpers, and styles.  |
+| Assets    | Balance, jetton, and NFT helpers.                                          |
+| DeFi      | Swap and staking provider integration.                                     |
+| Reference | Public package exports, methods, hooks, components, and schema objects.    |
 
-  <Card
-    title="Work with Toncoin"
-    icon="gem"
-    horizontal="true"
-    href="/ecosystem/appkit/toncoin"
-  />
+## Packages
 
-  <Card
-    title="Work with Jettons"
-    icon="coins"
-    horizontal="true"
-    href="/ecosystem/appkit/jettons"
-  />
+| Package                          | Use                                                              |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `@ton/appkit`                    | Core AppKit instance, actions, connectors, providers, and types. |
+| `@ton/appkit/queries`            | Query and mutation helpers for data fetching.                    |
+| `@ton/appkit-react`              | React provider, hooks, components, and core re-exports.          |
+| `@ton/appkit-react/styles.css`   | Default component styles.                                        |
+| `@ton/appkit/swap/omniston`      | Omniston swap provider.                                          |
+| `@ton/appkit/swap/dedust`        | DeDust swap provider.                                            |
+| `@ton/appkit/staking/tonstakers` | Tonstakers staking provider.                                     |
 
-  <Card
-    title="Work with NFTs"
-    icon="image"
-    horizontal="true"
-    href="/ecosystem/appkit/nfts"
-  />
+## Documentation map
 
-  <Card
-    title="Stake Toncoin"
-    icon="chart-line"
-    horizontal="true"
-    href="/ecosystem/appkit/stake"
-  />
-</Columns>
+- [Start](/ecosystem/appkit/start) gets a new app running.
+- [Concepts](/ecosystem/appkit/concepts) explains the model and boundaries.
+- [Build](/ecosystem/appkit/build) contains task guides for product flows.
+- [Examples](/ecosystem/appkit/examples) contains complete flows.
+- [Reference](/ecosystem/appkit/reference) describes public APIs.
+- [Schema](/ecosystem/appkit/schema) defines important request and config objects.
+- [FAQ](/ecosystem/appkit/faq) answers common integration questions.
+- [Releases](/ecosystem/appkit/releases) tracks changes and migration notes.
 
-## See also
+## Current status
 
-The [TON Connect overview](/ecosystem/ton-connect/overview) explains the protocol and its core concepts.
-
-Skim the reference pages with more in-depth information:
-
-- [TON Connect manifests](/ecosystem/ton-connect/manifest)
-- [`@tonconnect/protocol`, external API reference](https://ton-connect.github.io/sdk/modules/_tonconnect_protocol.html)
+AppKit is an application toolkit. Treat wallet approval, transaction inclusion, indexer data, and backend settlement as separate systems. Production apps should verify critical outcomes outside the browser.

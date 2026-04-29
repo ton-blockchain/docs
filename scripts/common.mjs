@@ -123,7 +123,7 @@ export function prefixWithSlash(src) {
  * Creates the Remark parser with same settings as in `remarkConfig` inside `package.json`.
  */
 export async function initMdxParser() {
-  const remarkConfig = (await import(join('..', '.remarkrc.mjs'))).default;
+  const remarkConfig = (await import(new URL('../.remarkrc.mjs', import.meta.url))).default;
   return remark().use(remarkConfig);
 }
 
@@ -280,8 +280,13 @@ export function getNavLinks(config) {
         break;
     }
   };
-  // @ts-ignore
-  config.navigation?.pages.forEach(processPage);
+  const navigationRoots = [
+    ...(Array.isArray(config.navigation?.pages) ? config.navigation.pages : []),
+    ...(Array.isArray(config.navigation?.anchors) ? config.navigation.anchors : []),
+    ...(Array.isArray(config.navigation?.tabs) ? config.navigation.tabs : []),
+  ];
+
+  navigationRoots.forEach(processPage);
   return links;
 }
 

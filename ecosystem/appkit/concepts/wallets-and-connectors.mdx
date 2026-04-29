@@ -1,0 +1,25 @@
+---
+title: "Wallets and connectors"
+sidebarTitle: "Wallets and connectors"
+icon: wallet
+---
+
+A wallet is the user's signing application. A connector is the transport AppKit uses to talk to that wallet.
+
+## Wallet state
+
+| Term             | Meaning                                                    |
+| ---------------- | ---------------------------------------------------------- |
+| Connected wallet | A wallet for which the connector has an active session.    |
+| Selected wallet  | The wallet used by actions when a flow needs one wallet.   |
+| Connector        | An object that can connect, disconnect, and send requests. |
+| Capability       | A request type supported by a wallet or connector.         |
+
+## Connector rule
+
+Do not assume every connector supports every flow. Check capability and handle rejection.
+
+## Related pages
+
+- [Connect wallets](/ecosystem/appkit/build/connect-wallets)
+- [Connector schema](/ecosystem/appkit/schema/connector)
