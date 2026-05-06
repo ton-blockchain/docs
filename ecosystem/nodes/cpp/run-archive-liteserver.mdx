@@ -1,21 +1,21 @@
 ---
 title: "Run an archive liteserver"
-description: "Learn how to set up and run a TON archive node in liteserver mode"
+description: "Run an archive liteserver node with MyTonCtrl"
 ---
 
 import { Aside } from '/snippets/aside.jsx';
 
 ## Overview
 
-An **archive node** is a type of full node that stores the entire block history of the TON blockchain. If you are building a blockchain explorer, an indexer, or any application requiring access to historical data, running an archive node is the recommended approach.
+An **archive liteserver node** is a type of full node that stores the entire block history of the TON blockchain. If you are building a blockchain explorer, an indexer, or any application requiring access to historical data, running an archive liteserver node is the recommended approach.
 
-This guide explains how to set up an archive node in **liteserver mode** using MyTonCtrl and ZFS for efficient storage management.
+This guide explains how to set up an archive liteserver node using MyTonCtrl and ZFS for efficient storage management.
 
 ## Step 1: Prepare environment
 
 ### 1.1 Minimal hardware requirements
 
-Running an archive node requires significant storage and network resources.
+Running an archive liteserver node requires significant storage and network resources.
 
 - **CPU**: 16-core CPU
 - **RAM**: 128 GB RAM
@@ -39,7 +39,7 @@ Archive nodes benefit significantly from ZFS due to its native compression and s
 
 ### 2.1 Install ZFS
 
-```bash
+```sh
 sudo apt update
 sudo apt install -y zfsutils-linux
 ```
@@ -48,7 +48,7 @@ sudo apt install -y zfsutils-linux
 
 For NVMe drives, it is critical to align the ZFS pool's sector size with the drive's physical block size to avoid significant performance degradation. Most modern NVMe drives use 4K blocks. Verify your drive's physical block size:
 
-```bash
+```sh
 # Replace nvme0n1 with your device name
 cat /sys/block/nvme0n1/queue/physical_block_size
 ```
@@ -60,12 +60,12 @@ If the result is `4096`, you must use the `-o ashift=12` parameter during pool c
 Create a ZFS pool named `data`. Use `-o ashift=12` for 4K blocks (standard for most NVMe drives):
 
 <CodeGroup>
-  ```bash Single drive
+  ```sh Single drive
   # Replace <disk> with your device identifier (e.g., /dev/nvme1n1)
   sudo zpool create -o ashift=12 data <disk>
   ```
 
-  ```bash Multiple drives (Stripe)
+  ```sh Multiple drives (Stripe)
   # Combine multiple disks to increase capacity and performance
   sudo zpool create -o ashift=12 data <disk1> <disk2> <disk3>
   ```
@@ -79,7 +79,7 @@ Create a ZFS pool named `data`. Use `-o ashift=12` for 4K blocks (standard for m
 
 We recommend enabling `lz4` compression to save disk space with minimal CPU overhead:
 
-```bash
+```sh
 sudo zfs set compression=lz4 data
 ```
 
@@ -87,7 +87,7 @@ sudo zfs set compression=lz4 data
 
 Create the dataset for TON data and set the mount point to `/var/ton-work`:
 
-```bash
+```sh
 sudo zfs create data/ton-work
 sudo zfs set mountpoint=/var/ton-work data/ton-work
 ```
@@ -98,7 +98,7 @@ sudo zfs set mountpoint=/var/ton-work data/ton-work
 
 If you still need a dedicated operator, create and switch to it before installing MyTonCtrl:
 
-```bash
+```sh
 sudo adduser <USERNAME>
 sudo usermod -aG sudo <USERNAME>
 # reconnect as the new user
@@ -109,7 +109,7 @@ ssh <USERNAME>@<SERVER_IP>
 
 Run the installer from the operator account with `sudo` so it can create system users and services:
 
-```bash
+```sh
 sudo apt update
 sudo apt install -y curl wget git ca-certificates python3-pip
 wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
@@ -131,7 +131,7 @@ During installation, select the following options:
 
 Since the installation runs in the background, you can track the download and setup progress by monitoring the installation log file in the directory where you ran the script:
 
-```bash
+```sh
 tail -f mytonctrl_installation.log
 ```
 
@@ -152,12 +152,26 @@ Check the field **Local validator initial sync status**. The value indicates how
 
 Ensure the node directories have correct permissions:
 
-```bash
+```sh
 # Database owner should be the validator user
 sudo chown -R validator:validator /var/ton-work/db
 
 # Keys owner should be the user who installed MyTonCtrl
 sudo chown -R <install_user>:<install_user> /var/ton-work/keys
+```
+
+### 4.4 Open the liteserver port
+
+Check the port in `/var/ton-work/db/config.json` (within the `liteservers` array).
+
+Update security groups or configure `ufw` on bare-metal hosts:
+
+```sh
+sudo apt install -y ufw
+sudo ufw allow ssh
+sudo ufw allow <port>
+sudo ufw enable
+sudo ufw status
 ```
 
 ## Step 5: Troubleshooting and Maintenance
@@ -167,12 +181,13 @@ sudo chown -R <install_user>:<install_user> /var/ton-work/keys
 To see detailed logs of the block import process, increase the log verbosity from the MyTonCtrl console:
 
 ```sh
+mytonctrl
 MyTonCtrl> installer set_node_argument --verbosity 3
 ```
 
 Then follow the log file from a separate terminal:
 
-```bash
+```sh
 tail -f /var/ton-work/log*
 ```
 
@@ -186,6 +201,7 @@ You should see entries like:
   Set verbosity back to `1` after checking logs to avoid excessive disk I/O overhead:
 
   ```sh
+  mytonctrl
   MyTonCtrl> installer set_node_argument --verbosity 1
   ```
 </Aside>
@@ -197,14 +213,14 @@ ZFS allows you to create snapshots for easy rollbacks if data corruption occurs.
 #### Create a snapshot
 Snapshots can be created **without** stopping the node:
 
-```bash
+```sh
 sudo zfs snapshot data/ton-work@backup-date
 ```
 
 #### Roll back to a snapshot
 To restore data from a snapshot, you **must** stop the validator service first:
 
-```bash
+```sh
 # Stop the service
 sudo systemctl stop validator.service
 
@@ -223,7 +239,7 @@ Creating a snapshot is instantaneous and happens on the same physical disks wher
 
 Before exporting, estimate the size of the snapshot:
 
-```bash
+```sh
 sudo zfs send -pc -nv data/ton-work@backup-date
 ```
 
@@ -235,7 +251,7 @@ total estimated size is 4.07T
 
 To save the snapshot to a file, use the `-c` flag to preserve `lz4` compression (without it, the file will be significantly larger):
 
-```bash
+```sh
 sudo zfs send -c data/ton-work@backup-date > /external_storage/backup_ton_work.zfs
 ```
 
@@ -247,7 +263,7 @@ sudo zfs send -c data/ton-work@backup-date > /external_storage/backup_ton_work.z
 
 You can stream a snapshot directly to a remote ZFS-enabled server:
 
-```bash
+```sh
 sudo zfs send -c data/ton-work@backup-date | ssh user@remote_host "sudo zfs recv remote_data/ton-work"
 ```
 
