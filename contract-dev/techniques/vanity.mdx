@@ -18,14 +18,13 @@ The contract code and data are included in the vanity deploy message. The vanity
 
 The vanity contract code:
 
-```tolk expandable
 struct VanityStorage {
     padding: uint5
     owner: address
     salt: uint256
 }
 
-struct DeployPayload {
+struct (0xBABECAFE) DeployPayload {
     code: cell
     data: cell
 }
@@ -37,7 +36,7 @@ fun onInternalMessage(in: InMessage) {
     val sender = in.senderAddress;
 
     // Allow deployment only to the owner
-    assert (sender == storage.owner) throw 8;
+    assert (sender == storage.owner) throw 100;
 
     // Set code and data
     val payload = lazy DeployPayload.fromSlice(in.body);
@@ -69,9 +68,8 @@ Where:
 - `<SUFFIX>` – desired address suffix; case sensitive when `--case-sensitive` is set.
 - `<OWNER_ADDR>` – address allowed to deploy via the vanity contract.
 
-After running, the script prints logs and starts the search, printing every found `salt`. It also writes found `salt` to the `found.txt` file. The search continues until it is stopped or exits after the first match when `--only-one` is set. Example output:
+After running, the script prints logs and starts the search, printing every found `salt`. It also writes found `salt` to the `found.txt` file. The search continues until it is stopped or exits after the first match when `--only-one` is set.
 
-```text
 Searching wallets case-sensitive, with "TEST" in the end
 Owner:  UQCSQnz9h3iilIHMueOPs8RaryGqzb-bJpReZuZAUsm6TDRo
 Flags:  1100
@@ -112,7 +110,6 @@ body:
 
 This example uses [Blueprint](/contract-dev/blueprint/overview) to create and send this message. Define a vanity contract wrapper at `wrappers/VanityContract.ts`:
 
-```ts expandable
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
 
 export type VanityContractConfig = {
@@ -185,7 +182,6 @@ export class VanityContract implements Contract {
 
 Create `scripts/deployExampleContract.ts`:
 
-```ts expandable
 import { toNano, Address } from '@ton/core';
 import { ExampleContract } from '../wrappers/ExampleContract';
 import { VanityContract } from '../wrappers/VanityContract';
