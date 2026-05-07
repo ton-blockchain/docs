@@ -18,6 +18,7 @@ The contract code and data are included in the vanity deploy message. The vanity
 
 The vanity contract code:
 
+```tolk title="Tolk" expandable
 struct VanityStorage {
     padding: uint5
     owner: address
@@ -70,6 +71,7 @@ Where:
 
 After running, the script prints logs and starts the search, printing every found `salt`. It also writes found `salt` to the `found.txt` file. The search continues until it is stopped or exits after the first match when `--only-one` is set.
 
+```text title="Example output"
 Searching wallets case-sensitive, with "TEST" in the end
 Owner:  UQCSQnz9h3iilIHMueOPs8RaryGqzb-bJpReZuZAUsm6TDRo
 Flags:  1100
@@ -97,7 +99,7 @@ The more specific the search, the rarer the matches, and the more compute is req
 
 Deploy of the vanity contract and the message that replaces its code and data usually come in a single [message](https://github.com/ton-blockchain/ton/blob/5c0349110bb03dd3a241689f2ab334ae1a554ffb/crypto/block/block.tlb#L155):
 
-```
+```text
 init:
     code: vanity contract code
     data:
@@ -110,6 +112,7 @@ body:
 
 This example uses [Blueprint](/contract-dev/blueprint/overview) to create and send this message. Define a vanity contract wrapper at `wrappers/VanityContract.ts`:
 
+```ts title="TypeScript" expandable
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
 
 export type VanityContractConfig = {
@@ -182,6 +185,7 @@ export class VanityContract implements Contract {
 
 Create `scripts/deployExampleContract.ts`:
 
+```ts title="TypeScript" expandable
 import { toNano, Address } from '@ton/core';
 import { ExampleContract } from '../wrappers/ExampleContract';
 import { VanityContract } from '../wrappers/VanityContract';
