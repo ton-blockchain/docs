@@ -4,30 +4,311 @@ sidebarTitle: "AppKit"
 icon: cube
 ---
 
-`AppKit` is the central runtime object.
-
-## Constructor
+## Class
 
 ### AppKit
 
-Use this constructor to create an AppKit instance.
+Runtime that wires together connectors, networks, providers and the event
+emitter for a TON dApp. Every action in `@ton/appkit` takes an `AppKit`
+instance as its first argument.
 
-| Parameter | Type           | Required | Description                                                     |
-| --------- | -------------- | -------- | --------------------------------------------------------------- |
-| `config`  | `AppKitConfig` | Yes      | Networks, connectors, providers, and defaults for this runtime. |
+Construct one at app startup, pass it down through your app (or via
+`AppKitProvider` in React), and reuse it for the lifetime of the
+application.
 
-Returns: `AppKit`.
+Constructor: `new AppKit(config)`
 
-## Common access patterns
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config`\* | `AppKitConfig` | Networks, connectors, providers and other startup settings. |
 
-| Pattern      | Use                                                              |
-| ------------ | ---------------------------------------------------------------- |
-| Core actions | Pass the instance as the first argument.                         |
-| React        | Pass the instance to `AppKitProvider`.                           |
-| Managers     | Access domain managers such as swap and staking through actions. |
+**Example**
 
-## Related schema
+```ts
+// Initialize AppKit
+const appKit = new AppKit({
+    networks: {
+        [Network.mainnet().chainId]: {
+            apiClient: {
+                url: 'https://toncenter.com',
+                key: 'your-key',
+            },
+        },
+        // Optional: add testnet
+        // [Network.testnet().chainId]: {
+        //     apiClient: {
+        //         url: 'https://testnet.toncenter.com',
+        //         key: 'your-key',
+        //     },
+        // },
+    },
+    connectors: [
+        createTonConnectConnector({
+            tonConnectOptions: {
+                manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
+            },
+        }),
+    ],
+});
+```
 
-- [AppKitConfig](/ecosystem/appkit/schema/appkit-config)
-- [Network](/ecosystem/appkit/schema/network)
-- [Connector](/ecosystem/appkit/schema/connector)
+## Action
+
+### Balances
+
+#### getBalance
+
+Read the Toncoin balance of the currently selected wallet.
+
+Returns `null` when no wallet is connected (rather than throwing), so the
+UI layer can render an empty state without an error path. For an
+arbitrary address use `getBalanceByAddress`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | [`AppKit`](#appkit) | AppKit runtime instance. |
+| `options` | [`GetBalanceOptions`](#getbalanceoptions) | Optional network override. |
+| `options.network` | `Network \| undefined` | Network to read the balance from. Defaults to the selected wallet's network. |
+
+Returns: `Promise<GetBalanceReturnType>` — Balance in TON as a human-readable decimal string, or `null` if no wallet is selected.
+
+**Example**
+
+```ts
+const balance = await getBalance(appKit);
+if (balance) {
+    console.log('Balance:', balance.toString());
+}
+```
+
+#### getBalanceByAddress
+
+Read the Toncoin balance of an arbitrary address.
+
+Use this when you need to look up a balance for any wallet, not just the
+one currently selected in AppKit. For the selected wallet's balance use
+`getBalance`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | [`AppKit`](#appkit) | AppKit runtime instance. |
+| `options`\* | [`GetBalanceByAddressOptions`](#getbalancebyaddressoptions) | Address to query and optional network override. |
+| `options.address`\* | `string \| Address` | Wallet address as a base64url string or an `Address` instance. |
+| `options.network` | `Network \| undefined` | Network to read the balance from. Defaults to the AppKit's selected network. |
+
+Returns: `Promise<string>` — Balance in TON as a human-readable decimal string.
+
+**Example**
+
+```ts
+const balanceByAddress = await getBalanceByAddress(appKit, {
+    address: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c', // Zero Address
+});
+console.log('Balance by address:', balanceByAddress);
+```
+
+#### watchBalance
+
+Subscribe to Toncoin balance updates for the currently selected wallet.
+
+The subscription transparently follows the selected wallet — if the user
+connects, switches, or disconnects, the underlying watcher is rebound
+without any extra wiring on the caller side. For a fixed address use
+`watchBalanceByAddress`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | [`AppKit`](#appkit) | AppKit runtime instance. |
+| `options`\* | [`WatchBalanceOptions`](#watchbalanceoptions) | Update callback and optional network override. |
+| `options.network` | `Network \| undefined` | Network to watch on. Defaults to the selected wallet's network. |
+| `options.onChange`\* | `(update: BalanceUpdate) => void` | Callback fired on every balance update from the streaming provider. |
+
+Returns: `WatchBalanceReturnType` — Unsubscribe function — call it to stop receiving updates.
+
+**Example**
+
+```ts
+const unsubscribe = watchBalance(appKit, {
+    onChange: (update) => {
+        console.log('Balance updated:', update.balance);
+    },
+});
+
+// Later: unsubscribe();
+```
+
+#### watchBalanceByAddress
+
+Subscribe to Toncoin balance updates for an arbitrary address.
+
+Useful when you need to monitor a wallet that is not currently selected
+in AppKit (e.g. a watched address, a recipient before they connect).
+For the selected wallet's balance use `watchBalance`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | [`AppKit`](#appkit) | AppKit runtime instance. |
+| `options`\* | [`WatchBalanceByAddressOptions`](#watchbalancebyaddressoptions) | Address, update callback and optional network override. |
+| `options.address`\* | `string \| Address` | Wallet address as a base64url string or an `Address` instance. |
+| `options.network` | `Network \| undefined` | Network to watch on. Defaults to the AppKit's selected network. |
+| `options.onChange`\* | `(update: BalanceUpdate) => void` | Callback fired on every balance update from the streaming provider. |
+
+Returns: `WatchBalanceByAddressReturnType` — Unsubscribe function — call it to stop receiving updates.
+
+**Example**
+
+```ts
+const unsubscribe = watchBalanceByAddress(appKit, {
+    address: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c',
+    onChange: (update) => {
+        console.log('Balance by address updated:', update.balance);
+    },
+});
+
+// Later: unsubscribe();
+```
+
+### Signing
+
+#### signText
+
+Ask the connected wallet to sign a plain text message.
+
+Throws `Error('Wallet not connected')` if no wallet is currently selected.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | [`AppKit`](#appkit) | AppKit runtime instance. |
+| `parameters`\* | [`SignTextParameters`](#signtextparameters) | Text to sign and optional network override. |
+| `parameters.text`\* | `string` | UTF-8 text the user is asked to sign. |
+| `parameters.network` | `Network \| undefined` | Network to issue the sign request against. Defaults to the AppKit's selected network. |
+
+Returns: `Promise<SignDataResponse>` — Signature and signed payload, as returned by the wallet.
+
+**Example**
+
+```ts
+const result = await signText(appKit, {
+    text: 'Hello, TON!',
+});
+
+console.log('Signature:', result.signature);
+```
+
+### Transactions
+
+#### transferTon
+
+Send a TON transfer from the selected wallet.
+
+Builds a transfer transaction and sends it through the connected wallet
+in one step. If you need to inspect or sign the transaction before
+sending, use `createTransferTonTransaction` and `sendTransaction`
+separately.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | [`AppKit`](#appkit) | AppKit runtime instance. |
+| `parameters`\* | `CreateTransferTonTransactionParameters` | Recipient, amount and optional payload/comment. |
+| `parameters.recipientAddress`\* | `string` | Recipient address |
+| `parameters.amount`\* | `string` | Amount in TONs |
+| `parameters.comment` | `string \| undefined` | Human-readable text comment (will be converted to payload) |
+| `parameters.payload` | `string \| undefined` | Message payload data encoded in Base64 (overrides comment if provided) |
+| `parameters.stateInit` | `string \| undefined` | Initial state for deploying a new contract, encoded in Base64 |
+
+Returns: `Promise<SendTransactionResponse>` — Wallet response carrying the BoC of the sent transaction.
+
+**Example**
+
+```ts
+const result = await transferTon(appKit, {
+    recipientAddress: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c',
+    amount: '0.1', // 0.1 TON (human-readable format)
+    comment: 'Hello from AppKit!',
+});
+
+console.log('Transfer Result:', result);
+```
+
+## Type
+
+### Balances
+
+#### Balance
+
+Wallet balance amount, expressed as a string (alias of `TokenAmount` from
+`@ton/walletkit`). The exact units depend on which API produced the value
+— balance/jetton-balance actions return human-readable decimal strings
+already formatted with the token's decimals; lower-level walletkit APIs
+may return raw integer nano amounts.
+
+```ts
+type Balance = TokenAmount;
+```
+
+#### GetBalanceByAddressOptions
+
+Options for getBalanceByAddress.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `address`\* | `string \| Address` | Wallet address as a base64url string or an `Address` instance. |
+| `network` | `Network \| undefined` | Network to read the balance from. Defaults to the AppKit's selected network. |
+
+#### GetBalanceOptions
+
+Options for getBalance.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `network` | `Network \| undefined` | Network to read the balance from. Defaults to the selected wallet's network. |
+
+#### WatchBalanceByAddressOptions
+
+Options for watchBalanceByAddress.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `address`\* | `string \| Address` | Wallet address as a base64url string or an `Address` instance. |
+| `network` | `Network \| undefined` | Network to watch on. Defaults to the AppKit's selected network. |
+| `onChange`\* | `(update: BalanceUpdate) => void` | Callback fired on every balance update from the streaming provider. |
+
+#### WatchBalanceOptions
+
+Options for watchBalance.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `network` | `Network \| undefined` | Network to watch on. Defaults to the selected wallet's network. |
+| `onChange`\* | `(update: BalanceUpdate) => void` | Callback fired on every balance update from the streaming provider. |
+
+### Connectors and wallets
+
+#### Connector
+
+Wallet connector contract.
+
+A connector is the protocol-specific bridge between AppKit and a wallet
+(TonConnect, embedded wallet, etc.). Add your connectors via the AppKit
+config; AppKit then drives them through this interface.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id`\* | `string` | Stable connector identifier, unique within an AppKit instance. |
+| `type`\* | `string` | Protocol type (e.g. `'tonconnect'`). Multiple connectors can share the same type. |
+| `metadata`\* | `ConnectorMetadata` | Display metadata (name, icon) shown in connect UIs. |
+| `destroy`\* | `() => void` | Release any resources held by the connector. Call on app teardown. |
+| `connectWallet`\* | `(network?: Network) => Promise<void>` | Initiate a wallet connection flow on the given network. |
+| `disconnectWallet`\* | `() => Promise<void>` | Disconnect the currently connected wallet, if any. |
+| `getConnectedWallets`\* | `() => WalletInterface[]` | Wallets currently connected through this connector. |
+
+### Signing
+
+#### SignTextParameters
+
+Parameters accepted by `signText`.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `text`\* | `string` | UTF-8 text the user is asked to sign. |
+| `network` | `Network \| undefined` | Network to issue the sign request against. Defaults to the AppKit's selected network. |
