@@ -58,7 +58,7 @@ If only part of the code should live in a library cell, move the shared function
 
 Construct a library cell in TypeScript with the `@ton/core` library. The following example shows the pattern in a Blueprint project:
 
-```ts
+```ts title="TypeScript"
 import { Cell, beginCell } from '@ton/core';
 
 const libPrep = beginCell().storeUint(2, 8).storeBuffer(jwalletCodeRaw.hash()).endCell();
