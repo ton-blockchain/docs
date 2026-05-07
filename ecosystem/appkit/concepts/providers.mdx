@@ -4,17 +4,139 @@ sidebarTitle: "Providers"
 icon: plug
 ---
 
-Providers connect AppKit to external data or DeFi services.
+Providers connect AppKit to external data and DeFi services. Four kinds matter: the **API client** that reads chain state, the **streaming provider** that pushes live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds stake transactions.
 
 ## Provider types
 
-| Type               | Use                                                      |
-| ------------------ | -------------------------------------------------------- |
-| API client         | Reads blockchain data such as balances and transactions. |
-| Streaming provider | Watches live updates.                                    |
-| Swap provider      | Returns swap quotes and builds swap transactions.        |
-| Staking provider   | Returns staking data and builds staking transactions.    |
+| Type               | Use                                                                  | Manager                       |
+| ------------------ | -------------------------------------------------------------------- | ----------------------------- |
+| API client         | Reads blockchain data such as balances, jettons, and NFTs.           | `AppKit.networkManager`       |
+| Streaming provider | Pushes live balance, transaction, and jetton updates over WebSocket. | `AppKit.streamingManager`     |
+| Swap provider      | Returns swap quotes and builds swap transactions.                    | `AppKit.swapManager`          |
+| Staking provider   | Returns staking quotes, balance, and builds stake transactions.      | `AppKit.stakingManager`       |
 
-## Rule
+## How they are registered
 
-Provider responses are external data. Validate critical outcomes before changing product state.
+Two registration paths exist.
+
+### Per-network: API client and streaming
+
+API clients are bound to a network in the `networks` field of `AppKitConfig`. The streaming provider is constructed by AppKit and discovered automatically when you watch.
+
+```ts
+import { AppKit, Network } from '@ton/appkit';
+
+const appKit = new AppKit({
+  networks: {
+    [Network.mainnet().chainId]: { url: 'https://toncenter.com/api/v2/jsonRPC' },
+    [Network.testnet().chainId]: { url: 'https://testnet.toncenter.com/api/v2/jsonRPC' },
+  },
+});
+```
+
+### Generic: swap and staking
+
+Swap and staking providers are passed to `providers` at construction or registered later with `registerProvider`. Each provider declares its `type` so AppKit can route it to the correct manager.
+
+```ts
+import { AppKit, registerProvider } from '@ton/appkit';
+import { createOmistonSwapProvider } from '@ton/appkit/swap/omniston';
+import { createTonstakersProvider } from '@ton/appkit/staking/tonstakers';
+
+const appKit = new AppKit({
+  providers: [createOmistonSwapProvider()],
+});
+
+registerProvider(appKit, createTonstakersProvider());
+```
+
+## Built-in providers
+
+| Provider              | Type     | Subpath import                          |
+| --------------------- | -------- | --------------------------------------- |
+| TonCenter API client  | API      | `@ton/appkit` (via `networks` config)   |
+| TonApi API client     | API      | `@ton/appkit` (via `networks` config)   |
+| TonCenter streaming   | Stream   | Auto-selected per network               |
+| TonApi streaming      | Stream   | Auto-selected per network               |
+| Omniston              | Swap     | `@ton/appkit/swap/omniston`             |
+| DeDust                | Swap     | `@ton/appkit/swap/dedust`               |
+| Tonstakers            | Staking  | `@ton/appkit/staking/tonstakers`        |
+
+## Actions
+
+| Action                       | Type     | Returns                                                   |
+| ---------------------------- | -------- | --------------------------------------------------------- |
+| `getApiClient`               | Query    | The API client for a network.                             |
+| `hasStreamingProvider`       | Query    | Whether a streaming provider is registered for a network. |
+| `registerProvider`           | Mutation | Register a swap or staking provider after construction.   |
+| `getSwapManager`             | Query    | The `SwapManager`, for advanced flows.                    |
+| `getSwapQuote`               | Query    | A swap quote across registered swap providers.            |
+| `buildSwapTransaction`       | Mutation | A `TransactionRequest` that performs the quoted swap.     |
+| `getStakingManager`          | Query    | The `StakingManager`, for advanced flows.                 |
+| `getStakingProviders`        | Query    | The list of registered staking provider ids.              |
+| `getStakingProviderInfo`     | Query    | Provider configuration and APY.                           |
+| `getStakingQuote`            | Query    | A staking or unstaking quote.                             |
+| `getStakedBalance`           | Query    | The staked balance for an address.                        |
+| `buildStakeTransaction`      | Mutation | A `TransactionRequest` that stakes or unstakes.           |
+
+`buildSwapTransaction` and `buildStakeTransaction` only build the request. Pass the result to `sendTransaction` to broadcast.
+
+```ts
+import { AppKit, getSwapQuote, buildSwapTransaction, sendTransaction } from '@ton/appkit';
+
+const quote = await getSwapQuote(appKit, {
+  amount: '1.0',
+  from: 'EQ-TON-MASTER',
+  to: 'EQ-USDT-MASTER',
+  network,
+});
+const request = await buildSwapTransaction(appKit, {
+  quote,
+  userAddress: wallet.getAddress().toString(),
+});
+await sendTransaction(appKit, request);
+```
+
+## Provider interfaces
+
+Both swap and staking providers expose a small interface so apps can register custom DeFi backends.
+
+### Swap
+
+```ts
+interface SwapProviderInterface<TQuoteOptions = unknown, TSwapOptions = unknown> {
+  type: 'swap';
+  providerId: string;
+  getQuote(params: SwapQuoteParams<TQuoteOptions>): Promise<SwapQuote>;
+  buildSwapTransaction(params: SwapParams<TSwapOptions>): Promise<TransactionRequest>;
+}
+```
+
+### Staking
+
+```ts
+interface StakingProviderInterface<TProviderOptions = unknown> {
+  type: 'staking';
+  providerId: string;
+  getQuote(params: StakingQuoteParams<TProviderOptions>): Promise<StakingQuote>;
+  buildStakeTransaction(params: StakeParams<TProviderOptions>): Promise<TransactionRequest>;
+  getStakedBalance(userAddress: UserFriendlyAddress, network: Network): Promise<StakingBalance>;
+  getStakingProviderInfo(network: Network): Promise<StakingProviderInfo>;
+  getSupportedUnstakeModes(): UnstakeModes;
+}
+```
+
+`UnstakeMode` values are `INSTANT`, `WHEN_AVAILABLE`, and `ROUND_END`.
+
+## Rules
+
+- Provider responses are external data. Validate critical outcomes (settlement amounts, addresses, signatures) before changing product state.
+- Quotes go stale. Build the transaction soon after fetching the quote, or refetch before showing the user a final price.
+- Do not assume a provider is registered. Call `getStakingProviders` or `hasStreamingProvider` and degrade gracefully when the list is empty.
+- Treat provider IDs as singletons. Registering a second provider with the same `providerId` replaces the previous one.
+
+## Related
+
+- [AppKit](/ecosystem/appkit/concepts/appkit)
+- [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
+- Streaming and Swaps live on dedicated concept pages.

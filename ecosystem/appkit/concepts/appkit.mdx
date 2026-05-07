@@ -1,0 +1,133 @@
+---
+title: "AppKit"
+sidebarTitle: "AppKit"
+icon: cube
+---
+
+AppKit is the application layer for TON wallet interaction. It owns the wallet connection state, transaction and signing requests, asset helpers, and DeFi provider integration that a web app needs to talk to TON.
+
+The framework-independent core lives in `@ton/appkit`. React bindings live in `@ton/appkit-react` and wrap the same actions with hooks and components.
+
+## What it owns
+
+| State      | Description                                                   |
+| ---------- | ------------------------------------------------------------- |
+| Networks   | Mainnet, testnet, and per-network API client configuration.   |
+| Connectors | Wallet connection mechanisms — for example, TonConnect.       |
+| Wallets    | Connected wallets and the currently selected wallet.          |
+| Managers   | Swap, staking, and streaming managers used by domain actions. |
+
+## Configuration
+
+`AppKit` is constructed once with an `AppKitConfig`. Fields are optional unless your app needs them.
+
+| Field            | Purpose                                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| `networks`       | Map keyed by `chainId` to API client config (`url`, optional `apiKey`). Defaults to mainnet.           |
+| `connectors`     | Wallet connectors to register on construction. Each entry is a `Connector` or a `ConnectorFactory`.    |
+| `defaultNetwork` | Network connectors will enforce when connecting. Set `undefined` to allow any network.                 |
+| `providers`      | Swap and staking providers to register on construction. Each entry is a provider or a factory.         |
+| `ssr`            | Enables server-side rendering safe initialization. Set when AppKit is constructed in a Next.js server. |
+
+```ts
+import { AppKit, Network } from '@ton/appkit';
+import { createTonConnectConnector } from '@ton/appkit/tonconnect';
+import { createOmistonSwapProvider } from '@ton/appkit/swap/omniston';
+
+const appKit = new AppKit({
+  networks: {
+    [Network.mainnet().chainId]: { url: 'https://toncenter.com/api/v2/jsonRPC' },
+  },
+  defaultNetwork: Network.mainnet(),
+  connectors: [
+    createTonConnectConnector({
+      tonConnectOptions: { manifestUrl: 'https://example.com/tonconnect-manifest.json' },
+    }),
+  ],
+  providers: [createOmistonSwapProvider()],
+});
+```
+
+## Lifecycle
+
+```text
+configure → register connectors → restore session → connect wallet → perform actions → observe state → disconnect
+```
+
+| Phase    | Behavior                                                                                                 |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| Restore  | Connectors that support session restore (TonConnect) reconnect previously paired wallets on first read.  |
+| Connect  | `connect({ connectorId })` opens the connector flow. The connector emits `connector:connected` on pair.  |
+| Select   | When wallets change, AppKit auto-selects the first wallet if none is selected.                           |
+| Act      | Actions (`transferTon`, `signText`, etc.) read the selected wallet and dispatch through its connector.   |
+| Observe  | `watch*` actions and React hooks subscribe to internal events. Subscriptions return an unsubscribe.      |
+
+## Events
+
+AppKit emits typed events on its internal emitter. Watch actions subscribe so you rarely need to consume the emitter directly.
+
+| Event                          | When it fires                                              |
+| ------------------------------ | ---------------------------------------------------------- |
+| `connector:connected`          | A connector reports a new wallet connection.               |
+| `connector:disconnected`       | A connector ends its session.                              |
+| `wallets:updated`              | The full connected wallet list changes.                    |
+| `wallets:selection-changed`    | The selected wallet changes (including auto-select).       |
+| `networks:default-changed`     | The default network changes via `setDefaultNetwork`.       |
+
+## Actions and queries
+
+AppKit exposes its capabilities as standalone functions, not methods on the instance. Every action takes the `AppKit` instance as its first argument.
+
+```ts
+import { getSelectedWallet, transferTon } from '@ton/appkit';
+
+const wallet = getSelectedWallet(appKit);
+if (wallet) {
+  await transferTon(appKit, { recipientAddress: 'EQ...', amount: '1.25' });
+}
+```
+
+| Shape    | Behavior                                                                  | Examples                                                |
+| -------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Query    | Reads current state synchronously or with a one-shot async call.          | `getSelectedWallet`, `getBalance`, `getTransactionStatus` |
+| Watcher  | Subscribes to changes; returns an unsubscribe function.                   | `watchSelectedWallet`, `watchBalance`, `watchTransactions` |
+| Mutation | Triggers a side effect and returns a promise.                             | `connect`, `disconnect`, `transferTon`, `sendTransaction`  |
+
+## React integration
+
+`@ton/appkit-react` wraps every action and watcher in a hook. Mount once with `AppKitProvider`, then call hooks anywhere below.
+
+```tsx
+import { AppKitProvider } from '@ton/appkit-react';
+import '@ton/appkit-react/styles.css';
+
+function App() {
+  return (
+    <AppKitProvider appKit={appKit}>
+      <Routes />
+    </AppKitProvider>
+  );
+}
+```
+
+Hooks come in three matching shapes:
+
+| Hook shape | Wraps a core...   | Returns                                                                |
+| ---------- | ----------------- | ---------------------------------------------------------------------- |
+| Query      | Query action      | TanStack Query `{ data, isLoading, error, refetch }`.                  |
+| Watch      | Watcher action    | `void`. Updates the matching query cache while mounted.                |
+| Mutation   | Mutation action   | TanStack Query `{ mutate, mutateAsync, isPending, error }`.            |
+
+## Rules
+
+- Create one AppKit instance for one app runtime. Do not share an instance across windows or processes.
+- Pass the instance to actions directly, or provide it to React with `AppKitProvider`. Do not call actions before the instance is constructed.
+- Treat connectors and providers as singletons by `id`. Adding a connector with an existing `id` replaces and destroys the previous one.
+- Do not call signing or transfer mutations without first checking that a wallet is selected.
+
+## Related
+
+- [Wallets and Connectors](/ecosystem/appkit/concepts/wallets-and-connectors)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
+- [Sign Data](/ecosystem/appkit/concepts/sign-data)

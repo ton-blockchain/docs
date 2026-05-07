@@ -1,0 +1,164 @@
+---
+title: "Work with Jettons"
+sidebarTitle: "Work with Jettons"
+icon: coins
+---
+
+Jettons are TON's fungible-token standard. Each user holds tokens in a per-user **jetton wallet** contract derived from the **jetton master** address. AppKit hides that derivation behind a small set of actions for reading balances, fetching metadata, and building transfer requests.
+
+Jetton balances and amounts are strings in human-readable units. Conversion to nanos uses the jetton's `decimals`.
+
+## Read jettons
+
+| Action                   | Returns                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| `getJettons`             | `Promise<JettonsResponse \| null>` — every jetton held by the selected wallet.       |
+| `getJettonsByAddress`    | `Promise<JettonsResponse>` — every jetton held by any address. Supports pagination.  |
+| `getJettonBalance`       | `Promise<TokenAmount>` — balance of one specific jetton for an owner.                |
+| `getJettonInfo`          | `Promise<JettonInfo \| null>` — metadata for a jetton master (name, symbol, image).  |
+| `getJettonWalletAddress` | `Promise<UserFriendlyAddress>` — the owner's jetton wallet for a given master.       |
+| `watchJettons`           | Subscribes to the selected wallet's jetton list.                                     |
+| `watchJettonsByAddress`  | Subscribes to a specific address.                                                    |
+
+```ts
+import { getJettons, getJettonInfo, getJettonBalance } from '@ton/appkit';
+
+const owned = await getJettons(appKit);
+// owned.jettons = [{ address, symbol, name, decimalsNumber, balance, image, ... }]
+
+const info = await getJettonInfo(appKit, { address: 'EQ-USDT-MASTER' });
+// info.symbol === 'USDT', info.decimals === 6
+
+const balance = await getJettonBalance(appKit, {
+  jettonAddress: 'EQ-USDT-MASTER',
+  ownerAddress: 'EQ-OWNER',
+  jettonDecimals: 6,
+});
+```
+
+`getJettons` returns `null` when no wallet is selected. `getJettonInfo` returns `null` when the jetton master is not found.
+
+## Build a transfer
+
+`createTransferJettonTransaction` resolves the owner's jetton wallet, builds the internal transfer payload, and wraps it in a `TransactionRequest` with a default gas allowance.
+
+```ts
+import { createTransferJettonTransaction, sendTransaction } from '@ton/appkit';
+
+const request = await createTransferJettonTransaction(appKit, {
+  jettonAddress: 'EQ-USDT-MASTER',
+  recipientAddress: 'EQ-RECIPIENT',
+  amount: '12.5',
+  jettonDecimals: 6,
+  comment: 'Invoice 42',
+});
+const response = await sendTransaction(appKit, request);
+```
+
+| Parameter            | Required | Meaning                                                              |
+| -------------------- | -------- | -------------------------------------------------------------------- |
+| `jettonAddress`      | Yes      | Master contract address of the jetton.                               |
+| `recipientAddress`   | Yes      | Destination owner address (not their jetton wallet).                 |
+| `amount`             | Yes      | Amount in jetton units, as a decimal string.                         |
+| `jettonDecimals`     | Yes      | Decimal precision of the jetton. Read from `getJettonInfo` if unknown. |
+| `comment`            | No       | Optional comment payload attached to the transfer.                   |
+
+The function throws if no wallet is selected. It is async because it queries the chain to derive the jetton wallet address.
+
+## One-shot transfer
+
+`transferJetton` chains build and send.
+
+```ts
+import { transferJetton } from '@ton/appkit';
+
+const response = await transferJetton(appKit, {
+  jettonAddress: 'EQ-USDT-MASTER',
+  recipientAddress: 'EQ-RECIPIENT',
+  amount: '12.5',
+  jettonDecimals: 6,
+});
+```
+
+## Track settlement
+
+Jetton transfers settle through the same trace API as TON transfers.
+
+```ts
+import { getTransactionStatus } from '@ton/appkit';
+
+const status = await getTransactionStatus(appKit, { boc: response.boc });
+```
+
+A jetton transfer typically produces multiple internal messages. Use `completedMessages` and `totalMessages` from the status to gauge progress; only treat `status === 'completed'` as final.
+
+## React hooks
+
+| Hook                         | Wraps                                |
+| ---------------------------- | ------------------------------------ |
+| `useJettons`                 | `getJettons`                         |
+| `useJettonsByAddress`        | `getJettonsByAddress`                |
+| `useJettonBalanceByAddress`  | `getJettonBalance`                   |
+| `useJettonInfo`              | `getJettonInfo`                      |
+| `useJettonWalletAddress`     | `getJettonWalletAddress`             |
+| `useTransferJetton`          | `transferJetton`                     |
+| `useWatchJettons`            | `watchJettons`                       |
+| `useWatchJettonsByAddress`   | `watchJettonsByAddress`              |
+
+```tsx
+import { useJettons, useTransferJetton } from '@ton/appkit-react';
+
+function JettonList() {
+  const { data } = useJettons();
+  return (
+    <ul>
+      {data?.jettons.map((j) => (
+        <li key={j.address}>
+          {j.balance} {j.symbol}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SendUsdt() {
+  const transfer = useTransferJetton();
+  return (
+    <button
+      onClick={() =>
+        transfer.mutate({
+          jettonAddress: 'EQ-USDT-MASTER',
+          recipientAddress: 'EQ-RECIPIENT',
+          amount: '12.5',
+          jettonDecimals: 6,
+        })
+      }
+    >
+      Send 12.5 USDT
+    </button>
+  );
+}
+```
+
+## Failure modes
+
+| Class             | Example                                                | Recovery                                                  |
+| ----------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| Missing metadata  | Jetton master returns no `decimalsNumber`.             | The action filters that jetton out of the list.           |
+| Wrong decimals    | Caller passes the master's decimals to the wrong jetton. | Fetch with `getJettonInfo` before building the transfer. |
+| Balance off       | Backend cached old balance.                            | Refetch after `transactionStatus.completed`.              |
+| Recipient unknown | Recipient has never held the jetton.                   | The transfer still succeeds; it deploys their jetton wallet. |
+| Insufficient gas  | Default gas is below the recipient deploy fee.         | Override `amount` on the underlying `TransactionRequest`. |
+
+## Rules
+
+- Always pass the **owner address** as `recipientAddress`. AppKit derives the recipient's jetton wallet for you.
+- Read decimals from chain metadata (`getJettonInfo`) before building a transfer. Hardcoded decimals drift across token deployments.
+- Treat the `boc` from `sendTransaction` as "user signed". Verify settlement with `getTransactionStatus` before crediting an order.
+- Do not display jetton metadata without sanitizing — names and images are user-supplied.
+
+## Related
+
+- [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
+- [Work with NFTs](/ecosystem/appkit/concepts/work-with-nfts)
+- [AppKit](/ecosystem/appkit/concepts/appkit)
