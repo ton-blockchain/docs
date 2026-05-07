@@ -107,21 +107,21 @@ sudo zfs set mountpoint=/var/ton-work data/ton-work
 
 If you still need a dedicated operator, create and switch to it before installing MyTonCtrl:
 
-1. Create a non-root user
+- Create a non-root user
 
-   ```bash
-   # Create a non-root operator user
-   sudo adduser <USERNAME>
-   sudo usermod -aG sudo <USERNAME>
-   ```
+```bash
+# Create a non-root operator user
+sudo adduser <USERNAME>
+sudo usermod -aG sudo <USERNAME>
+```
 
-1. Switch to it by reconnecting to the server via `ssh`
+- Switch to it by reconnecting to the server via `ssh`
 
-   ```bash
-   #reconnect as the new user
-   exit
-   ssh <USERNAME>@<SERVER_IP>
-   ```
+```bash
+#reconnect as the new user
+exit
+ssh <USERNAME>@<SERVER_IP>
+```
 
 ### 3.2 Harden server security
 
@@ -222,7 +222,7 @@ Installation will be run in background.
 
 The installation process consists of two lengthy stages (in total, this can take up to a week):
 
-### Node installation and data download via TON Storage
+### 4.1 Node installation and data download via TON Storage
 
 This process can take from 12 hours to several days depending on your internet connection speed. You can monitor the progress using the following command:
 
@@ -236,9 +236,9 @@ Upon successful completion of this stage, you will see the following line in the
 [5/5] Mytonctrl installation completed
 ```
 
-### Importing downloaded data into the node database and synchronization
+### 4.2 Importing downloaded data into the node database and synchronization
 
-This process can take from one to several days depending on your server performance. You can monitor the progress using the following command:
+This process can take from one to several days depending on your server performance. You can monitor the progress using the MyTonCtrl console:
 
 ```bash
 mytonctrl
@@ -376,15 +376,7 @@ Before performing any updates, it is highly recommended to create a ZFS snapshot
 sudo zfs snapshot data/ton-work@before-update-$(date +%Y-%m-%d)
 ```
 
-To update your node software and MyTonCtrl to the latest versions, use the MyTonCtrl console.
-
-Open the console:
-
-```bash
-mytonctrl
-```
-
-Inside the console, run the following commands sequentially:
+To update your node software and MyTonCtrl to the latest versions, use the MyTonCtrl console:
 
 ```bash
 MyTonCtrl> update master
