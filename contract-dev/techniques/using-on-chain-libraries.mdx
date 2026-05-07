@@ -71,12 +71,11 @@ Reference implementation: [`JettonWallet.spec.ts`](https://github.com/ton-blockc
 
 The following Tolk example is based on the librarian contract from the [multisig v2 repository](https://github.com/ton-blockchain/multisig-contract-v2/blob/master/contracts/helper/librarian.func).
 
-```tolk
+```tolk title="Tolk" expandable
 import "@stdlib/gas-payments"
 
 const DEFAULT_DURATION = 3600 * 24 * 365 * 10  // 10 years, can top-up any time
 const MAX_LIBRARY_CELLS = 1000 // Network config limit for library cells
-const ONE_TON = ton("1")
 const PUBLIC_LIBRARY_MODE = 2 // Public library mode for masterchain contracts
 
 // https://docs.ton.org/tvm/instructions#fb06-setlibcode
@@ -127,7 +126,7 @@ When testing smart contracts locally, there are two ways to register libraries i
 
 Enable automatic library detection by passing the `autoDeployLibs` flag when creating the blockchain:
 
-```ts
+```ts title="TypeScript"
 const blockchain = await Blockchain.create({ autoDeployLibs: true });
 ```
 
@@ -139,7 +138,7 @@ This lets the contract install and register the library at runtime, while the en
 
 If `autoDeployLibs` is not enabled, register libraries manually:
 
-```ts
+```ts title="TypeScript"
 const blockchain = await Blockchain.create();
 const code = await compile('Contract');
 
@@ -168,7 +167,7 @@ To resolve a library, call the [`/getLibraries` method](/ecosystem/api/toncenter
 
 To retrieve library cells from liteserver, use the [`liteServer.getLibraries`](https://github.com/ton-blockchain/ton/blob/4cfe1d1a96acf956e28e2bbc696a143489e23631/tl/generate/scheme/lite_api.tl#L96) method.
 
-```ts expandable
+```ts title="TypeScript" expandable
 import { LiteClient, LiteRoundRobinEngine, LiteSingleEngine } from "ton-lite-client";
 import { Cell } from "@ton/core";
 import { z } from "zod";
