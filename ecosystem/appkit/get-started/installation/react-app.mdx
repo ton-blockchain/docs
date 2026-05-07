@@ -1,0 +1,44 @@
+---
+title: "Install AppKit in a React app"
+sidebarTitle: "React App"
+icon: react
+---
+
+Install the packages required to use AppKit from a React 18 or 19 application. This page only covers installation. Setup code lives on later pages.
+
+## Before you begin
+
+You need:
+
+- a React 18 or 19 project;
+- a public TON Connect manifest URL;
+- an RPC provider URL such as `https://testnet.toncenter.com`.
+
+## Install packages
+
+```bash
+npm i @ton/appkit @ton/appkit-react @tanstack/react-query @tonconnect/ui-react @ton/core buffer
+```
+
+Use the package manager your project uses. Install AppKit packages together so core and React exports stay compatible.
+
+## Packages
+
+| Package                  | Use                                              |
+| ------------------------ | ------------------------------------------------ |
+| `@ton/appkit`            | Core instance, actions, connectors, types.       |
+| `@ton/appkit-react`      | Provider, hooks, components.                     |
+| `@tanstack/react-query`  | Query and mutation cache used by hooks.          |
+| `@tonconnect/ui-react`   | TON Connect transport. `@ton/appkit-react` re-exports `<TonConnectButton />` from this package. |
+| `@ton/core`              | TON address and cell helpers.                    |
+| `buffer`                 | Browser polyfill needed by AppKit dependencies.  |
+
+## Browser polyfill
+
+AppKit dependencies expect a `Buffer` global in the browser. See [Browser polyfill](/ecosystem/appkit/get-started/installation#browser-polyfill) on the Installation page for the manual `polyfills.ts` approach (recommended) and the Vite alias fallback.
+
+## Next steps
+
+1. [Connectors](/ecosystem/appkit/get-started/connectors) — create the `AppKit` instance and attach a connector.
+2. [Providers](/ecosystem/appkit/get-started/providers) — wrap your React tree with `AppKitProvider`.
+3. [Basic getter hooks](/ecosystem/appkit/get-started/basic-getter-hooks) — read wallet, balance, and transaction state from React.

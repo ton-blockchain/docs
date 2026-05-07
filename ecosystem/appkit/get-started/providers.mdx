@@ -1,0 +1,46 @@
+---
+title: "Providers"
+sidebarTitle: "Providers"
+icon: layer-group
+---
+
+Wrap your React tree with `AppKitProvider` so hooks can read AppKit state. Providers also describe the data and DeFi services that plug into AppKit.
+
+## Before you begin
+
+You need AppKit packages installed and an `AppKit` instance created. See [Installation](/ecosystem/appkit/get-started/installation) and [Connectors](/ecosystem/appkit/get-started/connectors).
+
+## React provider
+
+Wrap with `QueryClientProvider` and `AppKitProvider`. Hooks need both. Import the styles once at the entry file.
+
+```tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AppKitProvider } from '@ton/appkit-react';
+import '@ton/appkit-react/styles.css';
+
+import { appKit } from './appkit';
+
+const queryClient = new QueryClient();
+
+export function Root({ children }: { children: React.ReactNode }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppKitProvider appKit={appKit}>{children}</AppKitProvider>
+    </QueryClientProvider>
+  );
+}
+```
+
+## Provider types
+
+| Type               | Where it goes                                                             |
+| ------------------ | ------------------------------------------------------------------------- |
+| API client         | `networks[chainId].apiClient` — `ApiClientToncenter` or `ApiClientTonApi`. |
+| Streaming provider | `appKit.streamingManager.registerProvider(...)` after construction.       |
+| Swap provider      | `AppKitConfig.providers` array — `DeDustSwapProvider`, `OmnistonSwapProvider`. |
+| Staking provider   | `AppKitConfig.providers` array — `createTonstakersProvider({})`.          |
+
+## Next step
+
+See [Provider concept](/ecosystem/appkit/concepts/providers) and [DeFi providers reference](/ecosystem/appkit/reference/defi-providers) for full configuration. For task-level guides, see the [How to](/ecosystem/appkit/howto) section.

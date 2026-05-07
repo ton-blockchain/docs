@@ -1,0 +1,28 @@
+---
+title: "Basic getter hooks"
+sidebarTitle: "Basic getter hooks"
+icon: magnifying-glass
+---
+
+Getter hooks read AppKit state from React. There are two shapes: query hooks return an object with `data`, `isLoading`, and `error`; state hooks return a tuple.
+
+## Before you begin
+
+You need the React provider in place. See [Providers](/ecosystem/appkit/get-started/providers).
+
+## The two shapes
+
+```tsx
+// State hook — returns a tuple
+const [wallet] = useSelectedWallet();
+if (wallet) console.log(wallet.getAddress());
+
+// Query hook — returns { data, isLoading, error }
+const { data: balance, isLoading } = useBalance();
+```
+
+State hooks include `useSelectedWallet`, `useNetwork`, `useDefaultNetwork`, and `useAppKit`. Query hooks cover everything else: `useAddress`, `useBalance`, `useJettons`, `useNfts`, `useNetworks`, `useTransactionStatus`, and the `*ByAddress` variants.
+
+## Next step
+
+See [How to → Read balances](/ecosystem/appkit/howto/read-balances) for a complete walkthrough of reading TON, jetton, and NFT data, or the [full hook list](/ecosystem/appkit/reference/react) in the reference.

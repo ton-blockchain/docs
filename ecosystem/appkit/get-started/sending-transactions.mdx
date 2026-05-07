@@ -1,0 +1,36 @@
+---
+title: "Sending transactions"
+sidebarTitle: "Sending transactions"
+icon: paper-plane
+---
+
+Sending a transaction means asking the connected wallet to sign and broadcast a request. AppKit ships UI components that wrap the full mutation lifecycle, plus mutation hooks and core actions for custom flows.
+
+## Send Toncoin in one component
+
+```tsx
+import { SendTonButton } from '@ton/appkit-react';
+
+<SendTonButton recipientAddress="EQ..." amount="0.05" comment="Test">
+  {({ isLoading, onSubmit, disabled, text }) => (
+    <button onClick={onSubmit} disabled={disabled}>
+      {isLoading ? 'Sending…' : text}
+    </button>
+  )}
+</SendTonButton>
+```
+
+The component handles the wallet round-trip and exposes `{ isLoading, onSubmit, disabled, text }` to the render-prop child.
+
+## Pick the right call
+
+| Goal                                | Component             | Hook                 | Core action       |
+| ----------------------------------- | --------------------- | -------------------- | ----------------- |
+| Send Toncoin                        | `<SendTonButton />`   | `useTransferTon`     | `transferTon`     |
+| Send a jetton                       | `<SendJettonButton />`| `useTransferJetton`  | `transferJetton`  |
+| Send an NFT                         | `<Send />` + builder  | `useTransferNft`     | `transferNft`     |
+| Send a prepared transaction request | `<Send />`            | `useSendTransaction` | `sendTransaction` |
+
+## Next step
+
+See [How to → Send Toncoin](/ecosystem/appkit/howto/send-toncoin), [Send jettons](/ecosystem/appkit/howto/send-jettons), and [NFTs](/ecosystem/appkit/howto/nfts) for task-level walkthroughs. Pair every send with [Streaming](/ecosystem/appkit/get-started/streaming) to confirm settlement.

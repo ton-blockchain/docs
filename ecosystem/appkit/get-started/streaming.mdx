@@ -1,0 +1,33 @@
+---
+title: "Streaming"
+sidebarTitle: "Streaming"
+icon: tower-broadcast
+---
+
+Streaming is the live channel of AppKit. Subscribe to balance and transaction updates instead of polling. Watch hooks are no-ops until a streaming provider is registered — see [Providers](/ecosystem/appkit/get-started/providers).
+
+## Mount global watchers
+
+Call the `useWatch*` hooks once high in the tree. They keep the cache fresh; pass `onChange` when you want to react to each update.
+
+```tsx
+import { useWatchBalance, useWatchTransactions } from '@ton/appkit-react';
+
+export function GlobalWatchers() {
+  useWatchBalance();
+  useWatchTransactions({
+    onChange: (update) => {
+      if (update.status === 'finalized') {
+        console.log('settled', update.traceHash);
+      }
+    },
+  });
+  return null;
+}
+```
+
+`update.status` is `'pending' | 'confirmed' | 'finalized' | 'invalidated'`. Treat anything before `'finalized'` as not yet settled.
+
+## Next step
+
+See the full set of watch hooks and core actions in [React reference](/ecosystem/appkit/reference/react). For task-level patterns, see [How to](/ecosystem/appkit/howto).
