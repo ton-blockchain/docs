@@ -1,0 +1,286 @@
+---
+title: "AppKit React"
+sidebarTitle: "AppKit React"
+icon: react
+---
+
+## Hook
+
+### Balances
+
+#### useBalance
+
+React hook reading the Toncoin balance of the currently selected wallet through TanStack Query — auto-resolves the wallet address (use [`useBalanceByAddress`](#usebalancebyaddress) for an arbitrary address).
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseBalanceParameters`](#usebalanceparameters) | TanStack Query overrides (`select`, `enabled`, `staleTime`, …) and an optional network override. |
+
+Returns: <a href="#usebalancereturntype"><code>UseBalanceReturnType</code></a><code>&lt;selectData = GetBalanceByAddressData&gt;</code> — TanStack Query result for the balance read.
+
+**Example**
+
+```tsx
+const { data: balance, isLoading, error } = useBalance();
+
+if (isLoading) {
+    return <div>Loading...</div>;
+}
+
+if (error) {
+    return <div>Error: {error.message}</div>;
+}
+
+return <div>Balance: {balance}</div>;
+```
+
+#### useBalanceByAddress
+
+React hook reading the Toncoin balance of an arbitrary address through TanStack Query — useful for wallets that aren't selected in AppKit (use [`useBalance`](#usebalance) for the selected wallet).
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseBalanceByAddressParameters`](#usebalancebyaddressparameters) | Target address, optional network override, and TanStack Query overrides. |
+
+Returns: <a href="#usebalancebyaddressreturntype"><code>UseBalanceByAddressReturnType</code></a><code>&lt;selectData = GetBalanceByAddressData&gt;</code> — TanStack Query result for the balance read.
+
+**Example**
+
+```tsx
+const {
+    data: balance,
+    isLoading,
+    error,
+} = useBalanceByAddress({
+    address: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c',
+});
+
+if (isLoading) {
+    return <div>Loading...</div>;
+}
+
+if (error) {
+    return <div>Error: {error.message}</div>;
+}
+
+return <div>Balance: {balance}</div>;
+```
+
+#### useWatchBalance
+
+Subscribe to balance updates for the currently selected wallet; updates flow into the TanStack Query cache so [`useBalance`](#usebalance) re-renders automatically (use [`useWatchBalanceByAddress`](#usewatchbalancebyaddress) for a fixed address).
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseWatchBalanceParameters`](#usewatchbalanceparameters) | Update callback and optional network override. |
+
+Returns: `void`.
+
+**Example**
+
+```tsx
+const { data: balance } = useBalance();
+
+useWatchBalance();
+
+return <div>Current balance: {balance}</div>;
+```
+
+#### useWatchBalanceByAddress
+
+Subscribe to balance updates for an arbitrary address; updates flow into the TanStack Query cache so [`useBalanceByAddress`](#usebalancebyaddress) re-renders automatically. Logs a warning and exits when no streaming provider is configured for the resolved network.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters`\* | [`UseWatchBalanceByAddressParameters`](#usewatchbalancebyaddressparameters) | Address, update callback and optional network override. |
+
+Returns: `void`.
+
+**Example**
+
+```tsx
+const address = 'UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ';
+const network = Network.mainnet();
+const { data: balance } = useBalanceByAddress({ address, network });
+
+useWatchBalanceByAddress({ address, network });
+
+return <div>Current balance: {balance}</div>;
+```
+
+## Component
+
+### Balances
+
+#### BalanceBadge
+
+Compound component for rendering a token balance pill (icon + amount + symbol). Sub-components forward extra props to the underlying DOM element so callers can layer custom classes, click handlers, etc.
+
+Compound component. Members:
+
+##### BalanceBadge.Container
+
+_TODO: describe_
+
+_No props._
+
+##### BalanceBadge.Icon
+
+_TODO: describe_
+
+_No props._
+
+##### BalanceBadge.BalanceBlock
+
+_TODO: describe_
+
+_No props._
+
+##### BalanceBadge.Symbol
+
+_TODO: describe_
+
+_No props._
+
+##### BalanceBadge.Balance
+
+_TODO: describe_
+
+_No props._
+
+#### SendJettonButton
+
+Pre-wired button that builds a jetton transfer with [`createTransferJettonTransaction`](#createtransferjettontransaction) and dispatches it through the standard [`Send`](#send) flow on click — disabled until `recipientAddress`, `amount`, `jetton.address` and `jetton.decimals` are all set; throws inside the click handler when `jetton.address` or `jetton.decimals` are missing.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `recipientAddress`\* | `string` | Recipient address. |
+| `amount`\* | `string` | Amount in jetton units as a human-readable decimal string; converted to raw smallest units via `jetton.decimals`. |
+| `jetton`\* | `{         address: string;         symbol: string;         decimals: number;     }` | Jetton master metadata — `address` (master contract), `symbol` (rendered in the button label) and `decimals` (used to format `amount`). |
+| `comment` | `string` | Optional human-readable comment attached to the transfer. |
+| `text` | `ReactNode` | Custom button text |
+| `children` | `(props: SendRenderProps) => ReactNode` | Custom render function |
+| `onError` | `(error: Error) => void` | Callback when an error occurs |
+| `size` | `ButtonSize` | Size class applied to the button. Pass `'unset'` to skip the size class entirely (no padding, no typography) — useful with `variant="unstyled"`. |
+| `borderRadius` | `ButtonBorderRadius` | _TODO: describe_ |
+| `variant` | `ButtonVariant` | Visual variant. Use `'unstyled'` to opt out of all built-in styling — the consumer is fully responsible for visuals via `className`. The Button still provides ref forwarding, `disabled`/`loading` plumbing, and `icon`/`children` rendering. |
+| `loading` | `boolean` | _TODO: describe_ |
+| `fullWidth` | `boolean` | _TODO: describe_ |
+| `icon` | `ReactNode` | _TODO: describe_ |
+| `onSuccess` | `(response: SendTransactionReturnType) => void` | Callback when the transaction is successful |
+
+#### SendTonButton
+
+Pre-wired button that builds a TON transfer with [`createTransferTonTransaction`](#createtransfertontransaction) and dispatches it through the standard [`Send`](#send) flow on click — disabled until both `recipientAddress` and `amount` are set.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `recipientAddress`\* | `string` | Recipient address. |
+| `amount`\* | `string` | Amount in TONs as a human-readable decimal string (e.g., `"1.5"`); converted to nano-TON internally. |
+| `comment` | `string` | Optional human-readable comment attached to the transfer. |
+| `text` | `ReactNode` | Custom button text |
+| `children` | `(props: SendRenderProps) => ReactNode` | Custom render function |
+| `onError` | `(error: Error) => void` | Callback when an error occurs |
+| `size` | `ButtonSize` | Size class applied to the button. Pass `'unset'` to skip the size class entirely (no padding, no typography) — useful with `variant="unstyled"`. |
+| `borderRadius` | `ButtonBorderRadius` | _TODO: describe_ |
+| `variant` | `ButtonVariant` | Visual variant. Use `'unstyled'` to opt out of all built-in styling — the consumer is fully responsible for visuals via `className`. The Button still provides ref forwarding, `disabled`/`loading` plumbing, and `icon`/`children` rendering. |
+| `loading` | `boolean` | _TODO: describe_ |
+| `fullWidth` | `boolean` | _TODO: describe_ |
+| `icon` | `ReactNode` | _TODO: describe_ |
+| `onSuccess` | `(response: SendTransactionReturnType) => void` | Callback when the transaction is successful |
+
+## Type
+
+### Balances
+
+#### SendJettonButtonProps
+
+Props accepted by [`SendJettonButton`](#sendjettonbutton) — extends the base [`Send`](#send) button props (button text, sizing, callbacks) with the jetton-transfer details.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `recipientAddress`\* | `string` | Recipient address. |
+| `amount`\* | `string` | Amount in jetton units as a human-readable decimal string; converted to raw smallest units via `jetton.decimals`. |
+| `jetton`\* | `{         address: string;         symbol: string;         decimals: number;     }` | Jetton master metadata — `address` (master contract), `symbol` (rendered in the button label) and `decimals` (used to format `amount`). |
+| `comment` | `string` | Optional human-readable comment attached to the transfer. |
+| `text` | `ReactNode` | Custom button text |
+| `children` | `(props: SendRenderProps) => ReactNode` | Custom render function |
+| `onError` | `(error: Error) => void` | Callback when an error occurs |
+| `size` | `ButtonSize` | Size class applied to the button. Pass `'unset'` to skip the size class entirely (no padding, no typography) — useful with `variant="unstyled"`. |
+| `borderRadius` | `ButtonBorderRadius` | _TODO: describe_ |
+| `variant` | `ButtonVariant` | Visual variant. Use `'unstyled'` to opt out of all built-in styling — the consumer is fully responsible for visuals via `className`. The Button still provides ref forwarding, `disabled`/`loading` plumbing, and `icon`/`children` rendering. |
+| `loading` | `boolean` | _TODO: describe_ |
+| `fullWidth` | `boolean` | _TODO: describe_ |
+| `icon` | `ReactNode` | _TODO: describe_ |
+| `onSuccess` | `(response: SendTransactionReturnType) => void` | Callback when the transaction is successful |
+
+#### SendTonButtonProps
+
+Props accepted by [`SendTonButton`](#sendtonbutton) — extends the base [`Send`](#send) button props (button text, sizing, callbacks) with the TON-transfer details.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `recipientAddress`\* | `string` | Recipient address. |
+| `amount`\* | `string` | Amount in TONs as a human-readable decimal string (e.g., `"1.5"`); converted to nano-TON internally. |
+| `comment` | `string` | Optional human-readable comment attached to the transfer. |
+| `text` | `ReactNode` | Custom button text |
+| `children` | `(props: SendRenderProps) => ReactNode` | Custom render function |
+| `onError` | `(error: Error) => void` | Callback when an error occurs |
+| `size` | `ButtonSize` | Size class applied to the button. Pass `'unset'` to skip the size class entirely (no padding, no typography) — useful with `variant="unstyled"`. |
+| `borderRadius` | `ButtonBorderRadius` | _TODO: describe_ |
+| `variant` | `ButtonVariant` | Visual variant. Use `'unstyled'` to opt out of all built-in styling — the consumer is fully responsible for visuals via `className`. The Button still provides ref forwarding, `disabled`/`loading` plumbing, and `icon`/`children` rendering. |
+| `loading` | `boolean` | _TODO: describe_ |
+| `fullWidth` | `boolean` | _TODO: describe_ |
+| `icon` | `ReactNode` | _TODO: describe_ |
+| `onSuccess` | `(response: SendTransactionReturnType) => void` | Callback when the transaction is successful |
+
+#### UseBalanceByAddressParameters
+
+Parameters accepted by [`useBalanceByAddress`](#usebalancebyaddress) — TanStack Query options (`select`, `enabled`, `staleTime`, …) plus the target address and optional network override.
+
+```ts
+type UseBalanceByAddressParameters = GetBalanceByAddressQueryConfig<selectData>;
+```
+
+#### UseBalanceByAddressReturnType
+
+Return type of [`useBalanceByAddress`](#usebalancebyaddress) — TanStack Query result carrying `data`, `isLoading`, `error` and the standard companions.
+
+```ts
+type UseBalanceByAddressReturnType = UseQueryReturnType<
+    selectData,
+    GetBalanceErrorType
+>;
+```
+
+#### UseBalanceParameters
+
+Parameters accepted by [`useBalance`](#usebalance) — same shape as [`UseBalanceByAddressParameters`](#usebalancebyaddressparameters) minus `address`, which the hook resolves from the selected wallet.
+
+```ts
+type UseBalanceParameters = UseBalanceByAddressParameters<selectData>;
+```
+
+#### UseBalanceReturnType
+
+Return type of [`useBalance`](#usebalance) — TanStack Query result carrying `data`, `isLoading`, `error` and the standard companions.
+
+```ts
+type UseBalanceReturnType = UseBalanceByAddressReturnType<selectData>;
+```
+
+#### UseWatchBalanceByAddressParameters
+
+Parameters accepted by [`useWatchBalanceByAddress`](#usewatchbalancebyaddress) — same fields as [`WatchBalanceByAddressOptions`](#watchbalancebyaddressoptions), all optional so callers can render the hook before the address is known.
+
+```ts
+type UseWatchBalanceByAddressParameters = Partial<WatchBalanceByAddressOptions>;
+```
+
+#### UseWatchBalanceParameters
+
+Parameters accepted by [`useWatchBalance`](#usewatchbalance) — same fields as [`UseWatchBalanceByAddressParameters`](#usewatchbalancebyaddressparameters) minus `address`, which the hook resolves from the selected wallet.
+
+```ts
+type UseWatchBalanceParameters = Omit<UseWatchBalanceByAddressParameters, 'address'>;
+```
