@@ -4,11 +4,11 @@ sidebarTitle: "Sign data"
 icon: signature
 ---
 
-Sign Data lets a wallet attest to arbitrary data without sending a transaction. Use it for sign-in, attestation, and on-chain signatures that a smart contract can verify. AppKit covers three payload kinds — text, binary, and cell — through three matching mutations and three matching React hooks.
-
-The wallet returns an Ed25519 signature, the signing address, the timestamp it used, and the dApp domain it observed. Verification is the consumer's responsibility.
+Sign Data lets a wallet attest to arbitrary data without sending a transaction. Use it for sign-in, attestation, and on-chain signatures that a smart contract can verify. The wallet returns an Ed25519 signature, the signing address, the timestamp it used, and the dApp domain it observed. Verifying that response is the consumer's responsibility.
 
 ## Payload kinds
+
+AppKit exposes three payload kinds through three matching mutations and three matching React hooks. Pick the kind that matches what the verifier expects:
 
 | Kind     | Action       | Use                                                                              |
 | -------- | ------------ | -------------------------------------------------------------------------------- |
@@ -28,59 +28,24 @@ interface SignDataResponse {
 }
 ```
 
-## Sign text
+## Choosing a kind
+
+`signText` is for human-readable assertions — the wallet typically displays the text in plain form, so avoid embedding secrets or anything you do not want a user to read. `signBinary` is for arbitrary bytes the wallet should not interpret; wallets typically render a hash, so do not assume the user can read what they are signing. `signCell` is the only kind suitable for on-chain verification by a contract — schemas are how the wallet, the verifier, and the contract agree on layout.
 
 ```ts
-import { signText } from '@ton/appkit';
+import { signText, signBinary, signCell } from '@ton/appkit';
 
-const response = await signText(appKit, {
-  text: 'Sign in to example.com',
-});
-// response.signature, response.address, response.timestamp, response.domain
-```
+await signText(appKit, { text: 'Sign in to example.com' });
 
-| Parameter | Required | Meaning                                  |
-| --------- | -------- | ---------------------------------------- |
-| `text`    | Yes      | UTF-8 string the wallet should sign.     |
-| `network` | No       | Network the wallet should sign on.       |
+await signBinary(appKit, { bytes: 'iJM7Wb...=' /* base64 */ });
 
-Wallets typically display the text to the user in plain form. Avoid embedding secrets or anything you don't want a user to read.
-
-## Sign binary
-
-```ts
-import { signBinary } from '@ton/appkit';
-
-const response = await signBinary(appKit, {
-  bytes: 'iJM7Wb...=', // base64
-});
-```
-
-| Parameter | Required | Meaning                                                |
-| --------- | -------- | ------------------------------------------------------ |
-| `bytes`   | Yes      | Base64-encoded payload. Wallet does not interpret.     |
-| `network` | No       | Network the wallet should sign on.                     |
-
-Wallets typically render a hash for the user. Do not assume readability.
-
-## Sign cell
-
-```ts
-import { signCell } from '@ton/appkit';
-
-const response = await signCell(appKit, {
+await signCell(appKit, {
   cell: 'te6cck...=',                  // base64-encoded BoC
   schema: 'auth#_ nonce:uint64 ttl:uint32 = Auth;',
 });
 ```
 
-| Parameter | Required | Meaning                                                                          |
-| --------- | -------- | -------------------------------------------------------------------------------- |
-| `cell`    | Yes      | Base64-encoded BoC of the cell to sign.                                          |
-| `schema`  | Yes      | TL-B schema. Wallets render fields from this; verifiers reuse it on chain.       |
-| `network` | No       | Network the wallet should sign on.                                               |
-
-`signCell` is the only kind suitable for on-chain verification by a contract — schemas are how the wallet, the verifier, and the contract agree on layout.
+Each call accepts an optional `network` to pin the signing network. All three throw when no wallet is selected.
 
 ## Verify a response
 
@@ -94,47 +59,7 @@ The wallet returns a signature. The consumer (your backend, or another contract)
 | `domain`    | Match the dApp domain you expect. Reject if missing or wrong.                                  |
 | `payload`   | Match the request you issued. For text, compare strings. For binary, compare base64 verbatim.  |
 
-For replay protection, embed a nonce that you record server-side and reject on reuse. Wallets do not enforce nonce uniqueness.
-
-## React hooks
-
-| Hook            | Wraps        |
-| --------------- | ------------ |
-| `useSignText`   | `signText`   |
-| `useSignBinary` | `signBinary` |
-| `useSignCell`   | `signCell`   |
-
-```tsx
-import { useSignText } from '@ton/appkit-react';
-
-function SignInButton() {
-  const signText = useSignText();
-  return (
-    <button
-      onClick={() =>
-        signText.mutateAsync({ text: `Sign in to example.com\nnonce=${nonce}` }).then((r) => {
-          // POST r to backend for verification
-        })
-      }
-    >
-      Sign in
-    </button>
-  );
-}
-```
-
-`mutateAsync` returns a `Promise<SignDataResponse>` so callers can chain backend submission.
-
-## Failure modes
-
-| Class             | Example                                                  | Recovery                                                  |
-| ----------------- | -------------------------------------------------------- | --------------------------------------------------------- |
-| User rejected     | User dismisses the wallet prompt.                        | Keep state unchanged. Allow retry.                        |
-| Wrong signer      | Selected wallet differs from the wallet the user expects.| Show selected wallet before opening the prompt.           |
-| Stale request     | Timestamp drifts past the verifier's window.             | Refetch a nonce and re-sign.                              |
-| Replayed nonce    | Server already saw this nonce.                           | Reject with a clear message; refresh the nonce.           |
-| Bad encoding      | `bytes` or `cell` is not valid base64 / BoC.             | Validate before opening the wallet.                       |
-| Capability gap    | Wallet does not implement the requested kind.            | Catch the rejection and present an alternative kind.      |
+For replay protection, embed a nonce that you record server-side and reject on reuse. Wallets do not enforce nonce uniqueness — that is squarely the verifier's job.
 
 ## Rules
 
@@ -143,7 +68,7 @@ function SignInButton() {
 - Match `payload` byte-for-byte. Reformatted payloads will fail verification even if the content is equivalent.
 - Use `signCell` when a TON contract verifies the signature. Use `signText` for human-readable assertions. Use `signBinary` only when neither fits.
 
-## Related
+## Related pages
 
 - [Wallets and Connectors](/ecosystem/appkit/concepts/wallets-and-connectors)
 - [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)

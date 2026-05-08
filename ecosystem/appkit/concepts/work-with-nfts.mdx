@@ -4,7 +4,7 @@ sidebarTitle: "Work with NFTs"
 icon: image
 ---
 
-NFTs on TON are individual contracts, optionally grouped into a collection. AppKit covers reading the items owned by an address, fetching one item by address, and building transfer requests. As with other assets, transfers go through the connected wallet and settle on chain.
+NFTs on TON are individual contracts, optionally grouped into a collection. AppKit covers reading the items owned by an address, fetching one item by address, and building transfer requests. Transfers go through the connected wallet and settle on chain like any other transaction.
 
 ## NFT shape
 
@@ -25,15 +25,11 @@ interface NFT {
 }
 ```
 
-`NFTsResponse` wraps a list with the queried address and pagination info: `{ nfts: NFT[]; address: string; pagination?: { limit; offset } }`.
+Item metadata is off-chain and untrusted. The contract address and `index` are the authoritative routing keys.
 
 ## Read NFTs
 
-| Action            | Returns                                                                        |
-| ----------------- | ------------------------------------------------------------------------------ |
-| `getNfts`         | `Promise<NFTsResponse \| null>` — every NFT owned by the selected wallet.      |
-| `getNftsByAddress`| `Promise<NFTsResponse>` — every NFT owned by any address. Supports pagination. |
-| `getNft`          | `Promise<NFT \| null>` — a single NFT contract, by address.                    |
+`getNfts` returns every NFT owned by the selected wallet. `getNftsByAddress` is the same query for any address and supports pagination. `getNft` reads a single contract by address.
 
 ```ts
 import { getNfts, getNft } from '@ton/appkit';
@@ -46,7 +42,7 @@ const one = await getNft(appKit, { address: 'EQ-NFT-CONTRACT' });
 
 `getNfts` returns `null` when no wallet is selected. `getNft` returns `null` when the contract is not found.
 
-## Build a transfer
+## Build and send a transfer
 
 `createTransferNftTransaction` builds the NFT transfer payload, sets the response destination back to the sender, and wraps it in a `TransactionRequest` with a default gas allowance.
 
@@ -61,31 +57,20 @@ const request = await createTransferNftTransaction(appKit, {
 const response = await sendTransaction(appKit, request);
 ```
 
-| Parameter           | Required | Meaning                                                                       |
-| ------------------- | -------- | ----------------------------------------------------------------------------- |
-| `nftAddress`        | Yes      | NFT item contract address.                                                    |
-| `recipientAddress`  | Yes      | New owner address.                                                            |
-| `amount`            | No       | Gas budget in TON. Defaults to a safe gas allowance.                          |
-| `comment`           | No       | Optional comment payload attached to the transfer.                            |
+| Parameter           | Required | Meaning                                                       |
+| ------------------- | -------- | ------------------------------------------------------------- |
+| `nftAddress`        | Yes      | NFT item contract address.                                    |
+| `recipientAddress`  | Yes      | New owner address.                                            |
+| `amount`            | No       | Gas budget in TON. Defaults to a safe gas allowance.          |
+| `comment`           | No       | Optional comment payload attached to the transfer.            |
 
-The function throws if no wallet is selected. It is async because it composes the transfer body off the NFT contract.
+`createTransferNftTransaction` is async because it composes the transfer body off the NFT contract, and throws when no wallet is selected. The `transferNft` shorthand chains build and send for the common case.
 
-## One-shot transfer
-
-`transferNft` chains build and send.
-
-```ts
-import { transferNft } from '@ton/appkit';
-
-const response = await transferNft(appKit, {
-  nftAddress: 'EQ-NFT-CONTRACT',
-  recipientAddress: 'EQ-NEW-OWNER',
-});
-```
+A frequent failure mode is **stale ownership**: the NFT was sold between the read and the transfer attempt. Read `owner` again right before opening the wallet so the user signs an attempt that is at least plausibly current.
 
 ## Track settlement
 
-NFT transfers settle through the same trace API as other transfers. Treat the wallet response as "user signed" and confirm with `getTransactionStatus`.
+NFT transfers settle through the same trace API as other transfers. Treat the wallet response as "user signed" and confirm with `getTransactionStatus` before refetching the gallery.
 
 ```ts
 import { getTransactionStatus } from '@ton/appkit';
@@ -96,45 +81,6 @@ if (status.status === 'completed') {
 }
 ```
 
-## React hooks and components
-
-| Hook            | Wraps                |
-| --------------- | -------------------- |
-| `useNfts`       | `getNfts`            |
-| `useNftsByAddress` | `getNftsByAddress` |
-| `useNft`        | `getNft`             |
-| `useTransferNft`| `transferNft`        |
-
-The React package also ships an `<NftItem>` component for rendering a single NFT card (image, name, collection badge, on-sale indicator).
-
-```tsx
-import { useNfts, useTransferNft, NftItem } from '@ton/appkit-react';
-
-function MyGallery() {
-  const { data } = useNfts();
-  return <div>{data?.nfts.map((nft) => <NftItem key={nft.address} nft={nft} />)}</div>;
-}
-
-function GiftButton({ nftAddress, to }: { nftAddress: string; to: string }) {
-  const transfer = useTransferNft();
-  return (
-    <button onClick={() => transfer.mutate({ nftAddress, recipientAddress: to })}>
-      Gift NFT
-    </button>
-  );
-}
-```
-
-## Failure modes
-
-| Class             | Example                                          | Recovery                                                     |
-| ----------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| Stale ownership   | The NFT was sold between read and transfer.      | Read `owner` again before opening the wallet; re-render.     |
-| Missing metadata  | Off-chain metadata host is down.                 | Render a fallback card; do not block the transfer.           |
-| Insufficient gas  | A complex collection contract needs more gas.    | Pass `amount` explicitly to override the default allowance.  |
-| Provider failure  | API client cannot reach the NFT contract.        | Retry with backoff; surface a connectivity hint.             |
-| Recipient typo    | Caller passes a non-friendly address.            | Validate before opening the wallet.                          |
-
 ## Rules
 
 - Verify the current `owner` before allowing a user-initiated transfer. NFTs change hands fast.
@@ -142,7 +88,7 @@ function GiftButton({ nftAddress, to }: { nftAddress: string; to: string }) {
 - Use `getTransactionStatus` to confirm settlement before updating the gallery in app state. The wallet response only proves the user signed.
 - Do not concatenate NFT addresses for analytics keys. Use the contract address verbatim and the index as a numeric.
 
-## Related
+## Related pages
 
 - [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
 - [Work with Jettons](/ecosystem/appkit/concepts/work-with-jettons)

@@ -4,20 +4,13 @@ sidebarTitle: "Work with Toncoin"
 icon: gem
 ---
 
-Toncoin is the native asset on TON. AppKit covers reading balances, building transfer requests, sending them through the connected wallet, and tracking settlement.
+Toncoin is the native asset on TON. AppKit covers reading balances, building transfer requests, sending them through the connected wallet, and tracking settlement. All actions take the `AppKit` instance as the first argument.
 
-All actions take the `AppKit` instance as the first argument. The two-step pattern — `create*Transaction` + `sendTransaction` — is exposed as a single convenience function (`transferTon`) when you don't need to inspect the request first.
+Amounts move through these actions as decimal strings in human-readable units. Toncoin uses nine decimal places, so floating-point math will lose precision — keep amounts as strings until you display them.
 
 ## Read balance
 
-| Action                  | Returns                                                  |
-| ----------------------- | -------------------------------------------------------- |
-| `getBalance`            | `Promise<TokenAmount \| null>` for the selected wallet.  |
-| `getBalanceByAddress`   | `Promise<TokenAmount>` for any address.                  |
-| `watchBalance`          | Subscribes to the selected wallet's balance.             |
-| `watchBalanceByAddress` | Subscribes to any address's balance.                     |
-
-`TokenAmount` is a string in human-readable units. Toncoin uses 9 decimal places.
+`getBalance` reads the selected wallet once. `watchBalance` subscribes to changes and returns an unsubscribe function. Both have `*ByAddress` siblings for reading any address rather than the selected one.
 
 ```ts
 import { getBalance, watchBalance } from '@ton/appkit';
@@ -33,9 +26,9 @@ const stop = watchBalance(appKit, {
 // Call stop() when done.
 ```
 
-## Build a transfer
+## Build and send a transfer
 
-`createTransferTonTransaction` produces an unsigned `TransactionRequest`. Pass it to `sendTransaction` to ask the connected wallet to sign and broadcast.
+A transfer is a two-step flow: build a `TransactionRequest`, then pass it to `sendTransaction`. The two steps are exposed because some apps want to inspect or modify the request before signing — for example, to attach a custom payload.
 
 ```ts
 import { createTransferTonTransaction, sendTransaction } from '@ton/appkit';
@@ -49,19 +42,15 @@ const response = await sendTransaction(appKit, request);
 // response.boc, response.normalizedHash
 ```
 
-| Parameter           | Required | Meaning                                                                                  |
-| ------------------- | -------- | ---------------------------------------------------------------------------------------- |
-| `recipientAddress`  | Yes      | Destination address.                                                                     |
-| `amount`            | Yes      | Amount in TON, as a decimal string. Converted to nanos internally.                       |
-| `comment`           | No       | Free-text comment. Encoded as a text payload.                                            |
-| `payload`           | No       | Base64 BoC. When present, takes priority over `comment`.                                 |
-| `stateInit`         | No       | Base64 state init for deploying the destination contract on the same message.            |
+| Parameter           | Required | Meaning                                                                       |
+| ------------------- | -------- | ----------------------------------------------------------------------------- |
+| `recipientAddress`  | Yes      | Destination address.                                                          |
+| `amount`            | Yes      | Amount in TON, as a decimal string. Converted to nanos internally.            |
+| `comment`           | No       | Free-text comment. Encoded as a text payload.                                 |
+| `payload`           | No       | Base64 BoC. When present, takes priority over `comment`.                      |
+| `stateInit`         | No       | Base64 state init for deploying the destination contract on the same message. |
 
-`createTransferTonTransaction` throws if no wallet is selected.
-
-## One-shot transfer
-
-`transferTon` chains build and send.
+When you do not need to inspect the request, `transferTon` chains build and send into one call:
 
 ```ts
 import { transferTon } from '@ton/appkit';
@@ -72,17 +61,11 @@ const response = await transferTon(appKit, {
 });
 ```
 
+Both `createTransferTonTransaction` and `transferTon` throw when no wallet is selected.
+
 ## Track settlement
 
-A wallet returning a `boc` only means the user signed. Wait for the chain to confirm.
-
-| Action                         | Returns                                                        |
-| ------------------------------ | -------------------------------------------------------------- |
-| `getTransactionStatus`         | `Promise<TransactionStatusResponse>`. One-shot trace lookup.   |
-| `watchTransactions`            | Subscribes to selected wallet transactions.                    |
-| `watchTransactionsByAddress`   | Subscribes to a specific address.                              |
-
-`TransactionStatusResponse.status` is `'pending' | 'completed' | 'failed'`. Use `completedMessages` and `totalMessages` to render progress.
+A wallet returning a `boc` only means the user signed. The transaction still has to land on chain. `getTransactionStatus` is a one-shot trace lookup; `watchTransactions` subscribes to the selected wallet's transaction stream.
 
 ```ts
 import { getTransactionStatus } from '@ton/appkit';
@@ -93,59 +76,7 @@ if (status.status === 'completed') {
 }
 ```
 
-You can pass either `boc` (recommended; the action computes the normalized hash) or `normalizedHash` directly.
-
-## React hooks
-
-| Hook                         | Wraps                          |
-| ---------------------------- | ------------------------------ |
-| `useBalance`                 | `getBalance`                   |
-| `useBalanceByAddress`        | `getBalanceByAddress`          |
-| `useWatchBalance`            | `watchBalance`                 |
-| `useWatchBalanceByAddress`   | `watchBalanceByAddress`        |
-| `useSendTransaction`         | `sendTransaction`              |
-| `useTransferTon`             | `transferTon`                  |
-| `useTransactionStatus`       | `getTransactionStatus`         |
-| `useWatchTransactions`       | `watchTransactions`            |
-| `useWatchTransactionsByAddress` | `watchTransactionsByAddress` |
-
-```tsx
-import { useTransferTon, useTransactionStatus } from '@ton/appkit-react';
-
-function PayButton() {
-  const transferTon = useTransferTon();
-  return (
-    <button
-      onClick={() =>
-        transferTon.mutate({
-          recipientAddress: 'EQ...',
-          amount: '1.25',
-          comment: 'Order #1001',
-        })
-      }
-    >
-      Pay 1.25 TON
-    </button>
-  );
-}
-
-function Confirmation({ boc }: { boc: string }) {
-  const { data } = useTransactionStatus({ boc });
-  return <span>{data?.status ?? 'pending'}</span>;
-}
-```
-
-Watcher hooks return `void`. They keep the matching query cache fresh while mounted, so a paired `useBalance` will live-update without further wiring.
-
-## Failure modes
-
-| Class           | Example                                | Recovery                                       |
-| --------------- | -------------------------------------- | ---------------------------------------------- |
-| User rejected   | User dismisses the wallet prompt.      | Keep state unchanged. Allow retry.             |
-| Bad input       | Invalid recipient address.             | Validate before opening the wallet.            |
-| Insufficient    | Wallet does not have enough TON.       | Read balance first; show a top-up prompt.      |
-| Provider        | API client or trace API is unreachable.| Retry with backoff. Show a connectivity hint.  |
-| Stuck pending   | Trace returns `pending` for too long.  | Continue polling. Surface a long-pending UI.   |
+`status` is `'pending' | 'completed' | 'failed'`. Pass either `boc` (recommended — the action computes the normalized hash) or `normalizedHash` directly.
 
 ## Rules
 
@@ -154,7 +85,7 @@ Watcher hooks return `void`. They keep the matching query cache fresh while moun
 - Do not derive product success from the wallet response shape. Verify on the chain.
 - Keep amounts as strings until you display them. Floating-point math loses precision at TON's nine decimal places.
 
-## Related
+## Related pages
 
 - [Work with Jettons](/ecosystem/appkit/concepts/work-with-jettons)
 - [Work with NFTs](/ecosystem/appkit/concepts/work-with-nfts)

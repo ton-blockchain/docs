@@ -4,20 +4,20 @@ sidebarTitle: "Wallets and connectors"
 icon: wallet
 ---
 
-A **wallet** is the user's signing application. A **connector** is the transport AppKit uses to talk to that wallet. Connectors connect, disconnect, and report which wallets are paired. AppKit collects wallets across all connectors into a single connected list and tracks which one is selected.
+A **wallet** is the user's signing application. A **connector** is the transport AppKit uses to talk to that wallet. Connectors connect, disconnect, and report which wallets are paired. AppKit collects wallets across all connectors into a single connected list and tracks which one is **selected** — that is the wallet mutating actions and signing flows will use.
 
 ## Wallet state
 
 | Term             | Meaning                                                                                          |
 | ---------------- | ------------------------------------------------------------------------------------------------ |
 | Connected wallet | A wallet for which a connector has an active session. Multiple connected wallets are possible.   |
-| Selected wallet  | The wallet that mutating actions and signing flows use. AppKit auto-selects when a list changes. |
+| Selected wallet  | The wallet that mutating actions and signing flows use. AppKit auto-selects when the list changes. |
 | Connector        | A transport with an `id`, `type`, and methods to connect, disconnect, and report wallets.        |
 | Capability       | A request type a wallet supports (transfer, sign data). Not every wallet supports every flow.    |
 
 ## Connectors
 
-A connector implements the `Connector` interface:
+A connector implements the `Connector` interface. Apps register connectors when constructing `AppKit`, or later through `addConnector`. Connector ids are unique — adding a connector with an existing id replaces and destroys the previous one.
 
 ```ts
 interface Connector {
@@ -31,7 +31,7 @@ interface Connector {
 }
 ```
 
-Register connectors at construction or later:
+The bundled `createTonConnectConnector` covers most apps. It wraps `@tonconnect/ui`, restores prior sessions on first read, and resyncs to AppKit's default network whenever it changes.
 
 ```ts
 import { AppKit } from '@ton/appkit';
@@ -46,89 +46,17 @@ const appKit = new AppKit({
 });
 ```
 
-Connector ids are unique. Adding a connector with an existing id replaces and destroys the old one.
-
-## TonConnect
-
-`createTonConnectConnector` is the built-in TonConnect connector. It wraps `@tonconnect/ui`.
-
-| Option              | Meaning                                                                            |
-| ------------------- | ---------------------------------------------------------------------------------- |
-| `id`                | Connector id. Defaults to `'tonconnect'`.                                          |
-| `metadata`          | Optional `name` and `iconUrl` for UI lists.                                        |
-| `tonConnectOptions` | Options passed to the underlying `TonConnectUI`. `manifestUrl` is required there.  |
-| `tonConnectUI`      | A pre-constructed `TonConnectUI` instance, when you need to share it across views. |
-
-The TonConnect connector restores prior sessions on first read and resyncs to AppKit's default network whenever it changes.
-
 ## Lifecycle
 
 ```text
 addConnector → connect → connector:connected → wallets:updated → wallets:selection-changed
 ```
 
-| Step    | Behavior                                                                                                |
-| ------- | ------------------------------------------------------------------------------------------------------- |
-| Connect | `connect({ connectorId })` calls `connector.connectWallet(defaultNetwork)`.                             |
-| Pair    | The connector emits `connector:connected` with the new wallet list and connector id.                    |
-| Update  | AppKit aggregates wallets from every connector into one list and emits `wallets:updated`.               |
-| Select  | If the previously selected wallet is gone, AppKit auto-selects the first wallet and emits the change.   |
-| Restore | TonConnect-style connectors call `restoreConnection()` on first read; the same events fire.             |
-| Drop    | `disconnect({ connectorId })` calls `disconnectWallet()`. The wallet list shrinks; selection follows.   |
-
-## Actions
-
-| Action                 | Shape    | Purpose                                                       |
-| ---------------------- | -------- | ------------------------------------------------------------- |
-| `connect`              | Mutation | Open the connector flow for a given `connectorId`.            |
-| `disconnect`           | Mutation | End the connector session.                                    |
-| `getConnectors`        | Query    | List every registered connector.                              |
-| `getConnectorById`     | Query    | Look up a connector by id.                                    |
-| `watchConnectors`      | Watcher  | Subscribe to the connector list.                              |
-| `watchConnectorById`   | Watcher  | Subscribe to a single connector by id.                        |
-| `getConnectedWallets`  | Query    | Read the aggregated list of connected wallets.                |
-| `getSelectedWallet`    | Query    | Read the currently selected wallet, or `null`.                |
-| `setSelectedWalletId`  | Mutation | Set the selected wallet by id (or `null` to clear).           |
-| `watchConnectedWallets`| Watcher  | Subscribe to the connected wallet list.                       |
-| `watchSelectedWallet`  | Watcher  | Subscribe to the selected wallet.                             |
-
-## React hooks
-
-| Hook                  | Wraps                                       |
-| --------------------- | ------------------------------------------- |
-| `useConnect`          | `connect`                                   |
-| `useDisconnect`       | `disconnect`                                |
-| `useConnectors`       | `getConnectors` / `watchConnectors`         |
-| `useConnectorById`    | `getConnectorById` / `watchConnectorById`   |
-| `useConnectedWallets` | `getConnectedWallets` / `watchConnectedWallets` |
-| `useSelectedWallet`   | `getSelectedWallet` / `watchSelectedWallet` / `setSelectedWalletId` |
-| `useAddress`          | Convenience selector over `useSelectedWallet`. |
-
-```tsx
-import { useConnect, useConnectors, useSelectedWallet } from '@ton/appkit-react';
-
-function ConnectButton() {
-  const connectors = useConnectors();
-  const connect = useConnect();
-  const tonConnect = connectors.find((c) => c.id === 'tonconnect');
-  if (!tonConnect) return null;
-  return (
-    <button onClick={() => connect.mutate({ connectorId: tonConnect.id })}>
-      Connect wallet
-    </button>
-  );
-}
-
-function Account() {
-  const [wallet] = useSelectedWallet();
-  if (!wallet) return null;
-  return <span>{wallet.getAddress().toString()}</span>;
-}
-```
+`connect({ connectorId })` calls into the connector to open its flow. When the user pairs a wallet, the connector emits `connector:connected` with the new wallet list. AppKit aggregates wallets from every connector into a single list and emits `wallets:updated`. If the previously selected wallet is gone, AppKit auto-selects the first wallet and emits `wallets:selection-changed`. `disconnect` runs the same chain in reverse.
 
 ## Wallet identity
 
-Each wallet exposes the same minimum surface:
+Each wallet exposes the same minimum surface — address, public key, network, and the two operations (`sendTransaction`, `signData`) that flow through to its connector.
 
 ```ts
 interface WalletInterface {
@@ -142,7 +70,7 @@ interface WalletInterface {
 }
 ```
 
-Wallet ids are derived from `(network, address)`. The same address on a different network produces a different wallet object.
+Wallet ids are derived from `(network, address)`. The same address on a different network produces a different wallet object — apps that move users between mainnet and testnet should not assume id stability across that boundary.
 
 ## Rules
 
@@ -151,7 +79,7 @@ Wallet ids are derived from `(network, address)`. The same address on a differen
 - Do not pin a stale `selectedWalletId` in app state. The value can be reset by the connector at any moment (disconnect, network change, restore).
 - Do not call connectors directly. Use the public actions or React hooks so AppKit's event flow stays consistent.
 
-## Related
+## Related pages
 
 - [AppKit](/ecosystem/appkit/concepts/appkit)
 - [Providers](/ecosystem/appkit/concepts/providers)
