@@ -38,10 +38,8 @@ const appKit = new AppKit({
 ## Lifecycle
 
 ```text
-configure → register connectors → restore session → connect wallet → perform actions → observe state → disconnect
+new AppKit(config) → connect → connector:connected → wallets:updated → (auto-select) wallets:selection-changed
 ```
-
-Connectors that support session restore (TonConnect) reconnect previously paired wallets the first time you read state, so a returning user usually sees their wallet without an extra connect step. After that, `connect` opens the connector flow, mutating actions read the selected wallet and dispatch through its connector, and watchers stream state changes to your UI. AppKit auto-selects the first wallet whenever the connected list changes and the previous selection is gone.
 
 ## Action shapes
 
@@ -81,7 +79,8 @@ Hooks come in three matching shapes. Query hooks return TanStack Query's `{ data
 
 - Create one AppKit instance for one app runtime. Do not share an instance across windows or processes.
 - Pass the instance to actions directly, or provide it to React with `AppKitProvider`. Do not call actions before the instance is constructed.
-- Treat connectors and providers as singletons by `id`. Adding one with an existing `id` replaces and destroys the previous.
+- Connector `id`s are singletons. Registering a second connector with the same `id` calls `destroy()` on the old one before installing the new.
+- Swap and staking provider `providerId`s are singletons too, but only the registry entry is replaced — the previous provider is not torn down. Hold the reference if you need to dispose of it yourself.
 - Do not call signing or transfer mutations without first checking that a wallet is selected.
 
 ## Related pages
