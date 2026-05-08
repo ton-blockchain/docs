@@ -1,0 +1,54 @@
+---
+title: "Streaming"
+sidebarTitle: "Streaming"
+icon: tower-broadcast
+---
+
+Streaming in AppKit is a per-network subscription layer that pushes balance, jetton, and transaction updates from a streaming provider to the application.
+
+## Model
+
+| Object               | Description                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| `StreamingManager`   | Routes watch calls to the provider registered for a network. |
+| `StreamingProvider`  | Transport-bound implementation. One per network.            |
+| `BalanceUpdate`      | Account balance change.                                     |
+| `JettonUpdate`       | Jetton balance change.                                      |
+| `TransactionsUpdate` | New transaction for an address.                             |
+
+Bundled providers: `createTonCenterStreamingProvider` and `createTonApiStreamingProvider`. Both extend `WebsocketStreamingProvider`.
+
+## One provider per network
+
+Each streaming provider is bound to a `Network`. The manager keys providers by `chainId`. Registering a second provider for the same network replaces the first and disconnects the previous one.
+
+## Subscriptions
+
+Subscriptions return an unsubscribe function. Store it and call it when the consumer no longer needs updates.
+
+| Method                                     | Use                                                |
+| ------------------------------------------ | -------------------------------------------------- |
+| `watchBalance(network, address, onChange)` | Account balance changes.                           |
+| `watchTransactions(network, address, ...)` | New transactions for an address.                   |
+| `watchJettons(network, address, ...)`      | Jetton balance changes.                            |
+| `watch(network, address, types, onUpdate)` | Bulk subscribe to several types in one call.       |
+
+`connect()` and `disconnect()` open and close transport for all providers without dropping subscriptions. Use them to pause activity on hidden tabs.
+
+## Connection state
+
+`onConnectionChange(network, callback)` reports transport health for one network's provider. Subscriptions stay registered across reconnects.
+
+## Boundaries
+
+Streaming reflects the provider's view of the chain. Use it to refresh UI. Do not use it as a settlement source.
+
+## Rule
+
+Always store the unsubscribe function. Treat streaming updates as best-effort and reconcile with point-in-time queries when a flow needs certainty.
+
+## Related pages
+
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Networks](/ecosystem/appkit/concepts/networks)
+- [Transactions](/ecosystem/appkit/concepts/transactions)

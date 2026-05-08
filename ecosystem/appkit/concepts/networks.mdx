@@ -4,17 +4,56 @@ sidebarTitle: "Networks"
 icon: globe
 ---
 
-A network defines chain id, API client configuration, and environment assumptions.
+A network in AppKit is a chain identifier paired with the API client AppKit uses to read and submit data on that chain. AppKit supports multiple configured networks at once.
 
-## Mainnet and testnet
+## The Network value
 
-Use testnet while developing transaction flows. Use mainnet only when recipients, amounts, verification, and error handling are complete.
+`Network` is the canonical identifier and has one field: `chainId`.
+
+| Factory                  | Chain id  | Description           |
+| ------------------------ | --------- | --------------------- |
+| `Network.mainnet()`      | `-239`    | TON mainnet.          |
+| `Network.testnet()`      | `-3`      | TON testnet.          |
+| `Network.tetra()`        | `662387`  | TON Tetra L2.         |
+| `Network.custom(id)`     | provided  | User-defined network. |
+
+Pass a `Network` to actions and providers that need to scope their work to one chain.
+
+## Configured networks
+
+Networks are declared on the AppKit instance, keyed by chain id. Each entry configures one API client.
+
+```ts
+new AppKit({
+  networks: {
+    [Network.mainnet().chainId]: { apiClient: { url: 'https://toncenter.com', key: '...' } },
+    [Network.testnet().chainId]: { apiClient: { url: 'https://testnet.toncenter.com' } },
+  },
+});
+```
+
+At least one network must be configured. Bundled clients are `ApiClientToncenter` and `ApiClientTonApi`. A pre-built `ApiClient` instance can be passed in place of a config.
+
+## Default network
+
+AppKit tracks a default network used by flows that need one network but were not given one.
+
+| Method                      | Use                                                     |
+| --------------------------- | ------------------------------------------------------- |
+| `getDefaultNetwork(appKit)` | Read the current default.                               |
+| `setDefaultNetwork(appKit)` | Change the default. Connectors observe this change.    |
 
 ## Network mismatch
 
-A mismatch can happen when the app expects one network and the wallet or provider is using another. Block unsafe actions and show the expected network.
+A mismatch happens when the app expects one network and the wallet or provider reports another. Block unsafe actions and surface the expected network.
 
-## Related schema
+## Rule
 
-- [Network](/ecosystem/appkit/schema/network)
-- [AppKitConfig](/ecosystem/appkit/schema/appkit-config)
+Develop on testnet. Never derive product state from a network the app is not configured to read.
+
+## Related pages
+
+- [Handle network changes](/ecosystem/appkit/build/handle-network-changes)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Network schema](/ecosystem/appkit/schema/network)
+- [AppKitConfig schema](/ecosystem/appkit/schema/appkit-config)

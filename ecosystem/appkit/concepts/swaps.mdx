@@ -1,0 +1,55 @@
+---
+title: "Swaps"
+sidebarTitle: "Swaps"
+icon: right-left
+---
+
+Swaps in AppKit are a manager and provider model that returns quotes and builds swap transactions through registered DEX providers.
+
+## Model
+
+| Object               | Description                                                  |
+| -------------------- | ------------------------------------------------------------ |
+| `SwapManager`        | Registry of swap providers. Routes quote and build calls.    |
+| `SwapProvider`       | Implementation for one DEX or aggregator.                    |
+| `SwapQuote`          | Pricing and route for a single swap request.                 |
+| `TransactionRequest` | Wallet-ready request produced from a quote.                  |
+
+AppKit re-exports these from `@ton/walletkit`.
+
+## Providers
+
+| Provider              | Source                              |
+| --------------------- | ----------------------------------- |
+| `OmnistonSwapProvider` | STON.fi aggregator (Omniston SDK).  |
+| `DeDustSwapProvider`   | DeDust Router v2 aggregator.        |
+
+Register providers in the AppKit constructor or with `registerProvider(appKit, provider)`. Each provider declares a `providerId`. A default provider can be set per manager.
+
+## Quote and execute
+
+A swap is a two-step flow.
+
+1. Call `getSwapQuote` with `from`, `to`, `amount`, and the target `network`. The manager returns a `SwapQuote`.
+1. Call `buildSwapTransaction` with the quote. The manager produces a `TransactionRequest`. The provider is selected from `quote.providerId`, falling back to the manager default.
+
+The wallet still confirms the transaction. Manager methods do not send anything.
+
+## Provider options
+
+`slippageBps`, referrer fields, and other knobs are passed through `providerOptions` and vary by provider. Consult each provider's documentation. Common shape:
+
+```ts
+{ slippageBps: 100, providerOptions: { referrerAddress: 'EQ...' } }
+```
+
+## Rule
+
+A quote can become stale. Treat wallet approval and chain settlement as separate outcomes. Verify final settlement before crediting the user.
+
+## Related pages
+
+- [Swap tokens](/ecosystem/appkit/build/swap-tokens)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Transactions](/ecosystem/appkit/concepts/transactions)
+- [Swap schema](/ecosystem/appkit/schema/swap)

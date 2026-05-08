@@ -1,0 +1,44 @@
+---
+title: "Gasless"
+sidebarTitle: "Gasless"
+icon: gas-pump
+---
+
+Gasless in AppKit lets a user pay transaction fees in a jetton instead of TON by routing the transaction through a relayer that pays gas on the user's behalf.
+
+## Model
+
+| Object                 | Description                                                          |
+| ---------------------- | -------------------------------------------------------------------- |
+| `GaslessManager`       | Registry of gasless relay providers.                                 |
+| `GaslessProvider`      | Relayer-specific implementation.                                     |
+| `GaslessConfig`        | Relayer configuration, including accepted gas jettons and fee model. |
+| `GaslessGasJetton`     | One jetton the relayer accepts as a fee.                             |
+| `GaslessEstimateParams` | Inputs for fee estimation.                                          |
+| `GaslessSendParams`    | Inputs for relayer broadcast.                                        |
+
+Bundled provider: TonAPI relayer.
+
+## Flow
+
+A gasless transaction has three stages.
+
+1. Call `getConfig` to read accepted gas jettons and the relayer's fee model.
+1. Call `estimate` with the user's intent and chosen gas jetton. The relayer returns the fee in that jetton plus the message set the wallet must sign.
+1. The user signs in their wallet. Then call `send` to hand the signed transaction to the relayer for broadcast.
+
+The wallet still produces the signature. Only the broadcast is delegated.
+
+## Boundaries
+
+Gasless does not remove the wallet step. It does not work for arbitrary payloads — only what the relayer accepts. Failures from the relayer are a separate failure class from chain failures.
+
+## Rule
+
+Show the fee in the chosen gas jetton before asking the wallet to sign. Treat relayer rejection and chain rejection as different recovery paths.
+
+## Related pages
+
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Transactions](/ecosystem/appkit/concepts/transactions)
+- [Errors](/ecosystem/appkit/concepts/errors)

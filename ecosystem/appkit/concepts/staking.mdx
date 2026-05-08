@@ -1,0 +1,54 @@
+---
+title: "Staking"
+sidebarTitle: "Staking"
+icon: chart-line
+---
+
+Staking in AppKit is a manager and provider model that quotes stake and unstake operations and builds the matching transactions.
+
+## Model
+
+| Object                 | Description                                                  |
+| ---------------------- | ------------------------------------------------------------ |
+| `StakingManager`       | Registry of staking providers. Routes quote and build calls. |
+| `StakingProvider`      | Implementation for one staking pool or protocol.             |
+| `StakingQuote`         | Pricing and parameters for a stake or unstake operation.     |
+| `StakingBalance`       | The user's staked position with a provider.                  |
+| `StakingProviderInfo`  | APY and pool metadata.                                       |
+| `UnstakeMode`          | How an unstake settles (e.g. `INSTANT`).                     |
+
+## Direction and modes
+
+A staking quote has a `direction` of `'stake'` or `'unstake'`. Unstake quotes accept an `unstakeMode`. Tonstakers defaults to `UnstakeMode.INSTANT` when omitted on unstake quotes.
+
+A single `buildStakeTransaction` action serves both directions. The quote's `direction` selects which operation the provider builds.
+
+## Providers
+
+| Provider                  | Source                                |
+| ------------------------- | ------------------------------------- |
+| `createTonstakersProvider` | Tonstakers liquid staking (tsTON).   |
+
+Register providers the same way as swap providers — through the AppKit constructor or `registerProvider(appKit, provider)`.
+
+## Reading positions
+
+| Method                                         | Returns                                |
+| ---------------------------------------------- | -------------------------------------- |
+| `getStakedBalance(appKit, address, network?)`  | The user's staked position.            |
+| `getStakingProviderInfo(appKit, network?)`     | APY and pool metadata for the provider. |
+
+## Boundaries
+
+AppKit does not custody staked positions. Positions are wallet-side. The provider owns APY math, redemption windows, and unstake routing.
+
+## Rule
+
+Show APY and pool metadata as display data. Treat staking transactions like any other wallet request — wallet approval is not chain settlement.
+
+## Related pages
+
+- [Stake Toncoin](/ecosystem/appkit/build/stake-toncoin)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Assets](/ecosystem/appkit/concepts/assets)
+- [Staking schema](/ecosystem/appkit/schema/staking)
