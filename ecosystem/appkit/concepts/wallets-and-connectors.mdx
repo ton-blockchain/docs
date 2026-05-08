@@ -8,9 +8,9 @@ icon: wallet
 
 The user's signing application. It holds the keys and signs transactions and data when the user approves.
 
-AppKit collects wallets across every connector into one list — multiple wallets at once is normal — and tracks which one is **selected**: the wallet mutations and signing flows will use.
+AppKit collects wallets from every connector into one list. Multiple connected wallets are supported. One wallet is marked as **selected**, and AppKit uses that wallet for transfer and signing actions.
 
-Every wallet exposes the same minimum surface: a back-reference to the connector that produced it, four identity readers (`getAddress`, `getPublicKey`, `getNetwork`, `getWalletId`), and the two signing operations (`sendTransaction`, `signData`) that flow through to that connector.
+Every wallet exposes the same minimum interface: a reference to the connector that produced it, four identity readers (`getAddress`, `getPublicKey`, `getNetwork`, `getWalletId`), and two wallet-approved operations (`sendTransaction`, `signData`) that are routed through the connector.
 
 ```ts
 interface WalletInterface {
@@ -33,7 +33,7 @@ Wallet ids are derived from `(network, address)`. The same address on a differen
 
 ## Connector
 
-The transport between AppKit and a wallet. It opens the pairing flow, reports which wallets are paired, and routes signing requests through to the wallet.
+A connector is the transport between AppKit and a wallet. It opens the pairing flow, reports connected wallets, and routes signing requests to the wallet.
 
 A connector implements the `Connector` interface. Connector ids are unique — registering a second connector with the same id calls `destroy()` on the old one and replaces it.
 
@@ -49,11 +49,11 @@ interface Connector {
 }
 ```
 
-The bundled `createTonConnectConnector` covers most apps. It wraps `@tonconnect/ui`, restores prior sessions on first read, and resyncs to AppKit's default network whenever it changes.
+The bundled `createTonConnectConnector` covers most apps. It wraps `@tonconnect/ui`, restores prior sessions when the connector is first read, and syncs TonConnect with AppKit's default network.
 
 ## Adding a connector
 
-Both paths accept the same input — a `Connector` instance or a factory `(ctx) => Connector` — and route through the same internal `addConnector` method, so the choice is purely about when registration happens.
+Both paths accept the same input: a `Connector` instance or a factory `(ctx) => Connector`. Both use the same internal registration flow, so choose the path based on when the connector configuration is available.
 
 ### At construction
 
@@ -73,7 +73,7 @@ const appKit = new AppKit({
 
 ### After construction
 
-The `addConnector` action registers a connector against an existing `AppKit` instance and returns an unregister function. Use this when the connector depends on values that aren't ready at construction (e.g. a user-scoped manifest URL) or when the app dynamically swaps connectors.
+The `addConnector` action registers a connector on an existing `AppKit` instance and returns an unregister function. Use it when the connector depends on values that are not available at construction time, such as a user-scoped manifest URL, or when the app needs to replace connectors dynamically.
 
 ```ts
 import { addConnector, createTonConnectConnector } from '@ton/appkit';
@@ -125,16 +125,16 @@ function ConnectButton() {
 }
 ```
 
-Mutation hooks return TanStack Query's `{ mutate, mutateAsync, isPending, error }`. Async data hooks such as `useBalance` return TanStack Query results. Wallet and connector state hooks read AppKit's local store directly: `useSelectedWallet()` returns `[wallet, setWalletId]`, `useConnectedWallets()` returns `WalletInterface[]`, `useConnectors()` returns `Connector[]`, and `useConnectorById(id)` returns `Connector | undefined`. Watch hooks such as `useWatchBalance` return `void` and keep the matching query cache fresh while mounted.
+Mutation hooks return TanStack Query's `{ mutate, mutateAsync, isPending, error }`. Async data hooks such as `useBalance` return TanStack Query results. Wallet and connector state hooks read AppKit's local store directly: `useSelectedWallet()` returns `[wallet, setWalletId]`, `useConnectedWallets()` returns `WalletInterface[]`, `useConnectors()` returns `Connector[]`, and `useConnectorById(id)` returns `Connector | undefined`. Watch hooks such as `useWatchBalance` return `void` and keep the related query cache fresh while mounted.
 
-The full hook surface lives next to the source — see [`@ton/appkit-react/docs/hooks.md`](https://github.com/ton-connect/kit/tree/main/packages/appkit-react/docs) for every hook and example, and [`@ton/appkit/docs/actions.md`](https://github.com/ton-connect/kit/tree/main/packages/appkit/docs) for the underlying action each hook wraps.
+For the complete hook surface, see [`@ton/appkit-react/docs/hooks.md`](https://github.com/ton-connect/kit/tree/main/packages/appkit-react/docs). For the underlying core actions, see [`@ton/appkit/docs/actions.md`](https://github.com/ton-connect/kit/tree/main/packages/appkit/docs).
 
 ## Rules
 
 - Do not call mutations or signing actions while `getSelectedWallet` is `null`. The action will throw.
 - Do not assume every connector supports every flow. Catch rejections from the wallet and surface a recovery option.
-- Do not pin a stale `selectedWalletId` in app state. The value can be reset by the connector at any moment (disconnect, network change, restore).
-- In application code, use the public actions or React hooks instead of calling connector methods directly, so AppKit's event flow stays consistent. Connector methods are still the public surface for custom connector implementations.
+- Do not store `selectedWalletId` as long-lived application state. The selected wallet can change after disconnects, network changes, or session restores.
+- In application code, use public actions or React hooks instead of calling connector methods directly, so AppKit's event flow stays consistent. Connector methods are still the public surface for custom connector implementations.
 
 ## Related pages
 

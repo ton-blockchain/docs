@@ -4,7 +4,7 @@ sidebarTitle: "Providers"
 icon: plug
 ---
 
-Providers connect AppKit to external data and DeFi services. Four kinds matter: the **API client** that reads chain state, the **streaming provider** that pushes live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds stake transactions. Each kind is owned by a matching manager on the `AppKit` instance.
+Providers connect AppKit to external data sources and DeFi services. AppKit uses four provider-related components: the **API client** that reads chain state, the **streaming provider** that delivers live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds staking transactions. Each component is managed by the matching manager on the `AppKit` instance.
 
 | Type               | Use                                                                  | Manager                       |
 | ------------------ | -------------------------------------------------------------------- | ----------------------------- |
@@ -14,20 +14,20 @@ Providers connect AppKit to external data and DeFi services. Four kinds matter: 
 | Staking provider   | Returns staking quotes, balance, and builds stake transactions.      | `AppKit.stakingManager`       |
 
 <Note>
-Today only swap and staking are routed through `registerProvider`. Streaming providers are registered separately via `appKit.streamingManager.registerProvider(...)`, and API clients aren't providers in the type system at all — they're configured per-network through `networks[chainId].apiClient`. The team plans to unify these under the provider abstraction; until then, treat the four rows above as different registration paths, not as one uniform interface.
+Only swap and staking providers are registered through `registerProvider`. Streaming providers are registered with `appKit.streamingManager.registerProvider(...)`, and API clients are configured per network through `networks[chainId].apiClient`.
 </Note>
 
 ## Swaps
 
-A swap provider integrates one DEX or aggregator. It returns a **quote** — the current offer for a route (input asset, output asset, amount, fees, execution assumptions) — and on accept builds a `TransactionRequest` for the selected wallet. AppKit does not price markets itself; the `SwapManager` coordinates the registered providers. Bundled options are Omniston and DeDust. See [Swaps](/ecosystem/appkit/concepts/swaps) for the full quote-then-build flow.
+A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Swaps](/ecosystem/appkit/concepts/swaps) for the full quote-then-build flow.
 
 ## Staking
 
-A staking provider quotes a stake or unstake intent for a specific pool or protocol, then builds the matching `TransactionRequest`. Liquid-staking positions may surface back to the wallet as a derivative balance (e.g. tsTON); AppKit exposes pool metadata and APY as **display data** the provider supplies, not a promise of future yield or redemption timing. Unstake mechanics — instant, delayed, round-end — are provider-specific. The bundled provider is Tonstakers. See [Staking](/ecosystem/appkit/concepts/staking) for the full flow.
+A staking provider quotes a stake or unstake intent for a specific pool or protocol, then builds the matching `TransactionRequest`. Liquid-staking positions may appear in the wallet as derivative balances, such as tsTON. AppKit exposes pool metadata and APY as provider-supplied **display data**, not as a guarantee of future yield or redemption timing. Unstake mechanics, including instant, delayed, and round-end exits, are provider-specific. The bundled staking provider is Tonstakers. See [Staking](/ecosystem/appkit/concepts/staking) for the full flow.
 
 ## How they are registered
 
-There are three registration paths. **API clients** are bound to a network through the `networks` field of `AppKitConfig`. **Streaming providers** are also network-specific, but you register them directly on `appKit.streamingManager`. **Swap** and **staking** providers are generic: pass them to `providers` at construction or register them later with `registerProvider`. Each DeFi provider declares its `type` so AppKit can route it to the correct manager.
+Provider setup uses three registration paths. **API clients** are bound to a network through the `networks` field of `AppKitConfig`. **Streaming providers** are also network-specific and are registered directly on `appKit.streamingManager`. **Swap** and **staking** providers are network-aware DeFi providers: pass them in `providers` at construction or register them later with `registerProvider`. Each DeFi provider declares its `type` so AppKit can route it to the correct manager.
 
 ```ts
 import { AppKit, Network, registerProvider } from '@ton/appkit';
@@ -49,11 +49,11 @@ const appKit = new AppKit({
 registerProvider(appKit, createTonstakersProvider());
 ```
 
-AppKit configures TonCenter API clients by default when a network entry does not provide a custom client. TonApi and TonCenter streaming providers are available through WalletKit and can be registered on `appKit.streamingManager`. Omniston and DeDust are available as swap providers, and Tonstakers is available as a staking provider. Custom DeFi backends can be registered through the same `registerProvider` path by implementing the swap or staking interface.
+When a network entry does not provide a custom API client, AppKit creates a TonCenter client for that network. TonAPI and TonCenter streaming providers are available through WalletKit and can be registered on `appKit.streamingManager`. Omniston and DeDust are available as swap providers, and Tonstakers is available as a staking provider. Custom DeFi backends can use the same `registerProvider` path by implementing the swap or staking interface.
 
 ## Two-step transactions
 
-Swap and staking actions follow a quote-then-build pattern. `getSwapQuote` and `getStakingQuote` return external offers — fees, settlement amounts, routing data — and `buildSwapTransaction` / `buildStakeTransaction` turn an accepted quote into a `TransactionRequest`. Building the request does not broadcast it; the request still has to flow through `sendTransaction` and the connected wallet.
+Swap and staking actions follow a quote-then-build pattern. `getSwapQuote` and `getStakingQuote` return provider offers, including fees, settlement amounts, and routing data. `buildSwapTransaction` and `buildStakeTransaction` turn an accepted quote into a `TransactionRequest`. Building the request does not broadcast it; the request still has to be submitted with `sendTransaction` and approved in the connected wallet.
 
 ```ts
 import { AppKit, getSwapQuote, buildSwapTransaction, sendTransaction } from '@ton/appkit';
@@ -71,16 +71,16 @@ const request = await buildSwapTransaction(appKit, {
 await sendTransaction(appKit, request);
 ```
 
-This separation matters because quotes go stale. The settlement amount the user saw when the quote was fetched is not guaranteed when the transaction lands on chain — refetch the quote before building, and check the response again before crediting product state.
+This separation matters because quotes can expire. The settlement amount shown when the quote is fetched is not guaranteed when the transaction lands on chain. Refetch the quote before building the transaction, and verify the on-chain result before updating product state.
 
 ## Custom providers
 
-Apps that integrate their own DEX or staking backend implement a small interface. The shape is the same as the bundled providers and gets registered through `registerProvider`. Provider ids are singletons; registering a second provider with the same `providerId` replaces the previous one.
+Apps that integrate their own DEX or staking backend implement the same provider interface as the bundled providers, then register the provider with `registerProvider`. Provider ids are singletons; registering another provider with the same `providerId` replaces the previous entry.
 
 ## Rules
 
-- Provider responses are external data. Validate critical outcomes (settlement amounts, addresses, signatures) before changing product state.
-- Quotes go stale. Build the transaction soon after fetching the quote, or refetch before showing the user a final price.
+- Provider responses are external data. Validate critical outcomes, including settlement amounts, addresses, and signatures, before changing product state.
+- Quotes can expire. Build the transaction soon after fetching the quote, or refetch before showing the user a final price.
 - Do not assume a provider is registered. Call `getStakingProviders(appKit)` or `hasStreamingProvider(appKit, network)` and degrade gracefully when the list is empty or the provider is absent.
 - Treat provider ids as singletons. Registering a second provider with the same id replaces the previous one.
 

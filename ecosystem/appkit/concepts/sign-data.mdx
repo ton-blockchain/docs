@@ -4,13 +4,13 @@ sidebarTitle: "Sign data"
 icon: signature
 ---
 
-Sign Data lets a wallet attest to arbitrary application data without sending a transaction. Typical uses are user-facing attestations (terms acknowledgments, off-chain receipts) and signatures that a TON smart contract or your backend will later verify. For wallet-ownership sign-in, use `ton_proof` instead — that is a separate flow handled at connection time.
+Sign Data lets a wallet attest to application data without sending a transaction. Typical use cases include user-facing acknowledgments, off-chain receipts, and signatures that a backend or TON smart contract verifies later. For wallet-ownership sign-in, use `ton_proof` instead; it is a separate flow handled during connection.
 
-The wallet returns an Ed25519 signature, the signing address, the timestamp it used, and the dApp domain it observed. Verifying that response is the consumer's responsibility.
+The wallet returns an Ed25519 signature, the signing address, the wallet-supplied timestamp, and the dApp domain observed by the wallet. Your verifier is responsible for validating the response.
 
 ## Payload kinds
 
-AppKit exposes three payload kinds through three matching mutations and three matching React hooks. Pick the kind that matches what the verifier expects:
+AppKit supports three payload kinds, with matching actions and React hooks. Choose the kind your verifier expects:
 
 | Kind     | Action       | Use                                                                              |
 | -------- | ------------ | -------------------------------------------------------------------------------- |
@@ -30,13 +30,13 @@ interface SignDataResponse {
 }
 ```
 
-Each sign action below takes an optional `network` to pin the signing network and throws when no wallet is selected.
+Each signing action accepts an optional `network` and throws when no wallet is selected.
 
 ## Sign text
 
-`signText` signs a UTF-8 string. The wallet receives the literal text and displays it to the user verbatim before asking them to confirm — per the TonConnect spec, this is the format to use whenever the data is human-readable text.
+`signText` signs a UTF-8 string. The wallet receives the literal text and can display it to the user before asking for confirmation. Use this format when the payload is intended to be human-readable.
 
-Use it for user-facing attestations the user is meant to read on the wallet screen: terms-of-service acknowledgments, off-chain receipts, agreements you record server-side. **Do not** use it for wallet-ownership sign-in — that is `ton_proof`. Avoid embedding secrets or anything you do not want a user to see — the text is visible.
+Use it for attestations the user should read in the wallet, such as terms acknowledgments, off-chain receipts, or agreements recorded server-side. **Do not** use it for wallet-ownership sign-in; that is what `ton_proof` is for. Do not include secrets or hidden data in text payloads, because the text is visible to the user.
 
 ```ts
 import { signText } from '@ton/appkit';
@@ -48,9 +48,9 @@ const response = await signText(appKit, {
 
 ## Sign binary
 
-`signBinary` signs an opaque blob, passed as a base64 string. The wallet does not parse the bytes — most wallets render a hash for the user to confirm — so the user cannot meaningfully read what they are signing.
+`signBinary` signs an opaque blob passed as a base64 string. The wallet does not parse the bytes, and most wallets render a hash for the user to confirm. Use this only when the user does not need to read the payload itself.
 
-Reach for it when neither text nor cell fits: compact binary protocols, hash chains, or signing the digest of a larger off-chain document. Also a safe choice when you need byte-for-byte stability and worry that a text encoding step might mutate the payload before signing.
+Use binary payloads for compact binary protocols, hash chains, or signing the digest of a larger off-chain document. Binary signing is also useful when the payload must remain byte-for-byte stable and a text encoding step could change it.
 
 ```ts
 import { signBinary } from '@ton/appkit';
@@ -62,9 +62,9 @@ const response = await signBinary(appKit, {
 
 ## Sign cell
 
-`signCell` signs a TON cell encoded as a Bag-of-Cells (BoC) plus a TL-B schema describing the cell layout. The wallet uses the schema to parse the cell, render the fields to the user, and compute the canonical signing input. The verifier — your backend or a smart contract — uses the same schema to reconstruct that input.
+`signCell` signs a TON cell encoded as a Bag-of-Cells (BoC), together with a TL-B schema describing the cell layout. The wallet uses the schema to parse the cell, render fields to the user, and compute the canonical signing input. The verifier, whether backend or smart contract, uses the same schema to reconstruct that input.
 
-The spec calls for cell in two cases: when the data is destined for the TON blockchain (i.e., a contract will verify the signature), and when the data is structured but not plain text and should still be rendered to the user. Cell is the only kind a TON contract can verify on-chain. The schema is load-bearing in both cases: the wallet relies on it to display fields, and the verifier relies on it to reconstruct the signed input — a layout mismatch means the signature will not check out even if the data is equivalent.
+Use cell payloads when a TON contract will verify the signature, or when the data is structured, not plain text, and should still be displayed in a meaningful form. Cell is the only payload kind designed for on-chain verification. The schema is part of the signed-data contract: the wallet uses it for display, and the verifier uses it to reconstruct the signed input. If the layout does not match, verification fails even when the underlying values are equivalent.
 
 ```ts
 import { signCell } from '@ton/appkit';
@@ -77,7 +77,7 @@ const response = await signCell(appKit, {
 
 ## Verify a response
 
-Verification is the verifier's job — your backend for off-chain flows, a TON contract for on-chain. The response has to be real, fresh, and meant for this dApp; each field below maps to one check the verifier should make.
+Verification belongs to the verifier: your backend for off-chain flows, or a TON contract for on-chain flows. The response must be authentic, fresh, and intended for your dApp. Each response field maps to a concrete check:
 
 | Field       | Check                                                                                          |
 | ----------- | ---------------------------------------------------------------------------------------------- |
@@ -88,12 +88,12 @@ Verification is the verifier's job — your backend for off-chain flows, a TON c
 | `payload`   | Match the request you issued. For text, compare strings. For binary, compare base64 verbatim.  |
 | Nonce       | Extract from `payload` and reject if your server has already accepted this nonce.              |
 
-Wallets do not enforce nonce uniqueness — that is squarely the verifier's job. Embed a nonce in the payload at request time, record it server-side, and reject on reuse.
+Wallets do not enforce nonce uniqueness. Include a nonce in the payload, record it server-side, and reject any reuse.
 
 ## Rules
 
 - Include a domain identifier in the signed payload when your verifier expects one, and always include a nonce. AppKit does not add these application-level fields for you.
-- Verify the response server-side. Browser-side verification is fine for UX, but settlement must rely on the backend.
+- Verify the response server-side for off-chain flows. Browser-side verification can improve UX, but it should not be the authority for authentication or product state.
 - Match `payload` byte-for-byte. Reformatted payloads will fail verification even if the content is equivalent.
 - Use `signCell` when a TON contract verifies the signature. Use `signText` for human-readable assertions. Use `signBinary` only when neither fits.
 
