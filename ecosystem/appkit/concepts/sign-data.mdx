@@ -4,7 +4,9 @@ sidebarTitle: "Sign data"
 icon: signature
 ---
 
-Sign Data lets a wallet attest to arbitrary data without sending a transaction. Use it for sign-in, attestation, and on-chain signatures that a smart contract can verify. The wallet returns an Ed25519 signature, the signing address, the timestamp it used, and the dApp domain it observed. Verifying that response is the consumer's responsibility.
+Sign Data lets a wallet attest to arbitrary application data without sending a transaction. Typical uses are user-facing attestations (terms acknowledgments, off-chain receipts) and signatures that a TON smart contract or your backend will later verify. For wallet-ownership sign-in, use `ton_proof` instead — that is a separate flow handled at connection time.
+
+The wallet returns an Ed25519 signature, the signing address, the timestamp it used, and the dApp domain it observed. Verifying that response is the consumer's responsibility.
 
 ## Payload kinds
 
@@ -28,28 +30,54 @@ interface SignDataResponse {
 }
 ```
 
-## Choosing a kind
+Each sign action below takes an optional `network` to pin the signing network and throws when no wallet is selected.
 
-`signText` is for human-readable assertions — the wallet typically displays the text in plain form, so avoid embedding secrets or anything you do not want a user to read. `signBinary` is for arbitrary bytes the wallet should not interpret; wallets typically render a hash, so do not assume the user can read what they are signing. `signCell` is the only kind suitable for on-chain verification by a contract — schemas are how the wallet, the verifier, and the contract agree on layout.
+## Sign text
+
+`signText` signs a UTF-8 string. The wallet receives the literal text and displays it to the user verbatim before asking them to confirm — per the TonConnect spec, this is the format to use whenever the data is human-readable text.
+
+Use it for user-facing attestations the user is meant to read on the wallet screen: terms-of-service acknowledgments, off-chain receipts, agreements you record server-side. **Do not** use it for wallet-ownership sign-in — that is `ton_proof`. Avoid embedding secrets or anything you do not want a user to see — the text is visible.
 
 ```ts
-import { signText, signBinary, signCell } from '@ton/appkit';
+import { signText } from '@ton/appkit';
 
-await signText(appKit, { text: 'Sign in to example.com' });
+const response = await signText(appKit, {
+  text: 'Sign in to example.com\nnonce=2c8e9...',
+});
+```
 
-await signBinary(appKit, { bytes: 'iJM7Wb...=' /* base64 */ });
+## Sign binary
 
-await signCell(appKit, {
-  cell: 'te6cck...=',                  // base64-encoded BoC
+`signBinary` signs an opaque blob, passed as a base64 string. The wallet does not parse the bytes — most wallets render a hash for the user to confirm — so the user cannot meaningfully read what they are signing.
+
+Reach for it when neither text nor cell fits: compact binary protocols, hash chains, or signing the digest of a larger off-chain document. Also a safe choice when you need byte-for-byte stability and worry that a text encoding step might mutate the payload before signing.
+
+```ts
+import { signBinary } from '@ton/appkit';
+
+const response = await signBinary(appKit, {
+  bytes: 'iJM7Wb...=', // base64 of the bytes you want signed
+});
+```
+
+## Sign cell
+
+`signCell` signs a TON cell encoded as a Bag-of-Cells (BoC) plus a TL-B schema describing the cell layout. The wallet uses the schema to parse the cell, render the fields to the user, and compute the canonical signing input. The verifier — your backend or a smart contract — uses the same schema to reconstruct that input.
+
+The spec calls for cell in two cases: when the data is destined for the TON blockchain (i.e., a contract will verify the signature), and when the data is structured but not plain text and should still be rendered to the user. Cell is the only kind a TON contract can verify on-chain. The schema is load-bearing in both cases: the wallet relies on it to display fields, and the verifier relies on it to reconstruct the signed input — a layout mismatch means the signature will not check out even if the data is equivalent.
+
+```ts
+import { signCell } from '@ton/appkit';
+
+const response = await signCell(appKit, {
+  cell: 'te6cck...=', // base64-encoded BoC
   schema: 'auth#_ nonce:uint64 ttl:uint32 = Auth;',
 });
 ```
 
-Each call accepts an optional `network` to pin the signing network. All three throw when no wallet is selected.
-
 ## Verify a response
 
-The wallet returns a signature. The consumer (your backend, or another contract) must check that the response is fresh and intended for them.
+Verification is the verifier's job — your backend for off-chain flows, a TON contract for on-chain. The response has to be real, fresh, and meant for this dApp; each field below maps to one check the verifier should make.
 
 | Field       | Check                                                                                          |
 | ----------- | ---------------------------------------------------------------------------------------------- |
