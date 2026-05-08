@@ -16,7 +16,8 @@ Jetton balances and amounts are strings in human-readable units. Conversion to n
 import { getJettons, getJettonInfo, getJettonBalance } from '@ton/appkit';
 
 const owned = await getJettons(appKit);
-// owned.jettons = [{ address, symbol, name, decimalsNumber, balance, image, ... }]
+// owned.jettons = [{ address, walletAddress, balance, decimalsNumber, info, isVerified, prices, ... }]
+// owned.jettons[0].info = { name, symbol, image, description, ... }
 
 const info = await getJettonInfo(appKit, { address: 'EQ-USDT-MASTER' });
 // info.symbol === 'USDT', info.decimals === 6
@@ -32,7 +33,7 @@ const balance = await getJettonBalance(appKit, {
 
 ## Build and send a transfer
 
-`createTransferJettonTransaction` resolves the owner's jetton wallet, builds the internal transfer payload, and wraps it in a `TransactionRequest` with a default gas allowance. The recipient is always the **owner address**, not their jetton wallet — AppKit derives the recipient's jetton wallet for you.
+`createTransferJettonTransaction` resolves the selected wallet's jetton wallet contract, builds the internal transfer payload, and wraps it in a `TransactionRequest` with a default gas allowance. The recipient is always the destination **owner address**, not their jetton wallet.
 
 ```ts
 import { createTransferJettonTransaction, sendTransaction } from '@ton/appkit';
@@ -55,11 +56,11 @@ const response = await sendTransaction(appKit, request);
 | `jettonDecimals`     | Yes      | Decimal precision of the jetton. Read from `getJettonInfo` if unknown. |
 | `comment`            | No       | Optional comment payload attached to the transfer.                     |
 
-`createTransferJettonTransaction` is async because it queries the chain to derive the jetton wallet address, and throws when no wallet is selected. The `transferJetton` shorthand chains build and send for the common case.
+`createTransferJettonTransaction` is async because it queries the chain to derive the sender's jetton wallet address, and throws when no wallet is selected. The `transferJetton` shorthand chains build and send for the common case.
 
 ## Track settlement
 
-Jetton transfers settle through the same trace API as TON transfers — a `getTransactionStatus` call on the returned `boc`. A jetton transfer typically produces multiple internal messages. Use `completedMessages` and `totalMessages` from the status to gauge progress; only treat `status === 'completed'` as final.
+Jetton transfers settle through the same trace API as TON transfers — a `getTransactionStatus` call on the returned `boc`. A jetton transfer typically produces multiple internal messages. Use `onchainMessages`, `pendingMessages`, and `totalMessages` from the status to gauge progress; only treat `status === 'completed'` as final.
 
 ```ts
 import { getTransactionStatus } from '@ton/appkit';
@@ -67,13 +68,14 @@ import { getTransactionStatus } from '@ton/appkit';
 const status = await getTransactionStatus(appKit, { boc: response.boc });
 ```
 
-A common gotcha: if the recipient has never held the jetton, the transfer still succeeds but deploys their jetton wallet, which costs extra gas. The default allowance covers it; if a complex collection contract is involved, override `amount` on the underlying `TransactionRequest`.
+A common gotcha: if the recipient has never held the jetton, the transfer still succeeds but deploys their jetton wallet, which costs extra gas. The default allowance covers it; if a complex token contract needs more gas, adjust the outer TON message amount on the built request, for example `request.messages[0].amount`.
 
 ## Rules
 
-- Always pass the **owner address** as `recipientAddress`. AppKit derives the recipient's jetton wallet for you.
+- Always pass the destination **owner address** as `recipientAddress`. AppKit derives the sender's jetton wallet contract and puts the destination owner address into the jetton transfer payload.
 - Read decimals from chain metadata (`getJettonInfo`) before building a transfer. Hardcoded decimals drift across token deployments.
 - Treat the `boc` from `sendTransaction` as "user signed". Verify settlement with `getTransactionStatus` before crediting an order.
+- Refetch the user's jetton list and balances after settlement; the cached list will not catch up on its own.
 - Do not display jetton metadata without sanitizing — names and images are user-supplied.
 
 ## Related pages

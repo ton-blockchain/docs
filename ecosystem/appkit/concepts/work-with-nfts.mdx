@@ -10,22 +10,26 @@ NFTs on TON are individual contracts, optionally grouped into a collection. AppK
 
 ```ts
 interface NFT {
-  address: string;
-  index: bigint;
-  collection?: { address: string; name?: string; symbol?: string; image?: string };
-  owner?: Address;
-  metadata?: {
+  address: UserFriendlyAddress;
+  index?: string;
+  info?: {
     name?: string;
     description?: string;
-    image?: string;
-    contentUrl?: string;
-    attributes?: Array<{ trait_type: string; value: string }>;
-    externalUrl?: string;
+    image?: TokenImage;
+    animation?: TokenAnimation;
+    symbol?: string;
   };
+  attributes?: Array<{ traitType?: string; displayType?: string; value?: string }>;
+  collection?: NFTCollection;
+  ownerAddress?: UserFriendlyAddress;
+  realOwnerAddress?: UserFriendlyAddress;
+  isOnSale?: boolean;
+  isSoulbound?: boolean;
+  extra?: Record<string, unknown>;
 }
 ```
 
-Item metadata is off-chain and untrusted. The contract address and `index` are the authoritative routing keys.
+Item display data is off-chain and untrusted. The contract address is the authoritative routing key; use `index` when it is present for collection-relative display or analytics.
 
 ## Read NFTs
 
@@ -35,7 +39,7 @@ Item metadata is off-chain and untrusted. The contract address and `index` are t
 import { getNfts, getNft } from '@ton/appkit';
 
 const owned = await getNfts(appKit);
-// owned.nfts = [{ address, index, collection, owner, metadata }]
+// owned.nfts = [{ address, index, info, attributes, collection, ownerAddress, realOwnerAddress, ... }]
 
 const one = await getNft(appKit, { address: 'EQ-NFT-CONTRACT' });
 ```
@@ -64,9 +68,9 @@ const response = await sendTransaction(appKit, request);
 | `amount`            | No       | Gas budget in TON. Defaults to a safe gas allowance.          |
 | `comment`           | No       | Optional comment payload attached to the transfer.            |
 
-`createTransferNftTransaction` is async because it composes the transfer body off the NFT contract, and throws when no wallet is selected. The `transferNft` shorthand chains build and send for the common case.
+`createTransferNftTransaction` builds the NFT transfer body locally, returns a promise, and throws when no wallet is selected. The `transferNft` shorthand chains build and send for the common case.
 
-A frequent failure mode is **stale ownership**: the NFT was sold between the read and the transfer attempt. Read `owner` again right before opening the wallet so the user signs an attempt that is at least plausibly current.
+A frequent failure mode is **stale ownership**: the NFT was sold between the read and the transfer attempt. Read `ownerAddress` again right before opening the wallet so the user signs an attempt that is at least plausibly current. If `isOnSale` is true, also check `realOwnerAddress`.
 
 ## Track settlement
 
@@ -77,16 +81,17 @@ import { getTransactionStatus } from '@ton/appkit';
 
 const status = await getTransactionStatus(appKit, { boc: response.boc });
 if (status.status === 'completed') {
-  // Refetch the owner record.
+  // Refetch ownerAddress and realOwnerAddress.
 }
 ```
 
 ## Rules
 
-- Verify the current `owner` before allowing a user-initiated transfer. NFTs change hands fast.
-- Treat metadata as untrusted. Sanitize names and images and keep on-chain addresses authoritative for routing.
+- Verify the current `ownerAddress` before allowing a user-initiated transfer. NFTs change hands fast.
+- Display **verified** fields first — contract address, owner address, real owner address, collection address — and treat off-chain display data (`info`, `attributes`, `extra`) as **display data only**. Sanitize names and images, and never route on display metadata.
 - Use `getTransactionStatus` to confirm settlement before updating the gallery in app state. The wallet response only proves the user signed.
-- Do not concatenate NFT addresses for analytics keys. Use the contract address verbatim and the index as a numeric.
+- Refetch the gallery after settlement so the new owner fields replace the stale ones.
+- Do not concatenate NFT addresses for analytics keys. Use the contract address verbatim and `index` as a string when present.
 
 ## Related pages
 

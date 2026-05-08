@@ -76,12 +76,13 @@ if (status.status === 'completed') {
 }
 ```
 
-`status` is `'pending' | 'completed' | 'failed'`. Pass either `boc` (recommended — the action computes the normalized hash) or `normalizedHash` directly.
+`status` is `'unknown' | 'pending' | 'completed' | 'failed'`. The response also includes `totalMessages`, `pendingMessages`, and `onchainMessages` for trace progress. Pass either `boc` (recommended — the action computes the normalized hash) or `normalizedHash` directly.
 
 ## Rules
 
-- Validate the recipient address and amount before calling any mutation. Wallets should not be the input validator of last resort.
+- Validate the recipient address, amount, and expected network before calling any mutation. Wallets should not be the input validator of last resort.
 - Treat `sendTransaction` returning a `boc` as "user signed", not "settled". Wait for `getTransactionStatus` to return `completed` before delivering value.
+- Refetch wallet balances and any cached lists after settlement. The wallet response is not the trigger for product state — the trace status is.
 - Do not derive product success from the wallet response shape. Verify on the chain.
 - Keep amounts as strings until you display them. Floating-point math loses precision at TON's nine decimal places.
 

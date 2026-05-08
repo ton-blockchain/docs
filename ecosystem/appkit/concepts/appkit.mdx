@@ -17,23 +17,25 @@ A single `AppKit` instance holds four kinds of state: the configured **networks*
 `AppKit` is constructed once with an `AppKitConfig`. All fields are optional — pass only what your app needs.
 
 ```ts
-import { AppKit, Network } from '@ton/appkit';
-import { createTonConnectConnector } from '@ton/appkit/tonconnect';
+import { AppKit, Network, createTonConnectConnector, setDefaultNetwork } from '@ton/appkit';
 
 const appKit = new AppKit({
   networks: {
-    [Network.mainnet().chainId]: { url: 'https://toncenter.com/api/v2/jsonRPC' },
+    [Network.mainnet().chainId]: {
+      apiClient: { url: 'https://toncenter.com', key: 'your-api-key' },
+    },
   },
-  defaultNetwork: Network.mainnet(),
   connectors: [
     createTonConnectConnector({
       tonConnectOptions: { manifestUrl: 'https://example.com/tonconnect-manifest.json' },
     }),
   ],
 });
+
+setDefaultNetwork(appKit, { network: Network.mainnet() });
 ```
 
-`defaultNetwork` is the network connectors enforce when connecting a new wallet. Leave it `undefined` to allow any network. `ssr: true` enables a server-side-safe construction path for Next.js and similar frameworks.
+`setDefaultNetwork` sets the network connectors enforce when connecting a new wallet. Pass `undefined` to allow any network. `ssr: true` in `AppKitConfig` enables a server-side-safe construction path for Next.js and similar frameworks.
 
 ## Lifecycle
 
@@ -58,7 +60,7 @@ There are three shapes. **Queries** read state synchronously or with a one-shot 
 
 ## React integration
 
-`@ton/appkit-react` wraps every action and watcher in a hook. Mount once with `AppKitProvider`, then call hooks anywhere below.
+`@ton/appkit-react` wraps the main AppKit actions and watchers in hooks. Mount once with `AppKitProvider`, then call hooks anywhere below.
 
 ```tsx
 import { AppKitProvider } from '@ton/appkit-react';
@@ -73,7 +75,7 @@ function App() {
 }
 ```
 
-Hooks come in three matching shapes. Query hooks return TanStack Query's `{ data, isLoading, error, refetch }`. Watch hooks return `void` and keep the matching query cache fresh while mounted. Mutation hooks return TanStack Query's `{ mutate, mutateAsync, isPending, error }`.
+Most async data hooks return TanStack Query's `{ data, isLoading, error, refetch }`, and mutation hooks return `{ mutate, mutateAsync, isPending, error }`. Watch hooks such as `useWatchBalance` return `void` and keep the matching query cache fresh while mounted. Wallet state hooks that read AppKit's local store return direct values instead: for example, `useSelectedWallet()` returns `[wallet, setWalletId]`, while `useConnectedWallets()` and `useConnectors()` return arrays.
 
 ## Rules
 

@@ -27,25 +27,29 @@ A staking provider quotes a stake or unstake intent for a specific pool or proto
 
 ## How they are registered
 
-There are two registration paths. **API clients** and **streaming providers** are bound to a network: configure them through the `networks` field of `AppKitConfig`, and AppKit constructs the matching streaming provider automatically. **Swap** and **staking** providers are generic: pass them to `providers` at construction or register them later with `registerProvider`. Each provider declares its `type` so AppKit can route it to the correct manager.
+There are three registration paths. **API clients** are bound to a network through the `networks` field of `AppKitConfig`. **Streaming providers** are also network-specific, but you register them directly on `appKit.streamingManager`. **Swap** and **staking** providers are generic: pass them to `providers` at construction or register them later with `registerProvider`. Each DeFi provider declares its `type` so AppKit can route it to the correct manager.
 
 ```ts
 import { AppKit, Network, registerProvider } from '@ton/appkit';
-import { createOmistonSwapProvider } from '@ton/appkit/swap/omniston';
+import { OmnistonSwapProvider } from '@ton/appkit/swap/omniston';
 import { createTonstakersProvider } from '@ton/appkit/staking/tonstakers';
 
 const appKit = new AppKit({
   networks: {
-    [Network.mainnet().chainId]: { url: 'https://toncenter.com/api/v2/jsonRPC' },
-    [Network.testnet().chainId]: { url: 'https://testnet.toncenter.com/api/v2/jsonRPC' },
+    [Network.mainnet().chainId]: {
+      apiClient: { url: 'https://toncenter.com', key: 'your-mainnet-api-key' },
+    },
+    [Network.testnet().chainId]: {
+      apiClient: { url: 'https://testnet.toncenter.com', key: 'your-testnet-api-key' },
+    },
   },
-  providers: [createOmistonSwapProvider()],
+  providers: [new OmnistonSwapProvider()],
 });
 
 registerProvider(appKit, createTonstakersProvider());
 ```
 
-AppKit ships with TonCenter and TonApi as the API clients and streaming providers, Omniston and DeDust as swap providers, and Tonstakers as a staking provider. Custom DeFi backends can be registered through the same `registerProvider` path by implementing the swap or staking interface.
+AppKit configures TonCenter API clients by default when a network entry does not provide a custom client. TonApi and TonCenter streaming providers are available through WalletKit and can be registered on `appKit.streamingManager`. Omniston and DeDust are available as swap providers, and Tonstakers is available as a staking provider. Custom DeFi backends can be registered through the same `registerProvider` path by implementing the swap or staking interface.
 
 ## Two-step transactions
 
@@ -55,9 +59,9 @@ Swap and staking actions follow a quote-then-build pattern. `getSwapQuote` and `
 import { AppKit, getSwapQuote, buildSwapTransaction, sendTransaction } from '@ton/appkit';
 
 const quote = await getSwapQuote(appKit, {
-  amount: '1.0',
-  from: 'EQ-TON-MASTER',
-  to: 'EQ-USDT-MASTER',
+  amount: '1000000000',
+  from: { address: 'EQ-USDT-MASTER', decimals: 6 },
+  to: { address: 'ton', decimals: 9 },
   network,
 });
 const request = await buildSwapTransaction(appKit, {
@@ -77,7 +81,7 @@ Apps that integrate their own DEX or staking backend implement a small interface
 
 - Provider responses are external data. Validate critical outcomes (settlement amounts, addresses, signatures) before changing product state.
 - Quotes go stale. Build the transaction soon after fetching the quote, or refetch before showing the user a final price.
-- Do not assume a provider is registered. Call `getStakingProviders` or `hasStreamingProvider` and degrade gracefully when the list is empty.
+- Do not assume a provider is registered. Call `getStakingProviders(appKit)` or `hasStreamingProvider(appKit, network)` and degrade gracefully when the list is empty or the provider is absent.
 - Treat provider ids as singletons. Registering a second provider with the same id replaces the previous one.
 
 ## Related pages

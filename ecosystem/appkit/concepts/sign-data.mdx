@@ -86,12 +86,13 @@ Verification is the verifier's job — your backend for off-chain flows, a TON c
 | `timestamp` | Within an acceptable window (e.g. ±5 minutes). Reject older or future-dated values.            |
 | `domain`    | Match the dApp domain you expect. Reject if missing or wrong.                                  |
 | `payload`   | Match the request you issued. For text, compare strings. For binary, compare base64 verbatim.  |
+| Nonce       | Extract from `payload` and reject if your server has already accepted this nonce.              |
 
-For replay protection, embed a nonce that you record server-side and reject on reuse. Wallets do not enforce nonce uniqueness — that is squarely the verifier's job.
+Wallets do not enforce nonce uniqueness — that is squarely the verifier's job. Embed a nonce in the payload at request time, record it server-side, and reject on reuse.
 
 ## Rules
 
-- Always include a domain identifier and a nonce in the signed payload. Wallets cannot infer either for you.
+- Include a domain identifier in the signed payload when your verifier expects one, and always include a nonce. AppKit does not add these application-level fields for you.
 - Verify the response server-side. Browser-side verification is fine for UX, but settlement must rely on the backend.
 - Match `payload` byte-for-byte. Reformatted payloads will fail verification even if the content is equivalent.
 - Use `signCell` when a TON contract verifies the signature. Use `signText` for human-readable assertions. Use `signBinary` only when neither fits.
