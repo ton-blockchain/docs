@@ -4,20 +4,38 @@ sidebarTitle: "Wallets and connectors"
 icon: wallet
 ---
 
-A **wallet** is the user's signing application. A **connector** is the transport AppKit uses to talk to that wallet. Connectors connect, disconnect, and report which wallets are paired. AppKit collects wallets across all connectors into a single connected list and tracks which one is **selected** — that is the wallet mutating actions and signing flows will use.
+## Wallet
 
-## Wallet state
+The user's signing application. It holds the keys and signs transactions and data when the user approves.
 
-| Term             | Meaning                                                                                          |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| Connected wallet | A wallet for which a connector has an active session. Multiple connected wallets are possible.   |
-| Selected wallet  | The wallet that mutating actions and signing flows use. AppKit auto-selects when the list changes. |
-| Connector        | A transport with an `id`, `type`, and methods to connect, disconnect, and report wallets.        |
-| Capability       | A request type a wallet supports (transfer, sign data). Not every wallet supports every flow.    |
+AppKit collects wallets across every connector into one list — multiple wallets at once is normal — and tracks which one is **selected**: the wallet mutations and signing flows will use.
 
-## Connectors
+Every wallet exposes the same minimum surface: a back-reference to the connector that produced it, four identity readers (`getAddress`, `getPublicKey`, `getNetwork`, `getWalletId`), and the two signing operations (`sendTransaction`, `signData`) that flow through to that connector.
 
-A connector implements the `Connector` interface. Apps register connectors when constructing `AppKit`, or later through `addConnector`. Connector ids are unique — adding a connector with an existing id replaces and destroys the previous one.
+```ts
+interface WalletInterface {
+  /** Connector that created this wallet */
+  readonly connectorId: string;
+
+  // Identity
+  getAddress(): UserFriendlyAddress;
+  getPublicKey(): Hex;
+  getNetwork(): Network;
+  getWalletId(): string;
+
+  // Actions requiring wallet signature
+  sendTransaction(request: TransactionRequest): Promise<SendTransactionResponse>;
+  signData(payload: SignDataRequest): Promise<SignDataResponse>;
+}
+```
+
+Wallet ids are derived from `(network, address)`. The same address on a different network produces a different wallet object — apps that move users between mainnet and testnet should not assume id stability across that boundary.
+
+## Connector
+
+The transport between AppKit and a wallet. It opens the pairing flow, reports which wallets are paired, and routes signing requests through to the wallet.
+
+A connector implements the `Connector` interface. Connector ids are unique — registering a second connector with the same id calls `destroy()` on the old one and replaces it.
 
 ```ts
 interface Connector {
@@ -33,6 +51,14 @@ interface Connector {
 
 The bundled `createTonConnectConnector` covers most apps. It wraps `@tonconnect/ui`, restores prior sessions on first read, and resyncs to AppKit's default network whenever it changes.
 
+## Adding a connector
+
+Both paths accept the same input — a `Connector` instance or a factory `(ctx) => Connector` — and route through the same internal `addConnector` method, so the choice is purely about when registration happens.
+
+### At construction
+
+Pass connectors in the `connectors` field of `AppKitConfig`. The constructor runs `addConnector` for each entry in order.
+
 ```ts
 import { AppKit } from '@ton/appkit';
 import { createTonConnectConnector } from '@ton/appkit/tonconnect';
@@ -46,31 +72,64 @@ const appKit = new AppKit({
 });
 ```
 
-## Lifecycle
+### After construction
 
-```text
-addConnector → connect → connector:connected → wallets:updated → wallets:selection-changed
-```
-
-`connect({ connectorId })` calls into the connector to open its flow. When the user pairs a wallet, the connector emits `connector:connected` with the new wallet list. AppKit aggregates wallets from every connector into a single list and emits `wallets:updated`. If the previously selected wallet is gone, AppKit auto-selects the first wallet and emits `wallets:selection-changed`. `disconnect` runs the same chain in reverse.
-
-## Wallet identity
-
-Each wallet exposes the same minimum surface — address, public key, network, and the two operations (`sendTransaction`, `signData`) that flow through to its connector.
+The `addConnector` action registers a connector against an existing `AppKit` instance and returns an unregister function. Use this when the connector depends on values that aren't ready at construction (e.g. a user-scoped manifest URL) or when the app dynamically swaps connectors.
 
 ```ts
-interface WalletInterface {
-  readonly connectorId: string;
-  getAddress(): UserFriendlyAddress;
-  getPublicKey(): Hex;
-  getNetwork(): Network;
-  getWalletId(): string;
-  sendTransaction(request: TransactionRequest): Promise<SendTransactionResponse>;
-  signData(payload: SignDataRequest): Promise<SignDataResponse>;
+import { addConnector } from '@ton/appkit';
+import { createTonConnectConnector } from '@ton/appkit/tonconnect';
+
+const unregister = addConnector(
+  appKit,
+  createTonConnectConnector({
+    tonConnectOptions: { manifestUrl: 'https://example.com/tonconnect-manifest.json' },
+  }),
+);
+
+// Later, to remove and destroy the connector:
+unregister();
+```
+
+## React hooks
+
+`@ton/appkit-react` exposes a hook for every action and watcher in `@ton/appkit`. For wallets and connectors that means `useConnect`, `useDisconnect`, `useConnectors`, `useConnectedWallets`, `useSelectedWallet`, and `useAddress`.
+
+A typical connect-or-disconnect button reads the selected wallet and routes to the matching mutation:
+
+```tsx
+import { useConnect, useDisconnect, useSelectedWallet } from '@ton/appkit-react';
+
+function ConnectButton() {
+  const [wallet] = useSelectedWallet();
+  const { mutate: connect, isPending: isConnecting, error } = useConnect();
+  const { mutate: disconnect, isPending: isDisconnecting } = useDisconnect();
+
+  if (wallet) {
+    return (
+      <button
+        onClick={() => disconnect({ connectorId: wallet.connectorId })}
+        disabled={isDisconnecting}
+      >
+        {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
+      </button>
+    );
+  }
+
+  return (
+    <>
+      <button onClick={() => connect({ connectorId: 'tonconnect' })} disabled={isConnecting}>
+        {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+      </button>
+      {error && <div>{error.message}</div>}
+    </>
+  );
 }
 ```
 
-Wallet ids are derived from `(network, address)`. The same address on a different network produces a different wallet object — apps that move users between mainnet and testnet should not assume id stability across that boundary.
+Mutation hooks return TanStack Query's `{ mutate, mutateAsync, isPending, error }`; query and watch hooks return `{ data, isLoading, error, refetch }` (watch hooks also keep the matching query cache fresh while mounted).
+
+The full hook surface lives next to the source — see [`@ton/appkit-react/docs/hooks.md`](https://github.com/ton-connect/kit/tree/main/packages/appkit-react/docs) for every hook and example, and [`@ton/appkit/docs/actions.md`](https://github.com/ton-connect/kit/tree/main/packages/appkit/docs) for the underlying action each hook wraps.
 
 ## Rules
 

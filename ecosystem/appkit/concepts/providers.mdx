@@ -13,6 +13,18 @@ Providers connect AppKit to external data and DeFi services. Four kinds matter: 
 | Swap provider      | Returns swap quotes and builds swap transactions.                    | `AppKit.swapManager`          |
 | Staking provider   | Returns staking quotes, balance, and builds stake transactions.      | `AppKit.stakingManager`       |
 
+<Note>
+Today only swap and staking are routed through `registerProvider`. Streaming providers are registered separately via `appKit.streamingManager.registerProvider(...)`, and API clients aren't providers in the type system at all — they're configured per-network through `networks[chainId].apiClient`. The team plans to unify these under the provider abstraction; until then, treat the four rows above as different registration paths, not as one uniform interface.
+</Note>
+
+## Swaps
+
+A swap provider integrates one DEX or aggregator. It returns a **quote** — the current offer for a route (input asset, output asset, amount, fees, execution assumptions) — and on accept builds a `TransactionRequest` for the selected wallet. AppKit does not price markets itself; the `SwapManager` coordinates the registered providers. Bundled options are Omniston and DeDust. See [Swaps](/ecosystem/appkit/concepts/swaps) for the full quote-then-build flow.
+
+## Staking
+
+A staking provider quotes a stake or unstake intent for a specific pool or protocol, then builds the matching `TransactionRequest`. Liquid-staking positions may surface back to the wallet as a derivative balance (e.g. tsTON); AppKit exposes pool metadata and APY as **display data** the provider supplies, not a promise of future yield or redemption timing. Unstake mechanics — instant, delayed, round-end — are provider-specific. The bundled provider is Tonstakers. See [Staking](/ecosystem/appkit/concepts/staking) for the full flow.
+
 ## How they are registered
 
 There are two registration paths. **API clients** and **streaming providers** are bound to a network: configure them through the `networks` field of `AppKitConfig`, and AppKit constructs the matching streaming provider automatically. **Swap** and **staking** providers are generic: pass them to `providers` at construction or register them later with `registerProvider`. Each provider declares its `type` so AppKit can route it to the correct manager.
