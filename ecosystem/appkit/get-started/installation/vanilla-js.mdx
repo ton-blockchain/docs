@@ -6,6 +6,8 @@ icon: js
 
 Install the packages required to use AppKit from a project that does not use React. This page only covers installation. Setup code lives on later pages.
 
+In vanilla mode you call core actions directly with the `AppKit` instance: `connect`, `disconnect`, `transferTon`, `sendTransaction`, the `watch*` subscribers, and the rest of the surface. There are no hooks, no `AppKitProvider`, and no `<TonConnectButton />`; instead you call `connector.connectWallet()` and `connector.disconnectWallet()` on the connector returned by `getConnectors`.
+
 ## Before you begin
 
 You need:
@@ -20,7 +22,7 @@ You need:
 npm i @ton/appkit @tonconnect/ui @ton/core buffer
 ```
 
-Use the package manager your project uses. The React package and `@tanstack/react-query` are not needed in this path.
+Use the package manager your project uses. The React package and `@tanstack/react-query` are not needed in this path: nothing here uses a React component cache, so the vanilla install is a strict subset of the React one.
 
 ## Packages
 

@@ -5,6 +5,8 @@ sidebarTitle: "Installation"
 
 Install AppKit packages into your project. This page covers package selection and bundler setup. Code samples that use AppKit live on later pages.
 
+Installation is a setup step, not a configuration step. After this page you have packages, types, and the default stylesheet on disk; you do not yet have an `AppKit` instance, a connector, or a registered streaming provider. Those are created later, in [Connectors](/ecosystem/appkit/get-started/connectors) and [Providers](/ecosystem/appkit/get-started/providers).
+
 ## Pick a path
 
 | Path                                                                  | Use when                                                              |
@@ -16,9 +18,13 @@ Both paths share the core `@ton/appkit` package. The React path adds `@ton/appki
 
 ## Browser polyfill
 
-AppKit itself does not import `Buffer` directly, but several of its dependencies expect a `Buffer` global in the browser. Pick one of the two approaches below.
+AppKit itself does not import `Buffer` directly, but its dependency chain — primarily `@ton/core` and `@ton/crypto` — expects a `Buffer` global in the browser. Modern bundlers (Vite, esbuild, Rollup, Parcel) do not provide one by default, so the polyfill is a one-time setup chore, not a runtime fix. Without it, the first call into `@ton/core` (typically address parsing) throws a `ReferenceError` before your app code runs.
+
+You have two ways to fix this. Pick one.
 
 ### Option 1: Manual polyfill (recommended)
+
+This option keeps your bundler configuration untouched, at the cost of controlling import order in the entry file.
 
 Create a `polyfills.ts` file and import it before anything else in your entry file. This keeps the bundler config untouched.
 
@@ -54,6 +60,8 @@ createRoot(document.getElementById('root')!).render(
 
 ### Option 2: Vite alias
 
+This option moves the work to the bundler at the cost of a config-file edit. Use it when the entry file's import order is out of your control (frameworks that own `main.tsx`, custom build pipelines).
+
 If you cannot run code before module evaluation, alias the polyfill at the bundler level instead.
 
 ```ts
@@ -69,11 +77,15 @@ export default defineConfig({
 
 For webpack and other bundlers, configure the equivalent alias and the `process` and `Buffer` globals.
 
+## Rule
+
+The polyfill must run before any AppKit import is evaluated. Failing this loads `@ton/core` against an undefined `Buffer` and breaks address parsing at module-evaluation time, before any of your code has a chance to handle the error.
+
 ## After installation
 
 Continue with one of the following:
 
-- [Connectors](/ecosystem/appkit/get-started/connectors) creates the `AppKit` instance and attaches a connector.
-- [Providers](/ecosystem/appkit/get-started/providers) wraps a React tree and adds DeFi providers.
+- [Connectors](/ecosystem/appkit/get-started/connectors) creates the `AppKit` instance and renders the connect button.
+- [Providers](/ecosystem/appkit/get-started/providers) plugs in API clients, streaming, swap, and staking providers.
 - [Basic getter hooks](/ecosystem/appkit/get-started/basic-getter-hooks) reads state from React.
 - [Sending transactions](/ecosystem/appkit/get-started/sending-transactions) requests wallet operations.
