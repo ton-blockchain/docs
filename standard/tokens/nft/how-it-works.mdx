@@ -1,6 +1,6 @@
 ---
 title: "NFT: How it works"
-sidebarTitle: "How it works"
+sidebarTitle: "How NFT works"
 ---
 
 import { Aside } from '/snippets/aside.jsx';
@@ -18,8 +18,8 @@ Standardized NFTs on TON are implemented using a set of smart contracts, includi
 The NFT standard provides only a general interaction scheme, leaving specific implementation details to developers.
 
 <Image
-  src="/resources/images/nft/collection_light.svg"
-  darkSrc="/resources/images/nft/collection_dark.svg"
+  src="/resources/images/nft/collection_light.png"
+  darkSrc="/resources/images/nft/collection_dark.png"
   alt="NFT collection"
 />
 
@@ -64,12 +64,12 @@ Transfer message body contains the following data:
 | `forward_payload`      | `Either Cell ^Cell` | optional data that should be forwarded to the new owner                  |
 
 ```tlb TL-B
-transfer#5fcc3d14 query_id:uint64 
-                  new_owner:MsgAddress 
-                  response_destination:MsgAddress 
-                  custom_payload:(Maybe ^Cell) 
-                  forward_amount:(VarUInteger 16) 
-                  forward_payload:(Either Cell ^Cell) 
+transfer#5fcc3d14 query_id:uint64
+                  new_owner:MsgAddress
+                  response_destination:MsgAddress
+                  custom_payload:(Maybe ^Cell)
+                  forward_amount:(VarUInteger 16)
+                  forward_payload:(Either Cell ^Cell)
                   = InternalMsgBody;
 ```
 
