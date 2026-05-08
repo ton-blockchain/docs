@@ -4,48 +4,29 @@ sidebarTitle: "Streaming"
 icon: tower-broadcast
 ---
 
-Streaming in AppKit is a per-network subscription layer that pushes balance, jetton, and transaction updates from a streaming provider to the application.
+Streaming in AppKit is a per-network subscription layer that turns provider events into live balance, jetton, and transaction updates for the app.
 
-## Model
+## Live Provider Signals
 
-| Object               | Description                                                 |
-| -------------------- | ----------------------------------------------------------- |
-| `StreamingManager`   | Routes watch calls to the provider registered for a network. |
-| `StreamingProvider`  | Transport-bound implementation. One per network.            |
-| `BalanceUpdate`      | Account balance change.                                     |
-| `JettonUpdate`       | Jetton balance change.                                      |
-| `TransactionsUpdate` | New transaction for an address.                             |
+Streaming complements point-in-time API reads. Instead of asking an API client for the latest state after every interaction, the app subscribes to changes for an address on a specific network.
 
-Bundled providers: `createTonCenterStreamingProvider` and `createTonApiStreamingProvider`. Both extend `WebsocketStreamingProvider`.
+The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain.
 
-## One provider per network
+## Subscription Lifetime
 
-Each streaming provider is bound to a `Network`. The manager keys providers by `chainId`. Registering a second provider for the same network replaces the first and disconnects the previous one.
+A subscription belongs to the consumer that created it. Balance, jetton, transaction, and combined watches all return an unsubscribe function, and that function is the app's handle for stopping updates when a component unmounts or a flow ends.
 
-## Subscriptions
+Connecting and disconnecting the streaming layer opens and closes provider transports without changing the subscription list. This lets an app pause network activity and resume with the same watches still registered.
 
-Subscriptions return an unsubscribe function. Store it and call it when the consumer no longer needs updates.
+## Connection State
 
-| Method                                     | Use                                                |
-| ------------------------------------------ | -------------------------------------------------- |
-| `watchBalance(network, address, onChange)` | Account balance changes.                           |
-| `watchTransactions(network, address, ...)` | New transactions for an address.                   |
-| `watchJettons(network, address, ...)`      | Jetton balance changes.                            |
-| `watch(network, address, types, onUpdate)` | Bulk subscribe to several types in one call.       |
+Connection state describes transport health, not chain finality. A websocket can disconnect and reconnect while the underlying account state continues to change.
 
-`connect()` and `disconnect()` open and close transport for all providers without dropping subscriptions. Use them to pause activity on hidden tabs.
-
-## Connection state
-
-`onConnectionChange(network, callback)` reports transport health for one network's provider. Subscriptions stay registered across reconnects.
-
-## Boundaries
-
-Streaming reflects the provider's view of the chain. Use it to refresh UI. Do not use it as a settlement source.
+After reconnect, updates may resume from the provider's current view of the chain. A flow that needs certainty should refresh from the configured API client before it changes product state.
 
 ## Rule
 
-Always store the unsubscribe function. Treat streaming updates as best-effort and reconcile with point-in-time queries when a flow needs certainty.
+Store every unsubscribe function. Treat streaming updates as best-effort UI refresh signals, then reconcile with a point-in-time read when correctness matters.
 
 ## Related pages
 

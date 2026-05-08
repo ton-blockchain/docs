@@ -4,62 +4,34 @@ sidebarTitle: "UI widgets"
 icon: window-maximize
 ---
 
-UI widgets are end-to-end React components in `@ton/appkit-react` that render a complete flow on top of an AppKit manager — wallet connect, send, swap, staking, and onramp — with optional render-prop customisation.
+UI widgets are React vertical flows in `@ton/appkit-react` that render AppKit-powered wallet, send, swap, staking, and onramp experiences.
 
-## Widget set
+## Widget Level
 
-| Widget                  | Flow                                       |
-| ----------------------- | ------------------------------------------ |
-| `TonConnectButton`      | Open the wallet connect dialog.            |
-| `Send`                  | Send a prepared transaction request.       |
-| `SendTonButton`         | Send Toncoin to an address.                |
-| `SendJettonButton`      | Send a jetton to an address.               |
-| `SwapWidget`            | Quote and execute a DEX swap.              |
-| `StakingWidget`         | Quote and execute a stake or unstake.      |
-| `OnrampWidget`          | Fiat-to-crypto onramp through a provider.  |
-| `CryptoOnrampWidget`    | Crypto-to-crypto onramp through a bridge.  |
-| `TonPayWidget`          | TON Pay-specific onramp UI.                |
+A default widget owns the whole visible flow: inputs, loading state, validation, wallet connection checks, and submit behavior. It is useful when the app wants a complete AppKit experience with the package stylesheet.
 
-Default styles are imported from `@ton/appkit-react/styles.css`.
+The render-prop form keeps the widget state machine while replacing the layout. It fits branded product surfaces where AppKit should still own quote loading, validation, and submit readiness, but the app owns the visual structure.
 
-## Provider, hooks, UI
+Hooks are the lowest level. They are appropriate when the flow no longer matches one widget, or when state must be shared across a larger page.
 
-Each widget is composed of three parts.
+## Provider, Hooks, And UI
 
-| Part                   | Role                                                            |
-| ---------------------- | --------------------------------------------------------------- |
-| `*WidgetProvider`      | Owns the widget's state machine and binds to the AppKit manager. |
-| `use*Context`          | Reads widget state for custom rendering.                        |
-| `*WidgetUI`            | Renders the default look.                                       |
+Most widgets are built from three layers: a widget provider, hooks that read the widget state, and a default UI component. Using those pieces directly lets a flow be split across the React tree without rewriting the underlying manager integration.
 
-Use these directly when a widget must be split across the React tree, for example a header amount input with a footer submit button.
+The widget does not replace the manager or provider. It is a React surface over the same AppKit instance, selected wallet, network, and registered providers used by non-React actions.
 
-## Render-prop customisation
+## Required Context
 
-Pass a child function to keep the widget's state and replace the layout. Each widget exposes typed render props (e.g. `SwapWidgetRenderProps`, `StakingWidgetRenderProps`).
+Widgets must render inside `AppKitProvider`. Feature widgets also need the relevant manager and providers to exist on the AppKit instance; a swap widget cannot quote without a swap provider, and a staking widget cannot build staking intent without a staking provider.
 
-```tsx
-<SwapWidget tokens={tokens} network={Network.mainnet()}>
-  {({ fromAmount, setFromAmount, toAmount, isQuoteLoading, sendSwapTransaction, canSubmit }) => (
-    <CustomLayout ... />
-  )}
-</SwapWidget>
-```
-
-## Required context
-
-Widgets must be rendered inside `AppKitProvider`. Most widgets require a `network` prop and the matching manager to be registered on the AppKit instance. A `SwapWidget` without a registered swap provider will not produce quotes.
-
-## Boundaries
-
-Widgets are vertical flows, not a design system. Custom layouts should use the render-prop form or the underlying hooks (`useSwapQuote`, `useStakingQuote`, `useOnrampQuote`, …), not theme overrides.
+Most transaction-producing widgets also need a network. The network keeps quotes, wallet requests, and provider reads scoped to the same chain context.
 
 ## Rule
 
-Pick the widget level by how much control you need. Use the default UI for prototyping. Use the render-prop form for branded UI. Use hooks directly when the flow does not match a single widget.
+Pick the widget level by control needs: default UI for complete flows, render props for custom layout, and hooks for fully custom product logic.
 
 ## Related pages
 
-- [Swaps](/ecosystem/appkit/concepts/swaps)
-- [Staking](/ecosystem/appkit/concepts/staking)
-- [OnRamp](/ecosystem/appkit/concepts/onramp)
+- [React integration](/ecosystem/appkit/concepts/react-integration)
+- [Swap tokens](/ecosystem/appkit/build/swap-tokens)
+- [Stake Toncoin](/ecosystem/appkit/build/stake-toncoin)

@@ -4,53 +4,35 @@ sidebarTitle: "Networks"
 icon: globe
 ---
 
-A network in AppKit is a chain identifier paired with the API client AppKit uses to read and submit data on that chain. AppKit supports multiple configured networks at once.
+A network in AppKit is the chain context AppKit uses to read data, submit requests, and compare wallet state against the app's expected chain.
 
-## The Network value
+## Configured Networks
 
-`Network` is the canonical identifier and has one field: `chainId`.
+AppKit can be configured with more than one network at the same time. Each network is identified by a `Network` value with a `chainId`, and each configured chain has an API client behind it.
 
-| Factory                  | Chain id  | Description           |
-| ------------------------ | --------- | --------------------- |
-| `Network.mainnet()`      | `-239`    | TON mainnet.          |
-| `Network.testnet()`      | `-3`      | TON testnet.          |
-| `Network.tetra()`        | `662387`  | TON Tetra L2.         |
-| `Network.custom(id)`     | provided  | User-defined network. |
+The API client is the app's source for chain reads: balances, transactions, block height, asset metadata, and request submission. AppKit includes Toncenter and TonAPI clients, and a pre-built client can be supplied when an app needs its own transport or authentication policy.
 
-Pass a `Network` to actions and providers that need to scope their work to one chain.
+At least one network must be configured. If a flow tries to read from a chain that the AppKit instance does not know about, the app has no reliable source of truth for that chain.
 
-## Configured networks
+## Default Network
 
-Networks are declared on the AppKit instance, keyed by chain id. Each entry configures one API client.
+Some flows are explicitly scoped to a network. Others need a fallback when the caller does not pass one. The default network is that fallback.
 
-```ts
-new AppKit({
-  networks: {
-    [Network.mainnet().chainId]: { apiClient: { url: 'https://toncenter.com', key: '...' } },
-    [Network.testnet().chainId]: { apiClient: { url: 'https://testnet.toncenter.com' } },
-  },
-});
-```
+Changing the default network changes the chain AppKit uses for unspecific reads and actions. Connectors observe this change so wallet-facing flows can compare the selected wallet's network with the app's current expectation.
 
-At least one network must be configured. Bundled clients are `ApiClientToncenter` and `ApiClientTonApi`. A pre-built `ApiClient` instance can be passed in place of a config.
+## Network Mismatch
 
-## Default network
+A network mismatch happens when the app expects one chain and the selected wallet or provider reports another. This is not a display issue; it changes where a transaction request would be signed and where a result would settle.
 
-AppKit tracks a default network used by flows that need one network but were not given one.
-
-| Method                      | Use                                                     |
-| --------------------------- | ------------------------------------------------------- |
-| `getDefaultNetwork(appKit)` | Read the current default.                               |
-| `setDefaultNetwork(appKit)` | Change the default. Connectors observe this change.    |
-
-## Network mismatch
-
-A mismatch happens when the app expects one network and the wallet or provider reports another. Block unsafe actions and surface the expected network.
+Block unsafe actions when the expected network and the reported network do not match. Surface the expected network and let the wallet or app flow resolve the mismatch before sending a transaction request.
 
 ## Rule
 
-Develop on testnet. Never derive product state from a network the app is not configured to read.
+Develop on testnet. Never derive product state from a network the AppKit instance is not configured to read.
 
 ## Related pages
 
+- [Handle network changes](/ecosystem/appkit/build/handle-network-changes)
 - [Providers](/ecosystem/appkit/concepts/providers)
+- [Network schema](/ecosystem/appkit/schema/network)
+- [AppKit config schema](/ecosystem/appkit/schema/appkit-config)
