@@ -1,7 +1,6 @@
 ---
 title: "Sending transactions"
 sidebarTitle: "Sending transactions"
-icon: paper-plane
 ---
 
 Sending a transaction means assembling a `TransactionRequest`, asking the connected wallet to sign and broadcast it, and waiting for the chain to settle the result. AppKit ships three layers over this flow: UI components that wrap the full mutation lifecycle, mutation hooks that expose the same lifecycle without UI, and core actions that just make the wallet call.
