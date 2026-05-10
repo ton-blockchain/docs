@@ -48,20 +48,19 @@ npm install
 ## Run the `Multiplier` example
 
 Select `Multiplier` for the smallest end-to-end Groth16 verifier flow in the repository.
-The proof is generated at test time from `Multiplier.wasm` and `Multiplier_final.zkey`.
+The proof is generated at test time from `Multiplier_js/Multiplier.wasm` and `Multiplier_final.zkey`.
 
 ```bash
 cd circuits/Multiplier
 circom Multiplier.circom --r1cs --wasm --sym --prime bls12381
-snarkjs powersoftau new bls12-381 10 pot10_0000.ptau -v
-snarkjs powersoftau contribute pot10_0000.ptau pot10_0001.ptau --name="First contribution" -v -e="some random text"
-snarkjs powersoftau prepare phase2 pot10_0001.ptau pot10_final.ptau -v
-snarkjs groth16 setup Multiplier.r1cs pot10_final.ptau Multiplier_0000.zkey
-snarkjs zkey contribute Multiplier_0000.zkey Multiplier_final.zkey --name="1st Contributor" -v -e="some random text"
-snarkjs zkey export verificationkey Multiplier_final.zkey verification_key.json
+npx snarkjs powersoftau new bls12-381 10 pot10_0000.ptau -v
+npx snarkjs powersoftau contribute pot10_0000.ptau pot10_0001.ptau --name="First contribution" -v -e="some random text"
+npx snarkjs powersoftau prepare phase2 pot10_0001.ptau pot10_final.ptau -v
+npx snarkjs groth16 setup Multiplier.r1cs pot10_final.ptau Multiplier_0000.zkey
+npx snarkjs zkey contribute Multiplier_0000.zkey Multiplier_final.zkey --name="1st Contributor" -v -e="some random text"
+npx snarkjs zkey export verificationkey Multiplier_final.zkey verification_key.json
 cd ../..
-npx export-ton-verifier ./circuits/Multiplier/Multiplier_final.zkey ./contracts/verifier_multiplier.tolk --tolk
-npx export-ton-verifier import-wrapper ./wrappers/Verifier.ts --force --groth16
+npx export-ton-verifier ./circuits/Multiplier/Multiplier_final.zkey ./contracts/verifier_multiplier.tolk --tolk --contract-name multiplierVerifier
 npx blueprint test Verifier_multiplier_tolk
 ```
 
@@ -71,7 +70,7 @@ Expected output
 PASS tests/Verifier_multiplier_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 88768` gas and code size `4353 bits / 11 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size `5805 bits / 11 cells`.
 
 ## Run the `Sudoku` example
 
@@ -82,16 +81,15 @@ The current `Sudoku` source checks rows, columns, and diagonals. It does not che
 cd circuits/Sudoku
 noname check
 noname run --backend r1cs-bls12-381 --private-inputs '<SOLUTION_JSON>' --public-inputs '<GRID_JSON>'
-snarkjs powersoftau new bls12-381 14 pot14_0000.ptau -v
-snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First contribution" -v -e="some random text"
-snarkjs powersoftau prepare phase2 pot14_0001.ptau pot14_final.ptau -v
-snarkjs groth16 setup Sudoku.r1cs pot14_final.ptau Sudoku_0000.zkey
-snarkjs zkey contribute Sudoku_0000.zkey Sudoku_final.zkey --name="1st Contributor" -v -e="some random text"
-snarkjs zkey export verificationkey Sudoku_final.zkey verification_key.json
-snarkjs groth16 prove Sudoku_final.zkey Sudoku.wtns proof.json public.json
+npx snarkjs powersoftau new bls12-381 14 pot14_0000.ptau -v
+npx snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First contribution" -v -e="some random text"
+npx snarkjs powersoftau prepare phase2 pot14_0001.ptau pot14_final.ptau -v
+npx snarkjs groth16 setup Sudoku.r1cs pot14_final.ptau Sudoku_0000.zkey
+npx snarkjs zkey contribute Sudoku_0000.zkey Sudoku_final.zkey --name="1st Contributor" -v -e="some random text"
+npx snarkjs zkey export verificationkey Sudoku_final.zkey verification_key.json
+npx snarkjs groth16 prove Sudoku_final.zkey Sudoku.wtns proof.json public.json
 cd ../..
 npx export-ton-verifier ./circuits/Sudoku/Sudoku_final.zkey ./contracts/verifier_sudoku.tolk --tolk
-npx export-ton-verifier import-wrapper ./wrappers/Verifier.ts --force --groth16
 npx blueprint test Verifier_sudoku_tolk
 ```
 
@@ -106,7 +104,7 @@ Expected output
 PASS tests/Verifier_sudoku_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 850815` gas and code size `44471 bits / 75 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 858163` gas and code size `46975 bits / 78 cells`.
 
 ## Run the `cubic-gnark` example
 
@@ -117,8 +115,7 @@ The upstream `main.go` proves the public relation `y = x^3 + x + 5` and exports 
 cd circuits/cubic-gnark
 go run main.go
 cd ../..
-npx export-ton-verifier ./circuits/cubic-gnark/verification_key.json ./contracts/verifier_cubic.tolk --tolk
-npx export-ton-verifier import-wrapper ./wrappers/Verifier.ts --force --groth16
+npx export-ton-verifier ./circuits/cubic-gnark/verification_key.json ./contracts/verifier_cubic.tolk --tolk --contract-name Cubic
 npx blueprint test Verifier_cubic_tolk
 ```
 
@@ -128,7 +125,7 @@ Expected output
 PASS tests/Verifier_cubic_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 88768` gas and code size `4353 bits / 11 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size `5805 bits / 11 cells`.
 
 ## Run the `MulCircuit` example
 
@@ -139,8 +136,7 @@ The upstream `main.rs` proves a multiplication circuit over `Bls12_381` and expo
 cd circuits/Arkworks/MulCircuit
 cargo run
 cd ../../..
-npx export-ton-verifier ./circuits/Arkworks/MulCircuit/json/verification_key.json ./contracts/verifier_ark.tolk --tolk
-npx export-ton-verifier import-wrapper ./wrappers/Verifier.ts --force --groth16
+npx export-ton-verifier ./circuits/Arkworks/MulCircuit/json/verification_key.json ./contracts/verifier_ark.tolk --tolk --contract-name arkVerifier
 npx blueprint test Verifier_ark_tolk
 ```
 
@@ -150,7 +146,7 @@ Expected output
 PASS tests/Verifier_ark_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 88768` gas and code size `4353 bits / 11 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size `5805 bits / 11 cells`.
 
 ## Verify
 
@@ -181,7 +177,6 @@ const verifyResult = await verifier.sendVerify(deployer.getSender(), {
 
 ## Troubleshoot
 
-- If `npx blueprint test ...` fails because `../wrappers/Verifier` is missing, rerun `npx export-ton-verifier import-wrapper ./wrappers/Verifier.ts --force --groth16`.
 - If `npx blueprint test ...` fails because the Tolk contract is missing, rerun the matching `npx export-ton-verifier ... --tolk` command for that example.
 - If `snarkjs.groth16.verify(...)` returns `false`, confirm that the proof, public signals, and verification key come from the same circuit build.
 - If `export-ton-verifier` rejects the input file, confirm that the example uses Groth16 over `bls12-381`.
