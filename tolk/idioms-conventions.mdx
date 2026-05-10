@@ -6,6 +6,19 @@ import { Aside } from '/snippets/aside.jsx';
 
 After learning of [basic syntax](/languages/tolk/basic-syntax), study the common patterns, conventions, and best practices to write idiomatic Tolk code.
 
+## Declare each contract with a `contract` directive
+
+Place a [`contract` declaration](/languages/tolk/features/contract-abi) at the top of every entrypoint file. It names the contract and lists its public shapes — at minimum, the storage struct and the union of accepted incoming messages. The compiler uses this information to emit a machine-readable ABI, which in turn powers TypeScript wrappers, explorers, the step-by-step debugger, and other client-side tooling.
+
+```tolk
+contract JettonWallet {
+    storage: WalletStorage
+    incomingMessages: WalletMessages
+}
+```
+
+Use the contract's PascalCase name as the file name: `JettonWallet.tolk`, `JettonMinter.tolk`. All `get fun` and entrypoints must live in the same file as the `contract` declaration.
+
 ## Prefer automatic serialization to manual one
 
 Manual work with slices and builders is error-prone and tedious. By comparison, [auto-serialization](/languages/tolk/features/auto-serialization) with structures helps express data with types and prevents many related bugs.
@@ -183,6 +196,11 @@ struct (0x23456789) CounterReset {
 }
 
 type AllowedMessage = CounterIncrement | CounterReset
+
+contract Counter {
+    storage: Storage
+    incomingMessages: AllowedMessage
+}
 
 fun onInternalMessage(in: InMessage) {
     val msg = lazy AllowedMessage.fromSlice(in.body);
@@ -367,9 +385,9 @@ Consistent file structure across projects simplifies navigation:
 - Supply `errors.tolk` with constants or enums.
 - Supply `storage.tolk` with storage and helper methods.
 - Supply `messages.tolk` with incoming and outgoing messages.
-- Have `some-contract.tolk` as an entrypoint. Keep entrypoint files minimal, use [imports](/languages/tolk/syntax/imports) to bring all supplementary code.
+- Have `MyContract.tolk` as an entrypoint, named after the contract in PascalCase. Place a [`contract` declaration](/languages/tolk/features/contract-abi) at the top of the file and keep all `get fun` and entrypoint functions within it; use [imports](/languages/tolk/syntax/imports) to bring in shared code.
 
-When developing several related contracts simultaneously, keep them in the same codebase. For instance, struct `SomeMessage`, outgoing for contract A, can be incoming for contract B. In other cases,  contract A must know B's storage to assign the initial state for deployment.
+When developing several related contracts simultaneously, keep them in the same codebase. A contract file can `import` another contract — its types are exposed to the importer, while its `onInternalMessage` and `get fun` stay private to the original contract. For instance, struct `SomeMessage` outgoing for contract A can be incoming for contract B; or contract A may need to know B's storage to compute the deploy address.
 
 ## Prefer methods to functions
 
