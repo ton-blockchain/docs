@@ -1,0 +1,37 @@
+---
+title: "UI widgets"
+sidebarTitle: "UI widgets"
+icon: window-maximize
+---
+
+UI widgets are React vertical flows in `@ton/appkit-react` that render AppKit-powered wallet, send, swap, staking, and onramp experiences.
+
+## Widget Level
+
+A default widget owns the whole visible flow: inputs, loading state, validation, wallet connection checks, and submit behavior. It is useful when the app wants a complete AppKit experience with the package stylesheet.
+
+The render-prop form keeps the widget state machine while replacing the layout. It fits branded product surfaces where AppKit should still own quote loading, validation, and submit readiness, but the app owns the visual structure.
+
+Hooks are the lowest level. They are appropriate when the flow no longer matches one widget, or when state must be shared across a larger page.
+
+## Provider, Hooks, And UI
+
+Most widgets are built from three layers: a widget provider, hooks that read the widget state, and a default UI component. Using those pieces directly lets a flow be split across the React tree without rewriting the underlying manager integration.
+
+The widget does not replace the manager or provider. It is a React surface over the same AppKit instance, selected wallet, network, and registered providers used by non-React actions.
+
+## Required Context
+
+Widgets must render inside `AppKitProvider`. Feature widgets also need the relevant manager and providers to exist on the AppKit instance; a swap widget cannot quote without a swap provider, and a staking widget cannot build staking intent without a staking provider.
+
+Most transaction-producing widgets also need a network. The network keeps quotes, wallet requests, and provider reads scoped to the same chain context.
+
+## Rule
+
+Pick the widget level by control needs: default UI for complete flows, render props for custom layout, and hooks for fully custom product logic.
+
+## Related pages
+
+- [React integration](/ecosystem/appkit/concepts/react-integration)
+- [Swap tokens](/ecosystem/appkit/build/swap-tokens)
+- [Stake Toncoin](/ecosystem/appkit/build/stake-toncoin)

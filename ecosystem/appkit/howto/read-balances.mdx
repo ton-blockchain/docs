@@ -1,0 +1,95 @@
+---
+title: "Read balances"
+sidebarTitle: "Read balances"
+icon: coins
+---
+
+Read Toncoin and jetton balances for the connected wallet or any address.
+
+## Before you begin
+
+A connected wallet (or a known address) and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+
+## Pick the right hook
+
+| Goal                                           | Hook                  |
+| ---------------------------------------------- | --------------------- |
+| Toncoin balance for the selected wallet        | `useBalance`          |
+| Toncoin balance for an explicit address        | `useBalanceByAddress` |
+| Jetton balances for the selected wallet        | `useJettons`          |
+| Jetton balances for an explicit address        | `useJettonsByAddress` |
+
+All four are query hooks. They return `{ data, isLoading, error, refetch }` and accept a `query` field to forward TanStack Query options such as `refetchInterval`.
+
+## Read the connected wallet
+
+```tsx
+import { useBalance, useJettons } from '@ton/appkit-react';
+
+export function Balances() {
+  const ton = useBalance({ query: { refetchInterval: 20000 } });
+  const jettons = useJettons({ query: { refetchInterval: 20000 } });
+
+  if (ton.isLoading || jettons.isLoading) return <span>Loading…</span>;
+  if (ton.isError) return <span>Failed to load TON</span>;
+
+  return (
+    <section>
+      <p>TON: {ton.data?.value}</p>
+      <p>Jettons: {jettons.data?.jettons.length ?? 0}</p>
+    </section>
+  );
+}
+```
+
+`ton.data.value` is a string in nanotons. Convert with `fromNano` from `@ton/core` for display:
+
+```tsx
+import { fromNano } from '@ton/core';
+
+<p>TON: {ton.data ? fromNano(ton.data.value) : '0'}</p>
+```
+
+## Read by address
+
+Use the `*ByAddress` hooks to read any address — useful for receipt screens or admin tooling.
+
+```tsx
+import { useBalanceByAddress, useJettonsByAddress } from '@ton/appkit-react';
+
+export function ProfileBalances({ address }: { address: string }) {
+  const ton = useBalanceByAddress({ address });
+  const jettons = useJettonsByAddress({ address });
+  return <p>TON: {ton.data?.value}</p>;
+}
+```
+
+## Render a jetton row
+
+The SDK ships `getFormattedJettonInfo` to normalize jetton metadata for display.
+
+```tsx
+import { getFormattedJettonInfo } from '@ton/appkit';
+
+const formatted = getFormattedJettonInfo(jetton);
+// formatted: { name, symbol, decimals, balance, image, address }
+```
+
+## Read from vanilla JS
+
+```ts
+import { getBalanceByAddress, getJettonsByAddress } from '@ton/appkit';
+
+const ton = await getBalanceByAddress(appKit, { address: 'EQ...' });
+const jettons = await getJettonsByAddress(appKit, { address: 'EQ...' });
+```
+
+## Live updates
+
+Mount `useWatchBalance()` and `useWatchJettons()` once high in the tree to keep the cache pushed live. See [Streaming](/ecosystem/appkit/get-started/streaming).
+
+## Related
+
+- [Streaming](/ecosystem/appkit/get-started/streaming)
+- [React reference](/ecosystem/appkit/reference/react)
+- [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)

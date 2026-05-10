@@ -1,0 +1,35 @@
+---
+title: "Streaming"
+sidebarTitle: "Streaming"
+icon: tower-broadcast
+---
+
+Streaming in AppKit is a per-network subscription layer that turns provider events into live balance, jetton, and transaction updates for the app.
+
+## Live Provider Signals
+
+Streaming complements point-in-time API reads. Instead of asking an API client for the latest state after every interaction, the app subscribes to changes for an address on a specific network.
+
+The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain.
+
+## Subscription Lifetime
+
+A subscription belongs to the consumer that created it. Balance, jetton, transaction, and combined watches all return an unsubscribe function, and that function is the app's handle for stopping updates when a component unmounts or a flow ends.
+
+Connecting and disconnecting the streaming layer opens and closes provider transports without changing the subscription list. This lets an app pause network activity and resume with the same watches still registered.
+
+## Connection State
+
+Connection state describes transport health, not chain finality. A websocket can disconnect and reconnect while the underlying account state continues to change.
+
+After reconnect, updates may resume from the provider's current view of the chain. A flow that needs certainty should refresh from the configured API client before it changes product state.
+
+## Rule
+
+Store every unsubscribe function. Treat streaming updates as best-effort UI refresh signals, then reconcile with a point-in-time read when correctness matters.
+
+## Related pages
+
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Networks](/ecosystem/appkit/concepts/networks)
+- [Transactions](/ecosystem/appkit/concepts/transactions)

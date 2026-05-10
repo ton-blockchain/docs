@@ -1,0 +1,51 @@
+---
+title: "Providers"
+sidebarTitle: "Providers"
+icon: layer-group
+---
+
+Providers are AppKit's plug points to the rest of the world: services that read from a chain, push live updates, build swap transactions, or build staking transactions. They sit on the AppKit instance and supply data; they do not own UI, sessions, or signing.
+
+A provider is not a wallet and not a connector. The wallet still signs every transaction; the connector still owns the session. A provider is the source of *data* about the chain or about a DeFi protocol, and AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
+
+## Before you begin
+
+You need AppKit packages installed and an `AppKit` instance created. See [Installation](/ecosystem/appkit/get-started/installation) and [Connectors](/ecosystem/appkit/get-started/connectors). The React `AppKitProvider` and `QueryClientProvider` are set up in [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers); this page is only about data and DeFi providers.
+
+## Provider types
+
+The four data and DeFi providers attach to AppKit at different points in the lifecycle. The API client sits inside the network entry on the constructor and supplies point-in-time reads. Swap and staking providers go in the constructor's `providers` array (typed as `ProviderInput[]`) and are imported only when the app actually offers those flows. The streaming provider is registered separately on `appKit.streamingManager` *after* construction — it is not bundled with the API client, and watch hooks plus `watch*` actions are no-ops until at least one streaming provider is registered.
+
+| Type               | Where it goes                                                             |
+| ------------------ | ------------------------------------------------------------------------- |
+| API client         | `networks[chainId].apiClient` — `ApiClientToncenter` or `ApiClientTonApi`. |
+| Streaming provider | `appKit.streamingManager.registerProvider(...)` after construction.       |
+| Swap provider      | `AppKitConfig.providers` array — `DeDustSwapProvider`, `OmnistonSwapProvider`. |
+| Staking provider   | `AppKitConfig.providers` array — `createTonstakersProvider({})`.          |
+
+## Add a swap provider
+
+Swap providers ship as separate entrypoints under `@ton/appkit/swap/*` so the bundler only includes the protocols you actually use. Construct an instance and pass it in the `providers` array on the `AppKit` constructor; AppKit registers it with the swap manager and the swap hooks (`useSwapQuote`, `useBuildSwapTransaction`) start returning quotes from that protocol.
+
+```ts
+// appkit.ts
+import { AppKit } from '@ton/appkit';
+import { DeDustSwapProvider } from '@ton/appkit/swap/dedust';
+
+export const appKit = new AppKit({
+  // networks, connectors...
+  providers: [
+    new DeDustSwapProvider(),
+  ],
+});
+```
+
+You can pass more than one swap provider in the same array — for example `new DeDustSwapProvider()` and `new OmnistonSwapProvider()` together — and the swap manager picks the better quote per request. Use `createTonstakersProvider({})` from `@ton/appkit/staking/tonstakers` the same way for staking.
+
+## Rule
+
+Provider responses are external data. Validate critical outcomes server side before changing product state — wallet acceptance is not settlement, and a swap quote is not a price guarantee.
+
+## Next step
+
+See [Provider concept](/ecosystem/appkit/concepts/providers) and [DeFi providers reference](/ecosystem/appkit/reference/defi-providers) for full configuration. For task-level guides, see the [How to](/ecosystem/appkit/howto) section.
