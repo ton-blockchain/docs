@@ -1,7 +1,6 @@
 ---
 title: "Connect to a wallet"
 sidebarTitle: "Connect to a wallet"
-icon: wallet
 ---
 
 Open a wallet session, restore it across reloads, and disconnect cleanly.
@@ -24,27 +23,27 @@ export function Header() {
 
 ## Custom connector picker
 
-When you need a tailored UI, render the connector list yourself. Iterate `useConnectors`, then call `connect.mutate({ connector })`. The display name lives at `connector.metadata.name`.
+When the app needs a tailored UI, render the connector list directly. `useConnectors()` returns an array of registered connectors, and `useConnect()` accepts a `connectorId`.
 
 ```tsx
 import { useConnect, useConnectors, useDisconnect, useSelectedWallet } from '@ton/appkit-react';
 
 export function ConnectPanel() {
-  const { data: connectors = [] } = useConnectors();
+  const connectors = useConnectors();
   const [wallet] = useSelectedWallet();
   const connect = useConnect();
   const disconnect = useDisconnect();
 
   if (wallet) {
     return (
-      <button onClick={() => disconnect.mutate()}>
+      <button onClick={() => disconnect.mutate({ connectorId: wallet.connectorId })}>
         Disconnect {wallet.getAddress()}
       </button>
     );
   }
 
   return connectors.map((connector) => (
-    <button key={connector.id} onClick={() => connect.mutate({ connector })}>
+    <button key={connector.id} onClick={() => connect.mutate({ connectorId: connector.id })}>
       Connect {connector.metadata.name}
     </button>
   ));
@@ -74,14 +73,17 @@ const { data: address } = useAddress();
 ## Connect from vanilla JS
 
 ```ts
-import { getConnectors } from '@ton/appkit';
+import { connect, disconnect, getConnectors } from '@ton/appkit';
 import { appKit } from './appkit';
 
 const [connector] = getConnectors(appKit);
-await connector.connectWallet();
+await connect(appKit, { connectorId: connector.id });
+
+// Later:
+await disconnect(appKit, { connectorId: connector.id });
 ```
 
-`disconnectWallet()` is the matching method on the connector.
+`connector.connectWallet()` and `connector.disconnectWallet()` are the lower-level equivalents when direct connector access is preferred.
 
 ## Errors and recovery
 
@@ -94,8 +96,8 @@ Wrap every action in try/catch and convert errors with `getErrorMessage` from `@
 | Expired session   | Disconnect and request a new connection.          |
 | Wrong network     | Prompt the user to switch network in their wallet.|
 
-## Related
+## Next steps
 
 - [Connectors concept](/ecosystem/appkit/concepts/wallets-and-connectors)
-- [React reference](/ecosystem/appkit/reference/react)
+- [AppKit reference](/ecosystem/appkit/reference)
 - [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)

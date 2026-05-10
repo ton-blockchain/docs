@@ -1,7 +1,6 @@
 ---
 title: "Sending transactions"
 sidebarTitle: "Sending transactions"
-icon: paper-plane
 ---
 
 Sending a transaction means assembling a `TransactionRequest`, asking the connected wallet to sign and broadcast it, and waiting for the chain to settle the result. AppKit ships three layers over this flow: UI components that wrap the full mutation lifecycle, mutation hooks that expose the same lifecycle without UI, and core actions that just make the wallet call.
@@ -37,10 +36,11 @@ The three layers trade off control against work done for you. Components own the
 | Send an NFT                         | `<Send />` + builder  | `useTransferNft`     | `transferNft`     |
 | Send a prepared transaction request | `<Send />`            | `useSendTransaction` | `sendTransaction` |
 
-## Rule
+## Rules
 
 Wallet acceptance is not settlement. Always pair a send with [Streaming](/ecosystem/appkit/get-started/streaming) or `getTransactionStatus`, and verify the final outcome on a backend before delivering paid goods.
 
-## Next step
+## Next steps
 
-See [How to → Send Toncoin](/ecosystem/appkit/howto/send-toncoin), [Send jettons](/ecosystem/appkit/howto/send-jettons), and [NFTs](/ecosystem/appkit/howto/nfts) for task-level walkthroughs. Pair every send with [Streaming](/ecosystem/appkit/get-started/streaming) to confirm settlement.
+- See [How to send Toncoin](/ecosystem/appkit/howto/send-toncoin), [How to send jettons](/ecosystem/appkit/howto/send-jettons), and [How to work with NFTs](/ecosystem/appkit/howto/nfts) for task-level walkthroughs.
+- Pair every send with [Streaming](/ecosystem/appkit/get-started/streaming) or `getTransactionStatus` to confirm settlement.

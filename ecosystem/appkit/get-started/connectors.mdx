@@ -1,7 +1,6 @@
 ---
 title: "Connectors"
 sidebarTitle: "Connectors"
-icon: plug
 ---
 
 A connector is the transport AppKit uses to talk to a wallet. The `AppKit` instance is created with one or more connectors and at least one network.
@@ -52,7 +51,7 @@ export const appKit = new AppKit({
 
 The button below assumes the React providers are already mounted around your tree — see [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers).
 
-For most apps, the drop-in component is the right starting point. `<TonConnectButton />` from `@ton/appkit-react` owns the connect modal, the session lifecycle (open, restore on reload, expire), and the connected-address display — and it is the same component the official example app mounts in its layout. When you need a tailored UI (logo per wallet, custom copy, conditional connectors), use `useConnectors` and `useConnect` directly; that pattern is documented in [How to → Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+For most apps, the drop-in component is the right starting point. `<TonConnectButton />` from `@ton/appkit-react` owns the connect modal, the session lifecycle (open, restore on reload, expire), and the connected-address display — and it is the same component the official example app mounts in its layout. When the UI needs a tailored wallet list, use `useConnectors` and `useConnect` directly; that pattern is documented in [How to connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
 
 The drop-in `<TonConnectButton />` from `@ton/appkit-react` handles the modal, session, and address display.
 
@@ -64,10 +63,11 @@ export function Header() {
 }
 ```
 
-## Rule
+## Rules
 
 Do not assume every connector supports every flow. Check capability before sending a request and treat user rejection as a normal outcome on every action. Connector errors and chain errors are different failure classes and need different recovery paths.
 
-## Next step
+## Next steps
 
-See [How to → Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet) for the custom-selector pattern, vanilla JS connect, and error handling.
+- See [How to connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet) for the custom-selector pattern, vanilla JS connect, and error handling.
+- See [Wallets and connectors](/ecosystem/appkit/concepts/wallets-and-connectors) for the underlying model.

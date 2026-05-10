@@ -1,12 +1,11 @@
 ---
 title: "Networks"
 sidebarTitle: "Networks"
-icon: globe
 ---
 
 A network in AppKit is the chain context AppKit uses to read data, submit requests, and compare wallet state against the app's expected chain.
 
-## Configured Networks
+## Configured networks
 
 AppKit can be configured with more than one network at the same time. Each network is identified by a `Network` value with a `chainId`, and each configured chain has an API client behind it.
 
@@ -14,25 +13,26 @@ The API client is the app's source for chain reads: balances, transactions, bloc
 
 At least one network must be configured. If a flow tries to read from a chain that the AppKit instance does not know about, the app has no reliable source of truth for that chain.
 
-## Default Network
+## Default network
 
 Some flows are explicitly scoped to a network. Others need a fallback when the caller does not pass one. The default network is that fallback.
 
 Changing the default network changes the chain AppKit uses for unspecific reads and actions. Connectors observe this change so wallet-facing flows can compare the selected wallet's network with the app's current expectation.
 
-## Network Mismatch
+## Network mismatch
 
 A network mismatch happens when the app expects one chain and the selected wallet or provider reports another. This is not a display issue; it changes where a transaction request would be signed and where a result would settle.
 
 Block unsafe actions when the expected network and the reported network do not match. Surface the expected network and let the wallet or app flow resolve the mismatch before sending a transaction request.
 
-## Rule
+## Rules
 
-Develop on testnet. Never derive product state from a network the AppKit instance is not configured to read.
+- Develop on testnet first.
+- Never derive product state from a network the AppKit instance is not configured to read.
+- Block unsafe actions when the selected wallet network does not match the expected network.
 
 ## Related pages
 
-- [Handle network changes](/ecosystem/appkit/build/handle-network-changes)
 - [Providers](/ecosystem/appkit/concepts/providers)
-- [Network schema](/ecosystem/appkit/schema/network)
-- [AppKit config schema](/ecosystem/appkit/schema/appkit-config)
+- [Wallets and Connectors](/ecosystem/appkit/concepts/wallets-and-connectors)
+- [How to](/ecosystem/appkit/howto)

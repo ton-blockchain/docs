@@ -1,7 +1,6 @@
 ---
 title: "Send jettons"
 sidebarTitle: "Send jettons"
-icon: coin
 ---
 
 Transfer a jetton (a TON fungible token) from the connected wallet to another address.
@@ -45,8 +44,9 @@ const transferJetton = useTransferJetton();
 
 transferJetton.mutate({
   recipientAddress: 'EQ...',
-  jettonMaster: 'EQ...',
+  jettonAddress: 'EQ...',
   amount: '1.0',
+  jettonDecimals: 6,
 });
 ```
 
@@ -57,8 +57,9 @@ import { transferJetton } from '@ton/appkit';
 
 await transferJetton(appKit, {
   recipientAddress: 'EQ...',
-  jettonMaster: 'EQ...',
+  jettonAddress: 'EQ...',
   amount: '1.0',
+  jettonDecimals: 6,
 });
 ```
 
@@ -69,7 +70,7 @@ When you need the symbol, decimals, or icon for a UI, call `getJettonInfo` and p
 ```ts
 import { getJettonInfo, getFormattedJettonInfo } from '@ton/appkit';
 
-const jetton = await getJettonInfo(appKit, { jettonMaster: 'EQ...' });
+const jetton = await getJettonInfo(appKit, { address: 'EQ...' });
 const formatted = getFormattedJettonInfo(jetton);
 // formatted: { name, symbol, decimals, balance, image, address }
 ```
@@ -79,15 +80,16 @@ const formatted = getFormattedJettonInfo(jetton);
 | Field              | Type     | Required | Notes                                                    |
 | ------------------ | -------- | -------- | -------------------------------------------------------- |
 | `recipientAddress` | `string` | Yes      | TON address of the recipient.                             |
-| `jettonMaster`     | `string` | Yes      | Address of the jetton master contract.                    |
+| `jettonAddress`    | `string` | Yes      | Address of the jetton master contract.                    |
 | `amount`           | `string` | Yes      | Decimal jetton units, e.g. `'1.0'`.                       |
+| `jettonDecimals`   | `number` | Yes      | Decimal precision of the jetton.                          |
 | `comment`          | `string` | No       | Plain text memo on the jetton transfer.                   |
 
 ## Confirm settlement
 
 Track the transaction with [Streaming](/ecosystem/appkit/get-started/streaming) and verify the recipient's jetton balance in your backend before delivering value.
 
-## Related
+## Next steps
 
 - [Read balances](/ecosystem/appkit/howto/read-balances)
 - [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)

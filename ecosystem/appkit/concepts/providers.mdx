@@ -1,8 +1,9 @@
 ---
 title: "Providers"
 sidebarTitle: "Providers"
-icon: plug
 ---
+
+import { Aside } from '/snippets/aside.jsx';
 
 Providers connect AppKit to external data sources and DeFi services. AppKit uses four provider-related components: the **API client** that reads chain state, the **streaming provider** that delivers live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds staking transactions. Each component is managed by the matching manager on the `AppKit` instance.
 
@@ -13,9 +14,9 @@ Providers connect AppKit to external data sources and DeFi services. AppKit uses
 | Swap provider      | Returns swap quotes and builds swap transactions.                    | `AppKit.swapManager`          |
 | Staking provider   | Returns staking quotes, balance, and builds stake transactions.      | `AppKit.stakingManager`       |
 
-<Note>
+<Aside type="note">
 Only swap and staking providers are registered through `registerProvider`. Streaming providers are registered with `appKit.streamingManager.registerProvider(...)`, and API clients are configured per network through `networks[chainId].apiClient`.
-</Note>
+</Aside>
 
 ## Swaps
 

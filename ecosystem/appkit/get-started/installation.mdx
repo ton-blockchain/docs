@@ -77,7 +77,7 @@ export default defineConfig({
 
 For webpack and other bundlers, configure the equivalent alias and the `process` and `Buffer` globals.
 
-## Rule
+## Rules
 
 The polyfill must run before any AppKit import is evaluated. Failing this loads `@ton/core` against an undefined `Buffer` and breaks address parsing at module-evaluation time, before any of your code has a chance to handle the error.
 

@@ -1,7 +1,6 @@
 ---
 title: "Read balances"
 sidebarTitle: "Read balances"
-icon: coins
 ---
 
 Read Toncoin and jetton balances for the connected wallet or any address.
@@ -42,13 +41,13 @@ export function Balances() {
 }
 ```
 
-`ton.data.value` is a string in nanotons. Convert with `fromNano` from `@ton/core` for display:
+`ton.data` is a string in TON units. Render it directly, or use `toNano` only when another API expects raw nanotons:
 
 ```tsx
-import { fromNano } from '@ton/core';
-
-<p>TON: {ton.data ? fromNano(ton.data.value) : '0'}</p>
+<p>TON: {ton.data ?? '0'}</p>
 ```
+
+Jetton reads return formatted balances in the token's own units. Use the token metadata for symbols and decimals when rendering a list.
 
 ## Read by address
 
@@ -88,8 +87,8 @@ const jettons = await getJettonsByAddress(appKit, { address: 'EQ...' });
 
 Mount `useWatchBalance()` and `useWatchJettons()` once high in the tree to keep the cache pushed live. See [Streaming](/ecosystem/appkit/get-started/streaming).
 
-## Related
+## Next steps
 
 - [Streaming](/ecosystem/appkit/get-started/streaming)
-- [React reference](/ecosystem/appkit/reference/react)
+- [AppKit reference](/ecosystem/appkit/reference)
 - [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)

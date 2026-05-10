@@ -1,7 +1,6 @@
 ---
 title: "Streaming"
 sidebarTitle: "Streaming"
-icon: tower-broadcast
 ---
 
 Streaming is the live channel of AppKit: a per-network subscription layer that turns provider events into balance, jetton, and transaction updates pushed to the app. Use it instead of polling whenever a UI needs to reflect chain changes without a user-driven refresh.
@@ -10,7 +9,7 @@ Streaming reflects the streaming provider's view of the chain, not finality. The
 
 ## Before you begin
 
-You need a streaming provider registered on the AppKit instance before any watcher will fire. See [Providers → Streaming providers](/ecosystem/appkit/get-started/providers#provider-types) for the registration pattern, and use `hasStreamingProvider(appKit)` from `@ton/appkit` as the runtime check before subscribing.
+You need a streaming provider registered on the AppKit instance before any watcher will fire. See [Providers](/ecosystem/appkit/get-started/providers#provider-types) for the registration pattern, and use `hasStreamingProvider(appKit, network)` from `@ton/appkit` as the runtime check before subscribing.
 
 ## Mount global watchers
 
@@ -38,10 +37,11 @@ export function GlobalWatchers() {
 
 Each status names a different stage and carries a different meaning. `pending` means the streaming provider has seen the request but not its inclusion in a block. `confirmed` means a block contains the transaction but it is not irreversible. `finalized` means the chain considers the transaction permanent. `invalidated` means the provider has rolled the transaction back or rejected it; treat it the same as a failed send. UI hints are appropriate at every stage; product-state changes (delivering value, settling an order) are appropriate only at `finalized`.
 
-## Rule
+## Rules
 
 A stream is a hint, not proof. Verify the final state on a backend before delivering value or settling an order, and re-check after every reconnect — the stream may have missed transitions while disconnected.
 
-## Next step
+## Next steps
 
-See the full set of watch hooks and core actions in [React reference](/ecosystem/appkit/reference/react). For task-level patterns, see [How to](/ecosystem/appkit/howto).
+- See [How to](/ecosystem/appkit/howto) for task-level patterns that combine sends with settlement tracking.
+- See [AppKit reference](/ecosystem/appkit/reference) for package-level API details.
