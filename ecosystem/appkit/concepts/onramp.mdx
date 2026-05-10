@@ -1,12 +1,12 @@
 ---
-title: "OnRamp"
-sidebarTitle: "OnRamp"
+title: "Onramp"
+sidebarTitle: "Onramp"
 icon: arrow-down-to-line
 ---
 
-OnRamp in AppKit covers external flows that bring value into a TON wallet through fiat payment providers or crypto bridge aggregators.
+Onramp in AppKit covers external flows that bring value into a TON wallet through fiat payment providers or crypto bridge aggregators.
 
-## Two External Flows
+## Two external flows
 
 | Flow | What starts in AppKit | What finishes outside AppKit |
 | ---- | --------------------- | ---------------------------- |
@@ -15,24 +15,26 @@ OnRamp in AppKit covers external flows that bring value into a TON wallet throug
 
 Both flows use the same manager and provider idea as other AppKit integrations. The manager gives the app one surface to ask for quotes; the provider owns payment pages, bridge routes, fees, limits, and completion status.
 
-## Fiat Onramp
+## Fiat onramp
 
 A fiat onramp sends the user to a hosted provider page. AppKit can collect quotes and produce the URL for Mercuryo, MoonPay, TON Pay, or another registered provider, but it does not process card payments or perform KYC.
 
 The redirect is the beginning of an external process. The selected wallet address may be the destination, but wallet state alone is not the completion source for the provider flow.
 
-## Crypto Onramp
+## Crypto onramp
 
 A crypto onramp starts with bridge intent: a source chain, a source asset, and a TON destination. AppKit asks the provider for a quote, creates a deposit, and exposes the chain-specific instructions needed to fund it.
 
 Deposit addresses, memos, source-chain confirmations, bridge timing, and refunds are provider concerns. AppKit surfaces status so the app can track progress without pretending to move funds itself.
 
-## Rule
+## Rules
 
-OnRamp is asynchronous and external. Treat a URL or deposit as the start of a long-running provider process, and verify completion through provider status.
+- Treat a hosted URL or deposit instruction as the start of a long-running provider process.
+- Verify completion through provider status, not wallet state alone.
+- Surface provider fees, limits, and timing as provider data rather than guaranteed outcomes.
 
 ## Related pages
 
 - [Providers](/ecosystem/appkit/concepts/providers)
-- [Transactions](/ecosystem/appkit/concepts/transactions)
-- [OnRamp schema](/ecosystem/appkit/schema/onramp)
+- [Networks](/ecosystem/appkit/concepts/networks)
+- [How to](/ecosystem/appkit/howto)

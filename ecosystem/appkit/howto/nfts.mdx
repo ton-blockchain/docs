@@ -98,15 +98,15 @@ await transferNft(appKit, {
 ```ts
 import { getNft } from '@ton/appkit';
 
-const nft = await getNft(appKit, { nftAddress: 'EQ...' });
+const nft = await getNft(appKit, { address: 'EQ...' });
 ```
 
 ## Confirm settlement
 
 The wallet accepting the request does not prove the NFT moved. Track the transaction with [Streaming](/ecosystem/appkit/get-started/streaming) and verify ownership before crediting value.
 
-## Related
+## Next steps
 
 - [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
-- [React reference](/ecosystem/appkit/reference/react)
-- [Build → Work with NFTs](/ecosystem/appkit/build/work-with-nfts)
+- [AppKit reference](/ecosystem/appkit/reference)
+- [Work with NFTs](/ecosystem/appkit/concepts/work-with-nfts)

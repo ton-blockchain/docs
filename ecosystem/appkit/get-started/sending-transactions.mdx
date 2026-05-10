@@ -37,10 +37,11 @@ The three layers trade off control against work done for you. Components own the
 | Send an NFT                         | `<Send />` + builder  | `useTransferNft`     | `transferNft`     |
 | Send a prepared transaction request | `<Send />`            | `useSendTransaction` | `sendTransaction` |
 
-## Rule
+## Rules
 
 Wallet acceptance is not settlement. Always pair a send with [Streaming](/ecosystem/appkit/get-started/streaming) or `getTransactionStatus`, and verify the final outcome on a backend before delivering paid goods.
 
-## Next step
+## Next steps
 
-See [How to → Send Toncoin](/ecosystem/appkit/howto/send-toncoin), [Send jettons](/ecosystem/appkit/howto/send-jettons), and [NFTs](/ecosystem/appkit/howto/nfts) for task-level walkthroughs. Pair every send with [Streaming](/ecosystem/appkit/get-started/streaming) to confirm settlement.
+- See [How to send Toncoin](/ecosystem/appkit/howto/send-toncoin), [How to send jettons](/ecosystem/appkit/howto/send-jettons), and [How to work with NFTs](/ecosystem/appkit/howto/nfts) for task-level walkthroughs.
+- Pair every send with [Streaming](/ecosystem/appkit/get-started/streaming) or `getTransactionStatus` to confirm settlement.

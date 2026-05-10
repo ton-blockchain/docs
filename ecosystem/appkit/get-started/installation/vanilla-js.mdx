@@ -6,7 +6,7 @@ icon: js
 
 Install the packages required to use AppKit from a project that does not use React. This page only covers installation. Setup code lives on later pages.
 
-In vanilla mode you call core actions directly with the `AppKit` instance: `connect`, `disconnect`, `transferTon`, `sendTransaction`, the `watch*` subscribers, and the rest of the surface. There are no hooks, no `AppKitProvider`, and no `<TonConnectButton />`; instead you call `connector.connectWallet()` and `connector.disconnectWallet()` on the connector returned by `getConnectors`.
+In vanilla mode you call core actions directly with the `AppKit` instance: `connect`, `disconnect`, `transferTon`, `sendTransaction`, the `watch*` subscribers, and the rest of the surface. There are no hooks, no `AppKitProvider`, and no `<TonConnectButton />`. A vanilla app can either drive the flow through core actions such as `connect(appKit, { connectorId })` and `disconnect(appKit, { connectorId })`, or call the connector methods directly after reading them from `getConnectors(appKit)`.
 
 ## Before you begin
 
@@ -42,4 +42,4 @@ AppKit dependencies expect a `Buffer` global in the browser. See [Browser polyfi
 1. [Connectors](/ecosystem/appkit/get-started/connectors) — create the `AppKit` instance and attach a connector.
 2. [Sending transactions](/ecosystem/appkit/get-started/sending-transactions) — call `transferTon`, `transferJetton`, `sendTransaction` from core.
 3. [Streaming](/ecosystem/appkit/get-started/streaming) — subscribe to live balance and transaction updates.
-4. [Core actions reference](/ecosystem/appkit/reference/actions) — full inventory of vanilla functions.
+4. [AppKit reference](/ecosystem/appkit/reference) — package-level API inventory.

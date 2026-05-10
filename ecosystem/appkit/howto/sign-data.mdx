@@ -62,7 +62,7 @@ import { useSignBinary } from '@ton/appkit-react';
 const { mutate: signBinary } = useSignBinary();
 
 signBinary({
-  binary: 'base64-encoded-payload',
+  bytes: 'base64-encoded-payload',
 });
 ```
 
@@ -80,14 +80,15 @@ const cell = beginCell().storeUint(42, 32).storeStringTail('hello').endCell();
 
 signCell({
   cell: cell.toBoc().toString('base64'),
+  schema: 'message#_ value:uint32 text:Text = Message;',
 });
 ```
 
 ## Verify the signature
 
-The wallet returns `{ signature, address, network }`. Verify the signature server side against the payload and the wallet's public key before trusting it. Treat the client-side response as a hint, not proof.
+The wallet returns a signature response that includes `signature`, `address`, `timestamp`, `domain`, and the original `payload`. Verify the response server side against the payload and the wallet's public key before trusting it. Treat the client-side response as a hint, not proof.
 
-## Related
+## Next steps
 
-- [React reference](/ecosystem/appkit/reference/react)
-- [Build → Sign data](/ecosystem/appkit/build/sign-data)
+- [AppKit reference](/ecosystem/appkit/reference)
+- [Sign data](/ecosystem/appkit/concepts/sign-data)

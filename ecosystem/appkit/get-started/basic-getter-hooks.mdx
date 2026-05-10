@@ -29,10 +29,11 @@ State hooks include `useSelectedWallet`, `useNetwork`, `useDefaultNetwork`, and 
 
 A getter hook reflects a snapshot of provider data, not the chain itself. The user's wallet may report state that differs from what the configured `apiClient` returns — usually because the indexer is a few blocks behind the wallet, sometimes because the two read different networks. For live updates without manual refetch, mount the matching `useWatch*` hook (covered on [Streaming](/ecosystem/appkit/get-started/streaming)).
 
-## Rule
+## Rules
 
 Treat hook data as the latest read, not as a settlement check. Verify chain effects with `getTransactionStatus` or a backend before crediting value, and re-check after any reconnect.
 
-## Next step
+## Next steps
 
-See [How to → Read balances](/ecosystem/appkit/howto/read-balances) for a complete walkthrough of reading TON, jetton, and NFT data, or the [full hook list](/ecosystem/appkit/reference/react) in the reference.
+- See [How to read balances](/ecosystem/appkit/howto/read-balances) for a complete walkthrough of reading TON, jetton, and NFT data.
+- See [AppKit reference](/ecosystem/appkit/reference) for package-level API details.
