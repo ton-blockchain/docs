@@ -1,0 +1,101 @@
+---
+title: "Connect to a wallet"
+sidebarTitle: "Connect to a wallet"
+icon: wallet
+---
+
+Open a wallet session, restore it across reloads, and disconnect cleanly.
+
+## Before you begin
+
+You need an `AppKit` instance with at least one connector and the React providers mounted. See [Connectors](/ecosystem/appkit/get-started/connectors) for the instance and [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers) for the wrap.
+
+## Drop-in button
+
+`<TonConnectButton />` from `@ton/appkit-react` opens the TON Connect modal, manages the session, and renders the connected address. This is the recommended path for most apps.
+
+```tsx
+import { TonConnectButton } from '@ton/appkit-react';
+
+export function Header() {
+  return <TonConnectButton />;
+}
+```
+
+## Custom connector picker
+
+When you need a tailored UI, render the connector list yourself. Iterate `useConnectors`, then call `connect.mutate({ connector })`. The display name lives at `connector.metadata.name`.
+
+```tsx
+import { useConnect, useConnectors, useDisconnect, useSelectedWallet } from '@ton/appkit-react';
+
+export function ConnectPanel() {
+  const { data: connectors = [] } = useConnectors();
+  const [wallet] = useSelectedWallet();
+  const connect = useConnect();
+  const disconnect = useDisconnect();
+
+  if (wallet) {
+    return (
+      <button onClick={() => disconnect.mutate()}>
+        Disconnect {wallet.getAddress()}
+      </button>
+    );
+  }
+
+  return connectors.map((connector) => (
+    <button key={connector.id} onClick={() => connect.mutate({ connector })}>
+      Connect {connector.metadata.name}
+    </button>
+  ));
+}
+```
+
+## Read the connected wallet
+
+`useSelectedWallet` returns the wallet used by the next action. The wallet exposes `getAddress()` and `getNetwork()`.
+
+```tsx
+import { useSelectedWallet } from '@ton/appkit-react';
+
+const [wallet] = useSelectedWallet();
+const address = wallet?.getAddress();
+const network = wallet?.getNetwork();
+```
+
+For just the address string, `useAddress` is the convenience hook:
+
+```tsx
+import { useAddress } from '@ton/appkit-react';
+
+const { data: address } = useAddress();
+```
+
+## Connect from vanilla JS
+
+```ts
+import { getConnectors } from '@ton/appkit';
+import { appKit } from './appkit';
+
+const [connector] = getConnectors(appKit);
+await connector.connectWallet();
+```
+
+`disconnectWallet()` is the matching method on the connector.
+
+## Errors and recovery
+
+Wrap every action in try/catch and convert errors with `getErrorMessage` from `@ton/appkit`.
+
+| Error             | Recovery                                          |
+| ----------------- | ------------------------------------------------- |
+| User rejected     | Keep state unchanged and allow retry.             |
+| Missing connector | Check the AppKit configuration.                   |
+| Expired session   | Disconnect and request a new connection.          |
+| Wrong network     | Prompt the user to switch network in their wallet.|
+
+## Related
+
+- [Connectors concept](/ecosystem/appkit/concepts/wallets-and-connectors)
+- [React reference](/ecosystem/appkit/reference/react)
+- [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
