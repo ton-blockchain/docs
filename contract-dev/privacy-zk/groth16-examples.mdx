@@ -41,23 +41,28 @@ npm install
 | `cubic-gnark` | Gnark    | [`circuits/cubic-gnark`](https://github.com/zk-examples/zk-ton-examples/tree/main/circuits/cubic-gnark)                 | `y = x^3 + x + 5`               | `npx blueprint test Verifier_cubic_tolk`      |
 | `MulCircuit`  | Arkworks | [`circuits/Arkworks/MulCircuit`](https://github.com/zk-examples/zk-ton-examples/tree/main/circuits/Arkworks/MulCircuit) | `z = x * y`                     | `npx blueprint test Verifier_ark_tolk`        |
 
-<Aside type="tip">
-  This page follows the upstream Tolk verifier tests and runs locally in the Blueprint sandbox, not on TON mainnet.
+<Aside
+  type="caution"
+  title="Run locally first"
+>
+  This page follows the upstream Tolk verifier tests and runs in the Blueprint sandbox by default, not on TON Mainnet. When adapting the examples to TON Testnet or TON Mainnet, start on TON Testnet with small amounts. The trusted-setup commands are for local tests; production circuits need a dedicated multi-party ceremony with fresh high-entropy contributions.
 </Aside>
 
 ## Run the `Multiplier` example
 
-Select `Multiplier` for the smallest end-to-end Groth16 verifier flow in the repository.
+Select `Multiplier` for a minimal end-to-end Groth16 verifier flow with two private inputs and one public output.
 The proof is generated at test time from `Multiplier_js/Multiplier.wasm` and `Multiplier_final.zkey`.
 
 ```bash
 cd circuits/Multiplier
 circom Multiplier.circom --r1cs --wasm --sym --prime bls12381
+PTAU_ENTROPY="$(openssl rand -hex 32)"
+ZKEY_ENTROPY="$(openssl rand -hex 32)"
 npx snarkjs powersoftau new bls12-381 10 pot10_0000.ptau -v
-npx snarkjs powersoftau contribute pot10_0000.ptau pot10_0001.ptau --name="First contribution" -v -e="some random text"
+npx snarkjs powersoftau contribute pot10_0000.ptau pot10_0001.ptau --name="First contribution" -v -e="$PTAU_ENTROPY"
 npx snarkjs powersoftau prepare phase2 pot10_0001.ptau pot10_final.ptau -v
 npx snarkjs groth16 setup Multiplier.r1cs pot10_final.ptau Multiplier_0000.zkey
-npx snarkjs zkey contribute Multiplier_0000.zkey Multiplier_final.zkey --name="1st Contributor" -v -e="some random text"
+npx snarkjs zkey contribute Multiplier_0000.zkey Multiplier_final.zkey --name="1st Contributor" -v -e="$ZKEY_ENTROPY"
 npx snarkjs zkey export verificationkey Multiplier_final.zkey verification_key.json
 cd ../..
 npx export-ton-verifier ./circuits/Multiplier/Multiplier_final.zkey ./contracts/verifier_multiplier.tolk --tolk --contract-name multiplierVerifier
@@ -75,17 +80,19 @@ The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size
 ## Run the `Sudoku` example
 
 Select `Sudoku` for a larger verification key and many public inputs.
-The current `Sudoku` source checks rows, columns, and diagonals. It does not check 3x3 boxes (subgrids).
+The `Sudoku` source checks rows, columns, and diagonals. It does not check 3x3 boxes (subgrids).
 
 ```bash
 cd circuits/Sudoku
 noname check
-noname run --backend r1cs-bls12-381 --private-inputs '<SOLUTION_JSON>' --public-inputs '<GRID_JSON>'
+noname run --backend r1cs-bls12-381 --private-inputs "$SOLUTION_JSON" --public-inputs "$GRID_JSON"
+PTAU_ENTROPY="$(openssl rand -hex 32)"
+ZKEY_ENTROPY="$(openssl rand -hex 32)"
 npx snarkjs powersoftau new bls12-381 14 pot14_0000.ptau -v
-npx snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First contribution" -v -e="some random text"
+npx snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First contribution" -v -e="$PTAU_ENTROPY"
 npx snarkjs powersoftau prepare phase2 pot14_0001.ptau pot14_final.ptau -v
 npx snarkjs groth16 setup Sudoku.r1cs pot14_final.ptau Sudoku_0000.zkey
-npx snarkjs zkey contribute Sudoku_0000.zkey Sudoku_final.zkey --name="1st Contributor" -v -e="some random text"
+npx snarkjs zkey contribute Sudoku_0000.zkey Sudoku_final.zkey --name="1st Contributor" -v -e="$ZKEY_ENTROPY"
 npx snarkjs zkey export verificationkey Sudoku_final.zkey verification_key.json
 npx snarkjs groth16 prove Sudoku_final.zkey Sudoku.wtns proof.json public.json
 cd ../..
@@ -95,8 +102,8 @@ npx blueprint test Verifier_sudoku_tolk
 
 Define placeholders
 
-- `<SOLUTION_JSON>` — JSON object with the private solved grid in the format expected by `circuits/Sudoku/src/main.no`
-- `<GRID_JSON>` — JSON object with the public partially filled grid in the format expected by `circuits/Sudoku/src/main.no`
+- `SOLUTION_JSON` — JSON object with the private solved grid in the format expected by `circuits/Sudoku/src/main.no`
+- `GRID_JSON` — JSON object with the public partially filled grid in the format expected by `circuits/Sudoku/src/main.no`
 
 Expected output
 
@@ -152,7 +159,7 @@ The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size
 
 Run-time verification succeeds when all of the following are true:
 
-- `snarkjs.groth16.verify(...)` returns `true`
+- [`snarkjs.groth16.verify(...)`](https://github.com/iden3/snarkjs#7-verify-the-proof) returns `true`
 - The contract `getVerify` method returns `true`
 - `npx blueprint test ...` exits with code `0`
 
