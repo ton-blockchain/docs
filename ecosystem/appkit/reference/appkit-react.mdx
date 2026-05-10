@@ -3,6 +3,7 @@ title: "AppKit React"
 sidebarTitle: "AppKit React"
 ---
 
+
 ## Hook
 
 ### Balances
@@ -107,6 +108,198 @@ useWatchBalanceByAddress({ address, network });
 return <div>Current balance: {balance}</div>;
 ```
 
+### Connectors
+
+#### useConnectorById
+
+Read a connector by id (wraps [`getConnectorById`](#getconnectorbyid) + [`watchConnectorById`](#watchconnectorbyid)); re-renders on every wallet-connection event so dependent UI re-evaluates `connector.getConnectedWallets()`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id`\* | `string` | Id of the connector to look up. |
+
+Returns: `Connector \| undefined` — The matching [`Connector`](#connector), or `undefined` if none with that id is registered.
+
+#### useConnectors
+
+Read the list of connectors registered on this AppKit instance; re-renders on every wallet-connection event so dependent UI (connect modals, list pickers) stays in sync.
+
+Returns: <a href="#useconnectorsreturntype"><code>UseConnectorsReturnType</code></a> — Read-only array of registered [`Connector`](#connector)s.
+
+### Networks
+
+#### useBlockNumber
+
+React hook reading the latest masterchain seqno through TanStack Query — useful for freshness checks and pagination cursors.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseBlockNumberParameters`](#useblocknumberparameters) | TanStack Query overrides and optional network. |
+
+Returns: <a href="#useblocknumberreturntype"><code>UseBlockNumberReturnType</code></a><code>&lt;selectData = GetBlockNumberData&gt;</code> — TanStack Query result for the seqno read.
+
+#### useDefaultNetwork
+
+Read and write AppKit's default network — the one connectors enforce on new wallet connections. Returns a `useState`-style tuple; the read side re-renders when the default changes through any source (this hook, [`setDefaultNetwork`](#setdefaultnetwork), manager events).
+
+Returns: <a href="#usedefaultnetworkreturntype"><code>UseDefaultNetworkReturnType</code></a> — Tuple `[network, setNetwork]`.
+
+#### useNetwork
+
+Read the [`Network`](#network) the selected wallet is connected to; re-renders when the wallet's network changes (e.g. user switches mainnet/testnet inside the wallet).
+
+Returns: <a href="#usenetworkreturntype"><code>UseNetworkReturnType</code></a> — Selected wallet's network, or `undefined` when no wallet is selected.
+
+#### useNetworks
+
+Read the list of networks configured on AppKit; re-renders when [`AppKitNetworkManager`](#appkitnetworkmanager) adds, replaces or drops a network.
+
+Returns: <a href="#usenetworksreturntype"><code>UseNetworksReturnType</code></a> — Array of configured [`Network`](#network)s.
+
+### Settings
+
+#### useAppKit
+
+Read the [`AppKit`](#appkit) instance hosted by [`AppKitProvider`](#appkitprovider); throws when the hook is rendered outside the provider tree.
+
+Returns: `AppKit` — The AppKit instance shared with descendant hooks/components.
+
+#### useAppKitTheme
+
+State hook that mirrors the active appkit-react theme onto `document.body[data-ta-theme]` — returns a `[theme, setTheme]` tuple just like `useState`.
+
+Returns: `readonly [string, Dispatch<SetStateAction<string>>]` — Tuple `[theme, setTheme]` for reading and switching the active theme.
+
+#### useI18n
+
+Read the i18n context published by [`I18nProvider`](#i18nprovider) (or the wrapping [`AppKitProvider`](#appkitprovider)); returns the active locale, translation function and helpers to switch locales or merge dictionaries. Throws when rendered outside the provider tree.
+
+Returns: `I18nContextType`.
+
+### Signing
+
+#### useSignBinary
+
+React mutation hook that asks the connected wallet to sign a binary blob (wraps [`signBinary`](#signbinary)); returns `mutate(\{ bytes \})` you call from event handlers.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseSignBinaryParameters`](#usesignbinaryparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#usesignbinaryreturntype"><code>UseSignBinaryReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the signing call.
+
+#### useSignCell
+
+React mutation hook that asks the connected wallet to sign a TON cell (wraps [`signCell`](#signcell)); typically used so the signature can later be verified on-chain. Returns `mutate(\{ cell, schema \})` you call from event handlers.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseSignCellParameters`](#usesigncellparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#usesigncellreturntype"><code>UseSignCellReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the signing call.
+
+#### useSignText
+
+React mutation hook that asks the connected wallet to sign a plain-text message (wraps [`signText`](#signtext)); returns `mutate(\{ text \})` you call from event handlers.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseSignTextParameters`](#usesigntextparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#usesigntextreturntype"><code>UseSignTextReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the signing call.
+
+### Transactions
+
+#### useSendTransaction
+
+React mutation hook that hands a pre-built [`TransactionRequest`](#transactionrequest) to the selected wallet for signing and broadcast (wraps [`sendTransaction`](#sendtransaction)); returns `mutate(request)`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseSendTransactionParameters`](#usesendtransactionparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#usesendtransactionreturntype"><code>UseSendTransactionReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the send call.
+
+#### useTransactionStatus
+
+React hook that reads the trace status of a sent transaction (wraps [`getTransactionStatus`](#gettransactionstatus)); typically paired with `refetchInterval` to poll until the trace completes.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters`\* | [`UseTransactionStatusParameters`](#usetransactionstatusparameters) | `boc` xor `normalizedHash`, optional network and TanStack Query overrides. |
+
+Returns: <a href="#usetransactionstatusreturntype"><code>UseTransactionStatusReturnType</code></a><code>&lt;selectData = GetTransactionStatusData&gt;</code> — TanStack Query result for the status read.
+
+#### useTransferTon
+
+React mutation hook that builds and sends a TON transfer from the selected wallet in one step (wraps [`transferTon`](#transferton)); returns `mutate(\{ recipientAddress, amount, comment? \})`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseTransferTonParameters`](#usetransfertonparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#usetransfertonreturntype"><code>UseTransferTonReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the transfer call.
+
+#### useWatchTransactions
+
+Subscribe to transaction-trace events for the currently selected wallet (use [`useWatchTransactionsByAddress`](#usewatchtransactionsbyaddress) for a fixed address); auto-rebinds when the user connects, switches or disconnects.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseWatchTransactionsParameters`](#usewatchtransactionsparameters) | Update callback. |
+
+Returns: `void`.
+
+#### useWatchTransactionsByAddress
+
+Subscribe to transaction-trace events for an arbitrary address (wraps [`watchTransactionsByAddress`](#watchtransactionsbyaddress)); logs a warning and exits when no streaming provider is configured for the resolved network or no `onChange` callback was provided.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters`\* | [`UseWatchTransactionsByAddressParameters`](#usewatchtransactionsbyaddressparameters) | Address, update callback and optional network override. |
+
+Returns: `void`.
+
+### Wallets
+
+#### useAddress
+
+Read the user-friendly address of the currently selected wallet; re-renders when the selection changes.
+
+Returns: <a href="#useaddressreturntype"><code>UseAddressReturnType</code></a> — Selected wallet's address, or `undefined` when none is selected.
+
+#### useConnect
+
+React mutation hook that triggers the connection flow on a registered connector by id (wraps [`connect`](#connect)); returns a `mutate(\{ connectorId \})` you call from event handlers.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseConnectParameters`](#useconnectparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#useconnectreturntype"><code>UseConnectReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the connect call.
+
+#### useConnectedWallets
+
+Read the list of currently connected wallets across all registered connectors; re-renders when a wallet connects or disconnects.
+
+Returns: <a href="#useconnectedwalletsreturntype"><code>UseConnectedWalletsReturnType</code></a> — Read-only array of [`WalletInterface`](#walletinterface)s.
+
+#### useDisconnect
+
+React mutation hook that disconnects the wallet currently connected through a registered connector (wraps [`disconnect`](#disconnect)); returns `mutate(\{ connectorId \})` you call from event handlers.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parameters` | [`UseDisconnectParameters`](#usedisconnectparameters) | TanStack Query mutation overrides. |
+
+Returns: <a href="#usedisconnectreturntype"><code>UseDisconnectReturnType</code></a><code>&lt;context = unknown&gt;</code> — Mutation result for the disconnect call.
+
+#### useSelectedWallet
+
+Read and switch the wallet AppKit treats as "active" — most action hooks ([`useBalance`](#usebalance), [`useSignText`](#usesigntext), [`useTransferTon`](#usetransferton)) target this wallet implicitly. Returns a `useState`-style tuple.
+
+Returns: <a href="#useselectedwalletreturntype"><code>UseSelectedWalletReturnType</code></a> — Tuple `[wallet, setWalletId]`.
+
 ## Component
 
 ### Balances
@@ -175,7 +368,7 @@ Pre-wired button that builds a TON transfer with [`createTransferTonTransaction`
 | Prop | Type | Description |
 | --- | --- | --- |
 | `recipientAddress`\* | `string` | Recipient address. |
-| `amount`\* | `string` | Amount in TONs as a human-readable decimal string (e.g., `"1.5"`); converted to nano-TON internally. |
+| `amount`\* | `string` | Amount in TON as a human-readable decimal string (e.g., `"1.5"`); converted to nano-TON internally. |
 | `comment` | `string` | Optional human-readable comment attached to the transfer. |
 | `text` | `ReactNode` | Custom button text |
 | `children` | `(props: SendRenderProps) => ReactNode` | Custom render function |
@@ -187,6 +380,25 @@ Pre-wired button that builds a TON transfer with [`createTransferTonTransaction`
 | `fullWidth` | `boolean` | _TODO: describe_ |
 | `icon` | `ReactNode` | _TODO: describe_ |
 | `onSuccess` | `(response: SendTransactionReturnType) => void` | Callback when the transaction is successful |
+
+### Providers
+
+#### AppKitProvider
+
+Top-level React provider that wires AppKit, the TonConnect bridge and i18n into the component tree — wrap your app once near the root so descendant hooks ([`useAppKit`](#useappkit), [`useBalance`](#usebalance), …) and components can resolve their context.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `appKit`\* | `AppKit` | Runtime instance constructed at app startup; shared across every appkit-react hook and component. |
+
+#### I18nProvider
+
+React provider that mounts the i18n context for [`useI18n`](#usei18n) and child components — already wrapped by [`AppKitProvider`](#appkitprovider), so apps usually only render it directly when they need to override the locale or dictionaries.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `locale` | `string` | Initial locale code; defaults to the i18n library's default when omitted. |
+| `lngDicts` | `Record<string, Dict>` | Translation dictionaries keyed by locale; loaded into the underlying i18n instance on mount. |
 
 ## Type
 
@@ -220,7 +432,7 @@ Props accepted by [`SendTonButton`](#sendtonbutton) — extends the base [`Send`
 | Field | Type | Description |
 | --- | --- | --- |
 | `recipientAddress`\* | `string` | Recipient address. |
-| `amount`\* | `string` | Amount in TONs as a human-readable decimal string (e.g., `"1.5"`); converted to nano-TON internally. |
+| `amount`\* | `string` | Amount in TON as a human-readable decimal string (e.g., `"1.5"`); converted to nano-TON internally. |
 | `comment` | `string` | Optional human-readable comment attached to the transfer. |
 | `text` | `ReactNode` | Custom button text |
 | `children` | `(props: SendRenderProps) => ReactNode` | Custom render function |
@@ -237,9 +449,11 @@ Props accepted by [`SendTonButton`](#sendtonbutton) — extends the base [`Send`
 
 Parameters accepted by [`useBalanceByAddress`](#usebalancebyaddress) — TanStack Query options (`select`, `enabled`, `staleTime`, …) plus the target address and optional network override.
 
-```ts
-type UseBalanceByAddressParameters = GetBalanceByAddressQueryConfig<selectData>;
-```
+| Field | Type | Description |
+| --- | --- | --- |
+| `address` | `UserFriendlyAddress \| Address` | Wallet address — pass a [`UserFriendlyAddress`](#userfriendlyaddress) string or an `Address` instance from `@ton/core`. |
+| `network` | `Network` | Network to read the balance from. Defaults to the selected wallet's network; if no wallet is selected, falls back to AppKit's default network, or mainnet when none is set. |
+| `query` | `UnionLooseOmit<QueryOptions<queryFnData = unknown, error = Query.DefaultError, data = queryFnData, queryKey = Query.QueryKey>, 'queryKey = Query.QueryKey' \| 'queryFn'> \| undefined` | TanStack Query options forwarded to `useQuery` (`enabled`, `staleTime`, `refetchInterval`, `select`, …); `queryKey` and `queryFn` are managed by the wrapper. |
 
 #### UseBalanceByAddressReturnType
 
@@ -256,9 +470,11 @@ type UseBalanceByAddressReturnType = UseQueryReturnType<
 
 Parameters accepted by [`useBalance`](#usebalance) — same shape as [`UseBalanceByAddressParameters`](#usebalancebyaddressparameters) minus `address`, which the hook resolves from the selected wallet.
 
-```ts
-type UseBalanceParameters = UseBalanceByAddressParameters<selectData>;
-```
+| Field | Type | Description |
+| --- | --- | --- |
+| `address` | `UserFriendlyAddress \| Address` | Wallet address — pass a [`UserFriendlyAddress`](#userfriendlyaddress) string or an `Address` instance from `@ton/core`. |
+| `network` | `Network` | Network to read the balance from. Defaults to the selected wallet's network; if no wallet is selected, falls back to AppKit's default network, or mainnet when none is set. |
+| `query` | `UnionLooseOmit<QueryOptions<queryFnData = unknown, error = Query.DefaultError, data = queryFnData, queryKey = Query.QueryKey>, 'queryKey = Query.QueryKey' \| 'queryFn'> \| undefined` | TanStack Query options forwarded to `useQuery` (`enabled`, `staleTime`, `refetchInterval`, `select`, …); `queryKey` and `queryFn` are managed by the wrapper. |
 
 #### UseBalanceReturnType
 
@@ -282,4 +498,306 @@ Parameters accepted by [`useWatchBalance`](#usewatchbalance) — same fields as 
 
 ```ts
 type UseWatchBalanceParameters = Omit<UseWatchBalanceByAddressParameters, 'address'>;
+```
+
+### Connectors
+
+#### UseConnectorsReturnType
+
+Return type of [`useConnectors`](#useconnectors) — same shape as [`GetConnectorsReturnType`](#getconnectorsreturntype).
+
+```ts
+type UseConnectorsReturnType = GetConnectorsReturnType;
+```
+
+### Networks
+
+#### UseBlockNumberParameters
+
+Parameters accepted by [`useBlockNumber`](#useblocknumber) — TanStack Query options plus an optional network override (defaults to the selected wallet's network).
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `network` | `Network` | Network to query. Defaults to mainnet when omitted. |
+| `query` | `UnionLooseOmit<QueryOptions<queryFnData = unknown, error = Query.DefaultError, data = queryFnData, queryKey = Query.QueryKey>, 'queryKey = Query.QueryKey' \| 'queryFn'> \| undefined` | TanStack Query options forwarded to `useQuery` (`enabled`, `staleTime`, `refetchInterval`, `select`, …); `queryKey` and `queryFn` are managed by the wrapper. |
+
+#### UseBlockNumberReturnType
+
+Return type of [`useBlockNumber`](#useblocknumber) — TanStack Query result.
+
+```ts
+type UseBlockNumberReturnType = UseQueryReturnType<
+    selectData,
+    GetBlockNumberErrorType
+>;
+```
+
+#### UseDefaultNetworkReturnType
+
+Return type of [`useDefaultNetwork`](#usedefaultnetwork) — `[network, setNetwork]` tuple. `network` is the current default (or `undefined`); `setNetwork` calls [`setDefaultNetwork`](#setdefaultnetwork) and emits `networks:default-changed`.
+
+```ts
+type UseDefaultNetworkReturnType = [
+    network: GetDefaultNetworkReturnType,
+    setNetwork: (network: Network | undefined) => void,
+];
+```
+
+#### UseNetworkReturnType
+
+Return type of [`useNetwork`](#usenetwork) — `undefined` when no wallet is currently selected.
+
+```ts
+type UseNetworkReturnType = Network | undefined;
+```
+
+#### UseNetworksReturnType
+
+Return type of [`useNetworks`](#usenetworks) — same shape as [`GetNetworksReturnType`](#getnetworksreturntype).
+
+```ts
+type UseNetworksReturnType = GetNetworksReturnType;
+```
+
+### Settings
+
+#### AppKitTheme
+
+Theme value accepted by [`useAppKitTheme`](#useappkittheme) — `'light'`, `'dark'`, or any custom string mapped to a `data-ta-theme` token in the host's CSS.
+
+```ts
+type AppKitTheme = 'light' | 'dark' | string;
+```
+
+### Signing
+
+#### UseSignBinaryParameters
+
+Parameters accepted by [`useSignBinary`](#usesignbinary) — TanStack Query mutation options.
+
+```ts
+type UseSignBinaryParameters = SignBinaryOptions<context>;
+```
+
+#### UseSignBinaryReturnType
+
+Return type of [`useSignBinary`](#usesignbinary) — TanStack Query mutation result.
+
+```ts
+type UseSignBinaryReturnType = UseMutationResult<
+    SignBinaryData,
+    SignBinaryErrorType,
+    SignBinaryVariables,
+    context
+>;
+```
+
+#### UseSignCellParameters
+
+Parameters accepted by [`useSignCell`](#usesigncell) — TanStack Query mutation options.
+
+```ts
+type UseSignCellParameters = SignCellOptions<context>;
+```
+
+#### UseSignCellReturnType
+
+Return type of [`useSignCell`](#usesigncell) — TanStack Query mutation result.
+
+```ts
+type UseSignCellReturnType = UseMutationResult<
+    SignCellData,
+    SignCellErrorType,
+    SignCellVariables,
+    context
+>;
+```
+
+#### UseSignTextParameters
+
+Parameters accepted by [`useSignText`](#usesigntext) — TanStack Query mutation options.
+
+```ts
+type UseSignTextParameters = SignTextOptions<context>;
+```
+
+#### UseSignTextReturnType
+
+Return type of [`useSignText`](#usesigntext) — TanStack Query mutation result.
+
+```ts
+type UseSignTextReturnType = UseMutationResult<
+    SignTextData,
+    SignTextErrorType,
+    SignTextVariables,
+    context
+>;
+```
+
+### Transactions
+
+#### UseSendTransactionParameters
+
+Parameters accepted by [`useSendTransaction`](#usesendtransaction) — TanStack Query mutation options.
+
+```ts
+type UseSendTransactionParameters = SendTransactionOptions<context>;
+```
+
+#### UseSendTransactionReturnType
+
+Return type of [`useSendTransaction`](#usesendtransaction) — TanStack Query mutation result.
+
+```ts
+type UseSendTransactionReturnType = UseMutationReturnType<
+    SendTransactionData,
+    SendTransactionErrorType,
+    SendTransactionVariables,
+    context,
+    (
+        variables: SendTransactionVariables,
+        options?: MutateOptions<SendTransactionData, SendTransactionErrorType, SendTransactionVariables, context>,
+    ) => void,
+    MutateFunction<SendTransactionData, SendTransactionErrorType, SendTransactionVariables, context>
+>;
+```
+
+#### UseTransactionStatusParameters
+
+Parameters accepted by [`useTransactionStatus`](#usetransactionstatus) — `boc` xor `normalizedHash` plus optional network and TanStack Query overrides; pair with `query.refetchInterval` to poll until the transaction completes.
+
+```ts
+type UseTransactionStatusParameters = GetTransactionStatusParameters &
+    GetTransactionStatusQueryConfig<selectData>;
+```
+
+#### UseTransactionStatusReturnType
+
+Return type of [`useTransactionStatus`](#usetransactionstatus) — TanStack Query result for the status read.
+
+```ts
+type UseTransactionStatusReturnType = UseQueryReturnType<
+    selectData,
+    GetTransactionStatusErrorType
+>;
+```
+
+#### UseTransferTonParameters
+
+Parameters accepted by [`useTransferTon`](#usetransferton) — TanStack Query mutation options.
+
+```ts
+type UseTransferTonParameters = TransferTonOptions<context>;
+```
+
+#### UseTransferTonReturnType
+
+Return type of [`useTransferTon`](#usetransferton) — TanStack Query mutation result.
+
+```ts
+type UseTransferTonReturnType = UseMutationReturnType<
+    TransferTonData,
+    TransferTonErrorType,
+    TransferTonVariables,
+    context,
+    (
+        variables: TransferTonVariables,
+        options?: MutateOptions<TransferTonData, TransferTonErrorType, TransferTonVariables, context>,
+    ) => void,
+    MutateFunction<TransferTonData, TransferTonErrorType, TransferTonVariables, context>
+>;
+```
+
+#### UseWatchTransactionsByAddressParameters
+
+Parameters accepted by [`useWatchTransactionsByAddress`](#usewatchtransactionsbyaddress) — same fields as [`WatchTransactionsByAddressOptions`](#watchtransactionsbyaddressoptions), all optional so callers can render the hook before the address is known.
+
+```ts
+type UseWatchTransactionsByAddressParameters = Partial<WatchTransactionsByAddressOptions>;
+```
+
+#### UseWatchTransactionsParameters
+
+Parameters accepted by [`useWatchTransactions`](#usewatchtransactions).
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `onChange` | `(update: TransactionsUpdate) => void` | Callback fired on every transactions update from the streaming provider. |
+
+### Wallets
+
+#### UseAddressReturnType
+
+Return type of [`useAddress`](#useaddress) — `undefined` when no wallet is selected.
+
+```ts
+type UseAddressReturnType = string | undefined;
+```
+
+#### UseConnectParameters
+
+Parameters accepted by [`useConnect`](#useconnect) — TanStack Query mutation options (`onSuccess`, `onError`, `mutationKey`, …).
+
+```ts
+type UseConnectParameters = ConnectOptions<context>;
+```
+
+#### UseConnectReturnType
+
+Return type of [`useConnect`](#useconnect) — TanStack Query mutation result with `mutate`/`mutateAsync` and the standard companions.
+
+```ts
+type UseConnectReturnType = UseMutationReturnType<
+    ConnectData,
+    ConnectErrorType,
+    ConnectVariables,
+    context,
+    (
+        variables: ConnectVariables,
+        options?: MutateOptions<ConnectData, ConnectErrorType, ConnectVariables, context>,
+    ) => void,
+    MutateFunction<ConnectData, ConnectErrorType, ConnectVariables, context>
+>;
+```
+
+#### UseConnectedWalletsReturnType
+
+Return type of [`useConnectedWallets`](#useconnectedwallets) — same shape as [`GetConnectedWalletsReturnType`](#getconnectedwalletsreturntype).
+
+```ts
+type UseConnectedWalletsReturnType = GetConnectedWalletsReturnType;
+```
+
+#### UseDisconnectParameters
+
+Parameters accepted by [`useDisconnect`](#usedisconnect) — TanStack Query mutation options.
+
+```ts
+type UseDisconnectParameters = DisconnectOptions<context>;
+```
+
+#### UseDisconnectReturnType
+
+Return type of [`useDisconnect`](#usedisconnect) — TanStack Query mutation result.
+
+```ts
+type UseDisconnectReturnType = UseMutationReturnType<
+    DisconnectData,
+    DisconnectErrorType,
+    DisconnectVariables,
+    context,
+    (
+        variables: DisconnectVariables,
+        options?: MutateOptions<DisconnectData, DisconnectErrorType, DisconnectVariables, context>,
+    ) => void,
+    MutateFunction<DisconnectData, DisconnectErrorType, DisconnectVariables, context>
+>;
+```
+
+#### UseSelectedWalletReturnType
+
+Return type of [`useSelectedWallet`](#useselectedwallet) — `[wallet, setWalletId]` tuple. `wallet` is the active [`WalletInterface`](#walletinterface) (or `null`); `setWalletId` calls [`setSelectedWalletId`](#setselectedwalletid) and emits `wallets:selection-changed`.
+
+```ts
+type UseSelectedWalletReturnType = readonly [GetSelectedWalletReturnType, (walletId: string | null) => void];
 ```
