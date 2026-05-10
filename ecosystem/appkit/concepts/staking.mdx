@@ -1,0 +1,36 @@
+---
+title: "Staking"
+sidebarTitle: "Staking"
+icon: chart-line
+---
+
+Staking in AppKit is a provider-backed way to quote stake and unstake intent, then build the matching wallet transaction request.
+
+## Staking Model
+
+AppKit coordinates staking through a `StakingManager` and registered staking providers. The manager gives the app one integration surface; the provider owns the details of a pool or protocol.
+
+For liquid staking, the wallet position may appear as a staked-token balance such as tsTON. AppKit can surface that balance and provider metadata, but the position remains wallet-side and protocol-side rather than custody inside AppKit.
+
+## Stake And Unstake
+
+A staking flow starts with intent: stake TON into a provider, or unstake an existing position. The provider quotes the operation and builds the transaction request that the selected wallet can approve.
+
+Unstake behavior is provider-specific. Instant withdrawal, delayed redemption, pool liquidity, and routing are not AppKit rules; they belong to the staking provider and the underlying protocol.
+
+## Display Data
+
+APY, pool metadata, and redemption information help a developer show the current staking context. They are display data from the provider, not a promise of future yield or settlement timing.
+
+Product state should follow wallet and chain outcomes. A quote can explain the expected operation, while settlement confirms what actually happened.
+
+## Rule
+
+Show APY and pool metadata as provider data. Treat staking transactions like any other wallet request: wallet approval is not chain settlement.
+
+## Related pages
+
+- [Stake Toncoin](/ecosystem/appkit/build/stake-toncoin)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Assets](/ecosystem/appkit/concepts/assets)
+- [Staking schema](/ecosystem/appkit/schema/staking)

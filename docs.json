@@ -784,15 +784,16 @@
         "icon": "box",
         "pages": [
           "ecosystem/appkit/overview",
-          "ecosystem/appkit/faq",
-          "ecosystem/appkit/releases",
+          "ecosystem/appkit/changelog",
           {
-            "group": "Get started",
+            "group": "Get Started",
+            "icon": "rocket",
             "expanded": true,
             "pages": [
               "ecosystem/appkit/get-started",
               {
                 "group": "Installation",
+                "icon": "download",
                 "pages": [
                   "ecosystem/appkit/get-started/installation",
                   "ecosystem/appkit/get-started/installation/react-app",
@@ -803,7 +804,8 @@
               "ecosystem/appkit/get-started/providers",
               "ecosystem/appkit/get-started/basic-getter-hooks",
               "ecosystem/appkit/get-started/streaming",
-              "ecosystem/appkit/get-started/sending-transactions"
+              "ecosystem/appkit/get-started/sending-transactions",
+              "ecosystem/appkit/get-started/using-ui-widgets"
             ]
           },
           {
@@ -820,64 +822,24 @@
             ]
           },
           {
-            "group": "Start",
-            "icon": "rocket",
-            "pages": [
-              "ecosystem/appkit/start",
-              "ecosystem/appkit/start/installation",
-              "ecosystem/appkit/start/quick-start",
-              "ecosystem/appkit/start/configuration",
-              "ecosystem/appkit/start/wallet-connection",
-              "ecosystem/appkit/start/first-transaction",
-              "ecosystem/appkit/start/production"
-            ]
-          },
-          {
             "group": "Concepts",
             "icon": "diagram-project",
             "pages": [
               "ecosystem/appkit/concepts",
-              "ecosystem/appkit/concepts/what-appkit-does",
-              "ecosystem/appkit/concepts/appkit-instance",
+              "ecosystem/appkit/concepts/appkit",
               "ecosystem/appkit/concepts/wallets-and-connectors",
-              "ecosystem/appkit/concepts/sessions",
-              "ecosystem/appkit/concepts/networks",
               "ecosystem/appkit/concepts/providers",
-              "ecosystem/appkit/concepts/transactions",
-              "ecosystem/appkit/concepts/assets",
-              "ecosystem/appkit/concepts/react-integration",
-              "ecosystem/appkit/concepts/errors"
-            ]
-          },
-          {
-            "group": "Build",
-            "icon": "hammer",
-            "pages": [
-              "ecosystem/appkit/build",
-              "ecosystem/appkit/build/connect-wallets",
-              "ecosystem/appkit/build/send-toncoin",
-              "ecosystem/appkit/build/send-jettons",
-              "ecosystem/appkit/build/read-balances",
-              "ecosystem/appkit/build/work-with-nfts",
-              "ecosystem/appkit/build/sign-data",
-              "ecosystem/appkit/build/swap-tokens",
-              "ecosystem/appkit/build/stake-toncoin",
-              "ecosystem/appkit/build/track-transactions",
-              "ecosystem/appkit/build/handle-network-changes",
-              "ecosystem/appkit/build/build-checkout"
-            ]
-          },
-          {
-            "group": "Examples",
-            "icon": "flask",
-            "pages": [
-              "ecosystem/appkit/examples",
-              "ecosystem/appkit/examples/minimal-react-app",
-              "ecosystem/appkit/examples/event-ticket-checkout",
-              "ecosystem/appkit/examples/jetton-checkout",
-              "ecosystem/appkit/examples/nft-ticket",
-              "ecosystem/appkit/examples/swap-widget",
-              "ecosystem/appkit/examples/staking-widget"
+              "ecosystem/appkit/concepts/work-with-toncoin",
+              "ecosystem/appkit/concepts/work-with-jettons",
+              "ecosystem/appkit/concepts/work-with-nfts",
+              "ecosystem/appkit/concepts/sign-data",
+              "ecosystem/appkit/concepts/swaps",
+              "ecosystem/appkit/concepts/staking",
+              "ecosystem/appkit/concepts/onramp",
+              "ecosystem/appkit/concepts/streaming",
+              "ecosystem/appkit/concepts/gasless",
+              "ecosystem/appkit/concepts/networks",
+              "ecosystem/appkit/concepts/ui-widgets"
             ]
           },
           {
@@ -885,34 +847,11 @@
             "icon": "book",
             "pages": [
               "ecosystem/appkit/reference",
-              "ecosystem/appkit/reference/packages",
               "ecosystem/appkit/reference/appkit",
-              "ecosystem/appkit/reference/actions",
-              "ecosystem/appkit/reference/react",
-              "ecosystem/appkit/reference/components",
-              "ecosystem/appkit/reference/queries",
-              "ecosystem/appkit/reference/types",
-              "ecosystem/appkit/reference/defi-providers",
-              "ecosystem/appkit/reference/errors"
+              "ecosystem/appkit/reference/appkit-react"
             ]
           },
-          {
-            "group": "Schema",
-            "icon": "table",
-            "pages": [
-              "ecosystem/appkit/schema",
-              "ecosystem/appkit/schema/appkit-config",
-              "ecosystem/appkit/schema/transaction-request",
-              "ecosystem/appkit/schema/sign-data-request",
-              "ecosystem/appkit/schema/wallet",
-              "ecosystem/appkit/schema/connector",
-              "ecosystem/appkit/schema/network",
-              "ecosystem/appkit/schema/jetton",
-              "ecosystem/appkit/schema/nft",
-              "ecosystem/appkit/schema/swap",
-              "ecosystem/appkit/schema/staking"
-            ]
-          }
+          "ecosystem/appkit/faq-troubleshooting"
         ]
       }
     ]
