@@ -1,0 +1,73 @@
+---
+title: "Install AppKit in a React app"
+sidebarTitle: "React App"
+icon: react
+---
+
+Install the packages required to use AppKit from a React 18 or 19 application. This page only covers installation. Setup code lives on later pages.
+
+The React path gives you the AppKit core plus a layer of hooks, ready-to-mount components, and a default stylesheet on top. AppKit still works without that layer — vanilla TypeScript can call every action directly — but in a React app the layer removes most of the wiring you would otherwise write by hand.
+
+## Before you begin
+
+You need:
+
+- a React 18 or 19 project;
+- a public TON Connect manifest URL;
+- an RPC provider URL such as `https://testnet.toncenter.com`.
+
+## Install packages
+
+```bash
+npm i @ton/appkit @ton/appkit-react @tanstack/react-query @tonconnect/ui-react @ton/core buffer
+```
+
+Use the package manager your project uses. Install AppKit packages together so core and React exports stay compatible.
+
+The package set has a clear shape: `@ton/appkit` is the core and works alone; `@ton/appkit-react` is a thin layer over it. The React layer needs `@tanstack/react-query` (the cache used by every query and mutation hook) and `@tonconnect/ui-react` (the TON Connect modal). `@ton/appkit-react` re-exports `<TonConnectButton />` from the latter, which is why you install `@tonconnect/ui-react` even though your code never imports from it directly.
+
+## Packages
+
+| Package                  | Use                                              |
+| ------------------------ | ------------------------------------------------ |
+| `@ton/appkit`            | Core instance, actions, connectors, types.       |
+| `@ton/appkit-react`      | Provider, hooks, components.                     |
+| `@tanstack/react-query`  | Query and mutation cache used by hooks.          |
+| `@tonconnect/ui-react`   | TON Connect transport. `@ton/appkit-react` re-exports `<TonConnectButton />` from this package. |
+| `@ton/core`              | TON address and cell helpers.                    |
+| `buffer`                 | Browser polyfill needed by AppKit dependencies.  |
+
+## Browser polyfill
+
+AppKit dependencies expect a `Buffer` global in the browser. See [Browser polyfill](/ecosystem/appkit/get-started/installation#browser-polyfill) on the Installation page for the manual `polyfills.ts` approach (recommended) and the Vite alias fallback.
+
+## Set up React providers
+
+AppKit hooks need two contexts to read from: a TanStack Query cache and the `AppKit` instance. Wrap your app once at the root with `QueryClientProvider` and `AppKitProvider`. Each piece has a single responsibility — `QueryClientProvider` owns the cache that every query and mutation hook reads from, `AppKitProvider` owns the `AppKit` instance so any hook below it can resolve actions, connectors, and managers without prop-drilling. Importing `@ton/appkit-react/styles.css` at the same place ships the default look used by `<TonConnectButton />`, `<SendTonButton />`, `<NftItem />`, and the rest of the bundled components — without it those components render unstyled.
+
+```tsx
+// src/root.tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AppKitProvider } from '@ton/appkit-react';
+import '@ton/appkit-react/styles.css';
+
+import { appKit } from './appkit';
+
+const queryClient = new QueryClient();
+
+export function Root({ children }: { children: React.ReactNode }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppKitProvider appKit={appKit}>{children}</AppKitProvider>
+    </QueryClientProvider>
+  );
+}
+```
+
+The `appKit` import is the instance you create in [Connectors](/ecosystem/appkit/get-started/connectors) — packages get installed first, the instance is built next, and this `Root` component is what stitches them together. A vanilla TypeScript app does not need either provider.
+
+## Next steps
+
+1. [Connectors](/ecosystem/appkit/get-started/connectors) — create the `AppKit` instance and render the connect button.
+2. [Providers](/ecosystem/appkit/get-started/providers) — plug in API clients, streaming, swap, and staking providers.
+3. [Basic getter hooks](/ecosystem/appkit/get-started/basic-getter-hooks) — read wallet, balance, and transaction state from React.

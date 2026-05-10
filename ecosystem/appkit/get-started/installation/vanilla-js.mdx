@@ -1,0 +1,45 @@
+---
+title: "Install AppKit in a vanilla JS app"
+sidebarTitle: "Vanilla JS"
+icon: js
+---
+
+Install the packages required to use AppKit from a project that does not use React. This page only covers installation. Setup code lives on later pages.
+
+In vanilla mode you call core actions directly with the `AppKit` instance: `connect`, `disconnect`, `transferTon`, `sendTransaction`, the `watch*` subscribers, and the rest of the surface. There are no hooks, no `AppKitProvider`, and no `<TonConnectButton />`; instead you call `connector.connectWallet()` and `connector.disconnectWallet()` on the connector returned by `getConnectors`.
+
+## Before you begin
+
+You need:
+
+- a browser project that bundles ES modules;
+- a public TON Connect manifest URL;
+- an RPC provider URL such as `https://toncenter.com`.
+
+## Install packages
+
+```bash
+npm i @ton/appkit @tonconnect/ui @ton/core buffer
+```
+
+Use the package manager your project uses. The React package and `@tanstack/react-query` are not needed in this path: nothing here uses a React component cache, so the vanilla install is a strict subset of the React one.
+
+## Packages
+
+| Package           | Use                                          |
+| ----------------- | -------------------------------------------- |
+| `@ton/appkit`     | Core instance, actions, connectors, types.   |
+| `@tonconnect/ui`  | TON Connect transport for the connector.     |
+| `@ton/core`       | TON address and cell helpers.                |
+| `buffer`          | Browser polyfill required by some bundlers.  |
+
+## Browser polyfill
+
+AppKit dependencies expect a `Buffer` global in the browser. See [Browser polyfill](/ecosystem/appkit/get-started/installation#browser-polyfill) on the Installation page for the manual `polyfills.ts` approach (recommended) and the Vite alias fallback.
+
+## Next steps
+
+1. [Connectors](/ecosystem/appkit/get-started/connectors) — create the `AppKit` instance and attach a connector.
+2. [Sending transactions](/ecosystem/appkit/get-started/sending-transactions) — call `transferTon`, `transferJetton`, `sendTransaction` from core.
+3. [Streaming](/ecosystem/appkit/get-started/streaming) — subscribe to live balance and transaction updates.
+4. [Core actions reference](/ecosystem/appkit/reference/actions) — full inventory of vanilla functions.

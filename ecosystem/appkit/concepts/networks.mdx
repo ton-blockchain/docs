@@ -4,17 +4,35 @@ sidebarTitle: "Networks"
 icon: globe
 ---
 
-A network defines chain id, API client configuration, and environment assumptions.
+A network in AppKit is the chain context AppKit uses to read data, submit requests, and compare wallet state against the app's expected chain.
 
-## Mainnet and testnet
+## Configured Networks
 
-Use testnet while developing transaction flows. Use mainnet only when recipients, amounts, verification, and error handling are complete.
+AppKit can be configured with more than one network at the same time. Each network is identified by a `Network` value with a `chainId`, and each configured chain has an API client behind it.
 
-## Network mismatch
+The API client is the app's source for chain reads: balances, transactions, block height, asset metadata, and request submission. AppKit includes Toncenter and TonAPI clients, and a pre-built client can be supplied when an app needs its own transport or authentication policy.
 
-A mismatch can happen when the app expects one network and the wallet or provider is using another. Block unsafe actions and show the expected network.
+At least one network must be configured. If a flow tries to read from a chain that the AppKit instance does not know about, the app has no reliable source of truth for that chain.
 
-## Related schema
+## Default Network
 
-- [Network](/ecosystem/appkit/schema/network)
-- [AppKitConfig](/ecosystem/appkit/schema/appkit-config)
+Some flows are explicitly scoped to a network. Others need a fallback when the caller does not pass one. The default network is that fallback.
+
+Changing the default network changes the chain AppKit uses for unspecific reads and actions. Connectors observe this change so wallet-facing flows can compare the selected wallet's network with the app's current expectation.
+
+## Network Mismatch
+
+A network mismatch happens when the app expects one chain and the selected wallet or provider reports another. This is not a display issue; it changes where a transaction request would be signed and where a result would settle.
+
+Block unsafe actions when the expected network and the reported network do not match. Surface the expected network and let the wallet or app flow resolve the mismatch before sending a transaction request.
+
+## Rule
+
+Develop on testnet. Never derive product state from a network the AppKit instance is not configured to read.
+
+## Related pages
+
+- [Handle network changes](/ecosystem/appkit/build/handle-network-changes)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Network schema](/ecosystem/appkit/schema/network)
+- [AppKit config schema](/ecosystem/appkit/schema/appkit-config)

@@ -1,0 +1,38 @@
+---
+title: "Swaps"
+sidebarTitle: "Swaps"
+icon: right-left
+---
+
+Swaps in AppKit are quote-first wallet transactions assembled through registered DEX providers.
+
+## Swap Model
+
+AppKit does not price markets itself. The `SwapManager` coordinates swap providers, and each provider implements one DEX or aggregator integration.
+
+A quote is the provider's current offer for a route: input asset, output asset, amount, fees, and execution assumptions. The quote is not a transaction and it is not a guarantee that the same route will still be valid later.
+
+When a swap is built, AppKit turns the accepted quote into a transaction request for the selected wallet. The wallet still owns approval, signing, and rejection.
+
+## Provider Routing
+
+Bundled providers cover Omniston and DeDust. More providers can be registered on the AppKit instance, and the manager decides which provider handles a quote or build request.
+
+The quote carries provider identity so the build step can return to the same integration that produced the route. This keeps provider-specific route data out of the app's own swap logic.
+
+## Provider Policy
+
+Slippage, referral fields, routing rules, and similar settings are provider policy. AppKit passes those settings through to the provider, but the provider decides how they affect the quote and transaction request.
+
+For product flows, this means the app should display the quote, selected provider, expected output, and any provider-supplied warnings before asking the wallet to approve.
+
+## Rule
+
+A swap transaction is still a normal wallet request. Treat quote freshness, wallet approval, and chain settlement as separate states.
+
+## Related pages
+
+- [Swap tokens](/ecosystem/appkit/build/swap-tokens)
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Transactions](/ecosystem/appkit/concepts/transactions)
+- [Swap schema](/ecosystem/appkit/schema/swap)

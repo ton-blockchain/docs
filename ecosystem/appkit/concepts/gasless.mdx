@@ -1,0 +1,35 @@
+---
+title: "Gasless"
+sidebarTitle: "Gasless"
+icon: gas-pump
+---
+
+Gasless in AppKit lets the selected wallet sign a transaction while a relayer broadcasts it and charges fees in an accepted jetton instead of TON.
+
+## Relayer Model
+
+Gasless does not remove the wallet step. The selected wallet still reviews and signs the message set, and the relayer only takes over after the wallet signature exists.
+
+The `GaslessManager` coordinates a gasless provider. The bundled TonAPI provider describes which gas jettons it accepts, how it estimates fees, and which message shapes it is willing to relay.
+
+## Fee And Signature Flow
+
+The flow begins by reading relayer configuration, then estimating the fee for the chosen gas jetton. The estimate gives the app two things to present together: the fee charged by the relayer and the message set the wallet must sign.
+
+After signing, the app sends the signed payload to the relayer. The relayer broadcasts the transaction on behalf of the wallet and charges its fee according to its own rules.
+
+## Failure Boundaries
+
+Gasless introduces a relayer failure class in addition to wallet and chain failures. The wallet can reject signing, the relayer can reject the signed request, and the chain can still reject or fail the broadcast transaction.
+
+Those outcomes need different recovery paths. A relayer rejection may require a different gas jetton or payload, while a chain failure requires normal transaction-status handling.
+
+## Rule
+
+Show the fee in the chosen gas jetton before asking the wallet to sign. Treat relayer rejection and chain rejection as different outcomes.
+
+## Related pages
+
+- [Providers](/ecosystem/appkit/concepts/providers)
+- [Transactions](/ecosystem/appkit/concepts/transactions)
+- [Errors](/ecosystem/appkit/concepts/errors)
