@@ -559,9 +559,9 @@ The `NewConsensusConfig` has two constructors:
 - `slots_per_leader_window`: Number of consecutive slots assigned to one leader. Set to **4** in mainnet.
 - `noncritical_params`: A `HashmapE 8 uint32` map from parameter IDs to raw 32-bit values.
 
-Inherited from Param 29:
-
-- `max_block_size = 4 MiB`
+Inherited from [Param 29](https://tonviewer.com/config#29):
+- `max_block_bytes` — maximum block size.
+- `max_collated_bytes` — maximum size of serialized block correctness proofs.
 
 The `noncritical_params` dictionary contains tunable timing and DoS-protection parameters that might differ between validators:
 
