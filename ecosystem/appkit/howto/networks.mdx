@@ -19,6 +19,33 @@ Some flows are explicitly scoped to a network. Others need a fallback when the c
 
 Changing the default network changes the chain AppKit uses for unspecific reads and actions. Connectors observe this change so wallet-facing flows can compare the selected wallet's network with the app's current expectation.
 
+## Configure networks
+
+Declare every chain the app can read. A simple app usually configures testnet for development and mainnet for production:
+
+```ts
+import { AppKit, Network, setDefaultNetwork } from '@ton/appkit';
+
+export const appKit = new AppKit({
+  networks: {
+    [Network.testnet().chainId]: {
+      apiClient: { url: 'https://testnet.toncenter.com', key: 'testnet-api-key' },
+    },
+  },
+});
+
+setDefaultNetwork(appKit, { network: Network.testnet() });
+```
+
+Use `getDefaultNetwork` or the React `useDefaultNetwork` hook when UI needs to show the active chain:
+
+```tsx
+import { useDefaultNetwork } from '@ton/appkit-react';
+
+const { data: network } = useDefaultNetwork();
+return <span>{network?.chainId}</span>;
+```
+
 ## Network mismatch
 
 A network mismatch happens when the app expects one chain and the selected wallet or provider reports another. This is not a display issue; it changes where a transaction request would be signed and where a result would settle.
@@ -33,6 +60,6 @@ Block unsafe actions when the expected network and the reported network do not m
 
 ## Related pages
 
-- [Providers](/ecosystem/appkit/concepts/providers)
-- [Wallets and Connectors](/ecosystem/appkit/concepts/wallets-and-connectors)
+- [Providers](/ecosystem/appkit/howto/providers)
+- [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet)
 - [How to](/ecosystem/appkit/howto)

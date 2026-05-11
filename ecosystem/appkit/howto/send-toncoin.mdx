@@ -5,6 +5,12 @@ sidebarTitle: "Send Toncoin"
 
 Transfer Toncoin from the connected wallet. Pick the call style that fits your UI.
 
+## How it works
+
+Toncoin is the native asset on TON. AppKit keeps Toncoin amounts as decimal strings in human-readable TON units and converts them when it builds the wallet request.
+
+A wallet response means the selected wallet accepted and submitted the request. It does not prove that the transaction settled on chain, so product state should wait for status tracking or a backend verification read.
+
 ## Before you begin
 
 A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet). Use testnet during development.
@@ -77,14 +83,14 @@ await transferTon(appKit, {
 | Field              | Type     | Required | Notes                                               |
 | ------------------ | -------- | -------- | --------------------------------------------------- |
 | `recipientAddress` | `string` | Yes      | TON address.                                        |
-| `amount`           | `string` | Yes      | Decimal TON, e.g. `'0.05'`.                          |
+| `amount`           | `string` | Yes      | Decimal TON, e.g. `'0.05'`.                         |
 | `comment`          | `string` | No       | Plain text memo. Mutually exclusive with `payload`. |
 | `payload`          | `string` | No       | Base64 cell. Overrides `comment` when set.          |
 | `stateInit`        | `string` | No       | Base64 cell, used to deploy.                        |
 
 ## Confirm settlement
 
-The wallet accepting the request does not prove on-chain settlement. Track the transaction with [Streaming](/ecosystem/appkit/get-started/streaming) and verify final state in your backend before delivering value.
+The wallet accepting the request does not prove on-chain settlement. Track the transaction with [Streaming](/ecosystem/appkit/howto/streaming) and verify final state in your backend before delivering value.
 
 ## Common failures
 

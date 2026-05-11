@@ -7,24 +7,24 @@ import { Aside } from '/snippets/aside.jsx';
 
 Providers connect AppKit to external data sources and DeFi services. AppKit uses four provider-related components: the **API client** that reads chain state, the **streaming provider** that delivers live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds staking transactions. Each component is managed by the matching manager on the `AppKit` instance.
 
-| Type               | Use                                                                  | Manager                       |
-| ------------------ | -------------------------------------------------------------------- | ----------------------------- |
-| API client         | Reads blockchain data such as balances, jettons, and NFTs.           | `AppKit.networkManager`       |
-| Streaming provider | Pushes live balance, transaction, and jetton updates over WebSocket. | `AppKit.streamingManager`     |
-| Swap provider      | Returns swap quotes and builds swap transactions.                    | `AppKit.swapManager`          |
-| Staking provider   | Returns staking quotes, balance, and builds stake transactions.      | `AppKit.stakingManager`       |
+| Type               | Use                                                                  | Manager                   |
+| ------------------ | -------------------------------------------------------------------- | ------------------------- |
+| API client         | Reads blockchain data such as balances, jettons, and NFTs.           | `AppKit.networkManager`   |
+| Streaming provider | Pushes live balance, transaction, and jetton updates over WebSocket. | `AppKit.streamingManager` |
+| Swap provider      | Returns swap quotes and builds swap transactions.                    | `AppKit.swapManager`      |
+| Staking provider   | Returns staking quotes, balance, and builds stake transactions.      | `AppKit.stakingManager`   |
 
 <Aside type="note">
-Only swap and staking providers are registered through `registerProvider`. Streaming providers are registered with `appKit.streamingManager.registerProvider(...)`, and API clients are configured per network through `networks[chainId].apiClient`.
+  Only swap and staking providers are registered through `registerProvider`. Streaming providers are registered with `appKit.streamingManager.registerProvider(...)`, and API clients are configured per network through `networks[chainId].apiClient`.
 </Aside>
 
 ## Swaps
 
-A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Swaps](/ecosystem/appkit/concepts/swaps) for the full quote-then-build flow.
+A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Swaps](/ecosystem/appkit/howto/swaps) for the full quote-then-build flow.
 
 ## Staking
 
-A staking provider quotes a stake or unstake intent for a specific pool or protocol, then builds the matching `TransactionRequest`. Liquid-staking positions may appear in the wallet as derivative balances, such as tsTON. AppKit exposes pool metadata and APY as provider-supplied **display data**, not as a guarantee of future yield or redemption timing. Unstake mechanics, including instant, delayed, and round-end exits, are provider-specific. The bundled staking provider is Tonstakers. See [Staking](/ecosystem/appkit/concepts/staking) for the full flow.
+A staking provider quotes a stake or unstake intent for a specific pool or protocol, then builds the matching `TransactionRequest`. Liquid-staking positions may appear in the wallet as derivative balances, such as tsTON. AppKit exposes pool metadata and APY as provider-supplied **display data**, not as a guarantee of future yield or redemption timing. Unstake mechanics, including instant, delayed, and round-end exits, are provider-specific. The bundled staking provider is Tonstakers. See [Staking](/ecosystem/appkit/howto/staking) for the full flow.
 
 ## How they are registered
 
@@ -87,7 +87,7 @@ Apps that integrate their own DEX or staking backend implement the same provider
 
 ## Related pages
 
-- [AppKit](/ecosystem/appkit/concepts/appkit)
-- [Swaps](/ecosystem/appkit/concepts/swaps)
-- [Staking](/ecosystem/appkit/concepts/staking)
-- [Streaming](/ecosystem/appkit/concepts/streaming)
+- [AppKit](/ecosystem/appkit/howto/appkit)
+- [Swaps](/ecosystem/appkit/howto/swaps)
+- [Staking](/ecosystem/appkit/howto/staking)
+- [Streaming](/ecosystem/appkit/howto/streaming)
