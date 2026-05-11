@@ -160,7 +160,7 @@ val c = beginCell()
 The only way to access bits already written to a builder is to convert it into a slice:
 
 ```tolk
-var s = b.asSlice();
+var s = b.toSlice();
 // or (exactly the same)
 var s = b.endCell().beginParse();
 ```

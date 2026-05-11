@@ -96,15 +96,39 @@ fun HasCallback<TResult>.invoke(self): TResult {
 }
 ```
 
-Lambdas are not closures. Capturing variables from an outer scope is not supported:
+## Closures (lambdas with captures)
+
+Lambdas capture outer variables, becoming first-class closures:
 
 ```tolk
-fun outer(x: int) {
-    return fun(y: int) {
-        return x + y;    // error: undefined symbol `x`
-    }
+fun makeAdder(delta: int): int -> int {
+    return fun(value) {
+        return value + delta;
+    };
+}
+
+fun demo() {
+    val add3 = makeAdder(3);
+    return add3(10);   // 13
 }
 ```
+
+There is no special `use` or `[&]` syntax — capturing happens automatically. Variables are captured **by value at the point where the lambda is created**, so later mutations of the outer variable do not propagate into the closure:
+
+```tolk
+fun demo() {
+    var x = 10;
+
+    val cb = fun() {
+        return x + 1;
+    };
+
+    x = 20;
+    return cb();   // 11, not 21
+}
+```
+
+Closures combine with generics, nesting, and smart casts: a lambda captures the narrowed type of a variable as of the point where it was created.
 
 ## Low-level TVM continuations
 
