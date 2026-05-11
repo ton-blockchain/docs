@@ -3,7 +3,7 @@ title: "Install AppKit in a React app"
 sidebarTitle: "React App"
 ---
 
-Install AppKit's React packages, create an `AppKit` instance, and wrap the application in the two contexts that AppKit hooks read from. Connectors and DeFi providers are configured on later pages.
+Install AppKit's React packages, create an `AppKit` instance, and mount the providers that AppKit hooks rely on.
 
 ## Install packages
 
@@ -20,12 +20,12 @@ npm i @ton/appkit @ton/appkit-react @tanstack/react-query @tonconnect/ui-react @
 | `@ton/core`              | TON address and cell primitives.                                                                                     |
 
 <Note>
-  If the project has not gone through [Preparation](/ecosystem/appkit/get-started/installation) yet, complete that step first — the `Buffer` polyfill set up there is required for AppKit to run in the browser.
+  Complete the [Preparation](/ecosystem/appkit/get-started/installation) step first. The `Buffer` polyfill it sets up is required for AppKit to run in the browser.
 </Note>
 
-## Create AppKit instance
+## Create the AppKit instance
 
-Construct a default `AppKit` instance and export it from a dedicated file. An empty configuration is enough to wire the React contexts; connectors, networks, and DeFi providers are added on later pages.
+Create the `AppKit` instance in a dedicated module. An empty configuration is enough to start — connectors, networks, and DeFi providers are added on the following pages.
 
 ```ts
 // src/appkit.ts
@@ -36,11 +36,11 @@ export const appKit = new AppKit({});
 
 ## Wrap the application
 
-AppKit hooks read from two React contexts: the `AppKit` instance and a TanStack Query cache. Mount both at the root of the application.
+AppKit hooks read from two React contexts: the `AppKit` instance and a TanStack Query cache. Mount both at the application root.
 
 <Steps>
-  <Step title="AppKit">
-    `AppKitProvider` shares the `AppKit` instance with descendant hooks and components, so any of them can read connectors, the selected wallet, balances, and so on without prop drilling.
+  <Step title="AppKit provider">
+    `AppKitProvider` exposes the `AppKit` instance to descendant hooks and components, removing the need to thread it through props.
 
     ```tsx
     import { AppKitProvider } from '@ton/appkit-react'
@@ -56,7 +56,7 @@ AppKit hooks read from two React contexts: the `AppKit` instance and a TanStack 
     ```
   </Step>
 
-  <Step title="TanStack Query">
+  <Step title="TanStack Query provider">
     `QueryClientProvider` owns the cache used by every query and mutation hook. Create one `QueryClient` per application and mount it inside `AppKitProvider`.
 
     ```tsx
@@ -79,9 +79,9 @@ AppKit hooks read from two React contexts: the `AppKit` instance and a TanStack 
   </Step>
 </Steps>
 
-## Install styles (optional)
+## Import styles
 
-If the application uses bundled components or widgets from `@ton/appkit-react` (such as `<TonConnectButton />`, `<SendTonButton />`, `<NftItem />`), import the default stylesheet once at the application root. Without this import the components render unstyled.
+To use the bundled components from `@ton/appkit-react` (`<TonConnectButton />`, `<SendTonButton />`, `<NftItem />`), import the default stylesheet once at the application root. Without it, the components render unstyled.
 
 ```ts
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
