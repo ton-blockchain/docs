@@ -5,10 +5,10 @@ sidebarTitle: "Converter"
 
 import { Aside } from '/snippets/aside.jsx';
 
-The [converter](https://github.com/ton-blockchain/convert-func-to-tolk) allows any FunC project to be transformed into Tolk with a single command:
+[Acton](https://github.com/ton-blockchain/acton) provides a built-in command for converting FunC sources to Tolk:AA
 
 ```bash
-npx @ton/convert-func-to-tolk contracts
+acton func2tolk <PATH>
 ```
 
 This is a syntax-level converter that assists in migrating contracts to Tolk. It rewrites FunC code with one-to-one semantics and emits a Tolk version of the contract that remains close to the FunC original.
@@ -19,6 +19,14 @@ Example output: [jetton-minter.tolk](https://github.com/ton-blockchain/convert-f
 The converted contract does not use modern Tolk features such as structures, auto-serialization, or clean message composition. After some manual fixes, it compiles, runs, and passes tests.
 
 If a contract does not compile after conversion, refer to the [GitHub repository](https://github.com/ton-blockchain/convert-func-to-tolk). It contains common issues and provides ways to fix them.
+
+<Aside type="note">
+  For older projects not using Acton, the [standalone converter](https://github.com/ton-blockchain/convert-func-to-tolk) is also available:
+
+  ```bash
+  npx @ton/convert-func-to-tolk contracts
+  ```
+</Aside>
 
 ## Refactoring
 

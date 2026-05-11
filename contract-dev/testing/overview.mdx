@@ -4,6 +4,13 @@ title: "Overview"
 
 import { Aside } from "/snippets/aside.jsx";
 
+<Aside
+  type="note"
+  title="Acton"
+>
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
+
 TON Sandbox ([`@ton/sandbox`](https://github.com/ton-org/sandbox)) is a local blockchain emulator that allows you to test smart contracts from TypeScript, without deploying them to a real network, and without running a blockchain node. It provides a complete testing environment that closely mimics the behavior of the actual TON blockchain. [Blueprint](/contract-dev/blueprint/overview) project template already includes the `@ton/sandbox` dependency.
 
 The companion `@ton/test-utils` helper library provides [matchers](https://jestjs.io/docs/using-matchers) for writing tests with Jest.
@@ -56,15 +63,15 @@ describe('MyContract', () => {
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
-        
+
         myContract = blockchain.openContract(
             MyContract.createFromConfig({}, code)
         );
-        
+
         deployer = await blockchain.treasury('deployer');
-        
+
         const deployResult = await myContract.sendDeploy(
-            deployer.getSender(), 
+            deployer.getSender(),
             toNano('0.05')
         );
 
@@ -103,7 +110,7 @@ Each test should include a fresh `Blockchain` instance to ensure:
 beforeEach(async () => {
     // Fresh blockchain for each test
     blockchain = await Blockchain.create();
-    
+
     // Each test gets clean treasuries
     deployer = await blockchain.treasury('deployer');
     user = await blockchain.treasury('user');
@@ -154,7 +161,7 @@ npx blueprint test MyContract
 # Run with coverage
 npx blueprint test --coverage
 
-# Run with gas reporting  
+# Run with gas reporting
 npx blueprint test --gas-report
 ```
 
