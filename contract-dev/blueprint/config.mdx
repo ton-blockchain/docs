@@ -10,7 +10,7 @@ import { Aside } from '/snippets/aside.jsx';
 
 A [configuration file](https://github.com/ton-org/blueprint/blob/develop/src/config/Config.ts) allows customizing certain blueprint features.
 
-Create a `blueprint.config.ts` file in the root of the project, and export the configuration as a named `config`. Do **not** use a `default` export. Instead, prefer granular export:
+Create a `blueprint.config.ts` file in the root of the project, and export the configuration as a named `config`. Do **not** use a `default` export. Instead, use a named export:
 
 ```typescript
 import { Config } from '@ton/blueprint';
