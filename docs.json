@@ -66,21 +66,16 @@
     }
   },
   "navigation": {
-    "pages": [
-      "start-here",
-      "get-support",
-      "from-ethereum",
-      "more-tutorials",
-      "old",
+    "tabs": [
       {
-        "group": "Ecosystem",
+        "tab": "Onboarding",
         "pages": [
           {
-            "group": "AI",
-            "expanded": true,
+            "group": "Introduction",
             "pages": [
-              "ecosystem/ai/mcp",
-              "ecosystem/ai/wallets"
+              "start-here",
+              "ecosystem/subsecond",
+              "get-support"
             ]
           },
           {
@@ -94,13 +89,516 @@
             ]
           },
           {
-            "group": "Explorers",
+            "group": "Infrastructure",
             "pages": [
-              "ecosystem/explorers/overview",
-              "ecosystem/explorers/tonviewer"
+              {
+                "group": "Explorers",
+                "pages": [
+                  "ecosystem/explorers/overview",
+                  "ecosystem/explorers/tonviewer"
+                ]
+              },
+              "ecosystem/analytics",
+              {
+                "group": "Oracles",
+                "pages": [
+                  "ecosystem/oracles/overview",
+                  "ecosystem/oracles/redstone",
+                  "ecosystem/oracles/pyth"
+                ]
+              },
+              "ecosystem/bridges",
+              "ecosystem/status"
             ]
           },
-          "ecosystem/sdks",
+          {
+            "group": "Learn more",
+            "pages": [
+              "foundations/glossary",
+              "from-ethereum",
+              "more-tutorials",
+              "old"
+            ]
+          },
+          {
+            "group": "Contribute",
+            "pages": [
+              "contribute/style-guide",
+              {
+                "group": "Components and snippets",
+                "pages": [
+                  "contribute/snippets/overview",
+                  "contribute/snippets/aside",
+                  "contribute/snippets/image",
+                  "contribute/snippets/filetree"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Apps",
+        "pages": [
+          {
+            "group": "AppKit",
+            "pages": [
+              "ecosystem/appkit/overview",
+              "ecosystem/appkit/init",
+              "ecosystem/appkit/toncoin",
+              "ecosystem/appkit/jettons",
+              "ecosystem/appkit/nfts",
+              "ecosystem/appkit/stake"
+            ]
+          },
+          {
+            "group": "TMA: Telegram Mini Apps",
+            "pages": [
+              "ecosystem/tma/overview",
+              "ecosystem/tma/create-mini-app",
+              {
+                "group": "Telegram UI",
+                "pages": [
+                  "ecosystem/tma/telegram-ui/overview",
+                  "ecosystem/tma/telegram-ui/getting-started",
+                  "ecosystem/tma/telegram-ui/platform-and-palette",
+                  {
+                    "group": "Reference",
+                    "pages": [
+                      "ecosystem/tma/telegram-ui/reference/avatar"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Analytics",
+                "pages": [
+                  "ecosystem/tma/analytics/analytics",
+                  "ecosystem/tma/analytics/supported-events",
+                  "ecosystem/tma/analytics/preparation",
+                  "ecosystem/tma/analytics/install-via-script",
+                  "ecosystem/tma/analytics/install-via-npm",
+                  "ecosystem/tma/analytics/api-endpoints",
+                  "ecosystem/tma/analytics/managing-integration",
+                  "ecosystem/tma/analytics/faq"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Wallets",
+        "pages": [
+          "ecosystem/walletkit/overview",
+          {
+            "group": "Web",
+            "pages": [
+              "ecosystem/walletkit/web/init",
+              "ecosystem/walletkit/web/wallets",
+              "ecosystem/walletkit/web/connections",
+              "ecosystem/walletkit/web/events",
+              "ecosystem/walletkit/web/toncoin",
+              "ecosystem/walletkit/web/jettons",
+              "ecosystem/walletkit/web/nfts"
+            ]
+          },
+          {
+            "group": "iOS",
+            "pages": [
+              "ecosystem/walletkit/ios/installation",
+              "ecosystem/walletkit/ios/init",
+              "ecosystem/walletkit/ios/wallets",
+              "ecosystem/walletkit/ios/data",
+              "ecosystem/walletkit/ios/transactions",
+              "ecosystem/walletkit/ios/events",
+              "ecosystem/walletkit/ios/webview"
+              ]
+          },
+          {
+            "group": "Android",
+            "pages": [
+              "ecosystem/walletkit/android/installation",
+              "ecosystem/walletkit/android/init",
+              "ecosystem/walletkit/android/wallets",
+              "ecosystem/walletkit/android/data",
+              "ecosystem/walletkit/android/events",
+              "ecosystem/walletkit/android/transactions",
+              "ecosystem/walletkit/android/webview"
+            ]
+          },
+          {
+            "group": "Integration guides",
+            "pages": [
+               "ecosystem/walletkit/qa-guide",
+               "ecosystem/walletkit/native-web",
+               "ecosystem/walletkit/browser-extension"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Smart contracts",
+        "pages": [
+          {
+            "group": "Develop a smart contract",
+            "pages": [
+              "contract-dev/acton",
+              {
+                "group": "IDEs and editor plugins",
+                "pages": [
+                  "contract-dev/ide/vscode",
+                  "contract-dev/ide/jetbrains"
+                ]
+              },
+              {
+                "group": "Techniques",
+                "expanded": true,
+                "pages": [
+                  "contract-dev/techniques/signing",
+                  "contract-dev/techniques/contract-sharding",
+                  "contract-dev/techniques/security",
+                  "contract-dev/techniques/gas",
+                  "contract-dev/techniques/on-chain-jetton-processing",
+                  "contract-dev/techniques/using-on-chain-libraries",
+                  "contract-dev/techniques/random",
+                  "contract-dev/techniques/upgrades",
+                  "contract-dev/techniques/vanity",
+                  "contract-dev/techniques/zero-knowledge"
+                ]
+              },
+              {
+                "group": "Blueprint",
+                "tag": "legacy",
+                "pages": [
+                  "contract-dev/blueprint/overview",
+                 "contract-dev/blueprint/first-smart-contract",
+                  "contract-dev/blueprint/develop",
+                  {
+                    "group": "Testing",
+                    "pages": [
+                      "contract-dev/testing/overview",
+                      "contract-dev/testing/reference"
+                    ]
+                  },
+                  "contract-dev/blueprint/debug",
+                  "contract-dev/blueprint/deploy",
+                  "contract-dev/blueprint/coverage",
+                  "contract-dev/blueprint/benchmarks",
+                  "contract-dev/blueprint/config",
+                  "contract-dev/blueprint/cli",
+                  "contract-dev/blueprint/api"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Standard contracts",
+            "pages": [
+              {
+                "group": "Wallets",
+                "pages": [
+                  "standard/wallets/how-it-works",
+                  "standard/wallets/mnemonics",
+                  "standard/wallets/comparison",
+                  "standard/wallets/interact",
+                  {
+                    "group": "Wallet V5",
+                    "tag": "latest",
+                    "pages": [
+                      "standard/wallets/v5",
+                      "standard/wallets/v5-api"
+                    ]
+                  },
+                  "standard/wallets/v4",
+                  {
+                    "group": "Highload wallets",
+                    "pages": [
+                      "standard/wallets/highload/overview",
+                      {
+                        "group": "Highload wallet v3",
+                        "pages": [
+                          "standard/wallets/highload/v3/create",
+                          "standard/wallets/highload/v3/send-single-transfer",
+                          "standard/wallets/highload/v3/send-batch-transfers",
+                          "standard/wallets/highload/v3/verify-is-processed",
+                          "standard/wallets/highload/v3/specification"
+                        ]
+                      },
+                      {
+                        "group": "Highload wallet v2",
+                        "pages": [
+                          "standard/wallets/highload/v2/specification"
+                        ]
+                      }
+                    ]
+                  },
+                  "standard/wallets/lockup",
+                  {
+                    "group": "Preprocessed wallet",
+                    "tag": "v2",
+                    "pages": [
+                      "standard/wallets/preprocessed-v2/interact",
+                      "standard/wallets/preprocessed-v2/specification"
+                    ]
+                  },
+                  "standard/wallets/restricted",
+                  "standard/wallets/performance",
+                  "standard/wallets/history"
+                ]
+              },
+              {
+                "group": "Tokens",
+                "expanded": true,
+                "pages": [
+                  "standard/tokens/overview",
+                  "standard/tokens/metadata",
+                  {
+                    "group": "Jettons",
+                    "pages": [
+                      "standard/tokens/jettons/overview",
+                      "standard/tokens/jettons/how-it-works",
+                      "standard/tokens/jettons/comparison",
+                      "standard/tokens/jettons/mint",
+                      "standard/tokens/jettons/transfer",
+                      "standard/tokens/jettons/burn",
+                      "standard/tokens/jettons/find",
+                      "standard/tokens/jettons/wallet-data",
+                      "standard/tokens/jettons/supply-data",
+                      "standard/tokens/jettons/mintless/overview",
+                      "standard/tokens/jettons/mintless/deploy",
+                      "standard/tokens/jettons/api"
+                    ]
+                  },
+                  {
+                    "group": "NFT",
+                    "pages": [
+                      "standard/tokens/nft/overview",
+                      "standard/tokens/nft/how-it-works",
+                      "standard/tokens/nft/sbt",
+                      "standard/tokens/nft/comparison",
+                      "standard/tokens/nft/deploy",
+                      "standard/tokens/nft/transfer",
+                      "standard/tokens/nft/metadata",
+                      "standard/tokens/nft/verify",
+                      "standard/tokens/nft/api",
+                      "standard/tokens/nft/nft-reference",
+                      "standard/tokens/nft/nft-2.0"
+                    ]
+                  },
+                  "standard/tokens/airdrop"
+                ]
+              },
+              "standard/vesting"
+            ]
+          },
+          {
+            "group": "Tolk language",
+            "tag": "recommended",
+            "pages": [
+              "tolk/overview",
+              "tolk/basic-syntax",
+              "tolk/idioms-conventions",
+              "tolk/examples",
+              {
+                "group": "Type system",
+                "pages": [
+                  "tolk/types/list-of-types",
+                  "tolk/types/numbers",
+                  "tolk/types/booleans",
+                  "tolk/types/address",
+                  "tolk/types/cells",
+                  "tolk/types/strings",
+                  "tolk/types/structures",
+                  "tolk/types/aliases",
+                  "tolk/types/generics",
+                  "tolk/types/enums",
+                  "tolk/types/nullable",
+                  "tolk/types/unions",
+                  "tolk/types/tensors",
+                  "tolk/types/tuples",
+                  "tolk/types/maps",
+                  "tolk/types/callables",
+                  "tolk/types/unknown",
+                  "tolk/types/void-never",
+                  "tolk/types/type-checks-and-casts",
+                  "tolk/types/overall-tvm-stack",
+                  "tolk/types/overall-serialization"
+                ]
+              },
+              {
+                "group": "Syntax details",
+                "pages": [
+                  "tolk/syntax/variables",
+                  "tolk/syntax/conditions-loops",
+                  "tolk/syntax/exceptions",
+                  "tolk/syntax/functions-methods",
+                  "tolk/syntax/structures-fields",
+                  "tolk/syntax/pattern-matching",
+                  "tolk/syntax/mutability",
+                  "tolk/syntax/operators",
+                  "tolk/syntax/imports"
+                ]
+              },
+              {
+                "group": "Language features",
+                "pages": [
+                  "tolk/features/message-handling",
+                  "tolk/features/contract-storage",
+                  "tolk/features/contract-getters",
+                  "tolk/features/contract-abi",
+                  "tolk/features/message-sending",
+                  "tolk/features/auto-serialization",
+                  "tolk/features/lazy-loading",
+                  "tolk/features/jetton-payload",
+                  "tolk/features/standard-library",
+                  "tolk/features/asm-functions",
+                  "tolk/features/compiler-optimizations"
+                ]
+              },
+              {
+                "group": "Migrating from FunC",
+                "pages": [
+                  "tolk/from-func/tolk-vs-func",
+                  "tolk/from-func/stdlib-comparison",
+                  "tolk/from-func/converter"
+                ]
+              },
+              "tolk/changelog"
+            ]
+          },
+          {
+            "group": "Other languages",
+            "pages": [
+              {
+                "group": "TL-B",
+                "pages": [
+                  "languages/tl-b/overview",
+                  "languages/tl-b/syntax-and-semantics",
+                  "languages/tl-b/simple-examples",
+                  "languages/tl-b/complex-and-non-trivial-examples",
+                  "languages/tl-b/tep-examples",
+                  "languages/tl-b/tooling"
+                ]
+              },
+              {
+                "group": "Fift",
+                "pages": [
+                  "languages/fift/overview",
+                  "languages/fift/fift-and-tvm-assembly",
+                  "languages/fift/deep-dive",
+                  "languages/fift/multisig",
+                  "languages/fift/whitepaper"
+                ]
+              },
+              {
+                "group": "FunC",
+                "pages": [
+                  "languages/func/overview",
+                  "languages/func/cookbook",
+                  {
+                    "group": "Language",
+                    "expanded": true,
+                    "pages": [
+                      "languages/func/comments",
+                      "languages/func/types",
+                      "languages/func/literals",
+                      "languages/func/operators",
+                      "languages/func/expressions",
+                      "languages/func/statements",
+                      {
+                        "group": "Program declarations",
+                        "expanded": true,
+                        "pages": [
+                          "languages/func/declarations-overview",
+                          "languages/func/functions",
+                          "languages/func/special-functions",
+                          "languages/func/asm-functions",
+                          "languages/func/global-variables",
+                          "languages/func/compiler-directives"
+                        ]
+                      },
+                      "languages/func/built-ins",
+                      "languages/func/dictionaries"
+                    ]
+                  },
+                  {
+                    "group": "Libraries",
+                    "expanded": true,
+                    "pages": [
+                      "languages/func/stdlib",
+                      "languages/func/libraries"
+                    ]
+                  },
+                  "languages/func/changelog",
+                  "languages/func/known-issues"
+                ]
+              },
+              "languages/tact"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Nodes",
+        "pages": [
+          "ecosystem/nodes/overview",
+          {
+            "group": "C++ node",
+            "pages": [
+              "ecosystem/nodes/cpp/setup-mytonctrl",
+              "ecosystem/nodes/cpp/run-validator",
+              "ecosystem/nodes/cpp/integrating-with-prometheus",
+              "ecosystem/nodes/cpp/setup-mylocalton",
+              {
+                "group": "MyTonCtrl reference",
+                "pages": [
+                  "ecosystem/nodes/cpp/mytonctrl/overview",
+                  "ecosystem/nodes/cpp/mytonctrl/core",
+                  "ecosystem/nodes/cpp/mytonctrl/installer",
+                  "ecosystem/nodes/cpp/mytonctrl/wallet",
+                  "ecosystem/nodes/cpp/mytonctrl/validator",
+                  "ecosystem/nodes/cpp/mytonctrl/collator",
+                  "ecosystem/nodes/cpp/mytonctrl/pools",
+                  "ecosystem/nodes/cpp/mytonctrl/liquid-staking",
+                  "ecosystem/nodes/cpp/mytonctrl/custom-overlays",
+                  "ecosystem/nodes/cpp/mytonctrl/utilities",
+                  "ecosystem/nodes/cpp/mytonctrl/alerting",
+                  "ecosystem/nodes/cpp/mytonctrl/backups",
+                  "ecosystem/nodes/cpp/mytonctrl/btc-teleport"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Rust node",
+            "pages": [
+              "ecosystem/nodes/rust/quick-start",
+              "ecosystem/nodes/rust/architecture",
+              "ecosystem/nodes/rust/global-config",
+              "ecosystem/nodes/rust/logs-config",
+              "ecosystem/nodes/rust/node-config",
+              "ecosystem/nodes/rust/metrics",
+              "ecosystem/nodes/rust/node-config-ref",
+              "ecosystem/nodes/rust/probes",
+              "ecosystem/nodes/rust/monitoring"
+            ]
+          },
+          {
+            "group": "Staking",
+            "pages": [
+              "ecosystem/staking/overview",
+              "ecosystem/staking/stake-calculation",
+              "ecosystem/staking/liquid-staking",
+              "ecosystem/staking/single-nominator",
+              "ecosystem/staking/nominator-pools"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "APIs & SDKs",
+        "pages": [
           {
             "group": "APIs",
             "pages": [
@@ -160,85 +658,7 @@
               "ecosystem/api/price"
             ]
           },
-          "ecosystem/subsecond",
-          "ecosystem/status",
-          "ecosystem/analytics",
-          {
-            "group": "Oracles",
-            "pages": [
-              "ecosystem/oracles/overview",
-              "ecosystem/oracles/redstone",
-              "ecosystem/oracles/pyth"
-            ]
-          },
-          "ecosystem/bridges",
-          {
-            "group": "TON Connect",
-            "pages": [
-              "ecosystem/ton-connect/overview",
-              "ecosystem/ton-connect/wallet-connect",
-              "ecosystem/ton-connect/dapp",
-              "ecosystem/ton-connect/wallet",
-              "ecosystem/ton-connect/manifest",
-              "ecosystem/ton-connect/message-lookup"
-            ]
-          },
-          {
-            "group": "AppKit",
-            "pages": [
-              "ecosystem/appkit/overview",
-              "ecosystem/appkit/init",
-              "ecosystem/appkit/toncoin",
-              "ecosystem/appkit/jettons",
-              "ecosystem/appkit/nfts",
-              "ecosystem/appkit/stake"
-            ]
-          },
-          {
-            "group": "WalletKit",
-            "pages": [
-              "ecosystem/walletkit/overview",
-              {
-                "group": "Web",
-                "pages": [
-                  "ecosystem/walletkit/web/init",
-                  "ecosystem/walletkit/web/wallets",
-                  "ecosystem/walletkit/web/connections",
-                  "ecosystem/walletkit/web/events",
-                  "ecosystem/walletkit/web/toncoin",
-                  "ecosystem/walletkit/web/jettons",
-                  "ecosystem/walletkit/web/nfts"
-                ]
-              },
-              {
-                "group": "iOS",
-                "pages": [
-                  "ecosystem/walletkit/ios/installation",
-                  "ecosystem/walletkit/ios/init",
-                  "ecosystem/walletkit/ios/wallets",
-                  "ecosystem/walletkit/ios/data",
-                  "ecosystem/walletkit/ios/transactions",
-                  "ecosystem/walletkit/ios/events",
-                  "ecosystem/walletkit/ios/webview"
-                ]
-              },
-              {
-                "group": "Android",
-                "pages": [
-                  "ecosystem/walletkit/android/installation",
-                  "ecosystem/walletkit/android/init",
-                  "ecosystem/walletkit/android/wallets",
-                  "ecosystem/walletkit/android/data",
-                  "ecosystem/walletkit/android/events",
-                  "ecosystem/walletkit/android/transactions",
-                  "ecosystem/walletkit/android/webview"
-                ]
-              },
-              "ecosystem/walletkit/qa-guide",
-              "ecosystem/walletkit/native-web",
-              "ecosystem/walletkit/browser-extension"
-            ]
-          },
+          "ecosystem/sdks",
           {
             "group": "TON Pay",
             "pages": [
@@ -264,506 +684,133 @@
               "ecosystem/ton-pay/webhooks",
               "ecosystem/ton-pay/api-reference"
             ]
-          },
-          {
-            "group": "TMA: Telegram Mini Apps",
-            "pages": [
-              "ecosystem/tma/overview",
-              "ecosystem/tma/create-mini-app",
-              {
-                "group": "Telegram UI",
-                "pages": [
-                  "ecosystem/tma/telegram-ui/overview",
-                  "ecosystem/tma/telegram-ui/getting-started",
-                  "ecosystem/tma/telegram-ui/platform-and-palette",
-                  {
-                    "group": "Reference",
-                    "pages": [
-                      "ecosystem/tma/telegram-ui/reference/avatar"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Analytics",
-                "pages": [
-                  "ecosystem/tma/analytics/analytics",
-                  "ecosystem/tma/analytics/supported-events",
-                  "ecosystem/tma/analytics/preparation",
-                  "ecosystem/tma/analytics/install-via-script",
-                  "ecosystem/tma/analytics/install-via-npm",
-                  "ecosystem/tma/analytics/api-endpoints",
-                  "ecosystem/tma/analytics/managing-integration",
-                  "ecosystem/tma/analytics/faq"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Blockchain nodes",
-            "expanded": true,
-            "pages": [
-              "ecosystem/nodes/overview",
-              {
-                "group": "C++ node",
-                "pages": [
-                  "ecosystem/nodes/cpp/setup-mytonctrl",
-                  "ecosystem/nodes/cpp/run-validator",
-                  "ecosystem/nodes/cpp/integrating-with-prometheus",
-                  "ecosystem/nodes/cpp/setup-mylocalton",
-                  {
-                    "group": "MyTonCtrl reference",
-                    "pages": [
-                      "ecosystem/nodes/cpp/mytonctrl/overview",
-                      "ecosystem/nodes/cpp/mytonctrl/core",
-                      "ecosystem/nodes/cpp/mytonctrl/installer",
-                      "ecosystem/nodes/cpp/mytonctrl/wallet",
-                      "ecosystem/nodes/cpp/mytonctrl/validator",
-                      "ecosystem/nodes/cpp/mytonctrl/collator",
-                      "ecosystem/nodes/cpp/mytonctrl/pools",
-                      "ecosystem/nodes/cpp/mytonctrl/liquid-staking",
-                      "ecosystem/nodes/cpp/mytonctrl/custom-overlays",
-                      "ecosystem/nodes/cpp/mytonctrl/utilities",
-                      "ecosystem/nodes/cpp/mytonctrl/alerting",
-                      "ecosystem/nodes/cpp/mytonctrl/backups",
-                      "ecosystem/nodes/cpp/mytonctrl/btc-teleport"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Rust node",
-                "pages": [
-                  "ecosystem/nodes/rust/quick-start",
-                  "ecosystem/nodes/rust/architecture",
-                  "ecosystem/nodes/rust/global-config",
-                  "ecosystem/nodes/rust/logs-config",
-                  "ecosystem/nodes/rust/node-config",
-                  "ecosystem/nodes/rust/metrics",
-                  "ecosystem/nodes/rust/node-config-ref",
-                  "ecosystem/nodes/rust/probes",
-                  "ecosystem/nodes/rust/monitoring"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Staking",
-            "pages": [
-              "ecosystem/staking/overview",
-              "ecosystem/staking/stake-calculation",
-              "ecosystem/staking/liquid-staking",
-              "ecosystem/staking/single-nominator",
-              "ecosystem/staking/nominator-pools"
-            ]
           }
         ]
       },
       {
-        "group": "Payment processing",
-        "pages": [
-          "payments/overview",
-          "payments/toncoin",
-          "payments/jettons"
-        ]
-      },
-      {
-        "group": "Standard contracts",
+        "tab": "Foundations",
         "pages": [
           {
-            "group": "Wallets",
+            "group": "Payment processing",
             "pages": [
-              "standard/wallets/how-it-works",
-              "standard/wallets/mnemonics",
-              "standard/wallets/comparison",
-              "standard/wallets/interact",
-              {
-                "group": "Wallet V5",
-                "tag": "latest",
-                "pages": [
-                  "standard/wallets/v5",
-                  "standard/wallets/v5-api"
-                ]
-              },
-              "standard/wallets/v4",
-              {
-                "group": "Highload wallets",
-                "pages": [
-                  "standard/wallets/highload/overview",
-                  {
-                    "group": "Highload wallet v3",
-                    "pages": [
-                      "standard/wallets/highload/v3/create",
-                      "standard/wallets/highload/v3/send-single-transfer",
-                      "standard/wallets/highload/v3/send-batch-transfers",
-                      "standard/wallets/highload/v3/verify-is-processed",
-                      "standard/wallets/highload/v3/specification"
-                    ]
-                  },
-                  {
-                    "group": "Highload wallet v2",
-                    "pages": [
-                      "standard/wallets/highload/v2/specification"
-                    ]
-                  }
-                ]
-              },
-              "standard/wallets/lockup",
-              {
-                "group": "Preprocessed wallet",
-                "tag": "v2",
-                "pages": [
-                  "standard/wallets/preprocessed-v2/interact",
-                  "standard/wallets/preprocessed-v2/specification"
-                ]
-              },
-              "standard/wallets/restricted",
-              "standard/wallets/performance",
-              "standard/wallets/history"
+               "payments/overview",
+               "payments/toncoin",
+               "payments/jettons"
             ]
           },
           {
-            "group": "Tokens",
-            "expanded": true,
+            "group": "TON Connect",
             "pages": [
-              "standard/tokens/overview",
-              "standard/tokens/metadata",
+              "ecosystem/ton-connect/overview",
+              "ecosystem/ton-connect/wallet-connect",
+              "ecosystem/ton-connect/dapp",
+              "ecosystem/ton-connect/wallet",
+              "ecosystem/ton-connect/manifest",
+              "ecosystem/ton-connect/message-lookup"
+            ]
+          },
+          {
+            "group": "TVM: TON Virtual Machine",
+            "pages": [
+              "tvm/overview",
               {
-                "group": "Jettons",
+                "group": "Tools",
                 "pages": [
-                  "standard/tokens/jettons/overview",
-                  "standard/tokens/jettons/how-it-works",
-                  "standard/tokens/jettons/comparison",
-                  "standard/tokens/jettons/mint",
-                  "standard/tokens/jettons/transfer",
-                  "standard/tokens/jettons/burn",
-                  "standard/tokens/jettons/find",
-                  "standard/tokens/jettons/wallet-data",
-                  "standard/tokens/jettons/supply-data",
-                  "standard/tokens/jettons/mintless/overview",
-                  "standard/tokens/jettons/mintless/deploy",
-                  "standard/tokens/jettons/api"
+                  "tvm/tools/txtracer",
+                  "tvm/tools/retracer",
+                  "tvm/tools/tvm-explorer",
+                  "tvm/tools/ton-decompiler"
+                ]
+              },
+              "tvm/instructions",
+              "tvm/builders-and-slices",
+              "tvm/continuations",
+              "tvm/registers",
+              "tvm/gas",
+              "tvm/initialization",
+              "tvm/exit-codes",
+              "tvm/get-method"
+            ]
+          },
+          {
+            "group": "Primitives",
+            "pages": [
+              {
+                "group": "Serialization",
+                "pages": [
+                  "foundations/serialization/cells",
+                  "foundations/serialization/library",
+                  "foundations/serialization/merkle",
+                  "foundations/serialization/merkle-update",
+                  "foundations/serialization/pruned",
+                  "foundations/serialization/boc"
                 ]
               },
               {
-                "group": "NFT",
+                "group": "Addresses",
                 "pages": [
-                  "standard/tokens/nft/overview",
-                  "standard/tokens/nft/how-it-works",
-                  "standard/tokens/nft/sbt",
-                  "standard/tokens/nft/comparison",
-                  "standard/tokens/nft/deploy",
-                  "standard/tokens/nft/transfer",
-                  "standard/tokens/nft/metadata",
-                  "standard/tokens/nft/verify",
-                  "standard/tokens/nft/api",
-                  "standard/tokens/nft/nft-reference",
-                  "standard/tokens/nft/nft-2.0"
-                ]
-              },
-              "standard/tokens/airdrop"
-            ]
-          },
-          "standard/vesting"
-        ]
-      },
-      {
-        "group": "Contract development",
-        "pages": [
-          "contract-dev/acton",
-          {
-            "group": "IDEs and editor plugins",
-            "pages": [
-              "contract-dev/ide/vscode",
-              "contract-dev/ide/jetbrains"
-            ]
-          },
-          {
-            "group": "Techniques",
-            "expanded": true,
-            "pages": [
-              "contract-dev/techniques/signing",
-              "contract-dev/techniques/contract-sharding",
-              "contract-dev/techniques/security",
-              "contract-dev/techniques/gas",
-              "contract-dev/techniques/on-chain-jetton-processing",
-              "contract-dev/techniques/using-on-chain-libraries",
-              "contract-dev/techniques/random",
-              "contract-dev/techniques/upgrades",
-              "contract-dev/techniques/vanity",
-              "contract-dev/techniques/zero-knowledge"
-            ]
-          },
-          {
-            "group": "Blueprint",
-            "tag": "legacy",
-            "pages": [
-              "contract-dev/blueprint/overview",
-              "contract-dev/blueprint/first-smart-contract",
-              "contract-dev/blueprint/develop",
-              {
-                "group": "Testing",
-                "pages": [
-                  "contract-dev/testing/overview",
-                  "contract-dev/testing/reference"
-                ]
-              },
-              "contract-dev/blueprint/debug",
-              "contract-dev/blueprint/deploy",
-              "contract-dev/blueprint/coverage",
-              "contract-dev/blueprint/benchmarks",
-              "contract-dev/blueprint/config",
-              "contract-dev/blueprint/cli",
-              "contract-dev/blueprint/api"
-            ]
-          }
-        ]
-      },
-      {
-        "group": "Tolk language",
-        "tag": "recommended",
-        "pages": [
-          "tolk/overview",
-          "tolk/basic-syntax",
-          "tolk/idioms-conventions",
-          "tolk/examples",
-          {
-            "group": "Type system",
-            "pages": [
-              "tolk/types/list-of-types",
-              "tolk/types/numbers",
-              "tolk/types/booleans",
-              "tolk/types/address",
-              "tolk/types/cells",
-              "tolk/types/strings",
-              "tolk/types/structures",
-              "tolk/types/aliases",
-              "tolk/types/generics",
-              "tolk/types/enums",
-              "tolk/types/nullable",
-              "tolk/types/unions",
-              "tolk/types/tensors",
-              "tolk/types/tuples",
-              "tolk/types/maps",
-              "tolk/types/callables",
-              "tolk/types/unknown",
-              "tolk/types/void-never",
-              "tolk/types/type-checks-and-casts",
-              "tolk/types/overall-tvm-stack",
-              "tolk/types/overall-serialization"
-            ]
-          },
-          {
-            "group": "Syntax details",
-            "pages": [
-              "tolk/syntax/variables",
-              "tolk/syntax/conditions-loops",
-              "tolk/syntax/exceptions",
-              "tolk/syntax/functions-methods",
-              "tolk/syntax/structures-fields",
-              "tolk/syntax/pattern-matching",
-              "tolk/syntax/mutability",
-              "tolk/syntax/operators",
-              "tolk/syntax/imports"
-            ]
-          },
-          {
-            "group": "Language features",
-            "pages": [
-              "tolk/features/message-handling",
-              "tolk/features/contract-storage",
-              "tolk/features/contract-getters",
-              "tolk/features/contract-abi",
-              "tolk/features/message-sending",
-              "tolk/features/auto-serialization",
-              "tolk/features/lazy-loading",
-              "tolk/features/jetton-payload",
-              "tolk/features/standard-library",
-              "tolk/features/asm-functions",
-              "tolk/features/compiler-optimizations"
-            ]
-          },
-          {
-            "group": "Migrating from FunC",
-            "pages": [
-              "tolk/from-func/tolk-vs-func",
-              "tolk/from-func/stdlib-comparison",
-              "tolk/from-func/converter"
-            ]
-          },
-          "tolk/changelog"
-        ]
-      },
-      {
-        "group": "Other languages",
-        "pages": [
-          {
-            "group": "TL-B",
-            "pages": [
-              "languages/tl-b/overview",
-              "languages/tl-b/syntax-and-semantics",
-              "languages/tl-b/simple-examples",
-              "languages/tl-b/complex-and-non-trivial-examples",
-              "languages/tl-b/tep-examples",
-              "languages/tl-b/tooling"
-            ]
-          },
-          {
-            "group": "Fift",
-            "pages": [
-              "languages/fift/overview",
-              "languages/fift/fift-and-tvm-assembly",
-              "languages/fift/deep-dive",
-              "languages/fift/multisig",
-              "languages/fift/whitepaper"
-            ]
-          },
-          {
-            "group": "FunC",
-            "pages": [
-              "languages/func/overview",
-              "languages/func/cookbook",
-              {
-                "group": "Language",
-                "expanded": true,
-                "pages": [
-                  "languages/func/comments",
-                  "languages/func/types",
-                  "languages/func/literals",
-                  "languages/func/operators",
-                  "languages/func/expressions",
-                  "languages/func/statements",
-                  {
-                    "group": "Program declarations",
-                    "expanded": true,
-                    "pages": [
-                      "languages/func/declarations-overview",
-                      "languages/func/functions",
-                      "languages/func/special-functions",
-                      "languages/func/asm-functions",
-                      "languages/func/global-variables",
-                      "languages/func/compiler-directives"
-                    ]
-                  },
-                  "languages/func/built-ins",
-                  "languages/func/dictionaries"
+                  "foundations/addresses/overview",
+                  "foundations/addresses/formats",
+                  "foundations/addresses/serialize",
+                  "foundations/addresses/derive"
                 ]
               },
               {
-                "group": "Libraries",
-                "expanded": true,
+                "group": "Messages & Transactions",
                 "pages": [
-                  "languages/func/stdlib",
-                  "languages/func/libraries"
+                  "foundations/messages/overview",
+                  "foundations/messages/internal",
+                  "foundations/messages/external-in",
+                  "foundations/messages/external-out",
+                  "foundations/messages/deploy",
+                  "foundations/messages/modes",
+                  "foundations/messages/ordinary-tx"
                 ]
               },
-              "languages/func/changelog",
-              "languages/func/known-issues"
+              {
+                "group": "Actions",
+                "pages": [
+                  "foundations/actions/overview",
+                  "foundations/actions/send",
+                  "foundations/actions/reserve",
+                  "foundations/actions/set-code",
+                  "foundations/actions/change-library"
+                ]
+              },
+              {
+                "group": "Consensus",
+                "pages": [
+                  "foundations/consensus/catchain-visualizer"
+                ]
+              },
+              "foundations/status",
+              "foundations/phases",
+              "foundations/fees",
+              "foundations/traces",
+              "foundations/shards",
+              "foundations/limits",
+              "foundations/config",
+              {
+                "group": "Web3 services",
+                "pages": [
+                  "foundations/web3/overview",
+                  "foundations/web3/ton-dns",
+                  "foundations/web3/ton-storage",
+                  "foundations/web3/ton-proxy",
+                  "foundations/web3/ton-sites"
+                ]
+              },
+              {
+                "group": "Merkle proofs",
+                "pages": [
+                  "foundations/proofs/overview",
+                  "foundations/proofs/verifying-liteserver-proofs"
+                ]
+              },
+              "foundations/system",
+              "foundations/precompiled"
             ]
           },
-          "languages/tact"
-        ]
-      },
-      {
-        "group": "TVM: TON Virtual Machine",
-        "pages": [
-          "tvm/overview",
-          {
-            "group": "Tools",
-            "pages": [
-              "tvm/tools/txtracer",
-              "tvm/tools/retracer",
-              "tvm/tools/tvm-explorer",
-              "tvm/tools/ton-decompiler"
-            ]
-          },
-          "tvm/instructions",
-          "tvm/builders-and-slices",
-          "tvm/continuations",
-          "tvm/registers",
-          "tvm/gas",
-          "tvm/initialization",
-          "tvm/exit-codes",
-          "tvm/get-method"
-        ]
-      },
-      {
-        "group": "Blockchain foundations",
-        "pages": [
-          {
-            "group": "Serialization",
-            "pages": [
-              "foundations/serialization/cells",
-              "foundations/serialization/library",
-              "foundations/serialization/merkle",
-              "foundations/serialization/merkle-update",
-              "foundations/serialization/pruned",
-              "foundations/serialization/boc"
-            ]
-          },
-          {
-            "group": "Addresses",
-            "pages": [
-              "foundations/addresses/overview",
-              "foundations/addresses/formats",
-              "foundations/addresses/serialize",
-              "foundations/addresses/derive"
-            ]
-          },
-          {
-            "group": "Messages & Transactions",
-            "pages": [
-              "foundations/messages/overview",
-              "foundations/messages/internal",
-              "foundations/messages/external-in",
-              "foundations/messages/external-out",
-              "foundations/messages/deploy",
-              "foundations/messages/modes",
-              "foundations/messages/ordinary-tx"
-            ]
-          },
-          {
-            "group": "Actions",
-            "pages": [
-              "foundations/actions/overview",
-              "foundations/actions/send",
-              "foundations/actions/reserve",
-              "foundations/actions/set-code",
-              "foundations/actions/change-library"
-            ]
-          },
-          {
-            "group": "Consensus",
-            "pages": [
-              "foundations/consensus/catchain-visualizer"
-            ]
-          },
-          "foundations/status",
-          "foundations/phases",
-          "foundations/fees",
-          "foundations/traces",
-          "foundations/shards",
-          "foundations/limits",
-          "foundations/config",
-          {
-            "group": "Web3 services",
-            "pages": [
-              "foundations/web3/overview",
-              "foundations/web3/ton-dns",
-              "foundations/web3/ton-storage",
-              "foundations/web3/ton-proxy",
-              "foundations/web3/ton-sites"
-            ]
-          },
-          {
-            "group": "Merkle proofs",
-            "pages": [
-              "foundations/proofs/overview",
-              "foundations/proofs/verifying-liteserver-proofs"
-            ]
-          },
-          "foundations/system",
-          "foundations/precompiled",
           {
             "group": "Whitepapers",
             "pages": [
@@ -773,25 +820,9 @@
               "foundations/whitepapers/ton",
               "foundations/whitepapers/catchain"
             ]
-          },
-          "foundations/glossary"
-        ]
-      },
-      {
-        "group": "Contribute",
-        "pages": [
-          "contribute/style-guide",
-          {
-            "group": "Components and snippets",
-            "pages": [
-              "contribute/snippets/overview",
-              "contribute/snippets/aside",
-              "contribute/snippets/image",
-              "contribute/snippets/filetree"
-            ]
           }
         ]
-      }
+      } 
     ]
   },
   "footer": {
