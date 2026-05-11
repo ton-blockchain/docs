@@ -673,7 +673,7 @@ Returns: `readonly [string, Dispatch<SetStateAction<string>>]` — Tuple `[theme
 
 Read the i18n context published by [`I18nProvider`](#i18nprovider) (or the wrapping [`AppKitProvider`](#appkitprovider)); returns the active locale, translation function and helpers to switch locales or merge dictionaries. Throws when rendered outside the provider tree.
 
-Returns: `I18nContextType`.
+Returns: `I18nContextType` — The i18n context ([`I18nContextType`](#i18ncontexttype)) with `activeLocale`, `t`, `locale` and `addDict`.
 
 ### Signing
 
@@ -841,7 +841,7 @@ Returns: <code><a href="#usetransactionstatusreturntype">UseTransactionStatusRet
 
 #### useTransferTon
 
-React mutation hook that builds and sends a TON transfer from the selected wallet in one step (wraps [`transferTon`](/ecosystem/appkit/reference/appkit#transferton)); returns `mutate(\{ recipientAddress, amount, comment? \})`. The underlying action throws `Error('Wallet not connected')` if no wallet is currently selected — TanStack Query surfaces it via the mutation's `error`.
+React mutation hook that builds and sends a TON transfer from the selected wallet in one step (wraps [`transferTon`](/ecosystem/appkit/reference/appkit#transferton)); returns `mutate(\{ recipientAddress, amount, comment?, payload?, stateInit? \})`. The underlying action throws `Error('Wallet not connected')` if no wallet is currently selected — TanStack Query surfaces it via the mutation's `error`.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -979,11 +979,11 @@ Pill wrapper — renders a horizontal [`Block`](#block) that hosts the icon and 
 
 ##### BalanceBadge.Icon
 
-Token icon — re-exported [`Logo`](#logo) that draws the asset's image with a network badge.
+Token icon — re-exported [`Logo`](#logo) that draws the asset's image.
 
 ##### BalanceBadge.BalanceBlock
 
-Vertical block holding the balance amount and ticker symbol side by side.
+Block holding the balance amount and ticker symbol side by side.
 
 ##### BalanceBadge.Symbol
 
@@ -1377,7 +1377,7 @@ One row of the swap form. Renders the amount input, fiat conversion, balance lin
 | `fiatSymbol` | `string` | Fiat currency symbol displayed in front of the converted value. Defaults to `"$"`. |
 | `token` | `AppkitUIToken` | Currently selected token; controls the token selector label, balance formatting and fiat conversion. |
 | `onAmountChange` | `(value: string) => void` | Called with the raw input value when the user edits the amount. Only fired for `type: "pay"`. |
-| `balance` | `string` | Raw balance (in base units) of `token` for the active wallet; rendered next to the amount. |
+| `balance` | `string` | Formatted balance of `token` for the active wallet, as a human-readable decimal string; rendered in the balance line beneath the input. |
 | `isBalanceLoading` | `boolean` | When true, the balance area renders a skeleton placeholder instead of the value. |
 | `loading` | `boolean` | When true, the underlying input renders its loading state — used while a fresh quote is in flight. |
 | `onMaxClick` | `() => void` | Called when the user clicks the "max" shortcut to fill the maximum spendable amount. |
@@ -2996,7 +2996,7 @@ Props accepted by [`SwapField`](#swapfield) — a single source/target row insid
 | `fiatSymbol` | `string` | Fiat currency symbol displayed in front of the converted value. Defaults to `"$"`. |
 | `token` | `AppkitUIToken` | Currently selected token; controls the token selector label, balance formatting and fiat conversion. |
 | `onAmountChange` | `(value: string) => void` | Called with the raw input value when the user edits the amount. Only fired for `type: "pay"`. |
-| `balance` | `string` | Raw balance (in base units) of `token` for the active wallet; rendered next to the amount. |
+| `balance` | `string` | Formatted balance of `token` for the active wallet, as a human-readable decimal string; rendered in the balance line beneath the input. |
 | `isBalanceLoading` | `boolean` | When true, the balance area renders a skeleton placeholder instead of the value. |
 | `loading` | `boolean` | When true, the underlying input renders its loading state — used while a fresh quote is in flight. |
 | `onMaxClick` | `() => void` | Called when the user clicks the "max" shortcut to fill the maximum spendable amount. |
