@@ -10,6 +10,11 @@ The language compiles to [TVM](/tvm/overview) and provides direct control over e
 ```tolk
 type AllowedMessage = CounterIncrement | CounterReset
 
+contract Counter {
+    storage: Storage
+    incomingMessages: AllowedMessage
+}
+
 fun onInternalMessage(in: InMessage) {
     val msg = lazy AllowedMessage.fromSlice(in.body);
     match (msg) {
@@ -33,6 +38,7 @@ Tolk provides high-level readability while preserving low-level control:
 - a type system for describing [cell](/foundations/serialization/cells) layouts;
 - [`lazy` loading](/languages/tolk/features/lazy-loading) that skips unused fields;
 - unified message composition and deployment;
+- a [`contract` declaration](/languages/tolk/features/contract-abi) that drives ABI export, TypeScript wrappers, source maps, and debugging;
 - a compiler targeting the Fift assembler;
 - tooling with IDE integration.
 

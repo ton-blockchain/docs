@@ -4,6 +4,8 @@ title: "Handling messages"
 
 Each Tolk contract has special entrypoints – reserved functions that handle different message types. Handling an incoming message uses ordinary language constructs.
 
+A contract file typically begins with a [`contract` declaration](/languages/tolk/features/contract-abi) that names the contract and lists its public shapes — including the union of incoming messages.
+
 ## `onInternalMessage`
 
 Contracts primarily handle [internal messages](/foundations/messages/internal#internal-messages). Users interact with contracts through their wallets, which send internal messages to the contract. The entrypoint is declared as follows:
@@ -18,6 +20,7 @@ The basic guidelines are:
 
 - For each incoming message, declare a `struct` with a unique 32-bit prefix, opcode.
 - Declare a union type that represents all supported messages.
+- Reference the union from `incomingMessages:` in the [`contract` declaration](/languages/tolk/features/contract-abi).
 - Parse this union from `in.body` and `match` over structures.
 
 ```tolk
@@ -30,6 +33,11 @@ struct (0x23456789) CounterReset {
 }
 
 type AllowedMessage = CounterIncrement | CounterReset
+
+contract Counter {
+    storage: Storage
+    incomingMessages: AllowedMessage
+}
 
 fun onInternalMessage(in: InMessage) {
     val msg = lazy AllowedMessage.fromSlice(in.body);
@@ -227,7 +235,7 @@ When a contract accepts an external message, it has limited gas for execution. A
 
 Tolk defines several reserved entrypoints:
 
-- `fun onTickTock` is invoked on tick-tock transactions;
+- `fun onRunTickTock` is invoked on tick-tock transactions;
 - `fun onSplitPrepare` and `fun onSplitInstall` are reserved for split and install transactions; currently not used by the blockchain;
 - `fun main` is used for simple snippets and demos.
 

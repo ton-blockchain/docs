@@ -93,7 +93,7 @@ get fun publicKey() {
 ### Boolean type
 
 - FunC represents only integers: `-1` for true, `0` for false; `ifnot`.
-- Tolk provides a [`bool` type](/languages/tolk/types/booleans) and logical operators `&&`, `||`, and `!`.
+- Tolk provides a [`bool` type](/languages/tolk/types/booleans) and logical operators `&&`, `||`, and `!`. Conditions of `if`, `while`, ternary, and `assert` must be `bool` — write `if (someInt != 0)` instead of `if (someInt)`.
 
 ```tolk
 if (trustInput || validate(input)) {
@@ -394,3 +394,8 @@ Although Tolk is a high-level language, it exposes [low-level capabilities](/lan
 fun incThenNegate(v: int): int
     asm "INC" "NEGATE"
 ```
+
+### ABI, TypeScript wrappers, and a debugger
+
+- FunC has no machine-readable interface description — clients hand-roll wrappers and rely on heuristics.
+- Tolk emits an [ABI JSON](/languages/tolk/features/contract-abi#contract-abi-export) directly from sources whenever a file declares a `contract { ... }`. The same metadata drives auto-generated TypeScript wrappers, source maps, and a step-by-step debugger that works on fully-optimized bytecode.
