@@ -77,7 +77,7 @@ const appKit = new AppKit({
 
 #### EventEmitter
 
-Strongly-typed event emitter built on a string event name → payload type map; backs [`AppKit`](#appkit)`.emitter` and any custom emitters apps create. `appKit.emitter.on(name, handler)` returns an unsubscribe function.
+Strongly-typed event emitter built on a string event name → payload type map; backs [`AppKit`](#appkit)'s `emitter` and any custom emitters apps create. `appKit.emitter.on(name, handler)` returns an unsubscribe function.
 
 Constructor: `new EventEmitter()`
 
@@ -165,7 +165,7 @@ Constructor: `new DefiError(message, code, details)`
 
 #### AppKitNetworkManager
 
-Network manager exposed as [`AppKit`](#appkit)`.networkManager` — extends walletkit's `KitNetworkManager` with a default-network setter and AppKit event emission.
+Network manager exposed as [`AppKit`](#appkit)'s `networkManager` — extends walletkit's `KitNetworkManager` with a default-network setter and AppKit event emission.
 
 Constructor: `new AppKitNetworkManager(options, emitter)`
 
@@ -176,7 +176,7 @@ Constructor: `new AppKitNetworkManager(options, emitter)`
 
 #### KitNetworkManager
 
-Walletkit-side network manager — the base class [`AppKitNetworkManager`](#appkitnetworkmanager) extends with default-network state and AppKit event emission. Apps usually interact with the [`AppKitNetworkManager`](#appkitnetworkmanager) subclass via [`AppKit`](#appkit)`.networkManager`.
+Walletkit-side network manager — the base class [`AppKitNetworkManager`](#appkitnetworkmanager) extends with default-network state and AppKit event emission. Apps usually interact with the [`AppKitNetworkManager`](#appkitnetworkmanager) subclass via [`AppKit`](#appkit)'s `networkManager`.
 
 Constructor: `new KitNetworkManager(options)`
 
@@ -200,13 +200,13 @@ Constructor: `new StakingError(message, code, details)`
 
 #### StakingManager
 
-Runtime that owns registered [`StakingProvider`](#stakingprovider)s and dispatches quote/stake/balance calls. Exposed as [`AppKit`](#appkit)`.stakingManager`; usually accessed through the higher-level actions ([`getStakingQuote`](#getstakingquote), [`buildStakeTransaction`](#buildstaketransaction), [`getStakedBalance`](#getstakedbalance)).
+Runtime that owns registered [`StakingProvider`](#stakingprovider)s and dispatches quote/stake/balance calls. Exposed as [`AppKit`](#appkit)'s `stakingManager`; usually accessed through the higher-level actions ([`getStakingQuote`](#getstakingquote), [`buildStakeTransaction`](#buildstaketransaction), [`getStakedBalance`](#getstakedbalance)).
 
 Constructor: `new StakingManager(createFactoryContext)`
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `createFactoryContext`\* | `() => ProviderFactoryContext` | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
 
 #### StakingProvider
 
@@ -290,13 +290,13 @@ Constructor: `new SwapError(message, code, details)`
 
 #### SwapManager
 
-Runtime that owns registered [`SwapProvider`](#swapprovider)s and dispatches quote/swap calls. Exposed as [`AppKit`](#appkit)`.swapManager`; usually accessed through the higher-level actions ([`getSwapQuote`](#getswapquote), [`buildSwapTransaction`](#buildswaptransaction)).
+Runtime that owns registered [`SwapProvider`](#swapprovider)s and dispatches quote/swap calls. Exposed as [`AppKit`](#appkit)'s `swapManager`; usually accessed through the higher-level actions ([`getSwapQuote`](#getswapquote), [`buildSwapTransaction`](#buildswaptransaction)).
 
 Constructor: `new SwapManager(createFactoryContext)`
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `createFactoryContext`\* | `() => ProviderFactoryContext` | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
 
 #### SwapProvider
 
@@ -457,7 +457,7 @@ console.log('API Client:', apiClient);
 
 #### addConnector
 
-Register a wallet connector at runtime — equivalent to passing it via [`AppKitConfig`](#appkitconfig)`.connectors` at construction, but available after AppKit is up.
+Register a wallet connector at runtime — equivalent to passing it via [`AppKitConfig`](#appkitconfig)'s `connectors` at construction, but available after AppKit is up.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -513,7 +513,7 @@ Returns: <code><a href="#connectorfactory">ConnectorFactory</a></code> — The s
 
 #### createTonConnectConnector
 
-Build a TonConnect-backed [`Connector`](#connector) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)`.connectors` or [`addConnector`](#addconnector).
+Build a TonConnect-backed [`Connector`](#connector) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)'s `connectors` or [`addConnector`](#addconnector).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -589,7 +589,7 @@ if (connector) {
 
 #### getConnectors
 
-List every connector registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)`.connectors` and those added later through [`addConnector`](#addconnector).
+List every connector registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)'s `connectors` and those added later through [`addConnector`](#addconnector).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -675,7 +675,7 @@ Returns: <code><a href="#createcryptoonrampdepositreturntype">CreateCryptoOnramp
 
 #### createLayerswapProvider
 
-Build a Layerswap-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)`.providers` or [`registerProvider`](#registerprovider).
+Build a Layerswap-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -685,7 +685,7 @@ Returns: <code>ProviderFactory&lt;<a href="#layerswapcryptoonrampprovider">Layer
 
 #### createSwapsXyzProvider
 
-Build a swaps.xyz-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)`.providers` or [`registerProvider`](#registerprovider).
+Build a swaps.xyz-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -714,7 +714,7 @@ console.log('Crypto onramp provider:', provider.providerId);
 
 #### getCryptoOnrampProviders
 
-List every crypto-onramp provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)`.providers` and those added later through [`registerProvider`](#registerprovider).
+List every crypto-onramp provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)'s `providers` and those added later through [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -781,7 +781,7 @@ Returns: <code><a href="#watchcryptoonrampprovidersreturntype">WatchCryptoOnramp
 
 #### registerProvider
 
-Register a DeFi / onramp provider at runtime — equivalent to passing it via [`AppKitConfig`](#appkitconfig)`.providers` at construction, but available after AppKit is up. AppKit emits `provider:registered`, picked up by domain-specific subscribers like [`watchSwapProviders`](#watchswapproviders) and [`watchCryptoOnrampProviders`](#watchcryptoonrampproviders).
+Register a DeFi / onramp provider at runtime — equivalent to passing it via [`AppKitConfig`](#appkitconfig)'s `providers` at construction, but available after AppKit is up. AppKit emits `provider:registered`, picked up by domain-specific subscribers like [`watchSwapProviders`](#watchswapproviders) and [`watchCryptoOnrampProviders`](#watchcryptoonrampproviders).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1220,7 +1220,7 @@ if (network) {
 
 #### getNetworks
 
-List every network configured on this AppKit instance via [`AppKitConfig`](#appkitconfig)`.networks`.
+List every network configured on this AppKit instance via [`AppKitConfig`](#appkitconfig)'s `networks`.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1427,13 +1427,13 @@ console.log('Stake Transaction:', txRequest);
 
 #### createTonstakersProvider
 
-Build a Tonstakers-backed [`StakingProvider`](#stakingprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)`.providers` or [`registerProvider`](#registerprovider).
+Build a Tonstakers-backed [`StakingProvider`](#stakingprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `config` | <code><a href="#tonstakersproviderconfig">TonStakersProviderConfig</a></code> | Optional [`TonStakersProviderConfig`](#tonstakersproviderconfig); defaults are filled in for any field left undefined. |
 
-Returns: <code>(ctx: ProviderFactoryContext) =&gt; <a href="#tonstakersstakingprovider">TonStakersStakingProvider</a></code>.
+Returns: <code>(ctx: <a href="#providerfactorycontext">ProviderFactoryContext</a>) =&gt; <a href="#tonstakersstakingprovider">TonStakersStakingProvider</a></code>.
 
 #### getStakedBalance
 
@@ -1526,7 +1526,7 @@ console.log('Provider Metadata:', providerMetadata);
 
 #### getStakingProviders
 
-List every staking provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)`.providers` and those added later through [`registerProvider`](#registerprovider).
+List every staking provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)'s `providers` and those added later through [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1627,23 +1627,23 @@ console.log('Swap Transaction:', transactionResponse);
 
 #### createDeDustProvider
 
-Build a DeDust-backed [`SwapProvider`](#swapprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)`.providers` or [`registerProvider`](#registerprovider).
+Build a DeDust-backed [`SwapProvider`](#swapprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `config` | <code><a href="#dedustswapproviderconfig">DeDustSwapProviderConfig</a></code> | Optional [`DeDustSwapProviderConfig`](#dedustswapproviderconfig); defaults are filled in for any field left undefined. |
 
-Returns: <code>(ctx: ProviderFactoryContext) =&gt; <a href="#dedustswapprovider">DeDustSwapProvider</a></code>.
+Returns: <code>(ctx: <a href="#providerfactorycontext">ProviderFactoryContext</a>) =&gt; <a href="#dedustswapprovider">DeDustSwapProvider</a></code>.
 
 #### createOmnistonProvider
 
-Build an Omniston-backed [`SwapProvider`](#swapprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)`.providers` or [`registerProvider`](#registerprovider).
+Build an Omniston-backed [`SwapProvider`](#swapprovider) for AppKit; pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `config` | <code><a href="#omnistonswapproviderconfig">OmnistonSwapProviderConfig</a></code> | Optional [`OmnistonSwapProviderConfig`](#omnistonswapproviderconfig); defaults are filled in for any field left undefined. |
 
-Returns: <code>(ctx: ProviderFactoryContext) =&gt; <a href="#omnistonswapprovider">OmnistonSwapProvider</a></code>.
+Returns: <code>(ctx: <a href="#providerfactorycontext">ProviderFactoryContext</a>) =&gt; <a href="#omnistonswapprovider">OmnistonSwapProvider</a></code>.
 
 #### getSwapManager
 
@@ -1681,7 +1681,7 @@ const swapProvider = getSwapProvider(appKit, { id: 'stonfi' });
 
 #### getSwapProviders
 
-List every swap provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)`.providers` and those added later through [`registerProvider`](#registerprovider).
+List every swap provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)'s `providers` and those added later through [`registerProvider`](#registerprovider).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1944,7 +1944,7 @@ Switch which connected wallet AppKit treats as selected — emits `WALLETS_EVENT
 | --- | --- | --- |
 | `appKit`\* | [`AppKit`](#appkit) | Runtime instance. |
 | `parameters`\* | [`SetSelectedWalletIdParameters`](#setselectedwalletidparameters) | Wallet id to select, or `null` to clear. |
-| `parameters.walletId`\* | `string \| null` | Wallet id (as returned by [`WalletInterface`](#walletinterface)`.getWalletId()`) to select; pass `null` to clear the selection. |
+| `parameters.walletId`\* | `string \| null` | Wallet id (as returned by [`WalletInterface`](#walletinterface)'s `getWalletId()`) to select; pass `null` to clear the selection. |
 
 Returns: <code><a href="#setselectedwalletidreturntype">SetSelectedWalletIdReturnType</a></code>.
 
@@ -2149,7 +2149,7 @@ Indexer/RPC client interface used by AppKit to read on-chain state — balance, 
 
 #### ApiClientConfig
 
-Configuration accepted by [`NetworkConfig`](#networkconfig)`.apiClient` — picks an [`ApiClient`](#apiclient) implementation (Toncenter / TonAPI) and supplies its endpoint URL plus optional API key.
+Configuration accepted by [`NetworkConfig`](#networkconfig)'s `apiClient` — picks an [`ApiClient`](#apiclient) implementation (Toncenter / TonAPI) and supplies its endpoint URL plus optional API key.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -2174,7 +2174,7 @@ type GetApiClientReturnType = ApiClient;
 
 #### TokenInfo
 
-Display metadata for a token (TON, jetton, or NFT) — name, symbol, image and animation as reported by the indexer; surfaced as [`Jetton`](#jetton)`.info` and [`NFT`](#nft)`.info`.
+Display metadata for a token (TON, jetton, or NFT) — name, symbol, image and animation as reported by the indexer; surfaced as [`Jetton`](#jetton)'s `info` and [`NFT`](#nft)'s `info`.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -2188,7 +2188,7 @@ Display metadata for a token (TON, jetton, or NFT) — name, symbol, image and a
 
 #### AddConnectorParameters
 
-Connector instance or factory accepted by [`addConnector`](#addconnector) — same shape used in [`AppKitConfig`](#appkitconfig)`.connectors`.
+Connector instance or factory accepted by [`addConnector`](#addconnector) — same shape used in [`AppKitConfig`](#appkitconfig)'s `connectors`.
 
 ```ts
 type AddConnectorParameters = ConnectorInput;
@@ -2220,7 +2220,7 @@ type ConnectReturnType = void;
 
 #### Connector
 
-Wallet connector contract — the protocol-specific bridge (TonConnect, embedded wallet, …) AppKit drives once you register it via [`AppKitConfig`](#appkitconfig)`.connectors`.
+Wallet connector contract — the protocol-specific bridge (TonConnect, embedded wallet, …) AppKit drives once you register it via [`AppKitConfig`](#appkitconfig)'s `connectors`.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -2252,7 +2252,7 @@ Context that AppKit injects into a [`ConnectorFactory`](#connectorfactory) when 
 
 #### ConnectorInput
 
-Either a ready-made [`Connector`](#connector) or a [`ConnectorFactory`](#connectorfactory) that produces one — the value accepted by [`addConnector`](#addconnector) and [`AppKitConfig`](#appkitconfig)`.connectors`.
+Either a ready-made [`Connector`](#connector) or a [`ConnectorFactory`](#connectorfactory) that produces one — the value accepted by [`addConnector`](#addconnector) and [`AppKitConfig`](#appkitconfig)'s `connectors`.
 
 ```ts
 type ConnectorInput = Connector | ConnectorFactory;
@@ -2320,7 +2320,7 @@ type GetConnectorsReturnType = readonly Connector[];
 | `connectWallet`\* | <code>(network?: <a href="#network">Network</a>) =&gt; Promise&lt;void&gt;</code> | Initiate a wallet connection flow on the given network. |
 | `disconnectWallet`\* | `() => Promise<void>` | Disconnect the currently connected wallet, if any. |
 | `getConnectedWallets`\* | <code>() =&gt; <a href="#walletinterface">WalletInterface</a>[]</code> | Wallets currently connected through this connector. |
-| `tonConnectUI`\* | `TonConnectUI \| null` | _TODO: describe_ |
+| `tonConnectUI`\* | `TonConnectUI \| null` | Underlying `TonConnectUI` instance — `null` during SSR or before the connector has been initialised. Apps that need to drive the modal directly (e.g. custom UI flows) can read this and call its methods. |
 
 #### TonConnectConnectorConfig
 
@@ -2382,7 +2382,7 @@ Constructor options for [`AppKit`](#appkit) — networks, connectors, providers 
 
 #### AppKitEmitter
 
-Strongly-typed event emitter exposed as [`AppKit`](#appkit)`.emitter`; `appKit.emitter.on(name, handler)` returns an unsubscribe function.
+Strongly-typed event emitter exposed as [`AppKit`](#appkit)'s `emitter`; `appKit.emitter.on(name, handler)` returns an unsubscribe function.
 
 ```ts
 type AppKitEmitter = EventEmitter<AppKitEvents>;
@@ -2394,18 +2394,18 @@ Map of every event name AppKit can emit to its payload type, used to type listen
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `connector:added`\* | <code><a href="#connectoraddedpayload">ConnectorAddedPayload</a></code> | _TODO: describe_ |
-| `connector:removed`\* | <code><a href="#connectorremovedpayload">ConnectorRemovedPayload</a></code> | _TODO: describe_ |
-| `connector:wallets-updated`\* | <code><a href="#connectorwalletsupdatedpayload">ConnectorWalletsUpdatedPayload</a></code> | _TODO: describe_ |
-| `wallets:updated`\* | <code>&lbrace; wallets: <a href="#walletinterface">WalletInterface</a>[] &rbrace;</code> | _TODO: describe_ |
-| `wallets:selection-changed`\* | `{ walletId: string \| null }` | _TODO: describe_ |
-| `networks:updated`\* | `Record<string, never>` | _TODO: describe_ |
-| `networks:default-changed`\* | <code><a href="#defaultnetworkchangedpayload">DefaultNetworkChangedPayload</a></code> | _TODO: describe_ |
-| `streaming:balance-update`\* | <code><a href="#balanceupdate">BalanceUpdate</a></code> | _TODO: describe_ |
-| `streaming:transactions`\* | <code><a href="#transactionsupdate">TransactionsUpdate</a></code> | _TODO: describe_ |
-| `streaming:jettons-update`\* | <code><a href="#jettonupdate">JettonUpdate</a></code> | _TODO: describe_ |
-| `provider:registered`\* | `BaseProviderUpdate` | _TODO: describe_ |
-| `provider:default-changed`\* | `BaseProviderUpdate` | _TODO: describe_ |
+| `connector:added`\* | <code><a href="#connectoraddedpayload">ConnectorAddedPayload</a></code> | Fired by [`addConnector`](#addconnector) when a connector is registered with AppKit. |
+| `connector:removed`\* | <code><a href="#connectorremovedpayload">ConnectorRemovedPayload</a></code> | Fired by `removeConnector` when a connector is unregistered from AppKit. |
+| `connector:wallets-updated`\* | <code><a href="#connectorwalletsupdatedpayload">ConnectorWalletsUpdatedPayload</a></code> | Fired by a connector whenever its connected-wallets list changes (connect, disconnect, or account switch inside the wallet). |
+| `wallets:updated`\* | <code>&lbrace; wallets: <a href="#walletinterface">WalletInterface</a>[] &rbrace;</code> | Fired by AppKit's wallet manager after re-aggregating connectors — `wallets` is the full current set. |
+| `wallets:selection-changed`\* | `{ walletId: string \| null }` | Fired when the selected wallet changes — `walletId` is the new selection, or `null` when cleared. |
+| `networks:updated`\* | `Record<string, never>` | Fired by the network manager when a network's API client is registered or replaced via `setClient`. |
+| `networks:default-changed`\* | <code><a href="#defaultnetworkchangedpayload">DefaultNetworkChangedPayload</a></code> | Fired by [`setDefaultNetwork`](#setdefaultnetwork) — carries the new default network, or `undefined` when the constraint was cleared. |
+| `streaming:balance-update`\* | <code><a href="#balanceupdate">BalanceUpdate</a></code> | Fired by a streaming provider when a watched address's TON balance changes. |
+| `streaming:transactions`\* | <code><a href="#transactionsupdate">TransactionsUpdate</a></code> | Fired by a streaming provider when new transactions land for a watched address. |
+| `streaming:jettons-update`\* | <code><a href="#jettonupdate">JettonUpdate</a></code> | Fired by a streaming provider when a watched address's jetton holdings change. |
+| `provider:registered`\* | `BaseProviderUpdate` | Fired by a DeFi manager when a provider is registered through it (carries the provider's id and kind). |
+| `provider:default-changed`\* | `BaseProviderUpdate` | Fired by a DeFi manager when its default provider is set or cleared (carries the new default's id and kind). |
 
 #### ConnectorAddedPayload
 
@@ -2442,7 +2442,7 @@ Payload of `networks:default-changed` events — the new default network, or `un
 
 #### EventListener
 
-Listener callback signature accepted by [`EventEmitter`](#eventemitter).on — receives a [`KitEvent`](#kitevent) for the given event type and may return a Promise the emitter awaits.
+Listener callback signature accepted by [`EventEmitter`](#eventemitter)'s `on` — receives a [`KitEvent`](#kitevent) for the given event type and may return a Promise the emitter awaits.
 
 ```ts
 type EventListener = (event: KitEvent<T>) => void | Promise<void>;
@@ -2473,11 +2473,11 @@ Event-name → payload map shared between AppKit and walletkit; AppKit extends i
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `streaming:balance-update`\* | <code><a href="#balanceupdate">BalanceUpdate</a></code> | _TODO: describe_ |
-| `streaming:transactions`\* | <code><a href="#transactionsupdate">TransactionsUpdate</a></code> | _TODO: describe_ |
-| `streaming:jettons-update`\* | <code><a href="#jettonupdate">JettonUpdate</a></code> | _TODO: describe_ |
-| `provider:registered`\* | `BaseProviderUpdate` | _TODO: describe_ |
-| `provider:default-changed`\* | `BaseProviderUpdate` | _TODO: describe_ |
+| `streaming:balance-update`\* | <code><a href="#balanceupdate">BalanceUpdate</a></code> | Fired by a streaming provider when a watched address's TON balance changes. |
+| `streaming:transactions`\* | <code><a href="#transactionsupdate">TransactionsUpdate</a></code> | Fired by a streaming provider when new transactions land for a watched address. |
+| `streaming:jettons-update`\* | <code><a href="#jettonupdate">JettonUpdate</a></code> | Fired by a streaming provider when a watched address's jetton holdings change. |
+| `provider:registered`\* | `BaseProviderUpdate` | Fired by a DeFi manager when a provider is registered through it (carries the provider's id and kind). |
+| `provider:default-changed`\* | `BaseProviderUpdate` | Fired by a DeFi manager when its default provider is set or cleared (carries the new default's id and kind). |
 
 ### Crypto Onramp
 
@@ -2694,7 +2694,7 @@ Configuration accepted by [`createLayerswapProvider`](#createlayerswapprovider).
 
 #### LayerswapQuoteMetadata
 
-Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)`.metadata` from Layerswap — carries the swap id and deposit action that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) reads to build the deposit.
+Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)'s `metadata` from Layerswap — carries the swap id and deposit action that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) reads to build the deposit.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -2715,7 +2715,7 @@ Configuration accepted by [`createSwapsXyzProvider`](#createswapsxyzprovider).
 
 #### SwapsXyzQuoteMetadata
 
-Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)`.metadata` from swaps.xyz — carries the resolved action and bridge route that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) needs.
+Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)'s `metadata` from swaps.xyz — carries the resolved action and bridge route that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) needs.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -2754,7 +2754,7 @@ Shape every DeFi domain manager (swap, staking, onramp, crypto-onramp) satisfies
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `createFactoryContext`\* | `() => ProviderFactoryContext` | Build a fresh [`ProviderFactoryContext`](#providerfactorycontext) the manager hands to provider factories at registration time. |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Build a fresh [`ProviderFactoryContext`](#providerfactorycontext) the manager hands to provider factories at registration time. |
 | `registerProvider`\* | <code>(provider: <a href="#providerinput">ProviderInput</a>&lt;T&gt;) =&gt; void</code> | Register a new provider. If a provider with the same id is already registered, it is replaced. |
 | `removeProvider`\* | `(provider: T) => void` | Remove a previously registered provider. No-op if the provider was not registered. |
 | `setDefaultProvider`\* | `(providerId: string) => void` | Set the default provider |
@@ -2780,9 +2780,19 @@ Discriminator that tags every [`DefiProvider`](#defiprovider) with its kind — 
 type DefiProviderType = 'swap' | 'staking' | 'onramp' | 'crypto-onramp';
 ```
 
+#### ProviderFactoryContext
+
+Context that AppKit's DeFi managers inject into a [`ProviderInput`](#providerinput) factory at registration time — gives the provider access to AppKit's network manager and event emitter, plus an `ssr` flag for server-side initialisation.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `networkManager`\* | `NetworkManager` | Network manager the provider should use for client lookups and default-network reads. |
+| `eventEmitter`\* | <code><a href="#eventemitter">EventEmitter</a>&lt;Events = <a href="#sharedkitevents">SharedKitEvents</a>&gt;</code> | Event emitter the provider should publish its events to. |
+| `ssr` | `boolean` | `true` when the provider is constructed during server-side rendering — factories may skip browser-only setup. |
+
 #### ProviderInput
 
-Either a ready-made DeFi/onramp provider instance or a factory that produces one — the value accepted by [`AppKitConfig`](#appkitconfig)`.providers` and [`registerProvider`](#registerprovider).
+Either a ready-made DeFi/onramp provider instance or a factory that produces one — the value accepted by [`AppKitConfig`](#appkitconfig)'s `providers` and [`registerProvider`](#registerprovider).
 
 ```ts
 type ProviderInput = T | ProviderFactory<T>;
@@ -2790,7 +2800,7 @@ type ProviderInput = T | ProviderFactory<T>;
 
 #### RegisterProviderOptions
 
-Provider instance or factory accepted by [`registerProvider`](#registerprovider) — same shape used in [`AppKitConfig`](#appkitconfig)`.providers`. AppKit dispatches it to the right manager based on `provider.type` (`'swap'`, `'staking'`, `'onramp'`, `'crypto-onramp'`).
+Provider instance or factory accepted by [`registerProvider`](#registerprovider) — same shape used in [`AppKitConfig`](#appkitconfig)'s `providers`. AppKit dispatches it to the right manager based on `provider.type` (`'swap'`, `'staking'`, `'onramp'`, `'crypto-onramp'`).
 
 ```ts
 type RegisterProviderOptions = ProviderInput;
@@ -3136,7 +3146,7 @@ Single trait of an [`NFT`](#nft) — `traitType` names the category (e.g., `"Bac
 
 #### NFTCollection
 
-NFT collection (TEP-62) — surfaced as [`NFT`](#nft)`.collection` and carries the collection's name, image, owner and minting cursor.
+NFT collection (TEP-62) — surfaced as [`NFT`](#nft)'s `collection` and carries the collection's name, image, owner and minting cursor.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -3404,7 +3414,7 @@ type SignCellReturnType = SignDataResponse;
 
 #### SignData
 
-Payload the user is asked to sign — discriminated union over `'text'`, `'binary'`, and `'cell'`; nested under [`SignDataRequest`](#signdatarequest)`.data`.
+Payload the user is asked to sign — discriminated union over `'text'`, `'binary'`, and `'cell'`; nested under [`SignDataRequest`](#signdatarequest)'s `data`.
 
 ```ts
 type SignData = | { type: 'text'; value: SignDataText }
@@ -3431,7 +3441,7 @@ TON cell variant of [`SignData`](#signdata) — Base64-encoded cell payload pair
 
 #### SignDataRequest
 
-Sign-data payload sent to [`WalletInterface`](#walletinterface)`.signData` — discriminated by `data.type` (`'text'`, `'binary'`, or `'cell'`).
+Sign-data payload sent to [`WalletInterface`](#walletinterface)'s `signData` — discriminated by `data.type` (`'text'`, `'binary'`, or `'cell'`).
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -3641,7 +3651,7 @@ Staking API interface exposed by StakingManager
 | `getStakedBalance`\* | <code>(userAddress: <a href="#userfriendlyaddress">UserFriendlyAddress</a>, network?: <a href="#network">Network</a>, providerId?: string) =&gt; Promise&lt;<a href="#stakingbalance">StakingBalance</a>&gt;</code> | Get user's staked balance |
 | `getStakingProviderInfo`\* | <code>(network?: <a href="#network">Network</a>, providerId?: string) =&gt; Promise&lt;<a href="#stakingproviderinfo">StakingProviderInfo</a>&gt;</code> | Get staking provider information |
 | `getStakingProviderMetadata`\* | <code>(network?: <a href="#network">Network</a>, providerId?: string) =&gt; <a href="#stakingprovidermetadata">StakingProviderMetadata</a></code> | Get static metadata for a staking provider |
-| `createFactoryContext`\* | `() => ProviderFactoryContext` | Build a fresh [`ProviderFactoryContext`](#providerfactorycontext) the manager hands to provider factories at registration time. |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Build a fresh [`ProviderFactoryContext`](#providerfactorycontext) the manager hands to provider factories at registration time. |
 | `registerProvider`\* | <code>(provider: <a href="#providerinput">ProviderInput</a>&lt;StakingProviderInterface&gt;) =&gt; void</code> | Register a new provider. If a provider with the same id is already registered, it is replaced. |
 | `removeProvider`\* | `(provider: StakingProviderInterface) => void` | Remove a previously registered provider. No-op if the provider was not registered. |
 | `setDefaultProvider`\* | `(providerId: string) => void` | Set the default provider |
@@ -3725,7 +3735,7 @@ Parameters for getting a staking quote
 
 #### StakingTokenInfo
 
-Display metadata for a staking-pool token — `ticker`, `decimals` and `address` (or `'ton'` for native TON); carried on [`StakingProviderMetadata`](#stakingprovidermetadata)`.stakeToken` and `.receiveToken` so the UI can render the pool's input/output assets.
+Display metadata for a staking-pool token — `ticker`, `decimals` and `address` (or `'ton'` for native TON); carried on [`StakingProviderMetadata`](#stakingprovidermetadata)'s `stakeToken` and `receiveToken` so the UI can render the pool's input/output assets.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -3798,7 +3808,7 @@ DeDust-specific options forwarded through `providerOptions` on [`SwapQuoteParams
 
 #### DeDustQuoteMetadata
 
-Provider-specific metadata returned on a [`SwapQuote`](#swapquote)`.metadata` from DeDust — carries the resolved route, fees and `swapData` payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
+Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` from DeDust — carries the resolved route, fees and `swapData` payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -3900,7 +3910,7 @@ Omniston-specific options forwarded through `providerOptions` on [`SwapQuotePara
 
 #### OmnistonQuoteMetadata
 
-Provider-specific metadata returned on a [`SwapQuote`](#swapquote)`.metadata` from Omniston — carries the resolved route and signed quote payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
+Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` from Omniston — carries the resolved route and signed quote payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -3955,7 +3965,7 @@ API surface exposed by [`SwapManager`](#swapmanager) — quote and build-transac
 | --- | --- | --- |
 | `getQuote`\* | <code>(params: <a href="#swapquoteparams">SwapQuoteParams</a>, providerId?: string) =&gt; Promise&lt;<a href="#swapquote">SwapQuote</a>&gt;</code> | Get a quote for swapping tokens |
 | `buildSwapTransaction`\* | <code>(params: <a href="#swapparams">SwapParams</a>) =&gt; Promise&lt;<a href="#transactionrequest">TransactionRequest</a>&gt;</code> | Build a transaction for a swap. Provider is taken from `params.quote.providerId`, or the manager default. |
-| `createFactoryContext`\* | `() => ProviderFactoryContext` | Build a fresh [`ProviderFactoryContext`](#providerfactorycontext) the manager hands to provider factories at registration time. |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Build a fresh [`ProviderFactoryContext`](#providerfactorycontext) the manager hands to provider factories at registration time. |
 | `registerProvider`\* | <code>(provider: <a href="#providerinput">ProviderInput</a>&lt;SwapProviderInterface&lt;unknown, unknown&gt;&gt;) =&gt; void</code> | Register a new provider. If a provider with the same id is already registered, it is replaced. |
 | `removeProvider`\* | `(provider: SwapProviderInterface<unknown, unknown>) => void` | Remove a previously registered provider. No-op if the provider was not registered. |
 | `setDefaultProvider`\* | `(providerId: string) => void` | Set the default provider |
@@ -4013,7 +4023,7 @@ Parameters consumed by [`getSwapQuote`](#getswapquote) — source/target tokens 
 
 #### SwapToken
 
-Token descriptor passed to [`getSwapQuote`](#getswapquote) via [`SwapQuoteParams`](#swapquoteparams)`.from` / `.to` (and surfaced on the resulting [`SwapQuote`](#swapquote)) — address, decimals plus optional symbol/name/image used by swap-input UIs.
+Token descriptor passed to [`getSwapQuote`](#getswapquote) via [`SwapQuoteParams`](#swapquoteparams)'s `from` and `to` fields (and surfaced on the resulting [`SwapQuote`](#swapquote)) — address, decimals plus optional symbol/name/image used by swap-input UIs.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -4120,7 +4130,7 @@ type SendTransactionReturnType = SendTransactionResponse;
 
 #### Transaction
 
-Single transaction record carried inside [`TransactionsUpdate`](#transactionsupdate)`.transactions` — account, lt/hash, in/out messages and emulation result.
+Single transaction record carried inside [`TransactionsUpdate`](#transactionsupdate)'s `transactions` — account, lt/hash, in/out messages and emulation result.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -4147,7 +4157,7 @@ Single transaction record carried inside [`TransactionsUpdate`](#transactionsupd
 
 #### TransactionRequest
 
-Transaction payload passed to [`WalletInterface`](#walletinterface)`.sendTransaction` — one or more messages, optional network override and `validUntil` deadline.
+Transaction payload passed to [`WalletInterface`](#walletinterface)'s `sendTransaction` — one or more messages, optional network override and `validUntil` deadline.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -4257,7 +4267,7 @@ Parameters accepted by [`setSelectedWalletId`](#setselectedwalletid).
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `walletId`\* | `string \| null` | Wallet id (as returned by [`WalletInterface`](#walletinterface)`.getWalletId()`) to select; pass `null` to clear the selection. |
+| `walletId`\* | `string \| null` | Wallet id (as returned by [`WalletInterface`](#walletinterface)'s `getWalletId()`) to select; pass `null` to clear the selection. |
 
 #### SetSelectedWalletIdReturnType
 
@@ -4367,7 +4377,7 @@ const NETWORKS_EVENTS = {
 
 #### StakingErrorCode
 
-Discriminator carried on every [`StakingError`](#stakingerror)`.code` — `'INVALID_PARAMS'` (the request was malformed) or `'UNSUPPORTED_OPERATION'` (the provider doesn't support this call).
+Discriminator carried on every [`StakingError`](#stakingerror)'s `code` — `'INVALID_PARAMS'` (the request was malformed) or `'UNSUPPORTED_OPERATION'` (the provider doesn't support this call).
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -4376,7 +4386,7 @@ Discriminator carried on every [`StakingError`](#stakingerror)`.code` — `'INVA
 
 #### UnstakeMode
 
-Allowed unstake-timing flavours referenced by [`UnstakeModes`](#unstakemodes) and [`StakingProviderMetadata`](#stakingprovidermetadata)`.supportedUnstakeModes` — `'INSTANT'` (immediate withdrawal at a discount), `'WHEN_AVAILABLE'` (paid out as soon as liquidity is available — instantly or at round end), `'ROUND_END'` (paid out at the end of the staking round).
+Allowed unstake-timing flavours referenced by [`UnstakeModes`](#unstakemodes) and [`StakingProviderMetadata`](#stakingprovidermetadata)'s `supportedUnstakeModes` — `'INSTANT'` (immediate withdrawal at a discount), `'WHEN_AVAILABLE'` (paid out as soon as liquidity is available — instantly or at round end), `'ROUND_END'` (paid out at the end of the staking round).
 
 ```ts
 const UnstakeMode = { readonly INSTANT: "INSTANT"; readonly WHEN_AVAILABLE: "WHEN_AVAILABLE"; readonly ROUND_END: "ROUND_END"; };

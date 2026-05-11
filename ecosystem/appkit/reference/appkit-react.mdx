@@ -156,7 +156,7 @@ Returns: <code><a href="#usecryptoonrampproviderreturntype">UseCryptoOnrampProvi
 
 #### useCryptoOnrampProviders
 
-List every crypto-onramp provider registered on the AppKit instance (both those passed via [`AppKitConfig`](/ecosystem/appkit/reference/appkit#appkitconfig)`.providers` and those added later through [`registerProvider`](/ecosystem/appkit/reference/appkit#registerprovider)); subscribes to [`watchCryptoOnrampProviders`](/ecosystem/appkit/reference/appkit#watchcryptoonrampproviders) and re-reads via [`getCryptoOnrampProviders`](/ecosystem/appkit/reference/appkit#getcryptoonrampproviders) so the array stays in sync.
+List every crypto-onramp provider registered on the AppKit instance (both those passed via [`AppKitConfig`](/ecosystem/appkit/reference/appkit#appkitconfig)'s `providers` and those added later through [`registerProvider`](/ecosystem/appkit/reference/appkit#registerprovider)); subscribes to [`watchCryptoOnrampProviders`](/ecosystem/appkit/reference/appkit#watchcryptoonrampproviders) and re-reads via [`getCryptoOnrampProviders`](/ecosystem/appkit/reference/appkit#getcryptoonrampproviders) so the array stays in sync.
 
 Returns: <code><a href="#usecryptoonrampprovidersreturntype">UseCryptoOnrampProvidersReturnType</a></code> — Array of registered crypto-onramp providers.
 
@@ -803,7 +803,7 @@ Returns: <code><a href="#useswapproviderreturntype">UseSwapProviderReturnType</a
 
 #### useSwapProviders
 
-List every swap provider registered on the AppKit instance (both those passed via [`AppKitConfig`](/ecosystem/appkit/reference/appkit#appkitconfig)`.providers` and those added later through [`registerProvider`](/ecosystem/appkit/reference/appkit#registerprovider)); subscribes to [`watchSwapProviders`](/ecosystem/appkit/reference/appkit#watchswapproviders) and re-reads via [`getSwapProviders`](/ecosystem/appkit/reference/appkit#getswapproviders) so the array stays in sync.
+List every swap provider registered on the AppKit instance (both those passed via [`AppKitConfig`](/ecosystem/appkit/reference/appkit#appkitconfig)'s `providers` and those added later through [`registerProvider`](/ecosystem/appkit/reference/appkit#registerprovider)); subscribes to [`watchSwapProviders`](/ecosystem/appkit/reference/appkit#watchswapproviders) and re-reads via [`getSwapProviders`](/ecosystem/appkit/reference/appkit#getswapproviders) so the array stays in sync.
 
 Returns: <code><a href="#useswapprovidersreturntype">UseSwapProvidersReturnType</a></code> — Array of registered swap providers.
 
@@ -2029,7 +2029,7 @@ Source crypto payment method (what the user pays with on another chain) in the c
 
 #### OnrampAmountPreset
 
-Quick-pick amount button shown above the crypto-onramp input (carried on [`CryptoOnrampContextType`](#cryptoonrampcontexttype)`.presetAmounts`).
+Quick-pick amount button shown above the crypto-onramp input (carried on [`CryptoOnrampContextType`](#cryptoonrampcontexttype)'s `presetAmounts`).
 
 | Field | Type | Description |
 | --- | --- | --- |
