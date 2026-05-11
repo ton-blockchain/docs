@@ -433,7 +433,7 @@ This parameter provides the configuration for the `Catchain` protocol in the TON
 This parameter provides the configuration for the consensus protocol above `Catchain` ([Param 28](#param-28)) in the TON Blockchain. The consensus protocol is a crucial component of a blockchain network, and it ensures that all nodes agree on the state of the distributed ledger.
 
 <Aside>
-`ConfigParam 29` has evolved through several constructors. The most recent one, `consensus_config_v4#d9`, is documented in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/af252bcdaea357fee21739e984654c2c84e7d61d/crypto/block/block.tlb#L782) and is identical to the previous `consensus_config_v3#d8`, except that one bit is reallocated from `flags` to a new `use_quic:Bool` field that selects the network transport used by the legacy Catchain consensus path.
+`ConfigParam 29` has evolved through several constructors. The most recent one, `consensus_config_v4#d9`, is documented in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/af252bcdaea357fee21739e984654c2c84e7d61d/crypto/block/block.tlb#L782). It builds on `consensus_config_v3#d8`: one bit is reallocated from flags into a new `use_quic:Bool`, and `catchain_max_blocks_coeff:uint32` is appended at the end.
 </Aside>
 ### Configuration parameters
 
