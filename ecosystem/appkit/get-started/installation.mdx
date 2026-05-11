@@ -1,91 +1,69 @@
 ---
-title: "Installation"
-sidebarTitle: "Installation"
+title: "Prepare your project"
+sidebarTitle: "Preparation"
 ---
 
-Install AppKit packages into your project. This page covers package selection and bundler setup. Code samples that use AppKit live on later pages.
+Before installing AppKit, add a small browser polyfill that its dependencies rely on. The AppKit packages themselves, along with the `AppKit` instance, connectors, and providers, are covered on the following pages.
 
-Installation is a setup step, not a configuration step. After this page you have packages, types, and the default stylesheet on disk; you do not yet have an `AppKit` instance, a connector, or a registered streaming provider. Those are created later, in [Connectors](/ecosystem/appkit/get-started/connectors) and [Providers](/ecosystem/appkit/get-started/providers).
+## Buffer polyfill
 
-## Pick a path
+AppKit relies on `@ton/core` and `@ton/crypto`, and both libraries use the `Buffer` global from Node.js. Browsers do not provide it, and modern bundlers (Vite, esbuild, Rollup, Parcel) do not add it automatically. Without the polyfill the first call into `@ton/core` — usually address parsing — throws `ReferenceError: Buffer is not defined` before the application has a chance to run.
 
-| Path                                                                  | Use when                                                              |
-| --------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [React App](/ecosystem/appkit/get-started/installation/react-app)     | Your app uses React and you want hooks, components, and styles.       |
-| [Vanilla JS](/ecosystem/appkit/get-started/installation/vanilla-js)   | Your app does not use React and you call AppKit core actions.         |
+There are several ways to polyfill `Buffer` — through bundler plugins, framework-level providers, or by hand. The approach below is one option; choose whichever fits the project's tooling best.
 
-Both paths share the core `@ton/appkit` package. The React path adds `@ton/appkit-react` for the provider, hooks, and styles.
+The polyfill needs to load before any AppKit import. The reliable way to ensure that is to load it from a separate module in the HTML entry, ahead of the application script — relying on import order inside the entry file is more fragile.
 
-## Browser polyfill
+The example below uses Vite. For other module-based bundlers (Webpack, Parcel, Rollup) the steps are the same: a separate polyfill module loaded from the HTML entry before the application script.
 
-AppKit itself does not import `Buffer` directly, but its dependency chain — primarily `@ton/core` and `@ton/crypto` — expects a `Buffer` global in the browser. Modern bundlers (Vite, esbuild, Rollup, Parcel) do not provide one by default, so the polyfill is a one-time setup chore, not a runtime fix. Without it, the first call into `@ton/core` (typically address parsing) throws a `ReferenceError` before your app code runs.
+<Steps>
+  <Step title="Install the polyfill package">
+    ```shell
+    npm i buffer
+    ```
+  </Step>
 
-You have two ways to fix this. Pick one.
+  <Step title="Create a polyfill module">
+    Add a file that imports the `buffer` package and assigns `Buffer` to `window`. Use `.ts` in TypeScript projects, `.js` otherwise.
 
-### Option 1: Manual polyfill (recommended)
+    ```ts
+    // src/buffer.ts
+    import { Buffer } from 'buffer';
 
-This option keeps your bundler configuration untouched, at the cost of controlling import order in the entry file.
+    window.Buffer = Buffer;
+    ```
+  </Step>
 
-Create a `polyfills.ts` file and import it before anything else in your entry file. This keeps the bundler config untouched.
+  <Step title="Load it before the application entry">
+    In `index.html`, add a `<script type="module">` for the polyfill above the one that loads the application. Bundlers evaluate module scripts in document order, so the polyfill finishes before any application import is parsed.
 
-```ts
-// src/polyfills.ts
-import { Buffer } from 'buffer';
+    ```html
+    <!-- index.html -->
+    <body>
+      <div id="root"></div>
 
-declare global {
-  interface Window {
-    global: typeof globalThis;
-    Buffer: typeof Buffer;
-  }
-}
+      <script type="module" src="/src/buffer.ts"></script>
+      <script type="module" src="/src/main.tsx"></script>
+    </body>
+    ```
+  </Step>
+</Steps>
 
-window.global = window;
-window.Buffer = Buffer;
-```
+## Next steps
 
-```tsx
-// src/main.tsx — first import, before React or AppKit
-import './polyfills';
+<Columns cols={2}>
+  <Card
+    title="React"
+    icon="react"
+    href="/ecosystem/appkit/get-started/installation/react-app"
+  >
+    Install `@ton/appkit-react` with TanStack Query and TON Connect UI for React.
+  </Card>
 
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { App } from './app';
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
-```
-
-### Option 2: Vite alias
-
-This option moves the work to the bundler at the cost of a config-file edit. Use it when the entry file's import order is out of your control (frameworks that own `main.tsx`, custom build pipelines).
-
-If you cannot run code before module evaluation, alias the polyfill at the bundler level instead.
-
-```ts
-// vite.config.ts
-import { defineConfig } from 'vite';
-
-export default defineConfig({
-  resolve: {
-    alias: { buffer: 'buffer/' },
-  },
-});
-```
-
-For webpack and other bundlers, configure the equivalent alias and the `process` and `Buffer` globals.
-
-## Rules
-
-The polyfill must run before any AppKit import is evaluated. Failing this loads `@ton/core` against an undefined `Buffer` and breaks address parsing at module-evaluation time, before any of your code has a chance to handle the error.
-
-## After installation
-
-Continue with one of the following:
-
-- [Connectors](/ecosystem/appkit/get-started/connectors) creates the `AppKit` instance and renders the connect button.
-- [Providers](/ecosystem/appkit/get-started/providers) plugs in API clients, streaming, swap, and staking providers.
-- [Basic getter hooks](/ecosystem/appkit/get-started/basic-getter-hooks) reads state from React.
-- [Sending transactions](/ecosystem/appkit/get-started/sending-transactions) requests wallet operations.
+  <Card
+    title="Vanilla JS"
+    icon="globe"
+    href="/ecosystem/appkit/get-started/installation/vanilla-js"
+  >
+    Install `@ton/appkit` with TON Connect UI.
+  </Card>
+</Columns>
