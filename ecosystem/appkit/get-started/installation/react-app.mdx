@@ -11,13 +11,13 @@ Install AppKit's React packages, create an `AppKit` instance, and mount the prov
 npm i @ton/appkit @ton/appkit-react @tanstack/react-query @tonconnect/ui-react @ton/core
 ```
 
-| Package                  | Use                                                                                                                  |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `@ton/appkit`            | Core runtime: actions, connectors, types.                                                                            |
-| `@ton/appkit-react`      | React layer: hooks, components, default stylesheet.                                                                  |
-| `@tanstack/react-query`  | Cache backing every query and mutation hook.                                                                         |
-| `@tonconnect/ui-react`   | TON Connect transport. `@ton/appkit-react` re-exports `<TonConnectButton />` from this package.                      |
-| `@ton/core`              | TON address and cell primitives.                                                                                     |
+| Package                 | Use                                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `@ton/appkit`           | Core runtime: actions, connectors, types.                                                       |
+| `@ton/appkit-react`     | React layer: hooks, components, default stylesheet.                                             |
+| `@tanstack/react-query` | Cache backing every query and mutation hook.                                                    |
+| `@tonconnect/ui-react`  | TON Connect transport. `@ton/appkit-react` re-exports `<TonConnectButton />` from this package. |
+| `@ton/core`             | TON address and cell primitives.                                                                |
 
 <Note>
   Complete the [Preparation](/ecosystem/appkit/get-started/installation) step first. The `Buffer` polyfill it sets up is required for AppKit to run in the browser.
@@ -39,7 +39,9 @@ export const appKit = new AppKit({});
 AppKit hooks read from two React contexts: the `AppKit` instance and a TanStack Query cache. Mount both at the application root.
 
 <Steps>
-  <Step title="AppKit provider">
+  <Step
+    title="AppKit provider"
+  >
     `AppKitProvider` exposes the `AppKit` instance to descendant hooks and components, removing the need to thread it through props.
 
     ```tsx
@@ -56,7 +58,9 @@ AppKit hooks read from two React contexts: the `AppKit` instance and a TanStack 
     ```
   </Step>
 
-  <Step title="TanStack Query provider">
+  <Step
+    title="TanStack Query provider"
+  >
     `QueryClientProvider` owns the cache used by every query and mutation hook. Create one `QueryClient` per application and mount it inside `AppKitProvider`.
 
     ```tsx

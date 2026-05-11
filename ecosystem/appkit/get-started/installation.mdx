@@ -10,13 +10,17 @@ The polyfill must run before any AppKit import. The reliable way to guarantee th
 The steps below use Vite. The same pattern applies to any module-based bundler (Webpack, Parcel, Rollup): a dedicated polyfill module referenced from the HTML entry, before the application script.
 
 <Steps>
-  <Step title="Install the polyfill package">
+  <Step
+    title="Install the polyfill package"
+  >
     ```shell
     npm i buffer
     ```
   </Step>
 
-  <Step title="Create a polyfill module">
+  <Step
+    title="Create a polyfill module"
+  >
     Add a file that imports `buffer` and exposes it on `window`. Use `.ts` for TypeScript projects, `.js` otherwise.
 
     ```ts
@@ -27,7 +31,9 @@ The steps below use Vite. The same pattern applies to any module-based bundler (
     ```
   </Step>
 
-  <Step title="Load it before the application entry">
+  <Step
+    title="Load it before the application entry"
+  >
     In `index.html`, reference the polyfill from a `<script type="module">` placed above the application entry. Module scripts execute in document order, so the polyfill resolves before any application import.
 
     ```html
