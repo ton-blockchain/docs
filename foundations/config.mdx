@@ -500,7 +500,7 @@ _ ConsensusConfig = ConfigParam 29;
 ```
 
 <Aside>
-  `consensus_config_v4#d9` was introduced together with the [Catchain 2.0 / Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) migration tracked by [Param 30](#param-30). The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
+  `consensus_config_v4#d9` was introduced together with the [Catchain 2.0 / Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) migration tracked by [Param 30](#param-30-consensus-extension). The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
 </Aside>
 
 [Parameter #29 on mainnet](https://tonviewer.com/config#29)
@@ -508,10 +508,12 @@ _ ConsensusConfig = ConfigParam 29;
 ## Param 30: consensus extension
 
 <Aside type="note">
-  The [TON v2026.03](https://github.com/ton-blockchain/ton/releases/tag/v2026.03) update introduced this parameter on testnet. With the [TON v2026.04](https://github.com/ton-blockchain/ton/releases/tag/v2026.04) update, `ConfigParam 30` was enabled on mainnet.
+  - [TON v2026.03](https://github.com/ton-blockchain/ton/releases/tag/v2026.03): `ConfigParam 30` introduced on testnet.
+  - [TON v2026.04](https://github.com/ton-blockchain/ton/releases/tag/v2026.04): `ConfigParam 30` enabled on mainnet.
 </Aside>
 
-This parameter stores optional per-workchain settings for the [Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md)-based Catchain 2.0 consensus path. The node still uses `max_block_size` and `max_collated_data_size` from the [`ConfigParam 29`](/foundations/config#param-29-consensus-config).
+This parameter configures [Catchain 2.0](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) — the Simplex-based consensus protocol that succeeds the original Catchain. The settings are optional and can be supplied independently for each chain. Block-size limits are not duplicated here: the node continues to read `max_block_bytes` and `max_collated_bytes` from [`ConfigParam 29`](/foundations/config#param-29-consensus-config).
+
 The `crypto/block/block.tlb` [defines](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782) the following schema:
 
 ```tlb
