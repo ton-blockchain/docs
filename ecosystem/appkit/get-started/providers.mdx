@@ -5,7 +5,7 @@ sidebarTitle: "Providers"
 
 Providers are AppKit's plug points to the rest of the world: services that read from a chain, push live updates, build swap transactions, or build staking transactions. They sit on the AppKit instance and supply data; they do not own UI, sessions, or signing.
 
-A provider is not a wallet and not a connector. The wallet still signs every transaction; the connector still owns the session. A provider is the source of *data* about the chain or about a DeFi protocol, and AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
+A provider is not a wallet and not a connector. The wallet still signs every transaction; the connector still owns the session. A provider is the source of _data_ about the chain or about a DeFi protocol, and AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
 
 ## Before you begin
 
@@ -13,14 +13,14 @@ You need AppKit packages installed and an `AppKit` instance created. See [Instal
 
 ## Provider types
 
-The four data and DeFi providers attach to AppKit at different points in the lifecycle. The API client sits inside the network entry on the constructor and supplies point-in-time reads. Swap and staking providers go in the constructor's `providers` array (typed as `ProviderInput[]`) and are imported only when the app actually offers those flows. The streaming provider is registered separately on `appKit.streamingManager` *after* construction — it is not bundled with the API client, and watch hooks plus `watch*` actions are no-ops until at least one streaming provider is registered.
+The four data and DeFi providers attach to AppKit at different points in the lifecycle. The API client sits inside the network entry on the constructor and supplies point-in-time reads. Swap and staking providers go in the constructor's `providers` array (typed as `ProviderInput[]`) and are imported only when the app actually offers those flows. The streaming provider is registered separately on `appKit.streamingManager` _after_ construction — it is not bundled with the API client, and watch hooks plus `watch*` actions are no-ops until at least one streaming provider is registered.
 
-| Type               | Where it goes                                                             |
-| ------------------ | ------------------------------------------------------------------------- |
-| API client         | `networks[chainId].apiClient` — `ApiClientToncenter` or `ApiClientTonApi`. |
-| Streaming provider | `appKit.streamingManager.registerProvider(...)` after construction.       |
+| Type               | Where it goes                                                                  |
+| ------------------ | ------------------------------------------------------------------------------ |
+| API client         | `networks[chainId].apiClient` — `ApiClientToncenter` or `ApiClientTonApi`.     |
+| Streaming provider | `appKit.streamingManager.registerProvider(...)` after construction.            |
 | Swap provider      | `AppKitConfig.providers` array — `DeDustSwapProvider`, `OmnistonSwapProvider`. |
-| Staking provider   | `AppKitConfig.providers` array — `createTonstakersProvider({})`.          |
+| Staking provider   | `AppKitConfig.providers` array — `createTonstakersProvider({})`.               |
 
 ## Add a swap provider
 
