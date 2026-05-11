@@ -17,6 +17,35 @@ A subscription belongs to the consumer that created it. Balance, jetton, transac
 
 Connecting and disconnecting the streaming layer opens and closes provider transports without changing the subscription list. This lets an app pause network activity and resume with the same watches still registered.
 
+## Watch from React
+
+Mount watch hooks near the part of the tree that needs live data. The hook keeps related query caches fresh while it is mounted:
+
+```tsx
+import { useBalance, useWatchBalance } from '@ton/appkit-react';
+
+export function LiveBalance() {
+  useWatchBalance();
+  const balance = useBalance();
+
+  return <span>{balance.data ?? '0'} TON</span>;
+}
+```
+
+For a non-React consumer, keep the unsubscribe function and call it when the screen or process no longer needs updates:
+
+```ts
+import { watchBalance } from '@ton/appkit';
+
+const unsubscribe = watchBalance(appKit, {
+  onChange: (update) => {
+    console.log(update.address, update.balance);
+  },
+});
+
+unsubscribe();
+```
+
 ## Connection state
 
 Connection state describes transport health, not chain finality. A websocket can disconnect and reconnect while the underlying account state continues to change.
@@ -32,6 +61,6 @@ After reconnect, updates may resume from the provider's current view of the chai
 
 ## Related pages
 
-- [Providers](/ecosystem/appkit/concepts/providers)
-- [Networks](/ecosystem/appkit/concepts/networks)
-- [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
+- [Providers](/ecosystem/appkit/howto/providers)
+- [Networks](/ecosystem/appkit/howto/networks)
+- [Read balances](/ecosystem/appkit/howto/read-balances)

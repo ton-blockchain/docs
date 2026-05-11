@@ -5,6 +5,12 @@ sidebarTitle: "Connect to a wallet"
 
 Open a wallet session, restore it across reloads, and disconnect cleanly.
 
+## How it works
+
+A wallet is the signing application that owns the keys. A connector is the transport AppKit uses to open the wallet flow, restore sessions, list connected wallets, and route signing requests.
+
+AppKit can track multiple connected wallets, but one wallet is selected for actions such as transfers and data signing. A selected wallet can change after disconnects, network changes, or session restore, so read it from AppKit state instead of storing it as long-lived application state.
+
 ## Before you begin
 
 You need an `AppKit` instance with at least one connector and the React providers mounted. See [Connectors](/ecosystem/appkit/get-started/connectors) for the instance and [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers) for the wrap.
@@ -89,15 +95,15 @@ await disconnect(appKit, { connectorId: connector.id });
 
 Wrap every action in try/catch and convert errors with `getErrorMessage` from `@ton/appkit`.
 
-| Error             | Recovery                                          |
-| ----------------- | ------------------------------------------------- |
-| User rejected     | Keep state unchanged and allow retry.             |
-| Missing connector | Check the AppKit configuration.                   |
-| Expired session   | Disconnect and request a new connection.          |
-| Wrong network     | Prompt the user to switch network in their wallet.|
+| Error             | Recovery                                           |
+| ----------------- | -------------------------------------------------- |
+| User rejected     | Keep state unchanged and allow retry.              |
+| Missing connector | Check the AppKit configuration.                    |
+| Expired session   | Disconnect and request a new connection.           |
+| Wrong network     | Prompt the user to switch network in their wallet. |
 
 ## Next steps
 
-- [Connectors concept](/ecosystem/appkit/concepts/wallets-and-connectors)
+- [AppKit](/ecosystem/appkit/howto/appkit)
 - [AppKit reference](/ecosystem/appkit/reference)
 - [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)

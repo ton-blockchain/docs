@@ -25,6 +25,31 @@ Slippage, referral fields, routing rules, and similar settings are provider poli
 
 For product flows, this means the app should display the quote, selected provider, expected output, and any provider-supplied warnings before asking the wallet to approve.
 
+## Quote and send
+
+The practical flow is quote, build, send, then verify settlement. Keep those states separate in UI and backend code:
+
+```ts
+import { buildSwapTransaction, getSwapQuote, sendTransaction } from '@ton/appkit';
+
+const quote = await getSwapQuote(appKit, {
+  from: { address: 'EQ-USDT-MASTER', decimals: 6 },
+  to: { address: 'ton', decimals: 9 },
+  amount: '10',
+  network,
+  providerOptions: { slippageBps: 100 },
+});
+
+const request = await buildSwapTransaction(appKit, {
+  quote,
+  userAddress: wallet.getAddress().toString(),
+});
+
+const response = await sendTransaction(appKit, request);
+```
+
+Use the returned `boc` or normalized hash with transaction-status tracking before updating balances, orders, or inventory.
+
 ## Rules
 
 - Treat quote freshness, wallet approval, and chain settlement as separate states.
@@ -33,6 +58,6 @@ For product flows, this means the app should display the quote, selected provide
 
 ## Related pages
 
-- [Providers](/ecosystem/appkit/concepts/providers)
-- [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
+- [Providers](/ecosystem/appkit/howto/providers)
+- [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)
 - [How to](/ecosystem/appkit/howto)
