@@ -1,10 +1,30 @@
 "use client"
 import {ArrowUpToLine, FolderInput} from "lucide-react"
 import {useEffect, useRef, useState} from "react"
-import type {GroupMode, GroupRef, LinkRef, NavConfig, NavEntry, OpenApiRef, PageRef, Tab} from "@/lib/nav-types"
-import {isGroup, isLink, isPage, resolveGroupMode} from "@/lib/nav-types"
+import type {
+  ExternalTab,
+  GroupMode,
+  GroupRef,
+  InternalTab,
+  LinkRef,
+  NavConfig,
+  NavEntry,
+  OpenApiRef,
+  PageRef,
+  Tab,
+} from "@/lib/nav-types"
+import {
+  isExternalTab,
+  isGroup,
+  isInternalTab,
+  isLink,
+  isPage,
+  resolveGroupMode,
+} from "@/lib/nav-types"
 import {
   type Path,
+  convertTabToExternal,
+  convertTabToInternal,
   demoteTabToGroup,
   getAt,
   pageCanonicalUrl,
@@ -263,12 +283,48 @@ function TabInspector({
   onUpdate: (next: NavConfig, newSelectionPath?: Path | null) => void
   onDelete: () => void
 }) {
+  if (isExternalTab(tab)) {
+    return (
+      <ExternalTabInspector
+        config={config}
+        path={path}
+        tab={tab}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+      />
+    )
+  }
+  return (
+    <InternalTabInspector
+      config={config}
+      path={path}
+      tab={tab}
+      onUpdate={onUpdate}
+      onDelete={onDelete}
+    />
+  )
+}
+
+function InternalTabInspector({
+  config,
+  path,
+  tab,
+  onUpdate,
+  onDelete,
+}: {
+  config: NavConfig
+  path: Path
+  tab: InternalTab
+  onUpdate: (next: NavConfig, newSelectionPath?: Path | null) => void
+  onDelete: () => void
+}) {
   const tabIndex = path[0]
-  const canDemote = config.tabs.length > 1 && Boolean(tab.slug)
+  const internalSiblings = config.tabs.filter(isInternalTab)
+  const canDemote = internalSiblings.length > 1 && Boolean(tab.slug)
   const demoteTargets = canDemote
     ? config.tabs
         .map((t, i) => ({tab: t, index: i}))
-        .filter(({index}) => index !== tabIndex)
+        .filter(({tab: candidate, index}) => index !== tabIndex && isInternalTab(candidate))
     : []
   return (
     <aside className={shellClass()}>
@@ -300,6 +356,18 @@ function TabInspector({
         checked={!!tab.defaultOpen}
         onChange={v => onUpdate(updateAt<Tab>(config, path, {defaultOpen: v ? true : undefined}))}
       />
+      <Field
+        label="Convert to external tab"
+        hint="Swap pages for a single outbound URL. The tab keeps its title, icon, and tag."
+      >
+        <button
+          type="button"
+          onClick={() => onUpdate(convertTabToExternal(config, tabIndex), [tabIndex])}
+          className="rounded border border-fd-border px-2 py-1 text-xs text-fd-foreground hover:bg-fd-accent"
+        >
+          Convert to external tab
+        </button>
+      </Field>
       {canDemote && (
         <Field
           label="Demote into another tab"
@@ -324,6 +392,78 @@ function TabInspector({
           </div>
         </Field>
       )}
+      <div className="mt-auto pt-4">
+        <button
+          type="button"
+          onClick={onDelete}
+          className="rounded border border-fd-border px-2 py-1 text-xs text-fd-muted-foreground hover:bg-fd-destructive/10 hover:text-fd-destructive"
+        >
+          Delete tab
+        </button>
+      </div>
+    </aside>
+  )
+}
+
+function ExternalTabInspector({
+  config,
+  path,
+  tab,
+  onUpdate,
+  onDelete,
+}: {
+  config: NavConfig
+  path: Path
+  tab: ExternalTab
+  onUpdate: (next: NavConfig, newSelectionPath?: Path | null) => void
+  onDelete: () => void
+}) {
+  const tabIndex = path[0]
+  return (
+    <aside className={shellClass()}>
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide">External tab</h3>
+      <Field label="Title" hint="Label rendered in the header strip and home navbar.">
+        <TextInput
+          value={tab.title}
+          onChange={e => onUpdate(updateAt<Tab>(config, path, {title: e.target.value}))}
+        />
+      </Field>
+      <Field label="URL" hint="Absolute external URL. Opens in a new tab.">
+        <TextInput
+          value={tab.url}
+          onChange={e => onUpdate(updateAt<Tab>(config, path, {url: e.target.value}))}
+        />
+      </Field>
+      <Field label="Id (internal)">
+        <TextInput
+          value={tab.id}
+          onChange={e => onUpdate(updateAt<Tab>(config, path, {id: e.target.value}))}
+        />
+      </Field>
+      <IconField
+        value={tab.icon}
+        onChange={icon => onUpdate(updateAt<Tab>(config, path, {icon: icon ?? undefined}))}
+      />
+      <Field label="Tag" hint="Optional badge displayed next to the title (e.g. `new`, `beta`).">
+        <TextInput
+          value={tab.tag ?? ""}
+          onChange={e =>
+            onUpdate(updateAt<Tab>(config, path, {tag: e.target.value || undefined}))
+          }
+        />
+      </Field>
+      <Field
+        label="Convert to internal tab"
+        hint="Reset to an empty pages list with a fresh slug. The URL is discarded."
+      >
+        <button
+          type="button"
+          onClick={() => onUpdate(convertTabToInternal(config, tabIndex), [tabIndex])}
+          className="rounded border border-fd-border px-2 py-1 text-xs text-fd-foreground hover:bg-fd-accent"
+        >
+          Convert to internal tab
+        </button>
+      </Field>
       <div className="mt-auto pt-4">
         <button
           type="button"

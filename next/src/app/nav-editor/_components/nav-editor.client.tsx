@@ -23,7 +23,7 @@ import {
   removeAt,
   updateAt,
 } from "../_lib/tree-ops"
-import {isGroup, isLink, isPage} from "@/lib/nav-types"
+import {isGroup, isInternalTab, isLink, isPage} from "@/lib/nav-types"
 import type {GroupRef, LinkRef, NavEntry, PageRef, Tab} from "@/lib/nav-types"
 import {TreeDndProvider, TreeView} from "./tree-view"
 import {Inspector} from "./inspector"
@@ -455,10 +455,13 @@ function NavEditorImpl({initial}: {initial: EditorState}) {
       if (selected.length === 1 && config.tabs.length > 1) {
         const tabIndex = selected[0]
         const source = config.tabs[tabIndex]
-        if (source?.slug) {
+        // Demote only applies to internal tabs (external tabs have no slug
+        // / pages — there's nothing to fold into another tab).
+        if (source && isInternalTab(source) && source.slug) {
           for (let i = 0; i < config.tabs.length; i++) {
             if (i === tabIndex) continue
             const target = config.tabs[i]
+            if (!isInternalTab(target)) continue
             const targetIndex = i
             actions.push({
               id: `demote-to-section:${target.id}`,

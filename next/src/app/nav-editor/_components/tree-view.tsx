@@ -38,13 +38,31 @@ import {
   useState,
   type ReactNode,
 } from "react"
-import type {GroupRef, LinkRef, NavConfig, NavEntry, PageRef, Tab} from "@/lib/nav-types"
-import {isGroup, isLink, isPage, resolveGroupMode} from "@/lib/nav-types"
+import type {
+  ExternalTab,
+  GroupRef,
+  InternalTab,
+  LinkRef,
+  NavConfig,
+  NavEntry,
+  PageRef,
+  Tab,
+} from "@/lib/nav-types"
+import {
+  isExternalTab,
+  isGroup,
+  isInternalTab,
+  isLink,
+  isPage,
+  resolveGroupMode,
+} from "@/lib/nav-types"
 import {
   type FlatNode,
   type Path,
   collectTabSlugs,
   convertLinkToPage,
+  convertTabToExternal,
+  convertTabToInternal,
   demoteTabToGroup,
   flattenTree,
   getAt,
@@ -147,13 +165,16 @@ export function TreeDndProvider({
     const middle = !upperThird && !lowerThird
     const overParent = overNode.parentPath
     const overIndex = overNode.path[overNode.path.length - 1]
-    const isExpandable = overNode.path.length === 1 || isGroup(overNode.entry as NavEntry)
+    // External tabs are leaves — they can never be a drop-inside target.
+    const isExpandable =
+      (overNode.path.length === 1 && isInternalTab(overNode.entry as Tab)) ||
+      isGroup(overNode.entry as NavEntry)
 
     if (middle && isExpandable) {
       setHoverExpandKey(pathKey(overNode.path))
       const childrenArr =
         overNode.path.length === 1
-          ? (overNode.entry as Tab).pages
+          ? (overNode.entry as InternalTab).pages
           : (overNode.entry as GroupRef).pages
       setOverTarget({containerPath: overNode.path, index: childrenArr?.length ?? 0})
       return
@@ -421,7 +442,11 @@ function Row({
   })
 
   const entry = node.entry
-  const isExpandable = node.path.length === 1 || isGroup(entry as NavEntry)
+  const isTabRow = node.path.length === 1
+  const isExternalTabRow = isTabRow && isExternalTab(entry as Tab)
+  // External tabs hold no children — they're rendered as leaf rows.
+  const isExpandable =
+    !isExternalTabRow && (isTabRow || isGroup(entry as NavEntry))
   const indent = node.depth * INDENT_PX + 8
 
   const style: React.CSSProperties = {
@@ -434,13 +459,50 @@ function Row({
   let iconName: string | undefined
   let labelNode: React.ReactNode = null
   let canonicalUrl = ""
-  const isTabRow = node.path.length === 1
   const isLinkRow = !isTabRow && isLink(entry as NavEntry)
   const isGroupRow = !isTabRow && !isLinkRow && isGroup(entry as NavEntry)
   const isPageRow = !isTabRow && !isLinkRow && !isGroupRow && isPage(entry as NavEntry)
 
-  if (isTabRow) {
-    const tab = entry as Tab
+  if (isTabRow && isExternalTabRow) {
+    const tab = entry as ExternalTab
+    iconName = tab.icon
+    iconNode = tab.icon ? (
+      <IconRender name={tab.icon} size={14} />
+    ) : (
+      <ExternalLink size={14} className="text-fd-muted-foreground" />
+    )
+    canonicalUrl = tab.url
+    labelNode = (
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <InlineEdit
+          value={tab.title}
+          placeholder="Untitled tab"
+          ariaLabel="tab title"
+          className="font-medium"
+          onCommit={v => onUpdate(updateAt<Tab>(config, node.path, {title: v}))}
+        />
+        <span
+          className="text-[10px] uppercase tracking-wide text-fd-primary/70"
+          title="External-link tab — appears in the header strip and home navbar"
+        >
+          ext tab
+        </span>
+        <InlineEdit
+          value={tab.url}
+          placeholder="https://"
+          ariaLabel="tab url"
+          className="text-xs text-fd-muted-foreground"
+          monospace
+          onCommit={v => onUpdate(updateAt<Tab>(config, node.path, {url: v}))}
+        />
+        <TagPill
+          value={tab.tag}
+          onCommit={v => onUpdate(updateAt<Tab>(config, node.path, {tag: v || undefined}))}
+        />
+      </div>
+    )
+  } else if (isTabRow) {
+    const tab = entry as InternalTab
     iconName = tab.icon
     iconNode = tab.icon ? <IconRender name={tab.icon} size={14} /> : <Layers size={14} className="text-fd-primary" />
     canonicalUrl = tab.slug ? `/${tab.slug}` : "/"
@@ -963,11 +1025,18 @@ function RowMenu({
   const groupHasSlug = isGroupNode && Boolean((node as GroupRef).slug)
   const tabIndex = state.path[0]
   const sourceTab = isTab ? config.tabs[tabIndex] : null
-  const canDemote = isTab && config.tabs.length > 1 && Boolean(sourceTab?.slug)
+  const isExternalTabNode = isTab && sourceTab !== null && isExternalTab(sourceTab)
+  const isInternalTabNode = isTab && sourceTab !== null && isInternalTab(sourceTab)
+  // Demote only makes sense between two internal tabs (external tabs have
+  // no folder to fold into).
+  const canDemote =
+    isInternalTabNode &&
+    Boolean((sourceTab as InternalTab).slug) &&
+    config.tabs.filter(isInternalTab).length > 1
   const demoteTargets = canDemote
     ? config.tabs
         .map((t, i) => ({tab: t, index: i}))
-        .filter(({index}) => index !== tabIndex)
+        .filter(({tab, index}) => index !== tabIndex && isInternalTab(tab))
     : []
 
   function applyAndClose(next: NavConfig, sel?: Path | null) {
@@ -990,11 +1059,12 @@ function RowMenu({
 
   function addLinkBelow() {
     if (isTab) {
-      // On a tab, "add link below" means append a link inside the tab so the
-      // new entry inherits the tab's container (otherwise it would land in
-      // `config.tabs` and render as an empty tab row).
+      // On an internal tab, "add link below" means append a link inside the
+      // tab so the new entry inherits the tab's container. External tabs
+      // have no `pages[]` — this branch isn't reachable for them (the menu
+      // item is hidden below).
       const tab = config.tabs[tabIndex]
-      if (!tab) return
+      if (!tab || !isInternalTab(tab)) return
       const insideIdx = tab.pages.length
       applyAndClose(
         insertAt(config, [tabIndex], insideIdx, newLink("New link", "https://")),
@@ -1005,6 +1075,14 @@ function RowMenu({
     const parent = pathParent(state.path)
     const idx = state.path[state.path.length - 1] + 1
     applyAndClose(insertAt(config, parent, idx, newLink("New link", "https://")), [...parent, idx])
+  }
+
+  function makeTabExternal() {
+    applyAndClose(convertTabToExternal(config, tabIndex), [tabIndex])
+  }
+
+  function makeTabInternal() {
+    applyAndClose(convertTabToInternal(config, tabIndex), [tabIndex])
   }
 
   function promoteSelected() {
@@ -1032,11 +1110,13 @@ function RowMenu({
         onClick={e => e.stopPropagation()}
       >
         <MenuItem icon={<Copy size={14} />} label="Duplicate" onClick={duplicate} />
-        <MenuItem
-          icon={<Plus size={14} />}
-          label={isTab ? "Add link inside" : "Add link below"}
-          onClick={addLinkBelow}
-        />
+        {!isExternalTabNode && (
+          <MenuItem
+            icon={<Plus size={14} />}
+            label={isTab ? "Add link inside" : "Add link below"}
+            onClick={addLinkBelow}
+          />
+        )}
         {(isPageNode || isGroupNode) && (
           <MenuItem
             icon={<Link2 size={14} />}
@@ -1049,6 +1129,20 @@ function RowMenu({
             icon={<FileText size={14} />}
             label="Convert to internal page…"
             onClick={() => setPickerOpen(true)}
+          />
+        )}
+        {isInternalTabNode && (
+          <MenuItem
+            icon={<Link2 size={14} />}
+            label="Convert to external tab"
+            onClick={makeTabExternal}
+          />
+        )}
+        {isExternalTabNode && (
+          <MenuItem
+            icon={<FileText size={14} />}
+            label="Convert to internal tab"
+            onClick={makeTabInternal}
           />
         )}
         {isGroupNode && groupHasSlug && (

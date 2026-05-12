@@ -34,7 +34,9 @@ import {
   buildIdIndex,
   collectReferencedIds,
   getFrontmatterField,
+  isExternalTab,
   isGroup,
+  isInternalTab,
   isLink,
   isPage,
   parseFrontmatter,
@@ -233,10 +235,17 @@ function validateConfig(config, idToSlug) {
 
   for (const tab of config.tabs) {
     if (!tab.id || typeof tab.id !== "string") errors.push(`tab has no id: ${JSON.stringify(tab.title)}`)
-    if (typeof tab.slug !== "string") errors.push(`tab "${tab.id}" missing slug (use "" for root)`)
     if (typeof tab.title !== "string" || !tab.title.trim()) errors.push(`tab "${tab.id}" has no title`)
     if (seenTabIds.has(tab.id)) errors.push(`duplicate tab id: ${tab.id}`)
     seenTabIds.add(tab.id)
+    if (isExternalTab(tab)) {
+      // External tabs are pure outbound URLs — no slug / pages to validate.
+      if (typeof tab.url !== "string" || !tab.url.trim()) {
+        errors.push(`external tab "${tab.id}" has no url`)
+      }
+      continue
+    }
+    if (typeof tab.slug !== "string") errors.push(`tab "${tab.id}" missing slug (use "" for root)`)
     validateEntries(tab.pages ?? [], errors, [tab.slug].filter(Boolean), `tab "${tab.id}"`)
   }
 
@@ -652,6 +661,9 @@ async function emitMetaTree(config) {
   ensureDir("")
 
   for (const tab of config.tabs) {
+    // External tabs are header-strip-only — they have no `pages[]` and no
+    // folder on disk. Skip them entirely so the filesystem stays clean.
+    if (!isInternalTab(tab)) continue
     // Folder-backed tabs (non-empty slug) appear as a folder reference in the
     // root meta.json. The root-mounted tab (slug "") is the root itself, so
     // there's nothing to append to "" — its directory IS "".

@@ -17,7 +17,9 @@
  * @typedef {{type: "link", name: string, url: string, icon?: string, tag?: string}} LinkRef
  * @typedef {PageRef | Group | LinkRef} NavEntry
  * @typedef {{source: string, directory?: string}} OpenApiRef
- * @typedef {{id: string, slug: string, title: string, icon?: string, tag?: string, defaultOpen?: boolean, pages: NavEntry[]}} Tab
+ * @typedef {{id: string, slug: string, title: string, icon?: string, tag?: string, defaultOpen?: boolean, pages: NavEntry[]}} InternalTab
+ * @typedef {{id: string, title: string, url: string, external: true, icon?: string, tag?: string}} ExternalTab
+ * @typedef {InternalTab | ExternalTab} Tab
  * @typedef {{version: 1, tabs: Tab[], navbarLinks?: LinkRef[]}} NavConfig
  */
 import {promises as fs} from "node:fs"
@@ -74,6 +76,65 @@ export function isPage(entry) {
   )
 }
 
+/** @param {Tab} tab @returns {tab is ExternalTab} */
+export function isExternalTab(tab) {
+  return /** @type {ExternalTab} */ (tab).external === true
+}
+
+/** @param {Tab} tab @returns {tab is InternalTab} */
+export function isInternalTab(tab) {
+  return !isExternalTab(tab)
+}
+
+// ---------------------------------------------------------------------------
+// Tab list normalization (one-time migration of legacy `navbarLinks`)
+// ---------------------------------------------------------------------------
+
+/**
+ * Return the effective tab list. If `config.navbarLinks` is populated, fold
+ * each entry into the tab list as an `ExternalTab` (appended). On the next
+ * save the editor persists the merged list and drops `navbarLinks`, so this
+ * is effectively a one-time migration.
+ *
+ * @param {NavConfig} config
+ * @returns {Tab[]}
+ */
+export function getEffectiveTabs(config) {
+  const baseTabs = Array.isArray(config.tabs) ? config.tabs : []
+  const legacy = Array.isArray(config.navbarLinks) ? config.navbarLinks : []
+  if (legacy.length === 0) return baseTabs
+  const usedIds = new Set(baseTabs.map(t => t.id))
+  // Dedupe against any external tab whose URL already matches a legacy
+  // entry — keeps the merge idempotent if both fields are transiently
+  // populated (e.g. a stale module-level `navConfig` cache vs. the
+  // freshly-saved file on disk).
+  const usedUrls = new Set(
+    baseTabs.filter(isExternalTab).map(t => /** @type {ExternalTab} */ (t).url),
+  )
+  /** @type {ExternalTab[]} */
+  const extras = []
+  for (const link of legacy) {
+    if (usedUrls.has(link.url)) continue
+    const id = uniqueTabId(makeTabId(link.name ?? link.url ?? "external"), usedIds)
+    usedIds.add(id)
+    usedUrls.add(link.url)
+    /** @type {ExternalTab} */
+    const tab = {id, title: link.name, url: link.url, external: true}
+    if (link.icon) tab.icon = link.icon
+    if (link.tag) tab.tag = link.tag
+    extras.push(tab)
+  }
+  return [...baseTabs, ...extras]
+}
+
+/** @param {string} base @param {Set<string>} used */
+function uniqueTabId(base, used) {
+  if (!used.has(base)) return base
+  let i = 2
+  while (used.has(`${base}-${i}`)) i += 1
+  return `${base}-${i}`
+}
+
 // ---------------------------------------------------------------------------
 // Stable JSON serializer
 // ---------------------------------------------------------------------------
@@ -90,6 +151,7 @@ const KEY_PRIORITY = [
   "tag",
   "expanded",
   "flatten",
+  "external",
   "defaultOpen",
   "root",
   "openapi",
@@ -295,6 +357,7 @@ export function setFrontmatterField(source, key, value) {
  */
 export function resolveCurrentSlug(targetId, config) {
   for (const tab of config.tabs ?? []) {
+    if (!isInternalTab(tab)) continue
     const prefix = tab.slug ? [tab.slug] : []
     const found = walkAndFind(tab.pages ?? [], targetId, prefix)
     if (found !== undefined) return found
@@ -334,6 +397,7 @@ function walkAndFind(pages, targetId, prefix) {
  */
 export function walkPages(config, visitor) {
   for (const tab of config.tabs ?? []) {
+    if (!isInternalTab(tab)) continue
     const prefix = tab.slug ? [tab.slug] : []
     walkInner(tab.pages ?? [], prefix, tab, visitor)
   }
@@ -471,10 +535,11 @@ export function attachOrphansToConfig(config, allIds) {
   }
   orphans.sort()
 
+  const firstInternal = (config.tabs ?? []).find(isInternalTab)
   for (const id of orphans) {
     const target = findBestParent(config, id)
     if (!target) {
-      config.tabs[0]?.pages.push(makePageEntry(id, config.tabs[0]?.slug ?? ""))
+      firstInternal?.pages.push(makePageEntry(id, firstInternal.slug ?? ""))
       continue
     }
     target.parent.pages.push(makePageEntry(id, target.slugPath))
@@ -488,10 +553,11 @@ export function attachOrphansToConfig(config, allIds) {
  * @returns {{parent: Tab | Group, slugPath: string} | null}
  */
 function findBestParent(config, id) {
-  /** @type {{parent: Tab | Group, slugPath: string} | null} */
+  /** @type {{parent: InternalTab | Group, slugPath: string} | null} */
   let best = null
 
   for (const tab of config.tabs) {
+    if (!isInternalTab(tab)) continue
     const tabPath = tab.slug
     if (matches(id, tabPath)) {
       if (!best || tabPath.length > best.slugPath.length) {

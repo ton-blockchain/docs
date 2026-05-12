@@ -1,7 +1,7 @@
 import {promises as fs} from "node:fs"
 import path from "node:path"
 import type {NavConfig} from "@/lib/nav-types"
-import {collectReferencedIds} from "@/lib/nav-types"
+import {collectReferencedIds, getEffectiveTabs} from "@/lib/nav-types"
 
 /**
  * Locate the `next/` workspace root no matter where Node is started.
@@ -45,12 +45,23 @@ export async function loadEditorState(): Promise<EditorState> {
 }
 
 async function readConfig(): Promise<NavConfig> {
+  let raw: NavConfig
   try {
-    const raw = await fs.readFile(NAV_CONFIG_PATH, "utf8")
-    return JSON.parse(raw) as NavConfig
+    const text = await fs.readFile(NAV_CONFIG_PATH, "utf8")
+    raw = JSON.parse(text) as NavConfig
   } catch {
     return {version: 1, tabs: []}
   }
+  // Fold any legacy `navbarLinks` into `tabs[]` as ExternalTab entries
+  // before the editor sees the config, so the panel and main tree both
+  // operate on a single ordered list. Persisted on the next save.
+  if (raw.navbarLinks && raw.navbarLinks.length > 0) {
+    const tabs = getEffectiveTabs(raw)
+    const next: NavConfig = {...raw, tabs}
+    delete next.navbarLinks
+    return next
+  }
+  return raw
 }
 
 async function listMdxSlugs(): Promise<string[]> {

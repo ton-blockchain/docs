@@ -46,6 +46,11 @@ export default function Layout({children}: {children: ReactNode}) {
         },
       }}
       {...baseOptions()}
+      // `baseOptions().links` projects every tab as a `LinkItemType` for
+      // the home page navbar. Docs pages already surface the same items
+      // via the tab strip, so blank `links` here keeps the docs sidebar
+      // header from duplicating them.
+      links={[]}
     >
       {children}
     </DocsLayout>

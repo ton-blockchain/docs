@@ -1,12 +1,14 @@
 import type {
+  ExternalTab,
   GroupRef,
+  InternalTab,
   LinkRef,
   NavConfig,
   NavEntry,
   PageRef,
   Tab,
 } from "@/lib/nav-types"
-import {isGroup, isLink, isPage} from "@/lib/nav-types"
+import {isExternalTab, isGroup, isInternalTab, isLink, isPage} from "@/lib/nav-types"
 
 /**
  * A `Path` identifies a node in the navigation tree as a chain of indices:
@@ -55,7 +57,8 @@ export function getAt(config: NavConfig, path: Path): NavEntry | Tab | null {
   const tab = config.tabs[path[0]]
   if (!tab) return null
   if (path.length === 1) return tab
-  let cursor: GroupRef | Tab = tab
+  if (!isInternalTab(tab)) return null
+  let cursor: GroupRef | InternalTab = tab
   for (let i = 1; i < path.length - 1; i++) {
     const pages: NavEntry[] = cursor.pages ?? []
     const child: NavEntry | undefined = pages[path[i]]
@@ -76,6 +79,7 @@ function cloneConfig(config: NavConfig): NavConfig {
 }
 
 function cloneTab(t: Tab): Tab {
+  if (isExternalTab(t)) return {...t}
   return {...t, pages: t.pages.map(cloneEntry)}
 }
 
@@ -100,11 +104,12 @@ function withMutatedContainer(
   }
   const tab = next.tabs[containerPath[0]]
   if (!tab) return config
+  if (!isInternalTab(tab)) return config
   if (containerPath.length === 1) {
     mutate(tab.pages)
     return next
   }
-  let cursor: GroupRef | Tab = tab
+  let cursor: GroupRef | InternalTab = tab
   for (let i = 1; i < containerPath.length; i++) {
     const pages: NavEntry[] = cursor.pages ?? []
     const child: NavEntry | undefined = pages[containerPath[i]]
@@ -206,9 +211,12 @@ export function flattenTree(
   expanded: Set<string>,
   includeChildrenOfCollapsed = false,
 ): FlatNode[] {
-  /** @type {FlatNode[]} */
   const out: FlatNode[] = []
   for (let i = 0; i < config.tabs.length; i++) {
+    // External tabs are managed exclusively in the "Header items" panel.
+    // The main tree is for the docs page-tree, so showing external tabs
+    // here would only duplicate the panel and clutter the structural view.
+    if (isExternalTab(config.tabs[i])) continue
     walk([i], 0, [])
   }
   return out
@@ -222,7 +230,10 @@ export function flattenTree(
     out.push({path, depth, entry, parentPath, collapsed: isExpandable && !isExpanded})
 
     if (!isExpanded && !includeChildrenOfCollapsed) return
-    const children = path.length === 1 ? (entry as Tab).pages : (entry as GroupRef).pages
+    const children =
+      path.length === 1
+        ? (entry as InternalTab).pages
+        : (entry as GroupRef).pages
     if (!children) return
     for (let i = 0; i < children.length; i++) {
       walk([...path, i], depth + 1, path)
@@ -239,9 +250,11 @@ export function pageCanonicalUrl(config: NavConfig, path: Path): string {
   const parts: string[] = []
   const tab = config.tabs[path[0]]
   if (!tab) return ""
+  // External tabs hold no pages; deep paths into them are nonsense.
+  if (!isInternalTab(tab)) return ""
   if (tab.slug) parts.push(tab.slug)
 
-  let cursor: GroupRef | Tab = tab
+  let cursor: GroupRef | InternalTab = tab
   for (let i = 1; i < path.length - 1; i++) {
     const pages: NavEntry[] = cursor.pages ?? []
     const child: NavEntry | undefined = pages[path[i]]
@@ -265,9 +278,11 @@ export function pageCanonicalUrl(config: NavConfig, path: Path): string {
   return parts.join("/")
 }
 
-/** True iff the entry is a tab (top-level container). */
+/** True iff the entry is a tab (top-level container) of either variant. */
 export function isTab(entry: NavEntry | Tab): entry is Tab {
-  return "id" in entry && "slug" in entry && "title" in entry && "pages" in entry && !isGroup(entry) && !isLink(entry) && !isPage(entry)
+  if (isGroup(entry) || isLink(entry) || isPage(entry)) return false
+  if (!("id" in entry) || !("title" in entry)) return false
+  return "pages" in entry || (entry as ExternalTab).external === true
 }
 
 export function newPage(id: string): PageRef {
@@ -285,67 +300,117 @@ export function newLink(name: string, url: string): LinkRef {
 }
 
 // ---------------------------------------------------------------------------
-// Header-navbar link helpers
+// Top-level tab helpers
 //
-// `config.navbarLinks` is a flat ordered list of LinkRefs surfaced in the
-// top navigation bar (independent of the in-sidebar tab strip). These helpers
-// keep the editor's tree-path machinery untouched — navbar links live outside
-// the `tabs[]` namespace.
+// `config.tabs[]` is the single ordered list of header items. Each entry is
+// either an `InternalTab` (with `pages[]`) or an `ExternalTab` (with `url`).
+// The legacy `navbarLinks` field is folded into this list at load time by
+// `getEffectiveTabs(config)`; these helpers always operate on `tabs[]` and
+// never touch `navbarLinks`.
 // ---------------------------------------------------------------------------
 
-function withNavbarLinks(
+function uniqueTabId(base: string, used: Set<string>): string {
+  if (!used.has(base)) return base
+  let i = 2
+  while (used.has(`${base}-${i}`)) i += 1
+  return `${base}-${i}`
+}
+
+function slugifyTabId(name: string): string {
+  return (
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || `tab-${Math.random().toString(36).slice(2, 7)}`
+  )
+}
+
+/** Append a fresh external tab. */
+export function addExternalTab(
   config: NavConfig,
-  mutate: (list: LinkRef[]) => LinkRef[] | void,
+  init: {name: string; url: string},
 ): NavConfig {
   const next = cloneConfig(config)
-  const list = next.navbarLinks ? [...next.navbarLinks] : []
-  const result = mutate(list)
-  const out = Array.isArray(result) ? result : list
-  if (out.length === 0) delete next.navbarLinks
-  else next.navbarLinks = out
+  const usedIds = new Set(next.tabs.map(t => t.id))
+  const id = uniqueTabId(slugifyTabId(init.name || init.url), usedIds)
+  const tab: ExternalTab = {id, title: init.name, url: init.url, external: true}
+  next.tabs.push(tab)
   return next
 }
 
-export function addNavbarLink(config: NavConfig, link: LinkRef): NavConfig {
-  return withNavbarLinks(config, list => {
-    list.push({...link})
-  })
+/** Move a tab from `from` to `to`. */
+export function moveTab(config: NavConfig, from: number, to: number): NavConfig {
+  if (from < 0 || from >= config.tabs.length) return config
+  const clampedTo = Math.max(0, Math.min(to, config.tabs.length - 1))
+  if (from === clampedTo) return config
+  const next = cloneConfig(config)
+  const [moved] = next.tabs.splice(from, 1)
+  next.tabs.splice(clampedTo, 0, moved)
+  return next
 }
 
-export function updateNavbarLink(
+/** Remove the tab at `index`. */
+export function removeTab(config: NavConfig, index: number): NavConfig {
+  if (index < 0 || index >= config.tabs.length) return config
+  const next = cloneConfig(config)
+  next.tabs.splice(index, 1)
+  return next
+}
+
+/**
+ * Convert an internal tab at `index` to an external tab, preserving
+ * `id`, `title`, `icon`, `tag`. `url` defaults to `"https://"`. The
+ * existing `pages[]` is discarded — the editor surfaces a warning if
+ * non-empty.
+ */
+export function convertTabToExternal(
   config: NavConfig,
   index: number,
-  patch: Partial<LinkRef>,
+  url: string = "https://",
 ): NavConfig {
-  return withNavbarLinks(config, list => {
-    const current = list[index]
-    if (!current) return
-    const merged: LinkRef = {...current, ...patch}
-    for (const key of Object.keys(patch)) {
-      const v = (patch as Record<string, unknown>)[key]
-      if (v === undefined || v === null) {
-        delete (merged as unknown as Record<string, unknown>)[key]
-      }
-    }
-    list[index] = merged
-  })
+  const current = config.tabs[index]
+  if (!current || isExternalTab(current)) return config
+  const next = cloneConfig(config)
+  const external: ExternalTab = {
+    id: current.id,
+    title: current.title,
+    url,
+    external: true,
+  }
+  if (current.icon) external.icon = current.icon
+  if (current.tag) external.tag = current.tag
+  next.tabs[index] = external
+  return next
 }
 
-export function removeNavbarLink(config: NavConfig, index: number): NavConfig {
-  return withNavbarLinks(config, list => {
-    if (index < 0 || index >= list.length) return
-    list.splice(index, 1)
-  })
-}
-
-export function moveNavbarLink(config: NavConfig, from: number, to: number): NavConfig {
-  return withNavbarLinks(config, list => {
-    if (from < 0 || from >= list.length) return
-    const clampedTo = Math.max(0, Math.min(to, list.length - 1))
-    if (from === clampedTo) return
-    const [moved] = list.splice(from, 1)
-    list.splice(clampedTo, 0, moved)
-  })
+/**
+ * Convert an external tab at `index` back to an internal tab. A fresh
+ * `slug` is derived from the title (or id) and `pages[]` starts empty.
+ */
+export function convertTabToInternal(config: NavConfig, index: number): NavConfig {
+  const current = config.tabs[index]
+  if (!current || isInternalTab(current)) return config
+  const next = cloneConfig(config)
+  const existingSlugs = new Set(
+    next.tabs.filter(isInternalTab).map(t => t.slug).filter(s => s !== ""),
+  )
+  const baseSlug = slugifyTabId(current.title || current.id)
+  let slug = baseSlug
+  let n = 2
+  while (existingSlugs.has(slug)) {
+    slug = `${baseSlug}-${n}`
+    n += 1
+  }
+  const internal: InternalTab = {
+    id: current.id,
+    slug,
+    title: current.title,
+    pages: [],
+  }
+  if (current.icon) internal.icon = current.icon
+  if (current.tag) internal.tag = current.tag
+  next.tabs[index] = internal
+  return next
 }
 
 /**
@@ -369,14 +434,13 @@ export function convertLinkToPage(config: NavConfig, path: Path, id: string): Na
   })
 }
 
-export function newTab(title: string, slug?: string, existingSlugs?: Iterable<string>): Tab {
-  const baseId =
-    title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "") || `tab-${Math.random().toString(36).slice(2, 7)}`
+export function newTab(
+  title: string,
+  slug?: string,
+  existingSlugs?: Iterable<string>,
+): InternalTab {
+  const baseId = slugifyTabId(title)
   const taken = new Set(existingSlugs ?? [])
-  // Default slug = same as id (folder-backed). Auto-suffix if it collides.
   let candidate = slug ?? baseId
   if (slug === "") candidate = ""
   if (candidate !== "" && taken.has(candidate)) {
@@ -407,12 +471,8 @@ export function promoteToTab(
   const group = entry as GroupRef
   if (!group.slug) return {config, newPath: path}
 
-  const tab: Tab = {
-    id:
-      group.slug
-        .replace(/[^a-z0-9]+/gi, "-")
-        .toLowerCase()
-        .replace(/^-+|-+$/g, "") || `tab-${Math.random().toString(36).slice(2, 7)}`,
+  const tab: InternalTab = {
+    id: slugifyTabId(group.slug),
     slug: group.slug,
     title: group.group,
     pages: group.pages ?? [],
@@ -442,6 +502,9 @@ export function demoteTabToGroup(
   const source = config.tabs[tabIndex]
   const target = config.tabs[targetTabIndex]
   if (!source || !target) return {config, newPath: [tabIndex]}
+  // External tabs hold no pages and have no slug — they can't be demoted
+  // into a folder-backed group. The target must be internal too.
+  if (!isInternalTab(source) || !isInternalTab(target)) return {config, newPath: [tabIndex]}
   if (!source.slug) return {config, newPath: [tabIndex]}
 
   const group: GroupRef = {
@@ -454,18 +517,20 @@ export function demoteTabToGroup(
   if (source.defaultOpen) group.expanded = true
 
   const next = removeAt(config, [tabIndex])
-  // After removal, the target's index may have shifted if it came after tabIndex.
   const adjustedTarget = targetTabIndex > tabIndex ? targetTabIndex - 1 : targetTabIndex
   const targetTab = next.tabs[adjustedTarget]
-  if (!targetTab) return {config, newPath: [tabIndex]}
+  if (!targetTab || !isInternalTab(targetTab)) return {config, newPath: [tabIndex]}
   const insertIndex = (targetTab.pages ?? []).length
   const inserted = insertAt(next, [adjustedTarget], insertIndex, group)
   return {config: inserted, newPath: [adjustedTarget, insertIndex]}
 }
 
-/** Collect every slug currently used by a tab (including ""). */
+/**
+ * Collect every slug currently used by an internal tab (including "").
+ * External tabs have no slug and are skipped.
+ */
 export function collectTabSlugs(config: NavConfig): string[] {
-  return config.tabs.map(t => t.slug)
+  return config.tabs.filter(isInternalTab).map(t => t.slug)
 }
 
 // ---------------------------------------------------------------------------
@@ -512,7 +577,9 @@ export function pageIconPatch(
 /** Find the path of the entry with the given page id. */
 export function findPathById(config: NavConfig, id: string): Path | null {
   for (let t = 0; t < config.tabs.length; t++) {
-    const found = recurse(config.tabs[t].pages ?? [], [t])
+    const tab = config.tabs[t]
+    if (!isInternalTab(tab)) continue
+    const found = recurse(tab.pages ?? [], [t])
     if (found) return found
   }
   return null

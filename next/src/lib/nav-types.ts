@@ -66,7 +66,13 @@ export interface LinkRef {
 
 export type NavEntry = PageRef | GroupRef | LinkRef
 
-export interface Tab {
+/**
+ * Tab variants. An `InternalTab` owns a slice of the docs tree (`pages[]` +
+ * filesystem-backed `slug`); an `ExternalTab` is a thin reference to an
+ * outbound URL rendered alongside internal tabs in the header strip / home
+ * navbar. Discriminated by the `external` boolean on `ExternalTab`.
+ */
+export interface InternalTab {
   id: string
   slug: string
   title: string
@@ -76,13 +82,25 @@ export interface Tab {
   pages: NavEntry[]
 }
 
+export interface ExternalTab {
+  id: string
+  title: string
+  url: string
+  external: true
+  icon?: string
+  tag?: string
+}
+
+export type Tab = InternalTab | ExternalTab
+
 export interface NavConfig {
   version: 1
   tabs: Tab[]
   /**
-   * Optional flat list of outbound URLs rendered as top-bar header links.
-   * Independent of `tabs`; the in-sidebar tab strip is unaffected.
-   * Managed through the nav editor's "Header navbar links" panel.
+   * @deprecated Legacy flat list of outbound URLs. New code should append
+   * `ExternalTab` entries to `tabs[]` instead. `getEffectiveTabs(config)`
+   * folds any leftover `navbarLinks` into the tab list at read time, and
+   * the editor drops this field on the next save.
    */
   navbarLinks?: LinkRef[]
 }
@@ -111,6 +129,76 @@ export function isPage(entry: unknown): entry is PageRef {
   )
 }
 
+export function isExternalTab(tab: Tab): tab is ExternalTab {
+  return (tab as ExternalTab).external === true
+}
+
+export function isInternalTab(tab: Tab): tab is InternalTab {
+  return !isExternalTab(tab)
+}
+
+// ---------------------------------------------------------------------------
+// Tab list normalization (one-time migration of legacy `navbarLinks`)
+// ---------------------------------------------------------------------------
+
+function makeIdSlug(name: string): string {
+  return (
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "external"
+  )
+}
+
+function uniqueTabId(base: string, used: Set<string>): string {
+  if (!used.has(base)) return base
+  let i = 2
+  while (used.has(`${base}-${i}`)) i += 1
+  return `${base}-${i}`
+}
+
+/**
+ * Return the effective tab list. If `config.navbarLinks` is populated, each
+ * legacy entry is folded into the tab list as an `ExternalTab` (appended).
+ * The editor persists the merged list on the next save and drops
+ * `navbarLinks`, so this is effectively a one-time migration.
+ *
+ * Defensive dedup: legacy entries whose URL already matches an existing
+ * external tab are skipped. This keeps the merge idempotent across
+ * caching boundaries (stale module-level `navConfig` + freshly-saved
+ * file = no duplicate header item).
+ *
+ * Mirror of `getEffectiveTabs` in `scripts/nav-config.mjs`.
+ */
+export function getEffectiveTabs(config: NavConfig): Tab[] {
+  const baseTabs = config.tabs ?? []
+  const legacy = config.navbarLinks ?? []
+  if (legacy.length === 0) return baseTabs
+  const usedIds = new Set(baseTabs.map(t => t.id))
+  const usedUrls = new Set(
+    baseTabs
+      .filter(isExternalTab)
+      .map(t => t.url),
+  )
+  const extras: ExternalTab[] = []
+  for (const link of legacy) {
+    if (usedUrls.has(link.url)) continue
+    const id = uniqueTabId(makeIdSlug(link.name || link.url || "external"), usedIds)
+    usedIds.add(id)
+    usedUrls.add(link.url)
+    const tab: ExternalTab = {
+      id,
+      title: link.name,
+      url: link.url,
+      external: true,
+    }
+    if (link.icon) tab.icon = link.icon
+    if (link.tag) tab.tag = link.tag
+    extras.push(tab)
+  }
+  return [...baseTabs, ...extras]
+}
+
 // ---------------------------------------------------------------------------
 // Resolver
 // ---------------------------------------------------------------------------
@@ -122,6 +210,7 @@ export function isPage(entry: unknown): entry is PageRef {
  */
 export function resolveCurrentSlug(targetId: string, config: NavConfig): string | undefined {
   for (const tab of config.tabs ?? []) {
+    if (!isInternalTab(tab)) continue
     const prefix = tab.slug ? [tab.slug] : []
     const found = walkAndFind(tab.pages ?? [], targetId, prefix)
     if (found !== undefined) return found
@@ -155,9 +244,10 @@ function walkAndFind(
  */
 export function walkPages(
   config: NavConfig,
-  visitor: (page: PageRef, slug: string, parent: GroupRef | Tab, slugParts: string[]) => void,
+  visitor: (page: PageRef, slug: string, parent: GroupRef | InternalTab, slugParts: string[]) => void,
 ): void {
   for (const tab of config.tabs ?? []) {
+    if (!isInternalTab(tab)) continue
     const prefix = tab.slug ? [tab.slug] : []
     walkInner(tab.pages ?? [], prefix, tab, visitor)
   }
@@ -166,8 +256,8 @@ export function walkPages(
 function walkInner(
   pages: NavEntry[],
   prefix: string[],
-  parent: GroupRef | Tab,
-  visitor: (page: PageRef, slug: string, parent: GroupRef | Tab, slugParts: string[]) => void,
+  parent: GroupRef | InternalTab,
+  visitor: (page: PageRef, slug: string, parent: GroupRef | InternalTab, slugParts: string[]) => void,
 ): void {
   for (const entry of pages) {
     if (isLink(entry)) continue

@@ -1,18 +1,26 @@
 import type {BaseLayoutProps, LayoutTab, LinkItemType} from "fumadocs-ui/layouts/shared"
-import {icons} from "lucide-react"
+import {ArrowUpRight, icons} from "lucide-react"
 import {readFileSync} from "node:fs"
 import path from "node:path"
 import {createElement, type ComponentType, type SVGProps} from "react"
 import {ThemeLogo} from "@/components/ThemeLogo"
-import type {GroupRef, NavConfig, NavEntry, Tab} from "@/lib/nav-types"
-import {isGroup, isLink, isPage} from "@/lib/nav-types"
+import type {GroupRef, InternalTab, NavConfig, NavEntry} from "@/lib/nav-types"
+import {
+  getEffectiveTabs,
+  isExternalTab,
+  isGroup,
+  isLink,
+  isPage,
+} from "@/lib/nav-types"
 
 export const logo = <ThemeLogo />
 
 /**
- * Read `navigation.config.json` synchronously at module load. This runs at
- * build time (and during dev SSR) — the file lives in the project root and
- * is the single source of truth for tabs + header navbar links.
+ * Read `navigation.config.json` synchronously. Called per request rather
+ * than cached at module scope so the dev server picks up edits made via
+ * the nav editor immediately (a module-level cache would otherwise
+ * outlive `navbarLinks → tabs[]` migrations and surface stale items in
+ * the header strip). The file is tiny — re-reading is negligible.
  *
  * Fumadocs' built-in `getLayoutTabs(tree)` ignores the page-tree's Root
  * (it copies `children` but strips the Root's own `root: true` flag, see
@@ -30,8 +38,6 @@ function readNavConfig(): NavConfig {
     return {version: 1, tabs: []}
   }
 }
-
-const navConfig = readNavConfig()
 
 function toPascalCase(name: string): string {
   return name
@@ -80,7 +86,7 @@ function collectPageUrls(entries: NavEntry[], prefix: string[]): string[] {
   return out
 }
 
-function tabHref(tab: Tab): string {
+function tabHref(tab: InternalTab): string {
   const prefix = tab.slug ? [tab.slug] : []
   const [first] = collectPageUrls(tab.pages ?? [], prefix)
   if (first) return first
@@ -89,16 +95,33 @@ function tabHref(tab: Tab): string {
 
 /**
  * Build the explicit `LayoutTab[]` Fumadocs renders in `<DocsLayout tabs={...}>`.
- * Each tab's `urls` set drives `isLayoutTabActive`'s exact-match check, so
- * deep links like `/appkit/get-started/installation/react-app` correctly
+ *
+ * Internal tabs: each tab's `urls` set drives `isLayoutTabActive`'s exact-match
+ * check, so deep links like `/appkit/get-started/installation/react-app` still
  * highlight the AppKit tab.
+ *
+ * External tabs: linked out, never active. The title is wrapped with an
+ * `ArrowUpRight` glyph so users can tell at a glance the click leaves the
+ * docs. `fumadocs-core/link` auto-detects absolute URLs and renders
+ * `<a target="_blank">`.
  */
 export function buildLayoutTabs(): LayoutTab[] {
-  return navConfig.tabs.map<LayoutTab>(tab => {
+  return getEffectiveTabs(readNavConfig()).map<LayoutTab>(tab => {
+    if (isExternalTab(tab)) {
+      return {
+        url: tab.url,
+        title: (
+          <span className="inline-flex items-center gap-1.5">
+            {tab.title}
+            <ArrowUpRight size={14} className="text-fd-muted-foreground/70" />
+          </span>
+        ),
+        icon: resolveLucideIcon(tab.icon),
+        urls: new Set(),
+      }
+    }
     const prefix = tab.slug ? [tab.slug] : []
     const urls = new Set<string>(collectPageUrls(tab.pages ?? [], prefix))
-    // Also accept the tab's own jump-to URL even if no page lives there
-    // (e.g. a slug-less root with only an index page).
     urls.add(tabHref(tab))
     return {
       url: tabHref(tab),
@@ -110,19 +133,32 @@ export function buildLayoutTabs(): LayoutTab[] {
 }
 
 /**
- * Header links sourced from `navigation.config.json#navbarLinks`. These are
- * user-curated external URLs surfaced in the top navbar across every
- * layout (docs + home). The tab strip is handled separately by passing
- * `tabs={buildLayoutTabs()}` to `<DocsLayout>`.
+ * Header links sourced from the same effective tab list. The home page uses
+ * `<HomeLayout>` which doesn't render the docs tab strip; this projection
+ * keeps it in lockstep with what docs pages show.
+ *
+ * Internal tabs jump to their first concrete page (matching the docs strip);
+ * external tabs keep their absolute URL with `external: true` so Fumadocs
+ * opens them in a new window.
  */
 function buildLinks(): LinkItemType[] {
-  return (navConfig.navbarLinks ?? []).map<LinkItemType>(link => ({
-    type: "main",
-    text: link.name,
-    url: link.url,
-    external: true,
-    icon: resolveLucideIcon(link.icon),
-  }))
+  return getEffectiveTabs(readNavConfig()).map<LinkItemType>(tab => {
+    if (isExternalTab(tab)) {
+      return {
+        type: "main",
+        text: tab.title,
+        url: tab.url,
+        external: true,
+        icon: resolveLucideIcon(tab.icon),
+      }
+    }
+    return {
+      type: "main",
+      text: tab.title,
+      url: tabHref(tab),
+      icon: resolveLucideIcon(tab.icon),
+    }
+  })
 }
 
 export function baseOptions(): BaseLayoutProps {
