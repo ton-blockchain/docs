@@ -209,13 +209,13 @@ The wallet accepting the request does not prove the NFT moved. Track the transac
 
 ## Common failures
 
-| Failure                | Meaning                                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| User rejected          | The user closed or rejected the wallet request.                                                                           |
-| Stale ownership        | The NFT changed owners between the read and the transfer. Reread `ownerAddress` before sending.                            |
-| NFT on sale            | `isOnSale === true` — the NFT is held by a sale contract. Cancel the listing or transfer through the sale contract flow.   |
-| Soulbound NFT          | `isSoulbound === true` — the item cannot be transferred.                                                                  |
-| Invalid address        | The recipient or NFT contract address is malformed or for the wrong network.                                              |
+| Failure         | Meaning                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| User rejected   | The user closed or rejected the wallet request.                                                                          |
+| Stale ownership | The NFT changed owners between the read and the transfer. Reread `ownerAddress` before sending.                          |
+| NFT on sale     | `isOnSale === true` — the NFT is held by a sale contract. Cancel the listing or transfer through the sale contract flow. |
+| Soulbound NFT   | `isSoulbound === true` — the item cannot be transferred.                                                                 |
+| Invalid address | The recipient or NFT contract address is malformed or for the wrong network.                                             |
 
 ## Rules
 
