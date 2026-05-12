@@ -5,7 +5,7 @@ sidebarTitle: "Gas usage"
 
 import { Aside } from "/snippets/aside.jsx";
 
-Contracts which receive a user's message are referred to as **receiver** contracts. Other contracts in the same system are called **internal** contracts. This terminology is local to this article.
+Contracts that receive the initial external message are referred to as **receiver** contracts. Other contracts in the same system are called **internal** contracts. This terminology is local to this article.
 
 ## Contract system
 
@@ -71,7 +71,7 @@ B,Remaining value on B,70
 
 ### Receiver requirements
 
-Receiver contracts must verify that the attached Toncoin is sufficient to cover fees for all contracts in the subsequent trace. If an entry contract accepts a user message it must guarantee that the message will not later fail due to insufficient attached TON. "Accept" doesn't mean the call to `accept_message()`, but semantic acceptance, i.e., no throw and no asset returns.
+Receiver contracts must verify that the attached Toncoin is sufficient to cover fees for all contracts in the subsequent trace. If an entry contract accepts an external message, it must guarantee that the message will not later fail due to insufficient attached Toncoin. "Accept" doesn't mean the call to `accept_message()`, but semantic acceptance, i.e., no throw and no asset returns.
 
 The reason for this requirement is that reverting the contract system state is usually not possible, because the Toncoin is already spent.
 
@@ -83,7 +83,7 @@ When a contract system's correctness depends on successful execution of the rema
 - Use descriptive names for the operation and the contract. Store them in a dedicated file with constants.
 
 ```tolk
-const GasSwapRequest = 0;
+const GasSwapRequest: int = 0;
 ```
 
 - Run tests covering all execution paths. Missing a path might hide the most expensive one.
@@ -113,7 +113,7 @@ Received:    11578n
 ```
 
 ```tolk
-const GasSwapRequest = 12000;
+const GasSwapRequest: int = 12000;
 ```
 
 ## Compute fees
@@ -227,7 +227,7 @@ Storage fees for sending messages cannot be predicted in advance, because they d
 
 ### Maintain a positive reserve
 
-Always keep a minimum balance on all contracts in the system. Storage fees get deducted from this reserve. The reserve gets replenished with each user interaction. Do not hardcode Toncoin values for fees. Instead, hardcode the maximum possible contract size in cells and bits.
+Always keep a minimum balance on all contracts in the system. Storage fees get deducted from this reserve. The reserve gets replenished with each external interaction. Do not hardcode Toncoin values for fees. Instead, hardcode the maximum possible contract size in cells and bits.
 
 This approach affects code of internal contracts.
 
@@ -255,7 +255,7 @@ fun onInternalMessage(in: InMessage) {
     );
     // Process operation with remaining value...
 }
-// This contract probably also requires some code allowing the owner to withdraw TON from it.
+// This contract probably also requires code allowing the owner to withdraw Toncoin from it.
 ```
 
 In this approach, a receiver contract should calculate maximum possible storage fees for all contracts in trace.
@@ -284,8 +284,9 @@ fun onInternalMessage(in: InMessage) {
     val totalStorageFees = storageForA + storageForB;
     // Compute + forward fees go here.
     val otherFees = 0;
+    // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
     assert (in.valueCoins >= totalStorageFees + otherFees)
-        throw ERR_NOT_ENOUGH_TONS;
+        throw ERR_NOT_ENOUGH_TON;
 }
 ```
 
@@ -328,16 +329,21 @@ fun onInternalMessage(in: InMessage) {
 
 If the remaining trace involves `n` unique contracts, no more than `n` freeze limits are required to cover their storage fees. Therefore, the receiver contract should perform the following check:
 
+<Aside type="caution">
+  `FreezeDueLimit` is network-specific. The value below uses the current mainnet `freeze_due_limit`; verify the target network configuration before reusing it.
+</Aside>
+
 ```tolk
-const FreezeDueLimit = ton("0.1");  // Current mainnet freeze_due_limit; adjust for other networks if needed.
+const FreezeDueLimit: coins = ton("0.1");  // Current mainnet freeze_due_limit.
 
 fun onInternalMessage(in: InMessage) {
     // The trace is still receiver -> A -> B
     val freezeLimit = FreezeDueLimit;
     val otherFees = 0;  // Compute + forward fees go here.
     // n equals 3 because receiver -> A -> B
+    // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
     assert (in.valueCoins >= freezeLimit * 3 + otherFees)
-        throw ERR_NOT_ENOUGH_TONS;
+        throw ERR_NOT_ENOUGH_TON;
 }
 ```
 
@@ -354,7 +360,7 @@ it("should not accumulate excess balance", async () => {
 });
 ```
 
-This confirms that all incoming value was consumed or forwarded, with none left behind. It helps identify any bugs that cause accumulation of TON on any contract.
+This confirms that all incoming value was consumed or forwarded, with none left behind. It helps identify any bugs that cause accumulation of Toncoin on any contract.
 
 ## Implement fee validation
 
@@ -363,7 +369,7 @@ The final code in the receiver contract could look like this:
 ```tolk
 import "@stdlib/gas-payments";
 
-const FreezeDueLimit = ton("0.1");  // Current mainnet freeze_due_limit; adjust for other networks if needed.
+const FreezeDueLimit: coins = ton("0.1");  // Current mainnet freeze_due_limit.
 
 fun onInternalMessage(in: InMessage) {
     val workchain = contract.getAddress().getWorkchain();
@@ -386,13 +392,14 @@ fun onInternalMessage(in: InMessage) {
         calculateGasFee(workchain, GasVaultPayout) +
         3 * FreezeDueLimit;
 
+    // `ERR_INSUFFICIENT_TON_ATTACHED` means "insufficient Toncoin attached".
     assert (in.valueCoins >= msg.amount + minFees)
         throw ERR_INSUFFICIENT_TON_ATTACHED;
 
     // Send remaining value for fees...
 
     // It may also be necessary to handle fees on this exact
-    // contract if it is not supposed to hold users' TON.
+    // contract if it is not supposed to hold incoming Toncoin.
     // That can be done using either of the two approaches
     // described above.
 }
