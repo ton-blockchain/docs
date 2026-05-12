@@ -921,13 +921,38 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/appkit/howto/appkit",
+    "destination": "/appkit/howto/appkit",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/appkit/howto/connect-to-a-wallet",
     "destination": "/appkit/howto/connect-to-a-wallet",
     "permanent": true
   },
   {
+    "source": "/ecosystem/appkit/howto/gasless",
+    "destination": "/appkit/howto/gasless",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/howto/networks",
+    "destination": "/appkit/howto/networks",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/appkit/howto/nfts",
     "destination": "/appkit/howto/nfts",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/howto/onramp",
+    "destination": "/appkit/howto/onramp",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/howto/providers",
+    "destination": "/appkit/howto/providers",
     "permanent": true
   },
   {
@@ -948,6 +973,21 @@ export const redirects = [
   {
     "source": "/ecosystem/appkit/howto/sign-data",
     "destination": "/appkit/howto/sign-data",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/howto/staking",
+    "destination": "/appkit/howto/staking",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/howto/streaming",
+    "destination": "/appkit/howto/streaming",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/howto/swaps",
+    "destination": "/appkit/howto/swaps",
     "permanent": true
   },
   {
@@ -1011,6 +1051,141 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/nodes/cpp/integrating-with-prometheus",
+    "destination": "/nodes/cpp/integrating-with-prometheus",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/alerting",
+    "destination": "/nodes/cpp/mytonctrl/alerting",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/backups",
+    "destination": "/nodes/cpp/mytonctrl/backups",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/btc-teleport",
+    "destination": "/nodes/cpp/mytonctrl/btc-teleport",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/collator",
+    "destination": "/nodes/cpp/mytonctrl/collator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/core",
+    "destination": "/nodes/cpp/mytonctrl/core",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/custom-overlays",
+    "destination": "/nodes/cpp/mytonctrl/custom-overlays",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/installer",
+    "destination": "/nodes/cpp/mytonctrl/installer",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/liquid-staking",
+    "destination": "/nodes/cpp/mytonctrl/liquid-staking",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/overview",
+    "destination": "/nodes/cpp/mytonctrl/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/pools",
+    "destination": "/nodes/cpp/mytonctrl/pools",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/utilities",
+    "destination": "/nodes/cpp/mytonctrl/utilities",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/validator",
+    "destination": "/nodes/cpp/mytonctrl/validator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/wallet",
+    "destination": "/nodes/cpp/mytonctrl/wallet",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/run-validator",
+    "destination": "/nodes/cpp/run-validator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/setup-mylocalton",
+    "destination": "/nodes/cpp/setup-mylocalton",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/setup-mytonctrl",
+    "destination": "/nodes/cpp/setup-mytonctrl",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/overview",
+    "destination": "/nodes/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/architecture",
+    "destination": "/nodes/rust/architecture",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/global-config",
+    "destination": "/nodes/rust/global-config",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/logs-config",
+    "destination": "/nodes/rust/logs-config",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/metrics",
+    "destination": "/nodes/rust/metrics",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/monitoring",
+    "destination": "/nodes/rust/monitoring",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/node-config",
+    "destination": "/nodes/rust/node-config",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/node-config-ref",
+    "destination": "/nodes/rust/node-config-ref",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/probes",
+    "destination": "/nodes/rust/probes",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/quick-start",
+    "destination": "/nodes/rust/quick-start",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/tma/mate/getting-started",
     "destination": "/ecosystem/tma/overview",
     "permanent": true
@@ -1031,13 +1206,448 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/ton-connect/dapp",
+    "destination": "/ton-connect/dapp",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/manifest",
+    "destination": "/ton-connect/manifest",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/message-lookup",
+    "destination": "/ton-connect/message-lookup",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/overview",
+    "destination": "/ton-connect/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/wallet",
+    "destination": "/ton-connect/wallet",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/wallet-connect",
+    "destination": "/ton-connect/wallet-connect",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/ton-connect/walletkit/:slug*",
     "destination": "/ecosystem/walletkit/:slug*",
     "permanent": true
   },
   {
+    "source": "/ecosystem/ton-pay/api-reference",
+    "destination": "/ton-pay/api-reference",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/on-ramp",
+    "destination": "/ton-pay/on-ramp",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/overview",
+    "destination": "/ton-pay/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/payment-integration/payments-react",
+    "destination": "/ton-pay/payment-integration/payments-react",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/payment-integration/payments-tonconnect",
+    "destination": "/ton-pay/payment-integration/payments-tonconnect",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/payment-integration/status-info",
+    "destination": "/ton-pay/payment-integration/status-info",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/payment-integration/transfer",
+    "destination": "/ton-pay/payment-integration/transfer",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/quick-start",
+    "destination": "/ton-pay/quick-start",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/ui-integration/button-js",
+    "destination": "/ton-pay/ui-integration/button-js",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/ui-integration/button-react",
+    "destination": "/ton-pay/ui-integration/button-react",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-pay/webhooks",
+    "destination": "/ton-pay/webhooks",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/data",
+    "destination": "/walletkit/android/data",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/events",
+    "destination": "/walletkit/android/events",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/init",
+    "destination": "/walletkit/android/init",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/installation",
+    "destination": "/walletkit/android/installation",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/transactions",
+    "destination": "/walletkit/android/transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/wallets",
+    "destination": "/walletkit/android/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/android/webview",
+    "destination": "/walletkit/android/webview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/browser-extension",
+    "destination": "/walletkit/browser-extension",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/data",
+    "destination": "/walletkit/ios/data",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/events",
+    "destination": "/walletkit/ios/events",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/init",
+    "destination": "/walletkit/ios/init",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/installation",
+    "destination": "/walletkit/ios/installation",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/transactions",
+    "destination": "/walletkit/ios/transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/wallets",
+    "destination": "/walletkit/ios/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/ios/webview",
+    "destination": "/walletkit/ios/webview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/native-web",
+    "destination": "/walletkit/native-web",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/overview",
+    "destination": "/walletkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/qa-guide",
+    "destination": "/walletkit/qa-guide",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/connections",
+    "destination": "/walletkit/web/connections",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/events",
+    "destination": "/walletkit/web/events",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/init",
+    "destination": "/walletkit/web/init",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/jettons",
+    "destination": "/walletkit/web/jettons",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/nfts",
+    "destination": "/walletkit/web/nfts",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/toncoin",
+    "destination": "/walletkit/web/toncoin",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/walletkit/web/wallets",
+    "destination": "/walletkit/web/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/actions/change-library",
+    "destination": "/blockchain-basics/foundations/actions/change-library",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/actions/overview",
+    "destination": "/blockchain-basics/foundations/actions/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/actions/reserve",
+    "destination": "/blockchain-basics/foundations/actions/reserve",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/actions/send",
+    "destination": "/blockchain-basics/foundations/actions/send",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/actions/set-code",
+    "destination": "/blockchain-basics/foundations/actions/set-code",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/addresses/derive",
+    "destination": "/blockchain-basics/foundations/addresses/derive",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/addresses/formats",
+    "destination": "/blockchain-basics/foundations/addresses/formats",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/addresses/overview",
+    "destination": "/blockchain-basics/foundations/addresses/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/addresses/serialize",
+    "destination": "/blockchain-basics/foundations/addresses/serialize",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/config",
+    "destination": "/blockchain-basics/foundations/config",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/consensus/catchain-visualizer",
+    "destination": "/blockchain-basics/foundations/consensus/catchain-visualizer",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/fees",
+    "destination": "/blockchain-basics/foundations/fees",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/glossary",
+    "destination": "/blockchain-basics/foundations/glossary",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/limits",
+    "destination": "/blockchain-basics/foundations/limits",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/deploy",
+    "destination": "/blockchain-basics/foundations/messages/deploy",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/external-in",
+    "destination": "/blockchain-basics/foundations/messages/external-in",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/external-out",
+    "destination": "/blockchain-basics/foundations/messages/external-out",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/internal",
+    "destination": "/blockchain-basics/foundations/messages/internal",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/modes",
+    "destination": "/blockchain-basics/foundations/messages/modes",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/ordinary-tx",
+    "destination": "/blockchain-basics/foundations/messages/ordinary-tx",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/messages/overview",
+    "destination": "/blockchain-basics/foundations/messages/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/phases",
+    "destination": "/blockchain-basics/foundations/phases",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/precompiled",
+    "destination": "/blockchain-basics/foundations/precompiled",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/proofs/overview",
+    "destination": "/blockchain-basics/foundations/proofs/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/proofs/verifying-liteserver-proofs",
+    "destination": "/blockchain-basics/foundations/proofs/verifying-liteserver-proofs",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/serialization/boc",
+    "destination": "/blockchain-basics/foundations/serialization/boc",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/serialization/cells",
+    "destination": "/blockchain-basics/foundations/serialization/cells",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/serialization/library",
+    "destination": "/blockchain-basics/foundations/serialization/library",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/serialization/merkle",
+    "destination": "/blockchain-basics/foundations/serialization/merkle",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/serialization/merkle-update",
+    "destination": "/blockchain-basics/foundations/serialization/merkle-update",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/serialization/pruned",
+    "destination": "/blockchain-basics/foundations/serialization/pruned",
+    "permanent": true
+  },
+  {
     "source": "/foundations/services",
     "destination": "/foundations/web3/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/shards",
+    "destination": "/blockchain-basics/foundations/shards",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/status",
+    "destination": "/blockchain-basics/foundations/status",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/system",
+    "destination": "/blockchain-basics/foundations/system",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/traces",
+    "destination": "/blockchain-basics/foundations/traces",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/web3/overview",
+    "destination": "/blockchain-basics/foundations/web3/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/web3/ton-dns",
+    "destination": "/blockchain-basics/foundations/web3/ton-dns",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/web3/ton-proxy",
+    "destination": "/blockchain-basics/foundations/web3/ton-proxy",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/web3/ton-sites",
+    "destination": "/blockchain-basics/foundations/web3/ton-sites",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/web3/ton-storage",
+    "destination": "/blockchain-basics/foundations/web3/ton-storage",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/whitepapers/catchain",
+    "destination": "/blockchain-basics/foundations/whitepapers/catchain",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/whitepapers/overview",
+    "destination": "/blockchain-basics/foundations/whitepapers/overview",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/whitepapers/tblkch",
+    "destination": "/blockchain-basics/foundations/whitepapers/tblkch",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/whitepapers/ton",
+    "destination": "/blockchain-basics/foundations/whitepapers/ton",
+    "permanent": true
+  },
+  {
+    "source": "/foundations/whitepapers/tvm",
+    "destination": "/blockchain-basics/foundations/whitepapers/tvm",
     "permanent": true
   },
   {
@@ -1183,6 +1793,166 @@ export const redirects = [
   {
     "source": "/guidelines/web3-guidelines",
     "destination": "/foundations/web3/overview",
+    "permanent": true
+  },
+  {
+    "source": "/languages/fift/deep-dive",
+    "destination": "/blockchain-basics/languages/fift/deep-dive",
+    "permanent": true
+  },
+  {
+    "source": "/languages/fift/fift-and-tvm-assembly",
+    "destination": "/blockchain-basics/languages/fift/fift-and-tvm-assembly",
+    "permanent": true
+  },
+  {
+    "source": "/languages/fift/multisig",
+    "destination": "/blockchain-basics/languages/fift/multisig",
+    "permanent": true
+  },
+  {
+    "source": "/languages/fift/overview",
+    "destination": "/blockchain-basics/languages/fift/overview",
+    "permanent": true
+  },
+  {
+    "source": "/languages/fift/whitepaper",
+    "destination": "/blockchain-basics/languages/fift/whitepaper",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/asm-functions",
+    "destination": "/blockchain-basics/languages/func/asm-functions",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/built-ins",
+    "destination": "/blockchain-basics/languages/func/built-ins",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/changelog",
+    "destination": "/blockchain-basics/languages/func/changelog",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/comments",
+    "destination": "/blockchain-basics/languages/func/comments",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/compiler-directives",
+    "destination": "/blockchain-basics/languages/func/compiler-directives",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/cookbook",
+    "destination": "/blockchain-basics/languages/func/cookbook",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/declarations-overview",
+    "destination": "/blockchain-basics/languages/func/declarations-overview",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/dictionaries",
+    "destination": "/blockchain-basics/languages/func/dictionaries",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/expressions",
+    "destination": "/blockchain-basics/languages/func/expressions",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/functions",
+    "destination": "/blockchain-basics/languages/func/functions",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/global-variables",
+    "destination": "/blockchain-basics/languages/func/global-variables",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/known-issues",
+    "destination": "/blockchain-basics/languages/func/known-issues",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/libraries",
+    "destination": "/blockchain-basics/languages/func/libraries",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/literals",
+    "destination": "/blockchain-basics/languages/func/literals",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/operators",
+    "destination": "/blockchain-basics/languages/func/operators",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/overview",
+    "destination": "/blockchain-basics/languages/func/overview",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/special-functions",
+    "destination": "/blockchain-basics/languages/func/special-functions",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/statements",
+    "destination": "/blockchain-basics/languages/func/statements",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/stdlib",
+    "destination": "/blockchain-basics/languages/func/stdlib",
+    "permanent": true
+  },
+  {
+    "source": "/languages/func/types",
+    "destination": "/blockchain-basics/languages/func/types",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tact",
+    "destination": "/blockchain-basics/languages/tact",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tl-b/complex-and-non-trivial-examples",
+    "destination": "/blockchain-basics/languages/tl-b/complex-and-non-trivial-examples",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tl-b/overview",
+    "destination": "/blockchain-basics/languages/tl-b/overview",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tl-b/simple-examples",
+    "destination": "/blockchain-basics/languages/tl-b/simple-examples",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tl-b/syntax-and-semantics",
+    "destination": "/blockchain-basics/languages/tl-b/syntax-and-semantics",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tl-b/tep-examples",
+    "destination": "/blockchain-basics/languages/tl-b/tep-examples",
+    "permanent": true
+  },
+  {
+    "source": "/languages/tl-b/tooling",
+    "destination": "/blockchain-basics/languages/tl-b/tooling",
     "permanent": true
   },
   {
@@ -1376,8 +2146,243 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/standard/tokens/airdrop",
+    "destination": "/blockchain-basics/standard/tokens/airdrop",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/api",
+    "destination": "/blockchain-basics/standard/tokens/jettons/api",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/burn",
+    "destination": "/blockchain-basics/standard/tokens/jettons/burn",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/comparison",
+    "destination": "/blockchain-basics/standard/tokens/jettons/comparison",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/find",
+    "destination": "/blockchain-basics/standard/tokens/jettons/find",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/how-it-works",
+    "destination": "/blockchain-basics/standard/tokens/jettons/how-it-works",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/mint",
+    "destination": "/blockchain-basics/standard/tokens/jettons/mint",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/mintless/deploy",
+    "destination": "/blockchain-basics/standard/tokens/jettons/mintless/deploy",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/mintless/overview",
+    "destination": "/blockchain-basics/standard/tokens/jettons/mintless/overview",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/overview",
+    "destination": "/blockchain-basics/standard/tokens/jettons/overview",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/supply-data",
+    "destination": "/blockchain-basics/standard/tokens/jettons/supply-data",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/transfer",
+    "destination": "/blockchain-basics/standard/tokens/jettons/transfer",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/jettons/wallet-data",
+    "destination": "/blockchain-basics/standard/tokens/jettons/wallet-data",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/metadata",
+    "destination": "/blockchain-basics/standard/tokens/metadata",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/api",
+    "destination": "/blockchain-basics/standard/tokens/nft/api",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/comparison",
+    "destination": "/blockchain-basics/standard/tokens/nft/comparison",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/deploy",
+    "destination": "/blockchain-basics/standard/tokens/nft/deploy",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/how-it-works",
+    "destination": "/blockchain-basics/standard/tokens/nft/how-it-works",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/metadata",
+    "destination": "/blockchain-basics/standard/tokens/nft/metadata",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/nft-2.0",
+    "destination": "/blockchain-basics/standard/tokens/nft/nft-2.0",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/nft-reference",
+    "destination": "/blockchain-basics/standard/tokens/nft/nft-reference",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/overview",
+    "destination": "/blockchain-basics/standard/tokens/nft/overview",
+    "permanent": true
+  },
+  {
     "source": "/standard/tokens/nft/reference",
     "destination": "/standard/tokens/nft/nft-reference",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/sbt",
+    "destination": "/blockchain-basics/standard/tokens/nft/sbt",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/transfer",
+    "destination": "/blockchain-basics/standard/tokens/nft/transfer",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/nft/verify",
+    "destination": "/blockchain-basics/standard/tokens/nft/verify",
+    "permanent": true
+  },
+  {
+    "source": "/standard/tokens/overview",
+    "destination": "/blockchain-basics/standard/tokens/overview",
+    "permanent": true
+  },
+  {
+    "source": "/standard/vesting",
+    "destination": "/blockchain-basics/standard/vesting",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/comparison",
+    "destination": "/blockchain-basics/standard/wallets/comparison",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/overview",
+    "destination": "/blockchain-basics/standard/wallets/highload/overview",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/v2/specification",
+    "destination": "/blockchain-basics/standard/wallets/highload/v2/specification",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/v3/create",
+    "destination": "/blockchain-basics/standard/wallets/highload/v3/create",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/v3/send-batch-transfers",
+    "destination": "/blockchain-basics/standard/wallets/highload/v3/send-batch-transfers",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/v3/send-single-transfer",
+    "destination": "/blockchain-basics/standard/wallets/highload/v3/send-single-transfer",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/v3/specification",
+    "destination": "/blockchain-basics/standard/wallets/highload/v3/specification",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/highload/v3/verify-is-processed",
+    "destination": "/blockchain-basics/standard/wallets/highload/v3/verify-is-processed",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/history",
+    "destination": "/blockchain-basics/standard/wallets/history",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/how-it-works",
+    "destination": "/blockchain-basics/standard/wallets/how-it-works",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/interact",
+    "destination": "/blockchain-basics/standard/wallets/interact",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/lockup",
+    "destination": "/blockchain-basics/standard/wallets/lockup",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/mnemonics",
+    "destination": "/blockchain-basics/standard/wallets/mnemonics",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/performance",
+    "destination": "/blockchain-basics/standard/wallets/performance",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/preprocessed-v2/interact",
+    "destination": "/blockchain-basics/standard/wallets/preprocessed-v2/interact",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/preprocessed-v2/specification",
+    "destination": "/blockchain-basics/standard/wallets/preprocessed-v2/specification",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/restricted",
+    "destination": "/blockchain-basics/standard/wallets/restricted",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/v4",
+    "destination": "/blockchain-basics/standard/wallets/v4",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/v5",
+    "destination": "/blockchain-basics/standard/wallets/v5",
+    "permanent": true
+  },
+  {
+    "source": "/standard/wallets/v5-api",
+    "destination": "/blockchain-basics/standard/wallets/v5-api",
     "permanent": true
   },
   {
@@ -1618,6 +2623,71 @@ export const redirects = [
   {
     "source": "/tolk/types/void-never",
     "destination": "/contract-dev/tolk/types/void-never",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/builders-and-slices",
+    "destination": "/blockchain-basics/tvm/builders-and-slices",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/continuations",
+    "destination": "/blockchain-basics/tvm/continuations",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/exit-codes",
+    "destination": "/blockchain-basics/tvm/exit-codes",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/gas",
+    "destination": "/blockchain-basics/tvm/gas",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/get-method",
+    "destination": "/blockchain-basics/tvm/get-method",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/initialization",
+    "destination": "/blockchain-basics/tvm/initialization",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/instructions",
+    "destination": "/blockchain-basics/tvm/instructions",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/overview",
+    "destination": "/blockchain-basics/tvm/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/registers",
+    "destination": "/blockchain-basics/tvm/registers",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/tools/retracer",
+    "destination": "/blockchain-basics/tvm/tools/retracer",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/tools/ton-decompiler",
+    "destination": "/blockchain-basics/tvm/tools/ton-decompiler",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/tools/tvm-explorer",
+    "destination": "/blockchain-basics/tvm/tools/tvm-explorer",
+    "permanent": true
+  },
+  {
+    "source": "/tvm/tools/txtracer",
+    "destination": "/blockchain-basics/tvm/tools/txtracer",
     "permanent": true
   },
   {

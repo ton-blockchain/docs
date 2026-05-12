@@ -10,30 +10,221 @@
         {
           "id": "start-here",
           "title": "Welcome to TON",
-          "icon": "",
-          "tag": "new"
+          "icon": ""
         },
         {
+          "type": "link",
           "id": "first-smart-contract",
-          "icon": "rocket"
+          "name": "Smart contracts",
+          "icon": "file-text",
+          "url": "https://ton-blockchain.github.io/acton/"
         },
         {
           "id": "get-support",
-          "icon": "lightbulb"
+          "icon": "compass"
         },
         {
           "id": "from-ethereum",
-          "icon": "blocks"
+          "icon": "workflow"
         },
         {
           "id": "more-tutorials",
-          "icon": "book"
+          "icon": "external-link"
         },
         {
           "type": "link",
           "name": "Old documentation",
-          "icon": "boxes",
+          "icon": "inbox",
           "url": "https://old-docs.ton.org/"
+        },
+        {
+          "slug": "ton-connect",
+          "group": "TON Connect",
+          "pages": [
+            {
+              "id": "ecosystem/ton-connect/overview",
+              "title": "Overview"
+            },
+            {
+              "id": "ecosystem/ton-connect/dapp",
+              "title": "Quick start"
+            },
+            {
+              "id": "ecosystem/ton-connect/manifest",
+              "title": "Manifest"
+            },
+            {
+              "id": "ecosystem/ton-connect/message-lookup",
+              "title": "Message lookup"
+            },
+            {
+              "id": "ecosystem/ton-connect/wallet-connect",
+              "title": "WalletConnect"
+            },
+            {
+              "id": "ecosystem/ton-connect/wallet",
+              "title": "Wallets"
+            }
+          ]
+        },
+        {
+          "slug": "ton-pay",
+          "group": "TON Pay",
+          "pages": [
+            {
+              "id": "ecosystem/ton-pay/overview",
+              "title": "Overview"
+            },
+            {
+              "id": "ecosystem/ton-pay/quick-start",
+              "title": "Quick start"
+            },
+            {
+              "id": "ecosystem/ton-pay/on-ramp",
+              "title": "On-ramp"
+            },
+            {
+              "slug": "payment-integration",
+              "group": "Payment integration",
+              "pages": [
+                {
+                  "id": "ecosystem/ton-pay/payment-integration/transfer"
+                },
+                {
+                  "id": "ecosystem/ton-pay/payment-integration/payments-react"
+                },
+                {
+                  "id": "ecosystem/ton-pay/payment-integration/payments-tonconnect"
+                },
+                {
+                  "id": "ecosystem/ton-pay/payment-integration/status-info"
+                }
+              ]
+            },
+            {
+              "slug": "ui-integration",
+              "group": "UI integration",
+              "pages": [
+                {
+                  "id": "ecosystem/ton-pay/ui-integration/button-react"
+                },
+                {
+                  "id": "ecosystem/ton-pay/ui-integration/button-js"
+                }
+              ]
+            },
+            {
+              "id": "ecosystem/ton-pay/webhooks",
+              "title": "Webhooks"
+            },
+            {
+              "id": "ecosystem/ton-pay/api-reference",
+              "title": "API Reference"
+            }
+          ]
+        },
+        {
+          "slug": "walletkit",
+          "group": "WalletKit",
+          "pages": [
+            {
+              "id": "ecosystem/walletkit/overview",
+              "title": "Overview"
+            },
+            {
+              "slug": "web",
+              "group": "Web",
+              "pages": [
+                {
+                  "id": "ecosystem/walletkit/web/init"
+                },
+                {
+                  "id": "ecosystem/walletkit/web/wallets"
+                },
+                {
+                  "id": "ecosystem/walletkit/web/connections"
+                },
+                {
+                  "id": "ecosystem/walletkit/web/events"
+                },
+                {
+                  "id": "ecosystem/walletkit/web/toncoin"
+                },
+                {
+                  "id": "ecosystem/walletkit/web/jettons"
+                },
+                {
+                  "id": "ecosystem/walletkit/web/nfts"
+                }
+              ]
+            },
+            {
+              "slug": "ios",
+              "group": "iOS",
+              "pages": [
+                {
+                  "id": "ecosystem/walletkit/ios/installation"
+                },
+                {
+                  "id": "ecosystem/walletkit/ios/init"
+                },
+                {
+                  "id": "ecosystem/walletkit/ios/wallets"
+                },
+                {
+                  "id": "ecosystem/walletkit/ios/data"
+                },
+                {
+                  "id": "ecosystem/walletkit/ios/transactions"
+                },
+                {
+                  "id": "ecosystem/walletkit/ios/events"
+                },
+                {
+                  "id": "ecosystem/walletkit/ios/webview"
+                }
+              ]
+            },
+            {
+              "slug": "android",
+              "group": "Android",
+              "pages": [
+                {
+                  "id": "ecosystem/walletkit/android/installation"
+                },
+                {
+                  "id": "ecosystem/walletkit/android/init"
+                },
+                {
+                  "id": "ecosystem/walletkit/android/wallets"
+                },
+                {
+                  "id": "ecosystem/walletkit/android/data"
+                },
+                {
+                  "id": "ecosystem/walletkit/android/events"
+                },
+                {
+                  "id": "ecosystem/walletkit/android/transactions"
+                },
+                {
+                  "id": "ecosystem/walletkit/android/webview"
+                }
+              ]
+            },
+            {
+              "id": "ecosystem/walletkit/qa-guide",
+              "title": "QA Guide"
+            },
+            {
+              "id": "ecosystem/walletkit/native-web",
+              "title": "For native custodians"
+            },
+            {
+              "id": "ecosystem/walletkit/browser-extension",
+              "title": "For browser custodians"
+            }
+          ]
         },
         {
           "slug": "ecosystem",
@@ -518,180 +709,6 @@
               "id": "ecosystem/bridges"
             },
             {
-              "slug": "ton-connect",
-              "group": "TON Connect",
-              "pages": [
-                {
-                  "id": "ecosystem/ton-connect/overview"
-                },
-                {
-                  "id": "ecosystem/ton-connect/wallet-connect"
-                },
-                {
-                  "id": "ecosystem/ton-connect/dapp"
-                },
-                {
-                  "id": "ecosystem/ton-connect/wallet"
-                },
-                {
-                  "id": "ecosystem/ton-connect/manifest"
-                },
-                {
-                  "id": "ecosystem/ton-connect/message-lookup"
-                }
-              ]
-            },
-            {
-              "slug": "walletkit",
-              "group": "WalletKit",
-              "pages": [
-                {
-                  "id": "ecosystem/walletkit/overview"
-                },
-                {
-                  "slug": "web",
-                  "group": "Web",
-                  "pages": [
-                    {
-                      "id": "ecosystem/walletkit/web/init"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/web/wallets"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/web/connections"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/web/events"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/web/toncoin"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/web/jettons"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/web/nfts"
-                    }
-                  ]
-                },
-                {
-                  "slug": "ios",
-                  "group": "iOS",
-                  "pages": [
-                    {
-                      "id": "ecosystem/walletkit/ios/installation"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/ios/init"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/ios/wallets"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/ios/data"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/ios/transactions"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/ios/events"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/ios/webview"
-                    }
-                  ]
-                },
-                {
-                  "slug": "android",
-                  "group": "Android",
-                  "pages": [
-                    {
-                      "id": "ecosystem/walletkit/android/installation"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/android/init"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/android/wallets"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/android/data"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/android/events"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/android/transactions"
-                    },
-                    {
-                      "id": "ecosystem/walletkit/android/webview"
-                    }
-                  ]
-                },
-                {
-                  "id": "ecosystem/walletkit/qa-guide"
-                },
-                {
-                  "id": "ecosystem/walletkit/native-web"
-                },
-                {
-                  "id": "ecosystem/walletkit/browser-extension"
-                }
-              ]
-            },
-            {
-              "slug": "ton-pay",
-              "group": "TON Pay",
-              "pages": [
-                {
-                  "id": "ecosystem/ton-pay/overview"
-                },
-                {
-                  "id": "ecosystem/ton-pay/quick-start"
-                },
-                {
-                  "id": "ecosystem/ton-pay/on-ramp"
-                },
-                {
-                  "slug": "payment-integration",
-                  "group": "Payment integration",
-                  "pages": [
-                    {
-                      "id": "ecosystem/ton-pay/payment-integration/transfer"
-                    },
-                    {
-                      "id": "ecosystem/ton-pay/payment-integration/payments-react"
-                    },
-                    {
-                      "id": "ecosystem/ton-pay/payment-integration/payments-tonconnect"
-                    },
-                    {
-                      "id": "ecosystem/ton-pay/payment-integration/status-info"
-                    }
-                  ]
-                },
-                {
-                  "slug": "ui-integration",
-                  "group": "UI integration",
-                  "pages": [
-                    {
-                      "id": "ecosystem/ton-pay/ui-integration/button-react"
-                    },
-                    {
-                      "id": "ecosystem/ton-pay/ui-integration/button-js"
-                    }
-                  ]
-                },
-                {
-                  "id": "ecosystem/ton-pay/webhooks"
-                },
-                {
-                  "id": "ecosystem/ton-pay/api-reference"
-                }
-              ]
-            },
-            {
               "slug": "tma",
               "group": "TMA: Telegram Mini Apps",
               "pages": [
@@ -758,111 +775,6 @@
               ]
             },
             {
-              "slug": "nodes",
-              "group": "Blockchain nodes",
-              "pages": [
-                {
-                  "id": "ecosystem/nodes/overview"
-                },
-                {
-                  "slug": "cpp",
-                  "group": "C++ node",
-                  "pages": [
-                    {
-                      "id": "ecosystem/nodes/cpp/setup-mytonctrl"
-                    },
-                    {
-                      "id": "ecosystem/nodes/cpp/run-validator"
-                    },
-                    {
-                      "id": "ecosystem/nodes/cpp/integrating-with-prometheus"
-                    },
-                    {
-                      "id": "ecosystem/nodes/cpp/setup-mylocalton"
-                    },
-                    {
-                      "slug": "mytonctrl",
-                      "group": "MyTonCtrl reference",
-                      "pages": [
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/overview"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/core"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/installer"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/wallet"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/validator"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/collator"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/pools"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/liquid-staking"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/custom-overlays"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/utilities"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/alerting"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/backups"
-                        },
-                        {
-                          "id": "ecosystem/nodes/cpp/mytonctrl/btc-teleport"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "slug": "rust",
-                  "group": "Rust node",
-                  "pages": [
-                    {
-                      "id": "ecosystem/nodes/rust/quick-start"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/architecture"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/global-config"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/logs-config"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/node-config"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/metrics"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/node-config-ref"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/probes"
-                    },
-                    {
-                      "id": "ecosystem/nodes/rust/monitoring"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
               "slug": "staking",
               "group": "Staking",
               "pages": [
@@ -901,683 +813,285 @@
           ]
         },
         {
-          "slug": "standard",
-          "group": "Standard contracts",
+          "slug": "nodes",
+          "group": "Blockchain nodes",
+          "expanded": true,
           "pages": [
             {
-              "slug": "wallets",
-              "group": "Wallets",
+              "id": "ecosystem/nodes/overview"
+            },
+            {
+              "slug": "cpp",
+              "group": "C++ node",
               "pages": [
                 {
-                  "id": "standard/wallets/how-it-works"
+                  "id": "ecosystem/nodes/cpp/setup-mytonctrl"
                 },
                 {
-                  "id": "standard/wallets/mnemonics"
+                  "id": "ecosystem/nodes/cpp/run-validator"
                 },
                 {
-                  "id": "standard/wallets/comparison"
+                  "id": "ecosystem/nodes/cpp/integrating-with-prometheus"
                 },
                 {
-                  "id": "standard/wallets/interact"
+                  "id": "ecosystem/nodes/cpp/setup-mylocalton"
                 },
                 {
-                  "group": "Wallet V5",
-                  "tag": "latest",
+                  "slug": "mytonctrl",
+                  "group": "MyTonCtrl reference",
                   "pages": [
                     {
-                      "id": "standard/wallets/v5"
+                      "id": "ecosystem/nodes/cpp/mytonctrl/overview"
                     },
                     {
-                      "id": "standard/wallets/v5-api"
+                      "id": "ecosystem/nodes/cpp/mytonctrl/core"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/installer"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/wallet"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/validator"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/collator"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/pools"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/liquid-staking"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/custom-overlays"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/utilities"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/alerting"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/backups"
+                    },
+                    {
+                      "id": "ecosystem/nodes/cpp/mytonctrl/btc-teleport"
                     }
                   ]
-                },
-                {
-                  "id": "standard/wallets/v4"
-                },
-                {
-                  "slug": "highload",
-                  "group": "Highload wallets",
-                  "pages": [
-                    {
-                      "id": "standard/wallets/highload/overview"
-                    },
-                    {
-                      "slug": "v3",
-                      "group": "Highload wallet v3",
-                      "pages": [
-                        {
-                          "id": "standard/wallets/highload/v3/create"
-                        },
-                        {
-                          "id": "standard/wallets/highload/v3/send-single-transfer"
-                        },
-                        {
-                          "id": "standard/wallets/highload/v3/send-batch-transfers"
-                        },
-                        {
-                          "id": "standard/wallets/highload/v3/verify-is-processed"
-                        },
-                        {
-                          "id": "standard/wallets/highload/v3/specification"
-                        }
-                      ]
-                    },
-                    {
-                      "slug": "v2",
-                      "group": "Highload wallet v2",
-                      "pages": [
-                        {
-                          "id": "standard/wallets/highload/v2/specification"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "id": "standard/wallets/lockup"
-                },
-                {
-                  "slug": "preprocessed-v2",
-                  "group": "Preprocessed wallet",
-                  "tag": "v2",
-                  "pages": [
-                    {
-                      "id": "standard/wallets/preprocessed-v2/interact"
-                    },
-                    {
-                      "id": "standard/wallets/preprocessed-v2/specification"
-                    }
-                  ]
-                },
-                {
-                  "id": "standard/wallets/restricted"
-                },
-                {
-                  "id": "standard/wallets/performance"
-                },
-                {
-                  "id": "standard/wallets/history"
                 }
               ]
             },
             {
-              "slug": "tokens",
-              "group": "Tokens",
-              "expanded": true,
+              "slug": "rust",
+              "group": "Rust node",
               "pages": [
                 {
-                  "id": "standard/tokens/overview"
+                  "id": "ecosystem/nodes/rust/quick-start"
                 },
                 {
-                  "id": "standard/tokens/metadata"
+                  "id": "ecosystem/nodes/rust/architecture"
                 },
                 {
-                  "slug": "jettons",
-                  "group": "Jettons",
-                  "pages": [
-                    {
-                      "id": "standard/tokens/jettons/overview"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/how-it-works"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/comparison"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/mint"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/transfer"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/burn"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/find"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/wallet-data"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/supply-data"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/mintless/overview",
-                      "slug": "mintless/overview"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/mintless/deploy",
-                      "slug": "mintless/deploy"
-                    },
-                    {
-                      "id": "standard/tokens/jettons/api"
-                    }
-                  ]
+                  "id": "ecosystem/nodes/rust/global-config"
                 },
                 {
-                  "slug": "nft",
-                  "group": "NFT",
-                  "pages": [
-                    {
-                      "id": "standard/tokens/nft/overview"
-                    },
-                    {
-                      "id": "standard/tokens/nft/how-it-works"
-                    },
-                    {
-                      "id": "standard/tokens/nft/sbt"
-                    },
-                    {
-                      "id": "standard/tokens/nft/comparison"
-                    },
-                    {
-                      "id": "standard/tokens/nft/deploy"
-                    },
-                    {
-                      "id": "standard/tokens/nft/transfer"
-                    },
-                    {
-                      "id": "standard/tokens/nft/metadata"
-                    },
-                    {
-                      "id": "standard/tokens/nft/verify"
-                    },
-                    {
-                      "id": "standard/tokens/nft/api"
-                    },
-                    {
-                      "id": "standard/tokens/nft/nft-reference"
-                    },
-                    {
-                      "id": "standard/tokens/nft/nft-2.0"
-                    }
-                  ]
+                  "id": "ecosystem/nodes/rust/logs-config"
                 },
                 {
-                  "id": "standard/tokens/airdrop"
-                }
-              ]
-            },
-            {
-              "id": "standard/vesting"
-            }
-          ]
-        },
-        {
-          "slug": "contract-dev",
-          "group": "Contract development",
-          "pages": [
-            {
-              "slug": "tolk",
-              "group": "Tolk language",
-              "tag": "recommended",
-              "pages": [
-                {
-                  "id": "tolk/overview"
+                  "id": "ecosystem/nodes/rust/node-config"
                 },
                 {
-                  "id": "tolk/basic-syntax"
+                  "id": "ecosystem/nodes/rust/metrics"
                 },
                 {
-                  "id": "tolk/idioms-conventions"
+                  "id": "ecosystem/nodes/rust/node-config-ref"
                 },
                 {
-                  "id": "tolk/examples"
+                  "id": "ecosystem/nodes/rust/probes"
                 },
                 {
-                  "slug": "types",
-                  "group": "Type system",
-                  "pages": [
-                    {
-                      "id": "tolk/types/list-of-types"
-                    },
-                    {
-                      "id": "tolk/types/numbers"
-                    },
-                    {
-                      "id": "tolk/types/booleans"
-                    },
-                    {
-                      "id": "tolk/types/address"
-                    },
-                    {
-                      "id": "tolk/types/cells"
-                    },
-                    {
-                      "id": "tolk/types/strings"
-                    },
-                    {
-                      "id": "tolk/types/structures"
-                    },
-                    {
-                      "id": "tolk/types/aliases"
-                    },
-                    {
-                      "id": "tolk/types/generics"
-                    },
-                    {
-                      "id": "tolk/types/enums"
-                    },
-                    {
-                      "id": "tolk/types/nullable"
-                    },
-                    {
-                      "id": "tolk/types/unions"
-                    },
-                    {
-                      "id": "tolk/types/tensors"
-                    },
-                    {
-                      "id": "tolk/types/tuples"
-                    },
-                    {
-                      "id": "tolk/types/maps"
-                    },
-                    {
-                      "id": "tolk/types/callables"
-                    },
-                    {
-                      "id": "tolk/types/unknown"
-                    },
-                    {
-                      "id": "tolk/types/void-never"
-                    },
-                    {
-                      "id": "tolk/types/type-checks-and-casts"
-                    },
-                    {
-                      "id": "tolk/types/overall-tvm-stack"
-                    },
-                    {
-                      "id": "tolk/types/overall-serialization"
-                    }
-                  ]
-                },
-                {
-                  "slug": "syntax",
-                  "group": "Syntax details",
-                  "pages": [
-                    {
-                      "id": "tolk/syntax/variables"
-                    },
-                    {
-                      "id": "tolk/syntax/conditions-loops"
-                    },
-                    {
-                      "id": "tolk/syntax/exceptions"
-                    },
-                    {
-                      "id": "tolk/syntax/functions-methods"
-                    },
-                    {
-                      "id": "tolk/syntax/structures-fields"
-                    },
-                    {
-                      "id": "tolk/syntax/pattern-matching"
-                    },
-                    {
-                      "id": "tolk/syntax/mutability"
-                    },
-                    {
-                      "id": "tolk/syntax/operators"
-                    },
-                    {
-                      "id": "tolk/syntax/imports"
-                    }
-                  ]
-                },
-                {
-                  "slug": "features",
-                  "group": "Language features",
-                  "pages": [
-                    {
-                      "id": "tolk/features/message-handling"
-                    },
-                    {
-                      "id": "tolk/features/contract-storage"
-                    },
-                    {
-                      "id": "tolk/features/contract-getters"
-                    },
-                    {
-                      "id": "tolk/features/message-sending"
-                    },
-                    {
-                      "id": "tolk/features/auto-serialization"
-                    },
-                    {
-                      "id": "tolk/features/lazy-loading"
-                    },
-                    {
-                      "id": "tolk/features/jetton-payload"
-                    },
-                    {
-                      "id": "tolk/features/standard-library"
-                    },
-                    {
-                      "id": "tolk/features/asm-functions"
-                    },
-                    {
-                      "id": "tolk/features/compiler-optimizations"
-                    }
-                  ]
-                },
-                {
-                  "slug": "from-func",
-                  "group": "Migrating from FunC",
-                  "pages": [
-                    {
-                      "id": "tolk/from-func/tolk-vs-func"
-                    },
-                    {
-                      "id": "tolk/from-func/stdlib-comparison"
-                    },
-                    {
-                      "id": "tolk/from-func/converter"
-                    }
-                  ]
-                },
-                {
-                  "id": "tolk/changelog"
-                }
-              ]
-            },
-            {
-              "slug": "ide",
-              "group": "IDEs and editor plugins",
-              "pages": [
-                {
-                  "id": "contract-dev/ide/vscode"
-                },
-                {
-                  "id": "contract-dev/ide/jetbrains"
-                }
-              ]
-            },
-            {
-              "slug": "techniques",
-              "group": "Techniques",
-              "expanded": true,
-              "pages": [
-                {
-                  "id": "contract-dev/techniques/signing"
-                },
-                {
-                  "id": "contract-dev/techniques/contract-sharding"
-                },
-                {
-                  "id": "contract-dev/techniques/security"
-                },
-                {
-                  "id": "contract-dev/techniques/gas"
-                },
-                {
-                  "id": "contract-dev/techniques/on-chain-jetton-processing"
-                },
-                {
-                  "id": "contract-dev/techniques/using-on-chain-libraries"
-                },
-                {
-                  "id": "contract-dev/techniques/random"
-                },
-                {
-                  "id": "contract-dev/techniques/upgrades"
-                },
-                {
-                  "id": "contract-dev/techniques/vanity"
-                },
-                {
-                  "id": "contract-dev/techniques/zero-knowledge"
-                }
-              ]
-            },
-            {
-              "group": "Blueprint",
-              "expanded": true,
-              "pages": [
-                {
-                  "id": "contract-dev/blueprint/overview",
-                  "slug": "blueprint/overview"
-                },
-                {
-                  "id": "contract-dev/blueprint/develop",
-                  "slug": "blueprint/develop"
-                },
-                {
-                  "slug": "testing",
-                  "group": "Testing",
-                  "pages": [
-                    {
-                      "id": "contract-dev/testing/overview"
-                    },
-                    {
-                      "id": "contract-dev/testing/reference"
-                    }
-                  ]
-                },
-                {
-                  "id": "contract-dev/blueprint/debug",
-                  "slug": "blueprint/debug"
-                },
-                {
-                  "id": "contract-dev/blueprint/deploy",
-                  "slug": "blueprint/deploy"
-                },
-                {
-                  "id": "contract-dev/blueprint/coverage",
-                  "slug": "blueprint/coverage"
-                },
-                {
-                  "id": "contract-dev/blueprint/benchmarks",
-                  "slug": "blueprint/benchmarks"
-                },
-                {
-                  "id": "contract-dev/blueprint/config",
-                  "slug": "blueprint/config"
-                },
-                {
-                  "id": "contract-dev/blueprint/cli",
-                  "slug": "blueprint/cli"
-                },
-                {
-                  "id": "contract-dev/blueprint/api",
-                  "slug": "blueprint/api"
+                  "id": "ecosystem/nodes/rust/monitoring"
                 }
               ]
             }
           ]
         },
         {
-          "slug": "languages",
-          "group": "Other languages",
+          "slug": "contribute",
+          "group": "Contribute",
           "pages": [
             {
-              "slug": "tl-b",
-              "group": "TL-B",
+              "id": "contribute/style-guide"
+            },
+            {
+              "slug": "snippets",
+              "group": "Components and snippets",
               "pages": [
                 {
-                  "id": "languages/tl-b/overview"
+                  "id": "contribute/snippets/overview"
                 },
                 {
-                  "id": "languages/tl-b/syntax-and-semantics"
+                  "id": "contribute/snippets/aside"
                 },
                 {
-                  "id": "languages/tl-b/simple-examples"
+                  "id": "contribute/snippets/image"
                 },
                 {
-                  "id": "languages/tl-b/complex-and-non-trivial-examples"
-                },
-                {
-                  "id": "languages/tl-b/tep-examples"
-                },
-                {
-                  "id": "languages/tl-b/tooling"
+                  "id": "contribute/snippets/filetree"
                 }
               ]
             },
             {
-              "slug": "fift",
-              "group": "Fift",
-              "pages": [
-                {
-                  "id": "languages/fift/overview"
-                },
-                {
-                  "id": "languages/fift/fift-and-tvm-assembly"
-                },
-                {
-                  "id": "languages/fift/deep-dive"
-                },
-                {
-                  "id": "languages/fift/multisig"
-                },
-                {
-                  "id": "languages/fift/whitepaper"
-                }
-              ]
+              "id": "contribute/style-guide-extended"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "appkit",
+      "slug": "appkit",
+      "title": "Mini App Development",
+      "icon": "box",
+      "pages": [
+        {
+          "id": "ecosystem/appkit/overview"
+        },
+        {
+          "id": "ecosystem/appkit/changelog"
+        },
+        {
+          "slug": "get-started",
+          "group": "Get Started",
+          "icon": "rocket",
+          "expanded": true,
+          "pages": [
+            {
+              "id": "ecosystem/appkit/get-started",
+              "slug": ""
             },
             {
-              "slug": "func",
-              "group": "FunC",
+              "slug": "installation",
+              "group": "Installation",
               "pages": [
                 {
-                  "id": "languages/func/overview"
+                  "id": "ecosystem/appkit/get-started/installation",
+                  "slug": ""
                 },
                 {
-                  "id": "languages/func/cookbook"
+                  "id": "ecosystem/appkit/get-started/installation/react-app"
                 },
                 {
-                  "group": "Language",
-                  "expanded": true,
-                  "pages": [
-                    {
-                      "id": "languages/func/comments"
-                    },
-                    {
-                      "id": "languages/func/types"
-                    },
-                    {
-                      "id": "languages/func/literals"
-                    },
-                    {
-                      "id": "languages/func/operators"
-                    },
-                    {
-                      "id": "languages/func/expressions"
-                    },
-                    {
-                      "id": "languages/func/statements"
-                    },
-                    {
-                      "group": "Program declarations",
-                      "expanded": true,
-                      "pages": [
-                        {
-                          "id": "languages/func/declarations-overview"
-                        },
-                        {
-                          "id": "languages/func/functions"
-                        },
-                        {
-                          "id": "languages/func/special-functions"
-                        },
-                        {
-                          "id": "languages/func/asm-functions"
-                        },
-                        {
-                          "id": "languages/func/global-variables"
-                        },
-                        {
-                          "id": "languages/func/compiler-directives"
-                        }
-                      ]
-                    },
-                    {
-                      "id": "languages/func/built-ins"
-                    },
-                    {
-                      "id": "languages/func/dictionaries"
-                    }
-                  ]
-                },
-                {
-                  "group": "Libraries",
-                  "expanded": true,
-                  "pages": [
-                    {
-                      "id": "languages/func/stdlib"
-                    },
-                    {
-                      "id": "languages/func/libraries"
-                    }
-                  ]
-                },
-                {
-                  "id": "languages/func/changelog"
-                },
-                {
-                  "id": "languages/func/known-issues"
+                  "id": "ecosystem/appkit/get-started/installation/vanilla-js"
                 }
-              ]
+              ],
+              "mode": "folder"
             },
             {
-              "id": "languages/tact"
+              "id": "ecosystem/appkit/get-started/connectors"
+            },
+            {
+              "id": "ecosystem/appkit/get-started/providers"
+            },
+            {
+              "id": "ecosystem/appkit/get-started/basic-getter-hooks"
+            },
+            {
+              "id": "ecosystem/appkit/get-started/streaming"
+            },
+            {
+              "id": "ecosystem/appkit/get-started/sending-transactions"
+            },
+            {
+              "id": "ecosystem/appkit/get-started/using-ui-widgets"
             }
           ]
         },
         {
-          "slug": "tvm",
-          "group": "TVM: TON Virtual Machine",
+          "slug": "howto",
+          "group": "How to",
           "pages": [
             {
-              "id": "tvm/overview"
+              "id": "ecosystem/appkit/howto",
+              "slug": ""
             },
             {
-              "slug": "tools",
-              "group": "Tools",
-              "pages": [
-                {
-                  "id": "tvm/tools/txtracer"
-                },
-                {
-                  "id": "tvm/tools/retracer"
-                },
-                {
-                  "id": "tvm/tools/tvm-explorer"
-                },
-                {
-                  "id": "tvm/tools/ton-decompiler"
-                }
-              ]
+              "id": "ecosystem/appkit/howto/appkit"
             },
             {
-              "id": "tvm/instructions"
+              "id": "ecosystem/appkit/howto/connect-to-a-wallet"
             },
             {
-              "id": "tvm/builders-and-slices"
+              "id": "ecosystem/appkit/howto/providers"
             },
             {
-              "id": "tvm/continuations"
+              "id": "ecosystem/appkit/howto/networks"
             },
             {
-              "id": "tvm/registers"
+              "id": "ecosystem/appkit/howto/read-balances"
             },
             {
-              "id": "tvm/gas"
+              "id": "ecosystem/appkit/howto/send-toncoin"
             },
             {
-              "id": "tvm/initialization"
+              "id": "ecosystem/appkit/howto/send-jettons"
             },
             {
-              "id": "tvm/exit-codes"
+              "id": "ecosystem/appkit/howto/nfts"
             },
             {
-              "id": "tvm/get-method"
+              "id": "ecosystem/appkit/howto/sign-data"
+            },
+            {
+              "id": "ecosystem/appkit/howto/streaming"
+            },
+            {
+              "id": "ecosystem/appkit/howto/swaps"
+            },
+            {
+              "id": "ecosystem/appkit/howto/staking"
+            },
+            {
+              "id": "ecosystem/appkit/howto/onramp"
+            },
+            {
+              "id": "ecosystem/appkit/howto/gasless"
+            },
+            {
+              "id": "ecosystem/appkit/howto/use-ui-widgets"
             }
           ]
         },
+        {
+          "slug": "reference",
+          "group": "Reference",
+          "icon": "book",
+          "pages": [
+            {
+              "id": "ecosystem/appkit/reference",
+              "slug": ""
+            },
+            {
+              "id": "ecosystem/appkit/reference/appkit"
+            },
+            {
+              "id": "ecosystem/appkit/reference/appkit-react"
+            }
+          ]
+        },
+        {
+          "id": "ecosystem/appkit/faq-troubleshooting"
+        }
+      ]
+    },
+    {
+      "id": "new-tab",
+      "slug": "blockchain-basics",
+      "title": "Blockchain Basics",
+      "icon": "boxes",
+      "pages": [
         {
           "slug": "foundations",
           "group": "Blockchain foundations",
@@ -1742,9 +1256,6 @@
               "id": "foundations/precompiled"
             },
             {
-              "id": "foundations/glossary"
-            },
-            {
               "slug": "whitepapers",
               "group": "Whitepapers",
               "pages": [
@@ -1764,209 +1275,415 @@
                   "id": "foundations/whitepapers/catchain"
                 }
               ]
+            },
+            {
+              "id": "foundations/glossary"
             }
           ]
         },
         {
-          "slug": "contribute",
-          "group": "Contribute",
+          "slug": "tvm",
+          "group": "TON Virtual Machine",
           "pages": [
             {
-              "id": "contribute/style-guide"
+              "id": "tvm/overview"
             },
             {
-              "slug": "snippets",
-              "group": "Components and snippets",
+              "slug": "tools",
+              "group": "Tools",
               "pages": [
                 {
-                  "id": "contribute/snippets/overview"
+                  "id": "tvm/tools/txtracer"
                 },
                 {
-                  "id": "contribute/snippets/aside"
+                  "id": "tvm/tools/retracer"
                 },
                 {
-                  "id": "contribute/snippets/image"
+                  "id": "tvm/tools/tvm-explorer"
                 },
                 {
-                  "id": "contribute/snippets/filetree"
+                  "id": "tvm/tools/ton-decompiler"
                 }
               ]
             },
             {
-              "id": "contribute/style-guide-extended"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "appkit",
-      "slug": "appkit",
-      "title": "dApp Development",
-      "icon": "box",
-      "pages": [
-        {
-          "id": "ecosystem/appkit/overview"
-        },
-        {
-          "id": "ecosystem/appkit/changelog"
-        },
-        {
-          "slug": "get-started",
-          "group": "Get Started",
-          "icon": "rocket",
-          "expanded": true,
-          "pages": [
-            {
-              "id": "ecosystem/appkit/get-started",
-              "slug": ""
+              "id": "tvm/instructions"
             },
             {
-              "slug": "installation",
-              "group": "Installation",
+              "id": "tvm/builders-and-slices"
+            },
+            {
+              "id": "tvm/continuations"
+            },
+            {
+              "id": "tvm/registers"
+            },
+            {
+              "id": "tvm/gas"
+            },
+            {
+              "id": "tvm/initialization"
+            },
+            {
+              "id": "tvm/exit-codes"
+            },
+            {
+              "id": "tvm/get-method"
+            }
+          ]
+        },
+        {
+          "slug": "standard",
+          "group": "Standard contracts",
+          "pages": [
+            {
+              "slug": "wallets",
+              "group": "Wallets",
               "pages": [
                 {
-                  "id": "ecosystem/appkit/get-started/installation",
-                  "slug": ""
+                  "id": "standard/wallets/how-it-works"
                 },
                 {
-                  "id": "ecosystem/appkit/get-started/installation/react-app"
+                  "id": "standard/wallets/mnemonics"
                 },
                 {
-                  "id": "ecosystem/appkit/get-started/installation/vanilla-js"
+                  "id": "standard/wallets/comparison"
+                },
+                {
+                  "id": "standard/wallets/interact"
+                },
+                {
+                  "group": "Wallet V5",
+                  "tag": "latest",
+                  "pages": [
+                    {
+                      "id": "standard/wallets/v5"
+                    },
+                    {
+                      "id": "standard/wallets/v5-api"
+                    }
+                  ]
+                },
+                {
+                  "id": "standard/wallets/v4"
+                },
+                {
+                  "slug": "highload",
+                  "group": "Highload wallets",
+                  "pages": [
+                    {
+                      "id": "standard/wallets/highload/overview"
+                    },
+                    {
+                      "slug": "v3",
+                      "group": "Highload wallet v3",
+                      "pages": [
+                        {
+                          "id": "standard/wallets/highload/v3/create"
+                        },
+                        {
+                          "id": "standard/wallets/highload/v3/send-single-transfer"
+                        },
+                        {
+                          "id": "standard/wallets/highload/v3/send-batch-transfers"
+                        },
+                        {
+                          "id": "standard/wallets/highload/v3/verify-is-processed"
+                        },
+                        {
+                          "id": "standard/wallets/highload/v3/specification"
+                        }
+                      ]
+                    },
+                    {
+                      "slug": "v2",
+                      "group": "Highload wallet v2",
+                      "pages": [
+                        {
+                          "id": "standard/wallets/highload/v2/specification"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "standard/wallets/lockup"
+                },
+                {
+                  "slug": "preprocessed-v2",
+                  "group": "Preprocessed wallet",
+                  "tag": "v2",
+                  "pages": [
+                    {
+                      "id": "standard/wallets/preprocessed-v2/interact"
+                    },
+                    {
+                      "id": "standard/wallets/preprocessed-v2/specification"
+                    }
+                  ]
+                },
+                {
+                  "id": "standard/wallets/restricted"
+                },
+                {
+                  "id": "standard/wallets/performance"
+                },
+                {
+                  "id": "standard/wallets/history"
                 }
-              ],
-              "mode": "folder"
+              ]
             },
             {
-              "id": "ecosystem/appkit/get-started/connectors"
+              "slug": "tokens",
+              "group": "Tokens",
+              "pages": [
+                {
+                  "id": "standard/tokens/overview"
+                },
+                {
+                  "id": "standard/tokens/metadata"
+                },
+                {
+                  "slug": "jettons",
+                  "group": "Jettons",
+                  "pages": [
+                    {
+                      "id": "standard/tokens/jettons/overview"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/how-it-works"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/comparison"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/mint"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/transfer"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/burn"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/find"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/wallet-data"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/supply-data"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/mintless/overview",
+                      "slug": "mintless/overview"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/mintless/deploy",
+                      "slug": "mintless/deploy"
+                    },
+                    {
+                      "id": "standard/tokens/jettons/api"
+                    }
+                  ]
+                },
+                {
+                  "slug": "nft",
+                  "group": "NFT",
+                  "pages": [
+                    {
+                      "id": "standard/tokens/nft/overview"
+                    },
+                    {
+                      "id": "standard/tokens/nft/how-it-works"
+                    },
+                    {
+                      "id": "standard/tokens/nft/sbt"
+                    },
+                    {
+                      "id": "standard/tokens/nft/comparison"
+                    },
+                    {
+                      "id": "standard/tokens/nft/deploy"
+                    },
+                    {
+                      "id": "standard/tokens/nft/transfer"
+                    },
+                    {
+                      "id": "standard/tokens/nft/metadata"
+                    },
+                    {
+                      "id": "standard/tokens/nft/verify"
+                    },
+                    {
+                      "id": "standard/tokens/nft/api"
+                    },
+                    {
+                      "id": "standard/tokens/nft/nft-reference"
+                    },
+                    {
+                      "id": "standard/tokens/nft/nft-2.0"
+                    }
+                  ]
+                },
+                {
+                  "id": "standard/tokens/airdrop"
+                }
+              ]
             },
             {
-              "id": "ecosystem/appkit/get-started/providers"
-            },
-            {
-              "id": "ecosystem/appkit/get-started/basic-getter-hooks"
-            },
-            {
-              "id": "ecosystem/appkit/get-started/streaming"
-            },
-            {
-              "id": "ecosystem/appkit/get-started/sending-transactions"
-            },
-            {
-              "id": "ecosystem/appkit/get-started/using-ui-widgets"
+              "id": "standard/vesting"
             }
           ]
         },
         {
-          "slug": "howto",
-          "group": "How to",
+          "slug": "languages",
+          "group": "Languages",
           "pages": [
             {
-              "id": "ecosystem/appkit/howto",
-              "slug": ""
+              "slug": "tl-b",
+              "group": "TL-B",
+              "pages": [
+                {
+                  "id": "languages/tl-b/overview"
+                },
+                {
+                  "id": "languages/tl-b/syntax-and-semantics"
+                },
+                {
+                  "id": "languages/tl-b/simple-examples"
+                },
+                {
+                  "id": "languages/tl-b/complex-and-non-trivial-examples"
+                },
+                {
+                  "id": "languages/tl-b/tep-examples"
+                },
+                {
+                  "id": "languages/tl-b/tooling"
+                }
+              ]
             },
             {
-              "id": "ecosystem/appkit/howto/connect-to-a-wallet"
+              "slug": "fift",
+              "group": "Fift",
+              "pages": [
+                {
+                  "id": "languages/fift/overview"
+                },
+                {
+                  "id": "languages/fift/fift-and-tvm-assembly"
+                },
+                {
+                  "id": "languages/fift/deep-dive"
+                },
+                {
+                  "id": "languages/fift/multisig"
+                },
+                {
+                  "id": "languages/fift/whitepaper"
+                }
+              ]
             },
             {
-              "id": "ecosystem/appkit/howto/read-balances"
+              "slug": "func",
+              "group": "FunC",
+              "pages": [
+                {
+                  "id": "languages/func/overview"
+                },
+                {
+                  "id": "languages/func/cookbook"
+                },
+                {
+                  "group": "Language",
+                  "expanded": true,
+                  "pages": [
+                    {
+                      "id": "languages/func/comments"
+                    },
+                    {
+                      "id": "languages/func/types"
+                    },
+                    {
+                      "id": "languages/func/literals"
+                    },
+                    {
+                      "id": "languages/func/operators"
+                    },
+                    {
+                      "id": "languages/func/expressions"
+                    },
+                    {
+                      "id": "languages/func/statements"
+                    },
+                    {
+                      "group": "Program declarations",
+                      "expanded": true,
+                      "pages": [
+                        {
+                          "id": "languages/func/declarations-overview"
+                        },
+                        {
+                          "id": "languages/func/functions"
+                        },
+                        {
+                          "id": "languages/func/special-functions"
+                        },
+                        {
+                          "id": "languages/func/asm-functions"
+                        },
+                        {
+                          "id": "languages/func/global-variables"
+                        },
+                        {
+                          "id": "languages/func/compiler-directives"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "languages/func/built-ins"
+                    },
+                    {
+                      "id": "languages/func/dictionaries"
+                    }
+                  ]
+                },
+                {
+                  "group": "Libraries",
+                  "expanded": true,
+                  "pages": [
+                    {
+                      "id": "languages/func/stdlib"
+                    },
+                    {
+                      "id": "languages/func/libraries"
+                    }
+                  ]
+                },
+                {
+                  "id": "languages/func/changelog"
+                },
+                {
+                  "id": "languages/func/known-issues"
+                }
+              ]
             },
             {
-              "id": "ecosystem/appkit/howto/send-toncoin"
+              "type": "link",
+              "name": "Tolk",
+              "url": "https://ton-blockchain.github.io/acton/"
             },
             {
-              "id": "ecosystem/appkit/howto/send-jettons"
-            },
-            {
-              "id": "ecosystem/appkit/howto/nfts"
-            },
-            {
-              "id": "ecosystem/appkit/howto/sign-data"
-            },
-            {
-              "id": "ecosystem/appkit/howto/use-ui-widgets"
+              "id": "languages/tact"
             }
           ]
-        },
-        {
-          "slug": "concepts",
-          "group": "Concepts",
-          "icon": "diagram-project",
-          "pages": [
-            {
-              "id": "ecosystem/appkit/concepts",
-              "slug": ""
-            },
-            {
-              "id": "ecosystem/appkit/concepts/appkit"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/wallets-and-connectors"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/providers"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/work-with-toncoin"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/work-with-jettons"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/work-with-nfts"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/sign-data"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/swaps"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/staking"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/onramp"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/streaming"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/gasless"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/networks"
-            },
-            {
-              "id": "ecosystem/appkit/concepts/ui-widgets"
-            }
-          ]
-        },
-        {
-          "slug": "reference",
-          "group": "Reference",
-          "icon": "book",
-          "pages": [
-            {
-              "id": "ecosystem/appkit/reference",
-              "slug": ""
-            },
-            {
-              "id": "ecosystem/appkit/reference/appkit"
-            },
-            {
-              "id": "ecosystem/appkit/reference/appkit-react"
-            }
-          ]
-        },
-        {
-          "id": "ecosystem/appkit/faq-troubleshooting"
         }
       ]
     },
     {
       "id": "new-link",
-      "title": "Contract Development",
+      "title": "Smart Contract Development",
       "icon": "file-text",
       "external": true,
       "url": "https://ton-blockchain.github.io/acton/"

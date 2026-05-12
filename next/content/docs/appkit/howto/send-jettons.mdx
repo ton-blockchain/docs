@@ -7,6 +7,12 @@ description: ""
 
 Transfer a jetton (a TON fungible token) from the connected wallet to another address.
 
+## How it works
+
+Jettons are TON fungible tokens. Each holder has a jetton wallet contract derived from the jetton master address, but transfer UI usually asks for the recipient's owner address, not the recipient's jetton wallet address.
+
+Amounts are decimal strings in the jetton's own units. Read the token decimals from metadata before building a transfer, because different jettons can use different precision.
+
 ## Before you begin
 
 A connected wallet, the React provider mounted, and the jetton's master address. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet) and [Read balances](/ecosystem/appkit/howto/read-balances) to discover what the wallet holds.
@@ -79,17 +85,17 @@ const formatted = getFormattedJettonInfo(jetton);
 
 ## Parameters
 
-| Field              | Type     | Required | Notes                                                    |
-| ------------------ | -------- | -------- | -------------------------------------------------------- |
-| `recipientAddress` | `string` | Yes      | TON address of the recipient.                             |
-| `jettonAddress`    | `string` | Yes      | Address of the jetton master contract.                    |
-| `amount`           | `string` | Yes      | Decimal jetton units, e.g. `'1.0'`.                       |
-| `jettonDecimals`   | `number` | Yes      | Decimal precision of the jetton.                          |
-| `comment`          | `string` | No       | Plain text memo on the jetton transfer.                   |
+| Field              | Type     | Required | Notes                                   |
+| ------------------ | -------- | -------- | --------------------------------------- |
+| `recipientAddress` | `string` | Yes      | TON address of the recipient.           |
+| `jettonAddress`    | `string` | Yes      | Address of the jetton master contract.  |
+| `amount`           | `string` | Yes      | Decimal jetton units, e.g. `'1.0'`.     |
+| `jettonDecimals`   | `number` | Yes      | Decimal precision of the jetton.        |
+| `comment`          | `string` | No       | Plain text memo on the jetton transfer. |
 
 ## Confirm settlement
 
-Track the transaction with [Streaming](/ecosystem/appkit/get-started/streaming) and verify the recipient's jetton balance in your backend before delivering value.
+Track the transaction with [Streaming](/ecosystem/appkit/howto/streaming) and verify the recipient's jetton balance in your backend before delivering value.
 
 ## Next steps
 

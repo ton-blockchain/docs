@@ -7,6 +7,12 @@ description: ""
 
 Read, render, and transfer NFTs owned by the connected wallet.
 
+## How it works
+
+AppKit reads NFT ownership and metadata through the configured API client. NFT names, images, attributes, and collection fields are display data from contracts and indexers, so render them defensively.
+
+Transfers are wallet-approved transaction requests. The wallet accepting the request starts the chain flow, while ownership verification confirms that the NFT moved.
+
 ## Before you begin
 
 A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
@@ -104,10 +110,10 @@ const nft = await getNft(appKit, { address: 'EQ...' });
 
 ## Confirm settlement
 
-The wallet accepting the request does not prove the NFT moved. Track the transaction with [Streaming](/ecosystem/appkit/get-started/streaming) and verify ownership before crediting value.
+The wallet accepting the request does not prove the NFT moved. Track the transaction with [Streaming](/ecosystem/appkit/howto/streaming) and verify ownership before crediting value.
 
 ## Next steps
 
 - [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
 - [AppKit reference](/ecosystem/appkit/reference)
-- [Work with NFTs](/ecosystem/appkit/concepts/work-with-nfts)
+- [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)
