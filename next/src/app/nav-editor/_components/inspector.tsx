@@ -1,8 +1,8 @@
 "use client"
 import {ArrowUpToLine, FolderInput} from "lucide-react"
 import {useEffect, useRef, useState} from "react"
-import type {GroupRef, LinkRef, NavConfig, NavEntry, OpenApiRef, PageRef, Tab} from "@/lib/nav-types"
-import {isGroup, isLink, isPage} from "@/lib/nav-types"
+import type {GroupMode, GroupRef, LinkRef, NavConfig, NavEntry, OpenApiRef, PageRef, Tab} from "@/lib/nav-types"
+import {isGroup, isLink, isPage, resolveGroupMode} from "@/lib/nav-types"
 import {
   type Path,
   demoteTabToGroup,
@@ -393,31 +393,75 @@ function GroupInspector({
       </Field>
       {group.slug && (() => {
         // Top-level = direct child of a tab (path is [tabIdx, groupIdx]).
-        // We default flattening to ON at top level and OFF below; the user
-        // can override either default via this toggle.
+        // Top-level-in-tab groups expose a binary "render as section heading"
+        // toggle (flatten on/off). Sub-groups expose a three-way selector
+        // between `section` (separator-styled non-collapsible folder, with the
+        // sibling intro page re-parented inside it by `source.ts`) and
+        // `folder` (regular collapsible folder); the legacy `flatten` value
+        // is still respected when reading but cleared when the user picks
+        // an explicit mode to keep the config canonical.
         const isTopLevel = path.length === 2
-        const flattenDefault = isTopLevel
-        const flattenEffective = group.flatten ?? flattenDefault
+        const mode = resolveGroupMode(group, {isTopLevelInTab: isTopLevel})
+        if (isTopLevel) {
+          const flattenEffective = mode === "flatten"
+          return (
+            <CheckInput
+              label="Render as section heading"
+              hint={
+                group.flatten === undefined && group.mode === undefined
+                  ? "Folder stays on disk. Top-level default: on."
+                  : "Folder stays on disk; explicit override (clear by re-selecting the default)."
+              }
+              checked={flattenEffective}
+              onChange={v => {
+                onUpdate(
+                  updateAt<GroupRef>(config, path, {
+                    // Top-level default is "flatten"; persist only when the
+                    // user diverges from it. Reset both legacy & new fields
+                    // together so flipping the toggle never leaves a stale
+                    // `mode` lying around.
+                    flatten: v ? undefined : false,
+                    mode: undefined,
+                  }),
+                )
+              }}
+            />
+          )
+        }
+        const hasIntroPage = (group.pages ?? []).some(p => isPage(p) && p.slug === "")
+        const subDefault: GroupMode = hasIntroPage ? "section" : "folder"
+        const subEffective: GroupMode = mode === "flatten" ? subDefault : mode
         return (
-          <CheckInput
-            label="Render as section heading"
+          <Field
+            label="Render mode"
             hint={
-              group.flatten === undefined
-                ? `Folder stays on disk. Default for ${isTopLevel ? "top-level" : "nested"} groups: ${flattenDefault ? "on" : "off"}.`
-                : "Folder stays on disk; explicit override (clear by re-selecting the default)."
+              group.mode === undefined && group.flatten === undefined
+                ? hasIntroPage
+                  ? "Default for nested groups with an intro page: section."
+                  : "Default for nested groups: folder."
+                : "Explicit override (clear by selecting the default)."
             }
-            checked={flattenEffective}
-            onChange={v => {
-              // Persist `undefined` when the user lands back on the depth
-              // default to keep navigation.config.json compact.
-              const wantsDefault = v === flattenDefault
-              onUpdate(
-                updateAt<GroupRef>(config, path, {
-                  flatten: wantsDefault ? undefined : v,
-                }),
-              )
-            }}
-          />
+          >
+            <select
+              className="w-full rounded border border-fd-border bg-fd-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-fd-primary/40"
+              value={subEffective}
+              onChange={e => {
+                const next = e.target.value as GroupMode
+                const wantsDefault = next === subDefault
+                onUpdate(
+                  updateAt<GroupRef>(config, path, {
+                    mode: wantsDefault ? undefined : next,
+                    // Clearing the legacy boolean prevents it from out-voting
+                    // the new explicit `mode` on the next render.
+                    flatten: undefined,
+                  }),
+                )
+              }}
+            >
+              <option value="section">Section (separator-styled header)</option>
+              <option value="folder">Folder (collapsible)</option>
+            </select>
+          </Field>
         )
       })()}
       <CheckInput

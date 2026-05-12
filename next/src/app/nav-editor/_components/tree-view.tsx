@@ -39,11 +39,12 @@ import {
   type ReactNode,
 } from "react"
 import type {GroupRef, LinkRef, NavConfig, NavEntry, PageRef, Tab} from "@/lib/nav-types"
-import {isGroup, isLink, isPage} from "@/lib/nav-types"
+import {isGroup, isLink, isPage, resolveGroupMode} from "@/lib/nav-types"
 import {
   type FlatNode,
   type Path,
   collectTabSlugs,
+  convertLinkToPage,
   demoteTabToGroup,
   flattenTree,
   getAt,
@@ -237,6 +238,7 @@ export function TreeView({
   onUpdate,
   titles,
   icons,
+  allSlugs,
 }: {
   config: NavConfig
   expanded: Set<string>
@@ -246,6 +248,7 @@ export function TreeView({
   onUpdate: (next: NavConfig, newSelectionPath?: Path | null) => void
   titles: Record<string, string>
   icons: Record<string, string>
+  allSlugs: string[]
 }) {
   const flat = useMemo(() => flattenTree(config, expanded), [config, expanded])
   const {overTarget, setFlat} = useContext(DragCtx)
@@ -349,7 +352,14 @@ export function TreeView({
         />
       )}
       {menu && (
-        <RowMenu state={menu} config={config} onClose={() => setMenu(null)} onUpdate={onUpdate} />
+        <RowMenu
+          state={menu}
+          config={config}
+          onClose={() => setMenu(null)}
+          onUpdate={onUpdate}
+          allSlugs={allSlugs}
+          titles={titles}
+        />
       )}
     </SortableContext>
   )
@@ -391,6 +401,21 @@ function Row({
   onIconClick: (path: Path, rect: DOMRect | null) => void
   onMenuClick: (path: Path, rect: DOMRect | null) => void
 }) {
+  function openContextMenu(e: React.MouseEvent<HTMLElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    // Use the click coordinates so the menu appears under the cursor rather
+    // than glued to the row's right edge.
+    const pseudoRect = {
+      ...rect,
+      left: e.clientX,
+      top: e.clientY,
+      right: e.clientX,
+      bottom: e.clientY,
+    } as DOMRect
+    onMenuClick(node.path, pseudoRect)
+  }
   const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
     id: pathKey(node.path),
   })
@@ -476,11 +501,19 @@ function Row({
     iconName = g.icon
     iconNode = g.icon ? <IconRender name={g.icon} size={14} /> : <Folder size={14} className="text-fd-muted-foreground" />
     canonicalUrl = g.slug ?? ""
-    // Heading mode: a folder-backed group is rendered as `---Title---` + `...slug`
-    // in the parent meta.json. Default ON at top level (path = [tabIdx, groupIdx]),
-    // OFF below, unless the user overrode `flatten` explicitly.
+    // Resolve the effective sidebar rendering mode so the row carries the
+    // same visual cue the user will see once `apply-nav` runs. Mirrors the
+    // logic in `scripts/apply-nav.mjs#resolveGroupMode`.
     const isTopLevelGroup = node.path.length === 2
-    const flattenEffective = g.slug ? (g.flatten ?? isTopLevelGroup) : false
+    const groupMode = g.slug
+      ? resolveGroupMode(g, {isTopLevelInTab: isTopLevelGroup})
+      : null
+    const modePill =
+      groupMode === "flatten"
+        ? {label: "heading", title: "Renders as a `--- Title ---` heading with children inlined into the parent."}
+        : groupMode === "section"
+          ? {label: "section", title: "Renders as a non-collapsible separator-styled header with children nested below."}
+          : null
     labelNode = (
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <InlineEdit
@@ -496,12 +529,12 @@ function Row({
           emptyLabel="sidebar-only"
           onCommit={v => onUpdate(updateAt<GroupRef>(config, node.path, {slug: v || undefined}))}
         />
-        {flattenEffective && (
+        {modePill && (
           <span
             className="rounded border border-fd-border bg-fd-muted/30 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-fd-muted-foreground"
-            title="Renders as a `--- Title ---` heading with children inlined into the parent."
+            title={modePill.title}
           >
-            heading
+            {modePill.label}
           </span>
         )}
         <TagPill
@@ -555,6 +588,7 @@ function Row({
       {showInsertBarBefore && <InsertBar indent={indent} />}
       <div
         onClick={onSelect}
+        onContextMenu={openContextMenu}
         className={`group flex items-center gap-1.5 py-1 pr-2 ${
           selected ? "bg-fd-primary/10" : "hover:bg-fd-accent/40"
         } ${showDropInside ? "ring-2 ring-inset ring-fd-primary/40" : ""} cursor-pointer`}
@@ -898,26 +932,34 @@ function RowMenu({
   config,
   onClose,
   onUpdate,
+  allSlugs,
+  titles,
 }: {
   state: MenuState
   config: NavConfig
   onClose: () => void
   onUpdate: (next: NavConfig, newSelection?: Path | null) => void
+  allSlugs: string[]
+  titles: Record<string, string>
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false)
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
+      if (e.key === "Escape" && !pickerOpen) onClose()
     }
     document.addEventListener("keydown", onKey)
     return () => document.removeEventListener("keydown", onKey)
-  }, [onClose])
+  }, [onClose, pickerOpen])
 
-  const left = state.rect ? Math.min(window.innerWidth - 220, state.rect.left - 180) : 100
-  const top = state.rect ? Math.min(window.innerHeight - 240, state.rect.bottom + 4) : 100
+  const left = state.rect ? Math.min(window.innerWidth - 240, state.rect.left + 4) : 100
+  const top = state.rect ? Math.min(window.innerHeight - 280, state.rect.top + 4) : 100
 
   const isTab = state.path.length === 1
   const node = getAt(config, state.path)
-  const isGroupNode = node !== null && !isTab && isGroup(node as NavEntry)
+  const isLinkNode = node !== null && !isTab && isLink(node as NavEntry)
+  const isGroupNode = node !== null && !isTab && !isLinkNode && isGroup(node as NavEntry)
+  const isPageNode = node !== null && !isTab && !isLinkNode && !isGroupNode && isPage(node as NavEntry)
   const groupHasSlug = isGroupNode && Boolean((node as GroupRef).slug)
   const tabIndex = state.path[0]
   const sourceTab = isTab ? config.tabs[tabIndex] : null
@@ -947,6 +989,19 @@ function RowMenu({
   }
 
   function addLinkBelow() {
+    if (isTab) {
+      // On a tab, "add link below" means append a link inside the tab so the
+      // new entry inherits the tab's container (otherwise it would land in
+      // `config.tabs` and render as an empty tab row).
+      const tab = config.tabs[tabIndex]
+      if (!tab) return
+      const insideIdx = tab.pages.length
+      applyAndClose(
+        insertAt(config, [tabIndex], insideIdx, newLink("New link", "https://")),
+        [tabIndex, insideIdx],
+      )
+      return
+    }
     const parent = pathParent(state.path)
     const idx = state.path[state.path.length - 1] + 1
     applyAndClose(insertAt(config, parent, idx, newLink("New link", "https://")), [...parent, idx])
@@ -964,18 +1019,37 @@ function RowMenu({
     applyAndClose(next, newPath)
   }
 
+  function convertLink(pageId: string) {
+    applyAndClose(convertLinkToPage(config, state.path, pageId), state.path)
+  }
+
   return (
     <>
       <div className="fixed inset-0 z-40" onClick={onClose} />
       <div
-        className="fixed z-50 w-[220px] rounded-md border border-fd-border bg-fd-popover py-1 text-sm shadow-xl"
+        className="fixed z-50 w-[240px] rounded-md border border-fd-border bg-fd-popover py-1 text-sm shadow-xl"
         style={{left, top}}
         onClick={e => e.stopPropagation()}
       >
         <MenuItem icon={<Copy size={14} />} label="Duplicate" onClick={duplicate} />
-        <MenuItem icon={<Plus size={14} />} label="Add link below" onClick={addLinkBelow} />
-        {!isTab && (
-          <MenuItem icon={<Link2 size={14} />} label="Convert to external link" onClick={convertToLink} />
+        <MenuItem
+          icon={<Plus size={14} />}
+          label={isTab ? "Add link inside" : "Add link below"}
+          onClick={addLinkBelow}
+        />
+        {(isPageNode || isGroupNode) && (
+          <MenuItem
+            icon={<Link2 size={14} />}
+            label="Convert to external link"
+            onClick={convertToLink}
+          />
+        )}
+        {isLinkNode && (
+          <MenuItem
+            icon={<FileText size={14} />}
+            label="Convert to internal page…"
+            onClick={() => setPickerOpen(true)}
+          />
         )}
         {isGroupNode && groupHasSlug && (
           <MenuItem
@@ -1008,7 +1082,110 @@ function RowMenu({
           onClick={() => applyAndClose(removeAt(config, state.path), null)}
         />
       </div>
+      {pickerOpen && (
+        <LinkToPagePicker
+          allSlugs={allSlugs}
+          titles={titles}
+          onClose={() => setPickerOpen(false)}
+          onPick={convertLink}
+        />
+      )}
     </>
+  )
+}
+
+function LinkToPagePicker({
+  allSlugs,
+  titles,
+  onClose,
+  onPick,
+}: {
+  allSlugs: string[]
+  titles: Record<string, string>
+  onClose: () => void
+  onPick: (id: string) => void
+}) {
+  const [query, setQuery] = useState("")
+  const [active, setActive] = useState(0)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }, [])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return allSlugs.slice(0, 200)
+    return allSlugs
+      .filter(slug => {
+        const title = titles[slug] ?? ""
+        return slug.toLowerCase().includes(q) || title.toLowerCase().includes(q)
+      })
+      .slice(0, 200)
+  }, [query, allSlugs, titles])
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault()
+        onClose()
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault()
+        setActive(a => Math.min(a + 1, Math.max(0, filtered.length - 1)))
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault()
+        setActive(a => Math.max(0, a - 1))
+      } else if (e.key === "Enter") {
+        e.preventDefault()
+        const slug = filtered[active]
+        if (slug) onPick(slug)
+      }
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [filtered, active, onClose, onPick])
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-start justify-center bg-black/40 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="mt-[12vh] w-[560px] overflow-hidden rounded-lg border border-fd-border bg-fd-popover shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <input
+          ref={inputRef}
+          value={query}
+          onChange={e => {
+            setQuery(e.target.value)
+            setActive(0)
+          }}
+          placeholder="Pick an internal page (path or title)…"
+          className="w-full border-b border-fd-border bg-transparent px-4 py-3 text-sm outline-none"
+        />
+        <ul className="max-h-[400px] overflow-y-auto py-1">
+          {filtered.length === 0 && (
+            <li className="px-4 py-3 text-sm text-fd-muted-foreground">No matches.</li>
+          )}
+          {filtered.map((slug, i) => (
+            <li
+              key={slug}
+              onMouseEnter={() => setActive(i)}
+              onClick={() => onPick(slug)}
+              className={`flex cursor-pointer items-baseline justify-between px-4 py-2 text-sm ${
+                i === active ? "bg-fd-accent" : ""
+              }`}
+            >
+              <div className="flex flex-col">
+                <span>{titles[slug] ?? slug.split("/").pop()}</span>
+                <span className="text-xs text-fd-muted-foreground">/{slug}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   )
 }
 

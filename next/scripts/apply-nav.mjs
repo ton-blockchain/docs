@@ -445,7 +445,44 @@ async function pruneEmptyDirs(root) {
 // ---------------------------------------------------------------------------
 
 /**
- * @typedef {{title?: string, icon?: string, defaultOpen?: boolean, root?: boolean, order: string[]}} DirMeta
+ * Resolve how a folder-backed group should render in the sidebar.
+ *
+ * Three modes:
+ *   - `flatten` — emit `---Title---` + `...slug` in the parent's meta so
+ *     Fumadocs inlines the folder's children as siblings of the parent at
+ *     the same depth. Default for top-level-in-tab groups.
+ *   - `section` — emit the folder reference and mark the folder's own meta
+ *     with `collapsible: false`. The `SidebarFolderWithTag` wrapper renders
+ *     such folders with separator-styled, non-clickable triggers, keeping
+ *     children visibly nested. Default for sub-groups whose `pages` list
+ *     includes a `slug: ""` "intro" page (so the sibling orphan re-parented
+ *     by `source.ts` gets a visible header).
+ *   - `folder` — emit just the folder reference. Default for sub-groups
+ *     without an intro page.
+ *
+ * Per-group overrides:
+ *   - `GroupRef.mode` (preferred, fine-grained).
+ *   - `GroupRef.flatten` (legacy boolean: `true` → flatten, `false` → folder).
+ *
+ * @param {import("./nav-config.mjs").GroupRef} entry
+ * @param {{isTopLevelInTab: boolean}} ctx
+ * @returns {"flatten" | "section" | "folder"}
+ */
+function resolveGroupMode(entry, ctx) {
+  if (entry.mode === "flatten" || entry.mode === "section" || entry.mode === "folder") {
+    return entry.mode
+  }
+  if (entry.flatten === true) return "flatten"
+  if (entry.flatten === false) return "folder"
+  if (ctx.isTopLevelInTab) return "flatten"
+  const hasIntroPage = (entry.pages ?? []).some(
+    (child) => isPage(child) && child.slug === "",
+  )
+  return hasIntroPage ? "section" : "folder"
+}
+
+/**
+ * @typedef {{title?: string, icon?: string, defaultOpen?: boolean, collapsible?: boolean, root?: boolean, order: string[]}} DirMeta
  *
  * @param {import("./nav-config.mjs").NavConfig} config
  */
@@ -541,21 +578,32 @@ async function emitMetaTree(config) {
       if (isGroup(entry)) {
         if (entry.slug) {
           const groupDir = currentFolderDir ? `${currentFolderDir}/${entry.slug}` : entry.slug
-          const flattenEffective = entry.flatten ?? ctx.isTopLevelInTab
-          if (flattenEffective) {
+          const mode = resolveGroupMode(entry, ctx)
+          if (mode === "flatten") {
             // Folder-backed group rendered as a section heading: emit a
-            // separator + extract-prefix pair in the parent and still keep
-            // the folder's own meta.json for inner ordering.
+            // separator + extract-prefix pair in the parent so Fumadocs
+            // inlines the folder's children as siblings at the parent
+            // depth. The folder's own meta.json is still written for inner
+            // ordering.
             addEntry(currentFolderDir, `---${entry.group}---`)
             addEntry(currentFolderDir, `...${entry.slug}`)
           } else {
-            // Regular collapsible folder.
+            // `folder` (regular collapsible) and `section`
+            // (non-collapsible, separator-styled header rendered via the
+            // custom Sidebar.Folder wrapper in `SidebarItemWithTag.tsx`)
+            // both keep the folder as a node in the parent meta. Children
+            // therefore stay nested under the folder, getting Fumadocs'
+            // depth-based indent for free.
             addEntry(currentFolderDir, entry.slug)
           }
           setDirMeta(groupDir, {
             title: entry.group,
             icon: entry.icon,
             defaultOpen: entry.expanded,
+            // `section` mode flips `node.collapsible = false` so the
+            // SidebarFolderWithTag wrapper recognises it and styles the
+            // trigger like Fumadocs' SidebarSeparator.
+            collapsible: mode === "section" ? false : undefined,
           })
           if (entry.tag) overlays.tagByFolderPath[groupDir] = entry.tag
           walkEntries(entry.pages ?? [], groupDir, {isTopLevelInTab: false})
@@ -568,9 +616,16 @@ async function emitMetaTree(config) {
         continue
       }
       if (isPage(entry)) {
-        // slug "" marks an index page: its file sits next to its enclosing
-        // folder, sharing the folder's URL. Fumadocs auto-renders this from
-        // the parent's meta.json entry, so we don't add anything new.
+        // `slug: ""` marks a Mintlify-style "intro" page whose URL collides
+        // with its enclosing group's URL (e.g. `ecosystem/appkit/get-started`
+        // sitting inside the Get Started group). The file stays at
+        // `<currentFolderDir>.mdx` (sibling of the `<currentFolderDir>/`
+        // folder) so its canonical URL `/${currentFolderDir}` stays stable.
+        // We deliberately do NOT add it to the parent's `pages` order —
+        // Fumadocs would otherwise emit the file as a top-level orphan and
+        // also push it via the meta entry, double-rendering it. Instead, the
+        // `PageTreeTransformer.root` in `next/src/lib/source.ts` re-parents
+        // the orphan into its matching folder node as `children[0]`.
         if (entry.slug === "") {
           if (entry.tag) overlays.tagByItemUrl[`/${currentFolderDir}`] = entry.tag
           continue
@@ -629,6 +684,7 @@ async function emitMetaTree(config) {
     if (info.title) meta.title = info.title
     if (info.icon) meta.icon = info.icon
     if (info.defaultOpen) meta.defaultOpen = info.defaultOpen
+    if (info.collapsible === false) meta.collapsible = false
     if (info.root) meta.root = info.root
     meta.pages = info.order
 

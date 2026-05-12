@@ -67,10 +67,12 @@ export function getAt(config: NavConfig, path: Path): NavEntry | Tab | null {
 
 /** Shallow-clone config so React picks up state changes. */
 function cloneConfig(config: NavConfig): NavConfig {
-  return {
+  const next: NavConfig = {
     version: config.version,
     tabs: config.tabs.map(t => cloneTab(t)),
   }
+  if (config.navbarLinks) next.navbarLinks = config.navbarLinks.map(l => ({...l}))
+  return next
 }
 
 function cloneTab(t: Tab): Tab {
@@ -280,6 +282,91 @@ export function newGroup(title: string, slug?: string): GroupRef {
 
 export function newLink(name: string, url: string): LinkRef {
   return {type: "link", name, url}
+}
+
+// ---------------------------------------------------------------------------
+// Header-navbar link helpers
+//
+// `config.navbarLinks` is a flat ordered list of LinkRefs surfaced in the
+// top navigation bar (independent of the in-sidebar tab strip). These helpers
+// keep the editor's tree-path machinery untouched — navbar links live outside
+// the `tabs[]` namespace.
+// ---------------------------------------------------------------------------
+
+function withNavbarLinks(
+  config: NavConfig,
+  mutate: (list: LinkRef[]) => LinkRef[] | void,
+): NavConfig {
+  const next = cloneConfig(config)
+  const list = next.navbarLinks ? [...next.navbarLinks] : []
+  const result = mutate(list)
+  const out = Array.isArray(result) ? result : list
+  if (out.length === 0) delete next.navbarLinks
+  else next.navbarLinks = out
+  return next
+}
+
+export function addNavbarLink(config: NavConfig, link: LinkRef): NavConfig {
+  return withNavbarLinks(config, list => {
+    list.push({...link})
+  })
+}
+
+export function updateNavbarLink(
+  config: NavConfig,
+  index: number,
+  patch: Partial<LinkRef>,
+): NavConfig {
+  return withNavbarLinks(config, list => {
+    const current = list[index]
+    if (!current) return
+    const merged: LinkRef = {...current, ...patch}
+    for (const key of Object.keys(patch)) {
+      const v = (patch as Record<string, unknown>)[key]
+      if (v === undefined || v === null) {
+        delete (merged as unknown as Record<string, unknown>)[key]
+      }
+    }
+    list[index] = merged
+  })
+}
+
+export function removeNavbarLink(config: NavConfig, index: number): NavConfig {
+  return withNavbarLinks(config, list => {
+    if (index < 0 || index >= list.length) return
+    list.splice(index, 1)
+  })
+}
+
+export function moveNavbarLink(config: NavConfig, from: number, to: number): NavConfig {
+  return withNavbarLinks(config, list => {
+    if (from < 0 || from >= list.length) return
+    const clampedTo = Math.max(0, Math.min(to, list.length - 1))
+    if (from === clampedTo) return
+    const [moved] = list.splice(from, 1)
+    list.splice(clampedTo, 0, moved)
+  })
+}
+
+/**
+ * Replace the `LinkRef` at `path` with a fresh `PageRef` bound to `id`. Wipes
+ * link-only fields (`type`, `name`, `url`) and keeps the surrounding slot
+ * index stable so any tree selection in flight still resolves.
+ */
+export function convertLinkToPage(config: NavConfig, path: Path, id: string): NavConfig {
+  if (path.length < 2 || !id) return config
+  const current = getAt(config, path)
+  if (!current || !isLink(current as NavEntry)) return config
+  return withMutatedContainer(config, pathParent(path), children => {
+    const idx = path[path.length - 1]
+    const link = children[idx] as LinkRef | undefined
+    if (!link) return
+    const replacement: PageRef = {id}
+    // Carry over visual hints if the user had set them on the link.
+    if (link.icon) replacement.icon = link.icon
+    if (link.tag) replacement.tag = link.tag
+    children[idx] = replacement
+  })
 }
 
 export function newTab(title: string, slug?: string, existingSlugs?: Iterable<string>): Tab {

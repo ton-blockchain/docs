@@ -77,6 +77,17 @@ export const source = loader({
   // sidecars them in `nav-overlays.json`. Here we stamp them onto the matching
   // page-tree nodes as `$tag`, picked up by the custom `SidebarItemWithTag` /
   // `SidebarFolderWithTag` renderers wired through `DocsLayout.sidebar.components`.
+  //
+  // The same `folder` hook also re-parents Mintlify-style "intro" sibling
+  // pages (e.g. `appkit/get-started.mdx` next to `appkit/get-started/`).
+  // Fumadocs would otherwise drop these into `root.fallback` and the sidebar
+  // would never show them: a bare meta ref resolves to the folder (loader
+  // line 434) and the `...folder` extract only inlines `[node.index, ...]`
+  // (loader line 423), neither of which picks up the sibling file. By
+  // inserting the orphan as `folder.children[0]` from the transformer, both
+  // group modes Just Work — `flatten` extracts it into the parent depth
+  // right after the section separator, `section`/`folder` keep it nested as
+  // the first row under the folder header.
   pageTree: {
     transformers: [
       {
@@ -88,6 +99,19 @@ export const source = loader({
         folder(node, folderPath) {
           const tag = navOverlays.tagByFolderPath?.[folderPath]
           if (tag) (node as TaggedFolder).$tag = tag
+
+          // resolveFlattenPath returns the input unchanged when no file is
+          // registered at <folderPath>.<format>, so unequal => orphan exists.
+          const orphanFilePath = this.builder.resolveFlattenPath(folderPath, "page")
+          if (orphanFilePath !== folderPath) {
+            const orphan = this.builder.file(orphanFilePath)
+            // includes() guards against re-running on an already-handled
+            // node (cached folder builds short-circuit upstream, but the
+            // explicit check keeps the transformation idempotent).
+            if (orphan && !node.children.includes(orphan)) {
+              node.children.unshift(orphan)
+            }
+          }
           return node
         },
       },

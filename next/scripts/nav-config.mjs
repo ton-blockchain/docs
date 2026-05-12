@@ -11,12 +11,14 @@
  * and the on-disk filesystem layout.
  *
  * @typedef {{id: string, slug?: string, title?: string, icon?: string, tag?: string, openapi?: OpenApiRef}} PageRef
- * @typedef {{group: string, slug?: string, icon?: string, tag?: string, expanded?: boolean, flatten?: boolean, openapi?: OpenApiRef, pages: NavEntry[]}} Group
+ * @typedef {"flatten" | "section" | "folder"} GroupMode
+ * @typedef {{group: string, slug?: string, icon?: string, tag?: string, expanded?: boolean, flatten?: boolean, mode?: GroupMode, openapi?: OpenApiRef, pages: NavEntry[]}} Group
+ * @typedef {Group} GroupRef
  * @typedef {{type: "link", name: string, url: string, icon?: string, tag?: string}} LinkRef
  * @typedef {PageRef | Group | LinkRef} NavEntry
  * @typedef {{source: string, directory?: string}} OpenApiRef
  * @typedef {{id: string, slug: string, title: string, icon?: string, tag?: string, defaultOpen?: boolean, pages: NavEntry[]}} Tab
- * @typedef {{version: 1, tabs: Tab[]}} NavConfig
+ * @typedef {{version: 1, tabs: Tab[], navbarLinks?: LinkRef[]}} NavConfig
  */
 import {promises as fs} from "node:fs"
 import path from "node:path"
@@ -98,6 +100,7 @@ const KEY_PRIORITY = [
   "directory",
   "pages",
   "tabs",
+  "navbarLinks",
 ]
 
 function keyOrder(a, b) {

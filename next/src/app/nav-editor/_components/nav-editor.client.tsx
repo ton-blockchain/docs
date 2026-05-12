@@ -31,6 +31,7 @@ import {SaveBar} from "./save-bar"
 import {OrphansTray} from "./orphans-tray"
 import {CommandPalette, type PaletteAction} from "./command-palette"
 import {MovePreviewDrawer} from "./move-preview"
+import {NavbarLinksPanel} from "./navbar-links-panel"
 
 const STORAGE_KEY = "nav-editor:state-v1"
 
@@ -539,6 +540,7 @@ function NavEditorImpl({initial}: {initial: EditorState}) {
             acknowledged={orphanAcknowledged}
           />
           <main className="flex-1 overflow-y-auto">
+            <NavbarLinksPanel config={config} onUpdate={handleUpdate} />
             <TreeView
               config={config}
               expanded={expanded}
@@ -548,6 +550,7 @@ function NavEditorImpl({initial}: {initial: EditorState}) {
               onUpdate={handleUpdate}
               titles={titles}
               icons={icons}
+              allSlugs={initial.allSlugs}
             />
           </main>
           <Inspector

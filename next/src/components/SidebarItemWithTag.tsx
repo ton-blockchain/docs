@@ -143,6 +143,38 @@ function FolderTriggerInner({item, tagged}: {item: Folder; tagged: TaggedFolder}
   )
 }
 
+/**
+ * Non-collapsible "section" trigger: a folder rendered as a separator-styled
+ * header so its children stay visibly nested under it. Mirrors the styling of
+ * Fumadocs' built-in `SidebarSeparator` (`docs/slots/sidebar.js` line 186).
+ * Used for sub-groups marked `mode: "section"` in `navigation.config.json`
+ * (e.g. AppKit's "Installation"), where the orphan sibling page re-parented
+ * by `source.ts` sits as the first row beneath the header.
+ */
+function FolderSectionTriggerInner({
+  item,
+  tagged,
+}: {
+  item: Folder
+  tagged: TaggedFolder
+}) {
+  const folder = useFolder()
+  const depth = folder?.depth ?? 1
+  return (
+    <SidebarFolderTrigger
+      className={cn(
+        "inline-flex items-center gap-2 mb-1 px-2 mt-6 empty:mb-0 text-xs uppercase tracking-wide text-fd-muted-foreground [&_svg]:size-4 [&_svg]:shrink-0",
+        depth === 1 && "first:mt-0",
+      )}
+      style={{paddingInlineStart: getItemOffset(depth - 1)}}
+    >
+      {item.icon}
+      {item.name}
+      <TagBadge tag={tagged.$tag} />
+    </SidebarFolderTrigger>
+  )
+}
+
 function FolderLinkInner({
   item,
   tagged,
@@ -169,13 +201,20 @@ function FolderLinkInner({
   )
 }
 
-function FolderContentInner({children}: {children: ReactNode}) {
+function FolderContentInner({
+  children,
+  suppressGuide,
+}: {
+  children: ReactNode
+  suppressGuide?: boolean
+}) {
   const depth = useFolderDepth()
   return (
     <SidebarFolderContent
       className={cn(
         "relative",
-        depth === 1 &&
+        !suppressGuide &&
+          depth === 1 &&
           "before:content-[''] before:absolute before:w-px before:inset-y-1 before:bg-fd-border before:inset-s-2.5",
       )}
     >
@@ -188,6 +227,7 @@ export function SidebarFolderWithTag({item, children}: {item: Folder; children: 
   const pathname = usePathname()
   const path = useTreePath()
   const tagged = item as TaggedFolder
+  const isSection = item.collapsible === false
   return (
     <SidebarFolder
       collapsible={item.collapsible}
@@ -196,10 +236,12 @@ export function SidebarFolderWithTag({item, children}: {item: Folder; children: 
     >
       {item.index ? (
         <FolderLinkInner item={item} tagged={tagged} pathname={pathname} />
+      ) : isSection ? (
+        <FolderSectionTriggerInner item={item} tagged={tagged} />
       ) : (
         <FolderTriggerInner item={item} tagged={tagged} />
       )}
-      <FolderContentInner>{children}</FolderContentInner>
+      <FolderContentInner suppressGuide={isSection}>{children}</FolderContentInner>
     </SidebarFolder>
   )
 }
