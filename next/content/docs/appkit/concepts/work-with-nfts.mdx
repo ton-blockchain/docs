@@ -1,0 +1,101 @@
+---
+id: ecosystem/appkit/concepts/work-with-nfts
+title: "Work with NFTs"
+sidebarTitle: "Work with NFTs"
+description: ""
+---
+
+NFTs on TON are individual contracts, optionally grouped into collections. AppKit supports reading NFTs owned by an address, fetching a single NFT by address, and building transfer requests. Transfers go through the connected wallet and settle on chain like any other transaction.
+
+## NFT shape
+
+```ts
+interface NFT {
+  address: UserFriendlyAddress;
+  index?: string;
+  info?: {
+    name?: string;
+    description?: string;
+    image?: TokenImage;
+    animation?: TokenAnimation;
+    symbol?: string;
+  };
+  attributes?: Array<{ traitType?: string; displayType?: string; value?: string }>;
+  collection?: NFTCollection;
+  ownerAddress?: UserFriendlyAddress;
+  realOwnerAddress?: UserFriendlyAddress;
+  isOnSale?: boolean;
+  isSoulbound?: boolean;
+  extra?: Record<string, unknown>;
+}
+```
+
+NFT display data is off-chain and untrusted. The contract address is the authoritative routing key. Use `index` when it is present for collection-relative display or analytics.
+
+## Read NFTs
+
+`getNfts` returns NFTs owned by the selected wallet. `getNftsByAddress` reads NFTs for any address and supports pagination. `getNft` reads a single NFT contract by address.
+
+```ts
+import { getNfts, getNft } from '@ton/appkit';
+
+const owned = await getNfts(appKit);
+// owned.nfts = [{ address, index, info, attributes, collection, ownerAddress, realOwnerAddress, ... }]
+
+const one = await getNft(appKit, { address: 'EQ-NFT-CONTRACT' });
+```
+
+`getNfts` returns `null` when no wallet is selected. `getNft` returns `null` when the contract is not found.
+
+## Build and send a transfer
+
+`createTransferNftTransaction` builds the NFT transfer payload, sets the response destination back to the sender, and wraps it in a `TransactionRequest` with a default gas allowance.
+
+```ts
+import { createTransferNftTransaction, sendTransaction } from '@ton/appkit';
+
+const request = await createTransferNftTransaction(appKit, {
+  nftAddress: 'EQ-NFT-CONTRACT',
+  recipientAddress: 'EQ-NEW-OWNER',
+  comment: 'Gift',
+});
+const response = await sendTransaction(appKit, request);
+```
+
+| Parameter           | Required | Meaning                                                       |
+| ------------------- | -------- | ------------------------------------------------------------- |
+| `nftAddress`        | Yes      | NFT item contract address.                                    |
+| `recipientAddress`  | Yes      | New owner address.                                            |
+| `amount`            | No       | Gas budget in TON. Defaults to the standard allowance.       |
+| `comment`           | No       | Optional comment payload attached to the transfer.            |
+
+`createTransferNftTransaction` builds the NFT transfer body locally, returns a promise, and throws when no wallet is selected. The `transferNft` shorthand builds and sends the transfer in one call.
+
+A common failure mode is **stale ownership**: the NFT changes owners between the read and the transfer attempt. Read `ownerAddress` again before opening the wallet so the user signs a transfer based on current ownership. If `isOnSale` is true, also check `realOwnerAddress`.
+
+## Track settlement
+
+NFT transfers settle through the same trace API as other transfers. Treat the wallet response as "user signed" and confirm settlement with `getTransactionStatus` before refetching the NFT list.
+
+```ts
+import { getTransactionStatus } from '@ton/appkit';
+
+const status = await getTransactionStatus(appKit, { boc: response.boc });
+if (status.status === 'completed') {
+  // Refetch ownerAddress and realOwnerAddress.
+}
+```
+
+## Rules
+
+- Verify the current `ownerAddress` before allowing a user-initiated transfer. NFTs can change owners between reads and transfers.
+- Display **verified** fields first: contract address, owner address, real owner address, and collection address. Treat off-chain display data (`info`, `attributes`, `extra`) as **display data only**. Sanitize names and images, and never route on display metadata.
+- Use `getTransactionStatus` to confirm settlement before updating NFT state in your app. The wallet response only proves the user signed.
+- Refetch the NFT list after settlement so the owner fields are current.
+- Do not concatenate NFT addresses for analytics keys. Use the contract address verbatim and `index` as a string when present.
+
+## Related pages
+
+- [Work with Toncoin](/ecosystem/appkit/concepts/work-with-toncoin)
+- [Work with Jettons](/ecosystem/appkit/concepts/work-with-jettons)
+- [AppKit](/ecosystem/appkit/concepts/appkit)

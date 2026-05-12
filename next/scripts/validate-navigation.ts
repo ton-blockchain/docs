@@ -123,6 +123,12 @@ function pagesIncludes(pages: string[], entry: string): boolean {
     if (item === entry) return true
     // Separator / group syntax like "---Title---" never matches a real entry.
     if (item.startsWith("---")) return false
+    // Extract prefix: `...name` inlines a folder's children into the parent's
+    // list, so it still counts as listing the folder for nav-reachability.
+    if (item.startsWith("...") && item.slice(3) === entry) return true
+    // Link syntax `[Name](url)` (and `external:[Name](url)`) never points at a
+    // real on-disk page; ignore.
+    if (item.startsWith("[") || item.startsWith("external:")) return false
     return false
   })
 }

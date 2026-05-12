@@ -14,7 +14,12 @@
     "lint:links": "npm run lint:links:internal && npm run lint:links:external",
     "lint:links:internal": "tsx ./scripts/validate-links-internal.ts",
     "lint:links:external": "tsx ./scripts/validate-links-external.ts",
-    "lint:navigation": "tsx ./scripts/validate-navigation.ts"
+    "lint:navigation": "tsx ./scripts/validate-navigation.ts",
+    "migrate-content": "node ./scripts/migrate-content.mjs",
+    "nav:apply": "node ./scripts/apply-nav.mjs",
+    "nav:apply:plan": "node ./scripts/apply-nav.mjs --dry-run",
+    "nav:editor": "NAV_EDITOR=1 next dev -p 3001",
+    "sync": "npm run migrate-content && npm run nav:apply"
   },
   "dependencies": {
     "@orama/orama": "^3.1.18",
@@ -41,6 +46,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/mdx": "^2.0.13",

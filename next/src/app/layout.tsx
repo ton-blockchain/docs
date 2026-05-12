@@ -4,8 +4,7 @@ import {Provider} from "./provider"
 import {GeistSans} from "geist/font/sans"
 import {GeistMono} from "geist/font/mono"
 import "./globals.css"
-import logoDark from "@/public/logo-dark.svg"
-import logoLight from "@/public/logo-light.svg"
+import logoTon from "@/public/logo.svg"
 
 export const metadata: Metadata = {
   title: {
@@ -17,12 +16,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: logoLight.src,
+        url: logoTon.src,
         media: "(prefers-color-scheme: light)",
         type: "image/svg+xml",
       },
       {
-        url: logoDark.src,
+        url: logoTon.src,
         media: "(prefers-color-scheme: dark)",
         type: "image/svg+xml",
       },
