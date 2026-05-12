@@ -9,7 +9,7 @@ Streaming in AppKit is a per-network subscription layer that turns provider even
 
 Streaming complements point-in-time API reads. Instead of asking an API client for the latest state after every interaction, the app subscribes to changes for an address on a specific network.
 
-The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain.
+The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain. Provider registration is covered on [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered).
 
 ## Subscription lifetime
 
@@ -17,9 +17,17 @@ A subscription belongs to the consumer that created it. Balance, jetton, transac
 
 Connecting and disconnecting the streaming layer opens and closes provider transports without changing the subscription list. This lets an app pause network activity and resume with the same watches still registered.
 
+## Before you begin
+
+A connected wallet (for the default-address `useWatch*` hooks) and a streaming provider registered on the AppKit instance. See [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered).
+
 ## Watch from React
 
-Mount watch hooks near the part of the tree that needs live data. The hook keeps related query caches fresh while it is mounted:
+Mount watch hooks near the part of the tree that needs live data. The hook keeps related query caches fresh while it is mounted; passing `onChange` adds a side-effect callback on top of the cache refresh. Every React watch hook accepts an optional `{ onChange?, network? }`, and the `*ByAddress` variants additionally accept an `address`.
+
+### Watch a balance
+
+`useWatchBalance` refreshes the cache that `useBalance` reads. `useBalance` is a TanStack Query result (`{ data, isLoading, isError, refetch, ... }`); `data` is the formatted TON balance as a string when present.
 
 ```tsx
 import { useBalance, useWatchBalance } from '@ton/appkit-react';
@@ -32,7 +40,97 @@ export function LiveBalance() {
 }
 ```
 
-For a non-React consumer, keep the unsubscribe function and call it when the screen or process no longer needs updates:
+### Watch transactions
+
+`useWatchTransactions({ onChange })` reacts to transaction lifecycle changes. The update payload exposes `traceHash` and `status` (`'pending' | 'confirmed' | 'finalized' | 'invalidated'`). Plug in your own notification or state-update logic; the SDK does not pick a UI primitive for you.
+
+```tsx
+import { useWatchTransactions } from '@ton/appkit-react';
+
+export function FinalizedLog() {
+  useWatchTransactions({
+    onChange: (update) => {
+      if (update.status === 'finalized' && update.traceHash) {
+        console.log('finalized', update.traceHash);
+      }
+    },
+  });
+  return null;
+}
+```
+
+### Watch by address
+
+For receipt screens, admin tooling, or order-tracking widgets, subscribe to an address that may not be the connected wallet. The `*ByAddress` hooks take an `address` and keep the matching `useBalanceByAddress` / cache fresh while also delivering each update to `onChange`.
+
+```tsx
+import { useWatchBalanceByAddress, useWatchTransactionsByAddress } from '@ton/appkit-react';
+
+export function OrderTracker({ orderAddress }: { orderAddress: string }) {
+  useWatchBalanceByAddress({
+    address: orderAddress,
+    onChange: (update) => {
+      if (update.status === 'finalized') {
+        console.log('order balance', update.balance);
+      }
+    },
+  });
+
+  useWatchTransactionsByAddress({
+    address: orderAddress,
+    onChange: (update) => {
+      if (update.status === 'finalized') {
+        console.log('finalized txs', update.transactions.length);
+      }
+    },
+  });
+
+  return <span>Watching {orderAddress}</span>;
+}
+```
+
+### Watch jettons
+
+`useWatchJettons({ onChange })` pushes jetton balance changes for the connected wallet. Each update covers one jetton (`masterAddress`, `walletAddress`, `ownerAddress`, `rawBalance`) and may include `decimals` and a formatted `balance` when the jetton's decimals are known.
+
+```tsx
+import { useWatchJettons } from '@ton/appkit-react';
+
+export function PortfolioWatcher() {
+  useWatchJettons({
+    onChange: (update) => {
+      if (update.status === 'finalized' && update.balance !== undefined) {
+        console.log(update.masterAddress, update.balance);
+      }
+    },
+  });
+  return null;
+}
+```
+
+### Conditional watching
+
+When a watch should only run while a flow is active (an order in flight, a modal open, a screen mounted), call `useWatchTransactionsByAddress` with the address as a parameter and let the hook handle the lifecycle. The hook no-ops when `address` is falsy and re-subscribes when it changes, so passing `undefined` is the "off" switch.
+
+```tsx
+import { useState } from 'react';
+import { useWatchTransactionsByAddress } from '@ton/appkit-react';
+
+export function PendingOrder({ address }: { address: string | null }) {
+  const [status, setStatus] = useState('idle');
+
+  useWatchTransactionsByAddress({
+    address: address ?? undefined,
+    onChange: (update) => setStatus(update.status),
+  });
+
+  return <span>{status}</span>;
+}
+```
+
+## From vanilla code
+
+A non-React consumer keeps the unsubscribe function returned by each `watch*` action and calls it when the screen or process no longer needs updates.
 
 ```ts
 import { watchBalance } from '@ton/appkit';
@@ -46,21 +144,43 @@ const unsubscribe = watchBalance(appKit, {
 unsubscribe();
 ```
 
+The same shape applies to `watchBalanceByAddress`, `watchJettons`, `watchJettonsByAddress`, `watchTransactions`, and `watchTransactionsByAddress`. Each takes `{ network?, onChange }` (and `address` on the `*ByAddress` variants) and returns an unsubscribe function.
+
 ## Connection state
 
 Connection state describes transport health, not chain finality. A websocket can disconnect and reconnect while the underlying account state continues to change.
 
 After reconnect, updates may resume from the provider's current view of the chain. A flow that needs certainty should refresh from the configured API client before it changes product state.
 
+`appKit.streamingManager.onConnectionChange(network, callback)` registers a listener for the WebSocket connection state of one network. The callback receives `connected: boolean`; the method returns an unsubscribe function. Pair it with `useNetwork` so the listener follows the currently selected network.
+
+```tsx
+import { useEffect, useState } from 'react';
+import { useAppKit, useNetwork } from '@ton/appkit-react';
+
+export function StreamingHealth() {
+  const appKit = useAppKit();
+  const network = useNetwork();
+  const [connected, setConnected] = useState(true);
+
+  useEffect(() => {
+    if (!network) return;
+    return appKit.streamingManager.onConnectionChange(network, setConnected);
+  }, [appKit, network]);
+
+  return <span>{connected ? 'live' : 'reconnecting'}</span>;
+}
+```
+
 ## Rules
 
-- Store every unsubscribe function.
-- Treat streaming updates as best-effort UI refresh signals.
-- Reconcile with a point-in-time read before changing product state that depends on correctness.
-- Distinguish streaming finality updates such as `pending`, `confirmed`, `finalized`, and `invalidated` from trace status reads such as `pending` and `completed`.
+- Store every unsubscribe function and call it when the consumer goes away.
+- Call `hasStreamingProvider(appKit, network)` before subscribing on a network that may not have a provider registered, and degrade gracefully when it returns `false`.
+- Treat streaming updates as best-effort UI refresh signals. Reconcile with a point-in-time read before changing product state that depends on correctness.
+- `update.status` carries one of `'pending' | 'confirmed' | 'finalized' | 'invalidated'` on every streaming payload. Only `'finalized'` is irreversible; treat the others as intermediate.
 
 ## Related pages
 
-- [Providers](/ecosystem/appkit/howto/providers)
+- [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered)
 - [Networks](/ecosystem/appkit/howto/networks)
 - [Read balances](/ecosystem/appkit/howto/read-balances)
