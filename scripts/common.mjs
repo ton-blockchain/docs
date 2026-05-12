@@ -263,39 +263,25 @@ export function getConfig() {
 export function getNavLinks(config) {
   /** @type {string[]} */
   const links = [];
-
-  /** @param item {any} */
-  const processItem = (item) => {
-    if (!item) {
-      return;
-    }
-
-    // Plain page string
-    if (typeof item === 'string') {
-      links.push(prefixWithSlash(item));
-      return;
-    }
-
-    // Arrays
-    if (Array.isArray(item)) {
-      item.forEach(processItem);
-      return;
-    }
-
-    // Nested pages/groups/tabs
-    if (typeof item === 'object') {
-      if (Array.isArray(item.pages)) {
-        item.pages.forEach(processItem);
+  /** @param page {any} */
+  const processPage = (page) => {
+    switch (typeof page) {
+      case 'string': {
+        links.push(prefixWithSlash(page));
+        break;
       }
-
-      if (Array.isArray(item.tabs)) {
-        item.tabs.forEach(processItem);
+      case 'object': {
+        if (page?.pages) {
+          page['pages'].forEach(processPage);
+        }
+        break;
       }
+      default:
+        break;
     }
   };
-
-  processItem(config.navigation);
-
+  // @ts-ignore
+  config.navigation?.pages.forEach(processPage);
   return links;
 }
 
