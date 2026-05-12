@@ -1,0 +1,68 @@
+---
+id: ecosystem/appkit/howto/streaming
+title: "Streaming"
+sidebarTitle: "Streaming"
+description: ""
+---
+
+Streaming in AppKit is a per-network subscription layer that turns provider events into live balance, jetton, and transaction updates for the app.
+
+## Live provider signals
+
+Streaming complements point-in-time API reads. Instead of asking an API client for the latest state after every interaction, the app subscribes to changes for an address on a specific network.
+
+The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain.
+
+## Subscription lifetime
+
+A subscription belongs to the consumer that created it. Balance, jetton, transaction, and combined watches all return an unsubscribe function, and that function is the app's handle for stopping updates when a component unmounts or a flow ends.
+
+Connecting and disconnecting the streaming layer opens and closes provider transports without changing the subscription list. This lets an app pause network activity and resume with the same watches still registered.
+
+## Watch from React
+
+Mount watch hooks near the part of the tree that needs live data. The hook keeps related query caches fresh while it is mounted:
+
+```tsx
+import { useBalance, useWatchBalance } from '@ton/appkit-react';
+
+export function LiveBalance() {
+  useWatchBalance();
+  const balance = useBalance();
+
+  return <span>{balance.data ?? '0'} TON</span>;
+}
+```
+
+For a non-React consumer, keep the unsubscribe function and call it when the screen or process no longer needs updates:
+
+```ts
+import { watchBalance } from '@ton/appkit';
+
+const unsubscribe = watchBalance(appKit, {
+  onChange: (update) => {
+    console.log(update.address, update.balance);
+  },
+});
+
+unsubscribe();
+```
+
+## Connection state
+
+Connection state describes transport health, not chain finality. A websocket can disconnect and reconnect while the underlying account state continues to change.
+
+After reconnect, updates may resume from the provider's current view of the chain. A flow that needs certainty should refresh from the configured API client before it changes product state.
+
+## Rules
+
+- Store every unsubscribe function.
+- Treat streaming updates as best-effort UI refresh signals.
+- Reconcile with a point-in-time read before changing product state that depends on correctness.
+- Distinguish streaming finality updates such as `pending`, `confirmed`, `finalized`, and `invalidated` from trace status reads such as `pending` and `completed`.
+
+## Related pages
+
+- [Providers](/ecosystem/appkit/howto/providers)
+- [Networks](/ecosystem/appkit/howto/networks)
+- [Read balances](/ecosystem/appkit/howto/read-balances)

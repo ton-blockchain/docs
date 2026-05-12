@@ -1,0 +1,75 @@
+---
+id: ecosystem/appkit/get-started/connectors
+title: "Connectors"
+sidebarTitle: "Connectors"
+description: ""
+---
+
+A connector is the transport AppKit uses to talk to a wallet. The `AppKit` instance is created with one or more connectors and at least one network.
+
+A connector is not a wallet and does not sign. Signing always happens inside the user's wallet application; the connector only carries requests to it and responses back. AppKit cares about the connector's `id`, `type`, `metadata`, and the methods it exposes (`connectWallet`, `disconnectWallet`, `getConnectedWallets`, `destroy`) — what protocol it uses underneath is hidden by the interface.
+
+## Before you begin
+
+Install AppKit first. See [Installation](/ecosystem/appkit/get-started/installation).
+
+## Create the AppKit instance
+
+The `AppKit` constructor takes two pieces of configuration that almost every app sets: a `networks` map and a `connectors` array. The map is keyed by `chainId`, with each value carrying an `apiClient` instance — `ApiClientToncenter` for Toncenter v2/v3 endpoints, `ApiClientTonApi` for tonapi.io and compatible deployments. The array holds connector factories such as `createTonConnectConnector`.
+
+A single `AppKit` instance can hold more than one network and more than one connector. The user picks at connect time, and a flow can move between networks without rebuilding the instance. The example below configures the minimum: one testnet network and one TON Connect connector.
+
+The default connector uses TON Connect. Pair it with an `ApiClient` instance per network.
+
+```ts
+// appkit.ts
+import {
+  AppKit,
+  Network,
+  ApiClientToncenter,
+  createTonConnectConnector,
+} from '@ton/appkit';
+
+const testnetApiClient = new ApiClientToncenter({
+  network: Network.testnet(),
+  apiKey: import.meta.env.VITE_TON_API_KEY_TESTNET,
+});
+
+export const appKit = new AppKit({
+  networks: {
+    [Network.testnet().chainId]: { apiClient: testnetApiClient },
+  },
+  connectors: [
+    createTonConnectConnector({
+      tonConnectOptions: {
+        manifestUrl: 'https://example.com/tonconnect-manifest.json',
+      },
+    }),
+  ],
+});
+```
+
+## Render a connect button
+
+The button below assumes the React providers are already mounted around your tree — see [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers).
+
+For most apps, the drop-in component is the right starting point. `<TonConnectButton />` from `@ton/appkit-react` owns the connect modal, the session lifecycle (open, restore on reload, expire), and the connected-address display — and it is the same component the official example app mounts in its layout. When the UI needs a tailored wallet list, use `useConnectors` and `useConnect` directly; that pattern is documented in [How to connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+
+The drop-in `<TonConnectButton />` from `@ton/appkit-react` handles the modal, session, and address display.
+
+```tsx
+import { TonConnectButton } from '@ton/appkit-react';
+
+export function Header() {
+  return <TonConnectButton />;
+}
+```
+
+## Rules
+
+Do not assume every connector supports every flow. Check capability before sending a request and treat user rejection as a normal outcome on every action. Connector errors and chain errors are different failure classes and need different recovery paths.
+
+## Next steps
+
+- See [How to connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet) for the custom-selector pattern, vanilla JS connect, and error handling.
+- See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet) for the underlying model and examples.

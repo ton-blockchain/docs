@@ -1,0 +1,119 @@
+---
+id: ecosystem/appkit/howto/nfts
+title: "NFTs"
+sidebarTitle: "NFTs"
+description: ""
+---
+
+Read, render, and transfer NFTs owned by the connected wallet.
+
+## How it works
+
+AppKit reads NFT ownership and metadata through the configured API client. NFT names, images, attributes, and collection fields are display data from contracts and indexers, so render them defensively.
+
+Transfers are wallet-approved transaction requests. The wallet accepting the request starts the chain flow, while ownership verification confirms that the NFT moved.
+
+## Before you begin
+
+A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+
+## Read NFTs
+
+```tsx
+import { useNfts } from '@ton/appkit-react';
+
+export function MyNfts() {
+  const { data, isLoading, isError, refetch } = useNfts({
+    query: { refetchInterval: 10000 },
+  });
+
+  if (isError) return <button onClick={() => refetch()}>Retry</button>;
+  if (isLoading) return <span>Loading…</span>;
+
+  const nfts = data?.nfts ?? [];
+  return <p>{nfts.length} NFT(s)</p>;
+}
+```
+
+For a different address, use `useNftsByAddress({ address })`.
+
+## Render with `<NftItem />`
+
+`@ton/appkit-react` ships an `NftItem` component that renders the NFT card with image, name, and collection.
+
+```tsx
+import { NftItem, useNfts } from '@ton/appkit-react';
+
+const { data } = useNfts();
+const nfts = data?.nfts ?? [];
+
+return (
+  <div className="grid grid-cols-2 gap-2">
+    {nfts.map((nft) => (
+      <NftItem key={nft.address} nft={nft} onClick={() => console.log(nft)} />
+    ))}
+  </div>
+);
+```
+
+## Transfer an NFT
+
+For NFTs the recommended pattern is to build the request offline with `createTransferNftTransaction`, then hand it to `<Send />`. This keeps the transaction shape testable.
+
+```tsx
+import { Send, useAppKit } from '@ton/appkit-react';
+import { createTransferNftTransaction, getErrorMessage } from '@ton/appkit';
+import { useCallback } from 'react';
+
+export function TransferNft({ nftAddress, recipientAddress }: { nftAddress: string; recipientAddress: string }) {
+  const appKit = useAppKit();
+
+  const request = useCallback(
+    () => createTransferNftTransaction(appKit, { nftAddress, recipientAddress }),
+    [appKit, nftAddress, recipientAddress],
+  );
+
+  return (
+    <Send
+      request={request}
+      onSuccess={() => console.log('done')}
+      onError={(e) => console.error(getErrorMessage(e))}
+    >
+      {({ isLoading, onSubmit, disabled, text }) => (
+        <button onClick={onSubmit} disabled={disabled}>
+          {isLoading ? 'Sending…' : text}
+        </button>
+      )}
+    </Send>
+  );
+}
+```
+
+The shorter route is the `useTransferNft` hook or the `transferNft` core action — both build the request internally and call the wallet directly.
+
+```ts
+import { transferNft } from '@ton/appkit';
+
+await transferNft(appKit, {
+  nftAddress: 'EQ...',
+  recipientAddress: 'EQ...',
+});
+```
+
+## Read a single NFT
+
+```ts
+import { getNft } from '@ton/appkit';
+
+const nft = await getNft(appKit, { address: 'EQ...' });
+```
+
+## Confirm settlement
+
+The wallet accepting the request does not prove the NFT moved. Track the transaction with [Streaming](/ecosystem/appkit/howto/streaming) and verify ownership before crediting value.
+
+## Next steps
+
+- [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
+- [AppKit reference](/ecosystem/appkit/reference)
+- [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)

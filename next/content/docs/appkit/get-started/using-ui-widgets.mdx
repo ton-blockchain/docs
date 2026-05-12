@@ -1,0 +1,61 @@
+---
+id: ecosystem/appkit/get-started/using-ui-widgets
+title: "Using UI widgets"
+sidebarTitle: "Use UI widgets"
+description: ""
+---
+
+UI widgets are the quickest way to add AppKit flows to a React app. This page introduces the main component shapes and when to use them.
+
+## Before you begin
+
+Install the React packages, mount `AppKitProvider`, and import the default stylesheet. See [Install AppKit in a React app](/ecosystem/appkit/get-started/installation/react-app).
+
+## Pick a widget level
+
+AppKit UI widgets come in three levels:
+
+| Level                  | Use when                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| Default component      | The app needs a ready-made flow with the package stylesheet.                         |
+| Render-prop component  | The app needs AppKit to own the state machine, but the layout must be custom.        |
+| Hooks and core actions | The flow no longer matches one widget, or state must be shared across a larger page. |
+
+Default components such as `<TonConnectButton />` and `<SendTonButton />` cover the full user flow. Render-prop components keep the same behavior while letting the app render custom markup. Hooks and core actions are the lowest level and fit flows that need fully custom product logic.
+
+## Start with a ready-made component
+
+`<TonConnectButton />` is the smallest example. It opens the TON Connect modal, restores the session, and renders the selected wallet address.
+
+```tsx
+import { TonConnectButton } from '@ton/appkit-react';
+
+export function Header() {
+  return <TonConnectButton />;
+}
+```
+
+## Move to a custom send flow
+
+`<SendTonButton />` keeps the AppKit transaction flow while exposing render props for custom UI.
+
+```tsx
+import { SendTonButton } from '@ton/appkit-react';
+
+<SendTonButton recipientAddress="EQ..." amount="0.05" comment="Test">
+  {({ isLoading, onSubmit, disabled, text }) => (
+    <button onClick={onSubmit} disabled={disabled}>
+      {isLoading ? 'Sending…' : text}
+    </button>
+  )}
+</SendTonButton>;
+```
+
+## Rules
+
+Pick the widget level by control needs. Use a ready-made component for the smallest integration, render props for custom layout, and hooks or core actions when the flow needs more control than one widget can provide.
+
+## Next steps
+
+- See [How to use UI widgets](/ecosystem/appkit/howto/use-ui-widgets) for a component-by-component walkthrough.
+- See [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets) for the component model and examples.

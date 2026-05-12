@@ -13,10 +13,10 @@ Install the React packages, mount `AppKitProvider`, and import the default style
 
 AppKit UI widgets come in three levels:
 
-| Level | Use when |
-| ----- | -------- |
-| Default component | The app needs a ready-made flow with the package stylesheet. |
-| Render-prop component | The app needs AppKit to own the state machine, but the layout must be custom. |
+| Level                  | Use when                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| Default component      | The app needs a ready-made flow with the package stylesheet.                         |
+| Render-prop component  | The app needs AppKit to own the state machine, but the layout must be custom.        |
 | Hooks and core actions | The flow no longer matches one widget, or state must be shared across a larger page. |
 
 Default components such as `<TonConnectButton />` and `<SendTonButton />` cover the full user flow. Render-prop components keep the same behavior while letting the app render custom markup. Hooks and core actions are the lowest level and fit flows that need fully custom product logic.
@@ -56,4 +56,4 @@ Pick the widget level by control needs. Use a ready-made component for the small
 ## Next steps
 
 - See [How to use UI widgets](/ecosystem/appkit/howto/use-ui-widgets) for a component-by-component walkthrough.
-- See [UI widgets](/ecosystem/appkit/concepts/ui-widgets) for the conceptual model.
+- See [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets) for the component model and examples.

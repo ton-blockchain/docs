@@ -1,0 +1,33 @@
+---
+id: ecosystem/appkit/get-started
+title: "Get started with AppKit"
+sidebarTitle: "Get started"
+description: ""
+---
+
+Use this section to learn the AppKit surface one piece at a time. Each page introduces one part of the toolkit with the smallest example that explains it.
+
+AppKit ships in three layers. `@ton/appkit` is the core: it owns the `AppKit` instance, the connectors, the actions, and the type definitions, and it works on its own from plain TypeScript. `@ton/appkit-react` is a thin layer on top that exposes the same surface as React hooks and ready-to-mount components, plus a default stylesheet. The optional DeFi and streaming providers (`@ton/appkit/swap/*`, `@ton/appkit/staking/*`, and the streaming providers registered on `appKit.streamingManager`) plug AppKit into external services and live data.
+
+Read this section for orientation. Each page defines one piece of the surface, shows the smallest example that explains it, and stops. For end-to-end flows such as connect, read, send, or sign, continue to [How to](/ecosystem/appkit/howto).
+
+## What you will learn
+
+| Page                                                                       | What it covers                                                              |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [Installation](/ecosystem/appkit/get-started/installation)                 | Add AppKit packages to a React or vanilla JavaScript project.               |
+| [Connectors](/ecosystem/appkit/get-started/connectors)                     | Create the AppKit instance and connect wallets with `<TonConnectButton />`. |
+| [Providers](/ecosystem/appkit/get-started/providers)                       | Configure API clients and plug in streaming, swap, and staking services.    |
+| [Basic getter hooks](/ecosystem/appkit/get-started/basic-getter-hooks)     | Read wallet, address, balance, jetton, NFT, network, and transaction state. |
+| [Streaming](/ecosystem/appkit/get-started/streaming)                       | Subscribe to live updates with `useWatchBalance`, `useWatchTransactions`.   |
+| [Sending transactions](/ecosystem/appkit/get-started/sending-transactions) | Send Toncoin, jettons, NFTs, and prepared transactions with `<Send />`.     |
+
+## How to read this section
+
+Each page is a short orientation: one paragraph, one snippet, then a link to a deeper task guide. The pages are designed to be read in order, but every page stands on its own.
+
+## Next steps
+
+- See task-level walkthroughs in [How to](/ecosystem/appkit/howto).
+- See the package references in [AppKit reference](/ecosystem/appkit/reference).
+- Review the AppKit model in [How to](/ecosystem/appkit/howto).

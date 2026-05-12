@@ -1,0 +1,65 @@
+---
+id: ecosystem/appkit/howto/swaps
+title: "Swaps"
+sidebarTitle: "Swaps"
+description: ""
+---
+
+Swaps in AppKit are quote-first wallet transactions assembled through registered DEX providers.
+
+## Swap model
+
+AppKit does not price markets itself. The `SwapManager` coordinates swap providers, and each provider implements one DEX or aggregator integration.
+
+A quote is the provider's current offer for a route: input asset, output asset, amount, fees, and execution assumptions. The quote is not a transaction and it is not a guarantee that the same route will still be valid later.
+
+When a swap is built, AppKit turns the accepted quote into a `TransactionRequest` for the selected wallet. The wallet still owns approval, signing, and rejection.
+
+## Provider routing
+
+Bundled providers cover Omniston and DeDust. More providers can be registered on the AppKit instance, and the manager decides which provider handles a quote or build request.
+
+The quote carries provider identity so the build step can return to the same integration that produced the route. This keeps provider-specific route data out of the app's own swap logic.
+
+## Provider policy
+
+Slippage, referral fields, routing rules, and similar settings are provider policy. AppKit passes those settings through to the provider, but the provider decides how they affect the quote and transaction request.
+
+For product flows, this means the app should display the quote, selected provider, expected output, and any provider-supplied warnings before asking the wallet to approve.
+
+## Quote and send
+
+The practical flow is quote, build, send, then verify settlement. Keep those states separate in UI and backend code:
+
+```ts
+import { buildSwapTransaction, getSwapQuote, sendTransaction } from '@ton/appkit';
+
+const quote = await getSwapQuote(appKit, {
+  from: { address: 'EQ-USDT-MASTER', decimals: 6 },
+  to: { address: 'ton', decimals: 9 },
+  amount: '10',
+  network,
+  providerOptions: { slippageBps: 100 },
+});
+
+const request = await buildSwapTransaction(appKit, {
+  quote,
+  userAddress: wallet.getAddress().toString(),
+});
+
+const response = await sendTransaction(appKit, request);
+```
+
+Use the returned `boc` or normalized hash with transaction-status tracking before updating balances, orders, or inventory.
+
+## Rules
+
+- Treat quote freshness, wallet approval, and chain settlement as separate states.
+- Show the selected provider, expected output, fees, and any provider warnings before opening the wallet.
+- Refetch a quote before building or submitting a swap when the UI has been idle long enough for the route to expire.
+
+## Related pages
+
+- [Providers](/ecosystem/appkit/howto/providers)
+- [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)
+- [How to](/ecosystem/appkit/howto)

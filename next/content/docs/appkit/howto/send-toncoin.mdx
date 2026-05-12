@@ -1,0 +1,110 @@
+---
+id: ecosystem/appkit/howto/send-toncoin
+title: "Send Toncoin"
+sidebarTitle: "Send Toncoin"
+description: ""
+---
+
+Transfer Toncoin from the connected wallet. Pick the call style that fits your UI.
+
+## How it works
+
+Toncoin is the native asset on TON. AppKit keeps Toncoin amounts as decimal strings in human-readable TON units and converts them when it builds the wallet request.
+
+A wallet response means the selected wallet accepted and submitted the request. It does not prove that the transaction settled on chain, so product state should wait for status tracking or a backend verification read.
+
+## Before you begin
+
+A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet). Use testnet during development.
+
+## Component (recommended)
+
+`<SendTonButton />` builds the request, calls the wallet, and exposes the mutation state to a render-prop child.
+
+```tsx
+import { SendTonButton } from '@ton/appkit-react';
+import { getErrorMessage } from '@ton/appkit';
+import { useState } from 'react';
+
+export function SendTon() {
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <SendTonButton
+      recipientAddress="EQ..."
+      amount="0.05"
+      comment="Test payment"
+      onError={(e) => setError(getErrorMessage(e))}
+      onSuccess={({ boc }) => console.log('sent', boc)}
+    >
+      {({ isLoading, onSubmit, disabled, text }) => (
+        <button onClick={onSubmit} disabled={disabled}>
+          {isLoading ? 'Sending…' : text}
+        </button>
+      )}
+    </SendTonButton>
+  );
+}
+```
+
+`amount` is a decimal string in TON. The component accepts an optional `comment` for a memo on chain.
+
+## Hook
+
+`useTransferTon` is the mutation hook behind the component.
+
+```tsx
+import { useTransferTon } from '@ton/appkit-react';
+
+const transferTon = useTransferTon();
+
+transferTon.mutate({
+  recipientAddress: 'EQ...',
+  amount: '0.05',
+  comment: 'Test payment',
+});
+```
+
+Read `transferTon.isPending`, `transferTon.error`, and use `mutation.onSuccess` / `mutation.onError` if you initialise the hook with options.
+
+## Core action
+
+```ts
+import { transferTon } from '@ton/appkit';
+import { appKit } from './appkit';
+
+await transferTon(appKit, {
+  recipientAddress: 'EQ...',
+  amount: '0.05',
+  comment: 'Test payment',
+});
+```
+
+## Parameters
+
+| Field              | Type     | Required | Notes                                               |
+| ------------------ | -------- | -------- | --------------------------------------------------- |
+| `recipientAddress` | `string` | Yes      | TON address.                                        |
+| `amount`           | `string` | Yes      | Decimal TON, e.g. `'0.05'`.                         |
+| `comment`          | `string` | No       | Plain text memo. Mutually exclusive with `payload`. |
+| `payload`          | `string` | No       | Base64 cell. Overrides `comment` when set.          |
+| `stateInit`        | `string` | No       | Base64 cell, used to deploy.                        |
+
+## Confirm settlement
+
+The wallet accepting the request does not prove on-chain settlement. Track the transaction with [Streaming](/ecosystem/appkit/howto/streaming) and verify final state in your backend before delivering value.
+
+## Common failures
+
+| Failure              | Meaning                                                      |
+| -------------------- | ------------------------------------------------------------ |
+| User rejected        | The user closed or rejected the wallet request.              |
+| Insufficient balance | The wallet cannot pay amount and fees.                       |
+| Expired request      | The transaction deadline passed before approval.             |
+| Invalid address      | The recipient address is malformed or for the wrong network. |
+
+## Next steps
+
+- [Send jettons](/ecosystem/appkit/howto/send-jettons)
+- [NFTs](/ecosystem/appkit/howto/nfts)
+- [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
