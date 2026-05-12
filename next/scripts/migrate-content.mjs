@@ -1,32 +1,44 @@
 #!/usr/bin/env node
 /**
- * Mintlify → Fumadocs content migration.
+ * Mintlify -> Fumadocs content migration.
  *
  * What it does:
- *   1. Reads the legacy `docs.json` navigation tree.
- *   2. Walks every `.mdx` / `.md` file referenced (and every MDX file under the
- *      mapped root directories), copies it into `next/content/docs/<slug>.mdx`,
- *      preserving the original slug shape so docs.ton.org URLs stay stable.
- *   3. Removes `import { ... } from "/snippets/..."` lines — the components are
- *      now globally registered via `lib/mdx-components.tsx`.
- *   4. Normalises frontmatter (`mode: "custom"`/"wide" → Fumadocs `mode`).
- *   5. Generates one `meta.json` per directory describing the sidebar ordering
- *      and labels (icon, group, expanded) carried over from `docs.json`.
- *   6. Migrates the legacy `redirects` block into `next/redirects.mjs`.
+ *   1. Walks every `.mdx` / `.md` file at the repo root (excluding `next/`).
+ *   2. Computes each file's immutable `id` (= its upstream path minus `.mdx`)
+ *      and stamps it into the frontmatter if not already present.
+ *   3. Looks up the page's current canonical slug in `navigation.config.json`
+ *      (via `resolveCurrentSlug`). Falls back to `id == slug` when the config
+ *      doesn't reference the id (first run / new upstream pages).
+ *   4. Normalises frontmatter, removes legacy `import { ... } from "/snippets/..."`
+ *      lines, translates `:::admonition` blocks to JSX `<Aside>` components.
+ *   5. Writes the file to `next/content/docs/<currentSlug>.mdx`.
+ *   6. Seeds `next/redirects.mjs` from the legacy `redirects` block in docs.json
+ *      (idempotent, deduplicated, sorted).
+ *
+ * meta.json files are no longer this script's responsibility — they are owned
+ * by `scripts/apply-nav.mjs`, the sole writer of the navigation layout.
  */
 import {promises as fs} from "node:fs"
 import path from "node:path"
-import {fileURLToPath} from "node:url"
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const NEXT_ROOT = path.resolve(__dirname, "..")
-const REPO_ROOT = path.resolve(NEXT_ROOT, "..")
-const CONTENT_OUT = path.join(NEXT_ROOT, "content", "docs")
-const DOCS_JSON = path.join(REPO_ROOT, "docs.json")
-const REDIRECTS_OUT = path.join(NEXT_ROOT, "redirects.mjs")
+import {
+  CONTENT_ROOT,
+  DOCS_JSON_PATH,
+  REPO_ROOT,
+  getFrontmatterField,
+  isGroup,
+  isLink,
+  isPage,
+  parseFrontmatter,
+  readConfig,
+  readRedirects,
+  resolveCurrentSlug,
+  stampId,
+  writeConfig,
+  writeRedirects,
+} from "./nav-config.mjs"
 
 const ROOT_FILES = new Set([
-  "index", // becomes Next.js landing route
+  "index", // becomes the Next.js landing route, not a docs page
 ])
 
 const VERBOSE = process.argv.includes("--verbose")
@@ -41,18 +53,25 @@ async function readJson(file) {
   return JSON.parse(raw)
 }
 
-async function ensureDir(dir) {
-  if (DRY_RUN) return
-  await fs.mkdir(dir, {recursive: true})
-}
-
 async function writeFile(file, contents) {
   if (DRY_RUN) {
-    log("[dry-run] write", path.relative(NEXT_ROOT, file))
+    log("[dry-run] write", path.relative(REPO_ROOT, file))
     return
   }
-  await ensureDir(path.dirname(file))
+  await fs.mkdir(path.dirname(file), {recursive: true})
   await fs.writeFile(file, contents, "utf8")
+}
+
+async function removeFile(file) {
+  if (DRY_RUN) {
+    log("[dry-run] remove", path.relative(REPO_ROOT, file))
+    return
+  }
+  try {
+    await fs.unlink(file)
+  } catch (err) {
+    if (/** @type {NodeJS.ErrnoException} */ (err).code !== "ENOENT") throw err
+  }
 }
 
 function stripSnippetImports(source) {
@@ -63,15 +82,11 @@ function stripSnippetImports(source) {
 }
 
 /**
- * Translate the legacy `::: kind` block-level admonition to the JSX equivalent
- * so the docs stop needing remark-directive — and so colon-pairs like `14:30`
- * never get mis-parsed as inline directives.
+ * Translate `:::kind ...:::` admonition blocks into JSX `<Aside>` components so
+ * the docs no longer need remark-directive (which mis-parsed inline colon pairs
+ * like `14:30 UTC`).
  */
 function translateAdmonitions(source) {
-  // Matches:
-  //   :::note Optional title
-  //   ...body...
-  //   :::
   return source.replace(
     /^:::(note|tip|caution|danger|info|warning|warn)([^\n]*)\n([\s\S]*?)^:::\s*$/gm,
     (_match, kind, header, body) => {
@@ -92,10 +107,9 @@ function translateAdmonitions(source) {
 
 /**
  * Patch frontmatter:
- *   - Map Mintlify `mode: "wide"` → Fumadocs `mode: "wide"` (the schema
- *     accepts it; the page renderer expands the layout when present).
- *   - `mode: "custom"` is dropped — those pages must be rebuilt as native
- *     React routes (currently only `index.mdx`, handled separately).
+ *   - Drop legacy `mode: "custom"` (those pages are rebuilt as native routes).
+ *   - Rename quoted `"og:image"` / `"twitter:image"` keys to YAML-friendly forms.
+ *   - Ensure every page has a `title` and `description`.
  */
 function patchFrontmatter(source, slug) {
   const fmMatch = source.match(/^---\n([\s\S]*?)\n---/)
@@ -104,14 +118,12 @@ function patchFrontmatter(source, slug) {
   let fm = fmMatch[1]
 
   fm = fm.replace(/^mode:\s*["']custom["']\s*$/m, "")
-
   fm = fm.replace(/^"og:image":/m, "ogImage:")
   fm = fm.replace(/^"twitter:image":/m, "twitterImage:")
 
   if (!/^description:/m.test(fm) && !/^title:/m.test(fm)) {
     fm = `title: "${slug}"\n${fm}`
   }
-
   if (!/^description:/m.test(fm)) {
     fm += '\ndescription: ""'
   }
@@ -119,66 +131,19 @@ function patchFrontmatter(source, slug) {
   return source.replace(/^---\n[\s\S]*?\n---/, `---\n${fm.trim()}\n---`)
 }
 
-/**
- * Walk the docs.json navigation. The structure is:
- *   navigation.tabs[].pages[] = string | { group, icon?, expanded?, pages: [...] }
- *
- * Yields a flat list of { slug, group?, icon?, expanded? } entries we can use
- * to (a) emit meta.json files, (b) confirm an .mdx file exists for each slug.
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function flattenNav_DEPRECATED(navTabs) {
-  const slugs = []
-  const groups = new Map()
-
-  function walk(pages, prefix = []) {
-    if (!Array.isArray(pages)) return
-    for (const entry of pages) {
-      if (typeof entry === "string") {
-        slugs.push({slug: entry, group: prefix.at(-1)})
-        continue
-      }
-
-      if (entry && typeof entry === "object" && "group" in entry) {
-        const childPages = Array.isArray(entry.pages) ? entry.pages : []
-        const dirSegments = childPages[0]
-          ? typeof childPages[0] === "string"
-            ? childPages[0].split("/").slice(0, -1)
-            : []
-          : []
-
-        const dirKey = dirSegments.join("/")
-        const groupKey = dirKey || entry.openapi?.directory || entry.group
-
-        groups.set(groupKey, {
-          name: entry.group,
-          icon: entry.icon,
-          expanded: entry.expanded ?? false,
-          tag: entry.tag,
-          openapi: entry.openapi,
-          pages: childPages,
-        })
-
-        walk(childPages, [...prefix, entry.group])
-        continue
-      }
-    }
-  }
-
-  for (const tab of navTabs) {
-    walk(tab.pages ?? [])
-  }
-
-  return {slugs, groups}
-}
-
 async function discoverMdxFiles(root, dir = "") {
+  /** @type {string[]} */
   const out = []
-  const entries = await fs.readdir(path.join(root, dir), {withFileTypes: true})
+  let entries
+  try {
+    entries = await fs.readdir(path.join(root, dir), {withFileTypes: true})
+  } catch {
+    return out
+  }
+  entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
   for (const e of entries) {
     if (e.name.startsWith(".") || e.name === "node_modules" || e.name === "next") continue
     const rel = path.posix.join(dir, e.name)
-    const abs = path.join(root, rel)
     if (e.isDirectory()) {
       out.push(...(await discoverMdxFiles(root, rel)))
     } else if (e.name.endsWith(".mdx")) {
@@ -188,232 +153,261 @@ async function discoverMdxFiles(root, dir = "") {
   return out
 }
 
-async function migrateFile(repoRel) {
-  const slug = repoRel.replace(/\.mdx$/, "")
-  if (ROOT_FILES.has(slug)) {
+/**
+ * Mintlify pages with a `url:` frontmatter pointing somewhere outside the docs
+ * are sidebar shortcuts to external content, not routable pages. Anything with
+ * a scheme (`https:`, `mailto:`, `tel:`, ...) or that starts with `//` is
+ * external; relative paths like `/some/page` stay as regular pages.
+ *
+ * @param {string} value
+ * @returns {boolean}
+ */
+function isExternalUrl(value) {
+  if (typeof value !== "string" || !value) return false
+  return /^(?:[a-z][a-z0-9+.\-]*:|\/\/)/i.test(value) && !value.startsWith("/")
+}
+
+/**
+ * @typedef {{kind: "page", id: string, currentSlug: string, sourceRel: string, destAbs: string}} MigratedPage
+ * @typedef {{kind: "external", id: string, sourceRel: string, title: string, url: string, icon: string | undefined}} MigratedExternal
+ * @typedef {MigratedPage | MigratedExternal} MigratedFile
+ *
+ * @param {string} repoRel  Path relative to REPO_ROOT (e.g. `ecosystem/appkit/overview.mdx`).
+ * @param {import("./nav-config.mjs").NavConfig | null} navConfig
+ * @returns {Promise<MigratedFile | null>}
+ */
+async function migrateFile(repoRel, navConfig) {
+  const id = repoRel.replace(/\.mdx$/, "")
+  if (ROOT_FILES.has(id)) {
     log("skip root", repoRel, "(rebuilt as app/page.tsx)")
     return null
   }
 
-  const src = await fs.readFile(path.join(REPO_ROOT, repoRel), "utf8")
-  const patched = patchFrontmatter(translateAdmonitions(stripSnippetImports(src)), slug)
+  const upstreamAbs = path.join(REPO_ROOT, repoRel)
+  const raw = await fs.readFile(upstreamAbs, "utf8")
 
-  const dest = path.join(CONTENT_OUT, repoRel)
-  await writeFile(dest, patched)
-  return slug
+  // 1. Compute the canonical disk slug from the config (fallback: id == slug).
+  const resolvedSlug = navConfig ? resolveCurrentSlug(id, navConfig) : undefined
+  const currentSlug = resolvedSlug ?? id
+
+  // 1b. Short-circuit external-link pages. Mintlify treats a frontmatter `url:`
+  //     pointing to an external URL as a sidebar shortcut, so we never want
+  //     these as routable Fumadocs pages. Remove any stale on-disk copy and
+  //     report the entry so the caller can rewrite the nav config.
+  const rawUrl = getFrontmatterField(raw, "url")
+  if (rawUrl && isExternalUrl(rawUrl)) {
+    const title = getFrontmatterField(raw, "title") ?? id
+    const icon = getFrontmatterField(raw, "icon") || undefined
+    const candidates = new Set([
+      path.join(CONTENT_ROOT, `${currentSlug}.mdx`),
+      path.join(CONTENT_ROOT, `${id}.mdx`),
+    ])
+    for (const candidate of candidates) {
+      if (await pathExists(candidate)) {
+        const existing = await fs.readFile(candidate, "utf8")
+        const existingId = parseFrontmatter(existing).id ?? id
+        if (existingId === id) await removeFile(candidate)
+      }
+    }
+    return {kind: "external", id, sourceRel: repoRel, title, url: rawUrl, icon}
+  }
+
+  // 2. Stamp id into the frontmatter (no-op if already present), then apply
+  //    legacy transforms.
+  const stamped = stampId(raw, id)
+  const transformed = patchFrontmatter(
+    translateAdmonitions(stripSnippetImports(stamped)),
+    currentSlug,
+  )
+
+  const destAbs = path.join(CONTENT_ROOT, `${currentSlug}.mdx`)
+  await writeFile(destAbs, transformed)
+
+  // 3. If the config has moved this id away from its default location, remove
+  //    any stale copy that still lives at the upstream path inside content/docs.
+  if (resolvedSlug && resolvedSlug !== id) {
+    const stale = path.join(CONTENT_ROOT, `${id}.mdx`)
+    if (stale !== destAbs) {
+      const exists = await pathExists(stale)
+      if (exists) {
+        const staleContent = await fs.readFile(stale, "utf8")
+        const staleId = parseFrontmatter(staleContent).id
+        if (staleId === id) await removeFile(stale)
+      }
+    }
+  }
+
+  return {kind: "page", id, currentSlug, sourceRel: repoRel, destAbs}
+}
+
+async function pathExists(p) {
+  try {
+    await fs.stat(p)
+    return true
+  } catch (err) {
+    if (/** @type {NodeJS.ErrnoException} */ (err).code === "ENOENT") return false
+    throw err
+  }
 }
 
 /**
- * Build ordered meta.json pages for a directory using `docs.json` as the
- * source of truth. We walk the nav tree, collect the ordered slug list per
- * directory (preserving Mintlify's `group` nesting), then emit each meta.json
- * with the proper `pages` order. Anything in the directory not referenced by
- * `docs.json` is appended at the end alphabetically.
+ * Stamp every existing file under content/docs/ that's missing an id. This is
+ * a separate pass so even pages that don't have an upstream counterpart (added
+ * directly in the Fumadocs tree, or moved by the editor) get an id.
  */
-function buildMetaTreeFromNav(navTabs) {
-  /** dir -> { name?, icon?, expanded?, pages: string[] } */
-  const dirs = new Map()
+async function backfillIds() {
+  /** @type {string[]} */
+  const stamped = []
+  await walk(CONTENT_ROOT, "")
 
-  function ensureDir(dir, defaults = {}) {
-    if (!dirs.has(dir)) dirs.set(dir, {pages: [], ...defaults})
-    else if (defaults.name && !dirs.get(dir).name) Object.assign(dirs.get(dir), defaults)
-    return dirs.get(dir)
-  }
-
-  function walk(pages, currentDir = "", inheritedGroup) {
-    if (!Array.isArray(pages)) return
-    for (const entry of pages) {
-      if (typeof entry === "string") {
-        const parts = entry.split("/")
-        const fileSlug = parts[parts.length - 1]
-        const fileDir = parts.slice(0, -1).join("/")
-
-        if (fileDir === currentDir) {
-          const meta = ensureDir(currentDir)
-          if (!meta.pages.includes(fileSlug)) meta.pages.push(fileSlug)
-        } else {
-          // Fallback: place the page in its actual directory.
-          const meta = ensureDir(fileDir)
-          if (!meta.pages.includes(fileSlug)) meta.pages.push(fileSlug)
-        }
-        continue
-      }
-
-      if (entry && typeof entry === "object" && "group" in entry) {
-        const childPages = Array.isArray(entry.pages) ? entry.pages : []
-        const groupDir = computeGroupDir(entry, currentDir)
-
-        if (groupDir && groupDir !== currentDir) {
-          const parentMeta = ensureDir(currentDir)
-          const lastSegment = groupDir
-            .slice(currentDir.length === 0 ? 0 : currentDir.length + 1)
-            .split("/")[0]
-          if (lastSegment && !parentMeta.pages.includes(lastSegment)) {
-            parentMeta.pages.push(lastSegment)
-          }
-        }
-
-        if (groupDir !== currentDir) {
-          ensureDir(groupDir, {
-            name: entry.group,
-            icon: entry.icon,
-            expanded: entry.expanded ?? false,
-          })
-        }
-
-        walk(childPages, groupDir, entry.group)
-
-        if (entry.openapi?.directory) {
-          ensureDir(entry.openapi.directory, {
-            name: entry.group,
-            icon: entry.icon,
-          })
-        }
-      }
-    }
-  }
-
-  /**
-   * Compute the directory that should "own" a given group entry, defined as
-   * the longest path prefix shared by every string slug nested in the group.
-   *
-   * Examples:
-   *   group "Ecosystem" containing "ecosystem/ai/mcp" + "ecosystem/oracles/*"
-   *     → "ecosystem"
-   *   group "API v3" containing "ecosystem/api/toncenter/v3/overview" only
-   *     → "ecosystem/api/toncenter/v3"
-   */
-  function computeGroupDir(entry, fallback) {
-    const slugs = []
-    function collect(node) {
-      if (typeof node === "string") {
-        slugs.push(node)
-        return
-      }
-      if (node && typeof node === "object") {
-        for (const child of node.pages ?? []) collect(child)
-      }
-    }
-    for (const p of entry.pages ?? []) collect(p)
-    if (entry.openapi?.directory) slugs.push(`${entry.openapi.directory}/_`)
-
-    if (slugs.length === 0) return fallback
-
-    const parts = slugs.map(s => s.split("/"))
-    const minLen = Math.min(...parts.map(p => p.length - 1))
-    const prefix = []
-    for (let i = 0; i < minLen; i++) {
-      const segment = parts[0][i]
-      if (parts.every(p => p[i] === segment)) prefix.push(segment)
-      else break
-    }
-    return prefix.join("/") || fallback
-  }
-
-  for (const tab of navTabs) walk(tab.pages ?? [])
-
-  return dirs
-}
-
-async function appendMissingChildren(metaDirs) {
-  // Walk the filesystem and ensure every .mdx file / subdirectory shows up in
-  // its parent meta.json. Missing entries get appended in alphabetical order.
-  async function walk(dir) {
-    const abs = path.join(CONTENT_OUT, dir)
+  async function walk(root, rel) {
     let entries
     try {
-      entries = await fs.readdir(abs, {withFileTypes: true})
+      entries = await fs.readdir(path.join(root, rel), {withFileTypes: true})
     } catch {
       return
     }
-    const fsFiles = []
-    const fsSubdirs = []
+    entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
     for (const entry of entries) {
-      if (entry.name === "meta.json") continue
+      if (entry.name.startsWith(".")) continue
+      const childRel = rel ? path.posix.join(rel, entry.name) : entry.name
       if (entry.isDirectory()) {
-        fsSubdirs.push(entry.name)
-        await walk(path.posix.join(dir, entry.name))
-      } else if (entry.name.endsWith(".mdx")) {
-        fsFiles.push(entry.name.replace(/\.mdx$/, ""))
+        await walk(root, childRel)
+      } else if (entry.isFile() && entry.name.endsWith(".mdx")) {
+        const abs = path.join(root, childRel)
+        const raw = await fs.readFile(abs, "utf8")
+        const {id} = parseFrontmatter(raw)
+        if (!id) {
+          const newId = childRel.replace(/\.mdx$/, "")
+          const next = stampId(raw, newId)
+          if (next !== raw) {
+            await writeFile(abs, next)
+            stamped.push(newId)
+          }
+        }
       }
     }
-
-    if (fsFiles.length === 0 && fsSubdirs.length === 0) return
-    if (!metaDirs.has(dir)) metaDirs.set(dir, {pages: []})
-
-    const meta = metaDirs.get(dir)
-    const existing = new Set(meta.pages)
-
-    for (const name of [...fsFiles, ...fsSubdirs].sort()) {
-      if (!existing.has(name)) meta.pages.push(name)
-    }
   }
-
-  await walk("")
+  return stamped
 }
 
-async function emitMetaTree(navTabs) {
-  const metaDirs = buildMetaTreeFromNav(navTabs)
-  await appendMissingChildren(metaDirs)
-
-  for (const [dir, info] of metaDirs) {
-    if (info.pages.length === 0) continue
-    const meta = {
-      title: info.name,
-      icon: info.icon,
-      defaultOpen: info.expanded ?? false,
-      pages: info.pages,
-    }
-    if (!meta.title) delete meta.title
-    if (!meta.icon) delete meta.icon
-    if (!meta.defaultOpen) delete meta.defaultOpen
-
-    const target = path.join(CONTENT_OUT, dir, "meta.json")
-    await writeFile(target, JSON.stringify(meta, null, 2) + "\n")
-  }
-}
-
-async function migrateRedirects(docs) {
-  const entries = (docs.redirects ?? []).map(r => ({
+/**
+ * @param {{redirects?: Array<{source: string, destination: string, permanent?: boolean}>}} docsJson
+ */
+async function seedRedirects(docsJson) {
+  const fromDocsJson = (docsJson.redirects ?? []).map(r => ({
     source: r.source,
     destination: r.destination,
     permanent: r.permanent ?? true,
   }))
 
-  const body = `/**
- * Auto-generated from \`docs.json\` redirects on ${new Date().toISOString()}.
- * Re-run \`node next/scripts/migrate-content.mjs\` to regenerate.
- *
- * @type {Array<{source: string, destination: string, permanent?: boolean}>}
- */
-export const redirects = ${JSON.stringify(entries, null, 2)}
-`
-  await writeFile(REDIRECTS_OUT, body)
-  console.log(`  redirects: ${entries.length} entries`)
+  // Preserve any editor-appended entries already in redirects.mjs.
+  const existing = await readRedirects()
+  const merged = [...fromDocsJson, ...existing]
+  await writeRedirects(merged)
+  console.log(
+    `  redirects: ${fromDocsJson.length} from docs.json + ${existing.length} editor-added (deduped)`,
+  )
 }
 
 async function main() {
-  console.log(`Migrating Mintlify content from ${REPO_ROOT} → ${path.relative(REPO_ROOT, CONTENT_OUT)}`)
-  if (DRY_RUN) console.log("(dry-run — no files will be written)")
+  console.log(
+    `Migrating Mintlify content from ${REPO_ROOT} -> ${path.relative(REPO_ROOT, CONTENT_ROOT)}`,
+  )
+  if (DRY_RUN) console.log("(dry-run - no files will be written)")
 
-  const docs = await readJson(DOCS_JSON)
+  const docs = await readJson(DOCS_JSON_PATH)
+  const navConfig = await readConfig()
+  if (navConfig) {
+    console.log(`  using navigation.config.json (${navConfig.tabs?.length ?? 0} tabs)`)
+  } else {
+    console.log("  navigation.config.json not present; routing by id == slug")
+  }
 
   const allMdx = await discoverMdxFiles(REPO_ROOT)
   console.log(`  discovered: ${allMdx.length} .mdx files`)
 
   let migrated = 0
+  let moved = 0
+  /** @type {Map<string, MigratedExternal>} */
+  const externals = new Map()
   for (const rel of allMdx) {
     if (rel.startsWith("next/")) {
       log("skip", rel)
       continue
     }
-    const slug = await migrateFile(rel)
-    if (slug) migrated++
+    const result = await migrateFile(rel, navConfig)
+    if (!result) continue
+    if (result.kind === "external") {
+      externals.set(result.id, result)
+      continue
+    }
+    migrated++
+    if (result.currentSlug !== result.id) moved++
   }
-  console.log(`  migrated: ${migrated} pages`)
+  console.log(`  migrated: ${migrated} pages (${moved} routed via config)`)
+  if (externals.size > 0) {
+    console.log(`  external: ${externals.size} page(s) with url: frontmatter (not written to content/docs)`)
+  }
 
-  await emitMetaTree(docs.navigation?.tabs ?? [])
-  await migrateRedirects(docs)
+  const backfilled = await backfillIds()
+  if (backfilled.length > 0) {
+    console.log(`  stamped id into ${backfilled.length} existing files lacking one`)
+  }
+
+  if (navConfig && externals.size > 0) {
+    await rewriteExternalPagesAsLinks(navConfig, externals)
+  }
+
+  await seedRedirects(docs)
+}
+
+/**
+ * Walk `navigation.config.json` and replace any `PageRef` whose id is in
+ * `externals` with a `LinkRef` (preserving icon, tag, and array position).
+ * Persists via `writeConfig` only if the tree actually changed.
+ *
+ * @param {import("./nav-config.mjs").NavConfig} config
+ * @param {Map<string, MigratedExternal>} externals
+ */
+async function rewriteExternalPagesAsLinks(config, externals) {
+  let converted = 0
+
+  /** @param {import("./nav-config.mjs").NavEntry[]} entries */
+  function walk(entries) {
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i]
+      if (isGroup(entry)) {
+        walk(entry.pages ?? [])
+        continue
+      }
+      if (isLink(entry)) continue
+      if (!isPage(entry)) continue
+      const ext = externals.get(entry.id)
+      if (!ext) continue
+      /** @type {import("./nav-config.mjs").LinkRef} */
+      const link = {
+        type: "link",
+        name: entry.title ?? ext.title,
+        url: ext.url,
+      }
+      const icon = entry.icon ?? ext.icon
+      if (icon !== undefined) link.icon = icon
+      if (entry.tag !== undefined) link.tag = entry.tag
+      entries[i] = link
+      converted++
+    }
+  }
+
+  for (const tab of config.tabs ?? []) walk(tab.pages ?? [])
+
+  if (converted === 0) return
+  if (DRY_RUN) {
+    log(`[dry-run] would convert ${converted} PageRef -> LinkRef in navigation.config.json`)
+    return
+  }
+  await writeConfig(config)
+  console.log(`  rewrote ${converted} page entr${converted === 1 ? "y" : "ies"} as external link(s) in navigation.config.json`)
 }
 
 main().catch(err => {

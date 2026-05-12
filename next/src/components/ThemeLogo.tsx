@@ -1,6 +1,7 @@
 import Image from "next/image"
-import logoDark from "@/public/logo-dark.svg"
-import logoLight from "@/public/logo-light.svg"
+// import logoDark from "@/public/logo-dark.svg"
+// import logoLight from "@/public/logo-light.svg"
+import logoTon from "@/public/logo.svg"
 import styles from "./ThemeLogo.module.css"
 
 export function ThemeLogo() {
@@ -8,19 +9,21 @@ export function ThemeLogo() {
     <>
       <Image
         alt="TON"
-        src={logoLight}
-        width={100}
-        height={100}
-        sizes="100px"
+        // src={logoLight}
+        src={logoTon}
+        width={80}
+        height={80}
+        sizes="80px"
         className={`h-8 w-auto ${styles.lightLogo}`}
         aria-label="TON"
       />
       <Image
         alt="TON"
-        src={logoDark}
-        width={100}
-        height={100}
-        sizes="100px"
+        // src={logoDark}
+        src={logoTon}
+        width={80}
+        height={80}
+        sizes="80px"
         className={`h-8 w-auto ${styles.darkLogo}`}
         aria-label="TON"
       />
