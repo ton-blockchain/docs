@@ -3239,8 +3239,7 @@ TON blockchain network identifier.
 
 #### NetworkAdapters
 
-Multi-network configuration keyed by chain ID
-Example: \{ [Network.mainnet().chainId]: \{ apiClient: \{...\} \}, [Network.testnet().chainId]: \{ apiClient: \{...\} \} \}
+Multi-network configuration keyed by chain ID — each entry maps a chain ID (e.g. `Network.mainnet().chainId`) to its own [`NetworkConfig`](#networkconfig) carrying the api-client setup.
 
 ```ts
 type NetworkAdapters = {
