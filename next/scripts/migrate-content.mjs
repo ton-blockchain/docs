@@ -12,7 +12,11 @@
  *   4. Normalises frontmatter, removes legacy `import { ... } from "/snippets/..."`
  *      lines, translates `:::admonition` blocks to JSX `<Aside>` components.
  *   5. Writes the file to `next/content/docs/<currentSlug>.mdx`.
- *   6. Seeds `next/redirects.mjs` from the legacy `redirects` block in docs.json
+ *   6. Mirrors referenced asset folders (`resources/{images,logo,pdfs,tvm,videos}/`)
+ *      from the repo root into `next/public/resources/` so Next.js can serve
+ *      `/resources/...` URLs statically. Deterministic: each destination
+ *      subfolder is wiped and re-copied on every run.
+ *   7. Seeds `next/redirects.mjs` from the legacy `redirects` block in docs.json
  *      (idempotent, deduplicated, sorted).
  *
  * meta.json files are no longer this script's responsibility — they are owned
@@ -23,6 +27,7 @@ import path from "node:path"
 import {
   CONTENT_ROOT,
   DOCS_JSON_PATH,
+  NEXT_ROOT,
   REPO_ROOT,
   getFrontmatterField,
   isGroup,
@@ -36,6 +41,16 @@ import {
   writeConfig,
   writeRedirects,
 } from "./nav-config.mjs"
+
+/**
+ * Subfolders under `<repo>/resources/` that are referenced from MDX (via
+ * `/resources/<sub>/...` paths). These are mirrored into
+ * `<repo>/next/public/resources/<sub>/` so Next.js can serve them statically.
+ *
+ * Tooling-only subfolders such as `dictionaries/` and `grammars/` are
+ * intentionally excluded.
+ */
+const PUBLIC_ASSET_SUBDIRS = ["images", "logo", "pdfs", "tvm", "videos"]
 
 const ROOT_FILES = new Set([
   "index", // becomes the Next.js landing route, not a docs page
@@ -292,6 +307,44 @@ async function backfillIds() {
 }
 
 /**
+ * Mirror referenced asset folders from `<repo>/resources/<sub>/` into
+ * `<repo>/next/public/resources/<sub>/`. The mirror is deterministic and
+ * idempotent: each destination subfolder is wiped, then re-copied byte-for-byte
+ * from upstream. Upstream removals therefore propagate, and re-running the
+ * migration always yields the same tree.
+ *
+ * Only `PUBLIC_ASSET_SUBDIRS` are mirrored; anything else already under
+ * `next/public/` (favicon, og/, logo-*.svg, ...) is left untouched.
+ */
+async function mirrorPublicAssets() {
+  const publicResources = path.join(NEXT_ROOT, "public", "resources")
+  let copied = 0
+  let skipped = 0
+  for (const sub of PUBLIC_ASSET_SUBDIRS) {
+    const src = path.join(REPO_ROOT, "resources", sub)
+    const dest = path.join(publicResources, sub)
+    if (!(await pathExists(src))) {
+      skipped++
+      log(`  skip resources/${sub} (no upstream)`)
+      continue
+    }
+    if (DRY_RUN) {
+      log(`[dry-run] mirror resources/${sub} -> next/public/resources/${sub}`)
+      copied++
+      continue
+    }
+    await fs.rm(dest, {recursive: true, force: true})
+    await fs.mkdir(dest, {recursive: true})
+    await fs.cp(src, dest, {recursive: true})
+    copied++
+  }
+  console.log(
+    `  assets: ${copied} folder(s) mirrored to next/public/resources/` +
+      (skipped ? ` (${skipped} skipped)` : ""),
+  )
+}
+
+/**
  * @param {{redirects?: Array<{source: string, destination: string, permanent?: boolean}>}} docsJson
  */
 async function seedRedirects(docsJson) {
@@ -359,6 +412,7 @@ async function main() {
     await rewriteExternalPagesAsLinks(navConfig, externals)
   }
 
+  await mirrorPublicAssets()
   await seedRedirects(docs)
 }
 
