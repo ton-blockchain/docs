@@ -280,9 +280,16 @@ export function getNavLinks(config) {
         break;
     }
   };
-  // @ts-ignore
-  config.navigation?.pages.forEach(processPage);
-  return links;
+  /** Support both the old navigation format
+   * and the new tabbed format
+   */
+  if (Array.isArray(config.navigation?.pages)) {
+    config.navigation.pages.forEach(processPage);
+  }
+
+  if (Array.isArray(config.navigation?.tabs)) {
+    config.navigation.tabs.forEach(processPage);
+  }
 }
 
 /**
