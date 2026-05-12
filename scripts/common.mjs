@@ -191,6 +191,8 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
         'ecosystem/api/toncenter/v2',
         'ecosystem/api/toncenter/v3',
         'ecosystem/api/toncenter/smc-index',
+        // Fumadocs migration tree — navigation is in next/content/**/meta.json, not docs.json
+        'next',
       ].map((it) => join(dir, it)),
     },
   });
