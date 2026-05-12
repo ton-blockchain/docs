@@ -7,7 +7,7 @@ import { Aside } from '/snippets/aside.jsx';
 
 Providers connect AppKit to external data sources and DeFi services. AppKit uses four provider-related components: the **API client** that reads chain state, the **streaming provider** that delivers live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds staking transactions. Each component is managed by the matching manager on the `AppKit` instance.
 
-A provider is not a wallet and not a connector. The wallet still signs every transaction; the connector still owns the session. A provider is the source of *data* about the chain or about a DeFi protocol, and AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
+A provider is not a wallet and not a connector. The wallet still signs every transaction; the connector still owns the session. A provider is the source of _data_ about the chain or about a DeFi protocol, and AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
 
 | Type               | Use                                                                  | Manager                   |
 | ------------------ | -------------------------------------------------------------------- | ------------------------- |
