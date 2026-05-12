@@ -77,7 +77,7 @@ fun onInternalMessage(in: InMessage) {
 
         UpgradeContract => {
             var storage = lazy Storage.load();
-            assert (in.senderAddress == storage.adminAddress) throw 1111;
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
             if (msg.code != null) {
                 contract.setCodePostponed(msg.code!);
             }
@@ -87,7 +87,7 @@ fun onInternalMessage(in: InMessage) {
         }
 
         else => {
-            // just accept TON
+            // just accept Toncoin
         }
     }
 }
@@ -157,10 +157,10 @@ fun onInternalMessage(in: InMessage) {
         RequestUpgrade => {
             var storage = lazy Storage.load();
 
-            assert (in.senderAddress == storage.adminAddress) throw 100;
-            assert (storage.CurrentRequest == null) throw 101;
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            assert (storage.currentRequest == null) throw 3333;
 
-            storage.CurrentRequest = {
+            storage.currentRequest = {
                 newUpgrade: msg.newUpgrade,
                 timestamp: blockchain.now()
             };
@@ -171,48 +171,48 @@ fun onInternalMessage(in: InMessage) {
         RejectUpgrade => {
             var storage = lazy Storage.load();
 
-            assert (in.senderAddress == storage.adminAddress) throw 100;
-            assert (storage.CurrentRequest != null) throw 201;
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            assert (storage.currentRequest != null) throw 3333;
 
-            storage.CurrentRequest = null;
+            storage.currentRequest = null;
             storage.save();
         }
 
         ApproveUpgrade => {
             var storage = lazy Storage.load();
 
-            assert (in.senderAddress == storage.adminAddress) throw 100;
-            assert (storage.CurrentRequest != null) throw 301;
-            assert (storage.CurrentRequest!.timestamp + storage.timeout < blockchain.now()) throw 302;
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            assert (storage.currentRequest != null) throw 3333;
+            assert (storage.currentRequest!.timestamp + storage.timeout < blockchain.now()) throw 302;
 
-            if (storage.CurrentRequest!.newUpgrade.code != null) {
-                contract.setCodePostponed(storage.CurrentRequest!.newUpgrade.code!);
+            if (storage.currentRequest!.newUpgrade.code != null) {
+                contract.setCodePostponed(storage.currentRequest!.newUpgrade.code!);
             }
 
-            if (storage.CurrentRequest!.newUpgrade.data != null) {
-                contract.setData(storage.CurrentRequest!.newUpgrade.data!);
+            if (storage.currentRequest!.newUpgrade.data != null) {
+                contract.setData(storage.currentRequest!.newUpgrade.data!);
             }
             else {
-                storage.CurrentRequest = null;
+                storage.currentRequest = null;
                 storage.save();
             }
         }
 
         else => {
-            // just accepted tons
+            // just accepted Toncoin
         }
     }
 }
 
 get fun currentRequest() {
     var storage = lazy Storage.load();
-    return storage.CurrentRequest;
+    return storage.currentRequest;
 }
 
 struct Storage {
     adminAddress: address,
     timeout: uint32,
-    CurrentRequest: CurrentRequest?
+    currentRequest: CurrentRequest?
 }
 
 fun Storage.load() {
@@ -271,7 +271,7 @@ type AllowedMessages =
 
 // migration function must have method_id
 @method_id(2121)
-fun hotUpgradeData(additionalData: cell?) { return null; }
+fun hotUpgradeData(additionalData: cell?) { }
 
 fun onInternalMessage(in: InMessage) {
 
@@ -296,7 +296,7 @@ fun onInternalMessage(in: InMessage) {
         }
 
         else => {
-            // just accept TON
+            // just accept Toncoin
         }
     }
 }
@@ -387,7 +387,7 @@ fun onInternalMessage(in: InMessage) {
         }
 
         else => {
-            // just accept TON
+            // just accept Toncoin
         }
     }
 }
