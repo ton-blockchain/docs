@@ -67,6 +67,7 @@ For receipt screens, admin tooling, or order-tracking widgets, subscribe to an a
 
 ```tsx
 import {
+  useBalanceByAddress,
   useWatchBalanceByAddress,
   useWatchTransactionsByAddress,
 } from '@ton/appkit-react';
@@ -80,6 +81,7 @@ export function OrderTracker({ orderAddress }: { orderAddress: string }) {
       }
     },
   });
+  const balance = useBalanceByAddress({ address: orderAddress });
 
   useWatchTransactionsByAddress({
     address: orderAddress,
@@ -90,7 +92,7 @@ export function OrderTracker({ orderAddress }: { orderAddress: string }) {
     },
   });
 
-  return <span>Watching {orderAddress}</span>;
+  return <span>{balance.data ?? '0'} TON</span>;
 }
 ```
 
