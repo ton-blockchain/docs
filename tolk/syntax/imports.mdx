@@ -50,16 +50,17 @@ Techniques to avoid name collisions:
 
 ## Repeated symbols across contracts
 
-When developing multiple contracts, each contract has its own file, compilation target. Contract files do not import one another; therefore, the following declarations do not conflict across different contracts:
-
-- `onInternalMessage` and `onExternalMessage`;
-- `get fun`;
-- other contract entrypoints.
+When developing multiple contracts, each contract has its own file and compilation target. Place a [`contract` declaration](/languages/tolk/features/contract-abi) in every entrypoint file:
 
 ```tolk
-// file: a-contract.tolk
+// file: ContractA.tolk
 import "storage"
 import "errors"
+
+contract ContractA {
+    storage: StorageA
+    incomingMessages: MsgsA
+}
 
 fun onInternalMessage(in: InMessage) {
     // ...
@@ -71,9 +72,15 @@ get fun name() {
 ```
 
 ```tolk
-// file: b-contract.tolk
+// file: ContractB.tolk
 import "storage"
 import "errors"
+import "ContractA"   // brings types from ContractA, but NOT its entrypoints
+
+contract ContractB {
+    storage: StorageB
+    incomingMessages: MsgsB
+}
 
 fun onInternalMessage(in: InMessage) {
     // ...
@@ -84,19 +91,17 @@ get fun name() {
 }
 ```
 
-Get methods conceptually belong to the scope of a specific contract.
+`onInternalMessage`, `onExternalMessage`, and `get fun` belong to a specific contract. When a file declares `contract`, importing it exposes its types and functions but **not** these entrypoints — so `ContractB` can reuse `ContractA`'s storage and messages without any naming conflicts on `onInternalMessage` or get methods.
+
+In addition, when `contract` is present, all entrypoints must live in the same file as the `contract` declaration; importing a file that declares a `get fun` is not allowed.
 
 In a multi-contract project, each contract file typically contains only:
 
+- its `contract` declaration,
 - its entrypoints,
-- optionally, a union of allowed messages,
 - and contract-specific logic.
 
-The remaining codebase is shared.
-
-For instance, a struct `SomeMessage` outgoing for one contract and incoming for another. When one contract deploys another, both must share the storage struct.
-
-As a guideline, group messages, errors, utils, etc. in shared files, and use only minimal declarations inside each `contract.tolk`.
+The remaining codebase — messages, errors, utils, shared storage structs — is split into supplementary files that every contract may `import`.
 
 ## Import path mappings
 

@@ -19,13 +19,15 @@ if (condition) {
 }
 ```
 
-A condition must be a boolean or an integer. If not equals 0, then `true`:
+A condition must be a [`bool`](/languages/tolk/types/booleans). Integers are not implicitly converted — write the comparison explicitly:
 
 ```tolk
-if (someInt) {     // means "someInt != 0"
+if (someInt != 0) {
     // ...
 }
 ```
+
+The same rule applies to `while`, `do while`, ternary, [`assert`](/languages/tolk/syntax/exceptions#assert-statement), and the unary `!` operator. There is no gas overhead — the compiler strips the `!= 0` comparison off whenever it would translate to a redundant TVM instruction.
 
 The body of `if` and `else` must be enclosed in `{ ... }`:
 
@@ -141,6 +143,15 @@ fun demoDoWhile() {
     } while (rand % 2 == 0);
     return rand;  // an odd number
 }
+```
+
+Variables declared inside the body of `do while` are not visible in its condition. Declare them before the loop:
+
+```tolk
+var found: bool;
+do {
+    found = ...
+} while (found);
 ```
 
 `while` is used to iterate over maps:
