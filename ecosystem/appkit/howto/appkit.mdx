@@ -3,38 +3,31 @@ title: "AppKit"
 sidebarTitle: "AppKit"
 ---
 
-AppKit is the application layer for TON wallet interactions. It manages wallet connection state, transaction and signing requests, asset helpers, and DeFi provider integrations for TON web apps.
+TON Connect's **AppKit** is an open-source SDK that integrates web2 and web3 applications with TON. It enables wallet connection, authorization, balance tracking, asset transfers, and data signing.
 
 The framework-independent core lives in `@ton/appkit`. React bindings live in `@ton/appkit-react` and wrap the same actions with hooks.
 
+AppKit prepares requests, tracks application state, and connects your interface to wallets and providers. Wallets still sign transactions and data. Your backend still verifies orders, signatures, and business rules.
+
+## Features
+
+- **TON Connect**: integrates with the standard wallet infrastructure for TON.
+- **Wallet management**: access connected wallets from registered connectors.
+- **Asset support**: work with Toncoin, jettons (USDT and others), and NFTs.
+- **React**: hooks and ready-made UI components for common flows.
+- **DeFi**: swaps, staking, on-ramp, and gasless transfers through registered providers.
+
 ## What it owns
 
-A single `AppKit` instance holds four kinds of state: configured **networks** (mainnet, testnet, and the API client used to read each one), registered **connectors** that route signing requests to wallets, **connected wallets** with one wallet marked as selected, and **managers** for swap, staking, and streaming flows. Anything that reads or changes wallet state should go through this instance.
+A single `AppKit` instance holds configured **networks** (mainnet, testnet, and the API client used to read each), registered **connectors** that route signing requests to wallets, **connected wallets** with one wallet marked as selected, and **managers** for swap, staking, and streaming flows. Anything that reads or changes wallet state should go through this instance.
 
-## Configuration
+## Configuration notes
 
-Create `AppKit` once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs.
+Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Get started → Connectors](/ecosystem/appkit/get-started/connectors) for the constructor walkthrough.
 
-```ts
-import { AppKit, Network, createTonConnectConnector, setDefaultNetwork } from '@ton/appkit';
-
-const appKit = new AppKit({
-  networks: {
-    [Network.mainnet().chainId]: {
-      apiClient: { url: 'https://toncenter.com', key: 'your-api-key' },
-    },
-  },
-  connectors: [
-    createTonConnectConnector({
-      tonConnectOptions: { manifestUrl: 'https://example.com/tonconnect-manifest.json' },
-    }),
-  ],
-});
-
-setDefaultNetwork(appKit, { network: Network.mainnet() });
-```
-
-`setDefaultNetwork` defines the network that connectors should require when a wallet connects. Pass `undefined` to allow wallets from any network. Set `ssr: true` in `AppKitConfig` when constructing AppKit in a server-rendered environment such as Next.js.
+<Note>
+  If `networks` is omitted entirely, AppKit constructs a **mainnet-only** `ApiClientToncenter` with no API key. Fine for quick prototyping; expect rate limits on real workloads. Testnet apps must declare `networks` explicitly.
+</Note>
 
 ## Lifecycle
 
@@ -57,22 +50,11 @@ if (wallet) {
 
 Actions use three patterns. **Queries** read state synchronously or with a one-shot async call (`getSelectedWallet`, `getBalance`). **Watchers** subscribe to changes and return an unsubscribe function (`watchSelectedWallet`, `watchBalance`). **Mutations** trigger side effects and return a promise (`connect`, `transferTon`, `sendTransaction`).
 
+Read actions that target the selected wallet (`getBalance`, `getJettons`, `getNfts`, …) return **`null`** when no wallet is selected. Mutation and signing actions (`transferTon`, `sendTransaction`, `signText`, …) **throw** `Error('Wallet not connected')` in the same case. Check for a selected wallet — or be ready for the throw — before calling a mutation.
+
 ## React integration
 
-`@ton/appkit-react` provides hooks for the main AppKit actions and watchers. Mount `AppKitProvider` once, then call hooks anywhere below it.
-
-```tsx
-import { AppKitProvider } from '@ton/appkit-react';
-import '@ton/appkit-react/styles.css';
-
-function App() {
-  return (
-    <AppKitProvider appKit={appKit}>
-      <Routes />
-    </AppKitProvider>
-  );
-}
-```
+`@ton/appkit-react` provides hooks for the main AppKit actions and watchers. Mount `AppKitProvider` once at the root inside a TanStack `QueryClientProvider`, then call hooks anywhere below it. See [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application) for the full mount.
 
 Most async data hooks return TanStack Query results such as `{ data, isLoading, error, refetch }`, and mutation hooks return `{ mutate, mutateAsync, isPending, error }`. Watch hooks such as `useWatchBalance` return `void` and keep the related query cache fresh while mounted. Wallet state hooks read AppKit's local store directly: `useSelectedWallet()` returns `[wallet, setWalletId]`, while `useConnectedWallets()` and `useConnectors()` return arrays.
 
