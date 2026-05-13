@@ -15,7 +15,7 @@ The `StreamingManager` coordinates providers by `chainId`. A streaming provider 
 
 A subscription belongs to the consumer that created it. Balance, jetton, transaction, and combined watches all return an unsubscribe function, and that function is the app's handle for stopping updates when a component unmounts or a flow ends.
 
-When the underlying transport drops and reconnects, the SDK does not replay events from the gap. Updates resume from the provider's current view of the chain, so any intermediate transitions on a watched address are lost. The subscription list itself survives the cycle — `streamingManager.disconnect()` and `streamingManager.connect()` close and reopen the transport without removing your watches — but a flow that needs certainty should reconcile with a point-in-time read after a reconnect.
+When the underlying transport drops and reconnects, the SDK does not replay events from the gap. Updates resume from the provider's current view of the chain, so any intermediate transitions on a watched address are lost.
 
 ## Before you begin
 
@@ -110,34 +110,6 @@ export function PortfolioWatcher() {
     },
   });
   return null;
-}
-```
-
-### Conditional watching
-
-When a watch should only run while some UI is active (a panel expanded, a modal open, a screen mounted), call `useWatchTransactionsByAddress` with the address as a parameter and let the hook handle the lifecycle. The hook no-ops when `address` is falsy and re-subscribes when it changes, so passing `undefined` is the "off" switch.
-
-```tsx
-import { useState } from 'react';
-import { useWatchTransactionsByAddress } from '@ton/appkit-react';
-
-export function AddressActivity({ address }: { address: string }) {
-  const [expanded, setExpanded] = useState(false);
-  const [count, setCount] = useState(0);
-
-  useWatchTransactionsByAddress({
-    address: expanded ? address : undefined,
-    onChange: (update) => setCount((n) => n + update.transactions.length),
-  });
-
-  return (
-    <div>
-      <button onClick={() => setExpanded((v) => !v)}>
-        {expanded ? 'Pause activity' : 'Show live activity'}
-      </button>
-      {expanded && <span>{count} transactions seen</span>}
-    </div>
-  );
 }
 ```
 
