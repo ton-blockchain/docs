@@ -1222,18 +1222,18 @@ console.log('Available Staking Providers:', providers);
 
 Quote a stake or unstake — given the amount, direction and target asset, returns the rate, expected output and provider metadata needed to call [`buildStakeTransaction`](#buildstaketransaction).
 
-| Parameter                 | Type                                                                    | Description                                                                                                                            |
-| ------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `appKit`\*                | [`AppKit`](#appkit)                                                     | Runtime instance.                                                                                                                      |
-| `options`\*               | [`GetStakingQuoteOptions`](#getstakingquoteoptions)                     | Quote parameters and optional provider override.                                                                                       |
-| `options.direction`\*     | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                              |
-| `options.amount`\*        | `string`                                                                | Amount of tokens to stake or unstake                                                                                                   |
-| `options.userAddress`     | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code>     | Address of the user                                                                                                                    |
-| `options.network`         | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                          |
-| `options.unstakeMode`     | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Requested mode of unstaking                                                                                                            |
-| `options.isReversed`      | `boolean`                                                               | If true, for unstake requests the amount is specified in the staking coin (e.g. TON) instead of the Liquid Staking Token (e.g. tsTON). |
-| `options.providerOptions` | `TProviderOptions = unknown`                                            | Provider-specific options                                                                                                              |
-| `options.providerId`      | `string`                                                                | Provider to quote against. Defaults to the registered default staking provider.                                                        |
+| Parameter                 | Type                                                                    | Description                                                                                                                                                                                                                                                             |
+| ------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `appKit`\*                | [`AppKit`](#appkit)                                                     | Runtime instance.                                                                                                                                                                                                                                                       |
+| `options`\*               | [`GetStakingQuoteOptions`](#getstakingquoteoptions)                     | Quote parameters and optional provider override.                                                                                                                                                                                                                        |
+| `options.direction`\*     | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                                                                                                                                                               |
+| `options.amount`\*        | `string`                                                                | Amount of tokens to stake or unstake                                                                                                                                                                                                                                    |
+| `options.userAddress`     | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code>     | Address of the user                                                                                                                                                                                                                                                     |
+| `options.network`         | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                                                                                                                                                           |
+| `options.unstakeMode`     | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Unstake-timing mode the quote should target — see [`UnstakeMode`](#unstakemode) for the supported flavours (`'INSTANT'`, `'WHEN_AVAILABLE'`, `'ROUND_END'`). Only meaningful when `direction === 'unstake'` and the provider lists the mode in `supportedUnstakeModes`. |
+| `options.isReversed`      | `boolean`                                                               | If true, for unstake requests the amount is specified in the staking coin (e.g. TON) instead of the Liquid Staking Token (e.g. tsTON).                                                                                                                                  |
+| `options.providerOptions` | `TProviderOptions = unknown`                                            | Provider-specific options                                                                                                                                                                                                                                               |
+| `options.providerId`      | `string`                                                                | Provider to quote against. Defaults to the registered default staking provider.                                                                                                                                                                                         |
 
 Returns: <code><a href="#getstakingquotereturntype">GetStakingQuoteReturnType</a></code> — Quote with pricing details and provider metadata.
 
@@ -1277,16 +1277,16 @@ Returns: <code><a href="#watchstakingprovidersreturntype">WatchStakingProvidersR
 
 Build a [`TransactionRequest`](#transactionrequest) that executes a swap previously quoted by [`getSwapQuote`](#getswapquote) — returns it without sending so the UI can inspect or batch before signing.
 
-| Parameter                    | Type                                                                | Description                                                     |
-| ---------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `appKit`\*                   | [`AppKit`](#appkit)                                                 | Runtime instance.                                               |
-| `options`\*                  | [`BuildSwapTransactionOptions`](#buildswaptransactionoptions)       | Quote and provider-specific options.                            |
-| `options.quote`\*            | <code><a href="#swapquote">SwapQuote</a></code>                     | The swap quote based on which the transaction is built          |
-| `options.userAddress`\*      | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address of the user performing the swap                         |
-| `options.destinationAddress` | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address to receive the swapped tokens (defaults to userAddress) |
-| `options.slippageBps`        | `number`                                                            | Slippage tolerance in basis points (1 bp = 0.01%)               |
-| `options.deadline`           | `number`                                                            | Transaction deadline in unix timestamp                          |
-| `options.providerOptions`    | `TProviderOptions = unknown`                                        | Provider-specific options                                       |
+| Parameter                    | Type                                                                | Description                                                                        |
+| ---------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `appKit`\*                   | [`AppKit`](#appkit)                                                 | Runtime instance.                                                                  |
+| `options`\*                  | [`BuildSwapTransactionOptions`](#buildswaptransactionoptions)       | Quote and provider-specific options.                                               |
+| `options.quote`\*            | <code><a href="#swapquote">SwapQuote</a></code>                     | The swap quote based on which the transaction is built                             |
+| `options.userAddress`\*      | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address of the user performing the swap                                            |
+| `options.destinationAddress` | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address to receive the swapped tokens (defaults to userAddress)                    |
+| `options.slippageBps`        | `number`                                                            | Slippage tolerance in basis points (1 bp = 0.01%)                                  |
+| `options.deadline`           | `number`                                                            | Unix timestamp (in seconds) after which the swap transaction must not be executed. |
+| `options.providerOptions`    | `TProviderOptions = unknown`                                        | Provider-specific options                                                          |
 
 Returns: <code><a href="#buildswaptransactionreturntype">BuildSwapTransactionReturnType</a></code> — Transaction request ready to pass to `sendTransaction`.
 
@@ -1484,10 +1484,10 @@ console.log('Transaction Request:', tx);
 
 Read the status of a sent transaction by its BoC or normalized hash. In TON a single external message triggers a tree of internal messages — the transaction is `'completed'` only when the entire trace finishes. Until then it stays `'pending'`. Throws when neither `boc` nor `normalizedHash` is provided.
 
-| Parameter      | Type                                                                | Description                                               |
-| -------------- | ------------------------------------------------------------------- | --------------------------------------------------------- |
-| `appKit`\*     | [`AppKit`](#appkit)                                                 | Runtime instance.                                         |
-| `parameters`\* | [`GetTransactionStatusParameters`](#gettransactionstatusparameters) | `boc` xor `normalizedHash` and optional network override. |
+| Parameter      | Type                                                                | Description                                                                  |
+| -------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `appKit`\*     | [`AppKit`](#appkit)                                                 | Runtime instance.                                                            |
+| `parameters`\* | [`GetTransactionStatusParameters`](#gettransactionstatusparameters) | Exactly one of `boc` or `normalizedHash`, plus an optional network override. |
 
 Returns: <code>Promise\<<a href="#gettransactionstatusreturntype">GetTransactionStatusReturnType</a>></code> — Status response with current state, completed/total message counts and trace details.
 
@@ -1695,9 +1695,15 @@ const unsubscribe = watchSelectedWallet(appKit, {
 
 Constructor: `new ApiClientTonApi(config)`
 
-| Parameter | Type                  | Description                                                                                                         |
-| --------- | --------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `config`  | `BaseApiClientConfig` | TonAPI client config — endpoint URL and API key. Defaults to TonAPI mainnet/testnet URLs based on `config.network`. |
+| Parameter                   | Type                                          | Description                                                                                                         |
+| --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `config`                    | [`BaseApiClientConfig`](#baseapiclientconfig) | TonAPI client config — endpoint URL and API key. Defaults to TonAPI mainnet/testnet URLs based on `config.network`. |
+| `config.endpoint`           | `string`                                      | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.                |
+| `config.apiKey`             | `string`                                      | API key forwarded to the indexer for higher rate limits.                                                            |
+| `config.timeout`            | `number`                                      | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                         |
+| `config.fetchApi`           | `typeof fetch`                                | Custom `fetch` implementation. Defaults to the global `fetch`.                                                      |
+| `config.network`            | <code><a href="#network">Network</a></code>   | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.          |
+| `config.disableNetworkSend` | `boolean`                                     | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests.         |
 
 #### ApiClientToncenter
 
@@ -1705,9 +1711,16 @@ Constructor: `new ApiClientTonApi(config)`
 
 Constructor: `new ApiClientToncenter(config)`
 
-| Parameter | Type                                                        | Description                                                                                                                                               |
-| --------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config`  | <code><a href="#apiclientconfig">ApiClientConfig</a></code> | Toncenter client config — endpoint URL, API key and optional DNS resolver override. Defaults to mainnet/testnet Toncenter URLs based on `config.network`. |
+| Parameter                   | Type                                                    | Description                                                                                                                                               |
+| --------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config`                    | [`ApiClientToncenterConfig`](#apiclienttoncenterconfig) | Toncenter client config — endpoint URL, API key and optional DNS resolver override. Defaults to mainnet/testnet Toncenter URLs based on `config.network`. |
+| `config.dnsResolver`        | `string`                                                | Override the contract address used to resolve TON DNS records. Defaults to the network's standard root resolver.                                          |
+| `config.endpoint`           | `string`                                                | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.                                                      |
+| `config.apiKey`             | `string`                                                | API key forwarded to the indexer for higher rate limits.                                                                                                  |
+| `config.timeout`            | `number`                                                | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                                                               |
+| `config.fetchApi`           | `typeof fetch`                                          | Custom `fetch` implementation. Defaults to the global `fetch`.                                                                                            |
+| `config.network`            | <code><a href="#network">Network</a></code>             | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.                                                |
+| `config.disableNetworkSend` | `boolean`                                               | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests.                                               |
 
 ### Core
 
@@ -2112,7 +2125,7 @@ Single entry inside an [`AddressBook`](#addressbook) — pairs the user-friendly
 
 #### ApiClient
 
-Indexer/RPC client interface used by AppKit to read on-chain state — balance, jettons, NFTs, masterchain seqno, etc. Each [`Network`](#network) resolves to its own `ApiClient` via [`AppKitNetworkManager`](#appkitnetworkmanager). Apps usually pull one through [`getApiClient`](#getapiclient) rather than constructing it directly.
+Indexer/RPC client interface used by AppKit to read on-chain state — balance, jettons, NFTs, etc. Each [`Network`](#network) resolves to its own `ApiClient` via [`AppKitNetworkManager`](#appkitnetworkmanager). Apps usually pull one through [`getApiClient`](#getapiclient) rather than constructing it directly.
 
 | Field                      | Type                                                                                                                                                                 | Description                                                                                                                                |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -2143,6 +2156,33 @@ Configuration accepted by [`NetworkConfig`](#networkconfig)'s `apiClient` — pi
 | ----- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `url` | `string` | Base URL of the indexer endpoint. Defaults to `'https://toncenter.com'` for mainnet, `'https://testnet.toncenter.com'` for testnet. |
 | `key` | `string` | API key forwarded to the indexer for higher rate limits.                                                                            |
+
+#### ApiClientToncenterConfig
+
+Configuration accepted by [`ApiClientToncenter`](#apiclienttoncenter) — endpoint, API key, request timeout, custom `fetch`, target network, and optional DNS-resolver override.
+
+| Field                | Type                                        | Description                                                                                                      |
+| -------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `dnsResolver`        | `string`                                    | Override the contract address used to resolve TON DNS records. Defaults to the network's standard root resolver. |
+| `endpoint`           | `string`                                    | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.             |
+| `apiKey`             | `string`                                    | API key forwarded to the indexer for higher rate limits.                                                         |
+| `timeout`            | `number`                                    | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                      |
+| `fetchApi`           | `typeof fetch`                              | Custom `fetch` implementation. Defaults to the global `fetch`.                                                   |
+| `network`            | <code><a href="#network">Network</a></code> | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.       |
+| `disableNetworkSend` | `boolean`                                   | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests.      |
+
+#### BaseApiClientConfig
+
+Configuration shared by every [`ApiClient`](#apiclient) subclass — endpoint, API key, request timeout, custom `fetch`, target network and a `disableNetworkSend` dev toggle. Accepted directly by [`ApiClientTonApi`](#apiclienttonapi); extended by [`ApiClientToncenterConfig`](#apiclienttoncenterconfig).
+
+| Field                | Type                                        | Description                                                                                                 |
+| -------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `endpoint`           | `string`                                    | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.        |
+| `apiKey`             | `string`                                    | API key forwarded to the indexer for higher rate limits.                                                    |
+| `timeout`            | `number`                                    | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                 |
+| `fetchApi`           | `typeof fetch`                              | Custom `fetch` implementation. Defaults to the global `fetch`.                                              |
+| `network`            | <code><a href="#network">Network</a></code> | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.  |
+| `disableNetworkSend` | `boolean`                                   | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests. |
 
 #### GetApiClientOptions
 
@@ -2380,45 +2420,45 @@ type AppKitEmitter = EventEmitter<AppKitEvents>;
 
 Map of every event name AppKit can emit to its payload type, used to type listeners on [`AppKitEmitter`](#appkitemitter).
 
-| Field                         | Type                                                                                      | Description                                                                                                                           |
-| ----------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `connector:added`\*           | <code><a href="#connectoraddedpayload">ConnectorAddedPayload</a></code>                   | Fired by [`addConnector`](#addconnector) when a connector is registered with AppKit.                                                  |
-| `connector:removed`\*         | <code><a href="#connectorremovedpayload">ConnectorRemovedPayload</a></code>               | Fired by `removeConnector` when a connector is unregistered from AppKit.                                                              |
-| `connector:wallets-updated`\* | <code><a href="#connectorwalletsupdatedpayload">ConnectorWalletsUpdatedPayload</a></code> | Fired by a connector whenever its connected-wallets list changes (connect, disconnect, or account switch inside the wallet).          |
-| `wallets:updated`\*           | <code>\{ wallets: <a href="#walletinterface">WalletInterface</a>\[] }</code>              | Fired by AppKit's wallet manager after re-aggregating connectors — `wallets` is the full current set.                                 |
-| `wallets:selection-changed`\* | `{ walletId: string \| null }`                                                            | Fired when the selected wallet changes — `walletId` is the new selection, or `null` when cleared.                                     |
-| `networks:updated`\*          | `Record<string, never>`                                                                   | Fired by the network manager when a network's API client is registered or replaced via `setClient`.                                   |
-| `networks:default-changed`\*  | <code><a href="#defaultnetworkchangedpayload">DefaultNetworkChangedPayload</a></code>     | Fired by [`setDefaultNetwork`](#setdefaultnetwork) — carries the new default network, or `undefined` when the constraint was cleared. |
-| `streaming:balance-update`\*  | <code><a href="#balanceupdate">BalanceUpdate</a></code>                                   | Fired by a streaming provider when a watched address's TON balance changes.                                                           |
-| `streaming:transactions`\*    | <code><a href="#transactionsupdate">TransactionsUpdate</a></code>                         | Fired by a streaming provider when new transactions land for a watched address.                                                       |
-| `streaming:jettons-update`\*  | <code><a href="#jettonupdate">JettonUpdate</a></code>                                     | Fired by a streaming provider when a watched address's jetton holdings change.                                                        |
-| `provider:registered`\*       | <code><a href="#baseproviderupdate">BaseProviderUpdate</a></code>                         | Fired by a DeFi manager when a provider is registered through it (carries the provider's id and kind).                                |
-| `provider:default-changed`\*  | <code><a href="#baseproviderupdate">BaseProviderUpdate</a></code>                         | Fired by a DeFi manager when its default provider is set or cleared (carries the new default's id and kind).                          |
+| Field                         | Type                                                                                      | Description                                                                                                                                      |
+| ----------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `connector:added`\*           | <code><a href="#connectoraddedpayload">ConnectorAddedPayload</a></code>                   | Fired by [`addConnector`](#addconnector) when a connector is registered with AppKit.                                                             |
+| `connector:removed`\*         | <code><a href="#connectorremovedpayload">ConnectorRemovedPayload</a></code>               | Fired when a connector is unregistered from AppKit — typically by calling the unregister function returned from [`addConnector`](#addconnector). |
+| `connector:wallets-updated`\* | <code><a href="#connectorwalletsupdatedpayload">ConnectorWalletsUpdatedPayload</a></code> | Fired by a connector whenever its connected-wallets list changes (connect, disconnect, or account switch inside the wallet).                     |
+| `wallets:updated`\*           | <code>\{ wallets: <a href="#walletinterface">WalletInterface</a>\[] }</code>              | Fired by AppKit's wallet manager after re-aggregating connectors — `wallets` is the full current set.                                            |
+| `wallets:selection-changed`\* | `{ walletId: string \| null }`                                                            | Fired when the selected wallet changes — `walletId` is the new selection, or `null` when cleared.                                                |
+| `networks:updated`\*          | `Record<string, never>`                                                                   | Fired by the network manager when a network's API client is registered or replaced via `setClient`.                                              |
+| `networks:default-changed`\*  | <code><a href="#defaultnetworkchangedpayload">DefaultNetworkChangedPayload</a></code>     | Fired by [`setDefaultNetwork`](#setdefaultnetwork) — carries the new default network, or `undefined` when the constraint was cleared.            |
+| `streaming:balance-update`\*  | <code><a href="#balanceupdate">BalanceUpdate</a></code>                                   | Fired by a streaming provider when a watched address's TON balance changes.                                                                      |
+| `streaming:transactions`\*    | <code><a href="#transactionsupdate">TransactionsUpdate</a></code>                         | Fired by a streaming provider when new transactions land for a watched address.                                                                  |
+| `streaming:jettons-update`\*  | <code><a href="#jettonupdate">JettonUpdate</a></code>                                     | Fired by a streaming provider when a watched address's jetton holdings change.                                                                   |
+| `provider:registered`\*       | <code><a href="#baseproviderupdate">BaseProviderUpdate</a></code>                         | Fired by a DeFi manager when a provider is registered through it (carries the provider's id and kind).                                           |
+| `provider:default-changed`\*  | <code><a href="#baseproviderupdate">BaseProviderUpdate</a></code>                         | Fired by a DeFi manager when its default provider is set or cleared (carries the new default's id and kind).                                     |
 
 #### BaseProviderUpdate
 
 Payload of `provider:registered` and `provider:default-changed` events — carries the affected provider's id and kind.
 
-| Field          | Type     | Description      |
-| -------------- | -------- | ---------------- |
-| `providerId`\* | `string` | _TODO: describe_ |
-| `type`\*       | `string` | _TODO: describe_ |
+| Field          | Type     | Description                                                                                                               |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `providerId`\* | `string` | Stable id of the affected provider — same as the `providerId` it was registered with.                                     |
+| `type`\*       | `string` | Provider-kind discriminator (e.g., `'swap'`, `'staking'`, `'onramp'`, `'crypto-onramp'`) — same as the provider's `type`. |
 
 #### ConnectorAddedPayload
 
 Payload of `connector:added` events — the connector that was just registered.
 
-| Field         | Type                      | Description                  |
-| ------------- | ------------------------- | ---------------------------- |
-| `connector`\* | [`Connector`](#connector) | just registered with AppKit. |
+| Field         | Type                                            | Description                                                         |
+| ------------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| `connector`\* | <code><a href="#connector">Connector</a></code> | The [`Connector`](#connector) that was just registered with AppKit. |
 
 #### ConnectorRemovedPayload
 
 Payload of `connector:removed` events — the connector that was just unregistered.
 
-| Field         | Type                      | Description                                                        |
-| ------------- | ------------------------- | ------------------------------------------------------------------ |
-| `connector`\* | [`Connector`](#connector) | just unregistered from AppKit (already torn down via `destroy()`). |
+| Field         | Type                                            | Description                                                                                               |
+| ------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `connector`\* | <code><a href="#connector">Connector</a></code> | The [`Connector`](#connector) that was just unregistered from AppKit (already torn down via `destroy()`). |
 
 #### ConnectorWalletsUpdatedPayload
 
@@ -2502,7 +2542,7 @@ type CreateCryptoOnrampDepositReturnType = Promise<CryptoOnrampDeposit>;
 Deposit details returned by a crypto onramp provider.
 
 The user must send `amount` of `sourceCurrencyAddress` to `address` on `sourceChain`
-to complete the onramp. The provider then delivers the target crypto to the \* user's TON address.
+to complete the onramp. The provider then delivers the target crypto to the user's TON address.
 
 | Field                     | Type     | Description                                                            |
 | ------------------------- | -------- | ---------------------------------------------------------------------- |
@@ -2928,7 +2968,7 @@ Fungible TEP-74 token held in the user's TON wallet — carries the master contr
 | `decimalsNumber`  | `number`                                                            | The number of decimal places used by the token                                                        |
 | `isVerified`\*    | `boolean`                                                           | Indicates if the jetton is verified                                                                   |
 | `prices`\*        | `JettonPrice[]`                                                     | Current prices of the jetton in various currencies                                                    |
-| `extra`           | `{         [key: string]: unknown;     }`                           | Additional arbitrary data related to the jetton                                                       |
+| `extra`           | `{ [key: string]: unknown; }`                                       | Additional arbitrary data related to the jetton                                                       |
 
 #### JettonInfo
 
@@ -3128,7 +3168,7 @@ Non-fungible TEP-62 token held in the user's TON wallet — carries the contract
 | `ownerAddress`           | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Current owner address of the NFT                                               |
 | `realOwnerAddress`       | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Real owner address when NFT is on sale (sale contract becomes temporary owner) |
 | `saleContractAddress`    | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address of the sale contract, if the NFT is listed for sale                    |
-| `extra`                  | `{         [key: string]: unknown;     }`                           | Additional arbitrary data related to the NFT.                                  |
+| `extra`                  | `{ [key: string]: unknown; }`                                       | Additional arbitrary data related to the NFT.                                  |
 
 #### NFTAttribute
 
@@ -3154,7 +3194,7 @@ NFT collection (TEP-62) — surfaced as [`NFT`](#nft)'s `collection` and carries
 | `codeHash`      | <code><a href="#hex">Hex</a></code>                                 | The hash of the collection's smart contract code                 |
 | `dataHash`      | <code><a href="#hex">Hex</a></code>                                 | The hash of the collection's data in the blockchain              |
 | `ownerAddress`  | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | The blockchain address of the collection owner                   |
-| `extra`         | `{         [key: string]: unknown;     }`                           | Additional arbitrary data related to the NFT collection          |
+| `extra`         | `{ [key: string]: unknown; }`                                       | Additional arbitrary data related to the NFT collection          |
 
 #### NFTsResponse
 
@@ -3277,18 +3317,18 @@ type SetDefaultNetworkReturnType = void;
 
 Walletkit-side options shape consumed by [`KitNetworkManager`](#kitnetworkmanager)'s constructor — chiefly the `networks` map keyed by chain ID. [`AppKit`](#appkit) constructs the manager for you, so apps rarely instantiate this directly.
 
-| Field            | Type                                                                                          | Description                                                                                             |
-| ---------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `walletManifest` | `WalletInfo`                                                                                  | TonConnect wallet manifest published by the dApp. Required for the wallet to recognize the integration. |
-| `deviceInfo`     | `DeviceInfo`                                                                                  | Device fingerprint forwarded with TonConnect requests so wallets can recognize the host.                |
-| `sessionManager` | `TONConnectSessionManager`                                                                    | Custom session manager implementation. If not provided, TONConnectStoredSessionManager will be used.    |
-| `networks`       | <code><a href="#networkadapters">NetworkAdapters</a></code>                                   | Network configuration                                                                                   |
-| `bridge`         | `BridgeConfig`                                                                                | Bridge settings                                                                                         |
-| `storage`        | `StorageConfig \| StorageAdapter`                                                             | Storage settings                                                                                        |
-| `validation`     | `{         strictMode?: boolean;         allowUnknownWalletVersions?: boolean;     }`         | Validation settings                                                                                     |
-| `eventProcessor` | `EventProcessorConfig`                                                                        | Event processor settings                                                                                |
-| `analytics`      | `AnalyticsManagerOptions & {         enabled?: boolean;     }`                                | Analytics manager options merged with an `enabled` toggle. Off by default.                              |
-| `dev`            | `{         disableNetworkSend?: boolean;         disableManifestDomainCheck?: boolean;     }` | Diagnostic toggles useful during local development. Should not be set in production builds.             |
+| Field            | Type                                                                      | Description                                                                                             |
+| ---------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `walletManifest` | `WalletInfo`                                                              | TonConnect wallet manifest published by the dApp. Required for the wallet to recognize the integration. |
+| `deviceInfo`     | `DeviceInfo`                                                              | Device fingerprint forwarded with TonConnect requests so wallets can recognize the host.                |
+| `sessionManager` | `TONConnectSessionManager`                                                | Custom session manager implementation. If not provided, TONConnectStoredSessionManager will be used.    |
+| `networks`       | <code><a href="#networkadapters">NetworkAdapters</a></code>               | Network configuration                                                                                   |
+| `bridge`         | `BridgeConfig`                                                            | Bridge settings                                                                                         |
+| `storage`        | `StorageConfig \| StorageAdapter`                                         | Storage settings                                                                                        |
+| `validation`     | `{ strictMode?: boolean; allowUnknownWalletVersions?: boolean; }`         | Validation settings                                                                                     |
+| `eventProcessor` | `EventProcessorConfig`                                                    | Event processor settings                                                                                |
+| `analytics`      | `AnalyticsManagerOptions & { enabled?: boolean; }`                        | Analytics manager options merged with an `enabled` toggle. Off by default.                              |
+| `dev`            | `{ disableNetworkSend?: boolean; disableManifestDomainCheck?: boolean; }` | Diagnostic toggles useful during local development. Should not be set in production builds.             |
 
 #### WatchDefaultNetworkParameters
 
@@ -3609,16 +3649,16 @@ type GetStakingProvidersReturnType = StakingProviderInterface[];
 
 Options for [`getStakingQuote`](#getstakingquote) — extends [`StakingQuoteParams`](#stakingquoteparams) with an optional provider override.
 
-| Field             | Type                                                                    | Description                                                                                                                            |
-| ----------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `direction`\*     | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                              |
-| `amount`\*        | `string`                                                                | Amount of tokens to stake or unstake                                                                                                   |
-| `userAddress`     | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code>     | Address of the user                                                                                                                    |
-| `network`         | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                          |
-| `unstakeMode`     | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Requested mode of unstaking                                                                                                            |
-| `isReversed`      | `boolean`                                                               | If true, for unstake requests the amount is specified in the staking coin (e.g. TON) instead of the Liquid Staking Token (e.g. tsTON). |
-| `providerOptions` | `TProviderOptions = unknown`                                            | Provider-specific options                                                                                                              |
-| `providerId`      | `string`                                                                | Provider to quote against. Defaults to the registered default staking provider.                                                        |
+| Field             | Type                                                                    | Description                                                                                                                                                                                                                                                             |
+| ----------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `direction`\*     | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                                                                                                                                                               |
+| `amount`\*        | `string`                                                                | Amount of tokens to stake or unstake                                                                                                                                                                                                                                    |
+| `userAddress`     | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code>     | Address of the user                                                                                                                                                                                                                                                     |
+| `network`         | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                                                                                                                                                           |
+| `unstakeMode`     | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Unstake-timing mode the quote should target — see [`UnstakeMode`](#unstakemode) for the supported flavours (`'INSTANT'`, `'WHEN_AVAILABLE'`, `'ROUND_END'`). Only meaningful when `direction === 'unstake'` and the provider lists the mode in `supportedUnstakeModes`. |
+| `isReversed`      | `boolean`                                                               | If true, for unstake requests the amount is specified in the staking coin (e.g. TON) instead of the Liquid Staking Token (e.g. tsTON).                                                                                                                                  |
+| `providerOptions` | `TProviderOptions = unknown`                                            | Provider-specific options                                                                                                                                                                                                                                               |
+| `providerId`      | `string`                                                                | Provider to quote against. Defaults to the registered default staking provider.                                                                                                                                                                                         |
 
 #### GetStakingQuoteReturnType
 
@@ -3677,13 +3717,13 @@ Staking API interface exposed by StakingManager
 
 Staking balance information for a user
 
-| Field                          | Type                                                | Description                          |
-| ------------------------------ | --------------------------------------------------- | ------------------------------------ |
-| `rawStakedBalance`\*           | <code><a href="#tokenamount">TokenAmount</a></code> | Amount currently staked              |
-| `stakedBalance`\*              | `string`                                            | Amount currently staked              |
-| `rawInstantUnstakeAvailable`\* | <code><a href="#tokenamount">TokenAmount</a></code> | Amount available for instant unstake |
-| `instantUnstakeAvailable`\*    | `string`                                            | Amount available for instant unstake |
-| `providerId`\*                 | `string`                                            | Identifier of the staking provider   |
+| Field                          | Type                                                | Description                                                                                                                        |
+| ------------------------------ | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `rawStakedBalance`\*           | <code><a href="#tokenamount">TokenAmount</a></code> | Amount currently staked, in raw smallest units of the stake token (e.g., nano-TON).                                                |
+| `stakedBalance`\*              | `string`                                            | Amount currently staked, formatted to the stake token's decimals as a human-readable decimal string (e.g., `"12.5"`).              |
+| `rawInstantUnstakeAvailable`\* | <code><a href="#tokenamount">TokenAmount</a></code> | Amount available for instant unstake, in raw smallest units of the stake token (e.g., nano-TON).                                   |
+| `instantUnstakeAvailable`\*    | `string`                                            | Amount available for instant unstake, formatted to the stake token's decimals as a human-readable decimal string (e.g., `"12.5"`). |
+| `providerId`\*                 | `string`                                            | Identifier of the staking provider                                                                                                 |
 
 #### StakingProviderInfo
 
@@ -3692,8 +3732,8 @@ Dynamic staking information for a provider
 | Field                        | Type                                                | Description                                                                                                                                      |
 | ---------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `apy`\*                      | `number`                                            | Annual Percentage Yield in basis points (100 = 1%)                                                                                               |
-| `rawInstantUnstakeAvailable` | <code><a href="#tokenamount">TokenAmount</a></code> | Amount available for instant unstake                                                                                                             |
-| `instantUnstakeAvailable`    | `string`                                            | Amount available for instant unstake                                                                                                             |
+| `rawInstantUnstakeAvailable` | <code><a href="#tokenamount">TokenAmount</a></code> | Amount available for instant unstake right now, in raw smallest units of the stake token (e.g., nano-TON).                                       |
+| `instantUnstakeAvailable`    | `string`                                            | Amount available for instant unstake right now, formatted to the stake token's decimals as a human-readable decimal string (e.g., `"12.5"`).     |
 | `exchangeRate`               | `string`                                            | Exchange rate between stakeToken and receiveToken (e.g. 1 TON = 0.95 tsTON). Undefined when there is no receiveToken (direct/custodial staking). |
 
 #### StakingProviderMetadata
@@ -3709,21 +3749,34 @@ Static metadata for a staking provider
 | `receiveToken`            | <code><a href="#stakingtokeninfo">StakingTokenInfo</a></code>       | Token that the user receives when staking (e.g. tsTON for liquid staking). Absent for direct/custodial staking. |
 | `contractAddress`         | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Provider contract address (optional — custodial providers may not have one)                                     |
 
+#### StakingProviderMetadataOverride
+
+Partial overrides applied on top of a provider's built-in [`StakingProviderMetadata`](#stakingprovidermetadata). Used in provider configuration (e.g. `TonStakersChainConfig.metadata`) when an integrator needs to tweak the display name, token info or supported modes for a specific chain.
+
+| Field                   | Type                                                                | Description                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                  | `string`                                                            | Override the human-readable provider name surfaced in UIs.                                                                      |
+| `stakeToken`            | <code><a href="#stakingtokeninfo">StakingTokenInfo</a></code>       | Override the [`StakingTokenInfo`](#stakingtokeninfo) of the token the user sends when staking.                                  |
+| `receiveToken`          | <code><a href="#stakingtokeninfo">StakingTokenInfo</a></code>       | Override the [`StakingTokenInfo`](#stakingtokeninfo) of the token the user receives when staking (e.g. liquid-staking receipt). |
+| `contractAddress`       | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Override the provider contract address (user-friendly format).                                                                  |
+| `supportedUnstakeModes` | <code><a href="#unstakemodes">UnstakeModes</a>\[]</code>            | Override the list of supported unstake-timing modes. See [`UnstakeMode`](#unstakemode).                                         |
+| `supportsReversedQuote` | `boolean`                                                           | Override whether the provider supports reversed-amount quotes (e.g., specifying TON instead of tsTON on an unstake quote).      |
+
 #### StakingQuote
 
 Staking quote response with pricing information
 
-| Field            | Type                                                                    | Description                                         |
-| ---------------- | ----------------------------------------------------------------------- | --------------------------------------------------- |
-| `direction`\*    | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)           |
-| `rawAmountIn`\*  | <code><a href="#tokenamount">TokenAmount</a></code>                     | Amount of tokens being provided                     |
-| `rawAmountOut`\* | <code><a href="#tokenamount">TokenAmount</a></code>                     | Estimated amount of tokens to be received           |
-| `amountIn`\*     | `string`                                                                | Formatted amount of tokens being provided           |
-| `amountOut`\*    | `string`                                                                | Formatted estimated amount of tokens to be received |
-| `network`\*      | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed       |
-| `providerId`\*   | `string`                                                                | Identifier of the staking provider                  |
-| `unstakeMode`    | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Mode of unstaking (if applicable)                   |
-| `metadata`       | `unknown`                                                               | Provider-specific metadata for the quote            |
+| Field            | Type                                                                    | Description                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `direction`\*    | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                     |
+| `rawAmountIn`\*  | <code><a href="#tokenamount">TokenAmount</a></code>                     | Amount of tokens being provided                                                                                               |
+| `rawAmountOut`\* | <code><a href="#tokenamount">TokenAmount</a></code>                     | Estimated amount of tokens to be received                                                                                     |
+| `amountIn`\*     | `string`                                                                | Formatted amount of tokens being provided                                                                                     |
+| `amountOut`\*    | `string`                                                                | Formatted estimated amount of tokens to be received                                                                           |
+| `network`\*      | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                 |
+| `providerId`\*   | `string`                                                                | Identifier of the staking provider                                                                                            |
+| `unstakeMode`    | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Unstake-timing mode the quote was produced for. Only meaningful when `direction === 'unstake'` — for `'stake'` it is ignored. |
+| `metadata`       | `unknown`                                                               | Provider-specific metadata for the quote                                                                                      |
 
 #### StakingQuoteDirection
 
@@ -3737,15 +3790,15 @@ type StakingQuoteDirection = 'stake' | 'unstake';
 
 Parameters for getting a staking quote
 
-| Field             | Type                                                                    | Description                                                                                                                            |
-| ----------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `direction`\*     | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                              |
-| `amount`\*        | `string`                                                                | Amount of tokens to stake or unstake                                                                                                   |
-| `userAddress`     | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code>     | Address of the user                                                                                                                    |
-| `network`         | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                          |
-| `unstakeMode`     | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Requested mode of unstaking                                                                                                            |
-| `isReversed`      | `boolean`                                                               | If true, for unstake requests the amount is specified in the staking coin (e.g. TON) instead of the Liquid Staking Token (e.g. tsTON). |
-| `providerOptions` | `TProviderOptions = unknown`                                            | Provider-specific options                                                                                                              |
+| Field             | Type                                                                    | Description                                                                                                                                                                                                                                                             |
+| ----------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `direction`\*     | <code><a href="#stakingquotedirection">StakingQuoteDirection</a></code> | Direction of the quote (stake or unstake)                                                                                                                                                                                                                               |
+| `amount`\*        | `string`                                                                | Amount of tokens to stake or unstake                                                                                                                                                                                                                                    |
+| `userAddress`     | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code>     | Address of the user                                                                                                                                                                                                                                                     |
+| `network`         | <code><a href="#network">Network</a></code>                             | Network on which the staking will be executed                                                                                                                                                                                                                           |
+| `unstakeMode`     | <code><a href="#unstakemodes">UnstakeModes</a></code>                   | Unstake-timing mode the quote should target — see [`UnstakeMode`](#unstakemode) for the supported flavours (`'INSTANT'`, `'WHEN_AVAILABLE'`, `'ROUND_END'`). Only meaningful when `direction === 'unstake'` and the provider lists the mode in `supportedUnstakeModes`. |
+| `isReversed`      | `boolean`                                                               | If true, for unstake requests the amount is specified in the staking coin (e.g. TON) instead of the Liquid Staking Token (e.g. tsTON).                                                                                                                                  |
+| `providerOptions` | `TProviderOptions = unknown`                                            | Provider-specific options                                                                                                                                                                                                                                               |
 
 #### StakingTokenInfo
 
@@ -3757,15 +3810,28 @@ Display metadata for a staking-pool token — `ticker`, `decimals` and `address`
 | `decimals`\* | `number` | Number of decimal places used to format raw amounts.                                  |
 | `address`\*  | `string` | `'ton'` for native TON, otherwise the token contract address in user-friendly format. |
 
+#### TonStakersChainConfig
+
+Per-chain Tonstakers config — optional TonAPI key for APY reads and an optional staking-provider metadata override.
+
+| Field         | Type                                                                                        | Description                                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tonApiToken` | `string`                                                                                    | TonAPI key used for APY reads. Optional — APY still works without it, but providing one is recommended when you already use TonAPI elsewhere.     |
+| `metadata`    | <code><a href="#stakingprovidermetadataoverride">StakingProviderMetadataOverride</a></code> | Optional [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) applied on top of the built-in Tonstakers metadata for this chain. |
+
 #### TonStakersProviderConfig
 
-Configuration accepted by [`createTonstakersProvider`](#createtonstakersprovider).
+Configuration accepted by [`createTonstakersProvider`](#createtonstakersprovider) — map of chain ID (e.g. `Network.mainnet().chainId`) to its per-chain [`TonStakersChainConfig`](#tonstakerschainconfig).
 
-_Empty type._
+```ts
+type TonStakersProviderConfig = {
+    [chainId: string]: TonStakersChainConfig;
+};
+```
 
 #### UnstakeModes
 
-Mode of unstaking
+Union of [`UnstakeMode`](#unstakemode) values. Carried on [`StakingQuoteParams`](#stakingquoteparams)'s `unstakeMode` and on [`StakingProviderMetadata`](#stakingprovidermetadata)'s `supportedUnstakeModes` to discriminate `'INSTANT'` / `'WHEN_AVAILABLE'` / `'ROUND_END'` flows.
 
 ```ts
 type UnstakeModes = (typeof UnstakeMode)[keyof typeof UnstakeMode];
@@ -3809,16 +3875,16 @@ type BuildSwapTransactionReturnType = Promise<TransactionRequest>;
 
 DeDust-specific options forwarded through `providerOptions` on [`SwapQuoteParams`](#swapquoteparams) / [`SwapParams`](#swapparams).
 
-| Field                  | Type       | Description                                                                                                                                      |
-| ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `protocols`            | `string[]` | Protocols to use for routing Available: 'dedust', 'dedust\_v3', 'dedust\_v3\_memepad', 'stonfi\_v1', 'stonfi\_v2', 'tonco', 'memeslab', 'tonfun' |
-| `excludeProtocols`     | `string[]` | Protocols to exclude from routing                                                                                                                |
-| `onlyVerifiedPools`    | `boolean`  | Only use verified pools                                                                                                                          |
-| `maxSplits`            | `number`   | Maximum number of route splits                                                                                                                   |
-| `maxLength`            | `number`   | Maximum route length (hops)                                                                                                                      |
-| `excludeVolatilePools` | `boolean`  | Exclude volatile pools                                                                                                                           |
-| `referralAddress`      | `string`   | The address of the referrer                                                                                                                      |
-| `referralFeeBps`       | `number`   | Referral fee in basis points (max 100 = 1%)                                                                                                      |
+| Field                  | Type       | Description                                                                                                                                                                                                  |
+| ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `protocols`            | `string[]` | Protocols to use for routing. Available values: `'dedust'`, `'dedust_v3'`, `'dedust_v3_memepad'`, `'stonfi_v1'`, `'stonfi_v2'`, `'tonco'`, `'memeslab'`, `'tonfun'`. Defaults to all protocols when omitted. |
+| `excludeProtocols`     | `string[]` | Protocols to exclude from routing                                                                                                                                                                            |
+| `onlyVerifiedPools`    | `boolean`  | Only use verified pools                                                                                                                                                                                      |
+| `maxSplits`            | `number`   | Maximum number of route splits                                                                                                                                                                               |
+| `maxLength`            | `number`   | Maximum route length (hops)                                                                                                                                                                                  |
+| `excludeVolatilePools` | `boolean`  | Exclude volatile pools                                                                                                                                                                                       |
+| `referralAddress`      | `string`   | The address of the referrer                                                                                                                                                                                  |
+| `referralFeeBps`       | `number`   | Referral fee in basis points (max 100 = 1%)                                                                                                                                                                  |
 
 #### DeDustQuoteMetadata
 
@@ -3991,14 +4057,14 @@ API surface exposed by [`SwapManager`](#swapmanager) — quote and build-transac
 
 Parameters consumed by [`buildSwapTransaction`](#buildswaptransaction) — the previously obtained [`SwapQuote`](#swapquote) plus optional provider-specific options (`TProviderOptions`).
 
-| Field                | Type                                                                | Description                                                     |
-| -------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `quote`\*            | <code><a href="#swapquote">SwapQuote</a></code>                     | The swap quote based on which the transaction is built          |
-| `userAddress`\*      | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address of the user performing the swap                         |
-| `destinationAddress` | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address to receive the swapped tokens (defaults to userAddress) |
-| `slippageBps`        | `number`                                                            | Slippage tolerance in basis points (1 bp = 0.01%)               |
-| `deadline`           | `number`                                                            | Transaction deadline in unix timestamp                          |
-| `providerOptions`    | `TProviderOptions = unknown`                                        | Provider-specific options                                       |
+| Field                | Type                                                                | Description                                                                        |
+| -------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `quote`\*            | <code><a href="#swapquote">SwapQuote</a></code>                     | The swap quote based on which the transaction is built                             |
+| `userAddress`\*      | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address of the user performing the swap                                            |
+| `destinationAddress` | <code><a href="#userfriendlyaddress">UserFriendlyAddress</a></code> | Address to receive the swapped tokens (defaults to userAddress)                    |
+| `slippageBps`        | `number`                                                            | Slippage tolerance in basis points (1 bp = 0.01%)                                  |
+| `deadline`           | `number`                                                            | Unix timestamp (in seconds) after which the swap transaction must not be executed. |
+| `providerOptions`    | `TProviderOptions = unknown`                                        | Provider-specific options                                                          |
 
 #### SwapQuote
 
