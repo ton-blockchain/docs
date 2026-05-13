@@ -4,317 +4,6 @@ sidebarTitle: "AppKit"
 ---
 
 
-## Class
-
-### Client
-
-#### ApiClientTonApi
-
-[`ApiClient`](#apiclient) implementation backed by the TonAPI indexer.
-
-Constructor: `new ApiClientTonApi(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config` | `BaseApiClientConfig` | TonAPI client config — endpoint URL and API key. Defaults to TonAPI mainnet/testnet URLs based on `config.network`. |
-
-#### ApiClientToncenter
-
-[`ApiClient`](#apiclient) implementation backed by the Toncenter API.
-
-Constructor: `new ApiClientToncenter(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config` | <code><a href="#apiclientconfig">ApiClientConfig</a></code> | Toncenter client config — endpoint URL, API key and optional DNS resolver override. Defaults to mainnet/testnet Toncenter URLs based on `config.network`. |
-
-### Core
-
-#### AppKit
-
-Runtime that wires connectors, networks, providers and the event emitter for a TON dApp. Construct once at startup and reuse for the app's lifetime.
-
-Constructor: `new AppKit(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config`\* | [`AppKitConfig`](#appkitconfig) | Networks, connectors, providers and runtime flags. |
-| `config.networks` | <code><a href="#networkadapters">NetworkAdapters</a></code> | Map of chain ID to [`NetworkConfig`](#networkconfig) (which holds the api-client setup). If omitted, AppKit defaults to mainnet only. |
-| `config.connectors` | <code><a href="#connectorinput">ConnectorInput</a>[]</code> | Wallet connectors registered at startup. |
-| `config.defaultNetwork` | <code><a href="#network">Network</a></code> | Default network. |
-| `config.providers` | <code><a href="#providerinput">ProviderInput</a>[]</code> | Providers registered at startup. |
-| `config.ssr` | `boolean` | Set to `true` to enable server-side rendering support. |
-
-**Example**
-
-```ts
-// Initialize AppKit
-const appKit = new AppKit({
-    networks: {
-        [Network.mainnet().chainId]: {
-            apiClient: {
-                url: 'https://toncenter.com',
-                key: 'your-key',
-            },
-        },
-        // Optional: add testnet
-        // [Network.testnet().chainId]: {
-        //     apiClient: {
-        //         url: 'https://testnet.toncenter.com',
-        //         key: 'your-key',
-        //     },
-        // },
-    },
-    connectors: [
-        createTonConnectConnector({
-            tonConnectOptions: {
-                manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
-            },
-        }),
-    ],
-});
-```
-
-#### EventEmitter
-
-Strongly-typed event emitter built on a string event name → payload type map. Type of `appKit.emitter` and the base for any custom emitters apps create. See [`AppKitEvents`](#appkitevents) for the full list of events AppKit emits. `appKit.emitter.on(name, handler)` returns an unsubscribe function.
-
-Constructor: `new EventEmitter()`
-
-### Crypto Onramp
-
-#### CryptoOnrampError
-
-Error thrown by [`CryptoOnrampManager`](#cryptoonrampmanager) and crypto-onramp providers — extends [`DefiError`](#defierror) with `name: 'CryptoOnrampError'` and a typed [`CryptoOnrampErrorCode`](#cryptoonramperrorcode) on `code`.
-
-Constructor: `new CryptoOnrampError(message, code, details)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
-| `code`\* | [`CryptoOnrampErrorCode`](#cryptoonramperrorcode) | Stable error code for branching logic. |
-| `details` | `unknown` | Optional provider-specific context for diagnostics. |
-
-#### CryptoOnrampManager
-
-Runtime that owns registered [`CryptoOnrampProvider`](#cryptoonrampprovider)s and dispatches quote/deposit/status calls. Usually accessed through the higher-level actions ([`getCryptoOnrampQuote`](#getcryptoonrampquote), [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit), [`getCryptoOnrampStatus`](#getcryptoonrampstatus)).
-
-Constructor: `new CryptoOnrampManager()`
-
-#### CryptoOnrampProvider
-
-Abstract base class implemented by crypto-onramp providers (Layerswap, swaps.xyz, custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
-
-Constructor: `new CryptoOnrampProvider()`
-
-#### LayerswapCryptoOnrampProvider
-
-[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by Layerswap. Use [`createLayerswapProvider`](#createlayerswapprovider) to register it on AppKit.
-
-Constructor: `new LayerswapCryptoOnrampProvider(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config` | <code><a href="#layerswapproviderconfig">LayerswapProviderConfig</a></code> | Optional [`LayerswapProviderConfig`](#layerswapproviderconfig). Defaults are filled in for any field left undefined. |
-| `config.apiKey` | `string` | Optional API key. Forwarded as `X-LS-APIKEY` when provided. |
-| `config.apiUrl` | `string` | Override the base API URL. Defaults to https://api.layerswap.io/api/v2 |
-
-#### SwapsXyzCryptoOnrampProvider
-
-[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by swaps.xyz. Use [`createSwapsXyzProvider`](#createswapsxyzprovider) to register it on AppKit.
-
-Constructor: `new SwapsXyzCryptoOnrampProvider(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config`\* | [`SwapsXyzProviderConfig`](#swapsxyzproviderconfig) | Configuration carrying the required `apiKey` plus optional URL/sender overrides. |
-| `config.apiKey`\* | `string` | API key issued by swaps.xyz (passed as `x-api-key`) |
-| `config.apiUrl` | `string` | Override the base API URL. Defaults to https://api-v2.swaps.xyz/api |
-| `config.defaultSender` | `string` | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
-
-### DeFi
-
-#### DefiError
-
-Base error thrown across all DeFi domains (swap, staking, onramp, crypto-onramp). Subclassed by [`SwapError`](#swaperror), [`StakingError`](#stakingerror), [`CryptoOnrampError`](#cryptoonramperror) and the internal onramp error — catch the base when you don't care which domain produced the failure.
-
-Constructor: `new DefiError(message, code, details)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
-| `code`\* | [`DefiErrorCode`](#defierrorcode) | Stable error code for branching logic. |
-| `details` | `unknown` | Optional provider-specific context for diagnostics. |
-
-### Networks
-
-#### AppKitNetworkManager
-
-Network manager that extends walletkit's [`KitNetworkManager`](#kitnetworkmanager) with a default-network setter and AppKit event emission. Usually accessed through the higher-level actions ([`getDefaultNetwork`](#getdefaultnetwork), [`setDefaultNetwork`](#setdefaultnetwork), [`watchDefaultNetwork`](#watchdefaultnetwork), [`getNetworks`](#getnetworks), [`watchNetworks`](#watchnetworks)).
-
-Constructor: `new AppKitNetworkManager(options, emitter)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `options`\* | [`TonWalletKitOptions`](#tonwalletkitoptions) | Forwarded to the [`KitNetworkManager`](#kitnetworkmanager) base — chiefly the `networks` map keyed by chain ID. |
-| `emitter`\* | [`AppKitEmitter`](#appkitemitter) | Emitter the manager publishes `networks:default-changed` / `networks:updated` events through. |
-
-#### KitNetworkManager
-
-Walletkit-side network manager that [`AppKitNetworkManager`](#appkitnetworkmanager) extends, adding default-network state and AppKit event emission. Apps usually interact with the [`AppKitNetworkManager`](#appkitnetworkmanager) subclass.
-
-Constructor: `new KitNetworkManager(options)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `options`\* | [`TonWalletKitOptions`](#tonwalletkitoptions) | Configuration carrying the `networks` map keyed by chain ID. At least one network must be configured. |
-
-### Staking
-
-#### StakingError
-
-Error thrown by [`StakingManager`](#stakingmanager) and staking providers — extends [`DefiError`](#defierror) with `name: 'StakingError'` and a typed [`StakingErrorCode`](#stakingerrorcode) on `code`.
-
-Constructor: `new StakingError(message, code, details)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
-| `code`\* | [`StakingErrorCode`](#stakingerrorcode) | Stable error code for branching logic. |
-| `details` | `unknown` | Optional provider-specific context for diagnostics. |
-
-#### StakingManager
-
-Runtime that owns registered [`StakingProvider`](#stakingprovider)s and dispatches quote/stake/balance calls. Usually accessed through the higher-level actions ([`getStakingQuote`](#getstakingquote), [`buildStakeTransaction`](#buildstaketransaction), [`getStakedBalance`](#getstakedbalance)).
-
-Constructor: `new StakingManager(createFactoryContext)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
-
-#### StakingProvider
-
-Abstract base class implemented by staking providers (Tonstakers, custom integrations, …). Apps don't use it directly — they consume providers through [`StakingManager`](#stakingmanager) and the `getStaking*` / `buildStakeTransaction` actions.
-
-Constructor: `new StakingProvider(providerId)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `providerId`\* | `string` | Stable id the provider registers with — must be unique within [`StakingManager`](#stakingmanager). |
-
-#### TonStakersStakingProvider
-
-[`StakingProvider`](#stakingprovider) implementation backed by Tonstakers. Use [`createTonstakersProvider`](#createtonstakersprovider) to register it on AppKit.
-
-Constructor: `new TonStakersStakingProvider()`
-
-### Swap
-
-#### DeDustSwapProvider
-
-[`SwapProvider`](#swapprovider) implementation backed by DeDust. Use [`createDeDustProvider`](#creatededustprovider) to register it on AppKit.
-
-Constructor: `new DeDustSwapProvider(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config` | <code><a href="#dedustswapproviderconfig">DeDustSwapProviderConfig</a></code> | Optional [`DeDustSwapProviderConfig`](#dedustswapproviderconfig). Defaults are filled in for any field left undefined. |
-| `config.providerId` | `string` | Custom provider ID (defaults to 'dedust') |
-| `config.defaultSlippageBps` | `number` | Default slippage tolerance in basis points (1 bp = 0.01%) |
-| `config.apiUrl` | `string` | API base URL |
-| `config.onlyVerifiedPools` | `boolean` | Only use verified pools |
-| `config.maxSplits` | `number` | Maximum number of route splits |
-| `config.maxLength` | `number` | Maximum route length (hops) |
-| `config.minPoolUsdTvl` | `string` | Minimum pool TVL in USD |
-| `config.metadata` | `SwapProviderMetadataOverride` | Custom metadata for the provider |
-| `config.referralAddress` | `string` | The address of the referrer |
-| `config.referralFeeBps` | `number` | Referral fee in basis points (max 100 = 1%) |
-
-**Example**
-
-```ts
-kit.registerProvider(
-    createDeDustProvider({
-        defaultSlippageBps: 100, // 1%
-        referralAddress: 'EQ...',
-        referralFeeBps: 50, // 0.5%
-    }),
-);
-```
-
-#### OmnistonSwapProvider
-
-[`SwapProvider`](#swapprovider) implementation backed by Omniston. Use [`createOmnistonProvider`](#createomnistonprovider) to register it on AppKit.
-
-Constructor: `new OmnistonSwapProvider(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config` | <code><a href="#omnistonswapproviderconfig">OmnistonSwapProviderConfig</a></code> | Optional [`OmnistonSwapProviderConfig`](#omnistonswapproviderconfig). Defaults are filled in for any field left undefined. |
-| `config.apiUrl` | `string` | Optional URL for the Omniston API |
-| `config.defaultSlippageBps` | `number` | Default slippage tolerance in basis points (1 bp = 0.01%) |
-| `config.quoteTimeoutMs` | `number` | Timeout for quote requests in milliseconds |
-| `config.providerId` | `string` | Identifier for the provider |
-| `config.metadata` | `SwapProviderMetadataOverride` | Custom metadata for the provider |
-| `config.referrerAddress` | `string` | The address of the referrer |
-| `config.referrerFeeBps` | `number` | Referrer fee in basis points (1 bp = 0.01%) |
-| `config.flexibleReferrerFee` | `boolean` | Whether a flexible referrer fee is allowed |
-
-**Example**
-
-```ts
-kit.registerProvider(
-    createOmnistonProvider({
-        defaultSlippageBps: 100, // 1%
-        quoteTimeoutMs: 10000,
-    }),
-);
-```
-
-#### SwapError
-
-Error thrown by [`SwapManager`](#swapmanager) and swap providers — extends [`DefiError`](#defierror) with `name: 'SwapError'` and a typed [`SwapErrorCode`](#swaperrorcode) on `code`.
-
-Constructor: `new SwapError(message, code, details)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
-| `code`\* | [`SwapErrorCode`](#swaperrorcode) | Stable error code for branching logic. |
-| `details` | `unknown` | Optional provider-specific context for diagnostics. |
-
-#### SwapManager
-
-Runtime that owns registered [`SwapProvider`](#swapprovider)s and dispatches quote/swap calls. Usually accessed through the higher-level actions ([`getSwapQuote`](#getswapquote), [`buildSwapTransaction`](#buildswaptransaction)).
-
-Constructor: `new SwapManager(createFactoryContext)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
-
-#### SwapProvider
-
-Abstract base class implemented by swap providers (DeDust, Omniston, custom integrations). Apps don't use it directly — they consume providers through [`SwapManager`](#swapmanager) and the `getSwap*` / `buildSwapTransaction` actions.
-
-Constructor: `new SwapProvider()`
-
-### Wallets
-
-#### TonConnectWalletAdapter
-
-[`WalletInterface`](#walletinterface) implementation backed by a TonConnect wallet. Built for you by [`createTonConnectConnector`](#createtonconnectconnector) — apps interact with it through standard AppKit actions ([`sendTransaction`](#sendtransaction), [`signText`](#signtext)/[`signBinary`](#signbinary)/[`signCell`](#signcell)). On-chain reads (balance, jettons, NFTs) live on separate actions ([`getBalance`](#getbalance), [`getJettons`](#getjettons), [`getNfts`](#getnfts)) and don't go through this adapter.
-
-Constructor: `new TonConnectWalletAdapter(config)`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `config`\* | [`TonConnectWalletAdapterConfig`](#tonconnectwalletadapterconfig) | TonConnect wallet + UI instance and the id of the connector that produced them. |
-| `config.connectorId`\* | `string` | ID of the connector that produced this wallet — surfaced as `WalletInterface.connectorId`. |
-| `config.tonConnectWallet`\* | `TonConnectWallet` | Underlying TonConnect wallet object. |
-| `config.tonConnectUI`\* | `TonConnectUI` | TonConnect UI instance used to drive `sendTransaction` and `signData` calls. |
-
 ## Action
 
 ### Balances
@@ -1992,6 +1681,317 @@ const unsubscribe = watchSelectedWallet(appKit, {
 
 // Later: unsubscribe();
 ```
+
+## Class
+
+### Client
+
+#### ApiClientTonApi
+
+[`ApiClient`](#apiclient) implementation backed by the TonAPI indexer.
+
+Constructor: `new ApiClientTonApi(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config` | `BaseApiClientConfig` | TonAPI client config — endpoint URL and API key. Defaults to TonAPI mainnet/testnet URLs based on `config.network`. |
+
+#### ApiClientToncenter
+
+[`ApiClient`](#apiclient) implementation backed by the Toncenter API.
+
+Constructor: `new ApiClientToncenter(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config` | <code><a href="#apiclientconfig">ApiClientConfig</a></code> | Toncenter client config — endpoint URL, API key and optional DNS resolver override. Defaults to mainnet/testnet Toncenter URLs based on `config.network`. |
+
+### Core
+
+#### AppKit
+
+Runtime that wires connectors, networks, providers and the event emitter for a TON dApp. Construct once at startup and reuse for the app's lifetime.
+
+Constructor: `new AppKit(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config`\* | [`AppKitConfig`](#appkitconfig) | Networks, connectors, providers and runtime flags. |
+| `config.networks` | <code><a href="#networkadapters">NetworkAdapters</a></code> | Map of chain ID to [`NetworkConfig`](#networkconfig) (which holds the api-client setup). If omitted, AppKit defaults to mainnet only. |
+| `config.connectors` | <code><a href="#connectorinput">ConnectorInput</a>[]</code> | Wallet connectors registered at startup. |
+| `config.defaultNetwork` | <code><a href="#network">Network</a></code> | Default network. |
+| `config.providers` | <code><a href="#providerinput">ProviderInput</a>[]</code> | Providers registered at startup. |
+| `config.ssr` | `boolean` | Set to `true` to enable server-side rendering support. |
+
+**Example**
+
+```ts
+// Initialize AppKit
+const appKit = new AppKit({
+    networks: {
+        [Network.mainnet().chainId]: {
+            apiClient: {
+                url: 'https://toncenter.com',
+                key: 'your-key',
+            },
+        },
+        // Optional: add testnet
+        // [Network.testnet().chainId]: {
+        //     apiClient: {
+        //         url: 'https://testnet.toncenter.com',
+        //         key: 'your-key',
+        //     },
+        // },
+    },
+    connectors: [
+        createTonConnectConnector({
+            tonConnectOptions: {
+                manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
+            },
+        }),
+    ],
+});
+```
+
+#### EventEmitter
+
+Strongly-typed event emitter built on a string event name → payload type map. Type of `appKit.emitter` and the base for any custom emitters apps create. See [`AppKitEvents`](#appkitevents) for the full list of events AppKit emits. `appKit.emitter.on(name, handler)` returns an unsubscribe function.
+
+Constructor: `new EventEmitter()`
+
+### Crypto Onramp
+
+#### CryptoOnrampError
+
+Error thrown by [`CryptoOnrampManager`](#cryptoonrampmanager) and crypto-onramp providers — extends [`DefiError`](#defierror) with `name: 'CryptoOnrampError'` and a typed [`CryptoOnrampErrorCode`](#cryptoonramperrorcode) on `code`.
+
+Constructor: `new CryptoOnrampError(message, code, details)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
+| `code`\* | [`CryptoOnrampErrorCode`](#cryptoonramperrorcode) | Stable error code for branching logic. |
+| `details` | `unknown` | Optional provider-specific context for diagnostics. |
+
+#### CryptoOnrampManager
+
+Runtime that owns registered [`CryptoOnrampProvider`](#cryptoonrampprovider)s and dispatches quote/deposit/status calls. Usually accessed through the higher-level actions ([`getCryptoOnrampQuote`](#getcryptoonrampquote), [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit), [`getCryptoOnrampStatus`](#getcryptoonrampstatus)).
+
+Constructor: `new CryptoOnrampManager()`
+
+#### CryptoOnrampProvider
+
+Abstract base class implemented by crypto-onramp providers (Layerswap, swaps.xyz, custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
+
+Constructor: `new CryptoOnrampProvider()`
+
+#### LayerswapCryptoOnrampProvider
+
+[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by Layerswap. Use [`createLayerswapProvider`](#createlayerswapprovider) to register it on AppKit.
+
+Constructor: `new LayerswapCryptoOnrampProvider(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config` | <code><a href="#layerswapproviderconfig">LayerswapProviderConfig</a></code> | Optional [`LayerswapProviderConfig`](#layerswapproviderconfig). Defaults are filled in for any field left undefined. |
+| `config.apiKey` | `string` | Optional API key. Forwarded as `X-LS-APIKEY` when provided. |
+| `config.apiUrl` | `string` | Override the base API URL. Defaults to https://api.layerswap.io/api/v2 |
+
+#### SwapsXyzCryptoOnrampProvider
+
+[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by swaps.xyz. Use [`createSwapsXyzProvider`](#createswapsxyzprovider) to register it on AppKit.
+
+Constructor: `new SwapsXyzCryptoOnrampProvider(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config`\* | [`SwapsXyzProviderConfig`](#swapsxyzproviderconfig) | Configuration carrying the required `apiKey` plus optional URL/sender overrides. |
+| `config.apiKey`\* | `string` | API key issued by swaps.xyz (passed as `x-api-key`) |
+| `config.apiUrl` | `string` | Override the base API URL. Defaults to https://api-v2.swaps.xyz/api |
+| `config.defaultSender` | `string` | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
+
+### DeFi
+
+#### DefiError
+
+Base error thrown across all DeFi domains (swap, staking, onramp, crypto-onramp). Subclassed by [`SwapError`](#swaperror), [`StakingError`](#stakingerror), [`CryptoOnrampError`](#cryptoonramperror) and the internal onramp error — catch the base when you don't care which domain produced the failure.
+
+Constructor: `new DefiError(message, code, details)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
+| `code`\* | [`DefiErrorCode`](#defierrorcode) | Stable error code for branching logic. |
+| `details` | `unknown` | Optional provider-specific context for diagnostics. |
+
+### Networks
+
+#### AppKitNetworkManager
+
+Network manager that extends walletkit's [`KitNetworkManager`](#kitnetworkmanager) with a default-network setter and AppKit event emission. Usually accessed through the higher-level actions ([`getDefaultNetwork`](#getdefaultnetwork), [`setDefaultNetwork`](#setdefaultnetwork), [`watchDefaultNetwork`](#watchdefaultnetwork), [`getNetworks`](#getnetworks), [`watchNetworks`](#watchnetworks)).
+
+Constructor: `new AppKitNetworkManager(options, emitter)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `options`\* | [`TonWalletKitOptions`](#tonwalletkitoptions) | Forwarded to the [`KitNetworkManager`](#kitnetworkmanager) base — chiefly the `networks` map keyed by chain ID. |
+| `emitter`\* | [`AppKitEmitter`](#appkitemitter) | Emitter the manager publishes `networks:default-changed` / `networks:updated` events through. |
+
+#### KitNetworkManager
+
+Walletkit-side network manager that [`AppKitNetworkManager`](#appkitnetworkmanager) extends, adding default-network state and AppKit event emission. Apps usually interact with the [`AppKitNetworkManager`](#appkitnetworkmanager) subclass.
+
+Constructor: `new KitNetworkManager(options)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `options`\* | [`TonWalletKitOptions`](#tonwalletkitoptions) | Configuration carrying the `networks` map keyed by chain ID. At least one network must be configured. |
+
+### Staking
+
+#### StakingError
+
+Error thrown by [`StakingManager`](#stakingmanager) and staking providers — extends [`DefiError`](#defierror) with `name: 'StakingError'` and a typed [`StakingErrorCode`](#stakingerrorcode) on `code`.
+
+Constructor: `new StakingError(message, code, details)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
+| `code`\* | [`StakingErrorCode`](#stakingerrorcode) | Stable error code for branching logic. |
+| `details` | `unknown` | Optional provider-specific context for diagnostics. |
+
+#### StakingManager
+
+Runtime that owns registered [`StakingProvider`](#stakingprovider)s and dispatches quote/stake/balance calls. Usually accessed through the higher-level actions ([`getStakingQuote`](#getstakingquote), [`buildStakeTransaction`](#buildstaketransaction), [`getStakedBalance`](#getstakedbalance)).
+
+Constructor: `new StakingManager(createFactoryContext)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
+
+#### StakingProvider
+
+Abstract base class implemented by staking providers (Tonstakers, custom integrations, …). Apps don't use it directly — they consume providers through [`StakingManager`](#stakingmanager) and the `getStaking*` / `buildStakeTransaction` actions.
+
+Constructor: `new StakingProvider(providerId)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `providerId`\* | `string` | Stable id the provider registers with — must be unique within [`StakingManager`](#stakingmanager). |
+
+#### TonStakersStakingProvider
+
+[`StakingProvider`](#stakingprovider) implementation backed by Tonstakers. Use [`createTonstakersProvider`](#createtonstakersprovider) to register it on AppKit.
+
+Constructor: `new TonStakersStakingProvider()`
+
+### Swap
+
+#### DeDustSwapProvider
+
+[`SwapProvider`](#swapprovider) implementation backed by DeDust. Use [`createDeDustProvider`](#creatededustprovider) to register it on AppKit.
+
+Constructor: `new DeDustSwapProvider(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config` | <code><a href="#dedustswapproviderconfig">DeDustSwapProviderConfig</a></code> | Optional [`DeDustSwapProviderConfig`](#dedustswapproviderconfig). Defaults are filled in for any field left undefined. |
+| `config.providerId` | `string` | Custom provider ID (defaults to 'dedust') |
+| `config.defaultSlippageBps` | `number` | Default slippage tolerance in basis points (1 bp = 0.01%) |
+| `config.apiUrl` | `string` | API base URL |
+| `config.onlyVerifiedPools` | `boolean` | Only use verified pools |
+| `config.maxSplits` | `number` | Maximum number of route splits |
+| `config.maxLength` | `number` | Maximum route length (hops) |
+| `config.minPoolUsdTvl` | `string` | Minimum pool TVL in USD |
+| `config.metadata` | `SwapProviderMetadataOverride` | Custom metadata for the provider |
+| `config.referralAddress` | `string` | The address of the referrer |
+| `config.referralFeeBps` | `number` | Referral fee in basis points (max 100 = 1%) |
+
+**Example**
+
+```ts
+kit.registerProvider(
+    createDeDustProvider({
+        defaultSlippageBps: 100, // 1%
+        referralAddress: 'EQ...',
+        referralFeeBps: 50, // 0.5%
+    }),
+);
+```
+
+#### OmnistonSwapProvider
+
+[`SwapProvider`](#swapprovider) implementation backed by Omniston. Use [`createOmnistonProvider`](#createomnistonprovider) to register it on AppKit.
+
+Constructor: `new OmnistonSwapProvider(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config` | <code><a href="#omnistonswapproviderconfig">OmnistonSwapProviderConfig</a></code> | Optional [`OmnistonSwapProviderConfig`](#omnistonswapproviderconfig). Defaults are filled in for any field left undefined. |
+| `config.apiUrl` | `string` | Optional URL for the Omniston API |
+| `config.defaultSlippageBps` | `number` | Default slippage tolerance in basis points (1 bp = 0.01%) |
+| `config.quoteTimeoutMs` | `number` | Timeout for quote requests in milliseconds |
+| `config.providerId` | `string` | Identifier for the provider |
+| `config.metadata` | `SwapProviderMetadataOverride` | Custom metadata for the provider |
+| `config.referrerAddress` | `string` | The address of the referrer |
+| `config.referrerFeeBps` | `number` | Referrer fee in basis points (1 bp = 0.01%) |
+| `config.flexibleReferrerFee` | `boolean` | Whether a flexible referrer fee is allowed |
+
+**Example**
+
+```ts
+kit.registerProvider(
+    createOmnistonProvider({
+        defaultSlippageBps: 100, // 1%
+        quoteTimeoutMs: 10000,
+    }),
+);
+```
+
+#### SwapError
+
+Error thrown by [`SwapManager`](#swapmanager) and swap providers — extends [`DefiError`](#defierror) with `name: 'SwapError'` and a typed [`SwapErrorCode`](#swaperrorcode) on `code`.
+
+Constructor: `new SwapError(message, code, details)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `message`\* | `string` | Human-readable description, forwarded to `Error`. |
+| `code`\* | [`SwapErrorCode`](#swaperrorcode) | Stable error code for branching logic. |
+| `details` | `unknown` | Optional provider-specific context for diagnostics. |
+
+#### SwapManager
+
+Runtime that owns registered [`SwapProvider`](#swapprovider)s and dispatches quote/swap calls. Usually accessed through the higher-level actions ([`getSwapQuote`](#getswapquote), [`buildSwapTransaction`](#buildswaptransaction)).
+
+Constructor: `new SwapManager(createFactoryContext)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `createFactoryContext`\* | <code>() =&gt; <a href="#providerfactorycontext">ProviderFactoryContext</a></code> | Lazy provider of the [`ProviderFactoryContext`](#providerfactorycontext) the manager passes into provider factories at registration time. |
+
+#### SwapProvider
+
+Abstract base class implemented by swap providers (DeDust, Omniston, custom integrations). Apps don't use it directly — they consume providers through [`SwapManager`](#swapmanager) and the `getSwap*` / `buildSwapTransaction` actions.
+
+Constructor: `new SwapProvider()`
+
+### Wallets
+
+#### TonConnectWalletAdapter
+
+[`WalletInterface`](#walletinterface) implementation backed by a TonConnect wallet. Built for you by [`createTonConnectConnector`](#createtonconnectconnector) — apps interact with it through standard AppKit actions ([`sendTransaction`](#sendtransaction), [`signText`](#signtext)/[`signBinary`](#signbinary)/[`signCell`](#signcell)). On-chain reads (balance, jettons, NFTs) live on separate actions ([`getBalance`](#getbalance), [`getJettons`](#getjettons), [`getNfts`](#getnfts)) and don't go through this adapter.
+
+Constructor: `new TonConnectWalletAdapter(config)`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `config`\* | [`TonConnectWalletAdapterConfig`](#tonconnectwalletadapterconfig) | TonConnect wallet + UI instance and the id of the connector that produced them. |
+| `config.connectorId`\* | `string` | ID of the connector that produced this wallet — surfaced as `WalletInterface.connectorId`. |
+| `config.tonConnectWallet`\* | `TonConnectWallet` | Underlying TonConnect wallet object. |
+| `config.tonConnectUI`\* | `TonConnectUI` | TonConnect UI instance used to drive `sendTransaction` and `signData` calls. |
 
 ## Type
 
