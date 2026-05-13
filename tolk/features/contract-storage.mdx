@@ -100,6 +100,16 @@ This behavior is not related to [nullable types](/languages/tolk/types/nullable)
 
 This pattern is common in NFT contracts. Initially, an NFT contains only `itemIndex` and `collectionAddress`. After initialization, `ownerAddress` and `content` are added to the storage.
 
+When this pattern is used, declare both shapes in the [`contract` declaration](/languages/tolk/features/contract-abi) so client tools can compute the deployment address correctly:
+
+```tolk
+contract NftItem {
+    storage: NftItemStorage
+    storageAtDeployment: NftItemStorageNotInitialized
+    // ...
+}
+```
+
 Since arbitrary imperative code is allowed, the approach is:
 
 - Define two structures: initialized and uninitialized storages.
