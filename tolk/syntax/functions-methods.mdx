@@ -60,6 +60,22 @@ fun demo() {
 }
 ```
 
+### Optional `void` parameters
+
+If a trailing parameter has type `void`, it may be omitted at the call site. This is especially convenient for generic helpers where "no argument" is naturally expressed as `void`, instead of using a nullable wrapper or a pile of overloads.
+
+```tolk
+fun format<T1 = void, T2 = void>(msg: string, arg1: T1, arg2: T2) {
+    // ...
+}
+
+format("hello");
+format("value is {}", 42);
+format("pair is {} and {}", "str", beginCell());
+```
+
+The same convention has long been allowed for [`void`-typed struct fields](/languages/tolk/types/void-never#void-typed-fields).
+
 ## Method declaration
 
 Methods are declared as extension functions with a receiver specified before the name:
@@ -466,3 +482,5 @@ fun demo() {
     })
 }
 ```
+
+Lambdas can capture outer variables by value, becoming [closures](/languages/tolk/types/callables#closures-lambdas-with-captures).
