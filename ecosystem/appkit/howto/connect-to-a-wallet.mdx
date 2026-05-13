@@ -9,7 +9,7 @@ Open a wallet session, restore it across reloads, and disconnect cleanly.
 
 A wallet is the signing application that owns the keys. A connector is the transport AppKit uses to open the wallet flow, restore sessions, list connected wallets, and route signing requests. A connector is not a wallet and does not sign — signing always happens inside the user's wallet application.
 
-AppKit can track multiple connected wallets, but one wallet is selected for actions such as transfers and data signing. A selected wallet can change after disconnects, network changes, or session restore, so read it from AppKit state instead of storing it as long-lived application state. Wallet ids are derived from `(network, address)`, so the same address on a different network produces a different wallet object.
+AppKit can track multiple connected wallets, but one wallet is selected for actions such as transfers and data signing. A selected wallet can change after disconnects, network changes, or session restore, so read it from AppKit state instead of storing it as long-lived application state. The same wallet on a different network has a different wallet id, and AppKit treats those as separate wallet objects.
 
 ## Before you begin
 
@@ -77,8 +77,6 @@ import { useAddress } from '@ton/appkit-react';
 
 const address = useAddress(); // string | undefined
 ```
-
-`setSelectedWalletId` updates the stored id but does not emit `wallets:selection-changed`. The selection event fires only when the connected wallet list changes — through `connect`, `disconnect`, `addConnector`, or the auto-select that runs when the previously selected wallet drops off. After calling `setSelectedWalletId` directly, call `refetch()` on any query hooks that depend on the selected wallet.
 
 ## Register a connector after construction
 
