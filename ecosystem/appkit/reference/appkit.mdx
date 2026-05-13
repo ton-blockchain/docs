@@ -53,7 +53,7 @@ console.log('Balance by address:', balanceByAddress);
 
 #### watchBalance
 
-Subscribe to Toncoin balance updates for the currently selected wallet, automatically rebinding whenever the selected wallet changes or the connected-wallets list updates (use [`watchBalanceByAddress`](#watchbalancebyaddress) for a fixed address).
+Subscribe to Toncoin balance updates for the currently selected wallet, automatically rebinding whenever the selected wallet changes or the connected-wallets list updates (use [`watchBalanceByAddress`](#watchbalancebyaddress) for a fixed address). Requires a streaming provider registered for the network — call throws when none is configured. Use [`hasStreamingProvider`](#hasstreamingprovider) to check first.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -78,7 +78,7 @@ const unsubscribe = watchBalance(appKit, {
 
 #### watchBalanceByAddress
 
-Subscribe to Toncoin balance updates for an arbitrary address — useful for monitoring wallets that aren't selected in AppKit (use [`watchBalance`](#watchbalance) for the selected wallet).
+Subscribe to Toncoin balance updates for an arbitrary address — useful for monitoring wallets that aren't selected in AppKit (use [`watchBalance`](#watchbalance) for the selected wallet). Requires a streaming provider registered for the network — call throws when none is configured. Use [`hasStreamingProvider`](#hasstreamingprovider) to check first.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -136,7 +136,7 @@ Register a wallet connector at runtime — equivalent to passing it via [`AppKit
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `appKit`\* | [`AppKit`](#appkit) | Runtime instance. |
-| `connectorFn`\* | [`AddConnectorParameters`](#addconnectorparameters) | Connector instance or factory to register. |
+| `connector`\* | [`AddConnectorParameters`](#addconnectorparameters) | Connector instance or factory to register. |
 
 Returns: <code><a href="#addconnectorreturntype">AddConnectorReturnType</a></code> — Function that unregisters the connector when called.
 
@@ -192,6 +192,10 @@ Build a TonConnect-backed [`Connector`](#connector) for AppKit. Pass the result 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `config`\* | [`TonConnectConnectorConfig`](#tonconnectconnectorconfig) | Connector ID, metadata override and TonConnect options or pre-built UI instance. |
+| `config.id` | `string` | Connector ID. Defaults to [`TONCONNECT_DEFAULT_CONNECTOR_ID`](#tonconnect_default_connector_id) (`'tonconnect'`). Set this when you need to register multiple TonConnect-flavoured connectors side by side. |
+| `config.metadata` | <code><a href="#connectormetadata">ConnectorMetadata</a></code> | Display metadata override. Merged on top of TonConnect's default name and icon. |
+| `config.tonConnectOptions` | `TonConnectUiCreateOptions` | Options forwarded to the underlying `TonConnectUI` constructor (manifest URL, etc.). Ignored when `tonConnectUI` is supplied. |
+| `config.tonConnectUI` | `TonConnectUI` | Pre-built `TonConnectUI` instance to reuse. When set, the connector skips its own instantiation and `tonConnectOptions` is ignored. |
 
 Returns: <code><a href="#connectorfactory">ConnectorFactory</a></code> — Factory function consumed by AppKit at registration time.
 
@@ -677,7 +681,7 @@ console.log('Transfer Result:', result);
 
 #### watchJettons
 
-Subscribe to jetton-balance updates for the currently selected wallet, automatically rebinding when the user connects, switches, or disconnects (use [`watchJettonsByAddress`](#watchjettonsbyaddress) for a fixed address).
+Subscribe to jetton-balance updates for the currently selected wallet, automatically rebinding when the user connects, switches, or disconnects (use [`watchJettonsByAddress`](#watchjettonsbyaddress) for a fixed address). Requires a streaming provider registered for the network — call throws when none is configured. Use [`hasStreamingProvider`](#hasstreamingprovider) to check first.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -690,7 +694,7 @@ Returns: <code><a href="#watchjettonsreturntype">WatchJettonsReturnType</a></cod
 
 #### watchJettonsByAddress
 
-Subscribe to jetton-balance updates for an arbitrary owner address (use [`watchJettons`](#watchjettons) for the selected wallet).
+Subscribe to jetton-balance updates for an arbitrary owner address (use [`watchJettons`](#watchjettons) for the selected wallet). Requires a streaming provider registered for the network — call throws when none is configured. Use [`hasStreamingProvider`](#hasstreamingprovider) to check first.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1544,7 +1548,7 @@ console.log('Transfer Result:', result);
 
 #### watchTransactions
 
-Subscribe to incoming-transaction events for the currently selected wallet, automatically rebinding when the user connects, switches, or disconnects (use [`watchTransactionsByAddress`](#watchtransactionsbyaddress) for a fixed address).
+Subscribe to incoming-transaction events for the currently selected wallet, automatically rebinding when the user connects, switches, or disconnects (use [`watchTransactionsByAddress`](#watchtransactionsbyaddress) for a fixed address). Requires a streaming provider registered for the network — call throws when none is configured. Use [`hasStreamingProvider`](#hasstreamingprovider) to check first.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1557,7 +1561,7 @@ Returns: <code><a href="#watchtransactionsreturntype">WatchTransactionsReturnTyp
 
 #### watchTransactionsByAddress
 
-Subscribe to incoming-transaction events for an arbitrary address (use [`watchTransactions`](#watchtransactions) for the selected wallet).
+Subscribe to incoming-transaction events for an arbitrary address (use [`watchTransactions`](#watchtransactions) for the selected wallet). Requires a streaming provider registered for the network — call throws when none is configured. Use [`hasStreamingProvider`](#hasstreamingprovider) to check first.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -1787,7 +1791,7 @@ Constructor: `new CryptoOnrampProvider()`
 
 #### LayerswapCryptoOnrampProvider
 
-[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by Layerswap. Use [`createLayerswapProvider`](#createlayerswapprovider) to register it on AppKit.
+[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by Layerswap. Prefer the [`createLayerswapProvider`](#createlayerswapprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new LayerswapCryptoOnrampProvider(config)`
 
@@ -1799,7 +1803,7 @@ Constructor: `new LayerswapCryptoOnrampProvider(config)`
 
 #### SwapsXyzCryptoOnrampProvider
 
-[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by swaps.xyz. Use [`createSwapsXyzProvider`](#createswapsxyzprovider) to register it on AppKit.
+[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by swaps.xyz. Prefer the [`createSwapsXyzProvider`](#createswapsxyzprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new SwapsXyzCryptoOnrampProvider(config)`
 
@@ -1883,7 +1887,7 @@ Constructor: `new StakingProvider(providerId)`
 
 #### TonStakersStakingProvider
 
-[`StakingProvider`](#stakingprovider) implementation backed by Tonstakers. Use [`createTonstakersProvider`](#createtonstakersprovider) to register it on AppKit.
+[`StakingProvider`](#stakingprovider) implementation backed by Tonstakers. The constructor is private — always go through the [`createTonstakersProvider`](#createtonstakersprovider) factory and pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new TonStakersStakingProvider()`
 
@@ -1891,7 +1895,7 @@ Constructor: `new TonStakersStakingProvider()`
 
 #### DeDustSwapProvider
 
-[`SwapProvider`](#swapprovider) implementation backed by DeDust. Use [`createDeDustProvider`](#creatededustprovider) to register it on AppKit.
+[`SwapProvider`](#swapprovider) implementation backed by DeDust. Prefer the [`createDeDustProvider`](#creatededustprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new DeDustSwapProvider(config)`
 
@@ -1923,7 +1927,7 @@ kit.registerProvider(
 
 #### OmnistonSwapProvider
 
-[`SwapProvider`](#swapprovider) implementation backed by Omniston. Use [`createOmnistonProvider`](#createomnistonprovider) to register it on AppKit.
+[`SwapProvider`](#swapprovider) implementation backed by Omniston. Prefer the [`createOmnistonProvider`](#createomnistonprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new OmnistonSwapProvider(config)`
 
@@ -1982,7 +1986,7 @@ Constructor: `new SwapProvider()`
 
 #### TonConnectWalletAdapter
 
-[`WalletInterface`](#walletinterface) implementation backed by a TonConnect wallet. Built for you by [`createTonConnectConnector`](#createtonconnectconnector) — apps interact with it through standard AppKit actions ([`sendTransaction`](#sendtransaction), [`signText`](#signtext)/[`signBinary`](#signbinary)/[`signCell`](#signcell)). On-chain reads (balance, jettons, NFTs) live on separate actions ([`getBalance`](#getbalance), [`getJettons`](#getjettons), [`getNfts`](#getnfts)) and don't go through this adapter.
+[`WalletInterface`](#walletinterface) implementation backed by a TonConnect wallet. Prefer the [`createTonConnectConnector`](#createtonconnectconnector) factory over instantiating this class directly — the connector builds the adapter for every wallet it tracks and apps interact with it through standard AppKit actions ([`sendTransaction`](#sendtransaction), [`signText`](#signtext)/[`signBinary`](#signbinary)/[`signCell`](#signcell)). On-chain reads (balance, jettons, NFTs) live on separate actions ([`getBalance`](#getbalance), [`getJettons`](#getjettons), [`getNfts`](#getnfts)) and don't go through this adapter.
 
 Constructor: `new TonConnectWalletAdapter(config)`
 
