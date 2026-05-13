@@ -115,21 +115,29 @@ export function PortfolioWatcher() {
 
 ### Conditional watching
 
-When a watch should only run while a flow is active (an order in flight, a modal open, a screen mounted), call `useWatchTransactionsByAddress` with the address as a parameter and let the hook handle the lifecycle. The hook no-ops when `address` is falsy and re-subscribes when it changes, so passing `undefined` is the "off" switch.
+When a watch should only run while some UI is active (a panel expanded, a modal open, a screen mounted), call `useWatchTransactionsByAddress` with the address as a parameter and let the hook handle the lifecycle. The hook no-ops when `address` is falsy and re-subscribes when it changes, so passing `undefined` is the "off" switch.
 
 ```tsx
 import { useState } from 'react';
 import { useWatchTransactionsByAddress } from '@ton/appkit-react';
 
-export function PendingOrder({ address }: { address: string | null }) {
-  const [status, setStatus] = useState('idle');
+export function AddressActivity({ address }: { address: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [count, setCount] = useState(0);
 
   useWatchTransactionsByAddress({
-    address: address ?? undefined,
-    onChange: (update) => setStatus(update.status),
+    address: expanded ? address : undefined,
+    onChange: (update) => setCount((n) => n + update.transactions.length),
   });
 
-  return <span>{status}</span>;
+  return (
+    <div>
+      <button onClick={() => setExpanded((v) => !v)}>
+        {expanded ? 'Pause activity' : 'Show live activity'}
+      </button>
+      {expanded && <span>{count} transactions seen</span>}
+    </div>
+  );
 }
 ```
 
