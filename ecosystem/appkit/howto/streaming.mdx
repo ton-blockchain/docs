@@ -15,15 +15,17 @@ The `StreamingManager` coordinates providers by `chainId`. A streaming provider 
 
 A subscription belongs to the consumer that created it. Balance, jetton, transaction, and combined watches all return an unsubscribe function, and that function is the app's handle for stopping updates when a component unmounts or a flow ends.
 
-Connecting and disconnecting the streaming layer opens and closes provider transports without changing the subscription list. This lets an app pause network activity and resume with the same watches still registered.
+When the underlying transport drops and reconnects, the SDK does not replay events from the gap. Updates resume from the provider's current view of the chain, so any intermediate transitions on a watched address are lost. The subscription list itself survives the cycle — `streamingManager.disconnect()` and `streamingManager.connect()` close and reopen the transport without removing your watches — but a flow that needs certainty should reconcile with a point-in-time read after a reconnect.
 
 ## Before you begin
 
-A connected wallet (for the default-address `useWatch*` hooks) and a streaming provider registered on the AppKit instance. See [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered).
+You need a connected wallet (for the default-address `useWatch*` hooks) and a streaming provider registered on the AppKit instance. See [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered).
 
 ## Watch from React
 
 Mount watch hooks near the part of the tree that needs live data. The hook keeps related query caches fresh while it is mounted; passing `onChange` adds a side-effect callback on top of the cache refresh. Every React watch hook accepts an optional `{ onChange?, network? }`, and the `*ByAddress` variants additionally accept an `address`.
+
+Mount as many watchers as you need. The SDK deduplicates subscribers by network, address, and type, so multiple hook instances watching the same data share one underlying socket subscription. There is no benefit to lifting watchers into a single root component just to share them — pull them into the component that actually needs the live value.
 
 ### Watch a balance
 
@@ -42,7 +44,7 @@ export function LiveBalance() {
 
 ### Watch transactions
 
-`useWatchTransactions({ onChange })` reacts to transaction lifecycle changes. The update payload exposes `traceHash` and `status` (`'pending' | 'confirmed' | 'finalized' | 'invalidated'`). Plug in your own notification or state-update logic; the SDK does not pick a UI primitive for you.
+`useWatchTransactions` reacts to transaction lifecycle changes. The update payload exposes `traceHash` and `status` (`'pending' | 'confirmed' | 'finalized' | 'invalidated'`). Plug in your own notification or state-update logic; the SDK does not pick a UI primitive for you.
 
 ```tsx
 import { useWatchTransactions } from '@ton/appkit-react';
@@ -64,7 +66,10 @@ export function FinalizedLog() {
 For receipt screens, admin tooling, or order-tracking widgets, subscribe to an address that may not be the connected wallet. The `*ByAddress` hooks take an `address` and keep the matching `useBalanceByAddress` / cache fresh while also delivering each update to `onChange`.
 
 ```tsx
-import { useWatchBalanceByAddress, useWatchTransactionsByAddress } from '@ton/appkit-react';
+import {
+  useWatchBalanceByAddress,
+  useWatchTransactionsByAddress,
+} from '@ton/appkit-react';
 
 export function OrderTracker({ orderAddress }: { orderAddress: string }) {
   useWatchBalanceByAddress({
@@ -91,7 +96,7 @@ export function OrderTracker({ orderAddress }: { orderAddress: string }) {
 
 ### Watch jettons
 
-`useWatchJettons({ onChange })` pushes jetton balance changes for the connected wallet. Each update covers one jetton (`masterAddress`, `walletAddress`, `ownerAddress`, `rawBalance`) and may include `decimals` and a formatted `balance` when the jetton's decimals are known.
+`useWatchJettons` pushes jetton balance changes for the connected wallet. Each update covers one jetton (`masterAddress`, `walletAddress`, `ownerAddress`, `rawBalance`) and may include `decimals` and a formatted `balance` when the jetton's decimals are known.
 
 ```tsx
 import { useWatchJettons } from '@ton/appkit-react';
@@ -172,10 +177,10 @@ export function StreamingHealth() {
 }
 ```
 
-## Rules
+## Tips
 
 - Store every unsubscribe function and call it when the consumer goes away.
-- Call `hasStreamingProvider(appKit, network)` before subscribing on a network that may not have a provider registered, and degrade gracefully when it returns `false`.
+- Call `hasStreamingProvider` before subscribing on a network that may not have a provider registered, and degrade gracefully when it returns `false`.
 - Treat streaming updates as best-effort UI refresh signals. Reconcile with a point-in-time read before changing product state that depends on correctness.
 - `update.status` carries one of `'pending' | 'confirmed' | 'finalized' | 'invalidated'` on every streaming payload. Only `'finalized'` is irreversible; treat the others as intermediate.
 

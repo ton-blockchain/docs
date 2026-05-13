@@ -13,7 +13,7 @@ The wallet returns an Ed25519 signature, signing address, wallet timestamp, obse
 
 ## Before you begin
 
-A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+You need a connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
 
 ## Pick the right call
 
@@ -28,35 +28,15 @@ All three hooks are mutation hooks. They return `{ mutate, mutateAsync, isPendin
 ## Sign text
 
 ```tsx
-import { useState } from 'react';
-import { useSignText, useSelectedWallet } from '@ton/appkit-react';
-import { getErrorMessage } from '@ton/appkit';
+import { useSignText } from '@ton/appkit-react';
 
-export function SignMessage() {
-  const [message, setMessage] = useState('');
-  const [signature, setSignature] = useState<string | null>(null);
-  const [wallet] = useSelectedWallet();
+const { mutate: signText } = useSignText();
 
-  const { mutate: signText, isPending } = useSignText({
-    mutation: {
-      onSuccess: (result) => setSignature(result.signature),
-      onError: (error) => console.error(getErrorMessage(error)),
-    },
-  });
+signText({
+  text: 'Message to sign',
+});
 
-  return (
-    <div>
-      <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
-      <button
-        onClick={() => signText({ text: message })}
-        disabled={!wallet || !message.trim() || isPending}
-      >
-        {isPending ? 'Signing…' : 'Sign'}
-      </button>
-      {signature && <code>{signature}</code>}
-    </div>
-  );
-}
+// data: { signature, address, timestamp, domain, payload }
 ```
 
 ## Sign binary
@@ -69,6 +49,8 @@ const { mutate: signBinary } = useSignBinary();
 signBinary({
   bytes: 'base64-encoded-payload',
 });
+
+// data: { signature, address, timestamp, domain, payload }
 ```
 
 ## Sign a cell
@@ -87,6 +69,8 @@ signCell({
   cell: cell.toBoc().toString('base64'),
   schema: 'message#_ value:uint32 text:Text = Message;',
 });
+
+// data: { signature, address, timestamp, domain, payload }
 ```
 
 ## Verify the signature

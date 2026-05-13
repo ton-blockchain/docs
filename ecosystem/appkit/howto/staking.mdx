@@ -7,13 +7,13 @@ Quote a stake or unstake, build the transaction, and send it through the connect
 
 ## How it works
 
-The `StakingManager` routes the quote and build calls across every registered staking provider. A quote describes the intent (`direction: 'stake' | 'unstake'`, `amount`, optional `unstakeMode`), and `useBuildStakeTransaction` turns an accepted quote into a `TransactionRequest`. The provider owns the routing details; AppKit gives the app one integration surface.
+The `StakingManager` routes each quote and build call to a single registered staking provider — by default the first one you registered, or the one you pass as `providerId`. `setDefaultProvider` on the manager overrides the default; an unknown `providerId` throws. A quote describes the intent (`direction: 'stake' | 'unstake'`, `amount`, optional `unstakeMode`), and `useBuildStakeTransaction` turns an accepted quote into a `TransactionRequest`.
 
-The user's stake is held in their wallet as a derivative jetton — Tonstakers issues `tsTON` — not as an opaque "position" object inside AppKit. Read it with `useStakedBalance`, or query the jetton balance directly. `apy` and `instantUnstakeAvailable` from `useStakingProviderInfo` are provider-supplied display data, not guarantees of future yield or withdrawal timing.
+The protocol shape — derivative jetton, unstake modes, settlement timing, pool model — is provider-specific. Tonstakers, the bundled provider, issues `tsTON` and supports `INSTANT`, `WHEN_AVAILABLE`, and `ROUND_END` unstake modes. Read the user's staked-token balance with `useStakedBalance`, or query the jetton balance directly. `apy` and `instantUnstakeAvailable` from `useStakingProviderInfo` are provider-supplied display data, not guarantees of future yield or withdrawal timing.
 
 ## Before you begin
 
-A connected wallet and a staking provider registered on the AppKit instance (Tonstakers ships bundled). See [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered).
+You need a connected wallet and a staking provider registered on the AppKit instance. Tonstakers ships bundled — see [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered).
 
 ## Hooks
 
@@ -25,7 +25,7 @@ A connected wallet and a staking provider registered on the AppKit instance (Ton
 | `useStakingQuote`          | Quote a stake or unstake intent.                                     |
 | `useBuildStakeTransaction` | Build a `TransactionRequest` from a quote.                           |
 
-The first three are query hooks (`{ data, isLoading, isError, refetch }`); the last two are mutation/query pair used together. The built `TransactionRequest` is handed to `<Send />` from `@ton/appkit-react`, which drives the wallet round-trip.
+The first three are query hooks (`{ data, isLoading, isError, refetch }`); the last two are mutation/query pair used together. The built `TransactionRequest` is handed to `<Send />` from `@ton/appkit-react`, which exposes loading/error state.
 
 ## Read the user's staking balance
 
@@ -47,7 +47,10 @@ export function StakedBalance() {
   return (
     <div>
       <p>Staked: {data?.stakedBalance ?? '0'} tsTON</p>
-      <p>Instant unstake liquidity: {data?.instantUnstakeAvailable ?? '0'} TON</p>
+      <p>
+        Instant unstake liquidity:{' '}
+        {data?.instantUnstakeAvailable ?? '0'} TON
+      </p>
     </div>
   );
 }
@@ -71,7 +74,16 @@ export function StakePreview({ amount }: { amount: string }) {
   if (isLoading) return <span>Fetching quote…</span>;
   if (isError || !quote) return <span>Staking unavailable</span>;
 
-  return <span>Stake {quote.amountIn} TON → receive {quote.amountOut} tsTON</span>;
+  const rate = Number(quote.amountOut) / Number(quote.amountIn);
+
+  return (
+    <div>
+      <p>
+        Stake {quote.amountIn} TON → receive {quote.amountOut} tsTON
+      </p>
+      <p>Rate: 1 TON ≈ {rate.toFixed(4)} tsTON</p>
+    </div>
+  );
 }
 ```
 
@@ -94,26 +106,37 @@ const { data: quote } = useStakingQuote({
 import { Send, useAddress, useBuildStakeTransaction } from '@ton/appkit-react';
 import type { StakingQuote } from '@ton/appkit';
 
-export function StakeSendButton({ quote }: { quote: StakingQuote | undefined }) {
+export function StakeSendButton({
+  quote,
+}: {
+  quote: StakingQuote | undefined;
+}) {
   const address = useAddress();
   const { mutateAsync: buildStakeTransaction } = useBuildStakeTransaction();
 
-  const request = () => {
+  const request = async () => {
     if (!quote || !address) {
-      return Promise.reject(new Error('Missing quote or address'));
+      throw new Error('Missing quote or address');
     }
     return buildStakeTransaction({ quote, userAddress: address });
   };
 
-  return <Send request={request} disabled={!quote || !address} text="Stake" />;
+  return (
+    <Send
+      request={request}
+      disabled={!quote || !address}
+      text="Stake"
+      onSuccess={({ boc }) => console.log('sent', boc)}
+    />
+  );
 }
 ```
 
 ## After the send
 
-After the send completes, pass the response to `getTransactionStatus(appKit, ...)` to confirm settlement, then refetch `useStakedBalance` to see the new staked-token balance. The response carries either a `boc` or a `normalizedHash`; pass whichever is set.
+After the send completes, pass the response to `getTransactionStatus` to confirm settlement, then refetch `useStakedBalance` to see the new staked-token balance. The response carries either a `boc` or a `normalizedHash`; pass whichever is set.
 
-## Rules
+## Tips
 
 - The user's stake is a derivative jetton (e.g. `tsTON`), not an opaque AppKit object. Refresh with `useStakedBalance` (or a jetton balance read) after sends.
 - APY and instant-unstake liquidity from `useStakingProviderInfo` are provider-supplied display data, not guarantees of future yield or withdrawal timing.
