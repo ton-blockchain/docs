@@ -30,7 +30,7 @@ All three hooks are mutation hooks. They return `{ mutate, mutateAsync, isPendin
 ```tsx
 import { useSignText } from '@ton/appkit-react';
 
-const { mutate: signText } = useSignText();
+const { mutate: signText, data } = useSignText();
 
 signText({
   text: 'Message to sign',
@@ -44,7 +44,7 @@ signText({
 ```tsx
 import { useSignBinary } from '@ton/appkit-react';
 
-const { mutate: signBinary } = useSignBinary();
+const { mutate: signBinary, data } = useSignBinary();
 
 signBinary({
   bytes: 'base64-encoded-payload',
@@ -61,7 +61,7 @@ For application protocols that exchange typed payloads, send a TON cell.
 import { useSignCell } from '@ton/appkit-react';
 import { beginCell } from '@ton/core';
 
-const { mutate: signCell } = useSignCell();
+const { mutate: signCell, data } = useSignCell();
 
 const cell = beginCell().storeUint(42, 32).storeStringTail('hello').endCell();
 
