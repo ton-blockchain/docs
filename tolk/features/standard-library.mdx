@@ -517,5 +517,5 @@ The stdlib is bundled with the compiler as the `tolk-stdlib/` directory and is d
 The stdlib directory is discovered as follows:
 
 1. The compiler searches predefined and relative paths. For example, when launched from a system-installed package such as `/usr/bin/tolk`, the stdlib is located at `/usr/share/ton/smartcont`. For custom installations, the `TOLK_STDLIB` environment variable can be set.
-1. The WASM wrapper [tolk-js](https://github.com/ton-blockchain/tolk-js) also includes the stdlib, so it is already available when using blueprint.
+1. The WASM wrapper [tolk-js](https://github.com/ton-blockchain/tolk-js) also includes the stdlib, so it is already available when using Blueprint.
 1. IDE plugins automatically locate the stdlib to provide auto-completion. Blueprint installs `tolk-js`, creating the `node_modules/@ton/tolk-js/` folder in the project structure. It contains `common.tolk`, `tvm-dicts.tolk`, and other stdlib files.

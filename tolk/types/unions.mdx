@@ -150,6 +150,10 @@ This pattern is referred to as [`lazy` match](/languages/tolk/features/lazy-load
 
 Union types continue to work correctly without `lazy` and follow the same type-system rules.
 
+## `void` as a union variant
+
+`T | void` is a valid serializable union meaning "T or empty slice" — `void` carries no bits and does not participate in the prefix tree. This is useful for chains like wallet-v5's payload format: parse cells until refs run out. See [void-never](/languages/tolk/types/void-never#void-inside-unions-for-serialization).
+
 ## Stack layout and serialization
 
 Union types have a complex [stack layout](/languages/tolk/types/overall-tvm-stack), commonly referred to as tagged unions.

@@ -57,6 +57,7 @@
         "ShardChain->shardchain",
         "StateInit->`StateInit`",
         "TLB->TL-B",
+        "TONAPI->TonAPI",
         "Toncenter->TON Center",
         "toncoins->Toncoin",
         "Toncoins->Toncoin",
@@ -173,6 +174,7 @@
     //
     // Custom patterns
     //
+    "url: \".*?\"", // frontmatter url field
     "\\s*[^\\s]*?=[\"'\\{]", // arbitrary JSX attribute names
     "=\\s*\".*?\"", // string values of JSX attributes
     "=\\s*'.*?'", // string values of JSX attributes
