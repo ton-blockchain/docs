@@ -175,11 +175,23 @@
                 "group": "TON Connect",
                 "pages": [
                   "ecosystem/ton-connect/overview",
-                  "ecosystem/ton-connect/wallet-connect",
-                  "ecosystem/ton-connect/dapp",
-                  "ecosystem/ton-connect/wallet",
-                  "ecosystem/ton-connect/manifest",
-                  "ecosystem/ton-connect/message-lookup"
+                  "ecosystem/ton-connect/get-started",
+                  "ecosystem/ton-connect/core-concepts",
+                  {
+                    "group": "How-to",
+                    "pages": [
+                      "ecosystem/ton-connect/how-to/connect",
+                      "ecosystem/ton-connect/how-to/disconnect",
+                      "ecosystem/ton-connect/how-to/send-transaction",
+                      "ecosystem/ton-connect/how-to/sign-data",
+                      "ecosystem/ton-connect/how-to/sign-message-gasless",
+                      "ecosystem/ton-connect/how-to/embedded-request",
+                      "ecosystem/ton-connect/how-to/filter-wallets",
+                      "ecosystem/ton-connect/how-to/walletconnect-support"
+                    ]
+                  },
+                  "ecosystem/ton-connect/troubleshooting",
+                  "ecosystem/ton-connect/faq"
                 ]
               },
               {
@@ -2269,37 +2281,37 @@
     },
     {
       "source": "/v3/guidelines/ton-connect/quick-start",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
       "source": "/guidelines/dapp-guide",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/ton-connect/creating-manifest",
-      "destination": "/ecosystem/ton-connect/manifest",
+      "destination": "/ecosystem/ton-connect/core-concepts#manifest",
       "permanent": true
     },
     {
       "source": "/guidelines/install-ton-connect",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/ton-connect/frameworks/react",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/ton-connect/frameworks/web",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/ton-connect/frameworks/python",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
@@ -2309,7 +2321,7 @@
     },
     {
       "source": "/guidelines/cookbook",
-      "destination": "/ecosystem/ton-connect/dapp",
+      "destination": "/ecosystem/ton-connect/get-started",
       "permanent": true
     },
     {
@@ -2334,12 +2346,12 @@
     },
     {
       "source": "/v3/guidelines/ton-connect/guidelines/transaction-by-external-message",
-      "destination": "/ecosystem/ton-connect/message-lookup",
+      "destination": "/ecosystem/ton-connect/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/ton-connect/wallet",
-      "destination": "/ecosystem/ton-connect/wallet",
+      "destination": "/ecosystem/ton-connect/overview",
       "permanent": true
     },
     {
