@@ -123,7 +123,7 @@ export function prefixWithSlash(src) {
  * Creates the Remark parser with same settings as in `remarkConfig` inside `package.json`.
  */
 export async function initMdxParser() {
-  const remarkConfig = (await import(new URL('../.remarkrc.mjs', import.meta.url))).default;
+  const remarkConfig = (await import(join('..', '.remarkrc.mjs'))).default;
   return remark().use(remarkConfig);
 }
 
@@ -263,30 +263,43 @@ export function getConfig() {
 export function getNavLinks(config) {
   /** @type {string[]} */
   const links = [];
-  /** @param page {any} */
-  const processPage = (page) => {
-    switch (typeof page) {
-      case 'string': {
-        links.push(prefixWithSlash(page));
-        break;
+
+  /** @param item {any} */
+  const processItem = (item) => {
+    if (!item) {
+      return;
+    }
+
+    // Plain page string
+    if (typeof item === 'string') {
+      links.push(prefixWithSlash(item));
+      return;
+    }
+
+    // Arrays
+    if (Array.isArray(item)) {
+      item.forEach(processItem);
+      return;
+    }
+
+    // Nested pages/groups/tabs/anchors
+    if (typeof item === 'object') {
+      if (Array.isArray(item.pages)) {
+        item.pages.forEach(processItem);
       }
-      case 'object': {
-        if (page?.pages) {
-          page['pages'].forEach(processPage);
-        }
-        break;
+
+      if (Array.isArray(item.tabs)) {
+        item.tabs.forEach(processItem);
       }
-      default:
-        break;
+
+      if (Array.isArray(item.anchors)) {
+        item.anchors.forEach(processItem);
+      }
     }
   };
-  const navigationRoots = [
-    ...(Array.isArray(config.navigation?.pages) ? config.navigation.pages : []),
-    ...(Array.isArray(config.navigation?.anchors) ? config.navigation.anchors : []),
-    ...(Array.isArray(config.navigation?.tabs) ? config.navigation.tabs : []),
-  ];
 
-  navigationRoots.forEach(processPage);
+  processItem(config.navigation);
+
   return links;
 }
 

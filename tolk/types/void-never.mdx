@@ -51,6 +51,43 @@ fun demo() {
 }
 ```
 
+### Optional `void` parameters
+
+The same convention applies to function parameters: a trailing `void` parameter may be omitted at the call site. This is convenient for generic helpers where "no argument" is naturally represented by `void`.
+
+```tolk
+fun format<T1 = void, T2 = void>(msg: string, arg1: T1, arg2: T2) {
+    // ...
+}
+
+format("hello");
+format("value is {}", 42);
+format("pair is {} and {}", "str", beginCell());
+```
+
+For example, `body` of `createMessage` can be omitted because its type defaults to `TBody = void`.
+
+### `void` inside unions for serialization
+
+`T | void` is a valid serializable union. On the wire, `void` means **empty slice**: nothing is written on serialization, and an empty input slice deserializes to the `void` variant.
+
+This expresses "T or zero bits" — different from `T | null`, which always emits at least the `Maybe` bit.
+
+```tolk
+struct (0x01) Some { x: int32 }
+
+// either Some (0x01 + int32) — or empty slice
+type SomeOrEnd = Some | void
+
+// either 32 bits — or empty slice
+type Int32OrEnd = int32 | void
+
+// 0+int32, 1+int64, or empty slice
+type WideOrEnd = int32 | int64 | void
+```
+
+`void` does not participate in the prefix tree built for the other variants; it must come last and is matched by an empty slice. After deserialization, the value can be tested with `someVar is void`, or with `match (v) { ... void => ... }`. See [serialization rules](/languages/tolk/types/overall-serialization#void-as-a-union-variant-empty-slice) for details.
+
 ## `never`
 
 A function that never returns is `never`. A function whose execution always terminates by throwing an error has return type `never`:
