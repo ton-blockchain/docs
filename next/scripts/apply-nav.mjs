@@ -667,7 +667,7 @@ async function emitMetaTree(config) {
     // Folder-backed tabs (non-empty slug) appear as a folder reference in the
     // root meta.json. The root-mounted tab (slug "") is the root itself, so
     // there's nothing to append to "" — its directory IS "".
-    if (tab.slug) addEntry("", tab.slug)
+    // if (tab.slug) addEntry("", tab.slug)
     // Every tab — including the empty-slug root-mounted one — gets
     // `root: true` so Fumadocs treats it as a sidebar tab. With this in place,
     // visiting any non-folder-backed page activates the root tab and the full
@@ -683,7 +683,7 @@ async function emitMetaTree(config) {
 
   // Append filesystem-discovered children that the config doesn't reference,
   // alphabetically, so Fumadocs still shows them.
-  await appendUnlistedChildren(dirs)
+  // await appendUnlistedChildren(dirs)
 
   const ordered = [...dirs.keys()].sort()
   for (const dir of ordered) {
