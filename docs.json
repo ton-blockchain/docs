@@ -146,7 +146,7 @@
         ]
       },
       {
-        "tab": "Apps",
+        "tab": "Applications",
         "pages": [
           {
             "group": "AppKit",
@@ -159,142 +159,166 @@
               "ecosystem/appkit/swap",
               "ecosystem/appkit/stake"
             ]
-          },
-          {
-            "group": "TMA: Telegram Mini Apps",
-            "pages": [
-              "ecosystem/tma/overview",
-              "ecosystem/tma/create-mini-app",
-              {
-                "group": "Telegram UI",
-                "pages": [
-                  "ecosystem/tma/telegram-ui/overview",
-                  "ecosystem/tma/telegram-ui/getting-started",
-                  "ecosystem/tma/telegram-ui/platform-and-palette",
-                  {
-                    "group": "Reference",
-                    "pages": [
-                      "ecosystem/tma/telegram-ui/reference/avatar"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Analytics",
-                "pages": [
-                  "ecosystem/tma/analytics/analytics",
-                  "ecosystem/tma/analytics/supported-events",
-                  "ecosystem/tma/analytics/preparation",
-                  "ecosystem/tma/analytics/install-via-script",
-                  "ecosystem/tma/analytics/install-via-npm",
-                  "ecosystem/tma/analytics/api-endpoints",
-                  "ecosystem/tma/analytics/managing-integration",
-                  "ecosystem/tma/analytics/faq"
-                ]
-              }
-            ]
           }
         ]
       },
       {
-        "tab": "Wallets",
+        "tab": "Tools",
         "pages": [
-          "ecosystem/walletkit/overview",
           {
-            "group": "Web",
+            "group": "WalletKit",
             "pages": [
-              "ecosystem/walletkit/web/init",
-              "ecosystem/walletkit/web/wallets",
-              "ecosystem/walletkit/web/connections",
-              "ecosystem/walletkit/web/events",
-              "ecosystem/walletkit/web/toncoin",
-              "ecosystem/walletkit/web/jettons",
-              "ecosystem/walletkit/web/nfts"
+              "ecosystem/walletkit/overview",
+              {
+                "group": "Web",
+                "pages": [
+                  "ecosystem/walletkit/web/init",
+                  "ecosystem/walletkit/web/wallets",
+                  "ecosystem/walletkit/web/connections",
+                  "ecosystem/walletkit/web/events",
+                  "ecosystem/walletkit/web/toncoin",
+                  "ecosystem/walletkit/web/jettons",
+                  "ecosystem/walletkit/web/nfts"
+                ]
+              },
+              {
+                "group": "iOS",
+                "pages": [
+                  "ecosystem/walletkit/ios/installation",
+                  "ecosystem/walletkit/ios/init",
+                  "ecosystem/walletkit/ios/wallets",
+                  "ecosystem/walletkit/ios/data",
+                  "ecosystem/walletkit/ios/transactions",
+                  "ecosystem/walletkit/ios/events",
+                  "ecosystem/walletkit/ios/webview"
+                  ]
+              },
+              {
+                "group": "Android",
+                "pages": [
+                  "ecosystem/walletkit/android/installation",
+                  "ecosystem/walletkit/android/init",
+                  "ecosystem/walletkit/android/wallets",
+                  "ecosystem/walletkit/android/data",
+                  "ecosystem/walletkit/android/events",
+                  "ecosystem/walletkit/android/transactions",
+                  "ecosystem/walletkit/android/webview"
+                ]
+              },
+              "ecosystem/walletkit/qa-guide",
+              "ecosystem/walletkit/native-web",
+              "ecosystem/walletkit/browser-extension"
             ]
           },
           {
-            "group": "iOS",
+            "group": "TON Pay",
             "pages": [
-              "ecosystem/walletkit/ios/installation",
-              "ecosystem/walletkit/ios/init",
-              "ecosystem/walletkit/ios/wallets",
-              "ecosystem/walletkit/ios/data",
-              "ecosystem/walletkit/ios/transactions",
-              "ecosystem/walletkit/ios/events",
-              "ecosystem/walletkit/ios/webview"
-              ]
-          },
-          {
-            "group": "Android",
-            "pages": [
-              "ecosystem/walletkit/android/installation",
-              "ecosystem/walletkit/android/init",
-              "ecosystem/walletkit/android/wallets",
-              "ecosystem/walletkit/android/data",
-              "ecosystem/walletkit/android/events",
-              "ecosystem/walletkit/android/transactions",
-              "ecosystem/walletkit/android/webview"
+              "ecosystem/ton-pay/overview",
+              "ecosystem/ton-pay/quick-start",
+              "ecosystem/ton-pay/on-ramp",
+              {
+                "group": "Payment integration",
+                "pages": [
+                  "ecosystem/ton-pay/payment-integration/transfer",
+                  "ecosystem/ton-pay/payment-integration/payments-react",
+                  "ecosystem/ton-pay/payment-integration/payments-tonconnect",
+                  "ecosystem/ton-pay/payment-integration/status-info"
+                ]
+              },
+              {
+                "group": "UI integration",
+                "pages": [
+                  "ecosystem/ton-pay/ui-integration/button-react",
+                  "ecosystem/ton-pay/ui-integration/button-js"
+                ]
+              },
+              "ecosystem/ton-pay/webhooks",
+              "ecosystem/ton-pay/api-reference"
             ]
           },
-          "ecosystem/walletkit/qa-guide",
-          "ecosystem/walletkit/native-web",
-          "ecosystem/walletkit/browser-extension"
+          {
+            "group": "APIs",
+            "pages": [
+              "ecosystem/api/overview",
+              {
+                "group": "TON Center",
+                "expanded": true,
+                "pages": [
+                  "ecosystem/api/toncenter/introduction",
+                  "ecosystem/api/toncenter/rate-limit",
+                  "ecosystem/api/toncenter/get-api-key",
+                  {
+                    "group": "API v2",
+                    "pages": [
+                      "ecosystem/api/toncenter/v2/overview",
+                      "ecosystem/api/toncenter/v2-authentication",
+                      "ecosystem/api/toncenter/v2-errors",
+                      "ecosystem/api/toncenter/v2-tonlib-types"
+                    ],
+                    "openapi": {
+                      "source": "ecosystem/api/toncenter/v2.json",
+                      "directory": "ecosystem/api/toncenter/v2"
+                    }
+                  },
+                  {
+                    "group": "API v3",
+                    "pages": [
+                      "ecosystem/api/toncenter/v3/overview",
+                      "ecosystem/api/toncenter/v3-errors",
+                      "ecosystem/api/toncenter/v3-authentication",
+                      "ecosystem/api/toncenter/v3-pagination"
+                    ],
+                    "openapi": {
+                      "source": "ecosystem/api/toncenter/v3.yaml",
+                      "directory": "ecosystem/api/toncenter/v3"
+                    }
+                  },
+                  {
+                    "group": "Streaming API",
+                    "tag": "v2",
+                    "pages": [
+                      "ecosystem/api/toncenter/streaming/overview",
+                      "ecosystem/api/toncenter/streaming/sse",
+                      "ecosystem/api/toncenter/streaming/wss",
+                      "ecosystem/api/toncenter/streaming/reference"
+                    ]
+                  },
+                  {
+                    "group": "Nominator Pools API",
+                    "openapi": {
+                      "source": "ecosystem/api/toncenter/smc-index.json",
+                      "directory": "ecosystem/api/toncenter/smc-index"
+                    }
+                  }
+                ]
+              },
+              "ecosystem/api/price"
+            ]
+          },
+          "ecosystem/sdks"
         ]
       },
       {
-        "tab": "Smart contracts",
+        "tab": "Foundations",
         "pages": [
+          "foundations/core-concepts",
           {
-            "group": "Develop a smart contract",
+            "group": "Payment processing",
             "pages": [
-              "contract-dev/introduction",
-              "contract-dev/acton",
-              {
-                "group": "IDEs and editor plugins",
-                "pages": [
-                  "contract-dev/ide/vscode",
-                  "contract-dev/ide/jetbrains"
-                ]
-              },
-              {
-                "group": "Techniques",
-                "expanded": true,
-                "pages": [
-                  "contract-dev/techniques/signing",
-                  "contract-dev/techniques/contract-sharding",
-                  "contract-dev/techniques/security",
-                  "contract-dev/techniques/gas",
-                  "contract-dev/techniques/on-chain-jetton-processing",
-                  "contract-dev/techniques/using-on-chain-libraries",
-                  "contract-dev/techniques/random",
-                  "contract-dev/techniques/upgrades",
-                  "contract-dev/techniques/vanity",
-                  "contract-dev/techniques/zero-knowledge"
-                ]
-              },
-              {
-                "group": "Blueprint",
-                "tag": "legacy",
-                "pages": [
-                  "contract-dev/blueprint/overview",
-                 "contract-dev/blueprint/first-smart-contract",
-                  "contract-dev/blueprint/develop",
-                  {
-                    "group": "Testing",
-                    "pages": [
-                      "contract-dev/testing/overview",
-                      "contract-dev/testing/reference"
-                    ]
-                  },
-                  "contract-dev/blueprint/debug",
-                  "contract-dev/blueprint/deploy",
-                  "contract-dev/blueprint/coverage",
-                  "contract-dev/blueprint/benchmarks",
-                  "contract-dev/blueprint/config",
-                  "contract-dev/blueprint/cli",
-                  "contract-dev/blueprint/api"
-                ]
-              }
+               "payments/overview",
+               "payments/toncoin",
+               "payments/jettons"
+            ]
+          },          
+          {
+            "group": "TON Connect",
+            "pages": [
+              "ecosystem/ton-connect/overview",
+              "ecosystem/ton-connect/wallet-connect",
+              "ecosystem/ton-connect/dapp",
+              "ecosystem/ton-connect/wallet",
+              "ecosystem/ton-connect/manifest",
+              "ecosystem/ton-connect/message-lookup"
             ]
           },
           {
@@ -354,7 +378,6 @@
               },
               {
                 "group": "Tokens",
-                "expanded": true,
                 "pages": [
                   "standard/tokens/overview",
                   "standard/tokens/metadata",
@@ -376,7 +399,7 @@
                     ]
                   },
                   {
-                    "group": "NFT",
+                    "group": "NFTs",
                     "pages": [
                       "standard/tokens/nft/overview",
                       "standard/tokens/nft/how-it-works",
@@ -395,6 +418,58 @@
                 ]
               },
               "standard/vesting"
+            ]
+          },
+          {
+            "group": "Smart contract development",
+            "pages": [
+              "contract-dev/introduction",
+              "contract-dev/acton",
+              {
+                "group": "IDEs and editor plugins",
+                "pages": [
+                  "contract-dev/ide/vscode",
+                  "contract-dev/ide/jetbrains"
+                ]
+              },
+              {
+                "group": "Techniques",
+                "pages": [
+                  "contract-dev/techniques/signing",
+                  "contract-dev/techniques/contract-sharding",
+                  "contract-dev/techniques/security",
+                  "contract-dev/techniques/gas",
+                  "contract-dev/techniques/on-chain-jetton-processing",
+                  "contract-dev/techniques/using-on-chain-libraries",
+                  "contract-dev/techniques/random",
+                  "contract-dev/techniques/upgrades",
+                  "contract-dev/techniques/vanity",
+                  "contract-dev/techniques/zero-knowledge"
+                ]
+              },
+              {
+                "group": "Blueprint",
+                "tag": "legacy",
+                "pages": [
+                  "contract-dev/blueprint/overview",
+                 "contract-dev/blueprint/first-smart-contract",
+                  "contract-dev/blueprint/develop",
+                  {
+                    "group": "Testing",
+                    "pages": [
+                      "contract-dev/testing/overview",
+                      "contract-dev/testing/reference"
+                    ]
+                  },
+                  "contract-dev/blueprint/debug",
+                  "contract-dev/blueprint/deploy",
+                  "contract-dev/blueprint/coverage",
+                  "contract-dev/blueprint/benchmarks",
+                  "contract-dev/blueprint/config",
+                  "contract-dev/blueprint/cli",
+                  "contract-dev/blueprint/api"
+                ]
+              }
             ]
           },
           {
@@ -541,179 +616,6 @@
               },
               "languages/tact"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "Nodes",
-        "pages": [
-          "ecosystem/nodes/overview",
-          {
-            "group": "C++ node",
-            "pages": [
-              "ecosystem/nodes/cpp/setup-mytonctrl",
-              "ecosystem/nodes/cpp/run-validator",
-              "ecosystem/nodes/cpp/integrating-with-prometheus",
-              "ecosystem/nodes/cpp/setup-mylocalton",
-              {
-                "group": "MyTonCtrl reference",
-                "pages": [
-                  "ecosystem/nodes/cpp/mytonctrl/overview",
-                  "ecosystem/nodes/cpp/mytonctrl/core",
-                  "ecosystem/nodes/cpp/mytonctrl/installer",
-                  "ecosystem/nodes/cpp/mytonctrl/wallet",
-                  "ecosystem/nodes/cpp/mytonctrl/validator",
-                  "ecosystem/nodes/cpp/mytonctrl/collator",
-                  "ecosystem/nodes/cpp/mytonctrl/pools",
-                  "ecosystem/nodes/cpp/mytonctrl/liquid-staking",
-                  "ecosystem/nodes/cpp/mytonctrl/custom-overlays",
-                  "ecosystem/nodes/cpp/mytonctrl/utilities",
-                  "ecosystem/nodes/cpp/mytonctrl/alerting",
-                  "ecosystem/nodes/cpp/mytonctrl/backups",
-                  "ecosystem/nodes/cpp/mytonctrl/btc-teleport"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Rust node",
-            "pages": [
-              "ecosystem/nodes/rust/quick-start",
-              "ecosystem/nodes/rust/architecture",
-              "ecosystem/nodes/rust/global-config",
-              "ecosystem/nodes/rust/logs-config",
-              "ecosystem/nodes/rust/node-config",
-              "ecosystem/nodes/rust/metrics",
-              "ecosystem/nodes/rust/node-config-ref",
-              "ecosystem/nodes/rust/probes",
-              "ecosystem/nodes/rust/monitoring"
-            ]
-          },
-          {
-            "group": "Staking",
-            "pages": [
-              "ecosystem/staking/overview",
-              "ecosystem/staking/stake-calculation",
-              "ecosystem/staking/liquid-staking",
-              "ecosystem/staking/single-nominator",
-              "ecosystem/staking/nominator-pools"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "APIs & SDKs",
-        "pages": [
-          {
-            "group": "APIs",
-            "pages": [
-              "ecosystem/api/overview",
-              {
-                "group": "TON Center",
-                "expanded": true,
-                "pages": [
-                  "ecosystem/api/toncenter/introduction",
-                  "ecosystem/api/toncenter/rate-limit",
-                  "ecosystem/api/toncenter/get-api-key",
-                  {
-                    "group": "API v2",
-                    "pages": [
-                      "ecosystem/api/toncenter/v2/overview",
-                      "ecosystem/api/toncenter/v2-authentication",
-                      "ecosystem/api/toncenter/v2-errors",
-                      "ecosystem/api/toncenter/v2-tonlib-types"
-                    ],
-                    "openapi": {
-                      "source": "ecosystem/api/toncenter/v2.json",
-                      "directory": "ecosystem/api/toncenter/v2"
-                    }
-                  },
-                  {
-                    "group": "API v3",
-                    "pages": [
-                      "ecosystem/api/toncenter/v3/overview",
-                      "ecosystem/api/toncenter/v3-errors",
-                      "ecosystem/api/toncenter/v3-authentication",
-                      "ecosystem/api/toncenter/v3-pagination"
-                    ],
-                    "openapi": {
-                      "source": "ecosystem/api/toncenter/v3.yaml",
-                      "directory": "ecosystem/api/toncenter/v3"
-                    }
-                  },
-                  {
-                    "group": "Streaming API",
-                    "tag": "v2",
-                    "pages": [
-                      "ecosystem/api/toncenter/streaming/overview",
-                      "ecosystem/api/toncenter/streaming/sse",
-                      "ecosystem/api/toncenter/streaming/wss",
-                      "ecosystem/api/toncenter/streaming/reference"
-                    ]
-                  },
-                  {
-                    "group": "Nominator Pools API",
-                    "openapi": {
-                      "source": "ecosystem/api/toncenter/smc-index.json",
-                      "directory": "ecosystem/api/toncenter/smc-index"
-                    }
-                  }
-                ]
-              },
-              "ecosystem/api/price"
-            ]
-          },
-          "ecosystem/sdks",
-          {
-            "group": "TON Pay",
-            "pages": [
-              "ecosystem/ton-pay/overview",
-              "ecosystem/ton-pay/quick-start",
-              "ecosystem/ton-pay/on-ramp",
-              {
-                "group": "Payment integration",
-                "pages": [
-                  "ecosystem/ton-pay/payment-integration/transfer",
-                  "ecosystem/ton-pay/payment-integration/payments-react",
-                  "ecosystem/ton-pay/payment-integration/payments-tonconnect",
-                  "ecosystem/ton-pay/payment-integration/status-info"
-                ]
-              },
-              {
-                "group": "UI integration",
-                "pages": [
-                  "ecosystem/ton-pay/ui-integration/button-react",
-                  "ecosystem/ton-pay/ui-integration/button-js"
-                ]
-              },
-              "ecosystem/ton-pay/webhooks",
-              "ecosystem/ton-pay/api-reference"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Foundations",
-        "pages": [
-          "foundations/core-concepts",
-          {
-            "group": "Payment processing",
-            "pages": [
-               "payments/overview",
-               "payments/toncoin",
-               "payments/jettons"
-            ]
-          },
-          {
-            "group": "TON Connect",
-            "pages": [
-              "ecosystem/ton-connect/overview",
-              "ecosystem/ton-connect/wallet-connect",
-              "ecosystem/ton-connect/dapp",
-              "ecosystem/ton-connect/wallet",
-              "ecosystem/ton-connect/manifest",
-              "ecosystem/ton-connect/message-lookup"
-            ]
           },
           {
             "group": "TVM: TON Virtual Machine",
@@ -736,6 +638,63 @@
               "tvm/initialization",
               "tvm/exit-codes",
               "tvm/get-method"
+            ]
+          },
+          {
+            "group": "Nodes",
+            "pages": [
+              "ecosystem/nodes/overview",
+              {
+                "group": "C++ node",
+                "pages": [
+                  "ecosystem/nodes/cpp/setup-mytonctrl",
+                  "ecosystem/nodes/cpp/run-validator",
+                  "ecosystem/nodes/cpp/integrating-with-prometheus",
+                  "ecosystem/nodes/cpp/setup-mylocalton",
+                  {
+                    "group": "MyTonCtrl reference",
+                    "pages": [
+                      "ecosystem/nodes/cpp/mytonctrl/overview",
+                      "ecosystem/nodes/cpp/mytonctrl/core",
+                      "ecosystem/nodes/cpp/mytonctrl/installer",
+                      "ecosystem/nodes/cpp/mytonctrl/wallet",
+                      "ecosystem/nodes/cpp/mytonctrl/validator",
+                      "ecosystem/nodes/cpp/mytonctrl/collator",
+                      "ecosystem/nodes/cpp/mytonctrl/pools",
+                      "ecosystem/nodes/cpp/mytonctrl/liquid-staking",
+                      "ecosystem/nodes/cpp/mytonctrl/custom-overlays",
+                      "ecosystem/nodes/cpp/mytonctrl/utilities",
+                      "ecosystem/nodes/cpp/mytonctrl/alerting",
+                      "ecosystem/nodes/cpp/mytonctrl/backups",
+                      "ecosystem/nodes/cpp/mytonctrl/btc-teleport"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Rust node",
+                "pages": [
+                  "ecosystem/nodes/rust/quick-start",
+                  "ecosystem/nodes/rust/architecture",
+                  "ecosystem/nodes/rust/global-config",
+                  "ecosystem/nodes/rust/logs-config",
+                  "ecosystem/nodes/rust/node-config",
+                  "ecosystem/nodes/rust/metrics",
+                  "ecosystem/nodes/rust/node-config-ref",
+                  "ecosystem/nodes/rust/probes",
+                  "ecosystem/nodes/rust/monitoring"
+                ]
+              },
+              {
+                "group": "Staking",
+                "pages": [
+                  "ecosystem/staking/overview",
+                  "ecosystem/staking/stake-calculation",
+                  "ecosystem/staking/liquid-staking",
+                  "ecosystem/staking/single-nominator",
+                  "ecosystem/staking/nominator-pools"
+                ]
+              }
             ]
           },
           {
@@ -828,6 +787,11 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Smart contracts",
+        "icon": "arrow-up-right",
+        "href": "https://ton-blockchain.github.io/acton/docs/welcome"
       } 
     ]
   },
@@ -2018,52 +1982,52 @@
     },
     {
       "source": "/guidelines/tma",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/overview",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/guidelines/tma-guidelines",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/guidelines/testing-apps",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/guidelines/publishing",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/guidelines/monetization",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/guidelines/tips-and-tricks",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/guidelines/tma-tutorials-and-examples",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/tutorials/step-by-step-guide",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/dapps/tma/tutorials/app-examples",
-      "destination": "/ecosystem/tma/overview",
+      "destination": "/ecosystem/appkit/overview",
       "permanent": true
     },
     {
@@ -2598,27 +2562,27 @@
     },
     {
       "source": "/develop/dapps/telegram-apps/testing-apps",
-      "destination": "/v3/guidelines/dapps/tma/guidelines/testing-apps",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
       "source": "/develop/dapps/telegram-apps/publishing",
-      "destination": "/v3/guidelines/dapps/tma/guidelines/publishing",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
       "source": "/develop/dapps/telegram-apps/monetization",
-      "destination": "/v3/guidelines/dapps/tma/guidelines/monetization",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
       "source": "/develop/dapps/telegram-apps/tips-and-tricks",
-      "destination": "/v3/guidelines/dapps/tma/guidelines/tips-and-tricks",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
       "source": "/develop/dapps/telegram-apps/design-guidelines",
-      "destination": "/v3/guidelines/dapps/tma/tutorials/design-guidelines",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
@@ -3188,17 +3152,17 @@
     },
     {
       "source": "/develop/dapps/telegram-apps/README",
-      "destination": "/v3/guidelines/dapps/tma/overview",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
       "source": "/develop/dapps/telegram-apps/app-examples",
-      "destination": "/v3/guidelines/dapps/tma/tutorials/app-examples",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
       "source": "/develop/dapps/telegram-apps/step-by-step-guide",
-      "destination": "/v3/guidelines/dapps/tma/tutorials/step-by-step-guide",
+      "destination": "/ecosystem/tma/overview",
       "permanent": true
     },
     {
