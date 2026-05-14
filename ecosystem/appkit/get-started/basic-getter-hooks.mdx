@@ -1,9 +1,9 @@
 ---
-title: "Basic getter hooks"
-sidebarTitle: "Basic getter hooks"
+title: "Use basic getter hooks"
+sidebarTitle: "Use basic getter hooks"
 ---
 
-Getter hooks read AppKit state from React and re-render when that state changes. They do not start wallet actions; transactions and signatures use mutation hooks such as `useTransferTon`, `useSignText`, and `useSendTransaction`.
+Read the connected wallet's state from React using AppKit's getter hooks. They re-render when the underlying state changes and do not themselves start wallet actions — transactions and signatures use mutation hooks such as `useTransferTon`, `useSignText`, and `useSendTransaction`.
 
 ## Before you begin
 
@@ -47,13 +47,18 @@ The hooks that return query results: `useBalance`, `useJettons`, `useNfts`, `use
 
 ## Provider data is not chain finality
 
-A getter hook reflects a snapshot of provider data, not the chain itself. The user's wallet may report state that differs from what the configured `apiClient` returns — usually because the indexer is a few blocks behind the wallet, sometimes because the two read different networks. For live updates without manual refetch, mount the matching `useWatch*` hook (covered on [Streaming](/ecosystem/appkit/get-started/streaming)).
+A getter hook reflects a snapshot of provider data, not the chain itself. The user's wallet may report state that differs from what the configured `apiClient` returns — usually because the indexer is a few blocks behind the wallet, sometimes because the two read different networks. For live updates without manual refetch, mount the matching `useWatch*` hook (covered on [Stream live updates](/ecosystem/appkit/get-started/streaming)).
 
-## Rules
+## Tips
 
 Treat hook data as the latest read, not as a settlement check. Verify chain effects with `getTransactionStatus` or a backend before crediting value, and re-check after any reconnect.
 
-## Next steps
+## Code example
 
-- See [How to read balances](/ecosystem/appkit/howto/read-balances) for a complete walkthrough of reading TON, jetton, and NFT data.
-- See the [`@ton/appkit-react` reference](/ecosystem/appkit/reference/appkit-react) for the full hook surface.
+See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) that uses `useBalance`, `useJettons`, and `useNfts` to render wallet state.
+
+## What to do next
+
+- Move on to [Send transactions](/ecosystem/appkit/get-started/sending-transactions) — at that point you'll have a working app.
+- For a full walkthrough of reading TON, jetton, and NFT data, see [Read balances](/ecosystem/appkit/howto/read-balances).
+- Look up the full hook surface in the [`@ton/appkit-react` reference](/ecosystem/appkit/reference/appkit-react).

@@ -3,10 +3,6 @@ title: "AppKit"
 sidebarTitle: "Overview"
 ---
 
-AppKit is a TypeScript toolkit for adding TON wallet connection, payments, assets, DeFi flows, and React UI primitives to web applications.
-
-It prepares requests, tracks application state, and connects the application interface to wallets and providers. Wallets still sign transactions and data. Backends still verify orders, signatures, and business rules.
-
 | Goal                        | Read                                                             |
 | --------------------------- | ---------------------------------------------------------------- |
 | Add AppKit to a new app     | [Get started](/ecosystem/appkit/get-started)                     |
@@ -15,11 +11,13 @@ It prepares requests, tracks application state, and connects the application int
 | Check upgrade notes         | [Changelog](/ecosystem/appkit/changelog)                         |
 | Diagnose common issues      | [FAQ and troubleshooting](/ecosystem/appkit/faq-troubleshooting) |
 
-## What AppKit is
+## What is AppKit
 
-AppKit is the application layer around TON wallet operations. It gives one place to configure networks, connectors, providers, and React integration.
+AppKit gives one place to configure networks, connectors, providers, and React integration around TON wallet operations. It prepares requests, tracks application state, and bridges the application interface to wallets and providers.
 
-Use AppKit when an application needs to:
+Wallets still sign transactions and data. Backends still verify orders, signatures, and business rules.
+
+Reach for AppKit when an application needs to:
 
 - connect a TON wallet
 - request Toncoin, jetton, NFT, swap, staking, or signing operations
@@ -37,6 +35,12 @@ Use AppKit when an application needs to:
 | `@ton/appkit/swap/dedust`        | DeDust swap provider.                                            |
 | `@ton/appkit/staking/tonstakers` | Tonstakers staking provider.                                     |
 
-## Current status
+## Examples
 
-AppKit is an application toolkit. Treat wallet approval, transaction inclusion, indexer data, and backend settlement as separate systems. Production apps should verify critical outcomes outside the browser.
+The [`appkit-minter`](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) example app wires AppKit into a Vite + React app: wallet connect, balance and jetton reads, transaction sending, and streaming watches in one place.
+
+## What to do next
+
+- Walk through [Get started](/ecosystem/appkit/get-started) to install AppKit and reach a working app.
+- Switch to [How to](/ecosystem/appkit/howto) for task-level recipes once the baseline is in place.
+- Look up types and signatures in [Reference](/ecosystem/appkit/reference).
