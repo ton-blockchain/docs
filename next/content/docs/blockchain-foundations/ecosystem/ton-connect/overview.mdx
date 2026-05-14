@@ -29,15 +29,14 @@ Start here if you are integrating TON Connect into a web or Mini App frontend.
 
 When something breaks, jump to [Troubleshooting](/ecosystem/ton-connect/troubleshooting) — error codes and manifest 404 / CORS — or the [FAQ](/ecosystem/ton-connect/faq) for design-choice questions.
 
-## SDK reference
+## API reference
 
 The dApp-facing packages live in the [`ton-connect/sdk`](https://github.com/ton-connect/sdk) monorepo:
 
-{/* TODO(sdk-ref): switch to custom api ref once merged. */}
-
-- [`@tonconnect/ui-react`](https://ton-connect.github.io/sdk/modules/_tonconnect_ui-react.html) — hooks and prebuilt components for React.
-- [`@tonconnect/ui`](https://ton-connect.github.io/sdk/modules/_tonconnect_ui.html) — framework-agnostic UI, same components without React bindings.
-- [`@tonconnect/sdk`](https://ton-connect.github.io/sdk/modules/_tonconnect_sdk.html) — headless connector for server-side flows or custom UI.
+- [`@tonconnect/ui-react`](/ecosystem/ton-connect/api-reference/ui-react) — hooks and prebuilt components for React.
+- [`@tonconnect/ui`](/ecosystem/ton-connect/api-reference/ui) — framework-agnostic UI, same components without React bindings.
+- [`@tonconnect/sdk`](/ecosystem/ton-connect/api-reference/sdk) — headless connector for server-side flows or custom UI.
+- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — wire-format types and session cryptography for wallet/SDK implementers.
 
 A working end-to-end example: [demo-dapp-with-react-ui](https://github.com/ton-connect/demo-dapp-with-react-ui) ([live](https://tonconnect-sdk-demo-dapp.vercel.app/)).
 
@@ -52,4 +51,4 @@ Wallet implementers consume the normative spec, not these docs. See the [TON Con
 - [Protocol specification](https://github.com/the-ton-tech/ton-connect/tree/feature/refine-protocol) — bridge, RPC, session, and connect.
 - [Public wallet registry](https://github.com/ton-connect/wallets-list) — the `wallets-v2.json` file each wallet registers in.
 - [HTTP bridge reference implementation](https://github.com/ton-connect/bridge) — Go bridge implementation.
-- [`@tonconnect/protocol`](https://ton-connect.github.io/sdk/modules/_tonconnect_protocol.html) — types and helpers shared between SDK and wallets.
+- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — types and helpers shared between SDK and wallets.
