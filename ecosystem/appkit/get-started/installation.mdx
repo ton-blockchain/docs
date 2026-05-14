@@ -1,15 +1,29 @@
 ---
 title: "Prepare your project"
-sidebarTitle: "Preparation"
+sidebarTitle: "Prepare your project"
 ---
 
-AppKit's dependencies (`@ton/core` and `@ton/crypto`) use Node.js' `Buffer` global. Browsers don't expose it, and bundlers such as Vite, esbuild, Rollup, and Parcel don't polyfill it automatically. Without a polyfill, the first call into `@ton/core` — usually address parsing — throws `ReferenceError: Buffer is not defined`.
+Before adding AppKit, you need a JavaScript project with a module bundler. If you already have one, skip the scaffold step. The Buffer polyfill is required either way — AppKit's dependencies (`@ton/core` and `@ton/crypto`) use Node.js' `Buffer` global, which browsers don't expose and bundlers (Vite, esbuild, Rollup, Parcel) don't polyfill automatically. Without it, the first call into `@ton/core` — usually address parsing — throws `ReferenceError: Buffer is not defined`.
 
-The polyfill must run before any AppKit import. The reliable way to guarantee that is to load it from a dedicated module in the HTML entry, ahead of the application script. Relying on import order inside the entry file alone is fragile.
+The polyfill must run before any AppKit import. Load it from a dedicated module in the HTML entry, ahead of the application script — relying on import order inside the entry file alone is fragile.
 
 The steps below use Vite. The same pattern applies to any module-based bundler (Webpack, Parcel, Rollup): a dedicated polyfill module referenced from the HTML entry, before the application script.
 
 <Steps>
+  <Step
+    title="Scaffold a project (skip if you already have one)"
+  >
+    Create a new Vite project with the React + TypeScript template.
+
+    ```shell
+    pnpm create vite my-app --template react-ts
+    cd my-app
+    pnpm install
+    ```
+
+    Swap `pnpm` for `npm create` or `yarn create` if you don't use pnpm.
+  </Step>
+
   <Step
     title="Install the polyfill package"
   >
