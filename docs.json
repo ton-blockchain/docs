@@ -146,20 +146,64 @@
         ]
       },
       {
-        "tab": "Applications",
+        "tab": "AppKit",
+        "icon": "box",
         "pages": [
+          "ecosystem/appkit/overview",
+          "ecosystem/appkit/changelog",
           {
-            "group": "AppKit",
+            "group": "Get Started",
+            "icon": "rocket",
+            "expanded": true,
             "pages": [
-              "ecosystem/appkit/overview",
-              "ecosystem/appkit/init",
-              "ecosystem/appkit/toncoin",
-              "ecosystem/appkit/jettons",
-              "ecosystem/appkit/nfts",
-              "ecosystem/appkit/swap",
-              "ecosystem/appkit/stake"
+              "ecosystem/appkit/get-started",
+              {
+                "group": "Installation",
+                "pages": [
+                  "ecosystem/appkit/get-started/installation",
+                  "ecosystem/appkit/get-started/installation/react-app",
+                  "ecosystem/appkit/get-started/installation/vanilla-js"
+                ]
+              },
+              "ecosystem/appkit/get-started/connectors",
+              "ecosystem/appkit/get-started/providers",
+              "ecosystem/appkit/get-started/basic-getter-hooks",
+              "ecosystem/appkit/get-started/streaming",
+              "ecosystem/appkit/get-started/sending-transactions",
+              "ecosystem/appkit/get-started/using-ui-widgets"
             ]
-          }
+          },
+          {
+            "group": "How to",
+            "pages": [
+              "ecosystem/appkit/howto",
+              "ecosystem/appkit/howto/appkit",
+              "ecosystem/appkit/howto/connect-to-a-wallet",
+              "ecosystem/appkit/howto/providers",
+              "ecosystem/appkit/howto/networks",
+              "ecosystem/appkit/howto/read-balances",
+              "ecosystem/appkit/howto/send-toncoin",
+              "ecosystem/appkit/howto/send-jettons",
+              "ecosystem/appkit/howto/nfts",
+              "ecosystem/appkit/howto/sign-data",
+              "ecosystem/appkit/howto/streaming",
+              "ecosystem/appkit/howto/swaps",
+              "ecosystem/appkit/howto/staking",
+              "ecosystem/appkit/howto/onramp",
+              "ecosystem/appkit/howto/gasless",
+              "ecosystem/appkit/howto/use-ui-widgets"
+            ]
+          },
+          {
+            "group": "Reference",
+            "icon": "book",
+            "pages": [
+              "ecosystem/appkit/reference",
+              "ecosystem/appkit/reference/appkit",
+              "ecosystem/appkit/reference/appkit-react"
+            ]
+          },
+          "ecosystem/appkit/faq-troubleshooting"
         ]
       },
       {
@@ -309,7 +353,7 @@
                "payments/toncoin",
                "payments/jettons"
             ]
-          },          
+          },
           {
             "group": "TON Connect",
             "pages": [
@@ -804,7 +848,7 @@
         "tab": "Smart contracts",
         "icon": "arrow-up-right",
         "href": "https://ton-blockchain.github.io/acton/docs/welcome"
-      } 
+      }
     ]
   },
   "footer": {
