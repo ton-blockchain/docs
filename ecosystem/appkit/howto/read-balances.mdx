@@ -76,21 +76,6 @@ const formatted = getFormattedJettonInfo(jetton);
 // formatted: { name, symbol, decimals, balance, image, address }
 ```
 
-## Jetton wallet address
-
-A jetton balance lives on a separate `jetton wallet` contract derived from `(jettonMaster, ownerAddress)`. For transfers, AppKit derives this internally — you only need the owner address. For display (e.g. showing the exact contract that holds the user's USDT), resolve it explicitly with `getJettonWalletAddress` or the React `useJettonWalletAddress` hook.
-
-```tsx
-import { useAddress, useJettonWalletAddress } from '@ton/appkit-react';
-
-const ownerAddress = useAddress();
-const { data: walletAddress } = useJettonWalletAddress({
-  jettonAddress: 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs',
-  ownerAddress: ownerAddress ?? '',
-  query: { enabled: Boolean(ownerAddress) },
-});
-```
-
 ## Read from vanilla JS
 
 ```ts
