@@ -105,7 +105,7 @@ Applications should not block the UI while waiting for confirmation. Show a "sig
 | Expired request      | The transaction deadline passed before approval.             |
 | Invalid address      | The recipient address is malformed or for the wrong network. |
 
-## Rules
+## Tips
 
 - Validate the recipient address, amount, and expected network before calling any mutation. Do not rely on the wallet as the final input validator.
 - Treat `sendTransaction` returning a `boc` as "user signed", not "settled". Wait for `getTransactionStatus` to return `completed` before delivering value.
@@ -118,7 +118,7 @@ Applications should not block the UI while waiting for confirmation. Show a "sig
 
 See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) of TON transfers built with these mutations.
 
-## Next steps
+## Related pages
 
 - [Send jettons](/ecosystem/appkit/howto/send-jettons)
 - [NFTs](/ecosystem/appkit/howto/nfts)
