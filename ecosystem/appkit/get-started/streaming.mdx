@@ -13,7 +13,7 @@ A streaming provider has to be registered on the AppKit instance before any watc
 
 ## Mount global watchers
 
-Mount the `useWatch*` hooks once at a high level — the router, the app shell, or a layout component — so the underlying cache stays current for every consumer below. Calling a hook with no arguments simply keeps the cache warm. Pass an `onChange` callback for one-shot side effects (toast, log, navigate). A [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) calls `useWatchBalance()`, `useWatchJettons()`, and `useWatchTransactions({ onChange })` from its router for exactly this reason.
+Mount the `useWatch*` hooks once at a high level — the router, the app shell, or a layout component — so the underlying cache stays current for every consumer below. Calling a hook with no arguments simply keeps the cache warm. Pass an `onChange` callback for one-shot side effects (toast, log, navigate). A [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) calls `useWatchBalance()`, `useWatchJettons()`, and `useWatchTransactions({ onChange })` from its router for exactly this reason. [Try it live](https://appkit-minter.vercel.app/).
 
 Call the `useWatch*` hooks once high in the tree. They keep the cache fresh; pass `onChange` when you want to react to each update.
 
