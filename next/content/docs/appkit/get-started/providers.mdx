@@ -11,7 +11,7 @@ A provider is not a wallet and not a connector. The wallet still signs every tra
 
 ## Before you begin
 
-You need AppKit packages installed and an `AppKit` instance created. See [Installation](/ecosystem/appkit/get-started/installation) and [Connectors](/ecosystem/appkit/get-started/connectors). The React `AppKitProvider` and `QueryClientProvider` are set up in [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers); this page is only about data and DeFi providers.
+You need AppKit packages installed and an `AppKit` instance created. See [Installation](/ecosystem/appkit/get-started/installation) and [Connectors](/ecosystem/appkit/get-started/connectors). The React `AppKitProvider` and `QueryClientProvider` are set up in [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application); this page is only about data and DeFi providers.
 
 ## Provider types
 
@@ -42,6 +42,12 @@ export const appKit = new AppKit({
 ```
 
 You can pass more than one swap provider in the same array — for example `new DeDustSwapProvider()` and `new OmnistonSwapProvider()` together — and the swap manager picks the better quote per request. Use `createTonstakersProvider({})` from `@ton/appkit/staking/tonstakers` the same way for staking.
+
+Omniston requires its own SDK package — install it before registering the provider:
+
+```bash
+npm i @ston-fi/omniston-sdk
+```
 
 ## Rules
 

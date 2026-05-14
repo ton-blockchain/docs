@@ -15,7 +15,7 @@ The wallet returns an Ed25519 signature, signing address, wallet timestamp, obse
 
 ## Before you begin
 
-A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+You need a connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
 
 ## Pick the right call
 
@@ -30,35 +30,15 @@ All three hooks are mutation hooks. They return `{ mutate, mutateAsync, isPendin
 ## Sign text
 
 ```tsx
-import { useState } from 'react';
-import { useSignText, useSelectedWallet } from '@ton/appkit-react';
-import { getErrorMessage } from '@ton/appkit';
+import { useSignText } from '@ton/appkit-react';
 
-export function SignMessage() {
-  const [message, setMessage] = useState('');
-  const [signature, setSignature] = useState<string | null>(null);
-  const [wallet] = useSelectedWallet();
+const { mutate: signText, data } = useSignText();
 
-  const { mutate: signText, isPending } = useSignText({
-    mutation: {
-      onSuccess: (result) => setSignature(result.signature),
-      onError: (error) => console.error(getErrorMessage(error)),
-    },
-  });
+signText({
+  text: 'Message to sign',
+});
 
-  return (
-    <div>
-      <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
-      <button
-        onClick={() => signText({ text: message })}
-        disabled={!wallet || !message.trim() || isPending}
-      >
-        {isPending ? 'Signing…' : 'Sign'}
-      </button>
-      {signature && <code>{signature}</code>}
-    </div>
-  );
-}
+// data: { signature, address, timestamp, domain, payload }
 ```
 
 ## Sign binary
@@ -66,11 +46,13 @@ export function SignMessage() {
 ```tsx
 import { useSignBinary } from '@ton/appkit-react';
 
-const { mutate: signBinary } = useSignBinary();
+const { mutate: signBinary, data } = useSignBinary();
 
 signBinary({
   bytes: 'base64-encoded-payload',
 });
+
+// data: { signature, address, timestamp, domain, payload }
 ```
 
 ## Sign a cell
@@ -81,7 +63,7 @@ For application protocols that exchange typed payloads, send a TON cell.
 import { useSignCell } from '@ton/appkit-react';
 import { beginCell } from '@ton/core';
 
-const { mutate: signCell } = useSignCell();
+const { mutate: signCell, data } = useSignCell();
 
 const cell = beginCell().storeUint(42, 32).storeStringTail('hello').endCell();
 
@@ -89,6 +71,8 @@ signCell({
   cell: cell.toBoc().toString('base64'),
   schema: 'message#_ value:uint32 text:Text = Message;',
 });
+
+// data: { signature, address, timestamp, domain, payload }
 ```
 
 ## Verify the signature

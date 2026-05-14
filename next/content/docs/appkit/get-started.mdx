@@ -7,9 +7,9 @@ description: ""
 
 Use this section to learn the AppKit surface one piece at a time. Each page introduces one part of the toolkit with the smallest example that explains it.
 
-AppKit ships in three layers. `@ton/appkit` is the core: it owns the `AppKit` instance, the connectors, the actions, and the type definitions, and it works on its own from plain TypeScript. `@ton/appkit-react` is a thin layer on top that exposes the same surface as React hooks and ready-to-mount components, plus a default stylesheet. The optional DeFi and streaming providers (`@ton/appkit/swap/*`, `@ton/appkit/staking/*`, and the streaming providers registered on `appKit.streamingManager`) plug AppKit into external services and live data.
+AppKit has three layers: `@ton/appkit` for the core instance, connectors, actions, and types; `@ton/appkit-react` for React hooks, components, and styles; and optional providers for DeFi and streaming integrations.
 
-Read this section for orientation. Each page defines one piece of the surface, shows the smallest example that explains it, and stops. For end-to-end flows such as connect, read, send, or sign, continue to [How to](/ecosystem/appkit/howto).
+Each page here defines one piece of the surface, shows the smallest example that explains it, and stops. To build a connect, read, send, or sign flow, switch to the [How to](/ecosystem/appkit/howto) section, which extends the same code patterns into full task recipes.
 
 ## What you will learn
 
@@ -21,10 +21,6 @@ Read this section for orientation. Each page defines one piece of the surface, s
 | [Basic getter hooks](/ecosystem/appkit/get-started/basic-getter-hooks)     | Read wallet, address, balance, jetton, NFT, network, and transaction state. |
 | [Streaming](/ecosystem/appkit/get-started/streaming)                       | Subscribe to live updates with `useWatchBalance`, `useWatchTransactions`.   |
 | [Sending transactions](/ecosystem/appkit/get-started/sending-transactions) | Send Toncoin, jettons, NFTs, and prepared transactions with `<Send />`.     |
-
-## How to read this section
-
-Each page is a short orientation: one paragraph, one snippet, then a link to a deeper task guide. The pages are designed to be read in order, but every page stands on its own.
 
 ## Next steps
 

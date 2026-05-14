@@ -9,13 +9,13 @@ Open a wallet session, restore it across reloads, and disconnect cleanly.
 
 ## How it works
 
-A wallet is the signing application that owns the keys. A connector is the transport AppKit uses to open the wallet flow, restore sessions, list connected wallets, and route signing requests.
+A wallet is the signing application that owns the keys. A connector is the transport AppKit uses to open the wallet flow, restore sessions, list connected wallets, and route signing requests. A connector is not a wallet and does not sign — signing always happens inside the user's wallet application.
 
-AppKit can track multiple connected wallets, but one wallet is selected for actions such as transfers and data signing. A selected wallet can change after disconnects, network changes, or session restore, so read it from AppKit state instead of storing it as long-lived application state.
+AppKit can track multiple connected wallets, but one wallet is selected for actions such as transfers and data signing. A selected wallet can change after disconnects, network changes, or session restore, so read it from AppKit state instead of storing it as long-lived application state. The same wallet on a different network has a different wallet id, and AppKit treats those as separate wallet objects.
 
 ## Before you begin
 
-You need an `AppKit` instance with at least one connector and the React providers mounted. See [Connectors](/ecosystem/appkit/get-started/connectors) for the instance and [Installation → Set up React providers](/ecosystem/appkit/get-started/installation/react-app#set-up-react-providers) for the wrap.
+You need an `AppKit` instance with at least one connector and the React providers mounted. See [Connectors](/ecosystem/appkit/get-started/connectors) for the instance and [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application) for the provider setup.
 
 ## Drop-in button
 
@@ -58,6 +58,8 @@ export function ConnectPanel() {
 }
 ```
 
+If the `connectorId` passed to `connect` is not registered, the action throws `Connector with id "<id>" not found`. Confirm registration with `getConnectors` (or `useConnectors` in React) before calling `connect`.
+
 ## Read the connected wallet
 
 `useSelectedWallet` returns the wallet used by the next action. The wallet exposes `getAddress()` and `getNetwork()`.
@@ -75,8 +77,29 @@ For just the address string, `useAddress` is the convenience hook:
 ```tsx
 import { useAddress } from '@ton/appkit-react';
 
-const { data: address } = useAddress();
+const address = useAddress(); // string | undefined
 ```
+
+## Register a connector after construction
+
+If connector configuration is not available at construction time, register it with `addConnector`. Use this for user-scoped manifest URLs, feature flags, or dynamic wallet sets. `addConnector` accepts a `Connector` instance or a factory and returns an unregister function.
+
+```ts
+import { addConnector, createTonConnectConnector } from '@ton/appkit';
+import { appKit } from './appkit';
+
+const unregister = addConnector(
+  appKit,
+  createTonConnectConnector({
+    tonConnectOptions: { manifestUrl: 'https://example.com/tonconnect-manifest.json' },
+  }),
+);
+
+// Later, to remove and destroy the connector:
+unregister();
+```
+
+Connector ids are singletons. Registering a second connector with the same id calls `destroy()` on the previous one before installing the new.
 
 ## Connect from vanilla JS
 
@@ -93,6 +116,43 @@ await disconnect(appKit, { connectorId: connector.id });
 
 `connector.connectWallet()` and `connector.disconnectWallet()` are the lower-level equivalents when direct connector access is preferred.
 
+## Wallet and Connector interfaces
+
+Every connected wallet exposes the same minimum surface: a reference to the connector that produced it, four identity readers, and two wallet-approved operations that are routed through the connector.
+
+```ts
+interface WalletInterface {
+  /** Connector that created this wallet */
+  readonly connectorId: string;
+
+  // Identity
+  getAddress(): UserFriendlyAddress;
+  getPublicKey(): Hex;
+  getNetwork(): Network;
+  getWalletId(): string;
+
+  // Actions requiring wallet signature
+  sendTransaction(request: TransactionRequest): Promise<SendTransactionResponse>;
+  signData(payload: SignDataRequest): Promise<SignDataResponse>;
+}
+```
+
+Connectors implement a small interface that AppKit treats as opaque transport — the protocol underneath is hidden.
+
+```ts
+interface Connector {
+  readonly id: string;
+  readonly type: string;
+  readonly metadata: ConnectorMetadata;
+  destroy(): void;
+  connectWallet(network?: Network): Promise<void>;
+  disconnectWallet(): Promise<void>;
+  getConnectedWallets(): WalletInterface[];
+}
+```
+
+The bundled `createTonConnectConnector` covers most apps. It wraps `@tonconnect/ui`, restores prior sessions when the connector is first read, and syncs TON Connect with AppKit's default network.
+
 ## Errors and recovery
 
 Wrap every action in try/catch and convert errors with `getErrorMessage` from `@ton/appkit`.
@@ -104,8 +164,15 @@ Wrap every action in try/catch and convert errors with `getErrorMessage` from `@
 | Expired session   | Disconnect and request a new connection.           |
 | Wrong network     | Prompt the user to switch network in their wallet. |
 
+## Rules
+
+- Do not call mutations or signing actions while `getSelectedWallet` is `null` — the action will throw.
+- Do not assume every connector supports every flow. Catch rejections from the wallet and surface a recovery option.
+- Do not store `selectedWalletId` as long-lived application state. The selected wallet can change after disconnects, network changes, or session restores.
+- In application code, use public actions or React hooks instead of calling connector methods directly, so AppKit's event flow stays consistent. Connector methods are still the public surface for custom connector implementations.
+
 ## Next steps
 
 - [AppKit](/ecosystem/appkit/howto/appkit)
-- [AppKit reference](/ecosystem/appkit/reference)
+- [`@ton/appkit-react` reference](/ecosystem/appkit/reference/appkit-react)
 - [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)

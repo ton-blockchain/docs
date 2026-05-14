@@ -19,7 +19,7 @@ At least one network must be configured. If a flow tries to read from a chain th
 
 Some flows are explicitly scoped to a network. Others need a fallback when the caller does not pass one. The default network is that fallback.
 
-Changing the default network changes the chain AppKit uses for unspecific reads and actions. Connectors observe this change so wallet-facing flows can compare the selected wallet's network with the app's current expectation.
+Changing the default network changes the chain AppKit uses for reads and actions that do not specify a network. Connectors observe this change so wallet-facing flows can compare the selected wallet's network with the app's current expectation.
 
 ## Configure networks
 
@@ -39,12 +39,12 @@ export const appKit = new AppKit({
 setDefaultNetwork(appKit, { network: Network.testnet() });
 ```
 
-Use `getDefaultNetwork` or the React `useDefaultNetwork` hook when UI needs to show the active chain:
+Use `getDefaultNetwork` or the React `useDefaultNetwork` hook when UI needs to show the active chain. `useDefaultNetwork` returns a `[network, setNetwork]` tuple — the value is `Network | undefined`, and the setter updates the default network reactively.
 
 ```tsx
 import { useDefaultNetwork } from '@ton/appkit-react';
 
-const { data: network } = useDefaultNetwork();
+const [network] = useDefaultNetwork();
 return <span>{network?.chainId}</span>;
 ```
 
