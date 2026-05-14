@@ -996,6 +996,21 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/appkit/init",
+    "destination": "/ecosystem/appkit/get-started",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/jettons",
+    "destination": "/ecosystem/appkit/howto/send-jettons",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/nfts",
+    "destination": "/ecosystem/appkit/howto/nfts",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/appkit/overview",
     "destination": "/appkit/overview",
     "permanent": true
@@ -1013,6 +1028,21 @@ export const redirects = [
   {
     "source": "/ecosystem/appkit/reference/appkit-react",
     "destination": "/appkit/reference/appkit-react",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/stake",
+    "destination": "/ecosystem/appkit/howto/staking",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/swap",
+    "destination": "/ecosystem/appkit/howto/swaps",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/toncoin",
+    "destination": "/ecosystem/appkit/howto/send-toncoin",
     "permanent": true
   },
   {
@@ -1186,6 +1216,51 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/tma/analytics/analytics",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/api-endpoints",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/faq",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/install-via-npm",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/install-via-script",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/managing-integration",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/preparation",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/analytics/supported-events",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/create-mini-app",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/tma/mate/getting-started",
     "destination": "/ecosystem/tma/overview",
     "permanent": true
@@ -1198,6 +1273,31 @@ export const redirects = [
   {
     "source": "/ecosystem/tma/mate/telegram-apps-mate",
     "destination": "/ecosystem/tma/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/overview",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/telegram-ui/getting-started",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/telegram-ui/overview",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/telegram-ui/platform-and-palette",
+    "destination": "/ecosystem/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/tma/telegram-ui/reference/avatar",
+    "destination": "/ecosystem/appkit/overview",
     "permanent": true
   },
   {
@@ -1418,6 +1518,11 @@ export const redirects = [
   {
     "source": "/ecosystem/walletkit/web/wallets",
     "destination": "/walletkit/web/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/first-smart-contract",
+    "destination": "/contract-dev/blueprint/first-smart-contract",
     "permanent": true
   },
   {
