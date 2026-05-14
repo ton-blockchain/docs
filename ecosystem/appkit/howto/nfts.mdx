@@ -217,7 +217,7 @@ The wallet accepting the request does not prove the NFT moved. Track the transac
 | Soulbound NFT   | `isSoulbound === true` — the item cannot be transferred.                                                                 |
 | Invalid address | The recipient or NFT contract address is malformed or for the wrong network.                                             |
 
-## Rules
+## Tips
 
 - Verify the current `ownerAddress` before allowing a user-initiated transfer. NFTs can change owners between reads and transfers.
 - Display **verified** fields first: contract address, owner address, real owner address, and collection address. Treat off-chain display data (`info`, `attributes`, `extra`) as **display data only**. Sanitize names and images, and never route on display metadata.
@@ -229,7 +229,7 @@ The wallet accepting the request does not prove the NFT moved. Track the transac
 
 See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) of an NFT list rendered with `useNfts` — [try it live](https://appkit-minter.vercel.app/).
 
-## Next steps
+## Related pages
 
 - [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
 - [AppKit reference](/ecosystem/appkit/reference)

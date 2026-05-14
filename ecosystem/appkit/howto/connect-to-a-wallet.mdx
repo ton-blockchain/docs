@@ -13,7 +13,7 @@ AppKit can track multiple connected wallets, but one wallet is selected for acti
 
 ## Before you begin
 
-You need an `AppKit` instance with at least one connector and the React providers mounted. See [Connectors](/ecosystem/appkit/get-started/connectors) for the instance and [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application) for the provider setup.
+You need an `AppKit` instance with at least one connector and the React providers mounted. See [Add wallet connectors](/ecosystem/appkit/get-started/connectors) for the instance and [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application) for the provider setup.
 
 ## Drop-in button
 
@@ -162,14 +162,14 @@ Wrap every action in try/catch and convert errors with `getErrorMessage` from `@
 | Expired session   | Disconnect and request a new connection.           |
 | Wrong network     | Prompt the user to switch network in their wallet. |
 
-## Rules
+## Tips
 
 - Do not call mutations or signing actions while `getSelectedWallet` is `null` — the action will throw.
 - Do not assume every connector supports every flow. Catch rejections from the wallet and surface a recovery option.
 - Do not store `selectedWalletId` as long-lived application state. The selected wallet can change after disconnects, network changes, or session restores.
 - In application code, use public actions or React hooks instead of calling connector methods directly, so AppKit's event flow stays consistent. Connector methods are still the public surface for custom connector implementations.
 
-## Next steps
+## Related pages
 
 - [AppKit](/ecosystem/appkit/howto/appkit)
 - [`@ton/appkit-react` reference](/ecosystem/appkit/reference/appkit-react)
