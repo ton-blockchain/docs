@@ -282,7 +282,7 @@ export function getNavLinks(config) {
       return;
     }
 
-    // Nested pages/groups/tabs
+    // Nested pages/groups/tabs/anchors
     if (typeof item === 'object') {
       if (Array.isArray(item.pages)) {
         item.pages.forEach(processItem);
@@ -290,6 +290,10 @@ export function getNavLinks(config) {
 
       if (Array.isArray(item.tabs)) {
         item.tabs.forEach(processItem);
+      }
+
+      if (Array.isArray(item.anchors)) {
+        item.anchors.forEach(processItem);
       }
     }
   };

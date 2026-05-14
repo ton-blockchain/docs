@@ -1,0 +1,59 @@
+---
+title: "Basic getter hooks"
+sidebarTitle: "Basic getter hooks"
+---
+
+Getter hooks read AppKit state from React and re-render when that state changes. They do not start wallet actions; transactions and signatures use mutation hooks such as `useTransferTon`, `useSignText`, and `useSendTransaction`.
+
+## Before you begin
+
+You need the React providers in place. See [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application).
+
+## Three return shapes
+
+Getter hooks come in three return shapes. Which shape a hook uses depends on where the data lives.
+
+**Tuple with setter** — for state AppKit stores reactively and that the app can change. The first element is the value (or `null` if not yet set), the second is the setter.
+
+```tsx
+const [wallet, setWalletId] = useSelectedWallet();
+const [network, setDefaultNetwork] = useDefaultNetwork();
+```
+
+The hooks that return tuples: `useSelectedWallet`, `useDefaultNetwork`.
+
+**Direct value** — for store-derived state that is read-only from React. Returns the value itself, no wrapper.
+
+```tsx
+const address = useAddress();              // string | undefined
+const network = useNetwork();              // Network | undefined
+const networks = useNetworks();            // Network[]
+const connectors = useConnectors();        // Connector[]
+const wallets = useConnectedWallets();     // WalletInterface[]
+const connector = useConnectorById('tonconnect'); // Connector | undefined
+const appKit = useAppKit();                // AppKit
+```
+
+These hooks use `useSyncExternalStore` under the hood and re-render when the underlying state changes.
+
+**TanStack Query result** — for chain data fetched through an API client. Returns `{ data, isLoading, isError, error, refetch }` and accepts a `query` field for `refetchInterval`, `enabled`, `staleTime`, and the rest of the TanStack Query options.
+
+```tsx
+const { data: balance, isLoading } = useBalance();
+const { data: jettons } = useJettons({ query: { refetchInterval: 20000 } });
+```
+
+The hooks that return query results: `useBalance`, `useJettons`, `useNfts`, `useTransactionStatus`, `useJettonInfo`, `useJettonBalanceByAddress`, `useJettonWalletAddress`, `useBlockNumber`, `useNft`, and the `*ByAddress` variants.
+
+## Provider data is not chain finality
+
+A getter hook reflects a snapshot of provider data, not the chain itself. The user's wallet may report state that differs from what the configured `apiClient` returns — usually because the indexer is a few blocks behind the wallet, sometimes because the two read different networks. For live updates without manual refetch, mount the matching `useWatch*` hook (covered on [Streaming](/ecosystem/appkit/get-started/streaming)).
+
+## Rules
+
+Treat hook data as the latest read, not as a settlement check. Verify chain effects with `getTransactionStatus` or a backend before crediting value, and re-check after any reconnect.
+
+## Next steps
+
+- See [How to read balances](/ecosystem/appkit/howto/read-balances) for a complete walkthrough of reading TON, jetton, and NFT data.
+- See the [`@ton/appkit-react` reference](/ecosystem/appkit/reference/appkit-react) for the full hook surface.

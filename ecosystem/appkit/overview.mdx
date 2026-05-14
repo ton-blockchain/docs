@@ -1,83 +1,42 @@
 ---
-title: "AppKit: SDK for decentralized applications (dApps)"
+title: "AppKit"
 sidebarTitle: "Overview"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
+AppKit is a TypeScript toolkit for adding TON wallet connection, payments, assets, DeFi flows, and React UI primitives to web applications.
 
-TON Connect's **AppKit** is an open-source SDK that integrates web2 and web3 applications with TON. It enables wallet connection, authorization, balance tracking, asset transfers, and data signing.
+It prepares requests, tracks application state, and connects the application interface to wallets and providers. Wallets still sign transactions and data. Backends still verify orders, signatures, and business rules.
 
-<Aside
-  type="caution"
->
-  AppKit is currently in a public <Badge size="xs">alpha</Badge> version. Some behaviors and APIs might change in the future.
-</Aside>
+| Goal                        | Read                                                             |
+| --------------------------- | ---------------------------------------------------------------- |
+| Add AppKit to a new app     | [Get started](/ecosystem/appkit/get-started)                     |
+| Understand the moving parts | [How to](/ecosystem/appkit/howto)                                |
+| Look up functions and types | [Reference](/ecosystem/appkit/reference)                         |
+| Check upgrade notes         | [Changelog](/ecosystem/appkit/changelog)                         |
+| Diagnose common issues      | [FAQ and troubleshooting](/ecosystem/appkit/faq-troubleshooting) |
 
-## Features
+## What AppKit is
 
-- TON Connect protocol compliance: integrate with the standard wallet infrastructure for TON.
-- Wallet management: access connected TON wallets from registered providers.
-- Asset support: work with Toncoin (TON), jettons (tokens, i.e., USDT), and NFTs.
-- React: use hooks and ready-made UI components for common cases.
-- DeFi: make on-chain Toncoin and jetton swaps through different providers.
+AppKit is the application layer around TON wallet operations. It gives one place to configure networks, connectors, providers, and React integration.
 
-## Use cases
+Use AppKit when an application needs to:
 
-- Web2 apps that need to use TON for authorization, payments, NFT rewards, or other common needs.
-- Web3 apps that need to integrate TON wallets.
-- Telegram Mini Apps that utilize TON Blockchain to provide services for Telegram users.
+- connect a TON wallet
+- request Toncoin, jetton, NFT, swap, staking, or signing operations
+- read wallet data and asset balances
 
-## Quick start
+## Packages
 
-<Columns cols={3}>
-  <Card
-    title="Initialize the kit"
-    icon="wrench"
-    horizontal="true"
-    href="/ecosystem/appkit/init"
-  />
+| Package                          | Use                                                              |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `@ton/appkit`                    | Core AppKit instance, actions, connectors, providers, and types. |
+| `@ton/appkit/queries`            | Query and mutation helpers for data fetching.                    |
+| `@ton/appkit-react`              | React provider, hooks, components, and core re-exports.          |
+| `@ton/appkit-react/styles.css`   | Default component styles.                                        |
+| `@ton/appkit/swap/omniston`      | Omniston swap provider.                                          |
+| `@ton/appkit/swap/dedust`        | DeDust swap provider.                                            |
+| `@ton/appkit/staking/tonstakers` | Tonstakers staking provider.                                     |
 
-  <Card
-    title="Work with Toncoin"
-    icon="gem"
-    horizontal="true"
-    href="/ecosystem/appkit/toncoin"
-  />
+## Current status
 
-  <Card
-    title="Work with Jettons"
-    icon="coins"
-    horizontal="true"
-    href="/ecosystem/appkit/jettons"
-  />
-
-  <Card
-    title="Work with NFTs"
-    icon="image"
-    horizontal="true"
-    href="/ecosystem/appkit/nfts"
-  />
-
-  <Card
-    title="Swap tokens"
-    icon="rotate"
-    horizontal="true"
-    href="/ecosystem/appkit/swap"
-  />
-
-  <Card
-    title="Stake Toncoin"
-    icon="chart-line"
-    horizontal="true"
-    href="/ecosystem/appkit/stake"
-  />
-</Columns>
-
-## See also
-
-The [TON Connect overview](/ecosystem/ton-connect/overview) explains the protocol and its core concepts.
-
-Skim the reference pages with more in-depth information:
-
-- [TON Connect manifests](/ecosystem/ton-connect/manifest)
-- [`@tonconnect/protocol`, external API reference](https://ton-connect.github.io/sdk/modules/_tonconnect_protocol.html)
+AppKit is an application toolkit. Treat wallet approval, transaction inclusion, indexer data, and backend settlement as separate systems. Production apps should verify critical outcomes outside the browser.

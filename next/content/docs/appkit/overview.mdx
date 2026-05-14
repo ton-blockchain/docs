@@ -1,0 +1,44 @@
+---
+id: ecosystem/appkit/overview
+title: "AppKit"
+sidebarTitle: "Overview"
+description: ""
+---
+
+AppKit is a TypeScript toolkit for adding TON wallet connection, payments, assets, DeFi flows, and React UI primitives to web applications.
+
+It prepares requests, tracks application state, and connects the application interface to wallets and providers. Wallets still sign transactions and data. Backends still verify orders, signatures, and business rules.
+
+| Goal                        | Read                                                             |
+| --------------------------- | ---------------------------------------------------------------- |
+| Add AppKit to a new app     | [Get started](/ecosystem/appkit/get-started)                     |
+| Understand the moving parts | [How to](/ecosystem/appkit/howto)                                |
+| Look up functions and types | [Reference](/ecosystem/appkit/reference)                         |
+| Check upgrade notes         | [Changelog](/ecosystem/appkit/changelog)                         |
+| Diagnose common issues      | [FAQ and troubleshooting](/ecosystem/appkit/faq-troubleshooting) |
+
+## What AppKit is
+
+AppKit is the application layer around TON wallet operations. It gives one place to configure networks, connectors, providers, and React integration.
+
+Use AppKit when an application needs to:
+
+- connect a TON wallet
+- request Toncoin, jetton, NFT, swap, staking, or signing operations
+- read wallet data and asset balances
+
+## Packages
+
+| Package                          | Use                                                              |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `@ton/appkit`                    | Core AppKit instance, actions, connectors, providers, and types. |
+| `@ton/appkit/queries`            | Query and mutation helpers for data fetching.                    |
+| `@ton/appkit-react`              | React provider, hooks, components, and core re-exports.          |
+| `@ton/appkit-react/styles.css`   | Default component styles.                                        |
+| `@ton/appkit/swap/omniston`      | Omniston swap provider.                                          |
+| `@ton/appkit/swap/dedust`        | DeDust swap provider.                                            |
+| `@ton/appkit/staking/tonstakers` | Tonstakers staking provider.                                     |
+
+## Current status
+
+AppKit is an application toolkit. Treat wallet approval, transaction inclusion, indexer data, and backend settlement as separate systems. Production apps should verify critical outcomes outside the browser.
