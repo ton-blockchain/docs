@@ -92,7 +92,7 @@ This separation matters because quotes can expire. The settlement amount shown w
 
 Apps that integrate their own DEX or staking backend implement the same provider interface as the bundled providers, then register the provider with `registerProvider`. Provider ids are singletons; registering another provider with the same `providerId` replaces the previous entry.
 
-## Rules
+## Tips
 
 - Provider responses are external data. Validate critical outcomes, including settlement amounts, addresses, and signatures, before changing product state.
 - Quotes can expire. Build the transaction soon after fetching the quote, or refetch before showing the user a final price.

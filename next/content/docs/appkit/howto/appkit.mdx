@@ -25,7 +25,7 @@ A single `AppKit` instance holds configured **networks** (mainnet, testnet, and 
 
 ## Configuration notes
 
-Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Get started → Connectors](/ecosystem/appkit/get-started/connectors) for the constructor walkthrough.
+Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Get started → Add wallet connectors](/ecosystem/appkit/get-started/connectors) for the constructor walkthrough.
 
 <Note>
   If `networks` is omitted entirely, AppKit constructs a **mainnet-only** `ApiClientToncenter` with no API key. Fine for quick prototyping; expect rate limits on real workloads. Testnet apps must declare `networks` explicitly.
@@ -60,7 +60,7 @@ Read actions that target the selected wallet (`getBalance`, `getJettons`, `getNf
 
 Most async data hooks return TanStack Query results such as `{ data, isLoading, error, refetch }`, and mutation hooks return `{ mutate, mutateAsync, isPending, error }`. Watch hooks such as `useWatchBalance` return `void` and keep the related query cache fresh while mounted. Wallet state hooks read AppKit's local store directly: `useSelectedWallet()` returns `[wallet, setWalletId]`, while `useConnectedWallets()` and `useConnectors()` return arrays.
 
-## Rules
+## Tips
 
 - Create one AppKit instance for one app runtime. Do not share an instance across windows or processes.
 - Pass the instance to actions directly, or provide it to React with `AppKitProvider`. Do not call actions before the instance is constructed.

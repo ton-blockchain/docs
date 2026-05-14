@@ -42,18 +42,14 @@ export function Balances() {
 
   return (
     <section>
-      <p>TON: {ton.data?.value}</p>
+      <p>TON: {ton.data ?? '0'}</p>
       <p>Jettons: {jettons.data?.jettons.length ?? 0}</p>
     </section>
   );
 }
 ```
 
-`ton.data` is a string in TON units. Render it directly, or use `toNano` only when another API expects raw nanotons:
-
-```tsx
-<p>TON: {ton.data ?? '0'}</p>
-```
+`ton.data` is a string in TON units. Render it directly, or use `toNano` only when another API expects raw nanotons.
 
 Jetton reads return formatted balances in the token's own units. Use the token metadata for symbols and decimals when rendering a list.
 
@@ -67,7 +63,7 @@ import { useBalanceByAddress, useJettonsByAddress } from '@ton/appkit-react';
 export function ProfileBalances({ address }: { address: string }) {
   const ton = useBalanceByAddress({ address });
   const jettons = useJettonsByAddress({ address });
-  return <p>TON: {ton.data?.value}</p>;
+  return <p>TON: {ton.data ?? '0'}</p>;
 }
 ```
 
@@ -93,13 +89,13 @@ const jettons = await getJettonsByAddress(appKit, { address: 'EQ...' });
 
 ## Live updates
 
-Mount `useWatchBalance()` and `useWatchJettons()` once high in the tree to keep the cache pushed live. See [Streaming](/ecosystem/appkit/get-started/streaming).
+Mount `useWatchBalance()` and `useWatchJettons()` once high in the tree to keep the cache pushed live. See [Stream live updates](/ecosystem/appkit/get-started/streaming).
 
 ## Code example
 
-See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) of TON and jetton balances rendered together with the same hooks documented above.
+See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) of TON and jetton balances rendered together with the same hooks documented above — [try it live](https://appkit-minter.vercel.app/).
 
-## Next steps
+## Related pages
 
 - [Streaming](/ecosystem/appkit/howto/streaming)
 - [AppKit reference](/ecosystem/appkit/reference)

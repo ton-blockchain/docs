@@ -57,7 +57,7 @@ const deposit = await createCryptoOnrampDeposit(appKit, { quote });
 const status = await getCryptoOnrampStatus(appKit, { depositId: deposit.id });
 ```
 
-## Rules
+## Tips
 
 - Treat a hosted URL or deposit instruction as the start of a long-running provider process.
 - Verify completion through provider status, not wallet state alone.
