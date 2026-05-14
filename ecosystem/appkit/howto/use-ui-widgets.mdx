@@ -54,19 +54,22 @@ import { SendTonButton } from '@ton/appkit-react';
 
 The default rendering shows `Send {amount} TON`. Pass a `children` render-prop with `{ isLoading, onSubmit, disabled, text }` if you want to drive a custom button — the component still owns the request, the call to the wallet, and the loading/error state.
 
-<div className="flex justify-center my-4">
-<img
-  className="block dark:hidden"
-  width="96"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/send-ton-button-light.png"
-  alt="SendTonButton in Storybook"
-/>
-<img
-  className="hidden dark:block"
-  width="96"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/send-ton-button-dark.png"
-  alt="SendTonButton in Storybook"
-/>
+<div
+  className="flex justify-center my-4"
+>
+  <img
+    className="block dark:hidden"
+    width="96"
+    src="/resources/images/appkit/send-ton-button-light.png"
+    alt="SendTonButton in Storybook"
+  />
+
+  <img
+    className="hidden dark:block"
+    width="96"
+    src="/resources/images/appkit/send-ton-button-dark.png"
+    alt="SendTonButton in Storybook"
+  />
 </div>
 
 ## Send a jetton
@@ -89,19 +92,22 @@ import { SendJettonButton } from '@ton/appkit-react';
 
 `jetton.address`, `jetton.symbol`, and `jetton.decimals` are all required. The default rendering shows `Send {amount} {jetton.symbol}`; pass a `children` render-prop if you want to drive a custom button.
 
-<div className="flex justify-center my-4">
-<img
-  className="block dark:hidden"
-  width="108"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/send-jetton-button-light.png"
-  alt="SendJettonButton in Storybook"
-/>
-<img
-  className="hidden dark:block"
-  width="108"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/send-jetton-button-dark.png"
-  alt="SendJettonButton in Storybook"
-/>
+<div
+  className="flex justify-center my-4"
+>
+  <img
+    className="block dark:hidden"
+    width="108"
+    src="/resources/images/appkit/send-jetton-button-light.png"
+    alt="SendJettonButton in Storybook"
+  />
+
+  <img
+    className="hidden dark:block"
+    width="108"
+    src="/resources/images/appkit/send-jetton-button-dark.png"
+    alt="SendJettonButton in Storybook"
+  />
 </div>
 
 ## Send a prepared transaction
@@ -129,19 +135,22 @@ const request = async () =>
 
 Pass a `children` render-prop with `{ isLoading, onSubmit, disabled, text }` instead of (or alongside) `text` if you want full control over the button markup.
 
-<div className="flex justify-center my-4">
-<img
-  className="block dark:hidden"
-  width="117"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/send-light.png"
-  alt="Send in Storybook"
-/>
-<img
-  className="hidden dark:block"
-  width="117"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/send-dark.png"
-  alt="Send in Storybook"
-/>
+<div
+  className="flex justify-center my-4"
+>
+  <img
+    className="block dark:hidden"
+    width="117"
+    src="/resources/images/appkit/send-light.png"
+    alt="Send in Storybook"
+  />
+
+  <img
+    className="hidden dark:block"
+    width="117"
+    src="/resources/images/appkit/send-dark.png"
+    alt="Send in Storybook"
+  />
 </div>
 
 ## Render an NFT
@@ -199,19 +208,22 @@ const TOKENS: AppkitUIToken[] = [
 
 The required prop is `tokens`. `defaultFromSymbol`, `defaultToSymbol`, `defaultSlippage` (basis points, default `100` = 1%), `fiatSymbol` (default `'$'`), and `network` (defaults to the connected wallet's network) are all optional. Pass a `children` render-prop to replace the default UI while keeping the widget's internal state — the function receives `{ fromToken, toToken, fromAmount, toAmount, isQuoteLoading, canSubmit, setFromAmount, onFlip, ... }`.
 
-<div className="flex justify-center my-4">
-<img
-  className="block dark:hidden"
-  width="343"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/swap-widget-light.png"
-  alt="SwapWidget in Storybook"
-/>
-<img
-  className="hidden dark:block"
-  width="343"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/swap-widget-dark.png"
-  alt="SwapWidget in Storybook"
-/>
+<div
+  className="flex justify-center my-4"
+>
+  <img
+    className="block dark:hidden"
+    width="343"
+    src="/resources/images/appkit/swap-widget-light.png"
+    alt="SwapWidget in Storybook"
+  />
+
+  <img
+    className="hidden dark:block"
+    width="343"
+    src="/resources/images/appkit/swap-widget-dark.png"
+    alt="SwapWidget in Storybook"
+  />
 </div>
 
 ## Staking widget
@@ -233,14 +245,14 @@ import { Network } from '@ton/appkit';
 <div className="flex justify-center my-4">
 <img
   className="block dark:hidden"
-  width="216"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/staking-widget-light.png"
+  width="301"
+  src="/resources/images/appkit/staking-widget-light.png"
   alt="StakingWidget in Storybook"
 />
 <img
   className="hidden dark:block"
-  width="216"
-  src="/ecosystem/appkit/howto/images/use-ui-widgets/staking-widget-dark.png"
+  width="301"
+  src="/resources/images/appkit/staking-widget-dark.png"
   alt="StakingWidget in Storybook"
 />
 </div>
@@ -272,13 +284,17 @@ import { TonIcon, TonIconCircle } from '@ton/appkit-react';
 
 The send components share a callback shape:
 
-| Prop        | Type                                               | Notes                                                                |
-| ----------- | -------------------------------------------------- | -------------------------------------------------------------------- |
-| `onSuccess` | `(response: SendTransactionResponse) => void`      | Response carries `boc`, `normalizedBoc`, and `normalizedHash`.       |
-| `onError`   | `(error: Error) => void`                           | Plain `Error`. Pair with `getErrorMessage` for UX-safe text.         |
-| `disabled`  | `boolean`                                          | Disable the underlying button externally.                            |
-| children    | `(state: { isLoading, onSubmit, disabled, text })` | Render-prop API for full styling control.                            |
-| `text`      | `ReactNode`                                        | Label rendered when no children render-prop is provided.             |
+| Prop        | Type                                               | Notes                                                          |
+| ----------- | -------------------------------------------------- | -------------------------------------------------------------- |
+| `onSuccess` | `(response: SendTransactionResponse) => void`      | Response carries `boc`, `normalizedBoc`, and `normalizedHash`. |
+| `onError`   | `(error: Error) => void`                           | Plain `Error`. Pair with `getErrorMessage` for UX-safe text.   |
+| `disabled`  | `boolean`                                          | Disable the underlying button externally.                      |
+| children    | `(state: { isLoading, onSubmit, disabled, text })` | Render-prop API for full styling control.                      |
+| `text`      | `ReactNode`                                        | Label rendered when no children render-prop is provided.       |
+
+## Code example
+
+See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) that integrates `<SwapWidget />` and `<StakingWidget />`.
 
 ## Next steps
 

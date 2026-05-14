@@ -1,26 +1,15 @@
 ---
-title: "Providers"
-sidebarTitle: "Providers"
+title: "Add DeFi providers"
+sidebarTitle: "Add DeFi providers"
 ---
 
-Providers are AppKit's plug points to the rest of the world: services that read from a chain, push live updates, build swap transactions, or build staking transactions. They sit on the AppKit instance and supply data; they do not own UI, sessions, or signing.
+Plug in a swap or staking provider when the app needs DeFi flows. Each provider sits on the AppKit instance and supplies data: prices, quotes, and the transactions that the user will sign. The wallet still signs; the provider only prepares.
 
-A provider is not a wallet and not a connector. The wallet still signs every transaction; the connector still owns the session. A provider is the source of _data_ about the chain or about a DeFi protocol, and AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
+A provider is not a wallet and not a connector. AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
 
 ## Before you begin
 
-You need AppKit packages installed and an `AppKit` instance created. See [Installation](/ecosystem/appkit/get-started/installation) and [Connectors](/ecosystem/appkit/get-started/connectors). The React `AppKitProvider` and `QueryClientProvider` are set up in [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application); this page is only about data and DeFi providers.
-
-## Provider types
-
-The four data and DeFi providers attach to AppKit at different points in the lifecycle. The API client sits inside the network entry on the constructor and supplies point-in-time reads. Swap and staking providers go in the constructor's `providers` array (typed as `ProviderInput[]`) and are imported only when the app actually offers those flows. The streaming provider is registered separately on `appKit.streamingManager` _after_ construction — it is not bundled with the API client, and watch hooks plus `watch*` actions are no-ops until at least one streaming provider is registered.
-
-| Type               | Where it goes                                                                  |
-| ------------------ | ------------------------------------------------------------------------------ |
-| API client         | `networks[chainId].apiClient` — `ApiClientToncenter` or `ApiClientTonApi`.     |
-| Streaming provider | `appKit.streamingManager.registerProvider(...)` after construction.            |
-| Swap provider      | `AppKitConfig.providers` array — `DeDustSwapProvider`, `OmnistonSwapProvider`. |
-| Staking provider   | `AppKitConfig.providers` array — `createTonstakersProvider({})`.               |
+You need AppKit packages installed and an `AppKit` instance created. See [Prepare your project](/ecosystem/appkit/get-started/installation) and [Add wallet connectors](/ecosystem/appkit/get-started/connectors).
 
 ## Add a swap provider
 
@@ -39,20 +28,36 @@ export const appKit = new AppKit({
 });
 ```
 
-You can pass more than one swap provider in the same array — for example `new DeDustSwapProvider()` and `new OmnistonSwapProvider()` together — and the swap manager picks the better quote per request. Use `createTonstakersProvider({})` from `@ton/appkit/staking/tonstakers` the same way for staking.
-
 Omniston requires its own SDK package — install it before registering the provider:
 
 ```bash
 npm i @ston-fi/omniston-sdk
 ```
 
-## Rules
+## Add a staking provider
+
+Use `createTonstakersProvider({})` from `@ton/appkit/staking/tonstakers` the same way:
+
+```ts
+import { AppKit } from '@ton/appkit';
+import { createTonstakersProvider } from '@ton/appkit/staking/tonstakers';
+
+export const appKit = new AppKit({
+  // networks, connectors...
+  providers: [
+    createTonstakersProvider({}),
+  ],
+});
+```
+
+The staking hooks (`useStakingQuote`, `useBuildStakeTransaction`) start returning data from the registered provider.
+
+## Tips
 
 Provider responses are external data. Validate critical outcomes server side before changing product state — wallet acceptance is not settlement, and a swap quote is not a price guarantee.
 
-## Next steps
+## What to do next
 
-- See [Providers](/ecosystem/appkit/howto/providers) for the model and examples.
-- See [AppKit reference](/ecosystem/appkit/reference) for package-level API details.
-- For task-level flows, continue to [How to](/ecosystem/appkit/howto).
+- Continue to [Use UI widgets](/ecosystem/appkit/get-started/using-ui-widgets) to render full swap and staking UIs with one component each.
+- For task-level walkthroughs, see [Swaps](/ecosystem/appkit/howto/swaps) and [Staking](/ecosystem/appkit/howto/staking).
+- See [Providers](/ecosystem/appkit/howto/providers) for the full provider model — including the streaming and API client roles not covered here.
