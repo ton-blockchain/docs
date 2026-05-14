@@ -252,7 +252,20 @@ Upon successful completion of the installation, you will see the following line 
 [5/5] Mytonctrl installation completed
 ```
 
-### 2.1.3 Open the node UDP port and the liteserver port
+### 2.2 Importing downloaded data into the archive liteserver database
+
+This process starts automatically after installation and can take from one to several days depending on your server performance.
+
+You can monitor the progress using the MyTonCtrl console:
+
+```bash
+mytonctrl
+MyTonCtrl> status
+```
+
+Check the field **Local validator initial sync status**. The value indicates how old the last imported block was and should decrease over time.
+
+### 2.2.1 Open the node UDP port and the liteserver port
 
 At this stage, the node UDP port and liteserver port should be opened to make the archive liteserver available for syncing blocks from other nodes.
 
@@ -271,19 +284,6 @@ sudo ufw allow <NODE_UDP_PORT>
 sudo ufw allow <LITESERVER_PORT>
 sudo ufw status
 ```
-
-### 2.2 Importing downloaded data into the archive liteserver database
-
-This process starts automatically after installation and can take from one to several days depending on your server performance.
-
-You can monitor the progress using the MyTonCtrl console:
-
-```bash
-mytonctrl
-MyTonCtrl> status
-```
-
-Check the field **Local validator initial sync status**. The value indicates how old the last imported block was and should decrease over time.
 
 ### 2.3 Final synchronization of archive liteserver
 
