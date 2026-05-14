@@ -53,6 +53,10 @@ A getter hook reflects a snapshot of provider data, not the chain itself. The us
 
 Treat hook data as the latest read, not as a settlement check. Verify chain effects with `getTransactionStatus` or a backend before crediting value, and re-check after any reconnect.
 
+## Code example
+
+See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) that uses `useBalance`, `useJettons`, and `useNfts` to render wallet state.
+
 ## What to do next
 
 - Move on to [Send transactions](/ecosystem/appkit/get-started/sending-transactions) — at that point you'll have a working app.

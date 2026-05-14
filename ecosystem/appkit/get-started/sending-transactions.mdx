@@ -7,7 +7,7 @@ Assemble a `TransactionRequest`, ask the connected wallet to sign and broadcast 
 
 Reaching this page means you have a working app: install, connect, read, send. The pages after this one — streaming, DeFi providers, and UI widgets — layer on improvements rather than baseline functionality.
 
-The lifecycle has clear ownership boundaries. *Your code* assembles the request — recipient, amount, payload, validity window. *The wallet* reviews the request, presents it to the user, and signs it. *The chain* receives the signed message, orders it, and either includes or rejects it. *The streaming provider* observes the result and reports back. `onSuccess` firing on a component or hook means the wallet accepted the request, not that the chain accepted the transaction; settlement is observed separately on [Streaming](/ecosystem/appkit/get-started/streaming).
+The lifecycle has clear ownership boundaries. _Your code_ assembles the request — recipient, amount, payload, validity window. _The wallet_ reviews the request, presents it to the user, and signs it. _The chain_ receives the signed message, orders it, and either includes or rejects it. _The streaming provider_ observes the result and reports back. `onSuccess` firing on a component or hook means the wallet accepted the request, not that the chain accepted the transaction; settlement is observed separately on [Streaming](/ecosystem/appkit/get-started/streaming).
 
 ## Send Toncoin in one component
 
@@ -31,16 +31,20 @@ The component exposes `{ isLoading, onSubmit, disabled, text }` to the render-pr
 
 The three layers trade off control against work done for you. Components own the full lifecycle and ship a default render-prop UI hook, so you write the least code; mutation hooks give you the lifecycle without UI, so you build the button yourself; core actions give you neither — just a function that drives the wallet — and are the right pick from vanilla code or when you need to compose multiple transactions in one user action. Pick by how much of the lifecycle you want AppKit to own.
 
-| Goal                                | Component             | Hook                 | Core action       |
-| ----------------------------------- | --------------------- | -------------------- | ----------------- |
-| Send Toncoin                        | `<SendTonButton />`   | `useTransferTon`     | `transferTon`     |
-| Send a jetton                       | `<SendJettonButton />`| `useTransferJetton`  | `transferJetton`  |
-| Send an NFT                         | `<Send />` + builder  | `useTransferNft`     | `transferNft`     |
-| Send a prepared transaction request | `<Send />`            | `useSendTransaction` | `sendTransaction` |
+| Goal                                | Component              | Hook                 | Core action       |
+| ----------------------------------- | ---------------------- | -------------------- | ----------------- |
+| Send Toncoin                        | `<SendTonButton />`    | `useTransferTon`     | `transferTon`     |
+| Send a jetton                       | `<SendJettonButton />` | `useTransferJetton`  | `transferJetton`  |
+| Send an NFT                         | `<Send />` + builder   | `useTransferNft`     | `transferNft`     |
+| Send a prepared transaction request | `<Send />`             | `useSendTransaction` | `sendTransaction` |
 
 ## Tips
 
 Wallet acceptance is not settlement. Always pair a send with [Stream live updates](/ecosystem/appkit/get-started/streaming) or `getTransactionStatus`, and verify the final outcome on a backend before delivering paid goods.
+
+## Code example
+
+See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) of TON, jetton, and NFT transfers built with these mutations.
 
 ## What to do next
 

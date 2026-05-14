@@ -21,18 +21,45 @@ Changing the default network changes the chain AppKit uses for reads and actions
 
 ## Configure networks
 
-Declare every chain the app can read. A simple app usually configures testnet for development and mainnet for production:
+Each network entry takes an `apiClient` — either the inline `{ url, key }` shape that targets Toncenter, or a constructed `ApiClient` instance (such as `ApiClientTonApi`) for any other backend. The inline shape has preset URLs for mainnet and testnet, so `url` can be omitted for those.
+
+### Configure multiple networks
+
+Add more entries to `networks` to declare additional chains, including custom networks beyond mainnet and testnet. The example below configures mainnet and testnet through Toncenter, plus a custom chain through a TonAPI client instance with its own endpoint URL.
 
 ```ts
-import { AppKit, Network, setDefaultNetwork } from '@ton/appkit';
+const customNetwork = Network.custom('custom_chain_id');
 
-export const appKit = new AppKit({
+const appKit = new AppKit({
   networks: {
+    [Network.mainnet().chainId]: {
+      apiClient: {
+        key: 'your-mainnet-key',
+      },
+    },
     [Network.testnet().chainId]: {
-      apiClient: { url: 'https://testnet.toncenter.com', key: 'testnet-api-key' },
+      apiClient: {
+        url: 'https://testnet.toncenter.com',
+        key: 'your-testnet-key',
+      },
+    },
+    [customNetwork.chainId]: {
+      apiClient: new ApiClientTonApi({
+        network: customNetwork,
+        endpoint: 'https://your-custom-endpoint.example',
+        apiKey: 'your-custom-key',
+      }),
     },
   },
 });
+```
+
+### Set and read the default network
+
+Set the default network with `setDefaultNetwork`:
+
+```ts
+import { setDefaultNetwork } from '@ton/appkit';
 
 setDefaultNetwork(appKit, { network: Network.testnet() });
 ```
@@ -48,7 +75,7 @@ return <span>{network?.chainId}</span>;
 
 ## Network mismatch
 
-A network mismatch happens when the app expects one chain and the selected wallet or provider reports another. This is not a display issue; it changes where a transaction request would be signed and where a result would settle.
+A network mismatch happens when the app expects one chain and the selected wallet or provider reports another. This is not a display issue — it changes where a transaction request would be signed and where a result would settle.
 
 Block unsafe actions when the expected network and the reported network do not match. Surface the expected network and let the wallet or app flow resolve the mismatch before sending a transaction request.
 
