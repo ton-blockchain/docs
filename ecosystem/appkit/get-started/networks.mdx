@@ -13,7 +13,7 @@ Install AppKit first. See [Prepare your project](/ecosystem/appkit/get-started/i
 
 ## Basic configuration
 
-By default, AppKit constructs a mainnet-only `ApiClientToncenter` with no API key when `networks` is omitted. That is enough to start exploring AppKit, but production traffic will hit Toncenter's public rate limits — apps that ship to users should supply their own key.
+By default, AppKit constructs a mainnet-only `ApiClientToncenter` with no API key when `networks` is omitted. That is enough to start exploring AppKit, but production traffic will hit TON Center's public rate limits — apps that ship to users should supply their own key.
 
 Pass an `apiClient` entry on the network with a `key` to lift the limits. AppKit has preset URLs for mainnet (`https://toncenter.com`) and testnet (`https://testnet.toncenter.com`), so `url` can be omitted for those. For other networks, specify `url` explicitly.
 
@@ -31,7 +31,7 @@ const appKit = new AppKit({
 
 ## Use TonAPI instead
 
-Besides Toncenter, AppKit ships `ApiClientTonApi` for TonAPI and compatible deployments. The inline `{ url, key }` shape is Toncenter-only. To use TonAPI, pass a constructed instance into `apiClient`.
+Besides TON Center, AppKit ships `ApiClientTonApi` for TonAPI and compatible deployments. The inline `{ url, key }` shape is TON Center-only. To use TonAPI, pass a constructed instance into `apiClient`.
 
 ```ts
 import { AppKit, ApiClientTonApi, Network } from '@ton/appkit';

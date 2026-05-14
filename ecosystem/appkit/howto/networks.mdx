@@ -21,11 +21,11 @@ Changing the default network changes the chain AppKit uses for reads and actions
 
 ## Configure networks
 
-Each network entry takes an `apiClient` — either the inline `{ url, key }` shape that targets Toncenter, or a constructed `ApiClient` instance (such as `ApiClientTonApi`) for any other backend. The inline shape has preset URLs for mainnet and testnet, so `url` can be omitted for those.
+Each network entry takes an `apiClient` — either the inline `{ url, key }` shape that targets TON Center, or a constructed `ApiClient` instance (such as `ApiClientTonApi`) for any other backend. The inline shape has preset URLs for mainnet and testnet, so `url` can be omitted for those.
 
 ### Configure multiple networks
 
-Add more entries to `networks` to declare additional chains, including custom networks beyond mainnet and testnet. The example below configures mainnet and testnet through Toncenter, plus a custom chain through a TonAPI client instance with its own endpoint URL.
+Add more entries to `networks` to declare additional chains, including custom networks beyond mainnet and testnet. The example below configures mainnet and testnet through TON Center, plus a custom chain through a TonAPI client instance with its own endpoint URL.
 
 ```ts
 const customNetwork = Network.custom('custom_chain_id');
