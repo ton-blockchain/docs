@@ -7,7 +7,7 @@ import tlbGrammarRaw from "./grammars/grammar-tlb.json"
 import fiftGrammarRaw from "./grammars/grammar-fift.json"
 import lastModified from "fumadocs-mdx/plugins/last-modified"
 import {pageSchema} from "fumadocs-core/source/schema"
-import {remarkMdxFiles} from "fumadocs-core/mdx-plugins"
+import {remarkMdxFiles, remarkMdxMermaid} from "fumadocs-core/mdx-plugins"
 import remarkMath from "remark-math"
 import remarkGfm from "remark-gfm"
 import {z} from "zod"
@@ -123,6 +123,6 @@ export default defineConfig({
       },
       langs: [...builtinLangs, ...customLangs],
     },
-    remarkPlugins: [remarkMdxFiles, remarkGfm, remarkMath],
+    remarkPlugins: [remarkMdxFiles, remarkGfm, remarkMath, remarkMdxMermaid],
   },
 })

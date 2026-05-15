@@ -8,6 +8,7 @@ import {
 } from "@/components/CommandOptions"
 import {Callout} from "@/components/Callout"
 import {ImageZoom} from "@/components/image-zoom"
+import {Mermaid} from "@/components/Mermaid"
 import {SourceCodeLink} from "@/components/SourceCodeLink"
 import * as Mintlify from "@/components/mintlify"
 
@@ -33,6 +34,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     CommandOptionTitle,
     SourceCodeLink,
     Callout,
+    Mermaid,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     img: props => <ImageZoom {...(props as any)} />,
     ...components,
