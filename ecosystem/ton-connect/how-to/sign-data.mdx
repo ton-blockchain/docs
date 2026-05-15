@@ -17,7 +17,7 @@ Three payload variants cover three use cases:
 
 ## Calling `signData`
 
-`tonConnectUi.signData(payload)` is the entry point. The wallet must be connected when you call it, or pass `options.onConnected` to defer the request until a wallet is picked from the modal — a compliant wallet then handles connect and sign in one tap. See [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request). Without either, the SDK throws.
+`tonConnectUi.signData(payload)` is the entry point. The wallet must be connected when you call it, or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal — a compliant wallet then handles connect and sign in one tap. See [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request). Without either, the SDK throws.
 
 ### Text
 
