@@ -1,27 +1,30 @@
 ---
-title: "WalletKit: SDK for custodial and non-custodial wallet services"
-sidebarTitle: "Introduction"
+title: "WalletKit"
+sidebarTitle: "Overview"
 ---
 
 import { Aside } from '/snippets/aside.jsx';
 
-TON Connect's **WalletKit** is an open-source SDK that helps integrate your custodial or non-custodial wallet with TON in a secure and streamlined fashion.
+## What WalletKit is
 
-It is designed for institutions, non-custodians, and custodians that need full control over key management, signing, and access without compromising UX or compliance.
+**WalletKit** is an open-source SDK for custodial and non-custodial wallet services that need to integrate with the TON ecosystem. Supported platforms include **Web**, **mobile (Android and iOS)**, and **browser extensions**.
+
+With WalletKit, institutions, non-custodians, and custodians gain full control over key management, signing, and access without compromising UX or compliance. It's designed for both small wallet services and large cross-chain systems.
 
 ## Features
 
-- TON Connect protocol: Handles connect, disconnect, transaction and data sign requests
-- Wallet management: Support for multiple TON wallets at once, with persistent storage and optional use of custom signers
-- Action previews: Transaction emulation with money flow analysis
-- Asset support: Toncoin (TON), Jettons (including USDTs), NFTs with metadata
-- Platform availability: Use on the Web, on mobile (Android and iOS), and in browser extensions
+WalletKit provides the following features:
 
-## Use cases
+- **TON Connect**: Built-in support for [TON Connect](/ecosystem/ton-connect/overview) — a standard TON wallet connection protocol
+- **Wallet management**: Support for multiple TON wallets at once, with persistent storage and optional use of custom signers
+- **Action previews**: Transaction emulation with money flow analysis
+- **Asset support**: Toncoin, [jettons](https://docs.ton.org/standard/tokens/jettons/overview) (including USDTs), [NFTs](https://docs.ton.org/standard/tokens/nft/overview) with metadata
 
-WalletKit supports both small wallet services and large cross-chain systems.
+<Aside type="note">
+WalletKit is the wallet-side counterpart to [AppKit](ecosystem/appkit/overview) — an SDK for integrating TON into dApps.
+</Aside>
 
-## Quick start
+## What's next
 
 First, follow this step-by-step guide: [How to integrate a wallet with TON](/ecosystem/ton-connect/wallet).
 
