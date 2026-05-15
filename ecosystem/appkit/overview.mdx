@@ -3,6 +3,8 @@ title: "AppKit"
 sidebarTitle: "Overview"
 ---
 
+import { Aside } from "/snippets/aside.jsx";
+
 | Goal                        | Read                                                             |
 | --------------------------- | ---------------------------------------------------------------- |
 | Add AppKit to a new app     | [Get started](/ecosystem/appkit/get-started)                     |
@@ -11,17 +13,37 @@ sidebarTitle: "Overview"
 | Check upgrade notes         | [Changelog](/ecosystem/appkit/changelog)                         |
 | Diagnose common issues      | [FAQ and troubleshooting](/ecosystem/appkit/faq-troubleshooting) |
 
-## What is AppKit
+## What AppKit is
 
-AppKit gives one place to configure networks, connectors, providers, and React integration around TON wallet operations. It prepares requests, tracks application state, and bridges the application interface to wallets and providers.
+AppKit is an open-source SDK for integrating TON into [Telegram Mini Apps](https://core.telegram.org/bots/webapps) and dApps (React and JavaScript/TypeScript). It gives you a single place to configure networks, connectors, providers, and wallet interactions.
 
-Wallets still sign transactions and data. Backends still verify orders, signatures, and business rules.
+With AppKit, applications can send transactions on TON and integrate with DeFi protocols, such as staking and swaps, through providers. On top of this, it provides an out-of-the-box UI with sub-second updates.
 
-Reach for AppKit when an application needs to:
+Use AppKit to do the following:
 
-- connect a TON wallet
-- request Toncoin, jetton, NFT, swap, staking, or signing operations
-- read wallet data and asset balances
+- Connect a TON wallet
+- Send Toncoin and [jettons](https://docs.ton.org/standard/tokens/jettons/overview), work with [NFTs](https://docs.ton.org/standard/tokens/nft/overview)
+- Request swap, staking, or signing operations
+- Read wallet data and asset balances
+
+<Aside type="note">
+An application built with AppKit can interact with your own smart contract. To create a contract, use [Acton](https://ton-blockchain.github.io/acton/docs/welcome) and explore [TON Foundations](/foundations/core-concepts).
+</Aside>
+
+## How it works
+
+This is how AppKit fits into the TON ecosystem:
+
+- AppKit prepares requests, tracks application state, and bridges the application interface to wallets and providers.
+- Wallets sign transactions and data
+- Backends verify orders, signatures, and business rules
+
+AppKit builds on top of the following components: 
+
+- [TON Connect](/foundations/ton-connect/overview): A protocol enabling interaction between applications and wallets
+- [TanStack Query](https://tanstack.com/query/latest) and [TON Pay React hooks](/ton-pay/payment-integration/payments-react#how-to-send-payments-using-ton-pay-react-hook)
+- [TON Center API](/ecosystem/api/toncenter/introduction), [TON Center Streaming API v2](/ecosystem/api/toncenter/streaming/overview), and [TonApi](https://github.com/tonkeeper/opentonapi)
+- Open interfaces for integrating embedded wallets, on-chain/off-chain on-ramps, and DeFi protocols, such as staking and swaps
 
 ## Packages
 
@@ -37,7 +59,11 @@ Reach for AppKit when an application needs to:
 
 ## Examples
 
-The [`appkit-minter`](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) example app wires AppKit into a Vite + React app: wallet connect, balance and jetton reads, transaction sending, and streaming watches in one place. [Try it live](https://appkit-minter.vercel.app/).
+The [`appkit-minter`](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) example wires AppKit into a Vite + React application.
+
+This example implements wallet connection, balance and jetton queries, transaction sending, and streaming watches in one place.
+
+[Try it live: `appkit-minter`](https://appkit-minter.vercel.app/).
 
 ## What to do next
 
