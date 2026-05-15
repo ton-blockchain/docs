@@ -1321,11 +1321,6 @@ export const redirects = [
     "permanent": true
   },
   {
-    "source": "/ecosystem/ton-connect/overview",
-    "destination": "/ton-connect/overview",
-    "permanent": true
-  },
-  {
     "source": "/ecosystem/ton-connect/wallet",
     "destination": "/ton-connect/wallet",
     "permanent": true
