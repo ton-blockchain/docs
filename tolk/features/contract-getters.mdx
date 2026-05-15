@@ -31,6 +31,19 @@ Use camelCase for naming.
 This convention may be overridden when matching standard TEPs. For example, a jetton wallet should expose a method `get_wallet_data`, as it was named in implementations.
 In such cases, using `get fun get_wallet_data` is appropriate, even if it does not follow the camelCase convention.
 
+## Documentation comments
+
+Place `///` doc comments above a get method to enrich the [exported ABI](/languages/tolk/features/contract-abi#doc-comments) with descriptions.
+They are surfaced in TypeScript wrappers, IDE hover, explorers, and other client-side tooling.
+
+```tolk
+/// Reads current counter.
+/// @param verbose whether to include debug info
+get fun currentCounter(verbose: bool): SomeReply {
+    // ...
+}
+```
+
 ## Structures
 
 When a getter returns multiple values, define a [structure](/languages/tolk/types/structures) and return it.
