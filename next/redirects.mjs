@@ -6,6 +6,276 @@
  */
 export const redirects = [
   {
+    "source": "/appkit/changelog",
+    "destination": "/applications/appkit/changelog",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/faq-troubleshooting",
+    "destination": "/applications/appkit/faq-troubleshooting",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started",
+    "destination": "/applications/appkit/get-started",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/basic-getter-hooks",
+    "destination": "/applications/appkit/get-started/basic-getter-hooks",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/connectors",
+    "destination": "/applications/appkit/get-started/connectors",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/installation",
+    "destination": "/applications/appkit/get-started/installation",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/installation/react-app",
+    "destination": "/applications/appkit/get-started/installation/react-app",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/installation/vanilla-js",
+    "destination": "/applications/appkit/get-started/installation/vanilla-js",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/networks",
+    "destination": "/applications/appkit/get-started/networks",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/providers",
+    "destination": "/applications/appkit/get-started/providers",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/sending-transactions",
+    "destination": "/applications/appkit/get-started/sending-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/streaming",
+    "destination": "/applications/appkit/get-started/streaming",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/get-started/using-ui-widgets",
+    "destination": "/applications/appkit/get-started/using-ui-widgets",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto",
+    "destination": "/applications/appkit/howto",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/appkit",
+    "destination": "/applications/appkit/howto/appkit",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/connect-to-a-wallet",
+    "destination": "/applications/appkit/howto/connect-to-a-wallet",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/gasless",
+    "destination": "/applications/appkit/howto/gasless",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/networks",
+    "destination": "/applications/appkit/howto/networks",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/nfts",
+    "destination": "/applications/appkit/howto/nfts",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/onramp",
+    "destination": "/applications/appkit/howto/onramp",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/providers",
+    "destination": "/applications/appkit/howto/providers",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/read-balances",
+    "destination": "/applications/appkit/howto/read-balances",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/send-jettons",
+    "destination": "/applications/appkit/howto/send-jettons",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/send-toncoin",
+    "destination": "/applications/appkit/howto/send-toncoin",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/sign-data",
+    "destination": "/applications/appkit/howto/sign-data",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/staking",
+    "destination": "/applications/appkit/howto/staking",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/streaming",
+    "destination": "/applications/appkit/howto/streaming",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/swaps",
+    "destination": "/applications/appkit/howto/swaps",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/howto/use-ui-widgets",
+    "destination": "/applications/appkit/howto/use-ui-widgets",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/overview",
+    "destination": "/applications/appkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/reference",
+    "destination": "/applications/appkit/reference",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/reference/appkit",
+    "destination": "/applications/appkit/reference/appkit",
+    "permanent": true
+  },
+  {
+    "source": "/appkit/reference/appkit-react",
+    "destination": "/applications/appkit/reference/appkit-react",
+    "permanent": true
+  },
+  {
+    "source": "/applications/appkit/get-started",
+    "destination": "/applications/appkit/get-started/get-started",
+    "permanent": true
+  },
+  {
+    "source": "/applications/appkit/get-started/installation",
+    "destination": "/applications/appkit/get-started/installation/installation",
+    "permanent": true
+  },
+  {
+    "source": "/applications/appkit/howto",
+    "destination": "/applications/appkit/howto/howto",
+    "permanent": true
+  },
+  {
+    "source": "/applications/appkit/reference",
+    "destination": "/applications/appkit/reference/reference",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/api-reference/protocol",
+    "destination": "/ecosystem/ton-connect/api-reference/protocol",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/api-reference/sdk",
+    "destination": "/ecosystem/ton-connect/api-reference/sdk",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/api-reference/ui",
+    "destination": "/ecosystem/ton-connect/api-reference/ui",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/api-reference/ui-react",
+    "destination": "/ecosystem/ton-connect/api-reference/ui-react",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/core-concepts",
+    "destination": "/ecosystem/ton-connect/core-concepts",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/faq",
+    "destination": "/ecosystem/ton-connect/faq",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/get-started",
+    "destination": "/ecosystem/ton-connect/get-started",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/connect",
+    "destination": "/ecosystem/ton-connect/how-to/connect",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/disconnect",
+    "destination": "/ecosystem/ton-connect/how-to/disconnect",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/embedded-request",
+    "destination": "/ecosystem/ton-connect/how-to/embedded-request",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/filter-wallets",
+    "destination": "/ecosystem/ton-connect/how-to/filter-wallets",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/send-transaction",
+    "destination": "/ecosystem/ton-connect/how-to/send-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/sign-data",
+    "destination": "/ecosystem/ton-connect/how-to/sign-data",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/sign-message-gasless",
+    "destination": "/ecosystem/ton-connect/how-to/sign-message-gasless",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/how-to/walletconnect-support",
+    "destination": "/ecosystem/ton-connect/how-to/walletconnect-support",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/overview",
+    "destination": "/ecosystem/ton-connect/overview",
+    "permanent": true
+  },
+  {
+    "source": "/applications/ton-connect/troubleshooting",
+    "destination": "/ecosystem/ton-connect/troubleshooting",
+    "permanent": true
+  },
+  {
     "source": "/contract-dev/contract-sharding",
     "destination": "/contract-dev/techniques/contract-sharding",
     "permanent": true
@@ -2723,6 +2993,661 @@ export const redirects = [
   {
     "source": "/tolk/types/void-never",
     "destination": "/contract-dev/tolk/types/void-never",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/overview",
+    "destination": "/applications/api/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/price",
+    "destination": "/applications/api/price",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/get-api-key",
+    "destination": "/applications/api/toncenter/get-api-key",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/introduction",
+    "destination": "/applications/api/toncenter/introduction",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/rate-limit",
+    "destination": "/applications/api/toncenter/rate-limit",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/smc-index/get-nominator-bookings-method",
+    "destination": "/applications/api/toncenter/smc-index/get-nominator-bookings-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/smc-index/get-nominator-earnings-method",
+    "destination": "/applications/api/toncenter/smc-index/get-nominator-earnings-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/smc-index/get-nominator-method",
+    "destination": "/applications/api/toncenter/smc-index/get-nominator-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/smc-index/get-pool-bookings-method",
+    "destination": "/applications/api/toncenter/smc-index/get-pool-bookings-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/smc-index/get-pool-method",
+    "destination": "/applications/api/toncenter/smc-index/get-pool-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/smc-index/lifecheck-method",
+    "destination": "/applications/api/toncenter/smc-index/lifecheck-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/streaming/overview",
+    "destination": "/applications/api/toncenter/streaming/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/streaming/reference",
+    "destination": "/applications/api/toncenter/streaming/reference",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/streaming/sse",
+    "destination": "/applications/api/toncenter/streaming/sse",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/streaming/wss",
+    "destination": "/applications/api/toncenter/streaming/wss",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2-authentication",
+    "destination": "/applications/api/toncenter/v2-authentication",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2-errors",
+    "destination": "/applications/api/toncenter/v2-errors",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2-tonlib-types",
+    "destination": "/applications/api/toncenter/v2-tonlib-types",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/accounts/get-address-balance",
+    "destination": "/applications/api/toncenter/v2/accounts/get-address-balance",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/accounts/get-address-information",
+    "destination": "/applications/api/toncenter/v2/accounts/get-address-information",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/accounts/get-address-state",
+    "destination": "/applications/api/toncenter/v2/accounts/get-address-state",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/accounts/get-extended-address-information",
+    "destination": "/applications/api/toncenter/v2/accounts/get-extended-address-information",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/accounts/get-token-data",
+    "destination": "/applications/api/toncenter/v2/accounts/get-token-data",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/accounts/get-wallet-information",
+    "destination": "/applications/api/toncenter/v2/accounts/get-wallet-information",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-block-header",
+    "destination": "/applications/api/toncenter/v2/blocks/get-block-header",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-consensus-block",
+    "destination": "/applications/api/toncenter/v2/blocks/get-consensus-block",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-masterchain-block-signatures",
+    "destination": "/applications/api/toncenter/v2/blocks/get-masterchain-block-signatures",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-masterchain-info",
+    "destination": "/applications/api/toncenter/v2/blocks/get-masterchain-info",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-outbound-message-queue-size",
+    "destination": "/applications/api/toncenter/v2/blocks/get-outbound-message-queue-size",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-shard-block-proof",
+    "destination": "/applications/api/toncenter/v2/blocks/get-shard-block-proof",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/get-shards",
+    "destination": "/applications/api/toncenter/v2/blocks/get-shards",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/blocks/lookup-block",
+    "destination": "/applications/api/toncenter/v2/blocks/lookup-block",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/configuration/get-all-config-parameters",
+    "destination": "/applications/api/toncenter/v2/configuration/get-all-config-parameters",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/configuration/get-config-parameter",
+    "destination": "/applications/api/toncenter/v2/configuration/get-config-parameter",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/configuration/get-libraries",
+    "destination": "/applications/api/toncenter/v2/configuration/get-libraries",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/overview",
+    "destination": "/applications/api/toncenter/v2/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/rpc/json-rpc-endpoint",
+    "destination": "/applications/api/toncenter/v2/rpc/json-rpc-endpoint",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/run-method/run-get-method",
+    "destination": "/applications/api/toncenter/v2/run-method/run-get-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/run-method/run-get-method-standard",
+    "destination": "/applications/api/toncenter/v2/run-method/run-get-method-standard",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/send/estimate-fee",
+    "destination": "/applications/api/toncenter/v2/send/estimate-fee",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/send/send-boc",
+    "destination": "/applications/api/toncenter/v2/send/send-boc",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/send/send-boc-return-hash",
+    "destination": "/applications/api/toncenter/v2/send/send-boc-return-hash",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/get-block-transactions",
+    "destination": "/applications/api/toncenter/v2/transactions/get-block-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/get-block-transactions-extended",
+    "destination": "/applications/api/toncenter/v2/transactions/get-block-transactions-extended",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/get-transactions",
+    "destination": "/applications/api/toncenter/v2/transactions/get-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/get-transactions-standard",
+    "destination": "/applications/api/toncenter/v2/transactions/get-transactions-standard",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/try-locate-result-transaction",
+    "destination": "/applications/api/toncenter/v2/transactions/try-locate-result-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/try-locate-source-transaction",
+    "destination": "/applications/api/toncenter/v2/transactions/try-locate-source-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/transactions/try-locate-transaction",
+    "destination": "/applications/api/toncenter/v2/transactions/try-locate-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/utils/detect-address",
+    "destination": "/applications/api/toncenter/v2/utils/detect-address",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/utils/detect-hash",
+    "destination": "/applications/api/toncenter/v2/utils/detect-hash",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/utils/pack-address",
+    "destination": "/applications/api/toncenter/v2/utils/pack-address",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v2/utils/unpack-address",
+    "destination": "/applications/api/toncenter/v2/utils/unpack-address",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3-authentication",
+    "destination": "/applications/api/toncenter/v3-authentication",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3-errors",
+    "destination": "/applications/api/toncenter/v3-errors",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3-pagination",
+    "destination": "/applications/api/toncenter/v3-pagination",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/accounts/address-book",
+    "destination": "/applications/api/toncenter/v3/accounts/address-book",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/accounts/get-account-states",
+    "destination": "/applications/api/toncenter/v3/accounts/get-account-states",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/accounts/get-wallet-states",
+    "destination": "/applications/api/toncenter/v3/accounts/get-wallet-states",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/accounts/metadata",
+    "destination": "/applications/api/toncenter/v3/accounts/metadata",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/actions-and-traces/get-actions",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-actions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/actions-and-traces/get-pending-actions",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-pending-actions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/actions-and-traces/get-pending-traces",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-pending-traces",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/actions-and-traces/get-traces",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-traces",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/apiv2/estimate-fee",
+    "destination": "/applications/api/toncenter/v3/apiv2/estimate-fee",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/apiv2/get-address-information",
+    "destination": "/applications/api/toncenter/v3/apiv2/get-address-information",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/apiv2/get-wallet-information",
+    "destination": "/applications/api/toncenter/v3/apiv2/get-wallet-information",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/apiv2/run-get-method",
+    "destination": "/applications/api/toncenter/v3/apiv2/run-get-method",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/apiv2/send-message",
+    "destination": "/applications/api/toncenter/v3/apiv2/send-message",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-adjacent-transactions",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-adjacent-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-blocks",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-blocks",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state-1",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state-1",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-masterchain-info",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-masterchain-info",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-messages",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-messages",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-pending-transactions",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-pending-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-transactions",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-transactions-by-masterchain-block",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-transactions-by-masterchain-block",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/blockchain-data/get-transactions-by-message",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-transactions-by-message",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/dns/get-dns-records",
+    "destination": "/applications/api/toncenter/v3/dns/get-dns-records",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/jettons/get-jetton-burns",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-burns",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/jettons/get-jetton-masters",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-masters",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/jettons/get-jetton-transfers",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-transfers",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/jettons/get-jetton-wallets",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-wallets",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/multisig/get-multisig-orders",
+    "destination": "/applications/api/toncenter/v3/multisig/get-multisig-orders",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/multisig/get-multisig-wallets",
+    "destination": "/applications/api/toncenter/v3/multisig/get-multisig-wallets",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/nfts/get-nft-collections",
+    "destination": "/applications/api/toncenter/v3/nfts/get-nft-collections",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/nfts/get-nft-items",
+    "destination": "/applications/api/toncenter/v3/nfts/get-nft-items",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/nfts/get-nft-transfers",
+    "destination": "/applications/api/toncenter/v3/nfts/get-nft-transfers",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/overview",
+    "destination": "/applications/api/toncenter/v3/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/stats/get-top-accounts-by-balance",
+    "destination": "/applications/api/toncenter/v3/stats/get-top-accounts-by-balance",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/utils/decode-opcodes-and-bodies",
+    "destination": "/applications/api/toncenter/v3/utils/decode-opcodes-and-bodies",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/utils/decode-opcodes-and-bodies-1",
+    "destination": "/applications/api/toncenter/v3/utils/decode-opcodes-and-bodies-1",
+    "permanent": true
+  },
+  {
+    "source": "/tools/api/toncenter/v3/vesting/get-vesting-contracts",
+    "destination": "/applications/api/toncenter/v3/vesting/get-vesting-contracts",
+    "permanent": true
+  },
+  {
+    "source": "/tools/sdks",
+    "destination": "/applications/sdks",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/api-reference",
+    "destination": "/applications/ton-pay/api-reference",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/on-ramp",
+    "destination": "/applications/ton-pay/on-ramp",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/overview",
+    "destination": "/applications/ton-pay/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/payment-integration/payments-react",
+    "destination": "/applications/ton-pay/payment-integration/payments-react",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/payment-integration/payments-tonconnect",
+    "destination": "/applications/ton-pay/payment-integration/payments-tonconnect",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/payment-integration/status-info",
+    "destination": "/applications/ton-pay/payment-integration/status-info",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/payment-integration/transfer",
+    "destination": "/applications/ton-pay/payment-integration/transfer",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/quick-start",
+    "destination": "/applications/ton-pay/quick-start",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/ui-integration/button-js",
+    "destination": "/applications/ton-pay/ui-integration/button-js",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/ui-integration/button-react",
+    "destination": "/applications/ton-pay/ui-integration/button-react",
+    "permanent": true
+  },
+  {
+    "source": "/tools/ton-pay/webhooks",
+    "destination": "/applications/ton-pay/webhooks",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/data",
+    "destination": "/applications/walletkit/android/data",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/events",
+    "destination": "/applications/walletkit/android/events",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/init",
+    "destination": "/applications/walletkit/android/init",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/installation",
+    "destination": "/applications/walletkit/android/installation",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/transactions",
+    "destination": "/applications/walletkit/android/transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/wallets",
+    "destination": "/applications/walletkit/android/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/android/webview",
+    "destination": "/applications/walletkit/android/webview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/browser-extension",
+    "destination": "/applications/walletkit/browser-extension",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/data",
+    "destination": "/applications/walletkit/ios/data",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/events",
+    "destination": "/applications/walletkit/ios/events",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/init",
+    "destination": "/applications/walletkit/ios/init",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/installation",
+    "destination": "/applications/walletkit/ios/installation",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/transactions",
+    "destination": "/applications/walletkit/ios/transactions",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/wallets",
+    "destination": "/applications/walletkit/ios/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/ios/webview",
+    "destination": "/applications/walletkit/ios/webview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/native-web",
+    "destination": "/applications/walletkit/native-web",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/overview",
+    "destination": "/applications/walletkit/overview",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/qa-guide",
+    "destination": "/applications/walletkit/qa-guide",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/connections",
+    "destination": "/applications/walletkit/web/connections",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/events",
+    "destination": "/applications/walletkit/web/events",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/init",
+    "destination": "/applications/walletkit/web/init",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/jettons",
+    "destination": "/applications/walletkit/web/jettons",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/nfts",
+    "destination": "/applications/walletkit/web/nfts",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/toncoin",
+    "destination": "/applications/walletkit/web/toncoin",
+    "permanent": true
+  },
+  {
+    "source": "/tools/walletkit/web/wallets",
+    "destination": "/applications/walletkit/web/wallets",
     "permanent": true
   },
   {

@@ -593,8 +593,12 @@ async function emitMetaTree(config) {
             // separator + extract-prefix pair in the parent so Fumadocs
             // inlines the folder's children as siblings at the parent
             // depth. The folder's own meta.json is still written for inner
-            // ordering.
-            addEntry(currentFolderDir, `---${entry.group}---`)
+            // ordering. Icon is encoded into the separator via Fumadocs'
+            // `---[icon]Title---` syntax (loader-CeIUqWDI.js:275) so the
+            // top-level section header in the sidebar carries its icon
+            // even though it's rendered as a non-clickable separator.
+            const sepIcon = entry.icon ? `[${entry.icon}]` : ""
+            addEntry(currentFolderDir, `---${sepIcon}${entry.group}---`)
             addEntry(currentFolderDir, `...${entry.slug}`)
           } else {
             // `folder` (regular collapsible) and `section`
@@ -618,8 +622,10 @@ async function emitMetaTree(config) {
           walkEntries(entry.pages ?? [], groupDir, {isTopLevelInTab: false})
         } else {
           // Sidebar-only group: emits a `---Title---` separator and keeps the
-          // same currentFolderDir for its children.
-          addEntry(currentFolderDir, `---${entry.group}---`)
+          // same currentFolderDir for its children. Icon embedded via the
+          // `---[icon]Title---` separator syntax.
+          const sepIcon = entry.icon ? `[${entry.icon}]` : ""
+          addEntry(currentFolderDir, `---${sepIcon}${entry.group}---`)
           walkEntries(entry.pages ?? [], currentFolderDir, ctx)
         }
         continue

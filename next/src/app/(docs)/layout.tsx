@@ -9,30 +9,13 @@ export default function Layout({children}: {children: ReactNode}) {
     <DocsLayout
       tree={source.pageTree}
       githubUrl="https://github.com/ton-org/docs"
-      // Render every tab from `navigation.config.json` as a horizontal
-      // strip above the page content on every docs page. We pass `tabs`
-      // explicitly because Fumadocs' auto `getLayoutTabs(tree)` ignores
-      // the page-tree Root's own `root: true` (the "Documentation" tab),
-      // so the auto path would only ever surface AppKit.
-      tabMode="top"
+      // Render every tab from `navigation.config.json` as a `SidebarTabsDropdown`
+      // (picker at the top of the left sidebar) instead of the horizontal strip
+      // above the article. We pass `tabs` explicitly because Fumadocs' auto
+      // `getLayoutTabs(tree)` ignores the page-tree Root's own `root: true`
+      // (the "Documentation" tab), so the auto path would only ever surface AppKit.
+      tabMode="auto"
       tabs={buildLayoutTabs()}
-      // The built-in LayoutTabs strip is hardcoded to `[grid-area:main]`,
-      // the same cell as the article. We carve out a dedicated `tabs` row
-      // here, between `header` and `toc-popover`, so the strip appears
-      // above the mobile/tablet TOC summary. A CSS rule in `globals.css`
-      // retargets the strip into the new row and we bump `--fd-docs-row-2`
-      // (which `toc-popover` is sticky to) by `--fd-tabs-height` so the
-      // TOC summary doesn't slide under the strip when scrolled.
-      containerProps={{
-        style: {
-          gridTemplate: `"sidebar sidebar header toc toc"
-"sidebar sidebar tabs toc toc" auto
-"sidebar sidebar toc-popover toc toc"
-"sidebar sidebar main toc toc" 1fr / minmax(min-content, 1fr) var(--fd-sidebar-col) minmax(0, calc(var(--fd-layout-width,97rem) - var(--fd-sidebar-width) - var(--fd-toc-width))) var(--fd-toc-width) minmax(min-content, 1fr)`,
-          ["--fd-docs-row-2" as string]:
-            "calc(var(--fd-banner-height, 0px) + var(--fd-header-height) + var(--fd-tabs-height, 0px))",
-        },
-      }}
       sidebar={{
         className: "ton-docs-sidebar",
         // Render a tag pill next to pages / external links / folder-backed
