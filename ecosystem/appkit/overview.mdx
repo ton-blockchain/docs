@@ -15,9 +15,9 @@ import { Aside } from "/snippets/aside.jsx";
 
 ## What AppKit is
 
-AppKit is an open-source SDK for integrating TON into [Telegram Mini Apps](https://core.telegram.org/bots/webapps) and dApps (React and JavaScript/TypeScript). It gives you a single place to configure networks, connectors, providers, and wallet interactions.
+AppKit is an open-source SDK for integrating TON into React and JavaScript/TypeScript decentralized applications and [Telegram Mini Apps](https://core.telegram.org/bots/webapps).
 
-With AppKit, applications can send transactions on TON and integrate with DeFi protocols, such as staking and swaps, through providers. On top of this, it provides an out-of-the-box UI with sub-second updates.
+With AppKit, you have a single place to configure networks, wallet connectors, DeFi providers, and React integration around TON wallet operations. It also includes an out-of-the-box UI with sub-second updates.
 
 Use AppKit to do the following:
 
@@ -44,6 +44,10 @@ AppKit builds on top of the following components:
 - [TanStack Query](https://tanstack.com/query/latest) and [TON Pay React hooks](/ton-pay/payment-integration/payments-react#how-to-send-payments-using-ton-pay-react-hook)
 - [TON Center API](/ecosystem/api/toncenter/introduction), [TON Center Streaming API v2](/ecosystem/api/toncenter/streaming/overview), and [TonApi](https://github.com/tonkeeper/opentonapi)
 - Open interfaces for integrating embedded wallets, on-chain/off-chain on-ramps, and DeFi protocols, such as staking and swaps
+
+<Aside type="note">
+AppKit integrates with DeFi protocols through [providers](/ecosystem/appkit/get-started/providers).
+</Aside>
 
 ## Packages
 
