@@ -1,11 +1,11 @@
-import {docs} from "collections/server"
-import {findPath, type Folder, type Item} from "fumadocs-core/page-tree"
-import {loader} from "fumadocs-core/source"
-import {icons} from "lucide-react"
-import {readFileSync} from "node:fs"
+import { docs } from "collections/server"
+import { findPath, type Folder, type Item } from "fumadocs-core/page-tree"
+import { loader } from "fumadocs-core/source"
+import { icons } from "lucide-react"
+import { readFileSync } from "node:fs"
 import path from "node:path"
-import {createElement, type ComponentType, type SVGProps} from "react"
-import {type InferPageType} from "fumadocs-core/source"
+import { createElement, type ComponentType, type SVGProps } from "react"
+import { type InferPageType } from "fumadocs-core/source"
 
 /**
  * Frontmatter / meta.json icon names ship in kebab-case (`book-open`,
@@ -58,15 +58,15 @@ function loadNavOverlays(): NavOverlays {
       tagByFolderPath: parsed.tagByFolderPath ?? {},
     }
   } catch {
-    return {tagByItemUrl: {}, tagByFolderPath: {}}
+    return { tagByItemUrl: {}, tagByFolderPath: {} }
   }
 }
 
 const navOverlays = loadNavOverlays()
 
 /** Item / Folder node with the extra `$tag` we stash on them in the transformer. */
-export type TaggedItem = Item & {$tag?: string}
-export type TaggedFolder = Folder & {$tag?: string}
+export type TaggedItem = Item & { $tag?: string }
+export type TaggedFolder = Folder & { $tag?: string }
 
 export const source = loader({
   baseUrl: "/",
@@ -91,9 +91,21 @@ export const source = loader({
   pageTree: {
     transformers: [
       {
-        file(node) {
+        file(node, file) {
           const tag = navOverlays.tagByItemUrl?.[node.url]
           if (tag) (node as TaggedItem).$tag = tag
+
+          if (file) {
+              try {
+                const content = this.storage.read(file);
+                if ((content?.data as { sidebarTitle?: string })?.sidebarTitle) {
+                  node.name = (content?.data as { sidebarTitle?: string })?.sidebarTitle;
+                }
+              } catch (error) {
+                console.error('Error reading file', error);
+              }
+          }
+
           return node
         },
         folder(node, folderPath) {
@@ -174,7 +186,7 @@ const generateVisibleSourceParams: typeof source.generateParams = (slug, lang) =
 
   return getVisiblePages().map(page => ({
     [slugName]: page.slugs,
-    ...(page.locale ? {[langName]: page.locale} : {}),
+    ...(page.locale ? { [langName]: page.locale } : {}),
   })) as ReturnType<typeof source.generateParams>
 }
 
@@ -184,7 +196,7 @@ const generateVisibleLlmParams: typeof llmSource.generateParams = (slug, lang) =
 
   return getVisibleLlmPages().map(page => ({
     [slugName]: page.slugs,
-    ...(page.locale ? {[langName]: page.locale} : {}),
+    ...(page.locale ? { [langName]: page.locale } : {}),
   })) as ReturnType<typeof llmSource.generateParams>
 }
 
