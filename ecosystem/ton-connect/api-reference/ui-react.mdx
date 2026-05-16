@@ -269,7 +269,7 @@ Use it to get the user's current TON wallet. Returns `null` when no wallet is co
 re-renders whenever the user connects, disconnects, or switches accounts.
 
 ```ts
-function useTonWallet(): Wallet | unknown | null;
+function useTonWallet(): Wallet | (Wallet & WalletInfoWithOpenMethod) | null;
 ```
 
 Returns `Wallet | unknown | null`.
