@@ -93,13 +93,13 @@ The word `PUSHINT`, or equivalently `INT`, consumes the integer `x` at the top o
 17       // Fift Stack: Builder 239 17
 *        // Fift Stack: Builder 4063
 INT      // Fift Stack: Builder'
-// Builder' contains the TVM binary code for 
-// pushing integer 4063 into the TVM stack 
+// Builder' contains the TVM binary code for
+// pushing integer 4063 into the TVM stack
 
 }>s      // Fift Stack: Slice
-// "Slice" contains the TVM binary code for 
+// "Slice" contains the TVM binary code for
 // pushing integer 4063 into the TVM stack.
-// "Slice" can now be executed by using 
+// "Slice" can now be executed by using
 // word runvmcode
 ```
 
@@ -109,8 +109,8 @@ In the above example the multiplication `239 * 17 = 4063` happens in the Fift st
 <{       // Fift Stack: Builder
 239      // Fift Stack: Builder 239
 INT      // Fift Stack: Builder1
-// Builder1 contains the TVM binary code for 
-// pushing integer 239 into the TVM stack 
+// Builder1 contains the TVM binary code for
+// pushing integer 239 into the TVM stack
 
 17       // Fift Stack: Builder1 17
 INT      // Fift Stack: Builder2
@@ -125,9 +125,9 @@ MUL      // Fift Stack: Builder3
 // - Execute multiplication
 
 }>s      // Fift Stack: Slice
-// "Slice" contains the TVM binary code for 
+// "Slice" contains the TVM binary code for
 // multiplying 239 and 17 in the TVM stack.
-// "Slice" can now be executed by using 
+// "Slice" can now be executed by using
 // word runvmcode
 ```
 
@@ -147,13 +147,13 @@ Here is the trace:
 <{          // Fift Stack: Builder
 3           // Fift Stack: Builder 3
 INT         // Fift Stack: Builder1
-// Builder1 contains the TVM binary code for 
-// pushing integer 3 into the TVM stack 
+// Builder1 contains the TVM binary code for
+// pushing integer 3 into the TVM stack
 
 <{          // Fift Stack: Builder1 Builder'
 5           // Fift Stack: Builder1 Builder' 5
 INT         // Fift Stack: Builder1 Builder1'
-// Builder1' contains the TVM binary code for 
+// Builder1' contains the TVM binary code for
 // pushing integer 5 into the TVM stack
 
 ADD         // Fift Stack: Builder1 Builder2'
@@ -175,9 +175,9 @@ EXECUTE     // Fift Stack: Builder3
 //   which will push 5, and then add 3 and 5.
 
 }>s         // Fift Stack: Slice
-// "Slice" contains the TVM binary code for 
+// "Slice" contains the TVM binary code for
 // adding 3 and 5 in the TVM stack.
-// "Slice" can now be executed by using 
+// "Slice" can now be executed by using
 // word runvmcode
 ```
 
@@ -328,17 +328,17 @@ execute WHILE                  // TVM Stack: 0
 execute DUP                    // TVM Stack: 0 0
 execute PUSHINT 2              // TVM Stack: 0 0 2
 execute LESS                   // TVM Stack: 0 -1
-execute implicit RET           
-while loop condition end       // WHILE pops -1, since it is non-zero, 
+execute implicit RET
+while loop condition end       // WHILE pops -1, since it is non-zero,
                                // executes continuation { INC }
 execute INC                    // TVM Stack: 1
 execute implicit RET
 while loop body end            // WHILE executes again the first continuation
 execute DUP                    // TVM Stack: 1 1
-execute PUSHINT 2              // TVM Stack: 1 1 2 
+execute PUSHINT 2              // TVM Stack: 1 1 2
 execute LESS                   // TVM Stack: 1 -1
-execute implicit RET           
-while loop condition end       // WHILE pops -1, since it is non-zero, 
+execute implicit RET
+while loop condition end       // WHILE pops -1, since it is non-zero,
                                // executes continuation { INC }
 execute INC                    // TVM Stack: 2
 execute implicit RET
@@ -349,7 +349,7 @@ execute LESS                   // TVM Stack: 2 0
 execute implicit RET
 while loop condition end       // WHILE pops 0, since it is zero,
                                // it finishes execution
-while loop terminated          
+while loop terminated
 execute implicit RET           // TVM Stack: 2
 ```
 
@@ -379,14 +379,14 @@ execute DUP                   // TVM Stack: 1 1
 execute PUSHINT 2             // TVM Stack: 1 1 2
 execute GREATER               // TVM Stack: 1 0
 execute implicit RET
-until loop body end           // UNTIL pops 0, since it is zero, 
+until loop body end           // UNTIL pops 0, since it is zero,
                               // executes again the continuation
 execute INC                   // TVM Stack: 2
 execute DUP                   // TVM Stack: 2 2
 execute PUSHINT 2             // TVM Stack: 2 2 2
 execute GREATER               // TVM Stack: 2 0
 execute implicit RET
-until loop body end           // UNTIL pops 0, since it is zero, 
+until loop body end           // UNTIL pops 0, since it is zero,
                               // executes again the continuation
 execute INC                   // TVM Stack: 3
 execute DUP                   // TVM Stack: 3 3
@@ -394,7 +394,7 @@ execute PUSHINT 2             // TVM Stack: 3 3 2
 execute GREATER               // TVM Stack: 3 -1
 execute implicit RET
 until loop body end           // UNTIL pops -1, since it is non-zero,
-                              // it stops execution 
+                              // it stops execution
 until loop terminated
 execute implicit RET          // TVM Stack: 3
 ```
@@ -440,7 +440,7 @@ main PROC:<{
 
 // Complex number addition
 // (a + bi) + (c + di) = a + c + (b + d)i
-// Stack representation: a b c d --> a+c b+d 
+// Stack representation: a b c d --> a+c b+d
 add PROC:<{     // Initial stack: a b c d
   s1 s2 XCHG    // Stack: a c b d
   ADD           // Stack: a c b+d
@@ -451,7 +451,7 @@ add PROC:<{     // Initial stack: a b c d
 
 // Complex number multiplication
 // (a + bi) * (c + di) = ac - bd + (ad + bc)i
-// Stack representation: a b c d --> ac-bd ad+bc 
+// Stack representation: a b c d --> ac-bd ad+bc
 mul PROC:<{   // Initial stack: a b c d
   s3 s1 PUSH2 // Stack: a b c d a c
   MUL         // Stack: a b c d ac
