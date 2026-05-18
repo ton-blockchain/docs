@@ -1,6 +1,13 @@
 ---
-title: "Deployment and interaction"
+title: "Deployment and interaction with Blueprint"
+sidebarTitle: "Deployment and interaction"
 ---
+
+import { Aside } from '/snippets/aside.jsx';
+
+<Aside type="note">
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
 
 Following development and testing, contracts can be deployed and interacted with. This section outlines deployment scripts, provider configuration, and interaction workflows.
 
@@ -107,7 +114,7 @@ To run the following scripts, refer to the [Running scripts](#runningscripts) se
 
 ### Sending messages
 
-To send [messages](/foundations/transaction) to your deployed contracts, create a script that calls the `send` methods defined in your wrapper. These methods trigger contract execution and modify the contract's state.
+To send [messages](/foundations/messages/ordinary-tx) to your deployed contracts, create a script that calls the `send` methods defined in your wrapper. These methods trigger contract execution and modify the contract's state.
 
 ```typescript title="./scripts/sendIncrease.ts"
 import { Address, toNano } from '@ton/core';
