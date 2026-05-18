@@ -46,7 +46,7 @@ Three components enable gasless transactions:
 
 ### Transaction flow
 
-Step 1: User creates signed payload
+#### Step 1: User creates signed payload
 
 The user's wallet application:
 
@@ -55,7 +55,7 @@ The user's wallet application:
 - Signs with the wallet's private key
 - Sends signed payload to relayer via HTTPS
 
-Step 2: Relayer validates
+#### Step 2: Relayer validates
 
 The relayer verifies off-chain:
 
@@ -64,7 +64,7 @@ The relayer verifies off-chain:
 - Expiration timestamp is valid
 - Payment terms are met (if applicable)
 
-Step 3: Relayer submits internal message
+#### Step 3: Relayer submits internal message
 
 The relayer's contract sends an internal message to the user's wallet:
 
@@ -72,7 +72,7 @@ The relayer's contract sends an internal message to the user's wallet:
 - Includes the user's signed payload as the message body
 - Spends the relayer's Toncoin, not the user's
 
-Step 4: Wallet executes
+#### Step 4: Wallet executes
 
 The wallet contract:
 
@@ -230,9 +230,9 @@ Centralization: users depend on relayer uptime, policies, and willingness to ser
 - For jetton payments, emulate transactions to verify successful execution
 - Forward the signed payload verbatim in the internal message body without modifying fields covered by the signature
 
-### Example: Wallet v5
+### Example: wallet v5
 
-The [Wallet v5](/standard/wallets/v5) standard supports gasless via the `internal_signed` message format:
+The [wallet v5](/standard/wallets/v5) standard supports gasless via the `internal_signed` message format:
 
 - Separate opcodes for external and internal messages prevent replay attacks
 - The contract enforces signature verification, sequence numbers, and expiration checks for owner-signed internal messages
