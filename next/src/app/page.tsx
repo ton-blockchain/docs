@@ -21,11 +21,19 @@ const JOURNEYS: JourneyProps[] = [
     title: "Smart contracts",
     description: "Build, debug, and deploy smart contracts on TON.",
     steps: [
-      {title: "Acton toolchain", href: "https://ton-blockchain.github.io/acton/docs/welcome"},
-      {title: "JetBrains IDE plugin", href: "/blockchain-basics/contract-dev/ide/jetbrains"},
-      {title: "VS Code extension", href: "/blockchain-basics/contract-dev/ide/vscode"},
-      {title: "TVM exit codes", href: "/blockchain-basics/tvm/exit-codes"},
-      {title: "TVM instructions", href: "/blockchain-basics/tvm/instructions"},
+      {
+        title: "Quickstart with the Acton toolchain",
+        href: "https://ton-blockchain.github.io/acton/docs/welcome",
+      },
+      {
+        title: "Use AI Skills for coding agents",
+        href: "https://ton-blockchain.github.io/acton/docs/agent-skills/overview",
+      },
+      {
+        title: "Write a smart contract with Tolk",
+        href: "/blockchain-basics/tolk/overview",
+      },
+      {title: "Deep dive into TVM instructions", href: "/blockchain-basics/tvm/instructions"},
     ],
   },
   {
@@ -34,18 +42,18 @@ const JOURNEYS: JourneyProps[] = [
     steps: [
       {title: "Build applications with AppKit", href: "/applications/appkit/overview"},
       {title: "Integrate payments with TON Pay", href: "/applications/ton-pay/overview"},
-      {title: "Integrate wallets with WalletKit", href: "/applications/walletkit/overview"},
-      {title: "Access the blockchain via APIs", href: "/applications/api/overview"},
+      {title: "Build wallets with WalletKit", href: "/applications/walletkit/overview"},
+      {title: "Enable TON for agents with @ton/mcp", href: "/overview/ai/mcp"},
     ],
   },
   {
     title: "Nodes",
     description: "Run and manage TON blockchain nodes.",
     steps: [
-      {title: "Nodes overview", href: "/blockchain-basics/nodes/overview"},
-      {title: "Validator node", href: "/blockchain-basics/nodes/overview#validator-node"},
-      {title: "C++ node setup", href: "/blockchain-basics/nodes/cpp/setup-mytonctrl"},
-      {title: "Rust node setup", href: "/blockchain-basics/nodes/rust/quick-start"},
+      {title: "Start from nodes overview", href: "/blockchain-basics/nodes/overview"},
+      {title: "Learn about validator node", href: "/blockchain-basics/nodes/overview#validator-node"},
+      {title: "Setup C++ node", href: "/blockchain-basics/nodes/cpp/setup-mytonctrl"},
+      {title: "Setup Rust node", href: "/blockchain-basics/nodes/rust/quick-start"},
     ],
   },
 ]
@@ -116,7 +124,7 @@ export default function Page() {
                   Start here <ArrowRight className="size-4" />
                 </Link>
                 <Link
-                  href="/blockchain-basics/contract-dev/blueprint/first-smart-contract"
+                  href="https://ton-blockchain.github.io/acton/docs/tutorial/overview"
                   className="inline-flex items-center gap-1 rounded-md border border-fd-border px-4 py-2 text-sm font-medium text-fd-foreground hover:bg-fd-accent"
                 >
                   Your first smart contract
