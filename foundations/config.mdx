@@ -555,8 +555,8 @@ The `NewConsensusConfig` has two constructors:
 ### Configuration parameters of `simplex_config_v2`
 
 - `flags`: A general field that can be used to set various binary parameters.
-- `use_quic`: Whether the QUIC transport is used instead of RLDP2. Set to **True** in mainnet.
-- `slots_per_leader_window`: Number of consecutive slots assigned to one leader. Set to **4** in mainnet.
+- `use_quic`: Whether the QUIC transport is used instead of RLDP2. Set to `true` on mainnet.
+- `slots_per_leader_window`: Number of consecutive slots assigned to one leader. Set to `4` on mainnet.
 - `noncritical_params`: A `HashmapE 8 uint32` map from parameter IDs to raw 32-bit values.
 
 Inherited from [Param 29](https://tonviewer.com/config#29):
