@@ -1,5 +1,5 @@
 ---
-title: "Words, constants, and variables"
+title: "Words, constants, and variables in Fift"
 sidebarTitle: "Words, constants, and variables"
 noindex: "true"
 ---
@@ -56,15 +56,15 @@ defines a constant `Gram` equal to `10^9`. In other words, `1000000000` will be 
 
 ```fift
 // Pushes Gram and 2 into the stack.
-// Then, multiplies them, producing 
+// Then, multiplies them, producing
 // 2000000000 at the top of the stack.
-Gram 2 *   
+Gram 2 *
 ```
 
 It is possible to use the result of a computation to initialize the value of a constant:
 
 ```fift
-// Define constant mGram with the result 
+// Define constant mGram with the result
 // of the computation Gram 1000 /
 Gram 1000 / constant mGram
 mGram    // Pushes 1000000 into the stack
@@ -97,7 +97,7 @@ For instance, the following defines a word `setxy`, which sets constants `x` and
 
 ```fift
 { dup =: x dup * =: y } : setxy
-3 setxy x y +   // Produces 12 at the top of the stack 
+3 setxy x y +   // Produces 12 at the top of the stack
 7 setxy x y +   // Produces 56 at the top of the stack
 ```
 
@@ -111,7 +111,7 @@ dup      // Stack: 3 3
 *        // Stack: 9
 =: y     // Stack:      (y is 9)
 x        // Stack: 3
-y        // Stack: 3 9 
+y        // Stack: 3 9
 +        // Stack: 12
 ```
 
@@ -121,7 +121,7 @@ To recover the execution-time value of a constant inside a definition, prefix th
 
 ```fift
 { @' x @' y + } : addxy
-3 setxy addxy    // Produces 12 at the top of the stack 
+3 setxy addxy    // Produces 12 at the top of the stack
 ```
 
 The code `3 setxy addxy` has the same effect as the code `3 setxy x y +`. The main difference between `3 setxy addxy` and `3 setxy x y +` is that in `3 setxy addxy`, constants `x` and `y` are accessed inside a code definition, which require the use of word `@'` to access them; while in `3 setxy x y +`, the constants are accessed outside a code definition, which does not require the use of word `@'` to access them.
@@ -145,10 +145,10 @@ variable x variable y
 2 x !
 // Set the value of y to 10
 10 y !
-// Read x and place the value at the top of the stack 
-x @ 
-// Read y and place the value at the top of the stack 
-y @ 
+// Read x and place the value at the top of the stack
+x @
+// Read y and place the value at the top of the stack
+y @
 // Add the two values
 +     // Produces 12 at the top of the stack
 ```
@@ -183,9 +183,9 @@ Variables have one disadvantage compared to [constants](#constants): accessing t
 variable x-box
 
 // Define word x so that it reads the box contents.
-// Now, x can be treated as if 
+// Now, x can be treated as if
 // it was the "variable".
-// In other words, instead of writing "x-box @" 
+// In other words, instead of writing "x-box @"
 // to read the variable contents, write "x".
 { x-box @ } : x
 
@@ -216,12 +216,12 @@ dup      // Stack: Box Box
 1        // Stack: Box Box 1
 // Push the word definition for @
 ' @      // Stack: Box Box 1 WordDef-for-@
-// "does" creates the block/execution token { Box WordDef-for-@ execute } 
+// "does" creates the block/execution token { Box WordDef-for-@ execute }
 // that first pushes Box and then executes @.
-// The 1 integer in the stack tells "does" that it should 
+// The 1 integer in the stack tells "does" that it should
 // consume only one stack element below 1
 // in the stack.
-// So, it only takes one Box immediately below 1 to include 
+// So, it only takes one Box immediately below 1 to include
 // it inside the block/execution token.
 does     // Stack: Box { Box WordDef-for-@ execute }
 // Assign the block/execution token { Box WordDef-for-@ execute }
@@ -231,12 +231,12 @@ create   // Stack: Box
 1        // Stack: Box 1
 // Push the word definition for !
 ' !      // Stack: Box 1 WordDef-for-!
-// Create a block/execution token { Box WordDef-for-! execute } 
+// Create a block/execution token { Box WordDef-for-! execute }
 // that first pushes Box and then calls !.
-// The 1 integer in the stack tells "does" that it should 
+// The 1 integer in the stack tells "does" that it should
 // consume only one argument below 1
 // in the stack.
-// So, it only takes one Box immediately below 1 to include 
+// So, it only takes one Box immediately below 1 to include
 // it inside the block/execution token.
 does     // Stack: { Box WordDef-for-! execute }
 // Assign the block/execution token { Box WordDef-for-! execute }
@@ -261,7 +261,11 @@ x    // Top of stack has 10
 y    // Top of stack has 5
 ```
 
-For more details on blocks/execution tokens and words `' <WORD_NAME>` and `execute`, refer to the Blocks Section in the Control Flow page. For more details on words `create`, `' <WORD_NAME>`, `does`, refer to Sections [4.5](/languages/fift/whitepaper#4-5-defining-words-and-dictionary-manipulation), [4.6](/languages/fift/whitepaper#4-6-dictionary-lookup), and [4.7](/languages/fift/whitepaper#4-7-creating-and-manipulating-word-lists) in the Fift whitepaper.
+<Aside type="note">
+  For more details on blocks/execution tokens and words `' <WORD_NAME>` and `execute`, refer to the Blocks Section in the Control Flow page.
+
+  For more details on words `create`, `' <WORD_NAME>`, `does`, refer to Sections [4.5](/languages/fift/whitepaper#4-5-defining-words-and-dictionary-manipulation), [4.6](/languages/fift/whitepaper#4-6-dictionary-lookup), and [4.7](/languages/fift/whitepaper#4-7-creating-and-manipulating-word-lists) in the Fift whitepaper.
+</Aside>
 
 As another example of `variable-get-set`, the following implements a simple counter. The example uses auxiliary words `reset-counter` and `incr-counter` to reset the counter variable to `0` and increment the counter by one, respectively.
 
@@ -275,7 +279,7 @@ variable-get-set counter counter!
 // Increment the counter by one.
 { counter 1 + counter! } : incr-counter
 
-reset-counter      // counter variable has 0 
+reset-counter      // counter variable has 0
 incr-counter       // counter variable has 1
 incr-counter       // counter variable has 2
 reset-counter      // counter variable has 0
@@ -292,6 +296,6 @@ counter    // Stack: c
 1          // Stack: c 1
 // Add c and 1
 +          // Stack: c+1
-// Store the new value back into the counter variable 
-counter!   // Stack: 
+// Store the new value back into the counter variable
+counter!   // Stack:
 ```
