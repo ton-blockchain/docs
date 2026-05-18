@@ -2316,11 +2316,6 @@ export const redirects = [
     "permanent": true
   },
   {
-    "source": "/standard/tokens/nft/nft-2.0",
-    "destination": "/blockchain-basics/standard/tokens/nft/nft-2.0",
-    "permanent": true
-  },
-  {
     "source": "/standard/tokens/nft/nft-reference",
     "destination": "/blockchain-basics/standard/tokens/nft/nft-reference",
     "permanent": true
@@ -3616,18 +3611,8 @@ export const redirects = [
     "permanent": true
   },
   {
-    "source": "/v3/documentation/dapps/assets/nft-2.0",
-    "destination": "/blockchain-basics/standard/tokens/nft/nft-2.0",
-    "permanent": true
-  },
-  {
     "source": "/v3/documentation/dapps/assets/overview",
     "destination": "/blockchain-basics/standard/tokens/overview",
-    "permanent": true
-  },
-  {
-    "source": "/v3/documentation/dapps/assets/toncoin",
-    "destination": "/blockchain-basics/standard/wallets/how-it-works",
     "permanent": true
   },
   {

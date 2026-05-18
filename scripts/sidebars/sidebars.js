@@ -202,7 +202,6 @@ const sidebars = {
             'v3/documentation/dapps/assets/toncoin',
             'v3/documentation/dapps/assets/jetton',
             'v3/documentation/dapps/assets/nft',
-            'v3/documentation/dapps/assets/nft-2.0',
             'v3/documentation/dapps/assets/usdt',
             'v3/documentation/dapps/assets/extra-currencies',
           ],
