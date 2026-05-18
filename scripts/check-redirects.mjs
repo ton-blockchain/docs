@@ -16,10 +16,8 @@
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 // Node.js
-import { existsSync, statSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
-import { spawnSync } from 'node:child_process';
 
 // Common utils
 import {
@@ -115,6 +113,7 @@ const checkExist = (config) => {
     olderDocs: false,
     otherGithubLinks: false,
     wikiLinks: false,
+    eolWildcards: false,
     otherExternalLinks: false,
   };
 
@@ -141,6 +140,11 @@ const checkExist = (config) => {
     // TODOs
     if (path.startsWith('TODO')) {
       specialDestinationsExist.todos = true;
+      return true;
+    }
+    // End-of-line wildcard redirects
+    if (path.endsWith('/:slug*')) {
+      specialDestinationsExist.eolWildcards = true;
       return true;
     }
     // Otherwise
@@ -217,7 +221,7 @@ const checkExist = (config) => {
         trace: trace.concat(`No file nor a deeper redirect found for this destination: ${path}`),
       };
     }
-    // Otherwise, perform a next iteration with the new destination path.
+    // Otherwise, perform the next iteration with the new destination path.
     return pathFindWithTrace(redirectSource.destination, attemptsLeft - 1, trace.concat(path));
   };
 
@@ -269,35 +273,21 @@ const checkExist = (config) => {
  * Check redirects against the previous TON Documentation URLs.
  * Ensures that old routes point to new files or even anchors.
  *
- * @param td {string} Temporary directory path
  * @param config {Readonly<DocsConfig>} Parsed docs.json configuration
  * @return {Promise<CheckResult>}
  */
-const checkPrevious = async (td, config) => {
-  // 1. Clone previous TON Docs in a temporary directory
-  //    in order to obtain the sidebars.js module
-  const tonDocsPath = join(td, 'ton-docs');
-  const cloneRes = spawnSync('git', ['clone', '--depth=1', 'https://github.com/ton-community/ton-docs', tonDocsPath], {
-    encoding: 'utf8',
-    timeout: 1_000 * 60 * 10,
-  });
-  if (cloneRes.status != 0) {
+const checkPrevious = async (config) => {
+  // 1. Take the sidebars.js module from the previous TON Docs
+  const sidebarsPath = join('scripts', 'sidebars');
+  if (!existsSync(join(sidebarsPath, 'sidebars.js'))) {
     return {
       ok: false,
-      error: `${cloneRes.error ?? cloneRes.stdout}`,
-    };
-  }
-
-  // 2. Process sidebars.js and extract all URLs
-  const sidebarsPath = join(tonDocsPath, 'sidebars.js');
-  if (!existsSync(sidebarsPath)) {
-    return {
-      ok: false,
-      error: composeError(`sidebars.js was not found in ${tonDocsPath}`),
+      error: composeError(`sidebars.js was not found in ${sidebarsPath}`),
     };
   }
   /** @type Readonly<Sidebars> */
-  const sidebarsModule = Object.freeze((await import(sidebarsPath)).default);
+  const sidebarsModule = Object.freeze((await import('./sidebars/sidebars.js')).default);
+  // 2. Process sidebars.js and extract all URLs
   const sidebarsKeys = Object.keys(sidebarsModule);
   /** @type string[] */
   const prevLinks = [];
@@ -390,8 +380,12 @@ const checkUpstream = async (localConfig) => {
   }
 
   const redirectSources = getRedirects(localConfig).map((it) => it.source);
+  const eolWildcards = redirectSources.filter((it) => it.endsWith('/:slug*')).map((it) => it.replace(/\/:slug\*$/, ''));
   const missingSources = upstreamOnlyLinks.filter(
-    (it) => !redirectSources.includes(it) && !redirectSources.includes(it.replace(/\/index$/, '')),
+    (it) =>
+      !redirectSources.includes(it) &&
+      !redirectSources.includes(it.replace(/\/index$/, '')) &&
+      !eolWildcards.some((w) => it.startsWith(w)),
   );
   if (missingSources.length !== 0) {
     return {
@@ -399,7 +393,10 @@ const checkUpstream = async (localConfig) => {
       error: composeErrorList(
         'Missing pages or redirects for the following upstream URLs:',
         missingSources,
-        `Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream docs.json!\n${ansiYellow('Possible fix:')} merge the main branch into the current one to keep docs.json up to date, or add new redirects to account for removed or renamed pages.`,
+        [
+          'Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream docs.json!',
+          `${ansiYellow('How to fix:')} if you did not rename, move, or delete any pages from docs.json, merge the latest main branch into your branch. Otherwise, add necessary redirects pointing to existing pages.`,
+        ].join('\n'),
       ),
     };
   }
@@ -412,8 +409,8 @@ const main = async () => {
   const config = getConfig();
   console.log(); // intentional break
 
-  // Creating the temporary directory
-  const td = mkdtempSync(join(tmpdir(), 'td'));
+  // Environment variables
+  const allowNet = Boolean(process.env.ALLOW_NET ?? false);
 
   // Running either one check or all checks
   const rawArgs = process.argv.slice(2);
@@ -453,16 +450,17 @@ const main = async () => {
 
   if (shouldRunAll || argPrevious) {
     console.log('🏁 Checking redirects against the previous TON Documentation...');
-    handleCheckResult(await checkPrevious(td, config), 'Full coverage.');
+    handleCheckResult(await checkPrevious(config), 'Full coverage.');
   }
 
   if (shouldRunAll || argUpstream) {
     console.log('🏁 Checking redirects against the upstream docs.json structure...');
-    handleCheckResult(await checkUpstream(config), 'Full coverage.');
+    if (allowNet) {
+      handleCheckResult(await checkUpstream(config), 'Full coverage.');
+    } else {
+      console.log('Skipped: ALLOW_NET env variable is unset or empty.');
+    }
   }
-
-  // Removing the temporary directory
-  rmSync(td, { recursive: true });
 
   // In case of errors, exit with code 1
   if (errored) {
