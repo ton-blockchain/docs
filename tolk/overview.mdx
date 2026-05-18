@@ -10,6 +10,11 @@ The language compiles to [TVM](/tvm/overview) and provides direct control over e
 ```tolk
 type AllowedMessage = CounterIncrement | CounterReset
 
+contract Counter {
+    storage: Storage
+    incomingMessages: AllowedMessage
+}
+
 fun onInternalMessage(in: InMessage) {
     val msg = lazy AllowedMessage.fromSlice(in.body);
     match (msg) {
@@ -33,6 +38,7 @@ Tolk provides high-level readability while preserving low-level control:
 - a type system for describing [cell](/foundations/serialization/cells) layouts;
 - [`lazy` loading](/languages/tolk/features/lazy-loading) that skips unused fields;
 - unified message composition and deployment;
+- a [`contract` declaration](/languages/tolk/features/contract-abi) that drives ABI export, TypeScript wrappers, source maps, and debugging;
 - a compiler targeting the Fift assembler;
 - tooling with IDE integration.
 
@@ -47,15 +53,7 @@ Tolk evolved from FunC and is now the recommended language for TON smart contrac
 
 ## Quick start
 
-1. Run the command:
-
-   ```bash
-   npm create ton@latest
-   ```
-
-1. Enter a project name and choose "A simple counter contract (Tolk)".
-
-1. Follow [Your first smart contract](/contract-dev/first-smart-contract) page to write the contract in Tolk.
+Follow the [quickstart page in the Acton documentation](https://ton-blockchain.github.io/acton/docs/quickstart).
 
 ## IDE support
 
