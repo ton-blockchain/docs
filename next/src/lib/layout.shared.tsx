@@ -56,6 +56,15 @@ function resolveLucideIcon(name: string | undefined) {
   return createElement(Comp)
 }
 
+function resolveLucideTabIcon(name: string | undefined) {
+  if (!name) return undefined
+  const Comp = (icons as Record<string, ComponentType<SVGProps<SVGSVGElement>>>)[
+    toPascalCase(name)
+  ]
+  if (!Comp) return undefined
+  return createElement(Comp, {className: "size-full"})
+}
+
 /**
  * Walk a tab's `pages` depth-first and yield every concrete page URL.
  * Used to (a) pick a sensible jump-to URL for the tab and (b) populate
@@ -116,7 +125,7 @@ export function buildLayoutTabs(): LayoutTab[] {
             <ArrowUpRight size={14} className="text-fd-muted-foreground/70" />
           </span>
         ),
-        icon: resolveLucideIcon(tab.icon),
+        icon: resolveLucideTabIcon(tab.icon),
         urls: new Set(),
       }
     }
@@ -126,7 +135,7 @@ export function buildLayoutTabs(): LayoutTab[] {
     return {
       url: tabHref(tab),
       title: tab.title,
-      icon: resolveLucideIcon(tab.icon),
+      icon: resolveLucideTabIcon(tab.icon),
       urls,
     }
   })
