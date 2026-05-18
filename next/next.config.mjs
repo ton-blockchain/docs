@@ -9,8 +9,8 @@ const docsRoot = fileURLToPath(new URL(".", import.meta.url))
 const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === "true" || process.env.GITHUB_PAGES === "true"
 
-const repoUrl = "https://ton-blockchain.github.io"
-const repoName = "acton"
+const repoUrl = "https://the-ton-tech.github.io"
+const repoName = "ton-docs-private"
 
 function resolveBaseUrl() {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL
@@ -58,6 +58,7 @@ const config = {
     root: docsRoot,
   },
   basePath: basePath,
+  redirects: async () => redirects,
   assetPrefix: assetPrefix,
 }
 
