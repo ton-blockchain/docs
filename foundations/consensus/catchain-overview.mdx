@@ -1,9 +1,10 @@
 ---
 title: "Catchain overview"
-sidebarTitle: "Catchain overview"
+sidebarTitle: "Overview"
 ---
 
 import {Aside} from "/snippets/aside.jsx";
+import {Image} from "/snippets/image.jsx";
 
 Catchain is a communication protocol between actors. It does not execute the consensus algorithm itself but prepares the data required for the decision-making of a higher-level component: [BCP - Block Consensus Protocol](/foundations/consensus/bcp-overview). The main purpose of the protocol is to allow validators to send messages that explicitly depend on other messages, possibly produced by different actors. Dependencies are encoded in such a way that a node receiving a message can download the referenced messages and verify their validity.
 
@@ -57,21 +58,11 @@ Catchain message can declare any other messages by any node as a dependency. The
 
 ### Example message flow
 
-```mermaid
-flowchart LR
-    A((A))
-    B((B))
-    C((C))
-
-    A -- "(A; 1)<br/>prev: genesis" --> B
-    A -- "(A; 1)<br/>prev: genesis" --> C
-
-    B -- "(B; 1)<br/>prev: genesis<br/>deps: (A; 1)" --> A
-    B -- "(B; 1)<br/>prev: genesis<br/>deps: (A; 1)" --> C
-
-    C -- "(C; 1)<br/>prev: genesis<br/>deps: (A; 1), (B; 1)" --> A
-    C -- "(C; 2)<br/>prev: (C; 1)<br/>deps: (A; 1), (B; 1)" --> B
-```
+<Image
+  src="/resources/images/foundations/catchain-light.gif"
+  darkSrc="/resources/images/foundations/catchain-dark.gif"
+  alt="Example message flow, animated GIF"
+/>
 
 These messages do not have an order by default. In an asynchronous system they can be received in any order. Declaring message dependencies helps to establish a particial ordering on all messages in general and on each of node in particular. This is possible because in catchain "dependency" relation is antisymmetric, transitive and reflexive.
 
@@ -85,7 +76,8 @@ This property means, that $\forall A, B depends(A, B) -> !depends(B, A)$. Catcha
 
 ### Transitivity
 
-CHECK
+TODO: CHECK
+
 This property means, that $\forall A B C depends(A, B) && depends(B, C) -> depends(A, C)$. This property is preserved implicitly by honest nodes because if `A` depends on `B`, `A` will wait in queue for processing of `B`. Imagine a situation, when \`
 
 ### Detecting forks (duplicate message IDs)
@@ -106,7 +98,7 @@ The node state stores information about all messages processed by the current no
 <code>(A<sub>i</sub>, B<sub>j</sub>, C<sub>k</sub>, D<sub>m</sub> ...)</code>
 This vector tracks the last processed message for each validator. So, if A<sub>i</sub> is stored and A<sub>i+2</sub> arrives, the node must download A<sub>i+1</sub>.
 
-(Link to [https://en.wikipedia.org/wiki/Vector\_clock](https://en.wikipedia.org/wiki/Vector_clock))
+(TODO: Link to [https://en.wikipedia.org/wiki/Vector\_clock](https://en.wikipedia.org/wiki/Vector_clock))
 
 ## Dependency retrieval process
 
