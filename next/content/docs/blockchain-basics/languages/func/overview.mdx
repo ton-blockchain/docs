@@ -24,7 +24,7 @@ description: ""
   Learn how to [migrate from FunC to Tolk](/blockchain-basics/tolk/from-func/tolk-vs-func).
 </Aside>
 
-FunC is a domain-specific, statically typed language with C-like syntax designed to write smart contracts on TON. It can be characterized as an intermediate-level language sitting on top of the [Fift](/languages/fift) assembly language.
+FunC is a domain-specific, statically typed language with C-like syntax designed to write smart contracts on TON. It can be characterized as an intermediate-level language sitting on top of the [Fift](/blockchain-basics/languages/fift/overview) assembly language.
 
 Example of a FunC function for sending funds:
 
@@ -59,7 +59,7 @@ where
 
 ## Compiler
 
-The compiler converts FunC programs into [Fift](/languages/fift) assembly code. The Fift assembly code is then compiled down to the [TON Virtual Machine](/blockchain-basics/tvm/overview) bitcode by the [Fift](/languages/fift) compiler.
+The compiler converts FunC programs into [Fift](/blockchain-basics/languages/fift/overview) assembly code. The Fift assembly code is then compiled down to the [TON Virtual Machine](/blockchain-basics/tvm/overview) bitcode by the [Fift](/blockchain-basics/languages/fift/overview) compiler.
 
 Developers can use the compiled bitcode, structured as a [bag of cells](/blockchain-basics/primitives/serialization/boc) like all data in the TON blockchain, to test smart contracts, send messages, or execute it in a local TVM instance.
 
@@ -67,7 +67,7 @@ Developers can use the compiled bitcode, structured as a [bag of cells](/blockch
 
 The easiest way to install the FunC compiler is the [`@ton-community/func-js`](https://www.npmjs.com/package/@ton-community/func-js) NPM package. It requires [Node.js](https://nodejs.org/en/download) v22 or later.
 
-The package has both the FunC and [Fift](/languages/fift) compilers, and produces bitcode directly from the FunC source code, without manually invoking Fift.
+The package has both the FunC and [Fift](/blockchain-basics/languages/fift/overview) compilers, and produces bitcode directly from the FunC source code, without manually invoking Fift.
 
 To install it, run the following command in the project root folder:
 
@@ -113,7 +113,7 @@ func contract.fc -o output.fif
 
 where `contract.fc` is the FunC file to compile, and `output.fif` is the generated Fift output.
 
-To compile the generated Fift file `output.fif` further down to TVM bitcode, use the Fift compiler. See the [Fift](/languages/fift) for download and usage instructions.
+To compile the generated Fift file `output.fif` further down to TVM bitcode, use the Fift compiler. See the [Fift](/blockchain-basics/languages/fift/overview) for download and usage instructions.
 
 <Aside>
   The last FunC compiler version is v2025.07. The FunC compiler is no longer developed. New releases are focused on the [Tolk](https://github.com/ton-blockchain/ton/releases/latest) compiler.
