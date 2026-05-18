@@ -18,36 +18,24 @@ interface JourneyProps {
 
 const JOURNEYS: JourneyProps[] = [
   {
-    title: "Beginner",
-    description: "TON fundamentals for newcomers entering Web3 through TON.",
+    title: "Smart contracts",
+    description: "Build, debug, and deploy smart contracts on TON.",
     steps: [
-      {title: "How to read this documentation?", href: "/overview/start-here"},
-      {
-        title: "Writing your first smart contract",
-        href: "/blockchain-basics/contract-dev/blueprint/first-smart-contract",
-      },
-      {title: "Using a TON wallet", href: "/overview/wallets/wallet-apps/tonkeeper"},
-      {title: "Introduction to Tolk", href: "/blockchain-basics/tolk/overview"},
+      {title: "Acton toolchain", href: "https://ton-blockchain.github.io/acton/docs/welcome"},
+      {title: "JetBrains IDE plugin", href: "/blockchain-basics/contract-dev/ide/jetbrains"},
+      {title: "VS Code extension", href: "/blockchain-basics/contract-dev/ide/vscode"},
+      {title: "TVM exit codes", href: "/blockchain-basics/tvm/exit-codes"},
+      {title: "TVM instructions", href: "/blockchain-basics/tvm/instructions"},
     ],
   },
   {
     title: "Apps",
     description: "Everything one needs to build applications on TON.",
     steps: [
-      {title: "Connect wallets to the app", href: "/applications/ton-connect/overview"},
-      {title: "Manage and track assets with AppKit", href: "/applications/appkit/overview"},
+      {title: "Build applications with AppKit", href: "/applications/appkit/overview"},
+      {title: "Integrate payments with TON Pay", href: "/applications/ton-pay/overview"},
+      {title: "Integrate wallets with WalletKit", href: "/applications/walletkit/overview"},
       {title: "Access the blockchain via APIs", href: "/applications/api/overview"},
-      {title: "Build apps using SDKs", href: "/applications/sdks"},
-    ],
-  },
-  {
-    title: "Smart contracts",
-    description: "Build, debug, and deploy smart contracts on TON.",
-    steps: [
-      {title: "Tools to build", href: "/blockchain-basics/contract-dev/blueprint/overview"},
-      {title: "TVM exit codes", href: "/blockchain-basics/tvm/exit-codes"},
-      {title: "TVM instructions", href: "/blockchain-basics/tvm/instructions"},
-      {title: "Debugging smart contracts", href: "/blockchain-basics/contract-dev/blueprint/debug"},
     ],
   },
   {
