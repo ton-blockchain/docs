@@ -96,10 +96,7 @@ export default function Page() {
     <HomeLayout {...baseOptions()}>
       <main className="mx-auto w-full max-w-5xl px-6 pb-24">
         <section className="relative isolate py-8 sm:py-12 lg:py-16">
-          <div
-            aria-hidden
-            className="absolute inset-x-0 -top-40 -z-10 overflow-hidden blur-3xl"
-          >
+          <div aria-hidden className="absolute inset-x-0 -top-40 -z-10 overflow-hidden blur-3xl">
             <div
               style={{
                 clipPath:
@@ -125,13 +122,13 @@ export default function Page() {
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href="/start-here"
+                  href="/overview/start-here"
                   className="inline-flex items-center gap-1 rounded-md bg-fd-primary px-4 py-2 text-sm font-medium text-fd-primary-foreground hover:bg-fd-primary/85"
                 >
                   Start here <ArrowRight className="size-4" />
                 </Link>
                 <Link
-                  href="/contract-dev/first-smart-contract"
+                  href="/blockchain-basics/contract-dev/blueprint/first-smart-contract"
                   className="inline-flex items-center gap-1 rounded-md border border-fd-border px-4 py-2 text-sm font-medium text-fd-foreground hover:bg-fd-accent"
                 >
                   Your first smart contract
