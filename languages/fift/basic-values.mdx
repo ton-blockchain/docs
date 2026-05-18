@@ -159,8 +159,7 @@ hole       // Pushes an empty box
 "foo" box  // Pushes a box containing "foo"
 ```
 
-The value currently stored in a `Box` may be fetched by means of word `@` (pronounced "fetch"), and modified by means of word `!` (pronounced "store").
-Word `@` consumes the box at the top of the stack and pushes the value contained in the box. Word `!` requires a stack of the form `x p`, where `x` is the value to store and `p` is the box in which `x` is going to be stored. `!` consumes both `x` and `p` and stores `x` in `p`. Word `!` does not push anything into the stack.
+The value currently stored in a `Box` may be fetched by means of word `@` (pronounced "fetch"), and modified by means of word `!` (pronounced "store"). Word `@` consumes the box at the top of the stack and pushes the value contained in the box. Word `!` requires a stack of the form `x p`, where `x` is the value to store and `p` is the box in which `x` is going to be stored. `!` consumes both `x` and `p` and stores `x` in `p`. Word `!` does not push anything into the stack.
 
 For instance:
 
@@ -181,7 +180,7 @@ A @   // Pushes "foo" into the stack
 
 As the example suggests, the value stored in a box does not need to be of the same type as the box contents mutate.
 
-For advanced details about boxes, see the [Named and unnamed variables section](/languages/fift/whitepaper#2-14-named-and-unnamed-variables) in the Fift whitepaper.
+For advanced details about boxes, see the [named and unnamed variables section](/languages/fift/whitepaper#2-14-named-and-unnamed-variables) in the Fift whitepaper and the variables section in the [words, constants, and variables page](/languages/fift/variables#variables).
 
 ## Tuples
 

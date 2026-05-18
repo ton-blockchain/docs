@@ -130,10 +130,10 @@ The drawback of this approach is that `@'` has to look up the current definition
 
 ## Variables
 
-_Variables_ are a much more efficient way to represent changeable values. To declare a variable, use the word `variable` followed by the identifier. Internally, the word `variable` creates an empty box, which can then be updated with word `!`, and read with word `@`.
+_Variables_ are a much more efficient way to represent changeable values. To declare a variable, use the word `variable` followed by the identifier. Internally, the word `variable` creates an empty [box](/languages/fift/basic-values#boxes), which can then be updated with word `!`, and read with word `@`.
 
 <Aside>
-  Internally, word `variable` is a shorthand for `hole constant`. So, `variable x` is a shorthand for `hole constant x`, which is defining a [constant](#constants) `x` that stores an empty box.
+  Word `variable` is a shorthand for `hole constant`. In turn, `variable x` is a shorthand for `hole constant x`, which defines a [constant](#constants) `x` that stores an empty box.
 </Aside>
 
 For instance:
@@ -262,9 +262,9 @@ y    // Top of stack has 5
 ```
 
 <Aside type="note">
-  For more details on blocks/execution tokens and words `' <WORD_NAME>` and `execute`, refer to the Blocks Section in the Control Flow page.
+  For more details on block/execution tokens and words `' <WORD_NAME>` and `execute`, refer to the blocks section in the [control flow page](/languages/fift/control#blocks).
 
-  For more details on words `create`, `' <WORD_NAME>`, `does`, refer to Sections [4.5](/languages/fift/whitepaper#4-5-defining-words-and-dictionary-manipulation), [4.6](/languages/fift/whitepaper#4-6-dictionary-lookup), and [4.7](/languages/fift/whitepaper#4-7-creating-and-manipulating-word-lists) in the Fift whitepaper.
+  For more details on words `create`, `' <WORD_NAME>`, `does`, refer to sections [4.5](/languages/fift/whitepaper#4-5-defining-words-and-dictionary-manipulation), [4.6](/languages/fift/whitepaper#4-6-dictionary-lookup), and [4.7](/languages/fift/whitepaper#4-7-creating-and-manipulating-word-lists) in the Fift whitepaper.
 </Aside>
 
 As another example of `variable-get-set`, the following implements a simple counter. The example uses auxiliary words `reset-counter` and `incr-counter` to reset the counter variable to `0` and increment the counter by one, respectively.
