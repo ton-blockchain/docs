@@ -3,7 +3,6 @@ title: "Sign and relay a message (gasless)"
 sidebarTitle: "Sign message (gasless)"
 ---
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
 `signMessage` asks the wallet to sign an internal message **without broadcasting it**. The dApp receives a signed BoC and submits it through a relayer — typically to pay gas in a jetton instead of TON. This flow is currently supported only for Wallet V5.
 
@@ -243,5 +242,5 @@ To filter the wallet picker to only wallets that support `signMessage`, see [Fil
 
 - [Send a transaction](/ecosystem/ton-connect/how-to/send-transaction) — same payload shape, with broadcast
 - [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
-- [`signMessage` wallet guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/sign-message.md)
-- [RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md)
+- [`signMessage` wallet guide](https://github.com/ton-blockchain/ton-connect/blob/main/guides/sign-message.md)
+- [RPC specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md)

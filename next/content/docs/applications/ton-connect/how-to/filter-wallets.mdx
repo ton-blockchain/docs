@@ -5,9 +5,8 @@ sidebarTitle: "Filter wallets"
 description: ""
 ---
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
-`walletsRequiredFeatures` limits the wallet picker to wallets that advertise the capabilities your dApp depends on. The SDK compares each wallet's advertised features against the option and removes any wallet that does not match. For the protocol-level feature catalogue, see [`Feature` specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md#feature).
+`walletsRequiredFeatures` limits the wallet picker to wallets that advertise the capabilities your dApp depends on. The SDK compares each wallet's advertised features against the option and removes any wallet that does not match. For the protocol-level feature catalogue, see [`Feature` specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature).
 
 ## With `TonConnectUI`
 
@@ -65,7 +64,7 @@ function App() {
 
 A wallet matches when it advertises every requirement listed. Top-level keys combine as a logical AND — declaring `sendTransaction` and `signMessage` requires both.
 
-For each filter the SDK compares your declaration to the wallet's [`Feature`](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md#feature) entry:
+For each filter the SDK compares your declaration to the wallet's [`Feature`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature) entry:
 
 - `minMessages` — the wallet's `maxMessages` must be greater than or equal to this value.
 - `extraCurrencyRequired: true` — matches only wallets whose feature has `extraCurrencySupported: true`.
@@ -120,4 +119,4 @@ type RequiredFeatures = {
 - [Sign data](/applications/ton-connect/how-to/sign-data) — uses `signData.types`
 - [Sign and relay a message (gasless)](/applications/ton-connect/how-to/sign-message-gasless) — uses `signMessage`
 - [Connect-and-act in one tap (embedded request)](/applications/ton-connect/how-to/embedded-request) — uses `embeddedRequest`
-- [`Feature` in the Connect specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md#feature)
+- [`Feature` in the Connect specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature)

@@ -5,7 +5,6 @@ sidebarTitle: "Send a transaction"
 description: ""
 ---
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
 `sendTransaction` asks the wallet to sign and broadcast one or more outgoing messages from the connected account. The request supports two payload shapes — raw `messages` for full control, or structured `items` to let the wallet build the BoC.
 
@@ -271,7 +270,7 @@ To restrict the picker to wallets that support specific item types, see [Filter 
 
 ## Multi-message batches
 
-Wallets accept up to `maxMessages` messages per request (declared in the wallet's [`SendTransaction` feature](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md)). Exceeding the limit throws before the wallet is opened.
+Wallets accept up to `maxMessages` messages per request (declared in the wallet's [`SendTransaction` feature](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md)). Exceeding the limit throws before the wallet is opened.
 
 Submission is grouped, execution is not atomic across recipients:
 
@@ -326,5 +325,5 @@ Use the returned BoC to look up the transaction on-chain.
 - [Sign and relay a message (gasless)](/applications/ton-connect/how-to/sign-message-gasless) — same payload shape, no broadcast
 - [Connect-and-act in one tap (embedded request)](/applications/ton-connect/how-to/embedded-request)
 - [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
-- [Structured items wallet guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/structured-items.md)
-- [RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md)
+- [Structured items wallet guide](https://github.com/ton-blockchain/ton-connect/blob/main/guides/structured-items.md)
+- [RPC specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md)

@@ -5,7 +5,6 @@ sidebarTitle: "Overview"
 description: ""
 ---
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
 ## What TON Connect is
 
@@ -45,7 +44,7 @@ TON Connect does not provide integration with the TON blockchain. You need to im
 
 TON Connect does not provide an SDK for wallets. If you're a wallet developer, take one of these approaches:
 
-- Implement the protocol directly based on the [TON Connect specification](https://github.com/the-ton-tech/ton-connect/tree/feature/refine-protocol). Additionally, you can use [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) for interfaces.
+- Implement the protocol directly based on the [TON Connect specification](https://github.com/ton-blockchain/ton-connect). Additionally, you can use [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) for interfaces.
 - Use [WalletKit](/applications/walletkit/overview) — an SDK for wallet services with built-in support for TON Connect
 
 ## API reference
@@ -63,7 +62,7 @@ Here you can find a working end-to-end example of an application using TON Conne
 
 ## See also
 
-- [Protocol specification](https://github.com/the-ton-tech/ton-connect/tree/feature/refine-protocol) — bridge, RPC, session, and connect
+- [Protocol specification](https://github.com/ton-blockchain/ton-connect) — bridge, RPC, session, and connect
 - [Public wallet registry](https://github.com/ton-connect/wallets-list) — the `wallets-v2.json` file each wallet registers in
 - [HTTP bridge reference implementation](https://github.com/ton-connect/bridge) — Go bridge implementation.
 - [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — types and helpers shared between the SDK and wallets

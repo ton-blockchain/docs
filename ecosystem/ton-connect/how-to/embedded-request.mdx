@@ -3,7 +3,6 @@ title: "Connect-and-act in one tap"
 sidebarTitle: "Embedded request"
 ---
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
 An _embedded request_ packs an action — `sendTransaction`, `signMessage` or `signData` — into the wallet's connect URL via the `e` query parameter. A compatible wallet bundles the connect approval and the action into one screen and returns the signed result with the connect response, saving the second round-trip.
 
@@ -135,5 +134,5 @@ Without that filter, embedded is a soft capability — the SDK falls back to the
 - [Sign data](/ecosystem/ton-connect/how-to/sign-data)
 - [Sign and relay a message (gasless)](/ecosystem/ton-connect/how-to/sign-message-gasless)
 - [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets) — declare `EmbeddedRequest` as required
-- [Embedded requests implementer guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/embedded-requests.md)
-- [Bridge specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md) — embedded requests
+- [Embedded requests implementer guide](https://github.com/ton-blockchain/ton-connect/blob/main/guides/embedded-requests.md)
+- [Bridge specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md) — embedded requests

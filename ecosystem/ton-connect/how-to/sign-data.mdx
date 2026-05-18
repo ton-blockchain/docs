@@ -3,7 +3,6 @@ title: "Sign data"
 sidebarTitle: "Sign data"
 ---
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
 `signData` asks the wallet to sign opaque data the user reviews on the wallet's screen. The signature is bound to the user's wallet address, the dApp's domain, a timestamp, and the payload — so the same bytes signed by a different wallet, or for a different dApp, do not verify.
 
@@ -86,7 +85,7 @@ const result = await tonConnectUi.signData(payload, {
 console.log(result.signature);
 ```
 
-See [Bridge specification § `trace_id`](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md#trace_id--analytics-correlation) for the protocol-level details.
+See [Bridge specification § `trace_id`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#trace_id--analytics-correlation) for the protocol-level details.
 
 ## Detecting wallet support
 
@@ -94,7 +93,7 @@ The SDK rejects requests whose `type` is not supported by the connected wallet b
 
 ## Verifying `text` and `binary` signatures
 
-The signing scheme for `text` and `binary` payloads is described in the [`signData` RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md#signdata).
+The signing scheme for `text` and `binary` payloads is described in the [`signData` RPC specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md#signdata).
 
 To verify on the backend:
 
@@ -316,7 +315,7 @@ The `SCHEMA_HASH` constant is the CRC-32 of the exact UTF-8 schema string the dA
 
 ## See also
 
-- [`signData` RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md#signdata)
-- [`signData` wallet guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/sign-data.md)
+- [`signData` RPC specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md#signdata)
+- [`signData` wallet guide](https://github.com/ton-blockchain/ton-connect/blob/main/guides/sign-data.md)
 - [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
 - [Connect a wallet § backend verification](/ecosystem/ton-connect/how-to/connect#backend-verification) — for looking up the user's public key

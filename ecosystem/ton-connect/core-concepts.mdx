@@ -5,9 +5,8 @@ sidebarTitle: "Core concepts"
 
 import { Image } from '/snippets/image.jsx';
 
-{/* TODO(spec-merge): spec links point to `the-ton-tech/ton-connect` (`feature/refine-protocol`); switch to `ton-blockchain/ton-connect` once merged. */}
 
-TON Connect is a protocol that links dApps to wallets. This page introduces the main building blocks — architecture, bridges, sessions, links, manifests, the wallet registry, feature negotiation, and the security model. Each section gives you enough context to work with the SDK; the full protocol details live in the [protocol specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/overview.md).
+TON Connect is a protocol that links dApps to wallets. This page introduces the main building blocks — architecture, bridges, sessions, links, manifests, the wallet registry, feature negotiation, and the security model. Each section gives you enough context to work with the SDK; the full protocol details live in the [protocol specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/overview.md).
 
 ---
 
@@ -70,7 +69,7 @@ sequenceDiagram
     Note over App,Wallet: send() / listen() exchange plaintext on the same device
 ```
 
-For wire-level details, see the [protocol specification overview](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/overview.md), the [Bridge specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md), the [Session specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/session.md), and the [Connect specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md).
+For wire-level details, see the [protocol specification overview](https://github.com/ton-blockchain/ton-connect/blob/main/spec/overview.md), the [Bridge specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md), the [Session specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/session.md), and the [Connect specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md).
 
 ---
 
@@ -93,7 +92,7 @@ The SDK picks the JS bridge when available, otherwise falls back to the HTTP bri
 
 Bridge endpoints and the `BridgeMessage` envelope accept an optional `trace_id` (UUID, UUIDv7 recommended) for analytics correlation. Tracing-aware bridges echo it back to the recipient, so the dApp, bridge, and wallet share one ID per user-visible operation. The SDK auto-generates a `traceId` per call and exposes it on every response — use it as the correlation key in your own logs.
 
-Spec reference: [Bridge specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md).
+Spec reference: [Bridge specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md).
 
 ---
 
@@ -145,7 +144,7 @@ A session is bound to wherever its keypair lives. The protocol does not synchron
 
 For cross-device continuity, use `ton_proof` with a server-issued token — the user reconnects on each device, the backend verifies the proof, and the token follows the user. See [Authenticate with `ton_proof`](/ecosystem/ton-connect/how-to/connect#authenticate-with-ton_proof).
 
-Spec reference: [Session specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/session.md). See also [Disconnect a session](/ecosystem/ton-connect/how-to/disconnect).
+Spec reference: [Session specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/session.md). See also [Disconnect a session](/ecosystem/ton-connect/how-to/disconnect).
 
 ---
 
@@ -180,7 +179,7 @@ tc://?v=2&id=<client_id>&r=<ConnectRequest>&ret=back
 
 The `e` parameter packs an RPC request into the connect URL so the wallet handles connection and action in a single tap. Wallets that support this advertise `EmbeddedRequest` in their feature list; wallets that do not silently ignore `e` and the SDK falls back to the two-step flow. See [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request).
 
-Spec reference: [Deep links specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/deeplinks.md).
+Spec reference: [Deep links specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/deeplinks.md).
 
 ---
 
@@ -202,7 +201,7 @@ The dApp passes the URL as `manifestUrl` in the connect request. By convention t
 
 The manifest must be reachable with a `GET` from any origin, without CORS restrictions, without auth and without a proxy challenge. It must be served over HTTPS — wallets do not guarantee they will fetch a manifest served over plain HTTP. If the wallet cannot fetch it, the connect flow returns `MANIFEST_NOT_FOUND_ERROR` (code 2) or `MANIFEST_CONTENT_ERROR` (code 3). See [Manifest 404 and CORS](/ecosystem/ton-connect/troubleshooting#manifest-404-and-cors).
 
-Spec reference: [App manifest specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/manifest.md). Schema: [Manifest JSON schema](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/schemas/manifest.schema.json).
+Spec reference: [App manifest specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/manifest.md). Schema: [Manifest JSON schema](https://github.com/ton-blockchain/ton-connect/blob/main/schemas/manifest.schema.json).
 
 ---
 
@@ -249,14 +248,14 @@ The SDK loads `wallets-v2.json` and prepares the list before rendering the modal
 
 ### How a wallet gets listed
 
-1. Implement TON Connect — at minimum the connect handshake and `sendTransaction`. See the [wallet developer guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/wallet-guidelines.md).
-1. Deploy an HTTP bridge according to the [bridge spec](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md), expose a JS bridge, or both.
+1. Implement TON Connect — at minimum the connect handshake and `sendTransaction`. See the [wallet developer guide](https://github.com/ton-blockchain/ton-connect/blob/main/guides/wallet-guidelines.md).
+1. Deploy an HTTP bridge according to the [bridge spec](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md), expose a JS bridge, or both.
 1. Open a pull request against [`ton-connect/wallets-list`](https://github.com/ton-connect/wallets-list) with your entry appended to `wallets-v2.json`.
 1. CI validates the entry against the [wallets list JSON schema](https://github.com/ton-connect/wallets-list/blob/main/wallets-v2.schema.json).
 
 dApps may also add wallets directly through the SDK, bypassing the registry — useful for staging or partner integrations.
 
-Spec reference: [Wallets list specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/wallets-list.md). Schema: [Wallets list JSON schema](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/schemas/wallets-v2.schema.json).
+Spec reference: [Wallets list specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/wallets-list.md). Schema: [Wallets list JSON schema](https://github.com/ton-blockchain/ton-connect/blob/main/schemas/wallets-v2.schema.json).
 
 ---
 
@@ -287,4 +286,4 @@ The `features` in the registry are static (what the binary supports). The runtim
 
 **What the protocol does not protect against:** a compromised wallet device, phishing manifests on typo-domains, or smart contract bugs. The wallet signs the bytes the dApp provides — on-chain logic is out of scope.
 
-Spec reference: [Session specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/session.md), [`ton_proof` signature specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md#address-proof-signature-ton_proof), and the [Bridge specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md).
+Spec reference: [Session specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/session.md), [`ton_proof` signature specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#address-proof-signature-ton_proof), and the [Bridge specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md).

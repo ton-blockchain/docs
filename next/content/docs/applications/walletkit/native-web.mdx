@@ -124,7 +124,7 @@ The TON Connect Bridge protocol uses these main endpoints:
 
 There, `client_id` and `sender_id` are the public keys of the wallet's session in hex.
 
-To read more about the bridge protocol, please refer to the [TON Connect Bridge documentation](https://github.com/ton-blockchain/ton-connect/blob/main/bridge.md).
+To read more about the bridge protocol, please refer to the [TON Connect Bridge documentation](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md).
 
 ## TON Connect protocol
 
@@ -205,7 +205,7 @@ const restoredSessionCrypto: SessionCrypto = new SessionCrypto({
 });
 ```
 
-Refer to the [SessionCrypto implementation](https://github.com/ton-connect/sdk/blob/main/packages/protocol/src/crypto/session-crypto.ts) and [Session documentation](https://github.com/ton-blockchain/ton-connect/blob/main/session.md) for more details.
+Refer to the [SessionCrypto implementation](https://github.com/ton-connect/sdk/blob/main/packages/protocol/src/crypto/session-crypto.ts) and [Session documentation](https://github.com/ton-blockchain/ton-connect/blob/main/spec/session.md) for more details.
 
 ### Bridge communication
 
@@ -247,7 +247,7 @@ function listenFromBridge(clientId: string, lastEventId?: string) {
 }
 ```
 
-Refer to the [bridge API documentation](https://github.com/ton-blockchain/ton-connect/blob/main/bridge.md) for more details.
+Refer to the [bridge API documentation](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md) for more details.
 
 ### Handling TON Connect links for new connections
 
@@ -391,7 +391,7 @@ window.addEventListener('load', async () => {
 });
 ```
 
-Refer to [Universal link](https://github.com/ton-blockchain/ton-connect/blob/main/bridge.md#universal-link) and [`ConnectRequest`](https://github.com/ton-blockchain/ton-connect/blob/main/requests-responses.md#initiating-connection) documentation for more details.
+Refer to [Universal link](https://github.com/ton-blockchain/ton-connect/blob/main/spec/deeplinks.md#universal-link) and [`ConnectRequest`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#connectrequest) documentation for more details.
 
 ### Listening for messages from connected dApps
 
@@ -663,7 +663,7 @@ async function sendTransactionResponse(sessionId, sessionData, requestId, respon
 }
 ```
 
-Refer to the [SendTransactionRequest](https://github.com/ton-blockchain/ton-connect/blob/main/requests-responses.md#sign-and-send-transaction) documentation for more details.
+Refer to the [SendTransactionRequest](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md#sendtransaction) documentation for more details.
 
 ### Disconnecting from dApps
 
@@ -718,7 +718,7 @@ async function disconnectFromDApp(sessionId) {
 }
 ```
 
-Refer to the [DisconnectEvent](https://github.com/ton-blockchain/ton-connect/blob/main/requests-responses.md#wallet-events) documentation for more details.
+Refer to the [DisconnectEvent](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md#wallet-events) documentation for more details.
 
 ## TON Connect signing
 
@@ -738,7 +738,7 @@ This library provides examples and utilities for TON blockchain operations, but 
 
 For implementing the necessary functionality, two key resources are available:
 
-1. [TON Proof specification](https://github.com/ton-blockchain/ton-connect/blob/main/requests-responses.md#address-proof-signature-ton_proof)
+1. [TON Proof specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#address-proof-signature-ton_proof)
 
 - This document provides the complete specification for address proof signatures
 - Describes the required format and cryptographic requirements
@@ -793,11 +793,11 @@ These values are defined in the TON Connect protocol specification as the `CHAIN
 ## See also
 
 - TON Connect specification:
-  - [Bridge API](https://github.com/ton-blockchain/ton-connect/blob/main/bridge.md)
-  - [Requests and Responses](https://github.com/ton-blockchain/ton-connect/blob/main/requests-responses.md)
-  - [Session](https://github.com/ton-blockchain/ton-connect/blob/main/session.md)
-  - [TON Wallet Guidelines](https://github.com/ton-blockchain/ton-connect/blob/main/wallet-guidelines.md)
-  - [Workflows](https://github.com/ton-blockchain/ton-connect/blob/main/workflows.md)
+  - [Bridge API](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md)
+  - [Requests and Responses](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md)
+  - [Session](https://github.com/ton-blockchain/ton-connect/blob/main/spec/session.md)
+  - [TON Wallet Guidelines](https://github.com/ton-blockchain/ton-connect/blob/main/guides/wallet-guidelines.md)
+  - [Workflows](https://github.com/ton-blockchain/ton-connect/blob/main/spec/overview.md#workflows)
 - Reference implementations:
   - [`@tonconnect/protocol`](https://github.com/ton-connect/sdk/tree/main/packages/protocol)
   - [TON Connect Bridge][bridge-repo]
