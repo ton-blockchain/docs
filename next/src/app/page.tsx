@@ -155,8 +155,7 @@ export default function Page() {
               Troubleshooting
             </h2>
             <p className="mt-2 text-fd-muted-foreground">
-              Can&apos;t find what you need? Use <kbd>Ctrl + K</kbd> to search and ask AI, or{" "}
-              <kbd>Ctrl + I</kbd> to open the assistant panel.
+              Can&apos;t find what you need? Use <kbd>Ctrl + K</kbd> to search.
             </p>
           </div>
         </section>
