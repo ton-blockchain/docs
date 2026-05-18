@@ -191,6 +191,56 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/contract-dev/blueprint/api",
+    "destination": "/blockchain-basics/contract-dev/blueprint/api",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/benchmarks",
+    "destination": "/blockchain-basics/contract-dev/blueprint/benchmarks",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/cli",
+    "destination": "/blockchain-basics/contract-dev/blueprint/cli",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/config",
+    "destination": "/blockchain-basics/contract-dev/blueprint/config",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/coverage",
+    "destination": "/blockchain-basics/contract-dev/blueprint/coverage",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/debug",
+    "destination": "/blockchain-basics/contract-dev/blueprint/debug",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/deploy",
+    "destination": "/blockchain-basics/contract-dev/blueprint/deploy",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/develop",
+    "destination": "/blockchain-basics/contract-dev/blueprint/develop",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/first-smart-contract",
+    "destination": "/blockchain-basics/contract-dev/blueprint/first-smart-contract",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/blueprint/overview",
+    "destination": "/blockchain-basics/contract-dev/blueprint/overview",
+    "permanent": true
+  },
+  {
     "source": "/contract-dev/contract-sharding",
     "destination": "/blockchain-basics/contract-dev/techniques/contract-sharding",
     "permanent": true
@@ -211,8 +261,23 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/contract-dev/ide/jetbrains",
+    "destination": "/blockchain-basics/contract-dev/ide/jetbrains",
+    "permanent": true
+  },
+  {
     "source": "/contract-dev/ide/overview",
     "destination": "/blockchain-basics/contract-dev/ide/vscode",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/ide/vscode",
+    "destination": "/blockchain-basics/contract-dev/ide/vscode",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/introduction",
+    "destination": "/blockchain-basics/contract-dev/introduction",
     "permanent": true
   },
   {
@@ -233,6 +298,66 @@ export const redirects = [
   {
     "source": "/contract-dev/signing",
     "destination": "/blockchain-basics/contract-dev/techniques/signing",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/contract-sharding",
+    "destination": "/blockchain-basics/contract-dev/techniques/contract-sharding",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/gas",
+    "destination": "/blockchain-basics/contract-dev/techniques/gas",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/on-chain-jetton-processing",
+    "destination": "/blockchain-basics/contract-dev/techniques/on-chain-jetton-processing",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/random",
+    "destination": "/blockchain-basics/contract-dev/techniques/random",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/security",
+    "destination": "/blockchain-basics/contract-dev/techniques/security",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/signing",
+    "destination": "/blockchain-basics/contract-dev/techniques/signing",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/upgrades",
+    "destination": "/blockchain-basics/contract-dev/techniques/upgrades",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/using-on-chain-libraries",
+    "destination": "/blockchain-basics/contract-dev/techniques/using-on-chain-libraries",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/vanity",
+    "destination": "/blockchain-basics/contract-dev/techniques/vanity",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/techniques/zero-knowledge",
+    "destination": "/blockchain-basics/contract-dev/techniques/zero-knowledge",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/testing/overview",
+    "destination": "/blockchain-basics/contract-dev/blueprint/testing/overview",
+    "permanent": true
+  },
+  {
+    "source": "/contract-dev/testing/reference",
+    "destination": "/blockchain-basics/contract-dev/blueprint/testing/reference",
     "permanent": true
   },
   {
@@ -278,6 +403,31 @@ export const redirects = [
   {
     "source": "/contribute/participate",
     "destination": "https://old-docs.ton.org/v3/contribute/participate",
+    "permanent": true
+  },
+  {
+    "source": "/contribute/snippets/aside",
+    "destination": "/overview/contribute/snippets/aside",
+    "permanent": true
+  },
+  {
+    "source": "/contribute/snippets/filetree",
+    "destination": "/overview/contribute/snippets/filetree",
+    "permanent": true
+  },
+  {
+    "source": "/contribute/snippets/image",
+    "destination": "/overview/contribute/snippets/image",
+    "permanent": true
+  },
+  {
+    "source": "/contribute/snippets/overview",
+    "destination": "/overview/contribute/snippets/overview",
+    "permanent": true
+  },
+  {
+    "source": "/contribute/style-guide",
+    "destination": "/overview/contribute/style-guide",
     "permanent": true
   },
   {
@@ -966,6 +1116,496 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/ai/mcp",
+    "destination": "/overview/ai/mcp",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ai/overview",
+    "destination": "/overview/ai/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ai/wallets",
+    "destination": "/overview/ai/wallets",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/analytics",
+    "destination": "/overview/infrastructure/analytics",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/overview",
+    "destination": "/applications/api/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/price",
+    "destination": "/applications/api/price",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/get-api-key",
+    "destination": "/applications/api/toncenter/get-api-key",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/introduction",
+    "destination": "/applications/api/toncenter/introduction",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/rate-limit",
+    "destination": "/applications/api/toncenter/rate-limit",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/smc-index/get-nominator-bookings-method",
+    "destination": "/applications/api/toncenter/smc-index/get-nominator-bookings-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/smc-index/get-nominator-earnings-method",
+    "destination": "/applications/api/toncenter/smc-index/get-nominator-earnings-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/smc-index/get-nominator-method",
+    "destination": "/applications/api/toncenter/smc-index/get-nominator-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/smc-index/get-pool-bookings-method",
+    "destination": "/applications/api/toncenter/smc-index/get-pool-bookings-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/smc-index/get-pool-method",
+    "destination": "/applications/api/toncenter/smc-index/get-pool-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/smc-index/lifecheck-method",
+    "destination": "/applications/api/toncenter/smc-index/lifecheck-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/streaming/overview",
+    "destination": "/applications/api/toncenter/streaming/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/streaming/reference",
+    "destination": "/applications/api/toncenter/streaming/reference",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/streaming/sse",
+    "destination": "/applications/api/toncenter/streaming/sse",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/streaming/wss",
+    "destination": "/applications/api/toncenter/streaming/wss",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2-authentication",
+    "destination": "/applications/api/toncenter/v2-authentication",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2-errors",
+    "destination": "/applications/api/toncenter/v2-errors",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2-tonlib-types",
+    "destination": "/applications/api/toncenter/v2-tonlib-types",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/accounts/get-address-balance",
+    "destination": "/applications/api/toncenter/v2/accounts/get-address-balance",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/accounts/get-address-information",
+    "destination": "/applications/api/toncenter/v2/accounts/get-address-information",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/accounts/get-address-state",
+    "destination": "/applications/api/toncenter/v2/accounts/get-address-state",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/accounts/get-extended-address-information",
+    "destination": "/applications/api/toncenter/v2/accounts/get-extended-address-information",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/accounts/get-token-data",
+    "destination": "/applications/api/toncenter/v2/accounts/get-token-data",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/accounts/get-wallet-information",
+    "destination": "/applications/api/toncenter/v2/accounts/get-wallet-information",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-block-header",
+    "destination": "/applications/api/toncenter/v2/blocks/get-block-header",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-consensus-block",
+    "destination": "/applications/api/toncenter/v2/blocks/get-consensus-block",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-masterchain-block-signatures",
+    "destination": "/applications/api/toncenter/v2/blocks/get-masterchain-block-signatures",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-masterchain-info",
+    "destination": "/applications/api/toncenter/v2/blocks/get-masterchain-info",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-outbound-message-queue-size",
+    "destination": "/applications/api/toncenter/v2/blocks/get-outbound-message-queue-size",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-shard-block-proof",
+    "destination": "/applications/api/toncenter/v2/blocks/get-shard-block-proof",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/get-shards",
+    "destination": "/applications/api/toncenter/v2/blocks/get-shards",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/blocks/lookup-block",
+    "destination": "/applications/api/toncenter/v2/blocks/lookup-block",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/configuration/get-all-config-parameters",
+    "destination": "/applications/api/toncenter/v2/configuration/get-all-config-parameters",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/configuration/get-config-parameter",
+    "destination": "/applications/api/toncenter/v2/configuration/get-config-parameter",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/configuration/get-libraries",
+    "destination": "/applications/api/toncenter/v2/configuration/get-libraries",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/overview",
+    "destination": "/applications/api/toncenter/v2/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/rpc/json-rpc-endpoint",
+    "destination": "/applications/api/toncenter/v2/rpc/json-rpc-endpoint",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/run-method/run-get-method",
+    "destination": "/applications/api/toncenter/v2/run-method/run-get-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/run-method/run-get-method-standard",
+    "destination": "/applications/api/toncenter/v2/run-method/run-get-method-standard",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/send/estimate-fee",
+    "destination": "/applications/api/toncenter/v2/send/estimate-fee",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/send/send-boc",
+    "destination": "/applications/api/toncenter/v2/send/send-boc",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/send/send-boc-return-hash",
+    "destination": "/applications/api/toncenter/v2/send/send-boc-return-hash",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/get-block-transactions",
+    "destination": "/applications/api/toncenter/v2/transactions/get-block-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/get-block-transactions-extended",
+    "destination": "/applications/api/toncenter/v2/transactions/get-block-transactions-extended",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/get-transactions",
+    "destination": "/applications/api/toncenter/v2/transactions/get-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/get-transactions-standard",
+    "destination": "/applications/api/toncenter/v2/transactions/get-transactions-standard",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/try-locate-result-transaction",
+    "destination": "/applications/api/toncenter/v2/transactions/try-locate-result-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/try-locate-source-transaction",
+    "destination": "/applications/api/toncenter/v2/transactions/try-locate-source-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/transactions/try-locate-transaction",
+    "destination": "/applications/api/toncenter/v2/transactions/try-locate-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/utils/detect-address",
+    "destination": "/applications/api/toncenter/v2/utils/detect-address",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/utils/detect-hash",
+    "destination": "/applications/api/toncenter/v2/utils/detect-hash",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/utils/pack-address",
+    "destination": "/applications/api/toncenter/v2/utils/pack-address",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v2/utils/unpack-address",
+    "destination": "/applications/api/toncenter/v2/utils/unpack-address",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3-authentication",
+    "destination": "/applications/api/toncenter/v3-authentication",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3-errors",
+    "destination": "/applications/api/toncenter/v3-errors",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3-pagination",
+    "destination": "/applications/api/toncenter/v3-pagination",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/accounts/address-book",
+    "destination": "/applications/api/toncenter/v3/accounts/address-book",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/accounts/get-account-states",
+    "destination": "/applications/api/toncenter/v3/accounts/get-account-states",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/accounts/get-wallet-states",
+    "destination": "/applications/api/toncenter/v3/accounts/get-wallet-states",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/accounts/metadata",
+    "destination": "/applications/api/toncenter/v3/accounts/metadata",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/actions-and-traces/get-actions",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-actions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/actions-and-traces/get-pending-actions",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-pending-actions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/actions-and-traces/get-pending-traces",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-pending-traces",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/actions-and-traces/get-traces",
+    "destination": "/applications/api/toncenter/v3/actions-and-traces/get-traces",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/apiv2/estimate-fee",
+    "destination": "/applications/api/toncenter/v3/apiv2/estimate-fee",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/apiv2/get-address-information",
+    "destination": "/applications/api/toncenter/v3/apiv2/get-address-information",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/apiv2/get-wallet-information",
+    "destination": "/applications/api/toncenter/v3/apiv2/get-wallet-information",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/apiv2/run-get-method",
+    "destination": "/applications/api/toncenter/v3/apiv2/run-get-method",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/apiv2/send-message",
+    "destination": "/applications/api/toncenter/v3/apiv2/send-message",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-adjacent-transactions",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-adjacent-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-blocks",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-blocks",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state-1",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state-1",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-info",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-masterchain-info",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-messages",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-messages",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-pending-transactions",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-pending-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-transactions",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-transactions",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-transactions-by-masterchain-block",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-transactions-by-masterchain-block",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/blockchain-data/get-transactions-by-message",
+    "destination": "/applications/api/toncenter/v3/blockchain-data/get-transactions-by-message",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/dns/get-dns-records",
+    "destination": "/applications/api/toncenter/v3/dns/get-dns-records",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/jettons/get-jetton-burns",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-burns",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/jettons/get-jetton-masters",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-masters",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/jettons/get-jetton-transfers",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-transfers",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/jettons/get-jetton-wallets",
+    "destination": "/applications/api/toncenter/v3/jettons/get-jetton-wallets",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/multisig/get-multisig-orders",
+    "destination": "/applications/api/toncenter/v3/multisig/get-multisig-orders",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/multisig/get-multisig-wallets",
+    "destination": "/applications/api/toncenter/v3/multisig/get-multisig-wallets",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/nfts/get-nft-collections",
+    "destination": "/applications/api/toncenter/v3/nfts/get-nft-collections",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/nfts/get-nft-items",
+    "destination": "/applications/api/toncenter/v3/nfts/get-nft-items",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/nfts/get-nft-transfers",
+    "destination": "/applications/api/toncenter/v3/nfts/get-nft-transfers",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/overview",
+    "destination": "/applications/api/toncenter/v3/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/stats/get-top-accounts-by-balance",
+    "destination": "/applications/api/toncenter/v3/stats/get-top-accounts-by-balance",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/utils/decode-opcodes-and-bodies",
+    "destination": "/applications/api/toncenter/v3/utils/decode-opcodes-and-bodies",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/utils/decode-opcodes-and-bodies-1",
+    "destination": "/applications/api/toncenter/v3/utils/decode-opcodes-and-bodies-1",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/api/toncenter/v3/vesting/get-vesting-contracts",
+    "destination": "/applications/api/toncenter/v3/vesting/get-vesting-contracts",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/appkit/changelog",
     "destination": "/applications/appkit/changelog",
     "permanent": true
@@ -1078,6 +1718,11 @@ export const redirects = [
   {
     "source": "/ecosystem/appkit/get-started/installation/vanilla-js",
     "destination": "/applications/appkit/get-started/installation/vanilla-js",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/appkit/get-started/networks",
+    "destination": "/applications/appkit/get-started/networks",
     "permanent": true
   },
   {
@@ -1231,6 +1876,21 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/bridges",
+    "destination": "/overview/infrastructure/bridges",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/explorers/overview",
+    "destination": "/overview/infrastructure/explorers/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/explorers/tonviewer",
+    "destination": "/overview/infrastructure/explorers/tonviewer",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/node/integrating-with-prometheus",
     "destination": "/blockchain-basics/nodes/cpp/integrating-with-prometheus",
     "permanent": true
@@ -1266,6 +1926,196 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/nodes/cpp/integrating-with-prometheus",
+    "destination": "/blockchain-basics/nodes/cpp/integrating-with-prometheus",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/alerting",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/alerting",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/backups",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/backups",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/btc-teleport",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/btc-teleport",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/collator",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/collator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/core",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/core",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/custom-overlays",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/custom-overlays",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/installer",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/installer",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/liquid-staking",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/liquid-staking",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/overview",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/pools",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/pools",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/utilities",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/utilities",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/validator",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/validator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/mytonctrl/wallet",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/wallet",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/run-validator",
+    "destination": "/blockchain-basics/nodes/cpp/run-validator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/setup-mylocalton",
+    "destination": "/blockchain-basics/nodes/cpp/setup-mylocalton",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/cpp/setup-mytonctrl",
+    "destination": "/blockchain-basics/nodes/cpp/setup-mytonctrl",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/overview",
+    "destination": "/blockchain-basics/nodes/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/architecture",
+    "destination": "/blockchain-basics/nodes/rust/architecture",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/global-config",
+    "destination": "/blockchain-basics/nodes/rust/global-config",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/logs-config",
+    "destination": "/blockchain-basics/nodes/rust/logs-config",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/metrics",
+    "destination": "/blockchain-basics/nodes/rust/metrics",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/monitoring",
+    "destination": "/blockchain-basics/nodes/rust/monitoring",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/node-config",
+    "destination": "/blockchain-basics/nodes/rust/node-config",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/node-config-ref",
+    "destination": "/blockchain-basics/nodes/rust/node-config-ref",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/probes",
+    "destination": "/blockchain-basics/nodes/rust/probes",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/nodes/rust/quick-start",
+    "destination": "/blockchain-basics/nodes/rust/quick-start",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/oracles/overview",
+    "destination": "/overview/infrastructure/oracles/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/oracles/pyth",
+    "destination": "/overview/infrastructure/oracles/pyth",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/oracles/redstone",
+    "destination": "/overview/infrastructure/oracles/redstone",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/sdks",
+    "destination": "/applications/sdks",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/staking/liquid-staking",
+    "destination": "/blockchain-basics/nodes/staking/liquid-staking",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/staking/nominator-pools",
+    "destination": "/blockchain-basics/nodes/staking/nominator-pools",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/staking/overview",
+    "destination": "/blockchain-basics/nodes/staking/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/staking/single-nominator",
+    "destination": "/blockchain-basics/nodes/staking/single-nominator",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/staking/stake-calculation",
+    "destination": "/blockchain-basics/nodes/staking/stake-calculation",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/status",
+    "destination": "/overview/infrastructure/status",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/subsecond",
+    "destination": "/overview/subsecond",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/tma/mate/getting-started",
     "destination": "/ecosystem/tma/overview",
     "permanent": true
@@ -1281,13 +2131,88 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/ecosystem/ton-connect/api-reference/protocol",
+    "destination": "/applications/ton-connect/api-reference/protocol",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/api-reference/sdk",
+    "destination": "/applications/ton-connect/api-reference/sdk",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/api-reference/ui",
+    "destination": "/applications/ton-connect/api-reference/ui",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/api-reference/ui-react",
+    "destination": "/applications/ton-connect/api-reference/ui-react",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/ton-connect/appkit/:slug*",
     "destination": "/ecosystem/appkit/:slug*",
     "permanent": true
   },
   {
+    "source": "/ecosystem/ton-connect/core-concepts",
+    "destination": "/applications/ton-connect/core-concepts",
+    "permanent": true
+  },
+  {
     "source": "/ecosystem/ton-connect/dapp",
     "destination": "/ton-connect/dapp",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/faq",
+    "destination": "/applications/ton-connect/faq",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/get-started",
+    "destination": "/applications/ton-connect/get-started",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/connect",
+    "destination": "/applications/ton-connect/how-to/connect",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/disconnect",
+    "destination": "/applications/ton-connect/how-to/disconnect",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/embedded-request",
+    "destination": "/applications/ton-connect/how-to/embedded-request",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/filter-wallets",
+    "destination": "/applications/ton-connect/how-to/filter-wallets",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/send-transaction",
+    "destination": "/applications/ton-connect/how-to/send-transaction",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/sign-data",
+    "destination": "/applications/ton-connect/how-to/sign-data",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/sign-message-gasless",
+    "destination": "/applications/ton-connect/how-to/sign-message-gasless",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/how-to/walletconnect-support",
+    "destination": "/applications/ton-connect/how-to/walletconnect-support",
     "permanent": true
   },
   {
@@ -1298,6 +2223,16 @@ export const redirects = [
   {
     "source": "/ecosystem/ton-connect/message-lookup",
     "destination": "/ton-connect/message-lookup",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/overview",
+    "destination": "/applications/ton-connect/overview",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/ton-connect/troubleshooting",
+    "destination": "/applications/ton-connect/troubleshooting",
     "permanent": true
   },
   {
@@ -1368,6 +2303,31 @@ export const redirects = [
   {
     "source": "/ecosystem/ton-pay/webhooks",
     "destination": "/applications/ton-pay/webhooks",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/wallet-apps/addresses-workflow",
+    "destination": "/overview/wallets/wallet-apps/addresses-workflow",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/wallet-apps/deep-links",
+    "destination": "/overview/wallets/wallet-apps/deep-links",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/wallet-apps/get-coins",
+    "destination": "/overview/wallets/wallet-apps/get-coins",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/wallet-apps/tonkeeper",
+    "destination": "/overview/wallets/wallet-apps/tonkeeper",
+    "permanent": true
+  },
+  {
+    "source": "/ecosystem/wallet-apps/web",
+    "destination": "/overview/wallets/wallet-apps/web",
     "permanent": true
   },
   {
@@ -1556,6 +2516,11 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/foundations/core-concepts",
+    "destination": "/blockchain-basics/core-concepts",
+    "permanent": true
+  },
+  {
     "source": "/foundations/fees",
     "destination": "/blockchain-basics/primitives/fees",
     "permanent": true
@@ -1723,6 +2688,16 @@ export const redirects = [
   {
     "source": "/foundations/whitepapers/tvm",
     "destination": "/blockchain-basics/whitepapers/tvm",
+    "permanent": true
+  },
+  {
+    "source": "/from-ethereum",
+    "destination": "/overview/learn-more/from-ethereum",
+    "permanent": true
+  },
+  {
+    "source": "/get-support",
+    "destination": "/overview/get-support",
     "permanent": true
   },
   {
@@ -2096,6 +3071,11 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/learn-more/glossary",
+    "destination": "/overview/learn-more/glossary",
+    "permanent": true
+  },
+  {
     "source": "/learn/academy/academy-overview",
     "destination": "/overview/learn-more/more-tutorials",
     "permanent": true
@@ -2191,6 +3171,11 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/more-tutorials",
+    "destination": "/overview/learn-more/more-tutorials",
+    "permanent": true
+  },
+  {
     "source": "/participate/explorers",
     "destination": "/overview/infrastructure/explorers/overview",
     "permanent": true
@@ -2218,6 +3203,26 @@ export const redirects = [
   {
     "source": "/participate/web3/site-management",
     "destination": "https://old-docs.ton.org/v3/guidelines/web3/ton-proxy-sites/site-and-domain-management",
+    "permanent": true
+  },
+  {
+    "source": "/payments/jettons",
+    "destination": "/blockchain-basics/payments/jettons",
+    "permanent": true
+  },
+  {
+    "source": "/payments/overview",
+    "destination": "/blockchain-basics/payments/overview",
+    "permanent": true
+  },
+  {
+    "source": "/payments/toncoin",
+    "destination": "/blockchain-basics/payments/toncoin",
+    "permanent": true
+  },
+  {
+    "source": "/standard/overview",
+    "destination": "/blockchain-basics/standard/overview",
     "permanent": true
   },
   {
@@ -2456,6 +3461,11 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/start-here",
+    "destination": "/overview/start-here",
+    "permanent": true
+  },
+  {
     "source": "/tolk/basic-syntax",
     "destination": "/blockchain-basics/tolk/basic-syntax",
     "permanent": true
@@ -2483,6 +3493,11 @@ export const redirects = [
   {
     "source": "/tolk/features/compiler-optimizations",
     "destination": "/blockchain-basics/tolk/features/compiler-optimizations",
+    "permanent": true
+  },
+  {
+    "source": "/tolk/features/contract-abi",
+    "destination": "/blockchain-basics/tolk/features/contract-abi",
     "permanent": true
   },
   {
