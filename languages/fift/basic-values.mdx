@@ -1,5 +1,5 @@
 ---
-title: "Basic values"
+title: "Basic values and literals in Fift"
 sidebarTitle: "Basic values"
 noindex: "true"
 ---
@@ -14,7 +14,7 @@ Examples:
 
 ```fift
 0b1101     // Binary literal, denoting integer 13
-13         // Decimal literal 
+13         // Decimal literal
 0xd        // Hexadecimal literal, denoting integer 13
 ```
 
@@ -25,7 +25,7 @@ Examples:
 ```fift
 -0b1101     // Binary literal, denoting integer -13
 0b-1101     // Binary literal, denoting integer -13
--13         // Decimal literal 
+-13         // Decimal literal
 -0xd        // Hexadecimal literal, denoting integer -13
 0x-d        // Hexadecimal literal, denoting integer -13
 ```
@@ -39,7 +39,7 @@ Integer literals are pushed into the Fift stack in the order of their appearance
 produces the stack:
 
 ```text
-1 10 3 -2     // Rightmost number is the top of the stack 
+1 10 3 -2     // Rightmost number is the top of the stack
 ```
 
 In other words, `1` is pushed first, followed by `0xa` (i.e., `10`), followed by `3`, and finally `-0b10` (i.e., `-2`), leaving `-0b10` at the top of the stack.
@@ -100,7 +100,7 @@ This is a multi-line string
   does not work because `$<<"""` is not in a line alone. Also,
 
   ```fift
-  $<<""" 
+  $<<"""
   Hello, world!
   This is a multi-line string
       Another line... """
@@ -111,14 +111,18 @@ This is a multi-line string
 
 ## Booleans
 
-As described in the Types page, Fift does not have a separate type for booleans. Instead, booleans are emulated using `Integer`s, where `-1` represents truth, and `0` falsehood. Comparison primitives normally return `-1` to indicate success and `0` otherwise. Fift has the constants `true` and `false` to push these special integers into the stack:
+As described in the [Types page](/languages/fift/types), Fift does not have a separate type for booleans. Instead, booleans are emulated using `Integer`s, where `-1` represents truth, and `0` falsehood. Comparison primitives normally return `-1` to indicate success and `0` otherwise.
+
+Fift has the constants `true` and `false` to push these special integers into the stack:
 
 | Word    | Description                 |
 | :------ | :-------------------------- |
 | `true`  | pushes `-1` into the stack. |
 | `false` | pushes `0` into the stack.  |
 
-Certain operations, like conditional execution of blocks and loops with exit conditions, extend the notion of "true" to any non-zero integer. However, if the intention is to work with bitwise operations over booleans, any non-zero integer must first be transformed into `-1`. Fift has the word `0<>` that transforms any non-zero integer into `-1`, and leaves `0` unchanged. For instance:
+Certain operations, like conditional execution of blocks and loops with exit conditions, extend the notion of "true" to any non-zero integer. However, if the intention is to work with bitwise operations over booleans, any non-zero integer must first be transformed into `-1`. Fift has the word `0<>` that transforms any non-zero integer into `-1`, and leaves `0` unchanged.
+
+For instance:
 
 ```fift
 5 0<>     // Produces -1 at the top of the stack
@@ -150,7 +154,7 @@ Fift provides the words `hole` and `box` to create boxes. Word `hole` pushes an 
 For instance:
 
 ```fift
-hole       // Pushes an empty box 
+hole       // Pushes an empty box
 5 box      // Pushes a box containing 5
 "foo" box  // Pushes a box containing "foo"
 ```
@@ -165,11 +169,11 @@ For instance:
 hole constant A
 // Fetch the contents of box in A
 A @   // Pushes null into the stack
-// Store 5 into the box in A 
+// Store 5 into the box in A
 5 A !
 // Fetch the contents of box in A
 A @   // Pushes 5 into the stack
-// Store "foo" into the box in A 
+// Store "foo" into the box in A
 "foo" A !
 // Fetch the contents of box in A
 A @   // Pushes "foo" into the stack
@@ -218,7 +222,7 @@ The word `[]` extracts a specific index from a tuple. Word `[]` requires that th
 For instance, the following defines a 3x3 matrix of integers `Matrix`, and then, accesses entry at row `1` and column `2`:
 
 ```fift
-// The first line defines constant Matrix, 
+// The first line defines constant Matrix,
 // containing the nested tuples:
 // [
 //    [ 1 2 3 ]
@@ -239,7 +243,7 @@ For instance, the following defines a constant `A` containing the tuple `[ 7 8 9
 // The first line defines constant A
 // containing tuple [ 7 8 9 ]
 7 8 9 triple constant A
-A explode 
+A explode
 ```
 
 produces `7 8 9 3` in the stack, where `3`, the number at the top of the stack, is the number of elements in the original tuple.
@@ -272,7 +276,7 @@ The word `cons` takes a stack of the form `h l`, where `h` is a value and `l` is
 For instance, the following code produces the list `(1 2 3)`:
 
 ```fift
-1 2 3 null cons cons cons 
+1 2 3 null cons cons cons
 ```
 
 First, `1 2 3 null` produces the stack `1 2 3 null`, where `null` is at the top of the stack. Then, the first `cons` produces the stack `1 2 [ 3 null ]`, where tuple `[ 3 null ]` is at the top of the stack. Next, the second `cons` produces the stack `1 [ 2 [ 3 null ] ]`. Finally, the third `cons` produces the stack `[ 1 [ 2 [ 3 null ] ] ]` containing a single tuple at the top, which is the list `(1 2 3)`.
@@ -282,7 +286,7 @@ It is so common to build fixed-length lists like in the above example, that Fift
 For instance, the following produces the same list as the previous example:
 
 ```fift
-1 2 3 3 list 
+1 2 3 3 list
 ```
 
 <Aside>
@@ -295,7 +299,7 @@ For instance, the following produces the same list as the previous example:
   is different from the tuple constructed with the code:
 
   ```fift
-  1 2 3 3 tuple 
+  1 2 3 3 tuple
   ```
 
   The list is really the nested tuple `[ 1 [ 2 [ 3 null ] ] ]`, while the tuple is `[ 1 2 3 ]`.
@@ -331,7 +335,7 @@ It is possible to compare atoms using the word `eq?`. The word `eq?` consumes th
 For instance,
 
 ```fift
-`+ `+ eq?   // pushes -1 to the stack 
+`+ `+ eq?   // pushes -1 to the stack
 `+ `- eq?   // pushes 0 to the stack
 ```
 
