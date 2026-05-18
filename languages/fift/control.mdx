@@ -4,6 +4,12 @@ sidebarTitle: "Control flow"
 noindex: "true"
 ---
 
+import { Aside } from '/snippets/aside.jsx';
+
+<Aside type="note">
+  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
+</Aside>
+
 ## Blocks
 
 A block is defined using the special words `{` and `}`. All words listed between `{` and `}` constitute the body of the block, which is then pushed into the stack as an execution token. A block may be stored as a definition of a new Fift word by means of the word `:` as explained in the Words section, or executed by means of the word `execute`:

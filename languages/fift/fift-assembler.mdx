@@ -6,6 +6,10 @@ noindex: "true"
 
 import { Aside } from '/snippets/aside.jsx';
 
+<Aside type="note">
+  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
+</Aside>
+
 ## Calling TVM from Fift
 
 Fift has the words `runvmcode`, `runvmdict`, and `runvm` to invoke TVM code. All these words require that the code be provided in a slice. The code arguments can be prepared in the Fift stack, which is passed in its entirety to a fresh instance of the TVM stack. After executing the TVM code, the resulting TVM stack and the exit code are passed back to the Fift stack, so that it can be examined later using Fift words.

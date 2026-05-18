@@ -603,81 +603,6 @@
         ]
       },
       {
-        "group": "Other languages",
-        "pages": [
-          {
-            "group": "TL-B",
-            "pages": [
-              "languages/tl-b/overview",
-              "languages/tl-b/syntax-and-semantics",
-              "languages/tl-b/simple-examples",
-              "languages/tl-b/complex-and-non-trivial-examples",
-              "languages/tl-b/tep-examples",
-              "languages/tl-b/tooling"
-            ]
-          },
-          {
-            "group": "Fift",
-            "pages": [
-              "languages/fift/overview",
-              "languages/fift/types",
-              "languages/fift/basic-values",
-              "languages/fift/variables",
-              "languages/fift/control",
-              "languages/fift/fift-assembler",
-              "languages/fift/fift-and-tvm-assembly",
-              "languages/fift/deep-dive",
-              "languages/fift/multisig",
-              "languages/fift/whitepaper"
-            ]
-          },
-          {
-            "group": "FunC",
-            "pages": [
-              "languages/func/overview",
-              "languages/func/cookbook",
-              {
-                "group": "Language",
-                "expanded": true,
-                "pages": [
-                  "languages/func/comments",
-                  "languages/func/types",
-                  "languages/func/literals",
-                  "languages/func/operators",
-                  "languages/func/expressions",
-                  "languages/func/statements",
-                  {
-                    "group": "Program declarations",
-                    "expanded": true,
-                    "pages": [
-                      "languages/func/declarations-overview",
-                      "languages/func/functions",
-                      "languages/func/special-functions",
-                      "languages/func/asm-functions",
-                      "languages/func/global-variables",
-                      "languages/func/compiler-directives"
-                    ]
-                  },
-                  "languages/func/built-ins",
-                  "languages/func/dictionaries"
-                ]
-              },
-              {
-                "group": "Libraries",
-                "expanded": true,
-                "pages": [
-                  "languages/func/stdlib",
-                  "languages/func/libraries"
-                ]
-              },
-              "languages/func/changelog",
-              "languages/func/known-issues"
-            ]
-          },
-          "languages/tact"
-        ]
-      },
-      {
         "group": "TVM: TON Virtual Machine",
         "pages": [
           "tvm/overview",
@@ -703,6 +628,17 @@
       {
         "group": "Blockchain foundations",
         "pages": [
+          {
+            "group": "TL-B",
+            "pages": [
+              "foundations/tlb/overview",
+              "foundations/tlb/syntax-and-semantics",
+              "foundations/tlb/simple-examples",
+              "foundations/tlb/complex-and-non-trivial-examples",
+              "foundations/tlb/tep-examples",
+              "foundations/tlb/tooling"
+            ]
+          },
           {
             "group": "Serialization",
             "pages": [
@@ -791,7 +727,71 @@
         ]
       },
       {
-        "group": "Contribute",
+        "group": "Legacy languages",
+        "pages": [
+          {
+            "group": "Fift",
+            "pages": [
+              "languages/fift/overview",
+              "languages/fift/types",
+              "languages/fift/basic-values",
+              "languages/fift/variables",
+              "languages/fift/control",
+              "languages/fift/fift-assembler",
+              "languages/fift/fift-and-tvm-assembly",
+              "languages/fift/deep-dive",
+              "languages/fift/multisig",
+              "languages/fift/whitepaper"
+            ]
+          },
+          {
+            "group": "FunC",
+            "pages": [
+              "languages/func/overview",
+              "languages/func/cookbook",
+              {
+                "group": "Language",
+                "expanded": true,
+                "pages": [
+                  "languages/func/comments",
+                  "languages/func/types",
+                  "languages/func/literals",
+                  "languages/func/operators",
+                  "languages/func/expressions",
+                  "languages/func/statements",
+                  {
+                    "group": "Program declarations",
+                    "expanded": true,
+                    "pages": [
+                      "languages/func/declarations-overview",
+                      "languages/func/functions",
+                      "languages/func/special-functions",
+                      "languages/func/asm-functions",
+                      "languages/func/global-variables",
+                      "languages/func/compiler-directives"
+                    ]
+                  },
+                  "languages/func/built-ins",
+                  "languages/func/dictionaries"
+                ]
+              },
+              {
+                "group": "Libraries",
+                "expanded": true,
+                "pages": [
+                  "languages/func/stdlib",
+                  "languages/func/libraries"
+                ]
+              },
+              "languages/func/changelog",
+              "languages/func/known-issues"
+            ]
+          },
+          "languages/tact"
+        ]
+      },
+      {
+        "group": "Contributing",
         "pages": [
           "contribute/style-guide",
           {
@@ -3589,57 +3589,87 @@
     },
     {
       "source": "/contract-dev/signing",
-      "destination": "contract-dev/techniques/signing",
+      "destination": "/contract-dev/techniques/signing",
       "permanent": true
     },
     {
       "source": "/contract-dev/contract-sharding",
-      "destination": "contract-dev/techniques/contract-sharding",
+      "destination": "/contract-dev/techniques/contract-sharding",
       "permanent": true
     },
     {
       "source": "/contract-dev/gas",
-      "destination": "contract-dev/techniques/gas",
+      "destination": "/contract-dev/techniques/gas",
       "permanent": true
     },
     {
       "source": "/contract-dev/on-chain-jetton-processing",
-      "destination": "contract-dev/techniques/on-chain-jetton-processing",
+      "destination": "/contract-dev/techniques/on-chain-jetton-processing",
       "permanent": true
     },
     {
       "source": "/contract-dev/using-on-chain-libraries",
-      "destination": "contract-dev/techniques/using-on-chain-libraries",
+      "destination": "/contract-dev/techniques/using-on-chain-libraries",
       "permanent": true
     },
     {
       "source": "/contract-dev/random",
-      "destination": "contract-dev/techniques/random",
+      "destination": "/contract-dev/techniques/random",
       "permanent": true
     },
     {
       "source": "/contract-dev/upgrades",
-      "destination": "contract-dev/techniques/upgrades",
+      "destination": "/contract-dev/techniques/upgrades",
       "permanent": true
     },
     {
       "source": "/contract-dev/vanity",
-      "destination": "contract-dev/techniques/vanity",
+      "destination": "/contract-dev/techniques/vanity",
       "permanent": true
     },
     {
       "source": "/contract-dev/zero-knowledge",
-      "destination": "contract-dev/techniques/zero-knowledge",
+      "destination": "/contract-dev/techniques/zero-knowledge",
       "permanent": true
     },
     {
       "source": "/contract-dev/security",
-      "destination": "contract-dev/techniques/security",
+      "destination": "/contract-dev/techniques/security",
       "permanent": true
     },
     {
       "source": "/contract-dev/ide/overview",
       "destination": "/contract-dev/ide/vscode",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/overview",
+      "destination": "/foundations/tlb/overview",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/syntax-and-semantics",
+      "destination": "/foundations/tlb/syntax-and-semantics",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/simple-examples",
+      "destination": "/foundations/tlb/simple-examples",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/complex-and-non-trivial-examples",
+      "destination": "/foundations/tlb/complex-and-non-trivial-examples",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/tep-examples",
+      "destination": "/foundations/tlb/tep-examples",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/tooling",
+      "destination": "/foundations/tlb/tooling",
       "permanent": true
     }
   ]
