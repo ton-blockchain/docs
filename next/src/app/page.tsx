@@ -21,40 +21,43 @@ const JOURNEYS: JourneyProps[] = [
     title: "Beginner",
     description: "TON fundamentals for newcomers entering Web3 through TON.",
     steps: [
-      {title: "How to read this documentation?", href: "/start-here"},
-      {title: "Writing your first smart contract", href: "/contract-dev/first-smart-contract"},
-      {title: "Using a TON wallet", href: "/ecosystem/wallet-apps/tonkeeper"},
-      {title: "Introduction to Tolk", href: "/languages/tolk/overview"},
+      {title: "How to read this documentation?", href: "/overview/start-here"},
+      {
+        title: "Writing your first smart contract",
+        href: "/blockchain-basics/contract-dev/blueprint/first-smart-contract",
+      },
+      {title: "Using a TON wallet", href: "/overview/wallets/wallet-apps/tonkeeper"},
+      {title: "Introduction to Tolk", href: "/blockchain-basics/tolk/overview"},
     ],
   },
   {
     title: "Apps",
     description: "Everything one needs to build applications on TON.",
     steps: [
-      {title: "Connect wallets to the app", href: "/ecosystem/ton-connect/overview"},
-      {title: "Manage and track assets with AppKit", href: "/ecosystem/appkit/overview"},
-      {title: "Access the blockchain via APIs", href: "/ecosystem/api/overview"},
-      {title: "Build apps using SDKs", href: "/ecosystem/sdks"},
+      {title: "Connect wallets to the app", href: "/applications/ton-connect/overview"},
+      {title: "Manage and track assets with AppKit", href: "/applications/appkit/overview"},
+      {title: "Access the blockchain via APIs", href: "/applications/api/overview"},
+      {title: "Build apps using SDKs", href: "/applications/sdks"},
     ],
   },
   {
     title: "Smart contracts",
     description: "Build, debug, and deploy smart contracts on TON.",
     steps: [
-      {title: "Tools to build", href: "/contract-dev/blueprint/overview"},
-      {title: "TVM exit codes", href: "/tvm/exit-codes"},
-      {title: "TVM instructions", href: "/tvm/instructions"},
-      {title: "Debugging smart contracts", href: "/contract-dev/debug"},
+      {title: "Tools to build", href: "/blockchain-basics/contract-dev/blueprint/overview"},
+      {title: "TVM exit codes", href: "/blockchain-basics/tvm/exit-codes"},
+      {title: "TVM instructions", href: "/blockchain-basics/tvm/instructions"},
+      {title: "Debugging smart contracts", href: "/blockchain-basics/contract-dev/blueprint/debug"},
     ],
   },
   {
     title: "Nodes",
     description: "Run and manage TON blockchain nodes.",
     steps: [
-      {title: "Nodes overview", href: "/ecosystem/nodes/overview"},
-      {title: "Validator node", href: "/ecosystem/nodes/overview#validator-node"},
-      {title: "C++ node setup", href: "/ecosystem/nodes/cpp/setup-mytonctrl"},
-      {title: "Rust node setup", href: "/ecosystem/nodes/rust/quick-start"},
+      {title: "Nodes overview", href: "/blockchain-basics/nodes/overview"},
+      {title: "Validator node", href: "/blockchain-basics/nodes/overview#validator-node"},
+      {title: "C++ node setup", href: "/blockchain-basics/nodes/cpp/setup-mytonctrl"},
+      {title: "Rust node setup", href: "/blockchain-basics/nodes/rust/quick-start"},
     ],
   },
 ]
@@ -87,29 +90,6 @@ function JourneyCard({title, description, steps}: JourneyProps) {
     </article>
   )
 }
-
-const SUPPORT_LINKS = [
-  {
-    title: "Get support",
-    href: "/get-support",
-    description: "Learn how to get help on the dedicated page.",
-    icon: <LifeBuoy className="size-5" />,
-  },
-  {
-    title: "Telegram",
-    href: "https://t.me/addlist/1r5Vcb8eljk5Yzcy",
-    description: "Join the folder with many developer chats.",
-    icon: <Send className="size-5" />,
-    external: true,
-  },
-  {
-    title: "TON Talents",
-    href: "https://ton.org/en/talents",
-    description: "Seek skilled professionals and agencies.",
-    icon: <Users className="size-5" />,
-    external: true,
-  },
-]
 
 export default function Page() {
   return (
@@ -185,29 +165,6 @@ export default function Page() {
               Can&apos;t find what you need? Use <kbd>Ctrl + K</kbd> to search and ask AI, or{" "}
               <kbd>Ctrl + I</kbd> to open the assistant panel.
             </p>
-            <p className="mt-1 text-fd-muted-foreground">
-              Still stuck? Discuss issues and best practices with other community members.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {SUPPORT_LINKS.map(item => {
-              const external = item.external
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noreferrer noopener" : undefined}
-                  className="group rounded-2xl border border-fd-border bg-fd-card/40 px-5 py-4 transition-colors hover:border-fd-primary"
-                >
-                  <div className="mb-3 text-fd-primary">{item.icon}</div>
-                  <h3 className="text-sm font-semibold text-fd-foreground group-hover:text-fd-primary">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-fd-muted-foreground">{item.description}</p>
-                </Link>
-              )
-            })}
           </div>
         </section>
       </main>
