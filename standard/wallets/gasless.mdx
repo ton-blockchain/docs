@@ -53,7 +53,7 @@ The user's wallet application:
 - Constructs an action list (transfers, contract calls)
 - Adds replay protection (sequence number, expiration timestamp)
 - Signs with the wallet's private key
-- Sends signed payload to relayer via HTTPS
+- Sends signed payload to relayer via an API
 
 #### Step 2: Relayer validates
 
@@ -209,7 +209,7 @@ No standardization: relayer APIs, fee structures, and supported assets vary. Eac
 [TON Connect](/ecosystem/ton-connect/overview) incompatibility: currently, TON Connect does not support gasless. The `sendTransaction` method does not return signed payloads to dApps — it submits transactions directly. Gasless requires obtaining signed payloads and forwarding them to relayers off-chain.
 
 <Aside type="note">
-  dApps that need gasless must implement custom signing flows outside TON Connect. Users sign payloads directly (via browser extension or native app) and send to relayers via HTTPS.
+  dApps that need gasless must implement custom signing flows outside TON Connect. Users sign payloads directly via a browser extension or a native app and send them to relayers via an API.
 </Aside>
 
 Centralization: users depend on relayer uptime, policies, and willingness to serve requests. Relayers can censor addresses or refuse service.
