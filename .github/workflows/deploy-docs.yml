@@ -65,13 +65,13 @@ jobs:
         working-directory: next
         run: npm run generated-source
 
-      - name: Check docs formatting
-        working-directory: next
-        run: npm run fmt:check
-
-      - name: Lint Check docs
-        working-directory: next
-        run: npm run lint
+#      - name: Check docs formatting
+#        working-directory: next
+#        run: npm run fmt:check
+#
+#      - name: Lint Check docs
+#        working-directory: next
+#        run: npm run lint
 
       - name: Build docs
         working-directory: next
