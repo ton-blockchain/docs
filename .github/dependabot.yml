@@ -9,6 +9,8 @@ updates:
       day: "monday"
       time: "04:00"
       timezone: "Etc/UTC"
+    cooldown:
+      default-days: 7
     versioning-strategy: increase
     allow:
       - dependency-name: "cspell"
@@ -18,4 +20,5 @@ updates:
       - dependency-name: "remark*"
       - dependency-name: "unified*"
       - dependency-name: "unist*"
-      - dependency-name: "string*"
+      - dependency-name: "mdast*"
+      - dependency-name: "*string*"

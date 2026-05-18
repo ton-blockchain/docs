@@ -1,6 +1,6 @@
 ---
-title: "Wallet V5 API"
-sidebarTitle: "How to interact"
+title: "Wallet V5 interface: messages and get methods"
+sidebarTitle: "Messages and get methods"
 ---
 
 import { Aside } from "/snippets/aside.jsx";
@@ -411,14 +411,14 @@ export function createWalletTransferV5R1<T extends WalletV5SendArgs>(
 
 
     // now we store common part for both messages
-    signingMessage.storeUint(args.timeout || Math.floor(Date.now() / 1e3) + 60, 32); // Default timeout: 60 seconds
+    signingMessage.storeUint(args.validUntil, 32);
 
     signingMessage
         .storeUint(args.seqno, 32)
         .store(storeOutListExtendedV5(args.actions));
 
     // now we need to sign message
-    const signature = sign(signingMessage.endCell().hash(), args.secretKey);
+    const signature = sign(signingMessage.endCell().hash(), args.privateKey);
 
     return beginCell().storeBuilder(signingMessage).storeBuffer(signature).endCell();
 }
@@ -456,7 +456,7 @@ const boc = beginCell()
   .toBoc();
 ```
 
-You can send this BoC to the network in any convenient way, e.g. with API provider like [TonCenter /message](https://toncenter.com/api/v3/index.html#/api%2Fv2/api_v3_post_v2_message) or with your own [liteserver](/ecosystem/node/overview).
+You can send this BoC to the network in any convenient way, e.g. with API provider like [TonCenter /message](https://toncenter.com/api/v3/index.html#/api%2Fv2/api_v3_post_v2_message) or with your own [liteserver](/ecosystem/nodes/overview).
 
 #### Sending internal\_extension and internal\_signed
 
