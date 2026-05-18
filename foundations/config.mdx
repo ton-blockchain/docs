@@ -564,7 +564,7 @@ Inherited from [Param 29](https://tonviewer.com/config#29):
 - `max_block_bytes` — maximum block size.
 - `max_collated_bytes` — maximum size of serialized block correctness proofs.
 
-The `noncritical_params` dictionary contains tunable timing and DoS-protection parameters that might differ between validators:
+The `noncritical_params` dictionary contains tunable timing and DoS-protection parameters that can be changed via a config update without altering the `block.tlb` layout:
 
 - The key is an 8-bit parameter ID.
 - The value is always a raw 32-bit word.
