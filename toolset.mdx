@@ -1,0 +1,133 @@
+---
+title: "Everything you need to build on TON"
+sidebarTitle: "Toolset"
+---
+
+## Overview
+
+TON open-source SDKs provide tooling for building on-chain applications across smart contracts, applications, wallets, payments, and agent integrations.
+
+The ecosystem includes SDKs and infrastructure for contract development, wallet connectivity, payment flows, and AI agent interaction on TON.
+
+---
+
+## Acton
+
+[Acton](https://ton-blockchain.github.io/acton/docs/welcome) is an all-in-one toolchain for TON smart contract development built around Tolk. It provides a unified CLI for scaffolding, compilation, testing, deployment, and verification, along with tooling for debugging and IDE integration.
+
+**Links**
+
+- GitHub: [ton-blockchain/acton](https://github.com/ton-blockchain/acton)
+- [Website](https://ton-blockchain.github.io/acton/)
+- Docs: [Acton](https://ton-blockchain.github.io/acton/docs/welcome)
+
+**Features**
+
+- Unified CLI for the full contract lifecycle, with template scaffolding
+- Native Tolk tests plus mutation, coverage, fork, fuzz and gas profiling
+- Automatic TypeScript wrapper generation for dApp integration
+- Debugger with call-stack and variable inspection on production contracts; IDE support for VS Code, JetBrains, Cursor and Zed
+- func2tolk migration tool and low-level TVM tooling
+
+---
+
+## AppKit
+
+AppKit is an open-source SDK for integrating TON into Mini Apps and decentralized applications. It provides primitives, React components, wallet connection utilities, transaction builders, and asset-related hooks for working with Toncoin, Jettons, NFTs, swaps, and staking.
+
+**Links**
+
+- GitHub: [ton-connect/kit](https://github.com/ton-connect/kit)
+- npm: [`@ton/appkit`](https://www.npmjs.com/package/@ton/appkit) [`@ton/appkit-react`](https://www.npmjs.com/package/@ton/appkit-react)
+- Docs: [AppKit](https://docs.ton.org/ecosystem/appkit/overview)
+
+**Features**
+
+- One-call TON Connect wallet connection
+- Typed transaction builder and React hooks for Toncoin, Jettons and NFTs
+- Drop-in React components for transactions, balances and NFT cards
+- TON DNS resolve and reverse-resolve
+- Single-hook swap quotes across the two largest DEXes, plus liquid Toncoin staking
+
+---
+
+## TON Pay (beta)
+
+TON Pay is a payments SDK for accepting TON payments in web applications, Mini Apps, and bots. It supports direct-to-wallet payment flows, checkout components, TON Connect integrations, and payment-state tracking utilities for transaction reconciliation.
+
+**Links**
+
+- GitHub: [RSquad/ton-pay](https://github.com/RSquad/ton-pay)
+- npm: [`@ton-pay/api`](https://www.npmjs.com/package/@ton-pay/api) [`@ton-pay/ui-react`](https://www.npmjs.com/package/@ton-pay/ui-react)
+- Docs: [TON Pay](https://docs.ton.org/ecosystem/ton-pay/overview)
+
+**Features (beta)**
+
+- Direct-to-wallet TON acceptance
+- Drop-in React checkout components
+- One-time charges from any TON wallet over TON Connect
+- On-ramp flow out of the box
+- Hosted payment-state API (no indexer) with reference ID and memo for reconciliation
+
+---
+
+## WalletKit
+
+WalletKit is an SDK for custodial and non-custodial wallets. It provides TON Connect integration, asset transfer utilities, transaction signing flows, wallet management, and support for web, mobile, and browser extension environments while allowing applications to retain control over key management.
+
+**Links**
+
+- GitHub: [ton-connect/kit](https://github.com/ton-connect/kit)
+- npm: [`@ton/walletkit`](https://www.npmjs.com/package/@ton/walletkit)
+- Docs: [WalletKit](https://docs.ton.org/ecosystem/walletkit/overview)
+
+**Features**
+
+- Full TON Connect (connect, sign-data, transactions) without reading the spec
+- Toncoin, Jettons (incl. USD₮) and NFT reads/transfers with metadata, plus exact money-flow preview before signing
+- Gasless and one-click flows via Sign Message, Structured Items and Embedded Requests
+- Multi-wallet management with persistent storage and pluggable signers
+- Web, iOS, Android and browser extensions from one SDK
+- Custodial backend integration with full control over key storage
+
+---
+
+## AgentKit
+
+AgentKit provides TON integration for LLM agents through the Model Context Protocol (MCP). It exposes blockchain functionality through MCP-compatible tooling, including wallet management, transfers, asset queries, transaction history access, and reusable agent skills.
+
+**Links**
+
+- GitHub: [ton-connect/kit](https://github.com/ton-connect/kit)
+- [Website](https://mcp.ton.org/)
+- npm: [`@ton/mcp`](https://www.npmjs.com/package/@ton/mcp)
+- Docs: [AgentKit](https://docs.ton.org/ecosystem/ai/mcp)
+
+**Features**
+
+- One-line connection from any MCP client (Claude, Cursor, Codex…)
+- MCP server over stdio, HTTP or serverless
+- Balance queries, jetton listings, transaction history and TON DNS via tool calls
+- Single-intent transfers of Toncoin, Jettons and NFTs, plus DEX swap quotes
+- Agentic wallet key creation, import and rotation via MCP tools
+- Pre-built skills from the open repo — or your own
+
+---
+
+## Agentic wallets
+
+Agentic wallets are self-custody wallets designed for autonomous AI agents on TON. They separate operator and owner permissions, support key rotation and access revocation, and provide interfaces for managing agent-controlled funds programmatically or through a dashboard.
+
+**Links**
+
+- GitHub: [the-ton-tech/agentic-wallet-contract](https://github.com/the-ton-tech/agentic-wallet-contract)
+- Website: [agents.ton.org](https://agents.ton.org)
+- Docs: [Agentic wallets](https://docs.ton.org/ecosystem/ai/wallets)
+
+**Features**
+
+- Self-custody wallet operated by an agent on the user's behalf
+- Split keys: operator (agent) and owner (user)
+- Operator key rotation without redeploying the contract
+- On-chain access revocation at any time
+- Creation and management via dashboard or programmatically
