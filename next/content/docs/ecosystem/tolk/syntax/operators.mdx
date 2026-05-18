@@ -12,31 +12,31 @@ From highest to lowest.
 
 ### Parenthesis `(` `)`
 
-Groups expressions: `(1 + 2) * 3`; or creates [tensors](/languages/tolk/types/tensors): `pair = (1, 2)`.
+Groups expressions: `(1 + 2) * 3`; or creates [tensors](/ecosystem/tolk/types/tensors): `pair = (1, 2)`.
 
 ### Square brackets `[` `]`
 
-A universal constructor `[1, 2]` creates an array, `lisp_list`, or shaped tuple. See [tuples](/languages/tolk/types/tuples).
+A universal constructor `[1, 2]` creates an array, `lisp_list`, or shaped tuple. See [tuples](/ecosystem/tolk/types/tuples).
 
 ### Operator `lazy`
 
-With [lazy loading](/languages/tolk/features/lazy-loading) the compiler loads only the accessed fields and skips the rest.
+With [lazy loading](/ecosystem/tolk/features/lazy-loading) the compiler loads only the accessed fields and skips the rest.
 
 ### Non-null assertion operator `!`
 
-Skips the [nullability](/languages/tolk/types/nullable) check: `someVar!`.
+Skips the [nullability](/ecosystem/tolk/types/nullable) check: `someVar!`.
 
 ### Unary operators `!` `~` `-` `+`
 
-[Logical negation](/languages/tolk/types/booleans) `!x` (requires a `bool`), bitwise not `~x`, unary `-x` and `+x`.
+[Logical negation](/ecosystem/tolk/types/booleans) `!x` (requires a `bool`), bitwise not `~x`, unary `-x` and `+x`.
 
 ### Operators `as` `is` `!is`
 
-[Unsafe `as` cast](/languages/tolk/types/type-checks-and-casts) and checks for [union types](/languages/tolk/types/unions): `someVar is int`.
+[Unsafe `as` cast](/ecosystem/tolk/types/type-checks-and-casts) and checks for [union types](/ecosystem/tolk/types/unions): `someVar is int`.
 
 ### Multiplicative `*` `/` `%` `^/` `~/`
 
-Integer multiplication, division, modulo, ceiling-division, and rounding-division. All [integers](/languages/tolk/types/numbers) have 257-bit precision.
+Integer multiplication, division, modulo, ceiling-division, and rounding-division. All [integers](/ecosystem/tolk/types/numbers) have 257-bit precision.
 
 ### Additive `+` `-`
 
@@ -48,7 +48,7 @@ Bitwise shifts, extended by ceiling-right and rounding-right.
 
 ### Comparison `==` `<` `>` `<=` `>=` `!=` `<=>`
 
-Comparison operators. `<=>` is known as the spaceship or sign operator. Operators `==` and `!=` also work for several non-numeric types. For example, [addresses](/languages/tolk/types/address).
+Comparison operators. `<=>` is known as the spaceship or sign operator. Operators `==` and `!=` also work for several non-numeric types. For example, [addresses](/ecosystem/tolk/types/address).
 
 ### Bitwise `&` `|` `^`
 
@@ -56,7 +56,7 @@ Standard bitwise operators, applicable to both integers and booleans.
 
 ### Logical `&&` `||`
 
-[Short-circuit](/languages/tolk/types/booleans#logical-vs-bitwise-operators): the right operand is evaluated only when necessary.
+[Short-circuit](/ecosystem/tolk/types/booleans#logical-vs-bitwise-operators): the right operand is evaluated only when necessary.
 
 ### Assignment `=` `+=` `-=` and other
 
@@ -64,11 +64,11 @@ Assignment and augmented assignments.
 
 ### Null-coalescing `??`
 
-Returns the left operand if it is not `null`; otherwise, evaluates and returns the right operand. See [nullable types](/languages/tolk/types/nullable#null-coalescing-operator).
+Returns the left operand if it is not `null`; otherwise, evaluates and returns the right operand. See [nullable types](/ecosystem/tolk/types/nullable#null-coalescing-operator).
 
 ### Ternary `... ? ... : ...` (same priority)
 
-Ternary expressions are available in [conditions](/languages/tolk/syntax/conditions-loops).
+Ternary expressions are available in [conditions](/ecosystem/tolk/syntax/conditions-loops).
 
 ## Missing operators
 

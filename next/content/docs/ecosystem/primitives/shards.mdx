@@ -4,7 +4,7 @@ title: "Blockchain sharding"
 description: ""
 ---
 
-TON Blockchain is a collection of blockchains that are called _workchains_. Each workchain might have different formats of [account addresses](/foundations/addresses/overview), formats of [transactions](/foundations/messages/ordinary-tx), and different virtual machines for smart contracts.
+TON Blockchain is a collection of blockchains that are called _workchains_. Each workchain might have different formats of [account addresses](/ecosystem/primitives/addresses/overview), formats of [transactions](/ecosystem/primitives/messages/ordinary-tx), and different virtual machines for smart contracts.
 
 TON Blockchain dynamically splits workchains into halves when the transaction rate is above the threshold, and merges them when it decreases below the threshold. This is called _Infinite Sharding Paradigm_. [Sharding](https://en.wikipedia.org/wiki/Shard_\(database_architecture\)) is the general concept used to split the load into several parts, to ease requirements on a single computing element of some system.
 
@@ -19,7 +19,7 @@ Regularly creating empty blocks for rarely updated accountchains would be too ex
 
 ## Sharding process
 
-There might be up to `2^32` workchains, identified with `workchain_id`. Each workchain might use its own format for [`account_id`](/foundations/addresses/overview#account-id), but every such ID must be at least 64-bit long. A pair of `workchain_id` and `account_id` uniquely identifies an account.
+There might be up to `2^32` workchains, identified with `workchain_id`. Each workchain might use its own format for [`account_id`](/ecosystem/primitives/addresses/overview#account-id), but every such ID must be at least 64-bit long. A pair of `workchain_id` and `account_id` uniquely identifies an account.
 
 Each shardchain is identified by a pair `(workchain_id, shard_prefix)`, where `shard_prefix` is a bit string of length at most `60`. Accounts that have `account_id` starting with `shard_prefix` (have `shard_prefix` as the most significant bits) will be assigned to this shardchain.
 
@@ -58,4 +58,4 @@ As a simple example, consider a workchain that has eight shardchains with `shard
 
 TON Blockchain uses a more complex version. The hypercube has `15` dimensions, and each shardchain has up to `16` neighboring shardchains (include itself) along each dimension. Hence, each shardchain has up to `16 * 15 = 240` neighboring shardchains in total and the maximum number of hops between any two shardchains in the same workchain is `15`. If the source and destination shardchains belong to different workchains, then an additional hop between workchains is needed.
 
-The hypercube routing mechanism also has some additional features to ensure reliability and efficiency of message delivery, such as preventing double delivery of messages, processing messages in order of their logical time creation, and so on. For a detailed acquaintance with these processes, the reader can refer to the [TON Blockchain whitepaper](/foundations/whitepapers/tblkch#2-2-hypercube-routing-protocol).
+The hypercube routing mechanism also has some additional features to ensure reliability and efficiency of message delivery, such as preventing double delivery of messages, processing messages in order of their logical time creation, and so on. For a detailed acquaintance with these processes, the reader can refer to the [TON Blockchain whitepaper](/ecosystem/whitepapers/tblkch#2-2-hypercube-routing-protocol).

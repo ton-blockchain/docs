@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,7 +21,7 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 FunC is a domain-specific, statically typed language with C-like syntax designed to write smart contracts on TON. It can be characterized as an intermediate-level language sitting on top of the [Fift](/languages/fift) assembly language.
@@ -43,25 +43,25 @@ Example of a FunC function for sending funds:
 
 where
 
-- [`()`](/languages/func/types#tensor-types) is the return type, that stands for "do not return value", similar to `void` in C;
+- [`()`](/ecosystem/languages/func/types#tensor-types) is the return type, that stands for "do not return value", similar to `void` in C;
 - `send_money` is the name of the function;
-- `slice address` is the first parameter, address to send money to; it's type is [`slice`](/languages/func/types#atomic-types);
-- `int amount` is the second parameter, amount to be sent; it's type is [`int`](/languages/func/types#atomic-types);
-- `impure inline` are [specifiers](/languages/func/functions#specifiers), which are flags that tell the compiler to process the method in a specific way;
-- `var msg = ...` defines a variable without specifying its type; it will hold a [cell](/foundations/serialization/cells) with a [message](/foundations/messages/overview);
-- [`begin_cell()`](/languages/func/stdlib#begin-cell) creates a [cell builder](/tvm/builders-and-slices);
-- [`store_uint`](/languages/func/stdlib#store-uint), [`store_slice`](/languages/func/stdlib#store-slice), [`store_coins`](/languages/func/stdlib#store-coins) methods store data into the builder:
-  - [flags](/foundations/messages/internal);
+- `slice address` is the first parameter, address to send money to; it's type is [`slice`](/ecosystem/languages/func/types#atomic-types);
+- `int amount` is the second parameter, amount to be sent; it's type is [`int`](/ecosystem/languages/func/types#atomic-types);
+- `impure inline` are [specifiers](/ecosystem/languages/func/functions#specifiers), which are flags that tell the compiler to process the method in a specific way;
+- `var msg = ...` defines a variable without specifying its type; it will hold a [cell](/ecosystem/primitives/serialization/cells) with a [message](/ecosystem/primitives/messages/overview);
+- [`begin_cell()`](/ecosystem/languages/func/stdlib#begin-cell) creates a [cell builder](/ecosystem/tvm/builders-and-slices);
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint), [`store_slice`](/ecosystem/languages/func/stdlib#store-slice), [`store_coins`](/ecosystem/languages/func/stdlib#store-coins) methods store data into the builder:
+  - [flags](/ecosystem/primitives/messages/internal);
   - receiving address;
   - amount on Toncoin to attach to the message.
-- [`.end_cell()`](/languages/func/stdlib#end-cell) method finalizes the builder and turns it into a cell;
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message) function sends the message, where the parameter `64` describes a [sending mode](/foundations/messages/internal).
+- [`.end_cell()`](/ecosystem/languages/func/stdlib#end-cell) method finalizes the builder and turns it into a cell;
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message) function sends the message, where the parameter `64` describes a [sending mode](/ecosystem/primitives/messages/internal).
 
 ## Compiler
 
-The compiler converts FunC programs into [Fift](/languages/fift) assembly code. The Fift assembly code is then compiled down to the [TON Virtual Machine](/tvm/overview) bitcode by the [Fift](/languages/fift) compiler.
+The compiler converts FunC programs into [Fift](/languages/fift) assembly code. The Fift assembly code is then compiled down to the [TON Virtual Machine](/ecosystem/tvm/overview) bitcode by the [Fift](/languages/fift) compiler.
 
-Developers can use the compiled bitcode, structured as a [bag of cells](/foundations/serialization/boc) like all data in the TON blockchain, to test smart contracts, send messages, or execute it in a local TVM instance.
+Developers can use the compiled bitcode, structured as a [bag of cells](/ecosystem/primitives/serialization/boc) like all data in the TON blockchain, to test smart contracts, send messages, or execute it in a local TVM instance.
 
 ### End-to-end tooling
 
@@ -85,7 +85,7 @@ where `contract.fc` is the FunC source file in the project root, and `output.boc
 
 FunC standard library is supplied separately from the language. Download `smartcont_lib.zip` from the [latest release](https://github.com/ton-blockchain/ton/releases), extract it, and copy `stdlib.fc` to the project root.
 
-Alternatively, use the [Blueprint](/contract-dev/blueprint/overview) to start a project pre-configured for development in FunC.
+Alternatively, use the [Blueprint](/ecosystem/contract-dev/blueprint/overview) to start a project pre-configured for development in FunC.
 
 ### Compile manually using the binaries
 
@@ -148,4 +148,4 @@ To compile the generated Fift file `output.fif` further down to TVM bitcode, use
 
 ## Changelog
 
-[History of FunC](/languages/func/changelog)
+[History of FunC](/ecosystem/languages/func/changelog)

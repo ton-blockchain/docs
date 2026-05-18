@@ -5,9 +5,9 @@ sidebarTitle: "@tonconnect/ui-react"
 description: ""
 ---
 
-`@tonconnect/ui-react` is the React binding for [`@tonconnect/ui`](/ecosystem/ton-connect/api-reference/ui). It exposes a `<TonConnectUIProvider>` for app-wide setup, a `<TonConnectButton>` component, and hooks (`useTonConnectUI`, `useTonAddress`, `useTonWallet`) so React dApps can integrate TON Connect without touching the imperative UI API.
+`@tonconnect/ui-react` is the React binding for [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui). It exposes a `<TonConnectUIProvider>` for app-wide setup, a `<TonConnectButton>` component, and hooks (`useTonConnectUI`, `useTonAddress`, `useTonWallet`) so React dApps can integrate TON Connect without touching the imperative UI API.
 
-If your app does not use React, use [`@tonconnect/ui`](/ecosystem/ton-connect/api-reference/ui) directly. For server-side use, see [`@tonconnect/sdk`](/ecosystem/ton-connect/api-reference/sdk).
+If your app does not use React, use [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) directly. For server-side use, see [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk).
 
 ## Installation
 
@@ -60,7 +60,7 @@ interface TonConnectUIProviderPropsWithConnector {
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `connector` | [`ITonConnect`](/ecosystem/ton-connect/api-reference/sdk#itonconnect) | TonConnect instance. Can be helpful if you use custom ITonConnect implementation, or use both of @tonconnect/sdk and @tonconnect/ui in your app. |
+| `connector` | [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) | TonConnect instance. Can be helpful if you use custom ITonConnect implementation, or use both of @tonconnect/sdk and @tonconnect/ui in your app. |
 
 ### `TonConnectUIProviderPropsBase`
 
@@ -82,13 +82,13 @@ interface TonConnectUIProviderPropsBase {
 | Field | Type | Description |
 | --- | --- | --- |
 | `restoreConnection` | `boolean` | Try to restore existing session and reconnect to the corresponding wallet. |
-| `language` | [`Locales`](/ecosystem/ton-connect/api-reference/ui#locales) | Language for the phrases it the UI elements. |
+| `language` | [`Locales`](/applications/ton-connect/api-reference/ui#locales) | Language for the phrases it the UI elements. |
 | `widgetRootId` | `string` | HTML element id to attach the modal window element. If not passed, the library appends `div#tc-widget-root` to the end of `<body>` and uses it. Defaults to `div#tc-widget-root`. |
-| `uiPreferences` | [`UIPreferences`](/ecosystem/ton-connect/api-reference/ui#uipreferences) | *Optional*. UI elements configuration. |
-| `walletsListConfiguration` | [`WalletsListConfiguration`](/ecosystem/ton-connect/api-reference/ui#walletslistconfiguration) | *Optional*. Configuration for the wallets list in the connect wallet modal. |
-| `walletsRequiredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets to be displayed in the connect wallet modal. |
-| `walletsPreferredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets to be displayed in the connect wallet modal. |
-| `actionsConfiguration` | [`ActionConfiguration`](/ecosystem/ton-connect/api-reference/ui#actionconfiguration) | *Optional*. Configuration for action-period (e.g. sendTransaction) UI elements: modals and notifications and wallet behaviour (return strategy). |
+| `uiPreferences` | [`UIPreferences`](/applications/ton-connect/api-reference/ui#uipreferences) | *Optional*. UI elements configuration. |
+| `walletsListConfiguration` | [`WalletsListConfiguration`](/applications/ton-connect/api-reference/ui#walletslistconfiguration) | *Optional*. Configuration for the wallets list in the connect wallet modal. |
+| `walletsRequiredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets to be displayed in the connect wallet modal. |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets to be displayed in the connect wallet modal. |
+| `actionsConfiguration` | [`ActionConfiguration`](/applications/ton-connect/api-reference/ui#actionconfiguration) | *Optional*. Configuration for action-period (e.g. sendTransaction) UI elements: modals and notifications and wallet behaviour (return strategy). |
 | `enableAndroidBackHandler` | `boolean` | *Optional*. Specifies whether the Android back button should be used to close modals and notifications on Android devices. |
 | `analytics` | `AnalyticsSettings` | *Optional*. Analytics configuration forwarded to the underlying TonConnect SDK instance. |
 
@@ -237,7 +237,7 @@ function ConnectCta() {
 
 ### `useTonConnectUI()`
 
-Use it to get access to the [`TonConnectUI`](/ecosystem/ton-connect/api-reference/ui#tonconnectui) instance and UI options updating function. The returned tuple is stable across renders. `setOptions` merges into
+Use it to get access to the [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui) instance and UI options updating function. The returned tuple is stable across renders. `setOptions` merges into
 `tonConnectUI.uiOptions`; call it to switch language, theme, return
 strategy, or other UI preferences at runtime.
 
@@ -293,7 +293,7 @@ function WalletStatus() {
 
 ## Errors
 
-Every error from this package extends [`TonConnectUIReactError`](#tonconnectuireacterror), which itself extends [`TonConnectUIError`](/ecosystem/ton-connect/api-reference/ui#tonconnectuierror). Use `err instanceof TonConnectUIReactError` to catch errors from this package; use `err instanceof TonConnectUIError` to catch anything raised by the TonConnect stack.
+Every error from this package extends [`TonConnectUIReactError`](#tonconnectuireacterror), which itself extends [`TonConnectUIError`](/applications/ton-connect/api-reference/ui#tonconnectuierror). Use `err instanceof TonConnectUIReactError` to catch errors from this package; use `err instanceof TonConnectUIError` to catch anything raised by the TonConnect stack.
 
 ### `TonConnectUIReactError`
 
@@ -311,7 +311,7 @@ instances rather than constructing [`TonConnectUIReactError`](#tonconnectuireact
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `message` | `string` | *Optional*. Human-readable message. The resulting `error.message` is prefixed with `[TON_CONNECT_SDK_ERROR]` and the subclass name (inherited from [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror)). |
+| `message` | `string` | *Optional*. Human-readable message. The resulting `error.message` is prefixed with `[TON_CONNECT_SDK_ERROR]` and the subclass name (inherited from [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror)). |
 | `options` | `ErrorOptions` | *Optional*. Standard ES `Error` options. |
 
 ### Error catalogue
@@ -323,7 +323,7 @@ instances rather than constructing [`TonConnectUIReactError`](#tonconnectuireact
 
 ## Related pages
 
-- [`@tonconnect/ui`](/ecosystem/ton-connect/api-reference/ui) — framework-agnostic UI wrapped by these bindings.
-- [`@tonconnect/sdk`](/ecosystem/ton-connect/api-reference/sdk) — connector core under the UI.
-- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — wire-format types.
+- [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) — framework-agnostic UI wrapped by these bindings.
+- [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk) — connector core under the UI.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types.
 - [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.

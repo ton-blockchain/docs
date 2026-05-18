@@ -111,7 +111,7 @@ fun Point.calcSquare(self) {
 }
 ```
 
-Without `self` parameter, a [method](/languages/tolk/syntax/functions-methods) will be static. By default, `self` is immutable. The form `mutate self` enables mutation.
+Without `self` parameter, a [method](/ecosystem/tolk/syntax/functions-methods) will be static. By default, `self` is immutable. The form `mutate self` enables mutation.
 
 ## Serialization prefixes
 
@@ -131,7 +131,7 @@ fun demo(inc: CounterIncrement) {
 
 ## Structure syntax
 
-[Structure syntax](/languages/tolk/syntax/structures-fields) includes:
+[Structure syntax](/ecosystem/tolk/syntax/structures-fields) includes:
 
 - shorthand field syntax `{ x, y }`;
 - default field values (`a: int32 = 10`);
@@ -140,9 +140,9 @@ fun demo(inc: CounterIncrement) {
 
 ## Stack layout and serialization
 
-Fields are placed on the [stack](/languages/tolk/types/overall-tvm-stack) sequentially and [are serialized](/languages/tolk/types/overall-serialization) in the same order. If a struct has a prefix, it is written first.
+Fields are placed on the [stack](/ecosystem/tolk/types/overall-tvm-stack) sequentially and [are serialized](/ecosystem/tolk/types/overall-serialization) in the same order. If a struct has a prefix, it is written first.
 
-Serialization behavior can be overridden by defining [custom serializers](/languages/tolk/features/auto-serialization#custom-serializers-for-custom-types).
+Serialization behavior can be overridden by defining [custom serializers](/ecosystem/tolk/features/auto-serialization#custom-serializers-for-custom-types).
 
 ```tolk
 fun MyStruct.packToBuilder(self, mutate b: builder) {

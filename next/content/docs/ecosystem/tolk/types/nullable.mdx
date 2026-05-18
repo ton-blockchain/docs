@@ -153,11 +153,11 @@ The `!` operator is useful when conditions outside the code itself guarantee non
 
 ## Stack layout and serialization
 
-Primitives like `int` or `cell`, when nullable, are [serialized](/languages/tolk/types/overall-serialization) as a TVM value or `null`.
+Primitives like `int` or `cell`, when nullable, are [serialized](/ecosystem/tolk/types/overall-serialization) as a TVM value or `null`.
 
-Nullable structures and other composites are [represented](/languages/tolk/types/overall-tvm-stack) as tagged unions:
+Nullable structures and other composites are [represented](/ecosystem/tolk/types/overall-tvm-stack) as tagged unions:
 
 - if their type is `null`, they are serialized as `0`;
 - otherwise, they are serialized as `1` followed by the non-null value.
 
-The `address?` type is an exception, and it is [serialized in a different way](/languages/tolk/types/address#nullable-address).
+The `address?` type is an exception, and it is [serialized in a different way](/ecosystem/tolk/types/address#nullable-address).

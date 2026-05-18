@@ -115,7 +115,7 @@ If any condition fails, the SDK opens the wallet without `e` and either returns 
 
 ## Requiring embedded support
 
-To hide wallets that do not advertise `EmbeddedRequest` from the modal, set `walletsRequiredFeatures.embeddedRequest` on the `TonConnectUI` instance. See [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets) for the full filter shape.
+To hide wallets that do not advertise `EmbeddedRequest` from the modal, set `walletsRequiredFeatures.embeddedRequest` on the `TonConnectUI` instance. See [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets) for the full filter shape.
 
 ```ts
 const tonConnectUi = new TonConnectUI({
@@ -129,13 +129,13 @@ Without that filter, embedded is a soft capability — the SDK falls back to the
 ## When not to use embedded requests
 
 - Long-running flows where the user must review state between connect and action.
-- Flows where the outbound payload depends on data the dApp only obtains after connecting (custom routing, proofs, contract reads). Ordinary TON, jetton and NFT transfers are not in that bucket — use [structured `items`](/ecosystem/ton-connect/how-to/send-transaction#structured-items) (`ton`, `jetton`, `nft`) so the wallet builds the cells and the encoded link stays under the length budget.
+- Flows where the outbound payload depends on data the dApp only obtains after connecting (custom routing, proofs, contract reads). Ordinary TON, jetton and NFT transfers are not in that bucket — use [structured `items`](/applications/ton-connect/how-to/send-transaction#structured-items) (`ton`, `jetton`, `nft`) so the wallet builds the cells and the encoded link stays under the length budget.
 
 ## See also
 
-- [Send a transaction](/ecosystem/ton-connect/how-to/send-transaction)
-- [Sign data](/ecosystem/ton-connect/how-to/sign-data)
-- [Sign and relay a message (gasless)](/ecosystem/ton-connect/how-to/sign-message-gasless)
-- [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets) — declare `EmbeddedRequest` as required
+- [Send a transaction](/applications/ton-connect/how-to/send-transaction)
+- [Sign data](/applications/ton-connect/how-to/sign-data)
+- [Sign and relay a message (gasless)](/applications/ton-connect/how-to/sign-message-gasless)
+- [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets) — declare `EmbeddedRequest` as required
 - [Embedded requests implementer guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/embedded-requests.md)
 - [Bridge specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/bridge.md) — embedded requests

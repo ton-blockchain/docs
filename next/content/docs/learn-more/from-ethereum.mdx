@@ -42,21 +42,21 @@ Executing a large transaction on Ethereum or any other EVM-based blockchain come
 
 ### On-chain get methods
 
-Another difference is in the [get methods](/tvm/get-method). Both Ethereum and TON support them, allowing data to be retrieved from contracts without paying fees. However, in TON, get methods cannot be called on-chain: a contract cannot synchronously retrieve data from another contract during a transaction. This is a consequence of TON's asynchronous model: by the moment transaction that called a get method would start its execution, data might already change.
+Another difference is in the [get methods](/ecosystem/tvm/get-method). Both Ethereum and TON support them, allowing data to be retrieved from contracts without paying fees. However, in TON, get methods cannot be called on-chain: a contract cannot synchronously retrieve data from another contract during a transaction. This is a consequence of TON's asynchronous model: by the moment transaction that called a get method would start its execution, data might already change.
 
 ### Account model
 
 In Ethereum, there are two types of accounts: externally owned accounts (EOA), and contract accounts. EOAs are human-controlled entities, each represented by a private-public key pair. They sign transactions and each has its own balance; the community often refers to them as "wallets".
 
-In TON, there is no such separation. Every valid address represents an on-chain [account](/foundations/addresses/overview), each with its own state and balance, that could be changed through transactions. This means that "wallets" in TON are smart contracts that operate under the same rules as any other contract on the blockchain.
+In TON, there is no such separation. Every valid address represents an on-chain [account](/ecosystem/primitives/addresses/overview), each with its own state and balance, that could be changed through transactions. This means that "wallets" in TON are smart contracts that operate under the same rules as any other contract on the blockchain.
 
-The [TON wallet](/standard/wallets/comparison) smart contract works as a proxy: handles an external message, checks message is sent by the wallet's owner using regular [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography), and sends an internal message somewhere further in the network.
+The [TON wallet](/ecosystem/standard/wallets/comparison) smart contract works as a proxy: handles an external message, checks message is sent by the wallet's owner using regular [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography), and sends an internal message somewhere further in the network.
 
 ### Limited contract storage
 
 In Ethereum, it's possible to store any amount of data in a single contract. Unbounded maps and arrays are considered standard practice. TON sets a limit to the amount of data a contract can store. This means that ERC-20-like fungible tokens cannot be implemented in the same way as in an EVM chain, using a single map within a single contract.
 
-[The limit](/foundations/config) for contract storage is 65,536 unique cells contract storage, where a cell [stores up to](/foundations/serialization/cells) 1,023 bits. Messages are constrained by two size limits: 8,192 cells or 2<sup>21</sup> bits among them, whichever is smaller.
+[The limit](/foundations/config) for contract storage is 65,536 unique cells contract storage, where a cell [stores up to](/ecosystem/primitives/serialization/cells) 1,023 bits. Messages are constrained by two size limits: 8,192 cells or 2<sup>21</sup> bits among them, whichever is smaller.
 
 <Aside
   type="danger"
@@ -64,15 +64,15 @@ In Ethereum, it's possible to store any amount of data in a single contract. Unb
   Every map that is expected to grow beyond 1,000 values is dangerous. In the TVM map, key access is asymptotically logarithmic, meaning that gas consumption continuously increases to find keys as the map grows.
 </Aside>
 
-Instead, [sharding](/contract-dev/contract-sharding) should be used.
+Instead, [sharding](/ecosystem/contract-dev/techniques/contract-sharding) should be used.
 
 ## Ecosystem
 
 ### Tooling
 
-The recommended programming language for smart contract development in TON is [Tolk](/tolk/overview). Other established languages also exist and are still used, albeit in legacy status.
+The recommended programming language for smart contract development in TON is [Tolk](/ecosystem/tolk/overview). Other established languages also exist and are still used, albeit in legacy status.
 
-For off-chain software, TypeScript is the most adopted language in TON. Most of the tooling, bindings and [SDKs](/ecosystem/sdks) are implemented in TypeScript.
+For off-chain software, TypeScript is the most adopted language in TON. Most of the tooling, bindings and [SDKs](/applications/sdks) are implemented in TypeScript.
 
 | Use case                              | Ethereum tool         | TON counterparts                                                                                                |
 | :------------------------------------ | --------------------- | --------------------------------------------------------------------------------------------------------------- |
@@ -104,10 +104,10 @@ Due to significant differences in execution models, most of the standards in TON
 
 | Description                             | Ethereum standard                       | TON Standard (TEP)                                                 |
 | --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------ |
-| Fungible token standard                 | ERC-20                                  | [Jettons (TEP-0074)](/standard/tokens/jettons/overview)            |
-| Non-fungible token standard             | ERC-721                                 | [NFT standard (TEP-0062)](/standard/tokens/nft/overview)           |
-| Token metadata                          | ERC-4955 (Not exactly, but close match) | [Token Data Standard (TEP-0064)](/standard/tokens/metadata)        |
-| NFT royalty standard                    | EIP-2981                                | [NFT Royalty Standard (TEP-0066)](/standard/tokens/nft/comparison) |
-| DNS-like registry                       | ENS (EIP-137)                           | [DNS Standard (TEP-0081)](/foundations/web3/overview)              |
-| Soulbound / account-bound token concept | EIP-4973                                | [SBT Standard (TEP-0085)](/standard/tokens/nft/comparison#sbt)     |
-| Wallet connection protocol              | WalletConnect / EIP-1193                | [TonConnect (TEP-0115)](/ecosystem/ton-connect/overview)           |
+| Fungible token standard                 | ERC-20                                  | [Jettons (TEP-0074)](/ecosystem/standard/tokens/jettons/overview)            |
+| Non-fungible token standard             | ERC-721                                 | [NFT standard (TEP-0062)](/ecosystem/standard/tokens/nft/overview)           |
+| Token metadata                          | ERC-4955 (Not exactly, but close match) | [Token Data Standard (TEP-0064)](/ecosystem/standard/tokens/metadata)        |
+| NFT royalty standard                    | EIP-2981                                | [NFT Royalty Standard (TEP-0066)](/ecosystem/standard/tokens/nft/comparison) |
+| DNS-like registry                       | ENS (EIP-137)                           | [DNS Standard (TEP-0081)](/ecosystem/primitives/web3/overview)              |
+| Soulbound / account-bound token concept | EIP-4973                                | [SBT Standard (TEP-0085)](/ecosystem/standard/tokens/nft/comparison#sbt)     |
+| Wallet connection protocol              | WalletConnect / EIP-1193                | [TonConnect (TEP-0115)](/applications/ton-connect/overview)           |

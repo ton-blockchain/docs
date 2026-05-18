@@ -18,11 +18,11 @@ The aim of this text is to provide a detailed description of the Telegram Open N
 
 ## Introduction
 
-This document provides a detailed description of the TON Blockchain, including its precise block format, validity conditions, TON Virtual Machine (TVM) invocation details, smart-contract creation process, and cryptographic signatures. In this respect it is a continuation of the [TON whitepaper](/foundations/whitepapers/ton), so we freely use the terminology introduced in that document.
+This document provides a detailed description of the TON Blockchain, including its precise block format, validity conditions, TON Virtual Machine (TVM) invocation details, smart-contract creation process, and cryptographic signatures. In this respect it is a continuation of the [TON whitepaper](/ecosystem/whitepapers/ton), so we freely use the terminology introduced in that document.
 
 [Chapter 1](#1-overview) provides a general overview of the TON Blockchain and its design principles, with particular attention to the introduction of compatibility and validity conditions and the implementation of message delivery guarantees. More detailed information, such as the TL-B schemes that describe the serialization of all required data structures into trees or collections ("bags") of cells, is provided in subsequent chapters, culminating in a complete description of the TON Blockchain (shardchain and masterchain) block layout in [Chapter 5](#5-block-layout).
 
-A detailed description of the elliptic curve cryptography used for signing blocks and messages, also accessible through TVM primitives, is provided in [Appendix A](#a-elliptic-curve-cryptography). TVM itself is described in a [separate document](/foundations/whitepapers/tvm).
+A detailed description of the elliptic curve cryptography used for signing blocks and messages, also accessible through TVM primitives, is provided in [Appendix A](#a-elliptic-curve-cryptography). TVM itself is described in a [separate document](/ecosystem/whitepapers/tvm).
 
 Some subjects have intentionally been left out of this document. One is the Byzantine Fault Tolerant(BFT) protocol used by the validators to determine the next block of the masterchain or a shardchain; that subject is left for a forthcoming document dedicated to the TON Network. And although this document describes the precise format of TON Blockchain blocks, and discusses the blockchain's validity conditions and serialized invalidity proofs,<a id="ref-fn1"></a><sup>[1](#fn1)</sup> it provides no details about the network protocols used to propagate these blocks, block candidates, collated blocks, and invalidity proofs.
 
@@ -36,11 +36,11 @@ This chapter provides an overview of the main features and design principles of 
 
 ## 1.1   Everything is a bag of cells
 
-All data in the blocks and state of the TON Blockchain is represented as a collection of [cells](/foundations/whitepapers/ton#2-5-global-shardchain-state-%E2%80%9Cbag-of-cells%E2%80%9D-philosophy). Therefore, this chapter begins with a general discussion of cells.
+All data in the blocks and state of the TON Blockchain is represented as a collection of [cells](/ecosystem/whitepapers/ton#2-5-global-shardchain-state-%E2%80%9Cbag-of-cells%E2%80%9D-philosophy). Therefore, this chapter begins with a general discussion of cells.
 
 ### 1.1.1. TVM cells
 
-Recall that the TON Blockchain, as well as the TON Virtual Machine (TVM), represents all permanently stored data as a collection or [bag of so-called cells](/foundations/whitepapers/tvm#3-1-10-“everything-is-a-bag-of-cells”-paradigm). Each cell consists of up to 1023 data bits and up to four references to other cells. Cyclic cell references are not allowed, so the cells are usually organized into *trees of cells*, or rather *directed acyclic graphs (DAGs) of cells*.<a id="ref-fn3"></a><sup>[3](#fn3)</sup> Any value of an abstract algebraic (dependent) data type may be represented (serialized) as a tree of cells. The precise way of representing values of an abstract data type as a tree of cells is expressed by means of a *TL-B scheme*.<a id="ref-fn4"></a><sup>[4](#fn4)</sup>   A more thorough discussion of different kinds of cells may be found in [Generalities on cells](/foundations/whitepapers/tvm#3-1-generalities-on-cells).
+Recall that the TON Blockchain, as well as the TON Virtual Machine (TVM), represents all permanently stored data as a collection or [bag of so-called cells](/ecosystem/whitepapers/tvm#3-1-10-“everything-is-a-bag-of-cells”-paradigm). Each cell consists of up to 1023 data bits and up to four references to other cells. Cyclic cell references are not allowed, so the cells are usually organized into *trees of cells*, or rather *directed acyclic graphs (DAGs) of cells*.<a id="ref-fn3"></a><sup>[3](#fn3)</sup> Any value of an abstract algebraic (dependent) data type may be represented (serialized) as a tree of cells. The precise way of representing values of an abstract data type as a tree of cells is expressed by means of a *TL-B scheme*.<a id="ref-fn4"></a><sup>[4](#fn4)</sup>   A more thorough discussion of different kinds of cells may be found in [Generalities on cells](/ecosystem/whitepapers/tvm#3-1-generalities-on-cells).
 
 ### 1.1.2. Application to TON Blockchain blocks and state
 
@@ -79,7 +79,7 @@ Furthermore, because SHA-256 is tacitly assumed to be collision-resistant, we as
 
 ### 1.1.5. Exotic cells
 
-Apart from the *ordinary* cells (also called *simple* or *data* cells) considered so far, cells of other types, called *exotic cells*, sometimes appear in the actual representations of TON Blockchain blocks and other data structures. Their representation is somewhat different; they are distinguished by having the first [descriptor byte](/foundations/whitepapers/tvm#3-1-4-standard-cell-representation) $d_1\geq 5$.
+Apart from the *ordinary* cells (also called *simple* or *data* cells) considered so far, cells of other types, called *exotic cells*, sometimes appear in the actual representations of TON Blockchain blocks and other data structures. Their representation is somewhat different; they are distinguished by having the first [descriptor byte](/ecosystem/whitepapers/tvm#3-1-4-standard-cell-representation) $d_1\geq 5$.
 
 ### 1.1.6. External reference cells
 
@@ -104,7 +104,7 @@ Signatures are an excellent example of the application of representation hashes.
 
 ### 1.1.10. Higher hashes of a cell
 
-In addition to the transparent and representation hashes of a cell $c$, a sequence of [higher hashes](/foundations/whitepapers/tvm#3-1-6-the-higher-hashes-of-a-cell) $\text{Hash}_i(c)$, $i=1,2,\dots$ may be defined, which eventually stabilizes at $\text{Hash}_\infty(c)$.
+In addition to the transparent and representation hashes of a cell $c$, a sequence of [higher hashes](/ecosystem/whitepapers/tvm#3-1-6-the-higher-hashes-of-a-cell) $\text{Hash}_i(c)$, $i=1,2,\dots$ may be defined, which eventually stabilizes at $\text{Hash}_\infty(c)$.
 
 ---
 
@@ -165,7 +165,7 @@ Originally, each outbound message is included into *OutMsgQueue*; it is removed 
 
 ### 1.2.8. Layout of *InMsgDescr*, *OutMsgDescr* and *OutMsgQueue*
 
-All of the most important non-split shardchain data structures related to messages are organized as *hashmaps* or *dictionaries* (implemented by means of [Patricia trees](/foundations/whitepapers/tvm#3-3-2-hashmaps-as-patricia-trees) serialized into a tree of cells), with the following keys:
+All of the most important non-split shardchain data structures related to messages are organized as *hashmaps* or *dictionaries* (implemented by means of [Patricia trees](/ecosystem/whitepapers/tvm#3-3-2-hashmaps-as-patricia-trees) serialized into a tree of cells), with the following keys:
 
 - The inbound message description *InMsgDescr* uses the 256-bit message hash as a key.
 - The outbound message description *OutMsgDescr* uses the 256-bit message hash as a key.
@@ -182,7 +182,7 @@ Each transaction is described in the block by an instance of the *Transaction* t
 - A reference to exactly one *inbound message* (which must be present in *InMsgDescr* as well) that has been *processed* by the transaction.
 - References to several (maybe zero) *outbound messages* (also present in *OutMsgDescr* and most likely included in *OutMsgQueue*) that have been *generated* by the transaction.
 
-The transaction consists of an invocation of the TVM with the code of the smart contract corresponding to the account in question loaded into the virtual machine, and with the data root cell of the smart contract loaded into the virtual machine's [register c4](/foundations/whitepapers/tvm#1-3-2-list-of-control-registers). The inbound message itself is passed in the stack as an argument to the smart contract's `main()` function, along with some other important data, such as the amount of TON Gram and other defined currencies attached to the message, the sender account address, the current balance of the smart contract, and so on.
+The transaction consists of an invocation of the TVM with the code of the smart contract corresponding to the account in question loaded into the virtual machine, and with the data root cell of the smart contract loaded into the virtual machine's [register c4](/ecosystem/whitepapers/tvm#1-3-2-list-of-control-registers). The inbound message itself is passed in the stack as an argument to the smart contract's `main()` function, along with some other important data, such as the amount of TON Gram and other defined currencies attached to the message, the sender account address, the current balance of the smart contract, and so on.
 
 In addition to the information listed above, a *Transaction* instance also contains the original and final states of the account (i.e., of the smart contract), as well as some of the TVM running statistics (gas consumed, gas price, instructions performed, cells created/destroyed, virtual machine termination code, etc.).
 
@@ -448,7 +448,7 @@ In particular, when we say that a block *must* import in its *InMsgDescr* the me
 
 ## 1.6   Configurable parameters and smart contracts
 
-Recall that the TON Blockchain has several so-called ["configurable parameters"](/foundations/whitepapers/ton#2-1-21-configurable-parameters), which are either certain values or certain smart contracts residing in the masterchain. This section discusses the storage of and access to these configurable parameters.
+Recall that the TON Blockchain has several so-called ["configurable parameters"](/ecosystem/whitepapers/ton#2-1-21-configurable-parameters), which are either certain values or certain smart contracts residing in the masterchain. This section discusses the storage of and access to these configurable parameters.
 
 ### 1.6.1. Examples of configurable parameters
 
@@ -968,13 +968,13 @@ nanograms$_ amount:(VarUInteger 16) = Grams;
 
 If one wants to represent $x$ nanograms, one selects an integer $\ell<16$ such that $x<2^{8\ell}$, and serializes first $\ell$ as an unsigned 4-bit integer, then $x$ itself as an unsigned $8\ell$-bit integer. Notice that four zero bits represent a zero amount of Grams.
 
-Recall that the original total supply of [Grams](/foundations/whitepapers/ton#a-the-ton-coin,-or-the-gram) is fixed at five billion (i.e., $5\cdot10^{18}<2^{63}$ nanograms), and is expected to grow very slowly. Therefore, all the amounts of Grams encountered in practice will fit in unsigned or even signed 64-bit integers. The validators may use the 64-bit integer representation of Grams in their internal computations; however, the serialization of these values the blockchain is another matter.
+Recall that the original total supply of [Grams](/ecosystem/whitepapers/ton#a-the-ton-coin,-or-the-gram) is fixed at five billion (i.e., $5\cdot10^{18}<2^{63}$ nanograms), and is expected to grow very slowly. Therefore, all the amounts of Grams encountered in practice will fit in unsigned or even signed 64-bit integers. The validators may use the 64-bit integer representation of Grams in their internal computations; however, the serialization of these values the blockchain is another matter.
 
 ### 3.1.6. Representing collections of arbitrary currencies
 
 Recall that the TON Blockchain allows its users to define arbitrary cryptocurrencies or tokens apart from the Gram, provided some conditions are met. Such additional cryptocurrencies are identified by 32-bit $\textit{currency\_id}$s. The list of defined additional cryptocurrencies is a part of the blockchain configuration, stored in the masterchain.
 
-When some amounts of one or several such cryptocurrencies need to be represented, a [dictionary](/foundations/whitepapers/tvm#3-3-hashmaps,-or-dictionaries) with 32-bit $\textit{currency\_id}$s as keys and `VarUInteger 32` values is used:
+When some amounts of one or several such cryptocurrencies need to be represented, a [dictionary](/ecosystem/whitepapers/tvm#3-3-hashmaps,-or-dictionaries) with 32-bit $\textit{currency\_id}$s as keys and `VarUInteger 32` values is used:
 
 ```
 extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32)) 
@@ -1139,13 +1139,13 @@ Notice that the forwarding and transit fees collected from an imported message d
 
 Before continuing, let us discuss the serialization of *augmented* hashmaps, or dictionaries.
 
-Augmented hashmaps are key-value storage structures with $n$-bit keys and values of some type $X$, similar to the [ordinary hashmaps](/foundations/whitepapers/tvm#3-3-hashmaps,-or-dictionaries). However, each intermediate node of the Patricia tree representing an *augmented* hashmap is augmented by a value of type $Y$.
+Augmented hashmaps are key-value storage structures with $n$-bit keys and values of some type $X$, similar to the [ordinary hashmaps](/ecosystem/whitepapers/tvm#3-3-hashmaps,-or-dictionaries). However, each intermediate node of the Patricia tree representing an *augmented* hashmap is augmented by a value of type $Y$.
 
 These augmentation values must satisfy certain *aggregation conditions*. Typically, $Y$ is an integer type, and the aggregation condition is that the augmentation value of a fork must equal the sum of the augmentation values of its two children. In general, a *fork evaluation function* $S:Y\times Y\to Y$ or $S:Y\to Y\to Y$ is used instead of the sum. The augmentation value of a leaf is usually computed from the value stored in that leaf by means of a *leaf evaluation function* $L:X\to Y$. The augmentation value of a leaf may be stored explicitly in the leaf along with the value; however, in most cases there is no need for this, because the leaf evaluation function $L$ is very simple.
 
 ### 3.2.6. Serialization of augmented hashmaps
 
-The [serialization of augmented hashmaps](/foundations/whitepapers/tvm#3-3-3-serialization-of-hashmaps) with $n$-bit keys, values of type $X$, and augmentation values of type $Y$ is given by the following TL-B scheme, which is an extension:
+The [serialization of augmented hashmaps](/ecosystem/whitepapers/tvm#3-3-3-serialization-of-hashmaps) with $n$-bit keys, values of type $X$, and augmentation values of type $Y$ is given by the following TL-B scheme, which is an extension:
 
 ```
 ahm_edge#_ {n:#} {X:Type} {Y:Type} {l:#} {m:#} 
@@ -1530,7 +1530,7 @@ transaction$_ account_addr:uint256 lt:uint64 outmsg_cnt:uint15
   old:^X new:^X = MERKLE_UPDATE X;
 ```
 
-The exclamation mark in the TL-B declaration of a `merkle_update` indicates special processing required for such values. In particular, they must be kept in a separate cell, which must be marked as [*exotic*](/foundations/whitepapers/tvm#3-1-7-types-of-exotic-cells) by a bit in its header.
+The exclamation mark in the TL-B declaration of a `merkle_update` indicates special processing required for such values. In particular, they must be kept in a separate cell, which must be marked as [*exotic*](/ecosystem/whitepapers/tvm#3-1-7-types-of-exotic-cells) by a bit in its header.
 
 A full explanation of the serialization of *TransactionDescr*, which describes one transaction according to its [kind](#4-2-4-kinds-of-transactions), can be found in [Transaction descriptions](#4-3-transaction-descriptions).
 
@@ -1557,7 +1557,7 @@ acc_trans$_ account_addr:uint256
 
 The `transactions` dictionary is sum-augmented by a *Grams* value, which aggregates the total fees collected from these transactions.
 
-In addition to this dictionary, an *AccountBlock* contains a [Merkle update](/foundations/whitepapers/tvm#3-1-7-types-of-exotic-cells) of the total state of the account. If an account did not exist before the block, its state is represented by an `account_none`.
+In addition to this dictionary, an *AccountBlock* contains a [Merkle update](/ecosystem/whitepapers/tvm#3-1-7-types-of-exotic-cells) of the total state of the account. If an account did not exist before the block, its state is represented by an `account_none`.
 
 ### 4.2.16. Consistency conditions for *AccountBlocks*
 
@@ -1933,7 +1933,7 @@ A shardchain block must contain:
 - [InMsgDescr](#3-2-8-structure-of-inmsgdescr) and [OutMsgDescr](#3-3-5-structure-of-outmsgdescr), the inbound and outbound message descriptors.
 - *ShardAccountBlocks*, the [collection](#4-2-17-collection-of-all-transactions-in-a-block) of all transactions processed in the block along with all updates of the states of the accounts assigned to the shard. This is the *split* part of the [shardchain block](#1-2-2-split-and-non-split-part-of-the-shardchain-block-and-state).
 - The *value flow*, describing the total value imported from the preceding blocks of the same shardchain and from inbound messages, the total value exported by outbound message, the total fees collected by validators, and the total value remaining in the shard.
-- A [Merkle update](/foundations/whitepapers/tvm#3-1-7-types-of-exotic-cells) of the shardchain state. Such a Merkle update contains the hashes of the initial and final shardchain states with respect to the block, along with all new cells of the final state that have been created while processing the block.<a id="ref-fn37"></a><sup>[37](#fn37)</sup>
+- A [Merkle update](/ecosystem/whitepapers/tvm#3-1-7-types-of-exotic-cells) of the shardchain state. Such a Merkle update contains the hashes of the initial and final shardchain states with respect to the block, along with all new cells of the final state that have been created while processing the block.<a id="ref-fn37"></a><sup>[37](#fn37)</sup>
 
 ### 5.1.3. Common parts of the block layout for all workchains
 
@@ -2193,7 +2193,7 @@ If cells are listed in a topological order, then the verification that there are
 The serialization process of a bag of cells $B$ consisting of $n$ cells can be outlined as follows:
 
 1. List the cells from $B$ in a topological order: $c_0$, $c_1$, ..., $c_{n-1}$. Then $c_0$ is the root cell of $B$.
-2. Choose an integer $s$, such that $n\leq 2^s$. Represent each cell $c_i$ by an integral number of octets in the standard way ([1.1.3](#1-1-3-the-layout-of-a-single-cell) or [4, 3.1.4](/foundations/whitepapers/tvm#3-1-4-standard-cell-representation)), but using unsigned big-endian $s$-bit integer $j$ instead of hash $\text{Hash}(c_j)$ to [represent](#5-3-6-serialization-of-one-cell-from-a-bag-of-cells) internal references to cell $c_j$.
+2. Choose an integer $s$, such that $n\leq 2^s$. Represent each cell $c_i$ by an integral number of octets in the standard way ([1.1.3](#1-1-3-the-layout-of-a-single-cell) or [4, 3.1.4](/ecosystem/whitepapers/tvm#3-1-4-standard-cell-representation)), but using unsigned big-endian $s$-bit integer $j$ instead of hash $\text{Hash}(c_j)$ to [represent](#5-3-6-serialization-of-one-cell-from-a-bag-of-cells) internal references to cell $c_j$.
 3. Concatenate the representations of cells $c_i$ thus obtained in the increasing order of $i$.
 4. Optionally, an index can be constructed that consists of $n+1$ $t$-bit integer entries $L_0$, ..., $L_n$, where $L_i$ is the total length (in octets) of the representations of cells $c_j$ with $j\leq i$, and integer $t\geq0$ is chosen so that $L_n\leq 2^t$.
 5. The serialization of the bag of cells now consists of a magic number indicating the precise format of the serialization, followed by integers $s\geq 0$, $t\geq0$, $n\leq 2^s$, an optional index consisting of $\lceil(n+1)t/8\rceil$ octets, and $L_n$ octets with the cell representations.
@@ -2205,17 +2205,17 @@ If an index is included, any cell $c_i$ in the serialized bag of cells may be ea
 
 More precisely, each individual cell $c=c_i$ is serialized as follows, provided $s$ is a multiple of eight (usually $s=8$, $16$, $24$, or $32$):
 
-1. Two descriptor bytes $d_1$ and $d_2$ are computed similarly to [Standard cell representation](/foundations/whitepapers/tvm#3-1-4-standard-cell-representation) by setting $d_1=r+8s+16h+32l$ and $d_2=\lfloor b/8\rfloor+\lceil b/8\rceil$, where:
+1. Two descriptor bytes $d_1$ and $d_2$ are computed similarly to [Standard cell representation](/ecosystem/whitepapers/tvm#3-1-4-standard-cell-representation) by setting $d_1=r+8s+16h+32l$ and $d_2=\lfloor b/8\rfloor+\lceil b/8\rceil$, where:
    - $0\leq r\leq 4$ is the number of cell references present in cell $c$; if $c$ is absent from the bag of cells being serialized and is represented by its hashes only, then $r=7$.<a id="ref-fn38"></a><sup>[38](#fn38)</sup>
    - $0\leq b\leq 1023$ is the number of data bits in cell $c$.
-   - $0\leq l\leq 3$ is the [level of cell](/foundations/whitepapers/tvm#3-1-3-the-level-of-a-cell) $c$.
+   - $0\leq l\leq 3$ is the [level of cell](/ecosystem/whitepapers/tvm#3-1-3-the-level-of-a-cell) $c$.
    - $s=1$ for exotic cells and $s=0$ for ordinary cells.
    - $h=1$ if the cell's hashes are explicitly included into the serialization; otherwise, $h=0$. (When $r=7$, we must always have $h=1$.)
 
 For absent cells (i.e., external references), only $d_1$ is present, always equal to $23+32l$.
 
 2. Two bytes $d_1$ and $d_2$ (if $r<7$) or one byte $d_1$ (if $r=7$) begin the serialization of cell $c$.
-3. If $h=1$, the serialization is continued by $l+1$ 32-byte [higher hashes](/foundations/whitepapers/tvm#3-1-6-the-higher-hashes-of-a-cell) of $c$: $\text{Hash}_1(c)$, ..., $\text{Hash}_{l+1}(c)=\text{Hash}_\infty(c)$.
+3. If $h=1$, the serialization is continued by $l+1$ 32-byte [higher hashes](/ecosystem/whitepapers/tvm#3-1-6-the-higher-hashes-of-a-cell) of $c$: $\text{Hash}_1(c)$, ..., $\text{Hash}_{l+1}(c)=\text{Hash}_\infty(c)$.
 4. After that, $\lceil b/8\rceil$ data bytes are serialized, by splitting $b$ data bits into 8-bit groups and interpreting each group as a big-endian integer in the range $0\ldots255$. If $b$ is not divisible by $8$, then the data bits are first augmented by one binary $1$ and up to six binary $0$, so as to make the number of data bits divisible by eight.<a id="ref-fn39"></a><sup>[39](#fn39)</sup>
 5. Finally, $r$ cell references to cells $c_{j_1}$, ..., $c_{j_r}$ are encoded by means of $r$ $s$-bit big-endian integers $j_1$, ..., $j_r$.<a id="ref-fn40"></a><sup>[40](#fn40)</sup>
 

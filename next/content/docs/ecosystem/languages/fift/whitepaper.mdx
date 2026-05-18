@@ -8,7 +8,7 @@ noindex: "true"
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
 
   Fift pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -1648,7 +1648,7 @@ For example, one can create an instance of TVM running some simple code as follo
 2 3 9 x{1221} runvmcode .s
 ```
 
-The TVM stack is initialized by three integers 2, 3, and 9 (in this order; 9 is the topmost entry), and then the _Slice_ `x{1221}` containing 16 data bits and no references is transformed into a TVM continuation and executed. By consulting the [TVM instructions table](/tvm/instructions), we see that `x{12}` is the code of the TVM instruction `XCHG s1 s2`, and that `x{21}` is the code of the TVM instruction `OVER`. The latter is not to be confused with the Fift primitive `over`, which incidentally has the same effect on the stack, but applies to the Fift stack, not the TVM one.
+The TVM stack is initialized by three integers 2, 3, and 9 (in this order; 9 is the topmost entry), and then the _Slice_ `x{1221}` containing 16 data bits and no references is transformed into a TVM continuation and executed. By consulting the [TVM instructions table](/ecosystem/tvm/instructions), we see that `x{12}` is the code of the TVM instruction `XCHG s1 s2`, and that `x{21}` is the code of the TVM instruction `OVER`. The latter is not to be confused with the Fift primitive `over`, which incidentally has the same effect on the stack, but applies to the Fift stack, not the TVM one.
 
 The result of the above execution is:
 

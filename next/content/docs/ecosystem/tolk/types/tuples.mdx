@@ -5,7 +5,7 @@ sidebarTitle: "Arrays"
 description: ""
 ---
 
-In [TVM](/tvm/overview), a tuple is a dynamic container that stores from 0 to 255 elements in a [single stack slot](/languages/tolk/types/overall-tvm-stack). Tolk provides several types built on top of TVM tuples:
+In [TVM](/ecosystem/tvm/overview), a tuple is a dynamic container that stores from 0 to 255 elements in a [single stack slot](/ecosystem/tolk/types/overall-tvm-stack). Tolk provides several types built on top of TVM tuples:
 
 - `array<T>` — a dynamically sized array of elements of type `T`.
 - `[T1, T2, ...]` — a shaped tuple with a fixed number of elements of known types.
@@ -14,7 +14,7 @@ In [TVM](/tvm/overview), a tuple is a dynamic container that stores from 0 to 25
 <Aside
   type="caution"
 >
-  In many general-purpose languages, syntax `[A, B, C, ...]` is used for array or list literals, while syntax `(A, B, C, ...)` is used for tuples. However, in TON, there are no traditional arrays or lists. The `[A, B, C, ...]` syntax creates arrays or shaped tuples, while `(A, B, C, ...)` is used by [tensors](/languages/tolk/types/tensors): a distinct type that represents ordered collections of values that occupy multiple TVM stack entries.
+  In many general-purpose languages, syntax `[A, B, C, ...]` is used for array or list literals, while syntax `(A, B, C, ...)` is used for tuples. However, in TON, there are no traditional arrays or lists. The `[A, B, C, ...]` syntax creates arrays or shaped tuples, while `(A, B, C, ...)` is used by [tensors](/ecosystem/tolk/types/tensors): a distinct type that represents ordered collections of values that occupy multiple TVM stack entries.
 
   For example, `array<int>` is a single stack entry containing multiple integers. In contrast, a tensor `(int, int, int)` signifies three separate integers that occupy individual stack entries or are serialized sequentially.
 </Aside>
@@ -94,7 +94,7 @@ nums.size();   // 2 (pop removed the last element)
 [1, 2, 3].last();  // 3
 ```
 
-Additional methods such as `array.set` and others are [available in the standard library](/languages/tolk/features/standard-library#arrays).
+Additional methods such as `array.set` and others are [available in the standard library](/ecosystem/tolk/features/standard-library#arrays).
 
 ### `T` can be any type
 
@@ -300,7 +300,7 @@ Several helper methods are available in the standard library, such as `array.cal
 val depth = list.calculateSize();
 ```
 
-If there is a clear upper bound on the number of elements, prefer [arrays](/languages/tolk/types/tuples#arrays) or [maps](/languages/tolk/types/maps). Otherwise, consider [contract sharding](/contract-dev/contract-sharding).
+If there is a clear upper bound on the number of elements, prefer [arrays](/ecosystem/tolk/types/tuples#arrays) or [maps](/ecosystem/tolk/types/maps). Otherwise, consider [contract sharding](/ecosystem/contract-dev/techniques/contract-sharding).
 
 ## Conversion between arrays and composites
 
@@ -326,6 +326,6 @@ fun demo(p: Point3d) {
 - Shaped tuples `[T1, T2, ...]` also occupy a single TVM `TUPLE` slot.
 - `unknown` occupies a single stack slot.
 
-Arrays can be [serialized to cells](/languages/tolk/types/overall-serialization) when `T` is serializable. The binary format uses snake references: a `uint8` length followed by chained cell references containing the elements.
+Arrays can be [serialized to cells](/ecosystem/tolk/types/overall-serialization) when `T` is serializable. The binary format uses snake references: a `uint8` length followed by chained cell references containing the elements.
 
-Raw tuples are not serializable to cells, because `unknown` is unserializable. But they can be returned from [get methods](/tvm/get-method#get-methods), since contract getters operate directly on the stack.
+Raw tuples are not serializable to cells, because `unknown` is unserializable. But they can be returned from [get methods](/ecosystem/tvm/get-method#get-methods), since contract getters operate directly on the stack.

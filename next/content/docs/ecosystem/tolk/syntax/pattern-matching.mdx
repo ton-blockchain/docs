@@ -8,7 +8,7 @@ Tolk supports a `match` expression for pattern matching. It works both on types 
 
 ## `match` for union types
 
-Pattern matching on union types is used in [message handling](/languages/tolk/features/message-handling).
+Pattern matching on union types is used in [message handling](/ecosystem/tolk/features/message-handling).
 
 ```tolk
 type IncomingMessage =
@@ -55,7 +55,7 @@ fun errDemo(v: int | slice | Point) {
 }
 ```
 
-`else` is not allowed for unions, but is permitted for a [`lazy` match](/languages/tolk/features/lazy-loading#lazy-matching).
+`else` is not allowed for unions, but is permitted for a [`lazy` match](/ecosystem/tolk/features/lazy-loading#lazy-matching).
 
 ## Syntax details
 
@@ -146,7 +146,7 @@ All comparable types are supported, including addresses and enums.
 
 ## `match` for enums
 
-Pattern matching on [enums](/languages/tolk/types/enums) requires exhaustive coverage of all cases:
+Pattern matching on [enums](/ecosystem/tolk/types/enums) requires exhaustive coverage of all cases:
 
 ```tolk
 match (someColor) {

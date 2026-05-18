@@ -4,15 +4,15 @@ title: "Send message"
 description: ""
 ---
 
-Sending a message is the most frequent action that a smart contract performs during the [action phase](/foundations/phases#action-phase). It can get into the [out action list](https://github.com/ton-blockchain/ton/blob/5c0349110bb03dd3a241689f2ab334ae1a554ffb/crypto/block/block.tlb#L411) by:
+Sending a message is the most frequent action that a smart contract performs during the [action phase](/ecosystem/primitives/phases#action-phase). It can get into the [out action list](https://github.com/ton-blockchain/ton/blob/5c0349110bb03dd3a241689f2ab334ae1a554ffb/crypto/block/block.tlb#L411) by:
 
-- The [`SENDRAWMSG`](/tvm/instructions#fb00-sendrawms) instruction.
-- The [`SENDMSG`](/tvm/instructions#fb08-sendmsg) instruction.
-- The [`POPCTR`](/tvm/instructions#ed5-popctr) instruction.
+- The [`SENDRAWMSG`](/ecosystem/tvm/instructions#fb00-sendrawms) instruction.
+- The [`SENDMSG`](/ecosystem/tvm/instructions#fb08-sendmsg) instruction.
+- The [`POPCTR`](/ecosystem/tvm/instructions#ed5-popctr) instruction.
 
 The sending message action consists of:
 
-- an 8-bit bitmask [`mode`](/foundations/messages/modes) specifying the way of sending;
+- an 8-bit bitmask [`mode`](/ecosystem/primitives/messages/modes) specifying the way of sending;
 - a cell containing the message to send, which is serialized as `MessageRelaxed` type.
 
 ## Message normalization
@@ -29,7 +29,7 @@ During the process of sending, the original message is normalized. In the final 
 As a result, when composing a message cell, it is acceptable to:
 
 - fill the `ihr_disabled`, `bounced`, `fwd_fee`, `created_at`, and `created_lt` fields with any values;
-- fill the `src` field with [`addr_none`](/foundations/addresses/overview#external-addresses).
+- fill the `src` field with [`addr_none`](/ecosystem/primitives/addresses/overview#external-addresses).
 
 If the message cell does not fit into the maximum allowed size (1023 bits) after the normalization, the process is repeated with different ways to pack it:
 

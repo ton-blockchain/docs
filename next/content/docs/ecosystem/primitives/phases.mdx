@@ -107,7 +107,7 @@ To start, note that the compute phase can be **skipped** entirely. In that case,
 | Skip reason       | Description                                                                                                                                                                                                                                         |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cskip_no_state`  | The smart contract has no [state](/foundations/status#status-variety) and, therefore, no code, so execution is not possible.                                                                                                                        |
-| `cskip_bad_state` | Raised in two cases: when the `fixed_prefix_length` [field has an invalid value][fixed_prefix_length] or when the [`StateInit`](/foundations/messages/deploy) provided in the incoming message [does not match account’s address][account_address]. |
+| `cskip_bad_state` | Raised in two cases: when the `fixed_prefix_length` [field has an invalid value][fixed_prefix_length] or when the [`StateInit`](/ecosystem/primitives/messages/deploy) provided in the incoming message [does not match account’s address][account_address]. |
 | `cskip_no_gas`    | The incoming message did not provide enough TON to cover the gas required to execute the smart contract.                                                                                                                                            |
 | `cskip_suspended` | The address is suspended; execution is disabled (used to limit early miner accounts).                                                                                                                                                               |
 
@@ -119,7 +119,7 @@ To start, note that the compute phase can be **skipped** entirely. In that case,
   title="Bad state"
 >
   The `fixed_prefix_length` field can be used to specify a fixed prefix for the account address, ensuring that the account resides in a specific shard.
-  This topic is outside the scope of this guide, but more information is available in [Shards page](/foundations/shards).
+  This topic is outside the scope of this guide, but more information is available in [Shards page](/ecosystem/primitives/shards).
 </Aside>
 
 ## Action phase
@@ -191,7 +191,7 @@ The `tr_phase_bounce_negfunds` type is not used in the current version of the bl
 In this phase, `msg_fees` and `fwd_fees` are calculated from the `total_fwd_fees`:\
 approximately $\frac{1}{3}$ goes to `msg_fees` and $\frac{2}{3}$ go to `fwd_fees`.
 
-> See [Fees → Forward fee](/foundations/fees#forward-fee) for more info.
+> See [Fees → Forward fee](/ecosystem/primitives/fees#forward-fee) for more info.
 
 ### Key points
 

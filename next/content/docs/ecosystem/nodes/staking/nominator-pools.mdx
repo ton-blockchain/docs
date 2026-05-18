@@ -74,14 +74,14 @@ description: ""
 
 Reward data can be obtained using the [TON Center nominator pools API](https://toncenter.com/api/smc-index/):
 
-- [getPoolBookings](/ecosystem/api/toncenter/smc-index/get-pool-bookings-method) – get all the bookings, including debits and credits, in a specified pool.
-- [getNominatorBookings](/ecosystem/api/toncenter/smc-index/get-nominator-bookings-method) – get nominator bookings, including debits and credits, in a specified pool.
-- [getNominatorEarnings](/ecosystem/api/toncenter/smc-index/get-nominator-earnings-method) – get nominator income in a specified pool, including stake amounts on each time point.
-- [getNominator](/ecosystem/api/toncenter/smc-index/get-nominator-method) – get the nominator's balances across all pools in which the nominator participates.
-- [getPool](/ecosystem/api/toncenter/smc-index/get-pool-method) – get pool data, including all nominators.
+- [getPoolBookings](/applications/api/toncenter/smc-index/get-pool-bookings-method) – get all the bookings, including debits and credits, in a specified pool.
+- [getNominatorBookings](/applications/api/toncenter/smc-index/get-nominator-bookings-method) – get nominator bookings, including debits and credits, in a specified pool.
+- [getNominatorEarnings](/applications/api/toncenter/smc-index/get-nominator-earnings-method) – get nominator income in a specified pool, including stake amounts on each time point.
+- [getNominator](/applications/api/toncenter/smc-index/get-nominator-method) – get the nominator's balances across all pools in which the nominator participates.
+- [getPool](/applications/api/toncenter/smc-index/get-pool-method) – get pool data, including all nominators.
 
 ## Validator setup
 
-- Use [MyTonCtrl nominator pools](/ecosystem/node/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode) for standard multi-nominator operation.
+- Use [MyTonCtrl nominator pools](/ecosystem/nodes/cpp/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode) for standard multi-nominator operation.
 - Pools can technically be configured with a minimum stake of 100 TON; however, 10,000 TON is the tested and recommended value.
 - Validators can deploy pools manually using the [nominator pool contract](https://github.com/ton-blockchain/nominator-pool) without MyTonCtrl.

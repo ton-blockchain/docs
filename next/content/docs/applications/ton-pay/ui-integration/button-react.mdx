@@ -266,7 +266,7 @@ All props are optional except `handlePay`.
 
 ### Button variants
 
-[Use `useTonPay`](/ecosystem/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
+[Use `useTonPay`](/applications/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
 
 <CodeGroup>
   ```tsx Long variant (default)
@@ -288,7 +288,7 @@ All props are optional except `handlePay`.
 
 ### Presets
 
-[Use `useTonPay`](/ecosystem/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
+[Use `useTonPay`](/applications/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
 
 <CodeGroup>
   ```tsx Default preset
@@ -310,7 +310,7 @@ All props are optional except `handlePay`.
 
 ### Custom styling
 
-[Use `useTonPay`](/ecosystem/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
+[Use `useTonPay`](/applications/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
 
 ```tsx
 <TonPayButton
@@ -328,7 +328,7 @@ CSS gradients can be used in `bgColor`. For example: `"linear-gradient(135deg, #
 
 ### Button states
 
-[Use `useTonPay`](/ecosystem/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
+[Use `useTonPay`](/applications/ton-pay/ui-integration/button-react#option-1:-using-usetonpay-hook-recommended) for a complete example.
 
 ```tsx
 <TonPayButton
@@ -588,5 +588,5 @@ bun test:button-react
 - Set `isLoading={true}` during payment processing to prevent double submissions and provide visual feedback.
 - Verify cart totals, user input, and business rules before calling the payment handler.
 - Use `chain: "testnet"` during development. Switch to `"mainnet"` only after validation.
-- Save `reference` and `bodyBase64Hash` to track payment status using [webhooks](/ecosystem/ton-pay/webhooks).
+- Save `reference` and `bodyBase64Hash` to track payment status using [webhooks](/applications/ton-pay/webhooks).
 - After successful payment, show a confirmation message, redirect to a success page, or update the UI.

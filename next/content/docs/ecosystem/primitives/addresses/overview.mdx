@@ -52,7 +52,7 @@ Both use **256-bit addresses** for accounts.
 
 ### Account ID
 
-In the currently used workchains, an account ID is defined as the result of applying a hash function to a [`StateInit`](/foundations/messages/deploy) structure that stores initial code and data of a smart contract.
+In the currently used workchains, an account ID is defined as the result of applying a hash function to a [`StateInit`](/ecosystem/primitives/messages/deploy) structure that stores initial code and data of a smart contract.
 
 ```
 account_id = hash(initial_code, initial_data)
@@ -64,11 +64,11 @@ So, for each pair (`initial_code`, `initial_data`), there exists a unique accoun
   Although the deployed smart contract code and data may change during its lifetime, the address where it's deployed does not change.
 </Aside>
 
-Additionally, a 64-bit prefix of an account ID is crucial for the sharding process and delivering messages from one shard to another during [Hypercube Routing](/foundations/shards).
+Additionally, a 64-bit prefix of an account ID is crucial for the sharding process and delivering messages from one shard to another during [Hypercube Routing](/ecosystem/primitives/shards).
 
 ## External addresses
 
-External addresses are closely related to [External messages](/foundations/messages/overview): ones that originate outside the blockchain or are intended for actors outside it. These messages enable interaction between smart contracts and the external world.
+External addresses are closely related to [External messages](/ecosystem/primitives/messages/overview): ones that originate outside the blockchain or are intended for actors outside it. These messages enable interaction between smart contracts and the external world.
 
 Actually, external addresses are ignored by the TON Blockchain software altogether, but may be used by external software for its own purposes.
 
@@ -97,5 +97,5 @@ addr_extern$01 len:(## 9) external_address:(bits len)
 
 For more technical details, refer to:
 
-- [Internal address formats](/foundations/addresses/formats): encoding rules and practical examples.
+- [Internal address formats](/ecosystem/primitives/addresses/formats): encoding rules and practical examples.
 - [Account status](/foundations/status): how addresses evolve (active, frozen, etc.).

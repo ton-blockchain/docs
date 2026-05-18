@@ -6,7 +6,7 @@ description: ""
 
 Tolk supports enums, similar to TypeScript and C++ enums.
 
-In the [TVM](/tvm/overview), all enums are represented as integers. At the compiler level, an enum is a distinct type.
+In the [TVM](/ecosystem/tvm/overview), all enums are represented as integers. At the compiler level, an enum is a distinct type.
 
 ```tolk
 // will be 0 1 2
@@ -71,7 +71,7 @@ match (g.to) {
 
 ## Exhaustive pattern matching
 
-[`match`](/languages/tolk/syntax/pattern-matching) on enums requires coverage of all cases:
+[`match`](/ecosystem/tolk/syntax/pattern-matching) on enums requires coverage of all cases:
 
 ```tolk
 match (someColor) {
@@ -107,7 +107,7 @@ At the TVM level, every enum is represented as `int`. Casting between the enum a
 <Aside
   type="caution"
 >
-  Operator `as` can produce invalid values, for example `100 as Color`. In this case, operator `==` returns `false`, and an exhaustive `match` throws exception [5](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
+  Operator `as` can produce invalid values, for example `100 as Color`. In this case, operator `==` returns `false`, and an exhaustive `match` throws exception [5](/ecosystem/tvm/exit-codes#5%3A-integer-out-of-expected-range).
 </Aside>
 
 During deserialization with `fromCell()`, the compiler validates that encoded integers correspond to valid enum values.
@@ -140,7 +140,7 @@ fun validate(id: int) {
 
 ## Stack layout and serialization
 
-Every enum is [backed by TVM](/languages/tolk/types/overall-tvm-stack) `INT` and [serialized](/languages/tolk/types/overall-serialization) as `(u)intN`, where `N` is:
+Every enum is [backed by TVM](/ecosystem/tolk/types/overall-tvm-stack) `INT` and [serialized](/ecosystem/tolk/types/overall-serialization) as `(u)intN`, where `N` is:
 
 - specified manually, for example: `enum Role: int8 { ... }`;
 - or calculated automatically to fit all values.

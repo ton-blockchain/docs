@@ -13,7 +13,7 @@ WalletConnect support ships with `@tonconnect/sdk`. Enabling it adds a `WalletCo
 
 Add WalletConnect support when an integrator already requires WalletConnect and cannot install a TON Connect-native wallet — typically institutional custody and treasury platforms.
 
-For everything else, prefer native TON Connect: see [Build a dApp with React](/ecosystem/ton-connect/get-started#build-a-dapp-with-react).
+For everything else, prefer native TON Connect: see [Build a dApp with React](/applications/ton-connect/get-started#build-a-dapp-with-react).
 
 WalletConnect is not available inside Telegram Mini Apps. The wallet picker hides the WalletConnect entry when the dApp runs in TMA, in line with the [Telegram blockchain guidelines](https://core.telegram.org/bots/blockchain-guidelines#ton-connect). Use TON Connect there.
 
@@ -65,9 +65,9 @@ Once initialised, a `WalletConnect` entry appears at the bottom of the All Walle
 
 After connection, the dApp uses the same `TonConnect` or `TonConnectUI` API regardless of which transport carries the session:
 
-- [Send a transaction](/ecosystem/ton-connect/how-to/send-transaction) — maps to WalletConnect's `ton_sendMessage` method.
-- [Sign data](/ecosystem/ton-connect/how-to/sign-data) — maps to WalletConnect's `ton_signData` method.
-- [Disconnect](/ecosystem/ton-connect/how-to/disconnect).
+- [Send a transaction](/applications/ton-connect/how-to/send-transaction) — maps to WalletConnect's `ton_sendMessage` method.
+- [Sign data](/applications/ton-connect/how-to/sign-data) — maps to WalletConnect's `ton_signData` method.
+- [Disconnect](/applications/ton-connect/how-to/disconnect).
 
 Methods outside this set fall through to a `Not implemented.` response from the WalletConnect provider.
 
@@ -77,5 +77,5 @@ Keep TON Connect as the primary connection path. Enable WalletConnect support on
 
 ## See also
 
-- [Build a dApp with React](/ecosystem/ton-connect/get-started#build-a-dapp-with-react)
+- [Build a dApp with React](/applications/ton-connect/get-started#build-a-dapp-with-react)
 - [Reown AppKit documentation](https://docs.reown.com/appkit/overview)

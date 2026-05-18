@@ -22,7 +22,7 @@ A provider is not a wallet and not a connector. The wallet still signs every tra
 
 ## Swaps
 
-A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Swaps](/ecosystem/appkit/howto/swaps) for the full quote-then-build flow.
+A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Swaps](/applications/appkit/howto/swaps) for the full quote-then-build flow.
 
 ## Staking
 
@@ -30,7 +30,7 @@ A staking provider quotes a stake or unstake intent for a specific pool or proto
 
 Liquid-staking positions may appear in the wallet as derivative balances, such as tsTON. AppKit exposes pool metadata and APY as provider-supplied **display data**, not a guarantee of future yield or redemption timing.
 
-Unstake mechanics — instant, delayed, or round-end — are provider-specific. The bundled staking provider is Tonstakers. See [Staking](/ecosystem/appkit/howto/staking) for the full flow.
+Unstake mechanics — instant, delayed, or round-end — are provider-specific. The bundled staking provider is Tonstakers. See [Staking](/applications/appkit/howto/staking) for the full flow.
 
 ## How they are registered
 
@@ -101,7 +101,7 @@ Apps that integrate their own DEX or staking backend implement the same provider
 
 ## Related pages
 
-- [AppKit](/ecosystem/appkit/howto/appkit)
-- [Swaps](/ecosystem/appkit/howto/swaps)
-- [Staking](/ecosystem/appkit/howto/staking)
-- [Streaming](/ecosystem/appkit/howto/streaming)
+- [AppKit](/applications/appkit/howto/appkit)
+- [Swaps](/applications/appkit/howto/swaps)
+- [Staking](/applications/appkit/howto/staking)
+- [Streaming](/applications/appkit/howto/streaming)

@@ -78,15 +78,15 @@ _
 = StateInitWithLibs;
 ```
 
-The process of transforming the relaxed version of the structure into the strict version occurs in the action phase and is performed by the handler of [send message actions](/foundations/actions/send). This action rewrites [some fields](/foundations/actions/send#message-normalization) of the structure with correct values and validates the `StateInit` field against the `StateInitWithLibs` type.
+The process of transforming the relaxed version of the structure into the strict version occurs in the action phase and is performed by the handler of [send message actions](/ecosystem/primitives/actions/send). This action rewrites [some fields](/ecosystem/primitives/actions/send#message-normalization) of the structure with correct values and validates the `StateInit` field against the `StateInitWithLibs` type.
 
 ## Deploy
 
-It is possible to simultaneously send both the payload in the `body` field and the `StateInit` in the `init` field to [initialized the contract](/foundations/messages/deploy) and process the payload in the same transaction.
+It is possible to simultaneously send both the payload in the `body` field and the `StateInit` in the `init` field to [initialized the contract](/ecosystem/primitives/messages/deploy) and process the payload in the same transaction.
 
 ## Message value
 
-The message may set `value` field that tells to transfer Toncoin and extra-currency to the recipient of the message. The actually transferred amount depends on the value of this field and a [send mode](/foundations/messages/modes).
+The message may set `value` field that tells to transfer Toncoin and extra-currency to the recipient of the message. The actually transferred amount depends on the value of this field and a [send mode](/ecosystem/primitives/messages/modes).
 
 ## Bounces
 
@@ -95,8 +95,8 @@ A bounce message is used to inform the sender that handling of their message fai
 - there is enough Toncoin to send it left from handling the failed message,
 - and the message is bounceable,
 - and when either
-  - a contract throws an error from the [compute phase](/foundations/phases#compute-phase) during message processing, and the state was not committed by [`COMMIT`](/tvm/instructions#f80f-commit) TVM instruction,
-  - or an action fails in the [action phase](/foundations/phases#action-phase) with the `+16` flag enabled: [`SendBounceIfActionFail`](/foundations/messages/modes) in case of message sends or [`ReserveBounceIfActionFail`](/foundations/actions/reserve#modes) in case of reservations.
+  - a contract throws an error from the [compute phase](/ecosystem/primitives/phases#compute-phase) during message processing, and the state was not committed by [`COMMIT`](/ecosystem/tvm/instructions#f80f-commit) TVM instruction,
+  - or an action fails in the [action phase](/ecosystem/primitives/phases#action-phase) with the `+16` flag enabled: [`SendBounceIfActionFail`](/ecosystem/primitives/messages/modes) in case of message sends or [`ReserveBounceIfActionFail`](/ecosystem/primitives/actions/reserve#modes) in case of reservations.
 
 ### Default bounce
 

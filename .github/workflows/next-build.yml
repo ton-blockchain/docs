@@ -67,6 +67,14 @@ jobs:
         working-directory: next
         run: npm run lint:links:internal
 
+      - name: Validate links
+        working-directory: next
+        run: npm run lint:links:validate
+
+      - name: Validate SEO continuity (redirects, chains, sitemap, canonical)
+        working-directory: next
+        run: npm run lint:seo
+
       - name: Next build
         working-directory: next
         run: npm run build

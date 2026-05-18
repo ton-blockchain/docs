@@ -5,7 +5,7 @@ sidebarTitle: "Deriving"
 description: ""
 ---
 
-It is often useful to derive an [address](/foundations/addresses/overview) of an account to interact with it, either on-chain or off-chain. The general algorithm for address derivation is to compose the [`StateInit`](/foundations/messages/deploy) of an account, calculate its hash, and build the address in the desired [format](/foundations/addresses/overview#internal-addresses).
+It is often useful to derive an [address](/ecosystem/primitives/addresses/overview) of an account to interact with it, either on-chain or off-chain. The general algorithm for address derivation is to compose the [`StateInit`](/ecosystem/primitives/messages/deploy) of an account, calculate its hash, and build the address in the desired [format](/ecosystem/primitives/addresses/overview#internal-addresses).
 
 The `StateInit` is distinct from the account's current state. It is the initial state, which an account stores at deployment. After that, state can be changed by the smart contract itself — for example, by updating the data. Since the address depends on `StateInit`, to derive the address it is necessary to compose the initial state rather than the current one. In practice, address derivation is mostly about composing the correct `StateInit`.
 
@@ -13,7 +13,7 @@ The `StateInit` is distinct from the account's current state. It is the initial 
 
 ### On-chain — simple
 
-If it's known how to compose the contract's initial `code` and `data`, it's enough to follow the general algorithm mentioned above as is. Code and data form a `StateInit`, and the [workchain](/foundations/addresses/overview#workchain-id) is usually hardcoded. Below is one of the most common patterns when `code` is a constant cell known in advance and `data` is composed at runtime.
+If it's known how to compose the contract's initial `code` and `data`, it's enough to follow the general algorithm mentioned above as is. Code and data form a `StateInit`, and the [workchain](/ecosystem/primitives/addresses/overview#workchain-id) is usually hardcoded. Below is one of the most common patterns when `code` is a constant cell known in advance and `data` is composed at runtime.
 
 ```tolk title="Tolk" expandable
 // Compose an address builder
@@ -55,13 +55,13 @@ fun main() {
 }
 ```
 
-The `b5ee9c724101010100020000004cacb9cd` in the `getCode` function is a placeholder for a hardcoded code cell in [BoC](/foundations/serialization/boc) format known at compile-time. The `getData` function is a placeholder for building a data cell, and the actual implementation depends on the storage layout of the target smart contract. Usually, data is composed in a parametrized way, but this does not alter the rest of the logic — only the `getData` function.
+The `b5ee9c724101010100020000004cacb9cd` in the `getCode` function is a placeholder for a hardcoded code cell in [BoC](/ecosystem/primitives/serialization/boc) format known at compile-time. The `getData` function is a placeholder for building a data cell, and the actual implementation depends on the storage layout of the target smart contract. Usually, data is composed in a parametrized way, but this does not alter the rest of the logic — only the `getData` function.
 
-The `calculateAddress` function uses the [`AutoDeployAddress`](/languages/tolk/features/message-sending) built-in that handles all the underlying `StateInit` and address composing logic. In the Tolk stdlib, the code and data pair is represented by `ContractState`. The `buildAddress` method returns a builder containing the resulting address, which can be cheaply stored in another builder — the most common use case.
+The `calculateAddress` function uses the [`AutoDeployAddress`](/ecosystem/tolk/features/message-sending) built-in that handles all the underlying `StateInit` and address composing logic. In the Tolk stdlib, the code and data pair is represented by `ContractState`. The `buildAddress` method returns a builder containing the resulting address, which can be cheaply stored in another builder — the most common use case.
 
 ### On-chain — contract sharding
 
-When working with the [contract sharding](/contract-dev/contract-sharding) pattern, child contracts usually have a `StateInit` that depends on the parent. In the example below, the dependence is implemented by adding the parent address to the child `StateInit`. The same logic from the [simple on-chain](#on-chain-simple) case works here, and only `getData` has to be changed.
+When working with the [contract sharding](/ecosystem/contract-dev/techniques/contract-sharding) pattern, child contracts usually have a `StateInit` that depends on the parent. In the example below, the dependence is implemented by adding the parent address to the child `StateInit`. The same logic from the [simple on-chain](#on-chain-simple) case works here, and only `getData` has to be changed.
 
 ```tolk title="Tolk" expandable
 // Compose an address builder using the AutoDeployAddress built-in.
@@ -104,7 +104,7 @@ Child contracts also often have some kind of index or additional data that they 
 
 ### On-chain — vanity
 
-A [vanity contract](/contract-dev/vanity) allows _customizing_ the address of a smart contract that is being deployed. It does that by making its own `StateInit` depend on some salt that is randomly generated many times until a desired address is found.
+A [vanity contract](/ecosystem/contract-dev/techniques/vanity) allows _customizing_ the address of a smart contract that is being deployed. It does that by making its own `StateInit` depend on some salt that is randomly generated many times until a desired address is found.
 
 In this case, there is no real correlation between the data the contract holds and its final address. So there is no way to actually _derive_ the address. The only option left is to define a constant with the actual address that is obtained in advance.
 
@@ -123,9 +123,9 @@ fun main() {
 
 ### On-chain — prefixed
 
-The `toShard` field in `AutoDeployAddress` allows smart contracts to have a specific prefix in the address for the purpose of deploying it to a certain shardchain. This can be useful for cross-contract latency optimization, as in [Jetton 2.0](/standard/tokens/jettons/comparison).
+The `toShard` field in `AutoDeployAddress` allows smart contracts to have a specific prefix in the address for the purpose of deploying it to a certain shardchain. This can be useful for cross-contract latency optimization, as in [Jetton 2.0](/ecosystem/standard/tokens/jettons/comparison).
 
-This may seem similar to the [vanity](#on-chain-vanity) case, but it serves a different purpose. A vanity generator finds such a `StateInit` that an address composed from its hash will have certain letters in a prefix or suffix. The `toShard` does not alter the whole address and only tells the blockchain to replace the first few bits of the address to which the contract is being deployed. This optimization is used in [Jetton 2.0](/standard/tokens/jettons/comparison).
+This may seem similar to the [vanity](#on-chain-vanity) case, but it serves a different purpose. A vanity generator finds such a `StateInit` that an address composed from its hash will have certain letters in a prefix or suffix. The `toShard` does not alter the whole address and only tells the blockchain to replace the first few bits of the address to which the contract is being deployed. This optimization is used in [Jetton 2.0](/ecosystem/standard/tokens/jettons/comparison).
 
 The logic here is more similar to the [simple](#on-chain-simple) case. The only difference is the additional `toShard` field.
 

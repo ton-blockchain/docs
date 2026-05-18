@@ -5,9 +5,9 @@ sidebarTitle: "@tonconnect/ui"
 description: ""
 ---
 
-`@tonconnect/ui` is the framework-agnostic UI kit on top of [`@tonconnect/sdk`](/ecosystem/ton-connect/api-reference/sdk). It ships a styled connect button, a wallets modal, and notification flows that match the TON Connect protocol so dApps without a framework can integrate without designing their own modals.
+`@tonconnect/ui` is the framework-agnostic UI kit on top of [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk). It ships a styled connect button, a wallets modal, and notification flows that match the TON Connect protocol so dApps without a framework can integrate without designing their own modals.
 
-If you use React, see [`@tonconnect/ui-react`](/ecosystem/ton-connect/api-reference/ui-react). For protocol semantics, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
+If you use React, see [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react). For protocol semantics, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
 
 ## Installation
 
@@ -53,7 +53,7 @@ new TonConnectUI(options?: TonConnectUiCreateOptions)
 | --- | --- | --- |
 | `walletsRequiredFeatures` | `RequiredFeatures \| undefined` | Required features that wallets must support to appear in the wallets list. Wallets not supporting these features are excluded from the UI. |
 | `walletsPreferredFeatures` | `RequiredFeatures \| undefined` | Preferred features used to sort and rank wallets in the wallets list. Wallets supporting these features appear first in the UI. |
-| `connector` | [`ITonConnect`](/ecosystem/ton-connect/api-reference/sdk#itonconnect) | TonConnect instance. |
+| `connector` | [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) | TonConnect instance. |
 | `modal` | `WalletsModal` | Manages the modal window state. |
 | `connectionRestored` | `Promise<boolean>` | Promise that resolves after end of the connection restoring process (promise fires after [`onStatusChange`](#onstatuschange), so you can get actual information about wallet and session after when promise resolved). Resolved value `true`/`false` indicates if the session was restored successfully. |
 | `connected` | `boolean` | Current connection status. |
@@ -91,7 +91,7 @@ setConnectionNetwork(network?: ChainId): void;
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `network` | [`ChainId`](/ecosystem/ton-connect/api-reference/protocol#chainid) | *Optional*. Desired network id (e.g., '-239', '-3', or custom). Pass undefined to allow any network. |
+| `network` | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | *Optional*. Desired network id (e.g., '-239', '-3', or custom). Pass undefined to allow any network. |
 
 ### `getWallets()`
 
@@ -117,7 +117,7 @@ onStatusChange(
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `callback` | `(wallet: ConnectedWallet \| null) => void` | Called with the connected wallet on connect, or `null` on disconnect. |
-| `errorsHandler` | `(err: TonConnectError) => void` | *Optional*. Optional handler called when a [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror) occurs. |
+| `errorsHandler` | `(err: TonConnectError) => void` | *Optional*. Optional handler called when a [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) occurs. |
 
 Returns `() => void`. Unsubscribe function — call it to stop receiving status updates.
 
@@ -245,7 +245,7 @@ sendTransaction(
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `tx` | [`SendTransactionRequest`](/ecosystem/ton-connect/api-reference/sdk#sendtransactionrequest) | Transaction to send. |
+| `tx` | [`SendTransactionRequest`](/applications/ton-connect/api-reference/sdk#sendtransactionrequest) | Transaction to send. |
 | `options` | `ActionOptions<SendTransactionResponse>` | *Optional*. Modal and notifications behaviour settings. Default shows only the 'before' modal and all notifications. |
 
 Returns `Promise<OptionalTraceable<SendTransactionResponse>>`. Promise that resolves to the transaction response.
@@ -254,7 +254,7 @@ Returns `Promise<OptionalTraceable<SendTransactionResponse>>`. Promise that reso
 
 - [`TonConnectUIError`](#tonconnectuierror) — when no wallet is connected and `options.onConnected` is not provided.
 - [`TonConnectUIError`](#tonconnectuierror) — when the user cancels the transaction in the modal.
-- [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror) — subclasses raised by the underlying SDK call (e.g. `WalletWrongNetworkError`, `WalletNotSupportFeatureError`, `UserRejectsError`, `BadRequestError`, `UnknownAppError`) are propagated unchanged.
+- [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) — subclasses raised by the underlying SDK call (e.g. `WalletWrongNetworkError`, `WalletNotSupportFeatureError`, `UserRejectsError`, `BadRequestError`, `UnknownAppError`) are propagated unchanged.
 
 ### `signData()`
 
@@ -269,7 +269,7 @@ signData(
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `data` | [`SignDataPayload`](/ecosystem/ton-connect/api-reference/protocol#signdatapayload) | Data payload to sign. |
+| `data` | [`SignDataPayload`](/applications/ton-connect/api-reference/protocol#signdatapayload) | Data payload to sign. |
 | `options` | `ActionOptions<SignDataResponse>` | *Optional*. Modal and notifications behaviour settings. |
 
 Returns `Promise<SignDataResponse>`. Promise that resolves to the sign-data response including the signature.
@@ -278,7 +278,7 @@ Returns `Promise<SignDataResponse>`. Promise that resolves to the sign-data resp
 
 - [`TonConnectUIError`](#tonconnectuierror) — when no wallet is connected and `options.onConnected` is not provided.
 - [`TonConnectUIError`](#tonconnectuierror) — when the user cancels the signing in the modal.
-- [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror) — subclasses raised by the underlying SDK call (e.g. `WalletNotSupportFeatureError`, `UserRejectsError`, `BadRequestError`) are propagated unchanged.
+- [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) — subclasses raised by the underlying SDK call (e.g. `WalletNotSupportFeatureError`, `UserRejectsError`, `BadRequestError`) are propagated unchanged.
 
 ### `signMessage()`
 
@@ -293,7 +293,7 @@ signMessage(
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `message` | [`SignMessageRequest`](/ecosystem/ton-connect/api-reference/sdk#signmessagerequest) | Transaction-like request describing the internal message to sign. |
+| `message` | [`SignMessageRequest`](/applications/ton-connect/api-reference/sdk#signmessagerequest) | Transaction-like request describing the internal message to sign. |
 | `options` | `ActionOptions<SignMessageResponse>` | *Optional*. Modal and notifications behaviour settings. |
 
 Returns `Promise<OptionalTraceable<SignMessageResponse>>`. Promise that resolves to the sign-message response including the signed BoC.
@@ -302,7 +302,7 @@ Returns `Promise<OptionalTraceable<SignMessageResponse>>`. Promise that resolves
 
 - [`TonConnectUIError`](#tonconnectuierror) — when no wallet is connected and `options.onConnected` is not provided.
 - [`TonConnectUIError`](#tonconnectuierror) — when the user cancels the signing in the modal.
-- [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror) — subclasses raised by the underlying SDK call are propagated unchanged.
+- [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) — subclasses raised by the underlying SDK call are propagated unchanged.
 
 ### Static methods
 
@@ -362,8 +362,8 @@ interface TonConnectUiOptionsWithManifest {
 | `buttonRootId` | `string \| null` | *Optional*. HTML element id to attach the wallet connect button. If not passed the button does not appear. |
 | `language` | `Locales` | *Optional*. Language for the phrases in the UI elements. |
 | `walletsListConfiguration` | `WalletsListConfiguration` | *Optional*. Configuration for the wallets list in the connect wallet modal. |
-| `walletsRequiredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
-| `walletsPreferredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
+| `walletsRequiredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
 | `actionsConfiguration` | `ActionConfiguration` | *Optional*. Configuration for action-period (e.g. sendTransaction) UI elements: modals and notifications and wallet behaviour (return strategy). |
 | `enableAndroidBackHandler` | `boolean` | *Optional*. Specifies whether the Android back button should be used to close modals and notifications on Android devices. |
 | `analytics` | `AnalyticsSettings` | *Optional*. Analytics configuration forwarded to the underlying TonConnect SDK instance. |
@@ -390,7 +390,7 @@ interface TonConnectUiOptionsWithConnector {
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `connector` | [`ITonConnect`](/ecosystem/ton-connect/api-reference/sdk#itonconnect) | *Optional*. TonConnect instance. Can be helpful if you use custom ITonConnect implementation, or use both of @tonconnect/sdk and @tonconnect/ui in your app. |
+| `connector` | [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) | *Optional*. TonConnect instance. Can be helpful if you use custom ITonConnect implementation, or use both of @tonconnect/sdk and @tonconnect/ui in your app. |
 | `restoreConnection` | `boolean` | *Optional*. Try to restore existing session and reconnect to the corresponding wallet. |
 | `widgetRootId` | `string` | *Optional*. HTML element id to attach the modal window element. If not passed, `div#tc-widget-root` is appended to the end of `<body>` and used. Defaults to `'tc-widget-root'`. |
 | `eventDispatcher` | `EventDispatcher<RequestVersionEvent \| ResponseVersionEvent \| ConnectionStartedEvent \| ConnectionCompletedEvent \| ConnectionErrorEvent \| ConnectionRestoringStartedEvent \| ConnectionRestoringCompletedEvent \| ConnectionRestoringErrorEvent \| DisconnectionEvent \| TransactionSentForSignatureEvent \| TransactionSignedEvent \| TransactionSigningFailedEvent \| DataSentForSignatureEvent \| DataSignedEvent \| DataSigningFailedEvent \| WalletModalOpenedEvent \| SelectedWalletEvent>` | *Optional*. Event dispatcher to track user actions. By default, it uses `window.dispatchEvent` for browser environment. Defaults to `new BrowserEventDispatcher()`. |
@@ -398,8 +398,8 @@ interface TonConnectUiOptionsWithConnector {
 | `buttonRootId` | `string \| null` | *Optional*. HTML element id to attach the wallet connect button. If not passed the button does not appear. |
 | `language` | `Locales` | *Optional*. Language for the phrases in the UI elements. |
 | `walletsListConfiguration` | `WalletsListConfiguration` | *Optional*. Configuration for the wallets list in the connect wallet modal. |
-| `walletsRequiredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
-| `walletsPreferredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
+| `walletsRequiredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
 | `actionsConfiguration` | `ActionConfiguration` | *Optional*. Configuration for action-period (e.g. sendTransaction) UI elements: modals and notifications and wallet behaviour (return strategy). |
 | `enableAndroidBackHandler` | `boolean` | *Optional*. Specifies whether the Android back button should be used to close modals and notifications on Android devices. |
 | `analytics` | `AnalyticsSettings` | *Optional*. Analytics configuration forwarded to the underlying TonConnect SDK instance. |
@@ -432,8 +432,8 @@ interface TonConnectUiCreateOptionsBase {
 | `buttonRootId` | `string \| null` | *Optional*. HTML element id to attach the wallet connect button. If not passed the button does not appear. |
 | `language` | `Locales` | *Optional*. Language for the phrases in the UI elements. |
 | `walletsListConfiguration` | `WalletsListConfiguration` | *Optional*. Configuration for the wallets list in the connect wallet modal. |
-| `walletsRequiredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
-| `walletsPreferredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
+| `walletsRequiredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
 | `actionsConfiguration` | `ActionConfiguration` | *Optional*. Configuration for action-period (e.g. sendTransaction) UI elements: modals and notifications and wallet behaviour (return strategy). |
 | `enableAndroidBackHandler` | `boolean` | *Optional*. Specifies whether the Android back button should be used to close modals and notifications on Android devices. |
 | `analytics` | `AnalyticsSettings` | *Optional*. Analytics configuration forwarded to the underlying TonConnect SDK instance. |
@@ -460,8 +460,8 @@ interface TonConnectUiOptions {
 | `buttonRootId` | `string \| null` | *Optional*. HTML element id to attach the wallet connect button. If not passed the button does not appear. |
 | `language` | `Locales` | *Optional*. Language for the phrases in the UI elements. |
 | `walletsListConfiguration` | `WalletsListConfiguration` | *Optional*. Configuration for the wallets list in the connect wallet modal. |
-| `walletsRequiredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
-| `walletsPreferredFeatures` | [`RequiredFeatures`](/ecosystem/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
+| `walletsRequiredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Required features for wallets. If a wallet doesn't support the required features, it is disabled. |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures) | *Optional*. Preferred features for wallets. If a wallet doesn't support the preferred features, it is moved to the end of the list. |
 | `actionsConfiguration` | `ActionConfiguration` | *Optional*. Configuration for action-period (e.g. sendTransaction) UI elements: modals and notifications and wallet behaviour (return strategy). |
 | `enableAndroidBackHandler` | `boolean` | *Optional*. Specifies whether the Android back button should be used to close modals and notifications on Android devices. |
 | `analytics` | `AnalyticsSettings` | *Optional*. Analytics configuration forwarded to the underlying TonConnect SDK instance. |
@@ -586,7 +586,7 @@ type WalletInfoWalletConnect = WalletInfoBase & { type: 'wallet-connect' };
 
 ### `ConnectedWallet`
 
-A fully connected wallet: combines session data from [`Wallet`](/ecosystem/ton-connect/api-reference/sdk#wallet) with its UI metadata.
+A fully connected wallet: combines session data from [`Wallet`](/applications/ton-connect/api-reference/sdk#wallet) with its UI metadata.
 
 ```ts
 type ConnectedWallet = Wallet & WalletInfoWithOpenMethod;
@@ -720,15 +720,15 @@ enum THEME {
 
 ## Errors
 
-Every error from this package extends [`TonConnectUIError`](#tonconnectuierror), which itself extends [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror). Use `err instanceof TonConnectUIError` to catch errors from this package; use `err instanceof TonConnectError` to catch anything raised by the TonConnect stack.
+Every error from this package extends [`TonConnectUIError`](#tonconnectuierror), which itself extends [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror). Use `err instanceof TonConnectUIError` to catch errors from this package; use `err instanceof TonConnectError` to catch anything raised by the TonConnect stack.
 
 ### `TonConnectUIError`
 
 Base error class for errors thrown by `@tonconnect/ui` itself (modal lifecycle,
 UI configuration, deeplink helpers, etc.), as opposed to protocol errors
 surfaced from the SDK. Use `err instanceof TonConnectUIError` to distinguish
-UI-layer failures from [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror) subclasses raised by
-`@tonconnect/sdk`. Extends [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror).
+UI-layer failures from [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) subclasses raised by
+`@tonconnect/sdk`. Extends [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror).
 
 ```ts
 class TonConnectUIError extends TonConnectError {
@@ -742,13 +742,13 @@ by the package rather than constructing [`TonConnectUIError`](#tonconnectuierror
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `message` | `string` | *Optional*. Human-readable message. The resulting `error.message` is prefixed with `[TON_CONNECT_SDK_ERROR]` and the subclass name (inherited from [`TonConnectError`](/ecosystem/ton-connect/api-reference/sdk#tonconnecterror)). |
+| `message` | `string` | *Optional*. Human-readable message. The resulting `error.message` is prefixed with `[TON_CONNECT_SDK_ERROR]` and the subclass name (inherited from [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror)). |
 | `options` | `ErrorOptions` | *Optional*. Standard ES `Error` options. |
 
 
 ## Related pages
 
-- [`@tonconnect/sdk`](/ecosystem/ton-connect/api-reference/sdk) — connector core that this UI wraps.
-- [`@tonconnect/ui-react`](/ecosystem/ton-connect/api-reference/ui-react) — React bindings.
-- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — wire-format types.
+- [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk) — connector core that this UI wraps.
+- [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react) — React bindings.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types.
 - [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.

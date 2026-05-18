@@ -19,7 +19,7 @@ This page provides a complete technical specification for Preprocessed Wallet V2
 Understand the internal architecture, data structures, and operational mechanics of Preprocessed Wallet V2. This reference page explains how the wallet processes batch transactions efficiently with minimal gas consumption.
 
 <Aside type="tip">
-  For practical usage, see [How-to guides](/standard/wallets/preprocessed-v2/interact).
+  For practical usage, see [How-to guides](/ecosystem/standard/wallets/preprocessed-v2/interact).
 </Aside>
 
 ## What is Preprocessed Wallet V2?
@@ -37,7 +37,7 @@ The wallet consumes 1537 gas units per transaction.
 
 ## TL-B schema
 
-[TL-B (Type Language - Binary)](/languages/tl-b/overview) is a domain-specific language designed to describe data structures in TON. The schemas below define the binary layout of the contract's storage and external messages.
+[TL-B (Type Language - Binary)](/ecosystem/languages/tl-b/overview) is a domain-specific language designed to describe data structures in TON. The schemas below define the binary layout of the contract's storage and external messages.
 
 ### Storage structure
 
@@ -74,7 +74,7 @@ When the wallet receives an external message, it verifies that the 512-bit signa
 <Aside
   type="caution"
 >
-  The public key is not the wallet address. The address is [derived](/foundations/addresses/derive) from the contract's [`StateInit`](/foundations/messages/deploy).
+  The public key is not the wallet address. The address is [derived](/ecosystem/primitives/addresses/derive) from the contract's [`StateInit`](/ecosystem/primitives/messages/deploy).
 </Aside>
 
 ### `seq_no` (16 bits)
@@ -284,4 +284,4 @@ Suitable for batch operations with up to 255 actions per transaction.
 
 ## See also
 
-- [How to interact with Preprocessed Wallet V2](/standard/wallets/preprocessed-v2/interact)
+- [How to interact with Preprocessed Wallet V2](/ecosystem/standard/wallets/preprocessed-v2/interact)

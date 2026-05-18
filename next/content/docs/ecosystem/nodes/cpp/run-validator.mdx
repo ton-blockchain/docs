@@ -584,7 +584,7 @@ MyTonCtrl> pools_list
   alt="Pool list"
 />
 
-[Blockchain explorer](/ecosystem/explorers/overview) should also display the now-deployed contract with `Active` status.
+[Blockchain explorer](/infrastructure/explorers/overview) should also display the now-deployed contract with `Active` status.
 
 <Image
   src="/resources/images/nodes/run-validator/run-validator-20.png"
@@ -595,7 +595,7 @@ MyTonCtrl> pools_list
 <Aside
   type="caution"
 >
-  After activation, verify the following in a [blockchain explorer](/ecosystem/explorers/overview):
+  After activation, verify the following in a [blockchain explorer](/infrastructure/explorers/overview):
 
   1. The pool contract code hash matches the [official single nominator pool contract](https://github.com/orbs-network/single-nominator/blob/main/README.md).
   1. The owner address stored in the pool matches the address specified during creation.
@@ -781,11 +781,11 @@ Deposit effective stake to the single nominator pool address.
 
 ### 4.5 Track first cycle progress
 
-In the next election cycle (odd/even), MyTonCtrl will send half of the stake from the single nominator pool. Track this with a [blockchain explorer](/ecosystem/explorers/overview).
+In the next election cycle (odd/even), MyTonCtrl will send half of the stake from the single nominator pool. Track this with a [blockchain explorer](/infrastructure/explorers/overview).
 
 ### 4.6 Track second cycle progress
 
-In the next paired election cycle (even/odd), MyTonCtrl will send the second half of the stake from the single nominator pool. Track this with a [blockchain explorer](/ecosystem/explorers/overview).
+In the next paired election cycle (even/odd), MyTonCtrl will send the second half of the stake from the single nominator pool. Track this with a [blockchain explorer](/infrastructure/explorers/overview).
 
 ### 4.7 Verify entire staking cycle
 
@@ -941,7 +941,7 @@ Check the following indicators:
 
 Confirm that the validator participates in elections and recovers stakes on time by monitoring the pool balance in a [blockchain explorer](https://tonviewer.com/).
 
-Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/ecosystem/explorers/overview). For greater observability, [set up the monitoring](/ecosystem/nodes/cpp/run-validator#5-7-set-up-monitoring) of various validator metrics.
+Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/infrastructure/explorers/overview). For greater observability, [set up the monitoring](/ecosystem/nodes/cpp/run-validator#5-7-set-up-monitoring) of various validator metrics.
 
 ## Troubleshoot common issues
 
@@ -969,7 +969,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 ### Stake was not returned after a validation cycle
 
 - Wait for the full cycle to complete. Stake recovery is not immediate.
-- Check the elector contract status using a [blockchain explorer](/ecosystem/explorers/overview).
+- Check the elector contract status using a [blockchain explorer](/infrastructure/explorers/overview).
 - Contact [@mytonctrl\_help\_bot](https://t.me/mytonctrl_help_bot) if the stake is not returned after the cycle ends.
 
 ### Pool contract is frozen

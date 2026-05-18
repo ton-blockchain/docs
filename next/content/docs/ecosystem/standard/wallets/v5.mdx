@@ -7,7 +7,7 @@ description: ""
 
 The V5 wallet standard offers many benefits that improve the experience for both users and developers. V5 supports gasless transactions, account delegation and recovery, subscription payments using Jettons and Toncoin, and low-cost multi-transfers. In addition to retaining the previous functionality (V4), the new contract allows you to send up to 255 messages at a time.
 
-This article provides only a high-level wallet V5 contract overview. If you want to learn more about how to use its interfaces or develop extensions, check out the [wallet V5 API](/standard/wallets/v5-api) article.
+This article provides only a high-level wallet V5 contract overview. If you want to learn more about how to use its interfaces or develop extensions, check out the [wallet V5 API](/ecosystem/standard/wallets/v5-api) article.
 
 Source links:
 
@@ -45,7 +45,7 @@ As you can see, the `ContractState`, compared to previous versions, hasn't chang
 
 ### Internal message body layout
 
-Learn more about internal message serialization [here](/standard/wallets/v5-api).
+Learn more about internal message serialization [here](/ecosystem/standard/wallets/v5-api).
 
 ## Authentication process
 
@@ -70,7 +70,7 @@ The first thing that we should notice is `InnerRequest`, which we have already s
 
 We can consider `InnerRequest` as two lists of actions: the first, `OutList`, is an optional chain of cell references, each containing a send message request led by the message mode. The second, `ActionList`, is led by a one-bit flag, `has_other_actions`, which marks the presence of extended actions, starting from the first cell and continuing as a chain of cell references. We are already familiar with the first two extended actions, `action_add_ext` and `action_delete_ext`, followed by the internal address that we want to add or delete from the extensions dictionary. The third, `action_set_signature_auth_allowed`, restricts or allows authentication through the public key, leaving the only way to interact with the wallet through extensions. This functionality might be extremely important in the case of a lost or compromised private key.
 
-Learn more about actions [here](/standard/wallets/v5-api).
+Learn more about actions [here](/ecosystem/standard/wallets/v5-api).
 
 ## Exit codes
 

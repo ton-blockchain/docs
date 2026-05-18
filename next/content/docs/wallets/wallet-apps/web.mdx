@@ -5,7 +5,7 @@ description: ""
 ---
 
 
-[wallet.ton.org](https://wallet.ton.org) is a self-custodial wallet web app that doesn't require installation. It supports regular [wallets](/standard/wallets/how-it-works), [Jettons](/standard/tokens/jettons/overview), and [NFTs](/standard/tokens/nft/overview). Its source code can be found [here](https://github.com/ton-blockchain/ton-wallet).
+[wallet.ton.org](https://wallet.ton.org) is a self-custodial wallet web app that doesn't require installation. It supports regular [wallets](/ecosystem/standard/wallets/how-it-works), [Jettons](/ecosystem/standard/tokens/jettons/overview), and [NFTs](/ecosystem/standard/tokens/nft/overview). Its source code can be found [here](https://github.com/ton-blockchain/ton-wallet).
 
 <Image
   src="/resources/images/wallets/wallet-ton-org/ui_light.png"
@@ -46,7 +46,7 @@ Overall procedure is:
   type="caution"
   title="Bug!"
 >
-  There is a bug in wallet.ton.org. Mainnet [subwallet ID](/standard/wallets/how-it-works#subwallet-id) is used to generate the address of testnet account.
+  There is a bug in wallet.ton.org. Mainnet [subwallet ID](/ecosystem/standard/wallets/how-it-works#subwallet-id) is used to generate the address of testnet account.
 
   If an address from wallet.ton.org doesn't match an address computed with `@ton/ton` or some other library, this might be the reason.
 </Aside>
@@ -57,7 +57,7 @@ Overall procedure is:
 1. Click "Create Wallet".<br /><Image src="/resources/images/wallets/wallet-ton-org/welcome_page_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/welcome_page_dark.png" alt="Web wallet welcome page" />
 1. Choose "Use Password".<br /><Image src="/resources/images/wallets/wallet-ton-org/password_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/password_dark.png" alt="Password option" />
 1. Set and confirm password. Password will be used to encrypt the mnemonic that is stored in browser's local storage.<br /><Image src="/resources/images/wallets/wallet-ton-org/creating_password_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/creating_password_dark.png" alt="Password setup" />
-1. Save 24 words of the [mnemonic](/standard/wallets/mnemonics).<br />{<Aside type="danger" title="Funds at risk">
+1. Save 24 words of the [mnemonic](/ecosystem/standard/wallets/mnemonics).<br />{<Aside type="danger" title="Funds at risk">
      Mnemonic is the text representation of wallet's secret key. Losing it is the same as losing access to the wallet.<br/>
      Anyone who has access to the mnemonic can take control of the wallet and move funds. If you suspect it already happened, create a new wallet and transfer all funds immediately. Prefer not to store recovery words digitally; write them down and keep them offline.
      </Aside>}{<Image
@@ -73,7 +73,7 @@ Overall procedure is:
 1. Click the "Settings" icon.<br /><Image src="/resources/images/wallets/wallet-ton-org/settings_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/settings_dark.png" alt="Settings button" />
 1. In the settings window, double-click the wallet version number to open developer options.<br /><Image src="/resources/images/wallets/wallet-ton-org/version_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/version_dark.png" alt="Click on version" />
 1. In the "Developer options" panel, locate the "Networks" section and select "Testnet".<br /><Image src="/resources/images/wallets/wallet-ton-org/testnet_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/testnet_dark.png" alt="Choose Testnet" />
-1. The interface should indicate that testnet is used. Also address of the testnet wallet in the [user-friendly format](/foundations/addresses/formats#user-friendly-format) starts with `k` or `0`.<br />{<Image
+1. The interface should indicate that testnet is used. Also address of the testnet wallet in the [user-friendly format](/ecosystem/primitives/addresses/formats#user-friendly-format) starts with `k` or `0`.<br />{<Image
      src="/resources/images/wallets/wallet-ton-org/testnet_version_light.png"
      darkSrc="/resources/images/wallets/wallet-ton-org/testnet_version_dark.png"
      alt="Choose Testnet"
@@ -81,7 +81,7 @@ Overall procedure is:
 
 ### Add funds into the wallet
 
-There is a [separate article](/ecosystem/wallet-apps/get-coins) on this.
+There is a [separate article](/wallets/wallet-apps/get-coins) on this.
 
 1. Message [`@testgiver_ton_bot`](https://t.me/testgiver_ton_bot) in [Telegram](https://telegram.org/).
 1. Press the Start button or send `/start` message.
@@ -115,7 +115,7 @@ To deploy the code, send any transaction from the wallet. The recipient can be a
 
 ## Check the account state
 
-Use a [blockchain explorer](/ecosystem/explorers/overview) to inspect the account. For **Testnet**, use [Tonviewer Testnet](https://testnet.tonviewer.com/).
+Use a [blockchain explorer](/infrastructure/explorers/overview) to inspect the account. For **Testnet**, use [Tonviewer Testnet](https://testnet.tonviewer.com/).
 
 1. Paste the wallet address into the search bar.<br /><Image src="/resources/images/wallets/wallet-ton-org/tonviewer_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/tonviewer_dark.png" alt="Insert address in Tonviewer search" />
 
@@ -123,7 +123,7 @@ Use a [blockchain explorer](/ecosystem/explorers/overview) to inspect the accoun
 
 ## Verify wallet's version
 
-By default, wallet.ton.org creates wallets with the [Wallet v5](/standard/wallets/v5) code deployed on them. To check which [wallet contract version](/standard/wallets/comparison) is used:
+By default, wallet.ton.org creates wallets with the [Wallet v5](/ecosystem/standard/wallets/v5) code deployed on them. To check which [wallet contract version](/ecosystem/standard/wallets/comparison) is used:
 
 1. Click the "Settings" icon.<br /><Image src="/resources/images/wallets/wallet-ton-org/settings_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/settings_dark.png" alt="Settings button" />
 1. In the "Wallet Versions", you can see which contract the wallet uses.<br /><Image src="/resources/images/wallets/wallet-ton-org/wallet_version_light.png" darkSrc="/resources/images/wallets/wallet-ton-org/wallet_version_dark.png" alt="Settings button" />

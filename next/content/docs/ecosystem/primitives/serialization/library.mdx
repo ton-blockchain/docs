@@ -13,7 +13,7 @@ The library reference has level `0`, so it does not contain any higher hashes.
 Each library cell is serialized as follows:
 
 - The 1-byte tag that always equals `0x02`.
-- The 256-bit [representation hash](/foundations/serialization/cells) of the library cell being referred to.
+- The 256-bit [representation hash](/ecosystem/primitives/serialization/cells) of the library cell being referred to.
 
 ## Introduction
 
@@ -71,4 +71,4 @@ Also, if the account hosting the library becomes frozen, the library becomes ina
 
 ### Other articles
 
-Library cells are mainly used to minimize storage costs for accounts with identical code. Read more about this [pattern](/contract-dev/using-on-chain-libraries).
+Library cells are mainly used to minimize storage costs for accounts with identical code. Read more about this [pattern](/ecosystem/contract-dev/techniques/using-on-chain-libraries).

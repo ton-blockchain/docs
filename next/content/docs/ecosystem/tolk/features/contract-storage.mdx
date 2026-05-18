@@ -4,7 +4,7 @@ title: "Contract storage"
 description: ""
 ---
 
-Contract storage is a [`struct`](/languages/tolk/types/structures), serialized into persistent blockchain data. Tolk does not enforce any specific storage layout.
+Contract storage is a [`struct`](/ecosystem/tolk/types/structures), serialized into persistent blockchain data. Tolk does not enforce any specific storage layout.
 
 <Aside type="tip">
   For convenience, place the storage struct and its methods in a separate file, e.g., `storage.tolk`.
@@ -43,14 +43,14 @@ fun demoModify() {
 }
 ```
 
-- `fun Storage.f(self)` defines an instance [method](/languages/tolk/syntax/functions-methods).
-- `T.fromCell()` deserializes a cell into `T`, and [`obj.toCell()`](/languages/tolk/features/auto-serialization#unpackoptions-and-packoptions) packs it back into a cell.
-- The [`lazy`](/languages/tolk/features/lazy-loading) operator does the parsing on demand.
-- [`contract.getData()`](/languages/tolk/features/standard-library) fetches persistent data.
+- `fun Storage.f(self)` defines an instance [method](/ecosystem/tolk/syntax/functions-methods).
+- `T.fromCell()` deserializes a cell into `T`, and [`obj.toCell()`](/ecosystem/tolk/features/auto-serialization#unpackoptions-and-packoptions) packs it back into a cell.
+- The [`lazy`](/ecosystem/tolk/features/lazy-loading) operator does the parsing on demand.
+- [`contract.getData()`](/ecosystem/tolk/features/standard-library) fetches persistent data.
 
 ## Default values
 
-In TON, a contract’s address depends on its initial storage when it is [created on-chain](/foundations/addresses/derive#on-chain-—-simple). Assign default values to fields that must be defined at deployment:
+In TON, a contract’s address depends on its initial storage when it is [created on-chain](/ecosystem/primitives/addresses/derive#on-chain-—-simple). Assign default values to fields that must be defined at deployment:
 
 ```tolk
 struct WalletStorage {
@@ -96,11 +96,11 @@ Contracts may start with a storage layout and extend it after deployment. For ex
 - At deployment, storage contains only `a`, `b`, `c`.
 - Followed by a message supplying  `d` and `e`, storage becomes `a`, `b`, `c`, `d`, `e`.
 
-This behavior is not related to [nullable types](/languages/tolk/types/nullable). Nullable values such as `int8?` or `cell?` serialize with an explicit null marker 0 bit. In this case, fields are absent entirely, and no extra bits appear in serialization.
+This behavior is not related to [nullable types](/ecosystem/tolk/types/nullable). Nullable values such as `int8?` or `cell?` serialize with an explicit null marker 0 bit. In this case, fields are absent entirely, and no extra bits appear in serialization.
 
 This pattern is common in NFT contracts. Initially, an NFT contains only `itemIndex` and `collectionAddress`. After initialization, `ownerAddress` and `content` are added to the storage.
 
-When this pattern is used, declare both shapes in the [`contract` declaration](/languages/tolk/features/contract-abi) so client tools can compute the deployment address correctly:
+When this pattern is used, declare both shapes in the [`contract` declaration](/ecosystem/tolk/features/contract-abi) so client tools can compute the deployment address correctly:
 
 ```tolk
 contract NftItem {
@@ -180,4 +180,4 @@ var storage = loadingStorage.endLoading();
 // and the remaining logic: lazy match, etc.
 ```
 
-Different shapes with missing fields can also be expressed using [generics](/languages/tolk/types/generics) and the [void type](/languages/tolk/types/void-never).
+Different shapes with missing fields can also be expressed using [generics](/ecosystem/tolk/types/generics) and the [void type](/ecosystem/tolk/types/void-never).

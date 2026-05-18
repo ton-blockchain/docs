@@ -9,7 +9,7 @@ Wire up a connector so AppKit can talk to a wallet. A connector is the transport
 
 ## Before you begin
 
-Install AppKit first. See [Prepare your project](/ecosystem/appkit/get-started/installation).
+Install AppKit first. See [Prepare your project](/applications/appkit/get-started/installation/installation).
 
 ## Create the AppKit instance
 
@@ -32,9 +32,9 @@ export const appKit = new AppKit({
 
 ## Render a connect button
 
-Drop `<TonConnectButton />` somewhere in the tree to open the wallet picker. The button assumes the React providers are already mounted — see [Installation → Wrap the application](/ecosystem/appkit/get-started/installation/react-app#wrap-the-application).
+Drop `<TonConnectButton />` somewhere in the tree to open the wallet picker. The button assumes the React providers are already mounted — see [Installation → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
 
-For most apps, this drop-in component is the right starting point. `<TonConnectButton />` from `@ton/appkit-react` owns the connect modal, the session lifecycle (open, restore on reload, expire), and the connected-address display. When the UI needs a tailored wallet list, use `useConnectors` and `useConnect` directly. That pattern is documented in [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+For most apps, this drop-in component is the right starting point. `<TonConnectButton />` from `@ton/appkit-react` owns the connect modal, the session lifecycle (open, restore on reload, expire), and the connected-address display. When the UI needs a tailored wallet list, use `useConnectors` and `useConnect` directly. That pattern is documented in [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet).
 
 ```tsx
 import { TonConnectButton } from '@ton/appkit-react';
@@ -50,5 +50,5 @@ Do not assume every connector supports every flow. Check capability before sendi
 
 ## What to do next
 
-- Continue to [Add networks](/ecosystem/appkit/get-started/networks) to configure mainnet alongside testnet and pick an API client.
-- For the custom-selector pattern, vanilla JS connect, and error handling, see [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet).
+- Continue to [Add networks](/applications/appkit/get-started/networks) to configure mainnet alongside testnet and pick an API client.
+- For the custom-selector pattern, vanilla JS connect, and error handling, see [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet).

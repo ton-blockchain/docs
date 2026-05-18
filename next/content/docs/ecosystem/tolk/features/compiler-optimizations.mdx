@@ -115,7 +115,7 @@ x{0000000a00000014} STSLICECONST
 ENDC
 ```
 
-For unions, [createMessage](/languages/tolk/features/message-sending) is lightweight. The compiler generates all `IF-ELSE` and `STU`, but during compile-time analysis, these instructions resolve to constants because all types are known at compile time. The resulting code flattens into `PUSHINT` and `STSLICECONST`.
+For unions, [createMessage](/ecosystem/tolk/features/message-sending) is lightweight. The compiler generates all `IF-ELSE` and `STU`, but during compile-time analysis, these instructions resolve to constants because all types are known at compile time. The resulting code flattens into `PUSHINT` and `STSLICECONST`.
 
 ## Auto-inline functions
 
@@ -211,7 +211,7 @@ Other transformations occur semantically in advance when safe:
 
 ## `lazy` loading
 
-The [`lazy` keyword](/languages/tolk/features/lazy-loading) loads only the required fields from a cell or slice:
+The [`lazy` keyword](/ecosystem/tolk/features/lazy-loading) loads only the required fields from a cell or slice:
 
 ```tolk
 struct Storage {
@@ -263,7 +263,7 @@ The last option is using low-level Fift code for certain independent tasks that 
 
 ## Fift assembler
 
-The Tolk compiler outputs the Fift assembler. Fift generates the bitcode. Projects built on [Blueprint](/contract-dev/blueprint/overview) use `tolk-js`, which invokes Tolk and then Fift.
+The Tolk compiler outputs the Fift assembler. Fift generates the bitcode. Projects built on [Blueprint](/ecosystem/contract-dev/blueprint/overview) use `tolk-js`, which invokes Tolk and then Fift.
 
 - For command-line users, the Fift assembler is the compiler output.
 

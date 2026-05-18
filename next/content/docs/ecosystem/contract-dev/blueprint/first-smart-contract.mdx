@@ -18,7 +18,7 @@ This tutorial covers building, deploying, and interacting with a smart contract 
 - Basic familiarity with a command‑line interface and executing commands
 - Node.js—`v22` or later— [download here](https://nodejs.org/)
   - Check if installed: `node -v` in terminal
-- Installed [TON wallet](/ecosystem/wallet-apps/tonkeeper) with [Toncoin on testnet](/ecosystem/wallet-apps/get-coins)
+- Installed [TON wallet](/wallets/wallet-apps/tonkeeper) with [Toncoin on testnet](/wallets/wallet-apps/get-coins)
 
 ## Development environment
 
@@ -26,7 +26,7 @@ This tutorial covers building, deploying, and interacting with a smart contract 
   <Step
     title="Set up development environment"
   >
-    Use the [Blueprint](/contract-dev/blueprint/overview) development toolkit for smart contracts. Start a new project with:
+    Use the [Blueprint](/ecosystem/contract-dev/blueprint/overview) development toolkit for smart contracts. Start a new project with:
 
     ```bash
     npm create ton@latest -- Example --contractName FirstContract --type tolk-empty
@@ -63,13 +63,13 @@ This tutorial covers building, deploying, and interacting with a smart contract 
 
 ## What is a smart contract
 
-A smart contract is a program stored on <Tooltip tip="A distributed database that many computers maintain together." cta="Learn more" href="/foundations/shards">TON blockchain</Tooltip> and executed by the <Tooltip tip="The “computer” which executes smart contracts on TON blockchain." cta="Learn more" href="/tvm/overview">TVM</Tooltip>.
+A smart contract is a program stored on <Tooltip tip="A distributed database that many computers maintain together." cta="Learn more" href="/ecosystem/primitives/shards">TON blockchain</Tooltip> and executed by the <Tooltip tip="The “computer” which executes smart contracts on TON blockchain." cta="Learn more" href="/ecosystem/tvm/overview">TVM</Tooltip>.
 On-chain, every contract consists of two components:
 
-- Code — compiled [TVM instructions](/tvm/instructions), defines the contract's logic.
+- Code — compiled [TVM instructions](/ecosystem/tvm/instructions), defines the contract's logic.
 - Data — persistent state, stores information between interactions.
 
-Both are stored at a specific [address](/foundations/addresses/overview) on TON blockchain, which is a unique identifier for each smart contract. Smart contracts interact with each other only through [messages](/foundations/messages/overview).
+Both are stored at a specific [address](/ecosystem/primitives/addresses/overview) on TON blockchain, which is a unique identifier for each smart contract. Smart contracts interact with each other only through [messages](/ecosystem/primitives/messages/overview).
 
 ### Smart contract layout
 
@@ -77,9 +77,9 @@ A contract's code consists of three functional sections: storage, messages, and 
 
 - Storage holds the contract’s persistent state. Example: the `counter` variable keeps its value across calls from different users.
 - Messages are receivers defined in the contract’s code that specify how the contract should react to each incoming message. Each message triggers a specific action or changes the state according to the contract's logic.
-- [Get methods](/tvm/get-method) are read-only functions that return contract data without modifying state. Example: a get method that returns the current `counter` value.
+- [Get methods](/ecosystem/tvm/get-method) are read-only functions that return contract data without modifying state. Example: a get method that returns the current `counter` value.
 
-  Due to the [TON architecture](/from-ethereum#on-chain-get-methods), get methods cannot be called from other contracts. Inter-contract communication uses **messages** only.
+  Due to the [TON architecture](/learn-more/from-ethereum#on-chain-get-methods), get methods cannot be called from other contracts. Inter-contract communication uses **messages** only.
 
 ## Write a smart contract
 
@@ -89,7 +89,7 @@ To build a simple counter contract:
 - Send `increase` messages to add to the counter or `reset` messages to set it to 0.
 - Call a get method to return the current `counter` value.
 
-The contract uses [**Tolk**](/tolk/overview) language.
+The contract uses [**Tolk**](/ecosystem/tolk/overview) language.
 
 The TON ecosystem provides editor plugins with syntax support for IDEs and code editors. View them [here](/contract-dev/ide/overview).
 
@@ -99,7 +99,7 @@ The TON ecosystem provides editor plugins with syntax support for IDEs and code 
   >
     Open the `./contracts/first_contract.tolk` file.
 
-    To define contract storage, store the `counter` value. Tolk makes it simple with <Tooltip tip="A structure is a composite data type that groups named fields, each having its own type, into one unit." cta="Learn more" href="/tolk/overview">structures</Tooltip>:
+    To define contract storage, store the `counter` value. Tolk makes it simple with <Tooltip tip="A structure is a composite data type that groups named fields, each having its own type, into one unit." cta="Learn more" href="/ecosystem/tolk/overview">structures</Tooltip>:
 
     ```tolk title="./contracts/first_contract.tolk"
     struct Storage {
@@ -118,7 +118,7 @@ The TON ecosystem provides editor plugins with syntax support for IDEs and code 
     }
     ```
 
-    Structures serialize and deserialize automatically into [cells](/foundations/serialization/cells), the storage unit in TON. The `fromCell` and `toCell` functions handle conversion between structures and cells.
+    Structures serialize and deserialize automatically into [cells](/ecosystem/primitives/serialization/cells), the storage unit in TON. The `fromCell` and `toCell` functions handle conversion between structures and cells.
   </Step>
 
   <Step
@@ -301,7 +301,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     - keep deployment and address-derivation logic together,
     - avoid repeating low-level cell-building code in every script.
 
-    Blueprint creates `./wrappers/FirstContract.ts` when it scaffolds the project, and the Tolk compiler emits a `contract.abi.json` describing the contract's messages and get methods. In this tutorial the wrapper is edited manually, which is the recommended path for Tolk today. For naming conventions and the deeper pattern, see [Wrappers in Blueprint](/contract-dev/blueprint/develop#wrappers).
+    Blueprint creates `./wrappers/FirstContract.ts` when it scaffolds the project, and the Tolk compiler emits a `contract.abi.json` describing the contract's messages and get methods. In this tutorial the wrapper is edited manually, which is the recommended path for Tolk today. For naming conventions and the deeper pattern, see [Wrappers in Blueprint](/ecosystem/contract-dev/blueprint/develop#wrappers).
 
     In this step, update `./wrappers/FirstContract.ts` for the counter contract.
 
@@ -337,7 +337,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     - The function `createFromConfig` builds a wrapper using:
       - code — compiled bytecode
       - data — the initial storage layout
-    - The contract [address](/foundations/addresses/overview) is derived deterministically from `code` and `data` using `contractAddress`.
+    - The contract [address](/ecosystem/primitives/addresses/overview) is derived deterministically from `code` and `data` using `contractAddress`.
     - The method `sendDeploy` sends the first message with `stateInit`, the structure holding the contract's initial code and data, which triggers deployment. In practice, this can be an empty message with Toncoin attached.
   </Step>
 
@@ -392,7 +392,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     npx blueprint run deployFirstContract --testnet --tonconnect --tonviewer
     ```
 
-    For flags and options, see the [Blueprint deployment guide](/contract-dev/blueprint/deploy).
+    For flags and options, see the [Blueprint deployment guide](/ecosystem/contract-dev/blueprint/deploy).
   </Step>
 
   <Step
@@ -402,7 +402,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
       title="Wallet required"
       type="note"
     >
-      If a wallet is not installed, check the [wallet section](/ecosystem/wallet-apps/tonkeeper) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Toncoin on the testnet](/ecosystem/wallet-apps/get-coins).
+      If a wallet is not installed, check the [wallet section](/wallets/wallet-apps/tonkeeper) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Toncoin on the testnet](/wallets/wallet-apps/get-coins).
     </Aside>
 
     Scan the QR code displayed in the console, and confirm the transaction in the wallet app.
@@ -422,7 +422,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     You can view it at https://testnet.tonviewer.com/kQBz-OQQ0Olnd4IPdLGZCqHkpuAO3zdPqAy92y6G-UUpiC_o
     ```
 
-    The link opens the contract on [Tonviewer](/ecosystem/explorers/tonviewer), a [blockchain explorer](/ecosystem/explorers/overview) showing transactions, messages and [account states](/foundations/status).
+    The link opens the contract on [Tonviewer](/infrastructure/explorers/tonviewer), a [blockchain explorer](/infrastructure/explorers/overview) showing transactions, messages and [account states](/foundations/status).
 
     Next, interact with the contract by sending messages and calling getter functions.
   </Step>
@@ -569,7 +569,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
 
     What happens during execution:
 
-    1. Blueprint connects to the wallet using the [TON Connect](/ecosystem/ton-connect/overview) protocol.
+    1. Blueprint connects to the wallet using the [TON Connect](/applications/ton-connect/overview) protocol.
     1. The script builds a transaction with a message body containing opcode `0x7e8764ef` and value `42`.
     1. The wallet displays transaction details for confirmation.
     1. After approval, the transaction is sent to the network.

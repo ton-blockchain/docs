@@ -9,7 +9,7 @@ description: ""
 
 `signMessage` asks the wallet to sign an internal message **without broadcasting it**. The dApp receives a signed BoC and submits it through a relayer — typically to pay gas in a jetton instead of TON. This flow is currently supported only for Wallet V5.
 
-The request payload has the same shape as `sendTransaction`: it accepts both raw `messages` and structured [`items`](/ecosystem/ton-connect/how-to/send-transaction#structured-items).
+The request payload has the same shape as `sendTransaction`: it accepts both raw `messages` and structured [`items`](/applications/ton-connect/how-to/send-transaction#structured-items).
 
 ## Basic usage
 
@@ -206,7 +206,7 @@ async function retry<T>(
 
 `signMessage` rejects synchronously in several cases before anything reaches the wallet:
 
-- **No wallet connected.** `tonConnectUi.signMessage` throws `TonConnectUIError('Connect wallet to sign a message.')`. Either gate the call on `tonConnectUi.connected` (or `tonConnectUi.wallet`), or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal. When the payload uses structured [`items`](/ecosystem/ton-connect/how-to/send-transaction#structured-items), the SDK can fold it into the connect URL as an [embedded request](/ecosystem/ton-connect/how-to/embedded-request) so a compliant wallet handles connect and sign in one tap. The SDK's [`OneClickPay` demo](https://github.com/ton-connect/sdk/blob/main/apps/demo-dapp-with-react-ui/src/pages/OneClickPay/oneClickGaslessFlow.ts) shows the complete one-tap gasless flow end to end.
+- **No wallet connected.** `tonConnectUi.signMessage` throws `TonConnectUIError('Connect wallet to sign a message.')`. Either gate the call on `tonConnectUi.connected` (or `tonConnectUi.wallet`), or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal. When the payload uses structured [`items`](/applications/ton-connect/how-to/send-transaction#structured-items), the SDK can fold it into the connect URL as an [embedded request](/applications/ton-connect/how-to/embedded-request) so a compliant wallet handles connect and sign in one tap. The SDK's [`OneClickPay` demo](https://github.com/ton-connect/sdk/blob/main/apps/demo-dapp-with-react-ui/src/pages/OneClickPay/oneClickGaslessFlow.ts) shows the complete one-tap gasless flow end to end.
 - **Wallet does not advertise the `SignMessage` feature.** The connector throws `TonConnectError` with `code: METHOD_NOT_SUPPORTED` before serializing the request.
 - **Request validation fails** (missing fields, malformed payload, mismatched network). The connector throws `TonConnectError` with a validation message.
 
@@ -229,7 +229,7 @@ try {
 }
 ```
 
-To filter the wallet picker to only wallets that support `signMessage`, see [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets).
+To filter the wallet picker to only wallets that support `signMessage`, see [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets).
 
 ## Errors
 
@@ -243,7 +243,7 @@ To filter the wallet picker to only wallets that support `signMessage`, see [Fil
 
 ## See also
 
-- [Send a transaction](/ecosystem/ton-connect/how-to/send-transaction) — same payload shape, with broadcast
-- [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
+- [Send a transaction](/applications/ton-connect/how-to/send-transaction) — same payload shape, with broadcast
+- [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
 - [`signMessage` wallet guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/sign-message.md)
 - [RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md)

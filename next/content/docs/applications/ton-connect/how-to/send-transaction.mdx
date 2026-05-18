@@ -151,7 +151,7 @@ await tonConnectUi.sendTransaction({
 
 ## Structured `items[]`
 
-Structured items describe **what** to do — send TON, transfer a jetton, transfer an NFT. The wallet resolves jetton wallet addresses, builds transfer cells, and estimates gas. Use this path only when you know the target wallet advertises support (see [Choosing items vs messages](#choosing-items-vs-messages) and [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)).
+Structured items describe **what** to do — send TON, transfer a jetton, transfer an NFT. The wallet resolves jetton wallet addresses, builds transfer cells, and estimates gas. Use this path only when you know the target wallet advertises support (see [Choosing items vs messages](#choosing-items-vs-messages) and [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)).
 
 Three item types: `ton`, `jetton`, `nft`.
 
@@ -267,7 +267,7 @@ await tonConnectUi.sendTransaction({
 });
 ```
 
-To restrict the picker to wallets that support specific item types, see [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets).
+To restrict the picker to wallets that support specific item types, see [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets).
 
 ## Multi-message batches
 
@@ -285,14 +285,14 @@ Treat batch results as partial by default and verify each target account on-chai
 
 Prefer **`messages`** today unless you control the wallet list. Many wallets still do not advertise structured `SendTransaction` capabilities (`itemTypes` for `ton` / `jetton` / `nft`), so `items` flows often fail or fall back unpredictably across the full registry.
 
-If you build on **`items`** (simpler jetton and NFT flows, no jetton-wallet resolution in the dApp), restrict the connect UI to wallets that declare the features you need. See [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets).
+If you build on **`items`** (simpler jetton and NFT flows, no jetton-wallet resolution in the dApp), restrict the connect UI to wallets that declare the features you need. See [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets).
 
 | Prefer `messages` when                      | Prefer `items` when (with wallet filtering)                                                              |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Default path for maximum compatibility      | The wallet advertises the needed `itemTypes`                                                             |
 | Custom op codes or non-standard payloads    | Standard TON / jetton / NFT transfers only                                                               |
 | You already resolve jetton wallet addresses | You want the wallet to build TEP-74 / TEP-62 bodies                                                      |
-| You cannot filter the wallet picker         | You filter wallets — [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets) |
+| You cannot filter the wallet picker         | You filter wallets — [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets) |
 
 ## Response
 
@@ -323,8 +323,8 @@ Use the returned BoC to look up the transaction on-chain.
 
 ## See also
 
-- [Sign and relay a message (gasless)](/ecosystem/ton-connect/how-to/sign-message-gasless) — same payload shape, no broadcast
-- [Connect-and-act in one tap (embedded request)](/ecosystem/ton-connect/how-to/embedded-request)
-- [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
+- [Sign and relay a message (gasless)](/applications/ton-connect/how-to/sign-message-gasless) — same payload shape, no broadcast
+- [Connect-and-act in one tap (embedded request)](/applications/ton-connect/how-to/embedded-request)
+- [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
 - [Structured items wallet guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/structured-items.md)
 - [RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md)

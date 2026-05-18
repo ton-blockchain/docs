@@ -18,7 +18,7 @@ reply.send(SEND_MODE_REGULAR);
 
 ## Union types in contracts interaction
 
-When handling a message, some values can be represented in multiple valid forms. [Union types](/languages/tolk/types/unions) allow expressing these alternatives explicitly, so the same message-handling logic can accept and correctly process any of them.
+When handling a message, some values can be represented in multiple valid forms. [Union types](/ecosystem/tolk/types/unions) allow expressing these alternatives explicitly, so the same message-handling logic can accept and correctly process any of them.
 
 ### Message value
 
@@ -80,7 +80,7 @@ val walletInitialState: ContractState = {
 };
 ```
 
-When sending a message to the wallet, it may not yet exist on-chain. In this case, the message must include the wallet's code and initial data. The message destination is therefore defined by the wallet's [`StateInit`](/foundations/messages/deploy#deploy-message).
+When sending a message to the wallet, it may not yet exist on-chain. In this case, the message must include the wallet's code and initial data. The message destination is therefore defined by the wallet's [`StateInit`](/ecosystem/primitives/messages/deploy#deploy-message).
 
 ```tolk
 // address auto-calculated, code+data auto-attached
@@ -106,7 +106,7 @@ The `createMessage` interface supports deploying contracts into a specific shard
 This is expressed as follows:
 
 - A jetton wallet is deployed close to the owner's wallet;
-- This closeness is defined by [`shard_prefix`](/foundations/shards#sharding-process).
+- This closeness is defined by [`shard_prefix`](/ecosystem/primitives/shards#sharding-process).
 
 The example below uses `shard_prefix` is 8:
 
@@ -133,7 +133,7 @@ Shard prefix is part of `StateInit` together with code and data and is required 
 
 ## Message body
 
-A [message](/foundations/messages/overview) is a cell. Its body can either be embedded into the same cell or placed into a separate cell and referenced.
+A [message](/ecosystem/primitives/messages/overview) is a cell. Its body can either be embedded into the same cell or placed into a separate cell and referenced.
 
 When creating a message, the `body` should be provided. The compiler determines how the body is stored.
 
@@ -150,7 +150,7 @@ createMessage({
 - If `body` is large or has unpredictable size, it is stored as a ref.
 
 The decision is made at compile time. No runtime checks are involved.
-This is implemented using [generics](/languages/tolk/types/generics):
+This is implemented using [generics](/ecosystem/tolk/types/generics):
 
 ```tolk
 fun createMessage<TBody>(
@@ -234,7 +234,7 @@ A struct is declared as `CreateMessageOptions<TBody = void>`. By convention, fie
 
 ## Sending modes
 
-A message created with `createMessage()` is typically sent using [`msg.send(mode)`](/foundations/messages/modes#sending-modes).
+A message created with `createMessage()` is typically sent using [`msg.send(mode)`](/ecosystem/primitives/messages/modes#sending-modes).
 
 ## `ContractState` and `StateInit`
 
@@ -252,7 +252,7 @@ While a field `stateInit: ContractState | cell` is named as `stateInit`, emphasi
 
 ## `createExternalLogMessage`
 
-`createExternalLogMessage` follows the same general model as `createMessage`. [External outgoing messages](/foundations/messages/external-out) do not support bounce behavior, attached Toncoin, or related options, so the set of available fields is different. External messages are used only for emitting logs intended for indexers.
+`createExternalLogMessage` follows the same general model as `createMessage`. [External outgoing messages](/ecosystem/primitives/messages/external-out) do not support bounce behavior, attached Toncoin, or related options, so the set of available fields is different. External messages are used only for emitting logs intended for indexers.
 
 Example:
 

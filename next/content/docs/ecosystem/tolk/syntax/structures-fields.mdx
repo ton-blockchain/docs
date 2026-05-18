@@ -4,7 +4,7 @@ title: "Structures and fields"
 description: ""
 ---
 
-Tolk supports [structures](/languages/tolk/types/structures) — similar to TypeScript classes.
+Tolk supports [structures](/ecosystem/tolk/types/structures) — similar to TypeScript classes.
 
 ## Structure syntax
 
@@ -46,7 +46,7 @@ fun createDemo(allowExotic: bool, customData: tuple) {
 
 ## Methods for structures
 
-[Methods](/languages/tolk/syntax/functions-methods) are declared separately as extension functions:
+[Methods](/ecosystem/tolk/syntax/functions-methods) are declared separately as extension functions:
 
 ```tolk
 fun Demo.hasData(self): bool {
@@ -117,7 +117,7 @@ An object with a private field can only be constructed by a static method or an 
 
 ## Generic structs
 
-[Generics](/languages/tolk/types/generics) exist only at the type level and incur no runtime cost.
+[Generics](/ecosystem/tolk/types/generics) exist only at the type level and incur no runtime cost.
 
 ```tolk
 struct Nullable<T> {
@@ -147,7 +147,7 @@ fun Nullable<map<K, V>>.isNull(self) {
 
 ## Serialization prefixes and opcodes
 
-The syntax `struct (PREFIX) Name { ... }` specifies a [serialization prefix for the structure](/languages/tolk/types/overall-serialization#structures). For messages, 32-bit prefixes are typically called opcodes.
+The syntax `struct (PREFIX) Name { ... }` specifies a [serialization prefix for the structure](/ecosystem/tolk/types/overall-serialization#structures). For messages, 32-bit prefixes are typically called opcodes.
 
 ```tolk
 struct (0x7362d09c) TransferNotification {

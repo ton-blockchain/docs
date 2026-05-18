@@ -22,7 +22,7 @@ A full node is a software that stores the whole blockchain state locally, opposi
 ## Do you need your own node?
 
 - **Run your own full node** when you need guaranteed uptime or to serve high-volume workloads without third-party rate limits. Validators and staking services need to install a node and activate validator mode.
-- **Rely on public endpoints** when building prototypes or light integrations. Community liteservers and APIs such as [TON Center](/ecosystem/api/toncenter) or other [RPC providers](/ecosystem/api/overview) already expose the blockchain for read access and transaction submission.
+- **Rely on public endpoints** when building prototypes or light integrations. Community liteservers and APIs such as [TON Center](/ecosystem/api/toncenter) or other [RPC providers](/applications/api/overview) already expose the blockchain for read access and transaction submission.
 
 ## Pick your target environment
 
@@ -102,6 +102,6 @@ TON nodes can run in **liteserver mode**, which allows external applications to 
 
 Full and archive nodes typically enable liteserver mode because they store blockchain history and handle external requests. In contrast, validator nodes do not need it, as they focus on efficiently validating new blocks without additional workload from external queries. Use MyTonCtrl to [enable liteserver mode in a full or archive C++ node](/ecosystem/nodes/cpp/setup-mytonctrl#liteserver-quickstart).
 
-Liteserver mode, or _liteserver_ for short, uses the Abstract Datagram Network Layer (ADNL) protocol. Direct connections require either a client called _lite-client_ downloaded from the [latest TON release](https://github.com/ton-blockchain/ton/releases/latest), or a library that understands ADNL. In the [SDK table](/ecosystem/sdks), such libraries have a mark in the ADNL column.
+Liteserver mode, or _liteserver_ for short, uses the Abstract Datagram Network Layer (ADNL) protocol. Direct connections require either a client called _lite-client_ downloaded from the [latest TON release](https://github.com/ton-blockchain/ton/releases/latest), or a library that understands ADNL. In the [SDK table](/applications/sdks), such libraries have a mark in the ADNL column.
 
-To connect from a webpage or otherwise interact with TON nodes over HTTP, an HTTP-to-ADNL frontend is required. [TON Center](/ecosystem/api/toncenter/introduction) is an official HTTP API provider, and its API endpoints can be used directly or [self-hosted](/ecosystem/api/overview). In the [SDK table](/ecosystem/sdks), libraries that use these endpoints or other HTTP providers have a mark in the HTTP column.
+To connect from a webpage or otherwise interact with TON nodes over HTTP, an HTTP-to-ADNL frontend is required. [TON Center](/applications/api/toncenter/introduction) is an official HTTP API provider, and its API endpoints can be used directly or [self-hosted](/applications/api/overview). In the [SDK table](/applications/sdks), libraries that use these endpoints or other HTTP providers have a mark in the HTTP column.

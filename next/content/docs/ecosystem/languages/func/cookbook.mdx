@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,7 +21,7 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 The FunC cookbook was created to consolidate all the knowledge and best practices from experienced FunC developers in one place.
@@ -36,10 +36,10 @@ during smart contract development.
 
 To check whether an event is relevant, use a flag variable of type integer.
 The flag can either be `0`, representing `false`, or `-1`, representing `true`.
-See [absence of boolean type](/languages/func/types#no-boolean-type).
+See [absence of boolean type](/ecosystem/languages/func/types#no-boolean-type).
 
-When checking the flag in [if..else statements](/languages/func/statements#if%E2%80%A6else-statement), it is unnecessary to use
-the [`==` operator](/languages/func/operators#equality%2C-%3D%3D), since a `0` evaluates to `false`, and any nonzero value is
+When checking the flag in [if..else statements](/ecosystem/languages/func/statements#if%E2%80%A6else-statement), it is unnecessary to use
+the [`==` operator](/ecosystem/languages/func/operators#equality%2C-%3D%3D), since a `0` evaluates to `false`, and any nonzero value is
 considered to be `true` in `if..else` statements.
 
 ```func
@@ -58,7 +58,7 @@ else {
 
 ### How to write a repeat loop
 
-A [repeat loop](/languages/func/statements#repeat-loop) helps execute an action a fixed number of times. The example below computes
+A [repeat loop](/ecosystem/languages/func/statements#repeat-loop) helps execute an action a fixed number of times. The example below computes
 exponentiation of `number` to the exponent `exponent`, and illustrates it with specific values `number = 2` and `exponent = 5`:
 
 ```func
@@ -76,8 +76,8 @@ repeat(exponent) {   ;; The repeat multiplies variable "number",
 
 ### How to write a while loop
 
-A [while loop](/languages/func/statements#while-loop) is useful when the number of iterations is unknown.
-The following example processes the references in the message [cell](/foundations/serialization/cells).
+A [while loop](/ecosystem/languages/func/statements#while-loop) is useful when the number of iterations is unknown.
+The following example processes the references in the message [cell](/ecosystem/primitives/serialization/cells).
 Each cell can store up to four references to other cells:
 
 ```func
@@ -102,18 +102,18 @@ while (msg.slice_refs_empty?() != -1) { ;; Iterate while there are refs to proce
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`slice_refs_empty?`](/languages/func/stdlib#slice-refs-empty%3F)
-- [`load_ref`](/languages/func/stdlib#load-ref)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`slice_refs_empty?`](/ecosystem/languages/func/stdlib#slice-refs-empty%3F)
+- [`load_ref`](/ecosystem/languages/func/stdlib#load-ref)
 
 ### How to write a do until loop
 
-Use a [`do..until` loop](/languages/func/statements#until-loop) when the loop must execute at least once.
+Use a [`do..until` loop](/ecosystem/languages/func/statements#until-loop) when the loop must execute at least once.
 
 ```func
 int flag = 0;
@@ -168,14 +168,14 @@ slice_with_bits_and_refs.slice_empty?();
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string
-- [`slice_empty?`](/languages/func/stdlib#slice-empty%3F)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`store_slice`](/languages/func/stdlib#store-slice)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string
+- [`slice_empty?`](/ecosystem/languages/func/stdlib#slice-empty%3F)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
 
 ### How to determine if slice is empty (no bits, but may have refs)
 
@@ -217,14 +217,14 @@ slice_with_bits_and_refs.slice_data_empty?();
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`slice_data_empty?`](/languages/func/stdlib#slice-data-empty%3F)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`store_slice`](/languages/func/stdlib#store-slice)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`slice_data_empty?`](/ecosystem/languages/func/stdlib#slice-data-empty%3F)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
 
 ### How to determine if slice is empty (no refs, but may have bits)
 
@@ -266,14 +266,14 @@ slice_with_bits_and_refs.slice_refs_empty?();
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`slice_refs_empty?`](/languages/func/stdlib#slice-refs-empty%3F)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`store_slice`](/languages/func/stdlib#store-slice)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`slice_refs_empty?`](/ecosystem/languages/func/stdlib#slice-refs-empty%3F)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
 
 ### How to determine if a cell is empty
 
@@ -307,14 +307,14 @@ else {
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`slice_empty?`](/languages/func/stdlib#slice-empty%3F)
-- [`slice_data_empty?`](/languages/func/stdlib#slice-data-empty%3F)
-- [`slice_refs_empty?`](/languages/func/stdlib#slice-refs-empty%3F)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`slice_empty?`](/ecosystem/languages/func/stdlib#slice-empty%3F)
+- [`slice_data_empty?`](/ecosystem/languages/func/stdlib#slice-data-empty%3F)
+- [`slice_refs_empty?`](/ecosystem/languages/func/stdlib#slice-refs-empty%3F)
 
 ### Determine if the data bits of slices are equal
 
@@ -379,11 +379,11 @@ int are_slices_equal_3? (slice a, slice b) {
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`slice_hash`](/languages/func/stdlib#slice-hash)
-- [`SDEQ` asm instruction](/tvm/instructions#c705-sdeq)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`slice_hash`](/ecosystem/languages/func/stdlib#slice-hash)
+- [`SDEQ` asm instruction](/ecosystem/tvm/instructions#c705-sdeq)
 - `equal_slice_bits`
 
 ### Determine if the cells are equal
@@ -419,12 +419,12 @@ int are_cells_equal? (cell a, cell b) {
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`cell_hash`](/languages/func/stdlib#cell-hash)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_ref`](/languages/func/stdlib#store-ref)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`cell_hash`](/ecosystem/languages/func/stdlib#cell-hash)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
 
 ### How to get only the data bits from a slice
 
@@ -450,15 +450,15 @@ in the slice.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Builder primitives](/languages/func/stdlib#builder-primitives)
-- [Slice primitives](/languages/func/stdlib#slice-primitives)
-- [`preload_bits`](/languages/func/stdlib#preload-bits)
-- [`slice_bits`](/languages/func/stdlib#slice-bits)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Builder primitives](/ecosystem/languages/func/stdlib#builder-primitives)
+- [Slice primitives](/ecosystem/languages/func/stdlib#slice-primitives)
+- [`preload_bits`](/ecosystem/languages/func/stdlib#preload-bits)
+- [`slice_bits`](/ecosystem/languages/func/stdlib#slice-bits)
 
 ### How to build a `StateInit` cell
 
-The code follows the TL-B for [`StateInit`](/foundations/messages/deploy):
+The code follows the TL-B for [`StateInit`](/ecosystem/primitives/messages/deploy):
 
 ```
 _ split_depth:(Maybe (## 5)) special:(Maybe TickTock)
@@ -489,9 +489,9 @@ cell build_stateinit(cell init_code, cell init_data) {
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
 - [TL-B for `StateInit`](https://github.com/ton-blockchain/ton/blob/f58297f1b668c7b49e8b30b65062951ca7c18acc/crypto/block/block.tlb#L144-L146)
-- [Builder primitives](/languages/func/stdlib#builder-primitives)
+- [Builder primitives](/ecosystem/languages/func/stdlib#builder-primitives)
 
 ## Data structures
 
@@ -520,16 +520,16 @@ else {
 
 In `d~udict_set(256, 0, "hello")`, the function expects unsigned 256-bit integers as keys; also,
 `d~udict_set(256, 0, "hello")` will mutate the dictionary `d`, since `udict_set` is called using
-[modifying notation with the symbol `~`](/languages/func/expressions#modifying-notation).
+[modifying notation with the symbol `~`](/ecosystem/languages/func/expressions#modifying-notation).
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`new_dict`](/languages/func/stdlib#new-dict)
-- [`dict_set` primitives](/languages/func/stdlib#dict-set)
-- [`dict_empty?`](/languages/func/stdlib#dict-empty%3F)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`new_dict`](/ecosystem/languages/func/stdlib#new-dict)
+- [`dict_set` primitives](/ecosystem/languages/func/stdlib#dict-set)
+- [`dict_empty?`](/ecosystem/languages/func/stdlib#dict-empty%3F)
 
 ### How to store and load a dictionary in permanent storage
 
@@ -558,23 +558,23 @@ set_data(begin_cell().store_dict(dictionary_cell).end_cell());
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Slice primitives](/languages/func/stdlib#slice-primitives)
-- [`get_data`](/languages/func/stdlib#get-data)
-- [`set_data`](/languages/func/stdlib#set-data)
-- [Builder primitives](/languages/func/stdlib#builder-primitives)
-- [`new_dict`](/languages/func/stdlib#new-dict)
-- [`slice_empty?`](/languages/func/stdlib#slice-empty%3F)
-- [`load_dict`](/languages/func/stdlib#load-dict)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Slice primitives](/ecosystem/languages/func/stdlib#slice-primitives)
+- [`get_data`](/ecosystem/languages/func/stdlib#get-data)
+- [`set_data`](/ecosystem/languages/func/stdlib#set-data)
+- [Builder primitives](/ecosystem/languages/func/stdlib#builder-primitives)
+- [`new_dict`](/ecosystem/languages/func/stdlib#new-dict)
+- [`slice_empty?`](/ecosystem/languages/func/stdlib#slice-empty%3F)
+- [`load_dict`](/ecosystem/languages/func/stdlib#load-dict)
 
 ### How to iterate dictionaries
 
-To iterate a dictionary from the smallest to biggest key, first call a [`dict_get_min?` primitive](/languages/func/stdlib#dict-get-min%3F) to obtain the smallest key in the dictionary,
-and then call a [`dict_get_next?` primitive](/languages/func/stdlib#dict-get-next%3F) inside a loop while checking a flag for existence of further key-value pairs to process.
+To iterate a dictionary from the smallest to biggest key, first call a [`dict_get_min?` primitive](/ecosystem/languages/func/stdlib#dict-get-min%3F) to obtain the smallest key in the dictionary,
+and then call a [`dict_get_next?` primitive](/ecosystem/languages/func/stdlib#dict-get-next%3F) inside a loop while checking a flag for existence of further key-value pairs to process.
 
-Similarly, to iterate a dictionary from the biggest to smallest key, first call a [`dict_get_max?` primitive](/languages/func/stdlib#dict-get-max%3F) to obtain the biggest key in the dictionary,
-and then call a [`dict_get_prev?` primitive](/languages/func/stdlib#dict-get-prev%3F) inside a loop while checking a flag for existence of further key-value pairs to process.
+Similarly, to iterate a dictionary from the biggest to smallest key, first call a [`dict_get_max?` primitive](/ecosystem/languages/func/stdlib#dict-get-max%3F) to obtain the biggest key in the dictionary,
+and then call a [`dict_get_prev?` primitive](/ecosystem/languages/func/stdlib#dict-get-prev%3F) inside a loop while checking a flag for existence of further key-value pairs to process.
 
 ```func
 ;; Initialize an example dictionary.
@@ -621,19 +621,19 @@ while (flag) {
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`new_dict`](/languages/func/stdlib#new-dict)
-- [`dict_set` primitives](/languages/func/stdlib#dict-set)
-- [`dict_get_min?` primitives](/languages/func/stdlib#dict-get-min%3F)
-- [`dict_get_max?` primitives](/languages/func/stdlib#dict-get-max%3F)
-- [`dict_get_next?` primitives](/languages/func/stdlib#dict-get-next%3F)
-- [`dict_get_prev?` primitives](/languages/func/stdlib#dict-get-prev%3F)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`new_dict`](/ecosystem/languages/func/stdlib#new-dict)
+- [`dict_set` primitives](/ecosystem/languages/func/stdlib#dict-set)
+- [`dict_get_min?` primitives](/ecosystem/languages/func/stdlib#dict-get-min%3F)
+- [`dict_get_max?` primitives](/ecosystem/languages/func/stdlib#dict-get-max%3F)
+- [`dict_get_next?` primitives](/ecosystem/languages/func/stdlib#dict-get-next%3F)
+- [`dict_get_prev?` primitives](/ecosystem/languages/func/stdlib#dict-get-prev%3F)
 
 ### How to delete a value from a dictionary
 
-Use the [`dict_delete?` primitives](/languages/func/stdlib#dict-delete%3F) to delete keys in a dictionary.
+Use the [`dict_delete?` primitives](/ecosystem/languages/func/stdlib#dict-delete%3F) to delete keys in a dictionary.
 
 ```func
 ;; Initialize an example dictionary.
@@ -658,18 +658,18 @@ names~udict_delete?(256, 27);
 
 **References:**
 
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [`new_dict`](/languages/func/stdlib#new-dict)
-- [`dict_set` primitives](/languages/func/stdlib#dict-set)
-- [`dict_delete?` primitives](/languages/func/stdlib#dict-delete%3F)
-- [`dict_get?` primitives](/languages/func/stdlib#dict-get%3F)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [`new_dict`](/ecosystem/languages/func/stdlib#new-dict)
+- [`dict_set` primitives](/ecosystem/languages/func/stdlib#dict-set)
+- [`dict_delete?` primitives](/ecosystem/languages/func/stdlib#dict-delete%3F)
+- [`dict_get?` primitives](/ecosystem/languages/func/stdlib#dict-get%3F)
 
 ### How to determine if a tuple is empty
 
 When working with `tuples`, checking for existing values before extracting them is crucial.
-Extracting a value from an empty tuple will result in an error: ["not a tuple of valid size" - `exit code 7`](/tvm/exit-codes#7).
+Extracting a value from an empty tuple will result in an error: ["not a tuple of valid size" - `exit code 7`](/ecosystem/tvm/exit-codes#7).
 
 ```func
 ;; Declare the tlen assembler function because it's not present in stdlib
@@ -690,19 +690,19 @@ int tlen (tuple t) asm "TLEN";
 }
 ```
 
-The `tlen` [assembler function](/languages/func/asm-functions) uses
-the [TVM instruction `TLEN`](/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
+The `tlen` [assembler function](/ecosystem/languages/func/asm-functions) uses
+the [TVM instruction `TLEN`](/ecosystem/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
 The `tpush` function appends an element to the tuple, so that it becomes the last element.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [`empty_tuple`](/languages/func/stdlib#empty-tuple)
-- [`tpush`](/languages/func/stdlib#tpush)
-- [TVM Exit codes](/tvm/exit-codes)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [`empty_tuple`](/ecosystem/languages/func/stdlib#empty-tuple)
+- [`tpush`](/ecosystem/languages/func/stdlib#tpush)
+- [TVM Exit codes](/ecosystem/tvm/exit-codes)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### Basic operations with tuples
 
@@ -744,22 +744,22 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 }
 ```
 
-The `tlen` [assembler function](/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
+The `tlen` [assembler function](/ecosystem/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/ecosystem/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
 
-The `tpop` assembler function uses the [TVM instruction `TPOP`](/tvm/instructions#6f8d-tpop) to detach the last element from the tuple, and
+The `tpop` assembler function uses the [TVM instruction `TPOP`](/ecosystem/tvm/instructions#6f8d-tpop) to detach the last element from the tuple, and
 it returns the mutated tuple and the detached element.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [Polymorphic functions](/languages/func/functions#forall-declarator)
-- [`empty_tuple`](/languages/func/stdlib#empty-tuple)
-- [`tpush`](/languages/func/stdlib#tpush)
-- [`first`](/languages/func/stdlib#first)
-- [`at`](/languages/func/built-ins/#at)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [Polymorphic functions](/ecosystem/languages/func/functions#forall-declarator)
+- [`empty_tuple`](/ecosystem/languages/func/stdlib#empty-tuple)
+- [`tpush`](/ecosystem/languages/func/stdlib#tpush)
+- [`first`](/ecosystem/languages/func/stdlib#first)
+- [`at`](/ecosystem/languages/func/built-ins#at)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### How to iterate tuples (both directions)
 
@@ -804,20 +804,20 @@ forall X -> tuple to_tuple (X x) asm "NOP";
 }
 ```
 
-The `tlen` [assembler function](/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
+The `tlen` [assembler function](/ecosystem/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/ecosystem/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
 
 The `to_tuple` casts **any** type into an arbitrary length tuple, which leads to run-time errors if `to_tuple` is used to cast non-tuple types.
 Be careful to only cast fixed-length tuples, like `[1, 2]`. The `to_tuple` is essentially a dummy function that does nothing,
-because it uses the [No operation `NOP`](/tvm/instructions#00-nop) instruction. The only purpose of `to_tuple` is to tell the type-checker
+because it uses the [No operation `NOP`](/ecosystem/tvm/instructions#00-nop) instruction. The only purpose of `to_tuple` is to tell the type-checker
 to accept the input to `to_tuple` as a `tuple`.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [Polymorphic functions](/languages/func/functions#forall-declarator)
-- [`at`](/languages/func/built-ins/#at)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [Polymorphic functions](/ecosystem/languages/func/functions#forall-declarator)
+- [`at`](/ecosystem/languages/func/built-ins#at)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### Iterating n-nested tuples
 
@@ -888,26 +888,26 @@ global int max_value;
 }
 ```
 
-The `tuple_length` [assembler function](/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
+The `tuple_length` [assembler function](/ecosystem/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/ecosystem/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
 
-The `tpop` assembler function uses the [TVM instruction `TPOP`](/tvm/instructions#6f8d-tpop) to detach the last element from the tuple, and
+The `tpop` assembler function uses the [TVM instruction `TPOP`](/ecosystem/tvm/instructions#6f8d-tpop) to detach the last element from the tuple, and
 it returns the mutated tuple and the detached element.
 
-The `is_tuple` assembler function uses the [TVM instruction `ISTUPLE`](/tvm/instructions#6f8a-istuple) to determine if the argument is a tuple or not.
+The `is_tuple` assembler function uses the [TVM instruction `ISTUPLE`](/ecosystem/tvm/instructions#6f8a-istuple) to determine if the argument is a tuple or not.
 
 The `to_tuple` and `to_int` cast **any** type into an arbitrary length tuple and integer, respectively. This leads to run-time errors if
 `to_tuple` and `to_int` are used to cast non-tuple and non-integer types, respectively. The `to_tuple` and `to_int` are essentially dummy functions that do nothing,
-because they use the [No operation `NOP`](/tvm/instructions#00-nop) instruction. The only purpose of `to_tuple` and `to_int` is to tell the type-checker
+because they use the [No operation `NOP`](/ecosystem/tvm/instructions#00-nop) instruction. The only purpose of `to_tuple` and `to_int` is to tell the type-checker
 to accept the input to `to_tuple` as a `tuple`, and the input to `to_int` as an `int`.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [Polymorphic functions](/languages/func/functions#forall-declarator)
-- [Global Variables](/languages/func/global-variables)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [Polymorphic functions](/ecosystem/languages/func/functions#forall-declarator)
+- [Global Variables](/ecosystem/languages/func/global-variables)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### Casting types in tuples
 
@@ -986,7 +986,7 @@ forall X -> () resolve_type (X value) impure {
 }
 ```
 
-The `is_int` function uses [Fift code](/languages/fift/overview). Intuitively, the Fift code implements the
+The `is_int` function uses [Fift code](/ecosystem/languages/fift/overview). Intuitively, the Fift code implements the
 following FunC-like pseudocode:
 
 ```func
@@ -1003,7 +1003,7 @@ forall X -> int is_int (X x) {
 ```
 
 Similarly, the `is_cell` carries out the following FunC-like pseudocode, which makes use
-of the [CTOS TVM instruction](/tvm/instructions#d0-ctos):
+of the [CTOS TVM instruction](/ecosystem/tvm/instructions#d0-ctos):
 
 ```func
 forall X -> int is_cell (X x) {
@@ -1020,7 +1020,7 @@ forall X -> int is_cell (X x) {
 ```
 
 Finally, the `is_slice` carries out the following FunC-like pseudocode, which makes use
-of the [SBITS TVM instruction](/tvm/instructions#d749-sbits):
+of the [SBITS TVM instruction](/ecosystem/tvm/instructions#d749-sbits):
 
 ```func
 forall X -> int is_slice (X x) {
@@ -1039,12 +1039,12 @@ forall X -> int is_slice (X x) {
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [Polymorphic functions](/languages/func/functions#forall-declarator)
-- [`empty_tuple`](/languages/func/stdlib#empty-tuple)
-- [`tpush`](/languages/func/stdlib#tpush)
-- [TVM instructions](/tvm/instructions)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [Polymorphic functions](/ecosystem/languages/func/functions#forall-declarator)
+- [`empty_tuple`](/ecosystem/languages/func/stdlib#empty-tuple)
+- [`tpush`](/ecosystem/languages/func/stdlib#tpush)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### Reversing tuples
 
@@ -1088,25 +1088,25 @@ tuple reverse_tuple (tuple t1) {
 }
 ```
 
-The `tuple_length` [assembler function](/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
+The `tuple_length` [assembler function](/ecosystem/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/ecosystem/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
 
-The `tpop` assembler function uses the [TVM instruction `TPOP`](/tvm/instructions#6f8d-tpop) to detach the last element from the tuple, and
+The `tpop` assembler function uses the [TVM instruction `TPOP`](/ecosystem/tvm/instructions#6f8d-tpop) to detach the last element from the tuple, and
 it returns the mutated tuple and the detached element.
 
 The `to_tuple` casts **any** type into an arbitrary length tuple, which leads to run-time errors if `to_tuple` is used to cast non-tuple types.
 The `to_tuple` is essentially a dummy function that does nothing,
-because it uses the [No operation `NOP`](/tvm/instructions#00-nop) instruction. The only purpose of `to_tuple` is to tell the type-checker
+because it uses the [No operation `NOP`](/ecosystem/tvm/instructions#00-nop) instruction. The only purpose of `to_tuple` is to tell the type-checker
 to accept the input to `to_tuple` as a `tuple`.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [Polymorphic functions](/languages/func/functions#forall-declarator)
-- [`empty_tuple`](/languages/func/stdlib#empty-tuple)
-- [`tpush`](/languages/func/stdlib#tpush)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [Polymorphic functions](/ecosystem/languages/func/functions#forall-declarator)
+- [`empty_tuple`](/ecosystem/languages/func/stdlib#empty-tuple)
+- [`tpush`](/ecosystem/languages/func/stdlib#tpush)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### How to remove an item with a certain index from a tuple
 
@@ -1152,17 +1152,17 @@ int tlen (tuple t) asm "TLEN";
 }
 ```
 
-The `tlen` [assembler function](/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
+The `tlen` [assembler function](/ecosystem/languages/func/asm-functions) uses the [TVM instruction `TLEN`](/ecosystem/tvm/instructions#6f88-tlen) to determine the number of elements in the tuple.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [`empty_tuple`](/languages/func/stdlib#empty-tuple)
-- [`at`](/languages/func/built-ins/#at)
-- [`tpush`](/languages/func/stdlib#tpush)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [`empty_tuple`](/ecosystem/languages/func/stdlib#empty-tuple)
+- [`at`](/ecosystem/languages/func/built-ins#at)
+- [`tpush`](/ecosystem/languages/func/stdlib#tpush)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### Determine if tuples are equal
 
@@ -1291,23 +1291,23 @@ For explanation of the functions that check types, refer to the recipe ["Casting
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Assembler functions](/languages/func/asm-functions)
-- [Polymorphic functions](/languages/func/functions#forall-declarator)
-- [`tpush`](/languages/func/stdlib#tpush)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [Polymorphic functions](/ecosystem/languages/func/functions#forall-declarator)
+- [`tpush`](/ecosystem/languages/func/stdlib#tpush)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ### Basic operations in lisp-style lists
 
-[Lisp-style lists](/languages/func/stdlib#lisp-style-lists) are represented as nested tuples. For example, the list `1, 2, 3` is represented as the
+[Lisp-style lists](/ecosystem/languages/func/stdlib#lisp-style-lists) are represented as nested tuples. For example, the list `1, 2, 3` is represented as the
 nested tuple `[1, [2, [3, null]]]`, where the value `null` acts as a marker for the end of the list.
 
-Use the [`cons`](/languages/func/stdlib#cons) function to add an element at the front of the provided list. For example,
+Use the [`cons`](/ecosystem/languages/func/stdlib#cons) function to add an element at the front of the provided list. For example,
 if `lst` is the list `2, 3`, then `cons(1, lst)` is the list `1, 2, 3`. Internally, `cons(1, lst)` builds the tuple `[1, lst]`, where
 `lst` is the tuple `[2, [3, null]]`.
 
-The [`null?`](/languages/func/built-ins#null%3F) function checks if the provided argument is the `null` value, or equivalently, the empty list.
+The [`null?`](/ecosystem/languages/func/built-ins#null%3F) function checks if the provided argument is the `null` value, or equivalently, the empty list.
 
 The following snippet illustrates these functions:
 
@@ -1335,18 +1335,18 @@ if (numbers.null?()) {
 
 **References:**
 
-- [Lisp-style lists](/languages/func/stdlib#lisp-style-lists)
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`cons`](/languages/func/stdlib#cons)
-- [`null`](/languages/func/stdlib#null)
-- [`null?`](/languages/func/built-ins#null%3F)
+- [Lisp-style lists](/ecosystem/languages/func/stdlib#lisp-style-lists)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`cons`](/ecosystem/languages/func/stdlib#cons)
+- [`null`](/ecosystem/languages/func/stdlib#null)
+- [`null?`](/ecosystem/languages/func/built-ins#null%3F)
 
 ### How to iterate through a lisp-style list
 
 As described in the recipe ["Basic operations in lisp-style lists"](#basic-operations-in-lisp-style-lists),
-[Lisp-style lists](/languages/func/stdlib#lisp-style-lists) are represented as nested tuples.
+[Lisp-style lists](/ecosystem/languages/func/stdlib#lisp-style-lists) are represented as nested tuples.
 
-It is possible to iterate a lisp-style list by using the function [`list-next`](/languages/func/stdlib#list-next),
+It is possible to iterate a lisp-style list by using the function [`list-next`](/ecosystem/languages/func/stdlib#list-next),
 which returns the head of the list and the rest of the list. The following snippet illustrates its usage.
 
 ```func
@@ -1377,13 +1377,13 @@ which returns the head of the list and the rest of the list. The following snipp
 
 **References:**
 
-- [Lisp-style lists](/languages/func/stdlib#lisp-style-lists)
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [`cons`](/languages/func/stdlib#cons)
-- [`null`](/languages/func/stdlib#null)
-- [`null?`](/languages/func/built-ins#null%3F)
-- [`list_next`](/languages/func/stdlib#list-next)
+- [Lisp-style lists](/ecosystem/languages/func/stdlib#lisp-style-lists)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [`cons`](/ecosystem/languages/func/stdlib#cons)
+- [`null`](/ecosystem/languages/func/stdlib#null)
+- [`null?`](/ecosystem/languages/func/built-ins#null%3F)
+- [`list_next`](/ecosystem/languages/func/stdlib#list-next)
 
 ### How to iterate a cell tree
 
@@ -1395,7 +1395,7 @@ to access each cell in the tree. For example, the snippet below uses the
 [iterative version of pre-order traversal](https://en.wikipedia.org/wiki/Tree_traversal#Pre-order_implementation),
 which makes use of a stack, instead of recursive calls.
 
-The stack is implemented using the same technique for [lisp-style lists](/languages/func/stdlib#lisp-style-lists).
+The stack is implemented using the same technique for [lisp-style lists](/ecosystem/languages/func/stdlib#lisp-style-lists).
 The only difference is that the list grows by appending elements to the end of the list, instead of at the front.
 The last element in the list is the top of the stack.
 More concretely, if `s` is the current stack, append an element `x` by constructing the tuple `[s, x]`.
@@ -1473,16 +1473,16 @@ forall X -> (tuple, X) pop_back (tuple t) asm "UNCONS";
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Builder primitives](/languages/func/stdlib#builder-primitives)
-- [Slice primitives](/languages/func/stdlib#slice-primitives)
-- [`Lisp-style lists`](/languages/func/stdlib#lisp-style-lists)
-- [Assembler functions](/languages/func/asm-functions)
-- [`null`](/languages/func/stdlib#null)
-- [`null?`](/languages/func/built-ins#null%3F)
-- [`slice_refs`](/languages/func/stdlib#slice-refs)
-- [TVM instructions](/tvm/instructions)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Builder primitives](/ecosystem/languages/func/stdlib#builder-primitives)
+- [Slice primitives](/ecosystem/languages/func/stdlib#slice-primitives)
+- [`Lisp-style lists`](/ecosystem/languages/func/stdlib#lisp-style-lists)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
+- [`null`](/ecosystem/languages/func/stdlib#null)
+- [`null?`](/ecosystem/languages/func/built-ins#null%3F)
+- [`slice_refs`](/ecosystem/languages/func/stdlib#slice-refs)
+- [TVM instructions](/ecosystem/tvm/instructions)
 
 ## Contracts
 
@@ -1531,17 +1531,17 @@ It is important to handle all scenarios by checking if the state is empty and in
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [`recv_internal` method](/languages/func/special-functions#receive-internal)
-- [`get_data`](/languages/func/stdlib#get-data)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`slice_empty?`](/languages/func/stdlib#slice-empty%3F)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`load_uint`](/languages/func/stdlib#load-uint)
-- [`set_data`](/languages/func/stdlib#set-data)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [`recv_internal` method](/ecosystem/languages/func/special-functions#receive-internal)
+- [`get_data`](/ecosystem/languages/func/stdlib#get-data)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`slice_empty?`](/ecosystem/languages/func/stdlib#slice-empty%3F)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`load_uint`](/ecosystem/languages/func/stdlib#load-uint)
+- [`set_data`](/ecosystem/languages/func/stdlib#set-data)
 
 ### How to update the smart contract logic
 
@@ -1605,7 +1605,7 @@ await contractV1.sendUpgrade(provider.sender(), {
 
 **References:**
 
-- [`set_code`](/languages/func/stdlib#set-code)
+- [`set_code`](/ecosystem/languages/func/stdlib#set-code)
 
 ## Messages
 
@@ -1657,7 +1657,7 @@ because `0x10` corresponds to the 6 bits `010000`.
 The call `store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)` sets 7 further headers to the default value `0`. The sum `1 + 4 + 4 + 64 + 32 + 1 + 1` represents the number of bits occupied by each header. Among these 7 headers, the last two are probably the most interesting for a programmer, because they correspond to the `StateInit` header and the message body ref header, respectively. In particular, the default headers state that the message has no `StateInit`, and that the message body is not stored as a cell reference, but directly in the cell, together with the headers. Refer to recipes ["How to send a deploy message"](#how-to-send-a-deploy-message) and ["How to set the message body as a ref in an internal message"](#how-to-set-the-message-body-as-a-ref-in-an-internal-message) for examples on how to manipulate `StateInit` and the message body ref headers, respectively.
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1680,16 +1680,16 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_slice`](/languages/func/stdlib#store-slice)
-- [`store_coins`](/languages/func/stdlib#store-coins)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
+- [`store_coins`](/ecosystem/languages/func/stdlib#store-coins)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout)
 - Sending messages page
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ### How to set the message body as a ref in an internal message
 
@@ -1734,7 +1734,7 @@ The last header, corresponding to the message body ref header, is set with the c
 message body will be included as a cell reference.
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1760,16 +1760,16 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_slice`](/languages/func/stdlib#store-slice)
-- [`store_coins`](/languages/func/stdlib#store-coins)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
+- [`store_coins`](/ecosystem/languages/func/stdlib#store-coins)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout)
 - Sending messages page
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ### How to set the message body as a slice in an internal message
 
@@ -1804,7 +1804,7 @@ The function writes the default values for all the message headers, as in the re
 ["How to build an internal message with default headers"](#how-to-build-an-internal-message-with-default-headers).
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1831,17 +1831,17 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_slice`](/languages/func/stdlib#store-slice)
-- [`store_coins`](/languages/func/stdlib#store-coins)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
+- [`store_coins`](/ecosystem/languages/func/stdlib#store-coins)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout)
 - Sending messages page
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ### How to send a message containing a comment
 
@@ -1880,7 +1880,7 @@ The function writes the default values for all the message headers, as in the re
 ["How to build an internal message with default headers"](#how-to-build-an-internal-message-with-default-headers).
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1903,17 +1903,17 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_slice`](/languages/func/stdlib#store-slice)
-- [`store_coins`](/languages/func/stdlib#store-coins)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
+- [`store_coins`](/ecosystem/languages/func/stdlib#store-coins)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout)
 - Sending messages page
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ### How to send a message with a long text comment
 
@@ -1963,20 +1963,20 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_slice`](/languages/func/stdlib#store-slice)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 - Sending messages page
 
 ### How to send a deploy message
 
-When sending a deploy message, prepare a [`StateInit`](/foundations/messages/deploy) cell, as done in the recipe [How to build a `StateInit` cell](#how-to-build-a-StateInit-cell). Once the `StateInit` cell is ready, prepare a message cell in which the message body is included with the headers, or the message body is included as a separate cell.
+When sending a deploy message, prepare a [`StateInit`](/ecosystem/primitives/messages/deploy) cell, as done in the recipe [How to build a `StateInit` cell](#how-to-build-a-StateInit-cell). Once the `StateInit` cell is ready, prepare a message cell in which the message body is included with the headers, or the message body is included as a separate cell.
 
 The following function illustrates the case for the message body included in the same cell as the headers. The function receives the destination address, the amount to send, the `StateInit` cell, and the message body as a slice.
 
@@ -2068,26 +2068,26 @@ As a second example, the following function also includes a `StateInit`, but the
 ```
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 Refer to the sending messages page for further details on sending modes in the `send_raw_message` function.
 
 **References:**
 
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_slice`](/languages/func/stdlib#store-slice)
-- [`store_coins`](/languages/func/stdlib#store-coins)
-- [`store_ref`](/languages/func/stdlib#store-ref)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_slice`](/ecosystem/languages/func/stdlib#store-slice)
+- [`store_coins`](/ecosystem/languages/func/stdlib#store-coins)
+- [`store_ref`](/ecosystem/languages/func/stdlib#store-ref)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
+- [TL-B for messages](/ecosystem/whitepapers/tblkch#3-1-7-message-layout)
 - Sending messages page
 
 ### How to send a message with the entire balance
 
-To transfer the entire balance of a smart contract, use [send mode `128`](/foundations/messages/modes).
+To transfer the entire balance of a smart contract, use [send mode `128`](/ecosystem/primitives/messages/modes).
 This is particularly useful for proxy contracts that receive payments and forward them to the main contract.
 
 ```func
@@ -2116,10 +2116,10 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [`"<address string>"a` compile-time builtin](/ecosystem/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 - Sending messages page
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ### How to send a message in a proxy contract
 
@@ -2163,36 +2163,36 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [load\_uint](/languages/func/stdlib#load-uint)
-- [`load_msg_addr`](/languages/func/stdlib#load-msg-addr)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [load\_uint](/ecosystem/languages/func/stdlib#load-uint)
+- [`load_msg_addr`](/ecosystem/languages/func/stdlib#load-msg-addr)
 - Sending messages page
-- [`send_raw_message`](/languages/func/stdlib#send-raw-message)
+- [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ## Functions
 
 ### How to write custom functions using asm keyword
 
-Many features in FunC come from predefined methods in the [Standard library](/languages/func/stdlib).
-However, there are many functionalities that the standard library does not cover, but are available as [TVM instructions](/tvm/instructions).
+Many features in FunC come from predefined methods in the [Standard library](/ecosystem/languages/func/stdlib).
+However, there are many functionalities that the standard library does not cover, but are available as [TVM instructions](/ecosystem/tvm/instructions).
 In such cases, it is possible to define functions that make use of the TVM instructions.
 
-For example, while the function [`tpush`](/languages/func/stdlib#tpush), which adds an element to the end of a tuple, exists in the standard library,
+For example, while the function [`tpush`](/ecosystem/languages/func/stdlib#tpush), which adds an element to the end of a tuple, exists in the standard library,
 there is no `tpop` function, which removes the last element in a tuple and returns the modified tuple and the removed element.
-But there is a [TVM instruction `TPOP`](/tvm/instructions#6f8d-tpop) that does precisely this.
-So, define the function `tpop` as an [assembler function](/languages/func/asm-functions) that wraps the `TPOP` instruction:
+But there is a [TVM instruction `TPOP`](/ecosystem/tvm/instructions#6f8d-tpop) that does precisely this.
+So, define the function `tpop` as an [assembler function](/ecosystem/languages/func/asm-functions) that wraps the `TPOP` instruction:
 
 ```func
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 ```
 
 The return type `(tuple, X)` indicates that the function produces the modified tuple and the extracted element as a result.
-The function is [polymorphic](/languages/func/types#polymorphism-with-type-variables) in the sense that the type of the returned element `X`
+The function is [polymorphic](/ecosystem/languages/func/types#polymorphism-with-type-variables) in the sense that the type of the returned element `X`
 can be any type. The function name uses the symbol `~` to indicate that this function can be called
-using [modifying notation](/languages/func/expressions#modifying-notation).
+using [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 For example, if it is certain that tuple `t` has only integer elements, call the function using
-[modifying notation](/languages/func/expressions#modifying-notation), like this:
+[modifying notation](/ecosystem/languages/func/expressions#modifying-notation), like this:
 
 ```func
 int elem = t~tpop();
@@ -2200,13 +2200,13 @@ int elem = t~tpop();
 
 which will assign the removed element to `elem` and also modify tuple `t` implicitly.
 
-As another example, the following function determines the length of a tuple by wrapping the [`TLEN` TVM instruction](/tvm/instructions#6f88-tlen):
+As another example, the following function determines the length of a tuple by wrapping the [`TLEN` TVM instruction](/ecosystem/tvm/instructions#6f88-tlen):
 
 ```func
 int tuple_length (tuple t) asm "TLEN";
 ```
 
-Further examples taken from the [Standard library](/languages/func/stdlib):
+Further examples taken from the [Standard library](/ecosystem/languages/func/stdlib):
 
 ```func
 slice begin_parse(cell c) asm "CTOS";
@@ -2216,14 +2216,14 @@ cell end_cell(builder b) asm "ENDC";
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Standard library](/languages/func/stdlib)
-- [TVM instructions](/tvm/instructions)
-- [Assembler functions](/languages/func/asm-functions)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Standard library](/ecosystem/languages/func/stdlib)
+- [TVM instructions](/ecosystem/tvm/instructions)
+- [Assembler functions](/ecosystem/languages/func/asm-functions)
 
 ### How to use modifying notation on functions
 
-To use [modifying notation](/languages/func/expressions#modifying-notation) on a function, define the function so
+To use [modifying notation](/ecosystem/languages/func/expressions#modifying-notation) on a function, define the function so
 that it has a type of the form `(A, ...) -> (A, B)`, for arbitrary type `B`. Functions of this type usually mutate their first
 argument and return the mutated argument as their first result.
 
@@ -2270,13 +2270,13 @@ The function can be called using modifying notation as follows.
 }
 ```
 
-Refer to the [modifying notation page](/languages/func/expressions#modifying-notation) for further details.
+Refer to the [modifying notation page](/ecosystem/languages/func/expressions#modifying-notation) for further details.
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [`load_uint`](/languages/func/stdlib#load-uint)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [`load_uint`](/ecosystem/languages/func/stdlib#load-uint)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 
 ## Integer utilities
 
@@ -2295,7 +2295,7 @@ if (current_time > 1672080143) {
 
 **References:**
 
-- [now](/languages/func/stdlib#now)
+- [now](/ecosystem/languages/func/stdlib#now)
 
 ### How to generate a random number
 
@@ -2323,7 +2323,7 @@ int c = random();
 
 **References:**
 
-- [Random Number generator primitives](/languages/func/stdlib#random-number-generator-primitives)
+- [Random Number generator primitives](/ecosystem/languages/func/stdlib#random-number-generator-primitives)
 
 ### Modulo operations
 
@@ -2349,7 +2349,7 @@ Variable names like `xp+zp` are valid as long as there are no spaces between the
 }
 ```
 
-**Reference:** [`muldivmod`](/tvm/instructions#A98C)
+**Reference:** [`muldivmod`](/ecosystem/tvm/instructions#A98C)
 
 ### How to raise a number to a power
 
@@ -2408,8 +2408,8 @@ An usage example of `binpow`:
 
 **References:**
 
-- [Operators](/languages/func/operators)
-- [Loops](/languages/func/statements#loops)
+- [Operators](/ecosystem/languages/func/operators)
+- [Loops](/ecosystem/languages/func/statements#loops)
 
 ### How to convert the ASCII digits in a slice into an int
 
@@ -2434,10 +2434,10 @@ while (~ string_number.slice_empty?()) {
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`load_uint`](/languages/func/stdlib#load-uint)
-- [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`load_uint`](/ecosystem/languages/func/stdlib#load-uint)
+- [`"<ascii string>"` compile-time builtin](/ecosystem/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 
 ### How to convert an int into ASCII digits stored in a slice
 
@@ -2489,15 +2489,15 @@ slice result = string.end_cell().begin_parse();
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`null`](/languages/func/stdlib#null)
-- [`divmod`](/languages/func/stdlib#divmod)
-- [`store_uint`](/languages/func/stdlib#store_uint)
-- [List-style lists](/languages/func/stdlib#lisp-style-lists)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`null`](/ecosystem/languages/func/stdlib#null)
+- [`divmod`](/ecosystem/languages/func/stdlib#divmod)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store_uint)
+- [List-style lists](/ecosystem/languages/func/stdlib#lisp-style-lists)
 
 ## Errors
 
@@ -2525,10 +2525,10 @@ throw(36);
 
 **References:**
 
-- [TVM exception codes](/tvm/exit-codes)
-- [`throw_if`](/languages/func/stdlib#throw-if)
-- [`throw_unless`](/languages/func/stdlib#throw-unless)
-- [`throw`](/languages/func/stdlib#throw)
+- [TVM exception codes](/ecosystem/tvm/exit-codes)
+- [`throw_if`](/ecosystem/languages/func/stdlib#throw-if)
+- [`throw_unless`](/ecosystem/languages/func/stdlib#throw-unless)
+- [`throw`](/ecosystem/languages/func/stdlib#throw)
 
 ## Addresses
 
@@ -2564,20 +2564,20 @@ slice generate_internal_address (int workchain_id, cell state_init) {
 
 Refer to recipe ["How to build a `StateInit` cell"](#how-to-build-a-stateinit-cell). Additionally, refer to recipe ["How to send a deploy message"](#how-to-send-a-deploy-message) for sending a deploy message.
 
-Further information on workchain IDs are found in the [docs](/foundations/addresses/overview#workchain-id).
+Further information on workchain IDs are found in the [docs](/ecosystem/primitives/addresses/overview#workchain-id).
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
-- [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [`begin_cell`](/languages/func/stdlib#begin-cell)
-- [`end_cell`](/languages/func/stdlib#end-cell)
-- [`begin_parse`](/languages/func/stdlib#begin-parse)
-- [`cell_hash()`](/languages/func/stdlib#cell-hash)
-- [`store_uint`](/languages/func/stdlib#store-uint)
-- [`store_int`](/languages/func/stdlib#store-int)
-- [Workchain ID](/foundations/addresses/overview#workchain-id)
-- [Internal addresses](/foundations/addresses/overview#internal-addresses)
+- [Modifying notation using \~](/ecosystem/languages/func/expressions#modifying-notation)
+- [Non-modifying notation using .](/ecosystem/languages/func/expressions#non-modifying-notation)
+- [`begin_cell`](/ecosystem/languages/func/stdlib#begin-cell)
+- [`end_cell`](/ecosystem/languages/func/stdlib#end-cell)
+- [`begin_parse`](/ecosystem/languages/func/stdlib#begin-parse)
+- [`cell_hash()`](/ecosystem/languages/func/stdlib#cell-hash)
+- [`store_uint`](/ecosystem/languages/func/stdlib#store-uint)
+- [`store_int`](/ecosystem/languages/func/stdlib#store-int)
+- [Workchain ID](/ecosystem/primitives/addresses/overview#workchain-id)
+- [Internal addresses](/ecosystem/primitives/addresses/overview#internal-addresses)
 
 ### Generate an external address
 
@@ -2601,4 +2601,4 @@ slice generate_external_address (int address) {
 
 Since there is a need to find the exact number of bits occupied by the address, [declare an asm function](#how-to-write-custom-functions-using-asm-keyword) with the `UBITSIZE` opcode. This function will return the minimum number of bits required to store a given number.
 
-**Reference:** [TVM instructions](/tvm/instructions#B603)
+**Reference:** [TVM instructions](/ecosystem/tvm/instructions#B603)

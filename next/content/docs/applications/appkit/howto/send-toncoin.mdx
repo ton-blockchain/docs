@@ -15,7 +15,7 @@ The flow has three steps: AppKit assembles the request, the wallet signs and bro
 
 ## Before you begin
 
-A connected wallet and the React provider mounted. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet). Use testnet during development.
+A connected wallet and the React provider mounted. See [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet). Use testnet during development.
 
 ## Component (recommended)
 
@@ -96,7 +96,7 @@ TON achieves transaction [finality](https://docs.ton.org/payments/overview#trans
 
 `sendTransaction` returning a `boc` means **the user signed**. Settlement is a separate state — verify with `getTransactionStatus(appKit, { boc })`, which returns `'unknown' | 'pending' | 'completed' | 'failed'` along with `totalMessages`, `pendingMessages`, and `onchainMessages` for trace progress. Treat only `status === 'completed'` as final.
 
-Applications should not block the UI while waiting for confirmation. Show a "signed / confirming" state, let [Streaming](/ecosystem/appkit/howto/streaming) push live updates, and act on `completed` when it arrives. For finding a transaction by external message hash and applying normalization, see the [message lookup guide](/ecosystem/ton-connect/message-lookup).
+Applications should not block the UI while waiting for confirmation. Show a "signed / confirming" state, let [Streaming](/applications/appkit/howto/streaming) push live updates, and act on `completed` when it arrives. For finding a transaction by external message hash and applying normalization, see the [message lookup guide](/ecosystem/ton-connect/message-lookup).
 
 ## Common failures
 
@@ -122,6 +122,6 @@ See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit
 
 ## Related pages
 
-- [Send jettons](/ecosystem/appkit/howto/send-jettons)
-- [NFTs](/ecosystem/appkit/howto/nfts)
-- [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
+- [Send jettons](/applications/appkit/howto/send-jettons)
+- [NFTs](/applications/appkit/howto/nfts)
+- [Use UI widgets](/applications/appkit/howto/use-ui-widgets)

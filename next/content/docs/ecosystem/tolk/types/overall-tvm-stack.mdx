@@ -5,7 +5,7 @@ sidebarTitle: "TVM stack"
 description: ""
 ---
 
-This page assumes prior knowledge of the [Tolk type system](/languages/tolk/types/list-of-types) and [TVM](/tvm/overview). It serves as a concise low-level reference.
+This page assumes prior knowledge of the [Tolk type system](/ecosystem/tolk/types/list-of-types) and [TVM](/ecosystem/tvm/overview). It serves as a concise low-level reference.
 
 A consolidated summary of how Tolk types are represented on the TVM stack.
 
@@ -228,7 +228,7 @@ fun demo(t: [int, [int, int]]) {
 ## `map<K, V>`
 
 - `map<K, V>` occupies a single stack slot: either TVM `NULL` or `CELL`.
-- Non-empty maps, `CELL`, have [a non-trivial bit-level layout](/languages/tl-b/complex-and-non-trivial-examples#hashmap).
+- Non-empty maps, `CELL`, have [a non-trivial bit-level layout](/ecosystem/languages/tl-b/complex-and-non-trivial-examples#hashmap).
 
 ## Callables `(...ArgsT) -> ResultT`
 

@@ -23,7 +23,7 @@ Here you can view [wallet V4 source code](https://github.com/ton-blockchain/wall
 <Aside
   type="caution"
 >
-  Due to security reasons mentioned above, it is not possible to install plugins using [TonConnect](/ecosystem/ton-connect/overview).
+  Due to security reasons mentioned above, it is not possible to install plugins using [TonConnect](/applications/ton-connect/overview).
 </Aside>
 
 Plugins are essentially other smart contracts on TON that developers are free to implement as they wish. In relation to the wallet, they are simply addresses of smart contracts stored in a dictionary in the wallet's persistent memory. These plugins are allowed to request funds and remove themselves from the "allowed list" by sending internal messages to the wallet.
@@ -77,7 +77,7 @@ All previous versions of wallets had a straightforward implementation for receiv
 - `query_id`: 64-bit long integer. This field has no effect on the smart contract's behavior; it is used to track chains of messages between contracts.
 
 1. opcode = `0x706c7567`, request funds operation.
-   - `amount`: [Coins](/tvm/instructions#fa02-stgrams) amount of requested Toncoin.
+   - `amount`: [Coins](/ecosystem/tvm/instructions#fa02-stgrams) amount of requested Toncoin.
    - `extra_currencies`: dictionary containing the amount of requested extra currencies (may be empty).
 1. opcode = `0x64737472`, request removal of the plugin that sent this message from the allowed list.
 
@@ -180,7 +180,7 @@ Removes a plugin from the wallet's allowlist:
 - `balance`: Toncoin amount
 - `query_id`: 64-bit identifier for tracking the operation
 
-Wallet V4 provides standard functionality through the `0x0` opcode, similar to previous versions (see [wallet overview](/standard/wallets/history) for details on message layout). The `0x2` and `0x3` operations allow manipulation of the plugin dictionary.
+Wallet V4 provides standard functionality through the `0x0` opcode, similar to previous versions (see [wallet overview](/ecosystem/standard/wallets/history) for details on message layout). The `0x2` and `0x3` operations allow manipulation of the plugin dictionary.
 
 ## Exit codes
 

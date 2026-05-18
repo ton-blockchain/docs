@@ -49,9 +49,9 @@ Optional:
 - The manifest must be served over HTTPS. Wallets do not guarantee they will fetch a manifest served over plain HTTP.
 - Any reachable HTTPS URL is valid. Hosting the manifest at the root of your domain (e.g. `https://yourapp.com/tonconnect-manifest.json`) keeps access simple.
 
-If the wallet cannot fetch the manifest, the connect flow returns `MANIFEST_NOT_FOUND_ERROR` (code 2) or `MANIFEST_CONTENT_ERROR` (code 3). See [Manifest 404 and CORS](/ecosystem/ton-connect/troubleshooting#manifest-404-and-cors).
+If the wallet cannot fetch the manifest, the connect flow returns `MANIFEST_NOT_FOUND_ERROR` (code 2) or `MANIFEST_CONTENT_ERROR` (code 3). See [Manifest 404 and CORS](/applications/ton-connect/troubleshooting#manifest-404-and-cors).
 
-For the full field reference, see [Manifest](/ecosystem/ton-connect/core-concepts#manifest).
+For the full field reference, see [Manifest](/applications/ton-connect/core-concepts#manifest).
 
 ### 2. Pick an SDK
 
@@ -215,7 +215,7 @@ Drop `tonconnect-manifest.json` into your project's `public/` directory:
 public/tonconnect-manifest.json
 ```
 
-Next.js serves the file at `https://yourapp.com/tonconnect-manifest.json`. Make sure your hosting layer does not add CORS or auth gates — see [Manifest 404 and CORS](/ecosystem/ton-connect/troubleshooting#manifest-404-and-cors).
+Next.js serves the file at `https://yourapp.com/tonconnect-manifest.json`. Make sure your hosting layer does not add CORS or auth gates — see [Manifest 404 and CORS](/applications/ton-connect/troubleshooting#manifest-404-and-cors).
 
 ### 3. App Router
 
@@ -498,7 +498,7 @@ connector.connect(
 );
 ```
 
-See [Connect a wallet](/ecosystem/ton-connect/how-to/connect) for the proof-verification flow.
+See [Connect a wallet](/applications/ton-connect/how-to/connect) for the proof-verification flow.
 
 ### 6. Listen for status changes
 
@@ -544,11 +544,11 @@ Each wallet advertises its own per-call limit on the `SendTransaction` feature e
 
 ## What's next
 
-- Authenticate the user with `ton_proof` → [Connect a wallet](/ecosystem/ton-connect/how-to/connect)
-- Send a structured transaction → [Send a transaction](/ecosystem/ton-connect/how-to/send-transaction)
-- Sign data on the wallet → [Sign data](/ecosystem/ton-connect/how-to/sign-data)
-- Gasless transactions → [Sign and relay a message (gasless)](/ecosystem/ton-connect/how-to/sign-message-gasless)
-- One-tap connect-and-pay → [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request)
-- Handle wallet-initiated disconnects → [Disconnect a session](/ecosystem/ton-connect/how-to/disconnect)
-- Filter wallets by feature → [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
-- WalletConnect support → [Add WalletConnect support](/ecosystem/ton-connect/how-to/walletconnect-support)
+- Authenticate the user with `ton_proof` → [Connect a wallet](/applications/ton-connect/how-to/connect)
+- Send a structured transaction → [Send a transaction](/applications/ton-connect/how-to/send-transaction)
+- Sign data on the wallet → [Sign data](/applications/ton-connect/how-to/sign-data)
+- Gasless transactions → [Sign and relay a message (gasless)](/applications/ton-connect/how-to/sign-message-gasless)
+- One-tap connect-and-pay → [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request)
+- Handle wallet-initiated disconnects → [Disconnect a session](/applications/ton-connect/how-to/disconnect)
+- Filter wallets by feature → [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
+- WalletConnect support → [Add WalletConnect support](/applications/ton-connect/how-to/walletconnect-support)

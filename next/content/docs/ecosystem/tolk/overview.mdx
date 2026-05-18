@@ -7,7 +7,7 @@ description: ""
 
 Tolk is a statically typed language for writing smart contracts on TON. It provides declarative data structures, automatic cell serialization, and message handling primitives.
 
-The language compiles to [TVM](/tvm/overview) and provides direct control over execution.
+The language compiles to [TVM](/ecosystem/tvm/overview) and provides direct control over execution.
 
 ```tolk
 type AllowedMessage = CounterIncrement | CounterReset
@@ -31,16 +31,16 @@ get fun currentCounter() {
 }
 ```
 
-Tolk is compatible with existing [TON standards](/from-ethereum#standards).
+Tolk is compatible with existing [TON standards](/learn-more/from-ethereum#standards).
 
 ## Key features
 
 Tolk provides high-level readability while preserving low-level control:
 
-- a type system for describing [cell](/foundations/serialization/cells) layouts;
-- [`lazy` loading](/languages/tolk/features/lazy-loading) that skips unused fields;
+- a type system for describing [cell](/ecosystem/primitives/serialization/cells) layouts;
+- [`lazy` loading](/ecosystem/tolk/features/lazy-loading) that skips unused fields;
 - unified message composition and deployment;
-- a [`contract` declaration](/languages/tolk/features/contract-abi) that drives ABI export, TypeScript wrappers, source maps, and debugging;
+- a [`contract` declaration](/ecosystem/tolk/features/contract-abi) that drives ABI export, TypeScript wrappers, source maps, and debugging;
 - a compiler targeting the Fift assembler;
 - tooling with IDE integration.
 
@@ -48,10 +48,10 @@ Tolk provides high-level readability while preserving low-level control:
 
 Tolk evolved from FunC and is now the recommended language for TON smart contracts. To migrate from FunC:
 
-- see [Tolk contract examples](/languages/tolk/examples) for embedded jetton and NFT examples;
+- see [Tolk contract examples](/ecosystem/tolk/examples) for embedded jetton and NFT examples;
 - check [gas benchmarks](https://github.com/ton-blockchain/tolk-bench);
-- read [Tolk vs FunC](/languages/tolk/from-func/tolk-vs-func) for an overview;
-- use the [FunC-to-Tolk converter](/languages/tolk/from-func/converter) to migrate existing projects.
+- read [Tolk vs FunC](/ecosystem/tolk/from-func/tolk-vs-func) for an overview;
+- use the [FunC-to-Tolk converter](/ecosystem/tolk/from-func/converter) to migrate existing projects.
 
 ## Quick start
 
@@ -59,14 +59,14 @@ Follow the [quickstart page in the Acton documentation](https://ton-blockchain.g
 
 ## IDE support
 
-1. [JetBrains IDEs plugin](/contract-dev/ide/jetbrains#tolk) provides syntax highlighting and code navigation.
-1. [VSCode extension](/contract-dev/ide/vscode#tolk) adds syntax highlighting, code navigation, and other language features for VS Code and VS Code-based editors such as VSCodium, Cursor, and Windsurf.
+1. [JetBrains IDEs plugin](/ecosystem/contract-dev/ide/jetbrains#tolk) provides syntax highlighting and code navigation.
+1. [VSCode extension](/ecosystem/contract-dev/ide/vscode#tolk) adds syntax highlighting, code navigation, and other language features for VS Code and VS Code-based editors such as VSCodium, Cursor, and Windsurf.
 1. [Language server](https://github.com/ton-blockchain/ton-language-server#other-editors) supports (Neo)Vim, Helix, and other editors with LSP support.
 
 ## Start with
 
-- [Basic syntax](/languages/tolk/basic-syntax)
-- [Idioms and conventions](/languages/tolk/idioms-conventions)
-- [Contract examples](/languages/tolk/examples)
-- [Type system](/languages/tolk/types/list-of-types)
-- [Message handling](/languages/tolk/features/message-handling)
+- [Basic syntax](/ecosystem/tolk/basic-syntax)
+- [Idioms and conventions](/ecosystem/tolk/idioms-conventions)
+- [Contract examples](/ecosystem/tolk/examples)
+- [Type system](/ecosystem/tolk/types/list-of-types)
+- [Message handling](/ecosystem/tolk/features/message-handling)

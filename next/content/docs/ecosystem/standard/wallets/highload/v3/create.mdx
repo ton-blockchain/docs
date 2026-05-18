@@ -74,10 +74,10 @@ The `timeout` determines:
 <Aside
   type="caution"
 >
-  **Cannot be changed later:** `timeout` is part of the contract's [initial configuration](/standard/wallets/highload/v3/specification#storage-structure). Changing it would change the wallet address entirely.
+  **Cannot be changed later:** `timeout` is part of the contract's [initial configuration](/ecosystem/standard/wallets/highload/v3/specification#storage-structure). Changing it would change the wallet address entirely.
 </Aside>
 
-See [Timeout constraints](/standard/wallets/highload/v3/specification#timeout-constraints) in the specification for details.
+See [Timeout constraints](/ecosystem/standard/wallets/highload/v3/specification#timeout-constraints) in the specification for details.
 
 ### `subwalletId`
 
@@ -97,7 +97,7 @@ A single mnemonic can generate multiple independent wallet addresses by varying 
 
 If you use the same `subwalletId` across different wallet types (e.g., Highload v3 and standard wallet v5), they might share the same address, causing conflicts. Using `0x10ad` ensures isolation from standard wallets.
 
-See [Storage structure](/standard/wallets/highload/v3/specification#storage-structure) in the specification for details.
+See [Storage structure](/ecosystem/standard/wallets/highload/v3/specification#storage-structure) in the specification for details.
 
 ## Step 3: Generate or load a mnemonic
 
@@ -187,7 +187,7 @@ console.log('Wallet address:', address);
 This address is deterministic: it depends only on `CODE`, `publicKey`, `subwalletId`, and `timeout`. The same parameters always produce the same address.
 
 <Aside type="tip">
-  **Why non-bounceable?** When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. See [Address formats](/foundations/addresses/formats) for details.
+  **Why non-bounceable?** When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. See [Address formats](/ecosystem/primitives/addresses/formats) for details.
 </Aside>
 
 **Account status: [`nonexist`](/foundations/status#status-variety)**

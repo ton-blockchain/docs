@@ -11,7 +11,7 @@ This section outlines the on-chain and off-chain specifications for **NFTs with 
 
 ### Problem
 
-On TON, NFTs follow [TEP-62](/standard/tokens/nft/overview) and [TEP-64](/standard/tokens/metadata); royalties are defined by [TEP-66](/standard/tokens/nft/comparison#additional%3A-royalty). To be recognized as an NFT by ecosystem products such as wallets, explorers, and indexers, a smart contract must conform to the interfaces and internal constraints defined by these specifications.
+On TON, NFTs follow [TEP-62](/ecosystem/standard/tokens/nft/overview) and [TEP-64](/ecosystem/standard/tokens/metadata); royalties are defined by [TEP-66](/ecosystem/standard/tokens/nft/comparison#additional%3A-royalty). To be recognized as an NFT by ecosystem products such as wallets, explorers, and indexers, a smart contract must conform to the interfaces and internal constraints defined by these specifications.
 
 TEP-66, _the NFT royalty standard_, defines the on-chain layout for royalty parameters but does not impose any rules on how royalties should be enforced across the ecosystem. **This is intentional:** introducing mandatory on-chain royalty enforcement for auctions or other market mechanisms would interfere with the foundational principles of NFTs. This would mean enforcing royalties at the cost of restricting legitimate, non-commercial transfers — such as gifting or migrating assets between personal wallets. These constraints undermine usability and conflict with the open, decentralized principles that define NFTs.
 
@@ -163,7 +163,7 @@ Not all NFT-related operations are subject to royalty fees. Some actions — suc
 
 ### Royalty-bearing operations
 
-All operations that involve commercial intent must include royalty payments, as defined by the [TEP-66 specification](/standard/tokens/nft/comparison#additional%3A-royalty). This includes all market-based NFT trading models, such as auctions and offer mechanisms, as well as NFT-related DeFi use cases like floor perpetuals and staking.
+All operations that involve commercial intent must include royalty payments, as defined by the [TEP-66 specification](/ecosystem/standard/tokens/nft/comparison#additional%3A-royalty). This includes all market-based NFT trading models, such as auctions and offer mechanisms, as well as NFT-related DeFi use cases like floor perpetuals and staking.
 
 #### Retrieving royalty parameters
 
@@ -281,5 +281,5 @@ This diagram illustrates the end-to-end data flow of NFT 2.0 item distribution t
 
 ## See also
 
-- [NFT standard: TEP-62](/standard/tokens/nft/overview)
-- [NFT royalty standard extension: TEP-66](/standard/tokens/nft/comparison#additional%3A-royalty)
+- [NFT standard: TEP-62](/ecosystem/standard/tokens/nft/overview)
+- [NFT royalty standard extension: TEP-66](/ecosystem/standard/tokens/nft/comparison#additional%3A-royalty)

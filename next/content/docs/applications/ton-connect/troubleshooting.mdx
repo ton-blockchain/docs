@@ -9,7 +9,7 @@ description: ""
 
 When TON Connect breaks, the failure surfaces in one of two places — an explicit error code from the wallet, or a manifest fetch problem before the wallet even sees the request. This page collects each.
 
-For frequently asked questions about expected behaviour rather than failures, see the [FAQ](/ecosystem/ton-connect/faq).
+For frequently asked questions about expected behaviour rather than failures, see the [FAQ](/applications/ton-connect/faq).
 
 ## Common errors
 
@@ -76,7 +76,7 @@ The wallet does not implement the requested method, or it does not advertise the
 | Structured `items`                   | `SendTransaction` or `SignMessage` with `itemTypes` covering each item |
 | `ton_proof` connect item             | per-item code 400 in the `ConnectItemReply`                            |
 
-**Action.** Either fall back to a supported method, or use [`walletsRequiredFeatures`](/ecosystem/ton-connect/how-to/filter-wallets) to hide wallets that lack the feature before the user reaches the connect modal.
+**Action.** Either fall back to a supported method, or use [`walletsRequiredFeatures`](/applications/ton-connect/how-to/filter-wallets) to hide wallets that lack the feature before the user reaches the connect modal.
 
 ### `UNKNOWN_APP_ERROR` — code 100
 
@@ -103,7 +103,7 @@ Every `sendTransaction`, `signMessage`, `signData`, and `disconnect` call attach
 
 A manifest fetch error means the wallet could not load or validate your `tonconnect-manifest.json`. Before showing the connect prompt, the wallet fetches this file over HTTPS from any origin without authentication. Common causes are an unreachable host, blocked CORS, an HTML gateway challenge, and an `iconUrl` that does not load. In these cases the wallet returns `MANIFEST_NOT_FOUND_ERROR` (code `2`) or `MANIFEST_CONTENT_ERROR` (code `3`).
 
-Use `curl` to identify the failing layer. For the manifest schema and fields, see [Manifest](/ecosystem/ton-connect/core-concepts#manifest) and the [App manifest specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/manifest.md).
+Use `curl` to identify the failing layer. For the manifest schema and fields, see [Manifest](/applications/ton-connect/core-concepts#manifest) and the [App manifest specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/manifest.md).
 
 ### Self-diagnosis with `curl`
 
@@ -190,7 +190,7 @@ After publishing a fix:
 
 ## See also
 
-- [FAQ](/ecosystem/ton-connect/faq) — frequently asked questions about behaviour and design choices.
-- [Universal links](/ecosystem/ton-connect/core-concepts#universal-links) — `ret` parameter reference.
-- [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request) — reduces round-trips on mobile.
+- [FAQ](/applications/ton-connect/faq) — frequently asked questions about behaviour and design choices.
+- [Universal links](/applications/ton-connect/core-concepts#universal-links) — `ret` parameter reference.
+- [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request) — reduces round-trips on mobile.
 - [RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md) (`sendTransaction`, `signMessage`, `signData`, `disconnect`) and [Connect specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md) (connect event, connect item) — full normative error tables.

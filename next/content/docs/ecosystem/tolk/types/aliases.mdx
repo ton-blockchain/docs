@@ -67,11 +67,11 @@ fun demo(a: AssetsDict, b: BalanceDict) {
 }
 ```
 
-This behavior is similar to `intN` types: `int32` is assignable to `int`, and `int64` is assignable to `int`, but `int32` and `int64` are not assignable to each other. Assignment can be done with an explicit [cast](/languages/tolk/types/type-checks-and-casts). For example, `b as AssetsDict`.
+This behavior is similar to `intN` types: `int32` is assignable to `int`, and `int64` is assignable to `int`, but `int32` and `int64` are not assignable to each other. Assignment can be done with an explicit [cast](/ecosystem/tolk/types/type-checks-and-casts). For example, `b as AssetsDict`.
 
 ## Generic type aliases
 
-Type aliases can be [generic](/languages/tolk/types/generics).
+Type aliases can be [generic](/ecosystem/tolk/types/generics).
 
 ```tolk
 type Wrapper<T> = Nothing | Container<T>
@@ -79,9 +79,9 @@ type Wrapper<T> = Nothing | Container<T>
 
 ## Stack layout and serialization
 
-A type alias is identical to its underlying type in [stack layout](/languages/tolk/types/overall-tvm-stack) and [serialization](/languages/tolk/types/overall-serialization).
+A type alias is identical to its underlying type in [stack layout](/ecosystem/tolk/types/overall-tvm-stack) and [serialization](/ecosystem/tolk/types/overall-serialization).
 
-Serialization behavior can be overridden by defining [custom serializers](/languages/tolk/features/auto-serialization#custom-serializers-for-custom-types). This is useful when binary encoding cannot be expressed using existing types.
+Serialization behavior can be overridden by defining [custom serializers](/ecosystem/tolk/features/auto-serialization#custom-serializers-for-custom-types). This is useful when binary encoding cannot be expressed using existing types.
 
 ```tolk
 type MyString = slice

@@ -9,7 +9,7 @@ Assemble a `TransactionRequest`, ask the connected wallet to sign and broadcast 
 
 Reaching this page means you have a working app: install, connect, read, send. The pages after this one — streaming, DeFi providers, and UI widgets — layer on improvements rather than baseline functionality.
 
-The lifecycle has clear ownership boundaries. _Your code_ assembles the request — recipient, amount, payload, validity window. _The wallet_ reviews the request, presents it to the user, and signs it. _The chain_ receives the signed message, orders it, and either includes or rejects it. _The streaming provider_ observes the result and reports back. `onSuccess` firing on a component or hook means the wallet accepted the request, not that the chain accepted the transaction; settlement is observed separately on [Streaming](/ecosystem/appkit/get-started/streaming).
+The lifecycle has clear ownership boundaries. _Your code_ assembles the request — recipient, amount, payload, validity window. _The wallet_ reviews the request, presents it to the user, and signs it. _The chain_ receives the signed message, orders it, and either includes or rejects it. _The streaming provider_ observes the result and reports back. `onSuccess` firing on a component or hook means the wallet accepted the request, not that the chain accepted the transaction; settlement is observed separately on [Streaming](/applications/appkit/get-started/streaming).
 
 ## Send Toncoin in one component
 
@@ -42,7 +42,7 @@ The three layers trade off control against work done for you. Components own the
 
 ## Tips
 
-Wallet acceptance is not settlement. Always pair a send with [Stream live updates](/ecosystem/appkit/get-started/streaming) or `getTransactionStatus`, and verify the final outcome on a backend before delivering paid goods.
+Wallet acceptance is not settlement. Always pair a send with [Stream live updates](/applications/appkit/get-started/streaming) or `getTransactionStatus`, and verify the final outcome on a backend before delivering paid goods.
 
 ## Code example
 
@@ -52,8 +52,8 @@ See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit
 
 You now have the baseline working app. From here, layer on improvements:
 
-- [Stream live updates](/ecosystem/appkit/get-started/streaming) to react to chain changes without polling.
-- [Add DeFi providers](/ecosystem/appkit/get-started/providers) when the app needs swaps or staking.
-- [Use UI widgets](/ecosystem/appkit/get-started/using-ui-widgets) to drop in ready-made flows.
+- [Stream live updates](/applications/appkit/get-started/streaming) to react to chain changes without polling.
+- [Add DeFi providers](/applications/appkit/get-started/providers) when the app needs swaps or staking.
+- [Use UI widgets](/applications/appkit/get-started/using-ui-widgets) to drop in ready-made flows.
 
-For task-level walkthroughs, see [Send Toncoin](/ecosystem/appkit/howto/send-toncoin), [Send jettons](/ecosystem/appkit/howto/send-jettons), and [NFTs](/ecosystem/appkit/howto/nfts).
+For task-level walkthroughs, see [Send Toncoin](/applications/appkit/howto/send-toncoin), [Send jettons](/applications/appkit/howto/send-jettons), and [NFTs](/applications/appkit/howto/nfts).

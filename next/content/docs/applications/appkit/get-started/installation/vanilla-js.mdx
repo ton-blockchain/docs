@@ -20,7 +20,7 @@ npm i @ton/appkit @tonconnect/ui @ton/core
 | `@ton/core`      | TON address and cell primitives.                        |
 
 <Note>
-  Complete the [Preparation](/ecosystem/appkit/get-started/installation) step first. The `Buffer` polyfill it sets up is required for AppKit to run in the browser.
+  Complete the [Preparation](/applications/appkit/get-started/installation/installation) step first. The `Buffer` polyfill it sets up is required for AppKit to run in the browser.
 </Note>
 
 ## Create the AppKit instance
@@ -62,7 +62,7 @@ const { data } = useQuery(getBalanceQueryOptions(appKit, { address: '...' }));
   <Card
     title="Connectors"
     icon="plug"
-    href="/ecosystem/appkit/get-started/connectors"
+    href="/applications/appkit/get-started/connectors"
   >
     Register wallet connectors on the `AppKit` instance and open the connect flow.
   </Card>
@@ -70,7 +70,7 @@ const { data } = useQuery(getBalanceQueryOptions(appKit, { address: '...' }));
   <Card
     title="Sending transactions"
     icon="code"
-    href="/ecosystem/appkit/get-started/sending-transactions"
+    href="/applications/appkit/get-started/sending-transactions"
   >
     Call `transferTon`, `transferJetton`, and `sendTransaction` from the AppKit core.
   </Card>

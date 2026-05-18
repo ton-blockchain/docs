@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,7 +21,7 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 ## Constant evaluation breaks function argument substitution
@@ -35,7 +35,7 @@ during constant evaluation that removes the expected division by zero exception.
 
 Issue page: [#1678](https://github.com/ton-blockchain/ton/issues/1678)
 
-For functions [`muldiv`](/languages/func/built-ins#muldiv), [`muldivc`](/languages/func/built-ins#muldivc) and [`muldivr`](/languages/func/built-ins#muldivr),
+For functions [`muldiv`](/ecosystem/languages/func/built-ins#muldiv), [`muldivc`](/ecosystem/languages/func/built-ins#muldivc) and [`muldivr`](/ecosystem/languages/func/built-ins#muldivr),
 if any of their first two arguments is zero at compilation time, the compiler replaces the function call with 0, irrespective of the function's
 third argument, i.e., the divisor. This means that the function calls get replaced by 0 even when the divisor is 0,
 effectively removing the expected division by zero exception.
@@ -57,7 +57,7 @@ Issue pages: [#1659](https://github.com/ton-blockchain/ton/issues/1659),
 [#1661](https://github.com/ton-blockchain/ton/issues/1661),
 [#1662](https://github.com/ton-blockchain/ton/issues/1662).
 
-The compiler simplifies the [division `/`](/languages/func/operators#division%2C-%2F) and [modulo `%`](/languages/func/operators#modulo%2C-%25) operators when their left argument is `0`,
+The compiler simplifies the [division `/`](/ecosystem/languages/func/operators#division%2C-%2F) and [modulo `%`](/ecosystem/languages/func/operators#modulo%2C-%25) operators when their left argument is `0`,
 but only when `/` and `%` are used in tandem with comparison operators like `>=`, `>`, `==`, etc.
 
 For example, the following expressions are **not** simplified to 0 at compile-time, which is the correct behavior:

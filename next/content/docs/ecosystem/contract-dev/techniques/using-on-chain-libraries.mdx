@@ -5,7 +5,7 @@ sidebarTitle: "Using on-chain libraries"
 description: ""
 ---
 
-Before using on-chain libraries, read [Library cells](/foundations/serialization/library). That page explains the cell format that on-chain libraries use.
+Before using on-chain libraries, read [Library cells](/ecosystem/primitives/serialization/library). That page explains the cell format that on-chain libraries use.
 
 <Aside
   type="danger"
@@ -18,7 +18,7 @@ Before using on-chain libraries, read [Library cells](/foundations/serialization
 
 Use library cells when multiple contracts share the same code and forwarding or storage costs need to be reduced, _resulting in fee savings_.
 
-For example, in [jettons](/standard/tokens/jettons/overview), the [`StateInit`](/foundations/messages/deploy) must be forwarded with each transfer, which increases forwarding fees. Moving the code into a library cell reduces that overhead.
+For example, in [jettons](/ecosystem/standard/tokens/jettons/overview), the [`StateInit`](/ecosystem/primitives/messages/deploy) must be forwarded with each transfer, which increases forwarding fees. Moving the code into a library cell reduces that overhead.
 
 However, a library must be hosted in the masterchain, where storage is more expensive than in the basechain. If fewer than about 1,000 contracts share the same code, storing a copy in the basechain can be cheaper.
 
@@ -36,7 +36,7 @@ Replacing the entire code with a library cell is used in TON smart contracts. Ex
 
 ### Check for library usage
 
-Check whether a contract uses a library as its code by inspecting its `code` cell in an [explorer](/ecosystem/explorers/overview).
+Check whether a contract uses a library as its code by inspecting its `code` cell in an [explorer](/infrastructure/explorers/overview).
 
 ```txt title="Partial explorer snippet of a USDT jetton wallet account"
 ...
@@ -158,10 +158,10 @@ Reference implementation: [`JettonWallet.spec.ts`](https://github.com/ton-blockc
 
 When working with a jetton wallet whose code is stored in a library cell, check its balance by executing a get method.
 
-When methods run through the [HTTP API](/ecosystem/api/overview) or [liteserver](/ecosystem/nodes/overview), the library cell is resolved automatically and the method runs against the resolved code.
+When methods run through the [HTTP API](/applications/api/overview) or [liteserver](/ecosystem/nodes/overview), the library cell is resolved automatically and the method runs against the resolved code.
 
 For local execution, pull the account state and resolve every library reference cell first. In most cases, the entire code cell is itself a library reference.
-To resolve a library, call the [`/getLibraries` method](/ecosystem/api/toncenter/v2/configuration/get-libraries).
+To resolve a library, call the [`/getLibraries` method](/applications/api/toncenter/v2/configuration/get-libraries).
 
 ### Retrieve a library cell with liteserver
 

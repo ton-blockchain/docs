@@ -19,13 +19,13 @@ Each jetton stores `name`, `symbol`, and `decimals` in its metadata. Amounts are
 
 ## Before you begin
 
-A connected wallet, the React provider mounted, and the jetton's master address. See [Connect to a wallet](/ecosystem/appkit/howto/connect-to-a-wallet) and [Read balances](/ecosystem/appkit/howto/read-balances) to discover what the wallet holds.
+A connected wallet, the React provider mounted, and the jetton's master address. See [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet) and [Read balances](/applications/appkit/howto/read-balances) to discover what the wallet holds.
 
 <Warning>
   **Funds at risk.** Transferring without accounting for `decimals` can send drastically more or fewer tokens than intended. Verify the `decimals` value from chain metadata before calculating transfer amounts.
 </Warning>
 
-Before opening the wallet, make sure the sender's wallet has enough Toncoin to cover the [fees](/foundations/fees).
+Before opening the wallet, make sure the sender's wallet has enough Toncoin to cover the [fees](/ecosystem/primitives/fees).
 
 ## Component (recommended)
 
@@ -107,7 +107,7 @@ const formatted = getFormattedJettonInfo(jetton);
 
 Jetton transfers settle through the same trace API as Toncoin transfers, but typically produce multiple internal messages. Use `getTransactionStatus(appKit, { boc })` and inspect `onchainMessages`, `pendingMessages`, and `totalMessages` to track progress; treat only `status === 'completed'` as final.
 
-Track the transaction with [Streaming](/ecosystem/appkit/howto/streaming) and verify the recipient's jetton balance in your backend before delivering value.
+Track the transaction with [Streaming](/applications/appkit/howto/streaming) and verify the recipient's jetton balance in your backend before delivering value.
 
 If the recipient has never held this jetton, the transfer deploys the recipient's jetton wallet contract on first receive, which costs additional gas. The default outer-TON allowance on a built `transferJetton` request is designed to cover this case.
 
@@ -134,6 +134,6 @@ See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit
 
 ## Related pages
 
-- [Read balances](/ecosystem/appkit/howto/read-balances)
-- [Send Toncoin](/ecosystem/appkit/howto/send-toncoin)
-- [Use UI widgets](/ecosystem/appkit/howto/use-ui-widgets)
+- [Read balances](/applications/appkit/howto/read-balances)
+- [Send Toncoin](/applications/appkit/howto/send-toncoin)
+- [Use UI widgets](/applications/appkit/howto/use-ui-widgets)

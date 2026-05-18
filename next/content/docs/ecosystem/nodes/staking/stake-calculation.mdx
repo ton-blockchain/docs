@@ -11,7 +11,7 @@ description: ""
   Stake configuration directly controls how much TON is locked in the elector contract for a full validation round. Misconfiguration can lock the entire balance, leaving no funds for the next election. Review each setting carefully before applying changes on TON Mainnet.
 </Aside>
 
-MyTonCtrl automatically calculates the stake amount before submitting an election entry. The calculation balances operator preferences, staking mode, network-imposed limits, and fee reserves to produce a single integer value (in TON) sent to the [elector contract](/foundations/system).
+MyTonCtrl automatically calculates the stake amount before submitting an election entry. The calculation balances operator preferences, staking mode, network-imposed limits, and fee reserves to produce a single integer value (in TON) sent to the [elector contract](/ecosystem/primitives/system).
 
 ## Inputs
 
@@ -177,7 +177,7 @@ Settings: standard nominator pool mode (not single nominator).
 
 ## See also
 
-- [Staking overview](/ecosystem/staking/overview) — comparison of staking solutions and minimum requirements.
+- [Staking overview](/ecosystem/nodes/staking/overview) — comparison of staking solutions and minimum requirements.
 - [Run a validator](/ecosystem/nodes/cpp/run-validator#step-4-set-optimal-stake-for-validator) — step-by-step guide for setting optimal stake.
 - [MyTonCtrl settings](/ecosystem/nodes/cpp/mytonctrl/core#supported-settings) — full list of configurable parameters including `stake` and `stakePercent`.
-- [Single nominator pools](/ecosystem/staking/single-nominator) — recommended staking contract for large holders.
+- [Single nominator pools](/ecosystem/nodes/staking/single-nominator) — recommended staking contract for large holders.

@@ -45,12 +45,12 @@ import {
   resolveCurrentSlug,
   seedConfigFromDocsJson,
   setFrontmatterField,
-  stableStringify,
   stampId,
   walkPages,
   writeConfig,
   writeRedirects,
 } from "./nav-config.mjs"
+import {stableStringify} from "../src/lib/stable-stringify"
 
 const DRY_RUN = process.argv.includes("--dry-run")
 const ALLOW_ORPHANS = process.argv.includes("--allow-orphans")

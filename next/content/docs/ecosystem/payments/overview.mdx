@@ -17,7 +17,7 @@ Off-chain processing monitors blockchain state changes from outside the network.
 
 TON achieves transaction [finality](https://en.wikipedia.org/wiki/Blockchain#Finality) after a single masterchain block confirmation, typically within 1 second. Once a transaction from a shardchain appears in a masterchain block, it becomes irreversible. This differs from blockchains like Ethereum where merchants wait for multiple confirmations (usually 12-15 blocks, taking 2-3 minutes) or Bitcoin where 6 confirmations are standard (about 60 minutes).
 
-Since the [Catchain 2.0 update](/ecosystem/subsecond), the masterchain coordinates all workchain activity and produces blocks approximately every 400 milliseconds. When monitoring payments, you need to verify that the transaction was included in a masterchain block rather than just in a shardchain. Most TON APIs provide methods to check whether a transaction has achieved masterchain finality or, better yet, only consider a transaction included in the masterchain as finalized by the network.
+Since the [Catchain 2.0 update](/subsecond), the masterchain coordinates all workchain activity and produces blocks approximately every 400 milliseconds. When monitoring payments, you need to verify that the transaction was included in a masterchain block rather than just in a shardchain. Most TON APIs provide methods to check whether a transaction has achieved masterchain finality or, better yet, only consider a transaction included in the masterchain as finalized by the network.
 
 ## Supported assets
 
@@ -25,18 +25,18 @@ TON supports several asset types for payment processing:
 
 **Toncoin** is the native currency of the network. Every wallet can receive Toncoin directly without additional setup. Transfers are simple value transfers between addresses, making Toncoin the easiest asset to process.
 
-[**Jettons**](/standard/tokens/jettons/overview) are fungible tokens following the TON Enhancement Proposal 74 (TEP-74) standard. Each Jetton type has a master contract and individual wallet contracts for each holder. When processing Jetton payments, you monitor the Jetton wallet contract associated with your deposit address. Transfer notifications include sender information and transfer amounts.
+[**Jettons**](/ecosystem/standard/tokens/jettons/overview) are fungible tokens following the TON Enhancement Proposal 74 (TEP-74) standard. Each Jetton type has a master contract and individual wallet contracts for each holder. When processing Jetton payments, you monitor the Jetton wallet contract associated with your deposit address. Transfer notifications include sender information and transfer amounts.
 
-Read more about [how Jettons work](/standard/tokens/jettons/how-it-works).
+Read more about [how Jettons work](/ecosystem/standard/tokens/jettons/how-it-works).
 
-- [Toncoin processing](/payments/toncoin)
-- [Jetton processing](/payments/jettons)
+- [Toncoin processing](/ecosystem/payments/toncoin)
+- [Jetton processing](/ecosystem/payments/jettons)
 
 ## Implementation approaches
 
 Three main approaches exist for implementing payment processing on TON:
 
-**Self-built solution**: You run your own service that connects to some TON API or [liteserver](/ecosystem/api/overview), monitors blocks for relevant transactions, and maintains a database of payment events. This requires building infrastructure to fetch blocks, parse transactions, handle reconnections, and manage state. The advantage is complete control over the implementation and no dependency on external services. The disadvantage is significant development and maintenance effort.
+**Self-built solution**: You run your own service that connects to some TON API or [liteserver](/applications/api/overview), monitors blocks for relevant transactions, and maintains a database of payment events. This requires building infrastructure to fetch blocks, parse transactions, handle reconnections, and manage state. The advantage is complete control over the implementation and no dependency on external services. The disadvantage is significant development and maintenance effort.
 
 **Self-hosted payment processor**: Open-source payment processors like [Bicycle](https://github.com/gobicycle/bicycle) and [Spice harvester](https://github.com/txsociety/spice-harvester) provide ready-to-deploy solutions that handle blockchain monitoring and expose APIs for your application. You deploy the processor on your infrastructure, configure it for your wallet addresses and asset types, and consume its API to track payments. This balances control with reduced development effort, though you still manage the infrastructure.
 

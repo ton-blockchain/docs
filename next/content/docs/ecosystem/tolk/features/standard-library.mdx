@@ -25,7 +25,7 @@ const REFUND_ADDR = address("EQCRDM9h4k3UJdOePPuyX40mCgA4vxge5Dc5vjBR8djbEKC5")
 
 ### Compile-time string methods
 
-Several methods operate on constant [string](/languages/tolk/types/strings) literals. They require constant inputs and are evaluated at compile time.
+Several methods operate on constant [string](/ecosystem/tolk/types/strings) literals. They require constant inputs and are evaluated at compile time.
 
 ```tolk
 // calculates crc32 of a string
@@ -69,11 +69,11 @@ All functions in this section are available everywhere. They are defined in `@st
 
 ### Arrays
 
-Array-related methods allow interacting with [`array<T>`](/languages/tolk/types/tuples) — dynamically sized containers of up to 255 elements backed by TVM tuples.
+Array-related methods allow interacting with [`array<T>`](/ecosystem/tolk/types/tuples) — dynamically sized containers of up to 255 elements backed by TVM tuples.
 
 #### Creating arrays
 
-Use `[...]` to create arrays. See the [arrays](/languages/tolk/types/tuples#creating-arrays-with) page for details.
+Use `[...]` to create arrays. See the [arrays](/ecosystem/tolk/types/tuples#creating-arrays-with) page for details.
 
 #### `array.push`, `array.get`, and other array methods
 
@@ -107,7 +107,7 @@ fun demo() {
 
 ### Mathematical primitives
 
-These functions accept and return integers unless stated otherwise. All [integers](/languages/tolk/types/numbers) are 257-bit.
+These functions accept and return integers unless stated otherwise. All [integers](/ecosystem/tolk/types/numbers) are 257-bit.
 
 #### `min(x, y)`
 
@@ -173,7 +173,7 @@ Returns `address` — the internal address of the current smart contract. It can
 
 #### `contract.getOriginalBalance`
 
-Returns `coins` — the balance of the smart contract in nanotoncoins at the start of the [compute phase](/tvm/exit-codes#compute-phase).
+Returns `coins` — the balance of the smart contract in nanotoncoins at the start of the [compute phase](/ecosystem/tvm/exit-codes#compute-phase).
 
 #### `contract.getOriginalBalanceWithExtraCurrencies`
 
@@ -181,15 +181,15 @@ Returns `[coins, ExtraCurrenciesMap]` — similar to `contract.getOriginalBalanc
 
 #### `contract.getData`
 
-Returns `cell` — the persistent contract storage cell. Typically, its result is used as [`Storage.fromCell()`](/languages/tolk/features/contract-storage).
+Returns `cell` — the persistent contract storage cell. Typically, its result is used as [`Storage.fromCell()`](/ecosystem/tolk/features/contract-storage).
 
 #### `contract.setData(cell)`
 
-Sets the persistent contract storage. Typically, the argument is [`storageObject.toCell()`](/languages/tolk/features/contract-storage).
+Sets the persistent contract storage. Typically, the argument is [`storageObject.toCell()`](/ecosystem/tolk/features/contract-storage).
 
 #### `contract.getCode`
 
-Returns `cell` — the smart contract code stored in TVM [register `c7`](/tvm/registers).
+Returns `cell` — the smart contract code stored in TVM [register `c7`](/ecosystem/tvm/registers).
 
 #### `contract.setCodePostponed(newCodeCell)`
 
@@ -331,7 +331,7 @@ Dumps the stack, at most the top 255 values, and shows its depth.
 
 `slice.loadAddress` and other `loadXXX` methods are suggested by the IDE after a dot.
 
-Prefer [automatic serialization](/languages/tolk/features/auto-serialization) over manual slice parsing.
+Prefer [automatic serialization](/ecosystem/tolk/features/auto-serialization) over manual slice parsing.
 
 ### Builder primitives: constructing cells
 
@@ -341,12 +341,12 @@ Prefer [automatic serialization](/languages/tolk/features/auto-serialization) ov
 
 `builder.endCell()` constructs a cell from the written data.
 
-Prefer [automatic serialization](/languages/tolk/features/auto-serialization)
+Prefer [automatic serialization](/ecosystem/tolk/features/auto-serialization)
 over manual builder construction.
 
 ### Address manipulation primitives
 
-Methods for [`address` and `any_address`](/languages/tolk/types/address) are suggested by the IDE after a dot.
+Methods for [`address` and `any_address`](/ecosystem/tolk/types/address) are suggested by the IDE after a dot.
 
 #### `address.fromWorkchainAndHash(wc, hash)`
 
@@ -361,7 +361,7 @@ fun demo() {
 
 #### `address.getWorkchain`
 
-Returns `int8` — the workchain from an [internal address](/foundations/addresses/formats).
+Returns `int8` — the workchain from an [internal address](/ecosystem/primitives/addresses/formats).
 
 #### `address.getWorkchainAndHash`
 
@@ -385,7 +385,7 @@ fun demo() {
 
 This is a rarely used `any_address`, not `address`. Use it only in combination with external addresses. For example, pass a `none` to `createExternalLogMessage`, which accepts `any_address`.
 
-To represent [internal or none](/languages/tolk/types/address) , use `address?` and `null`.
+To represent [internal or none](/ecosystem/tolk/types/address) , use `address?` and `null`.
 
 #### `any_address.isNone`, `any_address.isInternal`, `any_address.isExternal`
 
@@ -393,12 +393,12 @@ Checks which specific blockchain address is contained in `any_address`.
 
 #### `any_address.castToInternal`
 
-Casts `any_address` to `address`, with a runtime check that the value is internal. To skip the check, use an [unsafe cast](/languages/tolk/types/type-checks-and-casts):
+Casts `any_address` to `address`, with a runtime check that the value is internal. To skip the check, use an [unsafe cast](/ecosystem/tolk/types/type-checks-and-casts):
 `addr = myAny as address`.
 
 ### Reserving Toncoin on the contract balance
 
-The standard library provides several `RESERVE_MODE_XXX` constants for [reserve modes](/foundations/actions/reserve), as well as the following functions.
+The standard library provides several `RESERVE_MODE_XXX` constants for [reserve modes](/ecosystem/primitives/actions/reserve), as well as the following functions.
 
 #### `reserveToncoinsOnBalance`
 
@@ -410,9 +410,9 @@ Similar to `reserveToncoinsOnBalance`, but also accepts a dictionary `extraAmoun
 
 ### Creating and sending messages
 
-Stdlib provides several `SEND_MODE_XXX` constants for [sending modes](/foundations/messages/modes).
+Stdlib provides several `SEND_MODE_XXX` constants for [sending modes](/ecosystem/primitives/messages/modes).
 
-[Message cell composition](/languages/tolk/features/message-sending) is encapsulated by the `createMessage` function.
+[Message cell composition](/ecosystem/tolk/features/message-sending) is encapsulated by the `createMessage` function.
 
 A low-level function, `sendRawMessage`, is also available, but its use is not recommended.
 
@@ -424,7 +424,7 @@ In addition to the always-available functions from `common.tolk`, Tolk provides 
 import "@stdlib/strings"
 ```
 
-[String](/languages/tolk/types/strings) utilities: `StringBuilder` for concatenation, `string.calculateLength`, `string.equalTo`, and other.
+[String](/ecosystem/tolk/types/strings) utilities: `StringBuilder` for concatenation, `string.calculateLength`, `string.equalTo`, and other.
 
 ```tolk
 import "@stdlib/reflection"
@@ -476,7 +476,7 @@ Gas- and payment-related primitives. All functions are documented with detailed 
 import "@stdlib/exotic-cells"
 ```
 
-Functions for loading and parsing [exotic cells](/foundations/serialization/cells), including library references.
+Functions for loading and parsing [exotic cells](/ecosystem/primitives/serialization/cells), including library references.
 
 ```tolk
 import "@stdlib/lisp-lists"
@@ -488,7 +488,7 @@ Lisp-style lists are represented as nested two-element tuples. For example, `[1,
 import "@stdlib/tvm-dicts"
 ```
 
-Low-level API for working with TVM dictionaries. Their use is not recommended; prefer [built-in maps](/languages/tolk/types/maps).
+Low-level API for working with TVM dictionaries. Their use is not recommended; prefer [built-in maps](/ecosystem/tolk/types/maps).
 
 ```tolk
 import "@stdlib/tvm-lowlevel"
@@ -506,7 +506,7 @@ fun slice.loadInt(mutate self, len: int): int
     builtin
 ```
 
-This is done for [optimization](/languages/tolk/features/compiler-optimizations) purposes. The compiler generates different assembler code depending on the arguments. For example, if `len` is a constant value such as `32`, `loadUint` is translated to `32 LDU`. If `len` is a variable, it is taken from the stack and the `LDUX` instruction is emitted.
+This is done for [optimization](/ecosystem/tolk/features/compiler-optimizations) purposes. The compiler generates different assembler code depending on the arguments. For example, if `len` is a constant value such as `32`, `loadUint` is translated to `32 LDU`. If `len` is a variable, it is taken from the stack and the `LDUX` instruction is emitted.
 
 Another example, `builder.storeUint(1, 32).storeUint(2, 64)` is not translated into `32 STU` and `64 STU`. Instead, these calls are merged into a single `STSLICECONST`.
 

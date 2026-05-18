@@ -24,12 +24,12 @@ The `list:(HashmapE 256 PrecompiledSmc)` represents a mapping of contract code h
 
 ## Accessing precompiled gas value
 
-Contracts can check their precompiled gas value using the [`GETPRECOMPILEDGAS`](/tvm/instructions#f839-getprecompiledgas) opcode:
+Contracts can check their precompiled gas value using the [`GETPRECOMPILEDGAS`](/ecosystem/tvm/instructions#f839-getprecompiledgas) opcode:
 
 - Returns the configured `gas_usage` value if the contract code hash is in `ConfigParam 45`
 - Returns `null` if the contract code hash is not in `ConfigParam 45`
 
-The value is also available in the [`c7`](/tvm/registers#c7--environment-information-and-global-variables) register environment tuple.
+The value is also available in the [`c7`](/ecosystem/tvm/registers#c7--environment-information-and-global-variables) register environment tuple.
 
 ## Execution modes
 
@@ -51,7 +51,7 @@ Otherwise, execution proceeds via one of two paths.
 
 The native C++ implementation is available and enabled in the validator node. The validator executes the C++ code directly without invoking TVM.
 
-Transaction [result](/foundations/phases#compute-phase):
+Transaction [result](/ecosystem/primitives/phases#compute-phase):
 
 - `gas_used` set to the value from `ConfigParam 45`
 - `vm_steps`, `vm_init_state_hash`, `vm_final_state_hash` set to zero

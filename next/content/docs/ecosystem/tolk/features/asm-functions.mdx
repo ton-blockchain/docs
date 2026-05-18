@@ -4,11 +4,11 @@ title: "Assembler functions"
 description: ""
 ---
 
-Functions in Tolk can be defined using assembler code. It's a low-level feature that requires understanding of stack layout, [Fift](/languages/fift/overview), and [TVM](/tvm/overview).
+Functions in Tolk can be defined using assembler code. It's a low-level feature that requires understanding of stack layout, [Fift](/ecosystem/languages/fift/overview), and [TVM](/ecosystem/tvm/overview).
 
 ## Standard functions
 
-Standard functions are `asm` wrappers. Many functions from the [standard library](/languages/tolk/features/standard-library) are translated to the Fift assembler directly. For example, TVM has a `HASHCU` instruction, which is "calculate hash of a cell". It pops a cell from the stack and pushes an integer in the range 0 to 2<sup>256</sup>-1. Therefore, the method `cell.hash` is defined:
+Standard functions are `asm` wrappers. Many functions from the [standard library](/ecosystem/tolk/features/standard-library) are translated to the Fift assembler directly. For example, TVM has a `HASHCU` instruction, which is "calculate hash of a cell". It pops a cell from the stack and pushes an integer in the range 0 to 2<sup>256</sup>-1. Therefore, the method `cell.hash` is defined:
 
 ```tolk
 @pure
@@ -84,7 +84,7 @@ Both the input and output sides can be combined: `asm(<INPUT_ORDER> -> <RETURN_O
 
 ## `mutate` and `self` in assembler functions
 
-The `mutate` keyword, which makes a parameter [mutable](/languages/tolk/syntax/mutability), implicitly returns updated values through the stack in both regular and `asm` functions.
+The `mutate` keyword, which makes a parameter [mutable](/ecosystem/tolk/syntax/mutability), implicitly returns updated values through the stack in both regular and `asm` functions.
 
 Consider regular functions first. The compiler applies all transformations automatically.
 

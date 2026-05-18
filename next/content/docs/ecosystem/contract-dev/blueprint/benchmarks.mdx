@@ -17,7 +17,7 @@ In TON, a contract's performance is defined by its gas consumption, so it's impo
 As you develop and iterate on a contract, even small changes to its logic can affect both gas usage and data size. Monitoring these changes helps ensure that your contract remains efficient and cost-effective.
 
 <Aside type="tip">
-  For a deeper breakdown of how fees work in TON, refer to [Transaction fees](/foundations/fees)
+  For a deeper breakdown of how fees work in TON, refer to [Transaction fees](/ecosystem/primitives/fees)
 </Aside>
 
 ## Gas metrics reporting
@@ -162,7 +162,7 @@ storage_fee = ceil(
                * time_delta / 2 ** 16)
 ```
 
-To try this in practice, use the [calculator example](/foundations/fees).
+To try this in practice, use the [calculator example](/ecosystem/primitives/fees).
 
 ### Regenerate the gas report
 
@@ -226,7 +226,7 @@ Report write in '.snapshot/1749821319408.json'
 Let’s try a simple optimization — adding the `inline` specifier to some functions.
 
 <Aside type="note">
-  An [inline specifier](/languages/func/functions#inline-specifier) is directly substituted into the code wherever it’s called, which can help reduce gas usage by eliminating the overhead of a function call.
+  An [inline specifier](/ecosystem/languages/func/functions#inline-specifier) is directly substituted into the code wherever it’s called, which can help reduce gas usage by eliminating the overhead of a function call.
 </Aside>
 
 Update your contract like this:

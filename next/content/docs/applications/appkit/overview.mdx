@@ -7,11 +7,11 @@ description: ""
 
 | Goal                        | Read                                                             |
 | --------------------------- | ---------------------------------------------------------------- |
-| Add AppKit to a new app     | [Get started](/ecosystem/appkit/get-started)                     |
-| Understand the moving parts | [How to](/ecosystem/appkit/howto)                                |
-| Look up functions and types | [Reference](/ecosystem/appkit/reference)                         |
-| Check upgrade notes         | [Changelog](/ecosystem/appkit/changelog)                         |
-| Diagnose common issues      | [FAQ and troubleshooting](/ecosystem/appkit/faq-troubleshooting) |
+| Add AppKit to a new app     | [Get started](/applications/appkit/get-started/get-started)                     |
+| Understand the moving parts | [How to](/applications/appkit/howto/howto)                                |
+| Look up functions and types | [Reference](/applications/appkit/reference/reference)                         |
+| Check upgrade notes         | [Changelog](/applications/appkit/changelog)                         |
+| Diagnose common issues      | [FAQ and troubleshooting](/applications/appkit/faq-troubleshooting) |
 
 ## What AppKit is
 
@@ -27,7 +27,7 @@ Use AppKit to do the following:
 - Read wallet data and asset balances
 
 <Aside type="note">
-An application built with AppKit can interact with your own smart contract. To create a contract, use [Acton](https://ton-blockchain.github.io/acton/docs/welcome) and explore primitives, such as [Messages & Transactions](/foundations/messages/overview) and others.
+An application built with AppKit can interact with your own smart contract. To create a contract, use [Acton](https://ton-blockchain.github.io/acton/docs/welcome) and explore primitives, such as [Messages & Transactions](/ecosystem/primitives/messages/overview) and others.
 </Aside>
 
 ## How it works
@@ -39,18 +39,18 @@ This is how AppKit fits into the TON ecosystem:
 - Backends verify orders, signatures, and business rules.
 
 <Aside type="note">
-AppKit is the user-facing layer of the connection between applications and wallets. Its wallet-side counterpart is [WalletKit](/ecosystem/walletkit/overview) — an SDK integrating wallet services with TON.
+AppKit is the user-facing layer of the connection between applications and wallets. Its wallet-side counterpart is [WalletKit](/applications/walletkit/overview) — an SDK integrating wallet services with TON.
 </Aside>
 
 AppKit builds on top of the following components: 
 
-- [TON Connect](/ecosystem/ton-connect/overview): A protocol enabling interaction between applications and wallets
+- [TON Connect](/applications/ton-connect/overview): A protocol enabling interaction between applications and wallets
 - [TanStack Query](https://tanstack.com/query/latest) and hooks
-- [TON Center API](/ecosystem/api/toncenter/introduction), [TON Center Streaming API v2](/ecosystem/api/toncenter/streaming/overview), and [TonApi](https://github.com/tonkeeper/opentonapi)
+- [TON Center API](/applications/api/toncenter/introduction), [TON Center Streaming API v2](/applications/api/toncenter/streaming/overview), and [TonApi](https://github.com/tonkeeper/opentonapi)
 - Open interfaces for integrating embedded wallets, on-chain/off-chain on-ramps, and DeFi protocols, such as staking and swaps
 
 <Aside type="note">
-AppKit integrates with DeFi protocols through [providers](/ecosystem/appkit/get-started/providers).
+AppKit integrates with DeFi protocols through [providers](/applications/appkit/get-started/providers).
 </Aside>
 
 ## Packages
@@ -75,6 +75,6 @@ This example implements wallet connection, balance and jetton queries, transacti
 
 ## What's next
 
-- Walk through [Get started](/ecosystem/appkit/get-started) to install AppKit and reach a working app.
-- Switch to [How to](/ecosystem/appkit/howto) for task-level recipes once the baseline is in place.
-- Look up types and signatures in [Reference](/ecosystem/appkit/reference).
+- Walk through [Get started](/applications/appkit/get-started/get-started) to install AppKit and reach a working app.
+- Switch to [How to](/applications/appkit/howto/howto) for task-level recipes once the baseline is in place.
+- Look up types and signatures in [Reference](/applications/appkit/reference/reference).

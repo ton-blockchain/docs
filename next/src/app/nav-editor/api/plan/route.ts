@@ -2,8 +2,8 @@ import {NextResponse} from "next/server"
 import {spawn} from "node:child_process"
 import {promises as fs} from "node:fs"
 import path from "node:path"
-import {stableStringify} from "@/lib/nav-config"
 import type {NavConfig} from "@/lib/nav-types"
+import { stableStringify } from "@/lib/stable-stringify"
 
 export const dynamic = "force-dynamic"
 

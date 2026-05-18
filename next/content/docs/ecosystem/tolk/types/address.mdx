@@ -4,7 +4,7 @@ title: "Address"
 description: ""
 ---
 
-Every smart contract has an [address](/foundations/addresses/overview) used for all on-chain interactions.
+Every smart contract has an [address](/ecosystem/primitives/addresses/overview) used for all on-chain interactions.
 
 Tolk provides the following types for working with addresses:
 
@@ -29,7 +29,7 @@ fun checkAddress(addr: address, expectHash: uint256) {
 }
 ```
 
-When [serialized](/languages/tolk/types/overall-serialization), values of `address` type occupy 267 bits:
+When [serialized](/ecosystem/tolk/types/overall-serialization), values of `address` type occupy 267 bits:
 
 - 3 bits for the standard address prefix — `0b100`
 - 8-bit workchain
@@ -39,7 +39,7 @@ During deserialization from a cell, the values of type `address` are automatical
 
 ## Comparison
 
-Compare addresses using `==` or `!=`. Internally, an [address is represented as a raw `slice` without references](/languages/tolk/types/overall-tvm-stack), so `==` and `!=` test for bits equality.
+Compare addresses using `==` or `!=`. Internally, an [address is represented as a raw `slice` without references](/ecosystem/tolk/types/overall-tvm-stack), so `==` and `!=` test for bits equality.
 
 ```tolk
 struct Storage {

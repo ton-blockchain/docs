@@ -74,7 +74,7 @@ format("value is {}", 42);
 format("pair is {} and {}", "str", beginCell());
 ```
 
-The same convention has long been allowed for [`void`-typed struct fields](/languages/tolk/types/void-never#void-typed-fields).
+The same convention has long been allowed for [`void`-typed struct fields](/ecosystem/tolk/types/void-never#void-typed-fields).
 
 ## Method declaration
 
@@ -149,7 +149,7 @@ All standard methods are declared this way: `fun cell.hash(self)`.
 
 In instance methods, `self` is immutable by default.
 
-To allow modifications, declare [`mutate self`](/languages/tolk/syntax/mutability) explicitly.
+To allow modifications, declare [`mutate self`](/ecosystem/tolk/syntax/mutability) explicitly.
 
 ```tolk
 // mind `mutate` — to allow modifications
@@ -406,7 +406,7 @@ fun map<K, map<K2, V2>>.method(self) { ... }
 
 ## Auto-inline small functions
 
-The [compiler automatically inlines small functions](/languages/tolk/features/compiler-optimizations) in-place when possible. For example:
+The [compiler automatically inlines small functions](/ecosystem/tolk/features/compiler-optimizations) in-place when possible. For example:
 
 ```tolk
 fun int.zero() {
@@ -458,7 +458,7 @@ Both `@custom` and `@test` attributes are intended for external tools, such as a
 
 ## Assembler functions
 
-Tolk supports declaring low-level [assembler functions](/languages/tolk/features/asm-functions) with embedded Fift code:
+Tolk supports declaring low-level [assembler functions](/ecosystem/tolk/features/asm-functions) with embedded Fift code:
 
 ```tolk
 @pure
@@ -468,7 +468,7 @@ fun minMax(x: int, y: int): (int, int)
 
 ## Anonymous functions (lambdas)
 
-Tolk supports first-class functions: [they can be passed as callbacks](/languages/tolk/types/callables).
+Tolk supports first-class functions: [they can be passed as callbacks](/ecosystem/tolk/types/callables).
 Both named functions and function expressions may be referenced:
 
 ```tolk
@@ -483,4 +483,4 @@ fun demo() {
 }
 ```
 
-Lambdas can capture outer variables by value, becoming [closures](/languages/tolk/types/callables#closures-lambdas-with-captures).
+Lambdas can capture outer variables by value, becoming [closures](/ecosystem/tolk/types/callables#closures-lambdas-with-captures).

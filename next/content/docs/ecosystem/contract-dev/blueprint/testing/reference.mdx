@@ -894,7 +894,7 @@ readonly init: StateInit
 
 The initial state of the treasury contract.
 
-**Returns:** [`StateInit`](/foundations/messages/deploy) for contract deployment
+**Returns:** [`StateInit`](/ecosystem/primitives/messages/deploy) for contract deployment
 
 #### `subwalletId`
 
@@ -931,7 +931,7 @@ Sends a single message via the treasury contract.
 **Parameters:**
 
 - `provider` — `ContractProvider`
-- `args` — `SenderArguments` including value, body, and [send mode](/foundations/messages/modes)
+- `args` — `SenderArguments` including value, body, and [send mode](/ecosystem/primitives/messages/modes)
 
 #### `getSender()`
 
@@ -1565,7 +1565,7 @@ export function internal(params: {
 - `to` — recipient `Address`
 - `value` — message value in nanoTON
 - `body` — optional message body `Cell`
-- `stateInit` — optional [`StateInit`](/foundations/messages/deploy) for contract deployment
+- `stateInit` — optional [`StateInit`](/ecosystem/primitives/messages/deploy) for contract deployment
 - `bounce` — bounce flag (default: true for bounceable messages)
 - `bounced` — indicates if this is a bounced message (default: false)
 - `ihrDisabled` — disable Instant Hypercube Routing (default: true)

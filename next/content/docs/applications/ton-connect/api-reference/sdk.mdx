@@ -7,7 +7,7 @@ description: ""
 
 `@tonconnect/sdk` is the JavaScript client library for the TON Connect protocol. It exposes the `TonConnect` connector for wallet connection, transaction signing, and message signing; the `WalletsListManager` for browsing supported wallets; and the models, errors, and utilities the protocol uses on the wire.
 
-This page is reference-level. For an integration walkthrough, see [Get started](/ecosystem/ton-connect/get-started). For protocol semantics behind the API, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
+This page is reference-level. For an integration walkthrough, see [Get started](/applications/ton-connect/get-started). For protocol semantics behind the API, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
 
 ## Installation
 
@@ -188,7 +188,7 @@ signData(
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `data` | [`SignDataPayload`](/ecosystem/ton-connect/api-reference/protocol#signdatapayload) | Payload to sign. The `type` discriminator selects the payload form (`'text'`, `'binary'`, or `'cell'`). |
+| `data` | [`SignDataPayload`](/applications/ton-connect/api-reference/protocol#signdatapayload) | Payload to sign. The `type` discriminator selects the payload form (`'text'`, `'binary'`, or `'cell'`). |
 | `options` | `OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>` | *Optional*. `onRequestSent` fires once the request has been dispatched to the wallet; `signal` aborts the in-flight signing request. |
 
 Returns `Promise<Traceable<SignDataResponse>>`. The signed payload together with the signer address, the domain the dApp was opened under, and the wallet-stamped timestamp.
@@ -244,7 +244,7 @@ setConnectionNetwork(network?: ChainId): void;
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `network` | [`ChainId`](/ecosystem/ton-connect/api-reference/protocol#chainid) | *Optional*. Desired network id (e.g., '-239', '-3', or custom). Pass undefined to allow any network. |
+| `network` | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | *Optional*. Desired network id (e.g., '-239', '-3', or custom). Pass undefined to allow any network. |
 
 **Throws:** [`TonConnectError`](#tonconnecterror) — a wallet is already connected — disconnect before changing the desired network.
 
@@ -968,7 +968,7 @@ interface Wallet {
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `device` | [`DeviceInfo`](/ecosystem/ton-connect/api-reference/protocol#deviceinfo) | Information about user's wallet's device. |
+| `device` | [`DeviceInfo`](/applications/ton-connect/api-reference/protocol#deviceinfo) | Information about user's wallet's device. |
 | `provider` | `'http' \| 'injected'` | Provider type: http bridge or injected js. |
 | `account` | `Account` | Selected account. |
 | `connectItems` | `{ tonProof?: TonProofItemReply }` | *Optional*. Response for connect items request. |
@@ -1722,8 +1722,8 @@ instances rather than constructing [`TonConnectError`](#tonconnecterror) directl
 
 ## Related pages
 
-- [Get started](/ecosystem/ton-connect/get-started) — integration walkthrough.
-- [`@tonconnect/ui`](/ecosystem/ton-connect/api-reference/ui) — framework-agnostic UI on top of the SDK.
-- [`@tonconnect/ui-react`](/ecosystem/ton-connect/api-reference/ui-react) — React bindings.
-- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — wire-format types re-exported by the SDK.
+- [Get started](/applications/ton-connect/get-started) — integration walkthrough.
+- [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) — framework-agnostic UI on top of the SDK.
+- [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react) — React bindings.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types re-exported by the SDK.
 - [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.

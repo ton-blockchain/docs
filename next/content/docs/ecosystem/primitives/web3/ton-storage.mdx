@@ -74,9 +74,9 @@ A `.ton` domain can point to a bag using the `dns_storage_address` record:
 dns_storage_address#7473 bag_id:bits256 = DNSRecord;
 ```
 
-See [TON DNS](/foundations/web3/ton-dns#dns-record-types) for all record types.
+See [TON DNS](/ecosystem/primitives/web3/ton-dns#dns-record-types) for all record types.
 
 ## Ecosystem use cases
 
 - NFT metadata: NFT collections can reference off-chain media and metadata stored as bags, using the `BagID` as a stable content identifier. Individual files within a bag are addressed using the `tonstorage://<BagID>/path` URI scheme.
-- [Static TON Sites](/foundations/web3/ton-sites): a bag containing HTML and static assets can be served as a TON Site by combining TON Storage, [TON DNS](/foundations/web3/ton-dns), and [TON Proxy](/foundations/web3/ton-proxy).
+- [Static TON Sites](/ecosystem/primitives/web3/ton-sites): a bag containing HTML and static assets can be served as a TON Site by combining TON Storage, [TON DNS](/ecosystem/primitives/web3/ton-dns), and [TON Proxy](/ecosystem/primitives/web3/ton-proxy).

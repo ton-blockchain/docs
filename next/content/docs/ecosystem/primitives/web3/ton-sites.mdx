@@ -96,13 +96,13 @@ The web server must listen on `http://127.0.0.1:80`. The proxy adds two headers 
 
 ### Domain assignment
 
-To assign the ADNL address to a `.ton` domain, open the domain in the TON DNS management interface, paste the ADNL address into the "Site" field, and confirm the transaction with the domain owner's wallet. For record types and resolution details, see [TON DNS](/foundations/web3/ton-dns).
+To assign the ADNL address to a `.ton` domain, open the domain in the TON DNS management interface, paste the ADNL address into the "Site" field, and confirm the transaction with the domain owner's wallet. For record types and resolution details, see [TON DNS](/ecosystem/primitives/web3/ton-dns).
 
 ## Domain name resolution
 
 ### TON DNS
 
-A `dns_adnl_address` record in TON DNS maps a `.ton` domain name to the ADNL address of the TON Site. The proxy client resolves this record and connects to the correct ADNL address. See [TON DNS](/foundations/web3/ton-dns) for the full record type specification.
+A `dns_adnl_address` record in TON DNS maps a `.ton` domain name to the ADNL address of the TON Site. The proxy client resolves this record and connects to the correct ADNL address. See [TON DNS](/ecosystem/primitives/web3/ton-dns) for the full record type specification.
 
 ### Direct access via ADNL address
 
@@ -112,5 +112,5 @@ TON Sites can also be accessed directly by their ADNL address, without DNS resol
 
 - **ADNL**: the abstract datagram network layer providing transport for TON Sites.
 - **RLDP**: the reliable large datagram protocol over ADNL for HTTP transfer.
-- [TON Proxy](/foundations/web3/ton-proxy): bridges HTTP requests from a conventional browser to the ADNL network.
-- [TON DNS](/foundations/web3/ton-dns): maps `.ton` domains to ADNL addresses.
+- [TON Proxy](/ecosystem/primitives/web3/ton-proxy): bridges HTTP requests from a conventional browser to the ADNL network.
+- [TON DNS](/ecosystem/primitives/web3/ton-dns): maps `.ton` domains to ADNL addresses.

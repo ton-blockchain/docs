@@ -42,9 +42,9 @@ where the fields are:
 
 ## Deploying to specific shard
 
-Due to [the way](/foundations/shards) messages are sent between blockchain shards, the number of hops and, hence, latency depends on the distance between the shards of a source and a destination. The optimal performance is achieved when both addresses are in the same shard.
+Due to [the way](/ecosystem/primitives/shards) messages are sent between blockchain shards, the number of hops and, hence, latency depends on the distance between the shards of a source and a destination. The optimal performance is achieved when both addresses are in the same shard.
 
-Usually, a new contract has to be deployed by a message to the exactly same address as computed out of `StateInit`'s hash, i.e. the content of `StateInit` uniquely determines the address. Any discrepancy between the address [computed](/foundations/addresses/derive) from `StateInit` and destination address of a deploy message [will result](/foundations/phases#when-the-compute-phase-is-skipped) in a failed transaction.
+Usually, a new contract has to be deployed by a message to the exactly same address as computed out of `StateInit`'s hash, i.e. the content of `StateInit` uniquely determines the address. Any discrepancy between the address [computed](/ecosystem/primitives/addresses/derive) from `StateInit` and destination address of a deploy message [will result](/ecosystem/primitives/phases#when-the-compute-phase-is-skipped) in a failed transaction.
 
 To deploy a contract to the desired shard, there is a `fixed_prefix_length` field in `StateInit`. It allows to specify the destination address that would slightly differ from the computed address. Only all the bits except for the first `fixed_prefix_length` have to match.
 

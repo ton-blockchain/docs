@@ -143,9 +143,9 @@ A session is bound to wherever its keypair lives. The protocol does not synchron
 - **Custom storage backends.** A headless app injects an `IStorage` (IndexedDB, encrypted file, server database). One keypair per logical session — keyed per user on a multi-tenant server, not shared globally.
 - **Do not copy session state to another device.** Anyone holding the dApp's secret key `a` and `client_id` `B` can decrypt every message in the session. To "share" a connection across devices, do a fresh connect on each.
 
-For cross-device continuity, use `ton_proof` with a server-issued token — the user reconnects on each device, the backend verifies the proof, and the token follows the user. See [Authenticate with `ton_proof`](/ecosystem/ton-connect/how-to/connect#authenticate-with-ton_proof).
+For cross-device continuity, use `ton_proof` with a server-issued token — the user reconnects on each device, the backend verifies the proof, and the token follows the user. See [Authenticate with `ton_proof`](/applications/ton-connect/how-to/connect#authenticate-with-ton_proof).
 
-Spec reference: [Session specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/session.md). See also [Disconnect a session](/ecosystem/ton-connect/how-to/disconnect).
+Spec reference: [Session specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/session.md). See also [Disconnect a session](/applications/ton-connect/how-to/disconnect).
 
 ---
 
@@ -178,7 +178,7 @@ tc://?v=2&id=<client_id>&r=<ConnectRequest>&ret=back
 | `e`        | no       | Embedded RPC request, base64-URL JSON. Requires `EmbeddedRequest` feature.                                                                                                                                           |
 | `trace_id` | no       | UUID (UUIDv7 recommended) for end-to-end analytics correlation across dApp, bridge, and wallet. Echoed by tracing-aware bridges in the `BridgeMessage` envelope, and reused by tracing-aware wallets on their reply. |
 
-The `e` parameter packs an RPC request into the connect URL so the wallet handles connection and action in a single tap. Wallets that support this advertise `EmbeddedRequest` in their feature list; wallets that do not silently ignore `e` and the SDK falls back to the two-step flow. See [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request).
+The `e` parameter packs an RPC request into the connect URL so the wallet handles connection and action in a single tap. Wallets that support this advertise `EmbeddedRequest` in their feature list; wallets that do not silently ignore `e` and the SDK falls back to the two-step flow. See [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request).
 
 Spec reference: [Deep links specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/deeplinks.md).
 
@@ -200,7 +200,7 @@ The dApp passes the URL as `manifestUrl` in the connect request. By convention t
 | `termsOfUseUrl`    | no       | URL to terms of use.                                                 |
 | `privacyPolicyUrl` | no       | URL to privacy policy.                                               |
 
-The manifest must be reachable with a `GET` from any origin, without CORS restrictions, without auth and without a proxy challenge. It must be served over HTTPS — wallets do not guarantee they will fetch a manifest served over plain HTTP. If the wallet cannot fetch it, the connect flow returns `MANIFEST_NOT_FOUND_ERROR` (code 2) or `MANIFEST_CONTENT_ERROR` (code 3). See [Manifest 404 and CORS](/ecosystem/ton-connect/troubleshooting#manifest-404-and-cors).
+The manifest must be reachable with a `GET` from any origin, without CORS restrictions, without auth and without a proxy challenge. It must be served over HTTPS — wallets do not guarantee they will fetch a manifest served over plain HTTP. If the wallet cannot fetch it, the connect flow returns `MANIFEST_NOT_FOUND_ERROR` (code 2) or `MANIFEST_CONTENT_ERROR` (code 3). See [Manifest 404 and CORS](/applications/ton-connect/troubleshooting#manifest-404-and-cors).
 
 Spec reference: [App manifest specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/manifest.md). Schema: [Manifest JSON schema](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/schemas/manifest.schema.json).
 
@@ -244,7 +244,7 @@ For example, the Tonkeeper entry:
 The SDK loads `wallets-v2.json` and prepares the list before rendering the modal:
 
 1. **Platform handling.** The UI uses `platforms` as a display and connection hint. Mobile views show `ios`/`android` wallets; desktop views can still show mobile wallets because QR-code connection is a desktop flow.
-1. **Feature handling.** When the dApp declares required capabilities via [`walletsRequiredFeatures`](/ecosystem/ton-connect/how-to/filter-wallets), the UI checks each entry's `features` array. Once a session opens, the SDK checks the runtime `DeviceInfo.features`, which is authoritative.
+1. **Feature handling.** When the dApp declares required capabilities via [`walletsRequiredFeatures`](/applications/ton-connect/how-to/filter-wallets), the UI checks each entry's `features` array. Once a session opens, the SDK checks the runtime `DeviceInfo.features`, which is authoritative.
 1. **Injected detection.** For entries that list a `js` bridge, the SDK probes `window[<bridge.key>]`. If present, that wallet is marked as injected.
 
 ### How a wallet gets listed

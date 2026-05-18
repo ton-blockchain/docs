@@ -5,14 +5,14 @@ sidebarTitle: "Overview"
 description: ""
 ---
 
-There are four actions that a smart contract can perform during the [action phase](/foundations/phases#action-phase):
+There are four actions that a smart contract can perform during the [action phase](/ecosystem/primitives/phases#action-phase):
 
-- [send a message](/foundations/actions/send);
-- [reserve coins](/foundations/actions/reserve);
-- [change its libraries](/foundations/actions/change-library);
-- [change its code](/foundations/actions/set-code).
+- [send a message](/ecosystem/primitives/actions/send);
+- [reserve coins](/ecosystem/primitives/actions/reserve);
+- [change its libraries](/ecosystem/primitives/actions/change-library);
+- [change its code](/ecosystem/primitives/actions/set-code).
 
-A smart contract can create up to 255 such actions during its execution. Actions are created during the compute phase by special [TVM instructions](/tvm/instructions). When an action is created, it is populated into the output action list of the smart contract. From the low-level perspective, the output action list is a linked list where each action is represented as a cell.
+A smart contract can create up to 255 such actions during its execution. Actions are created during the compute phase by special [TVM instructions](/ecosystem/tvm/instructions). When an action is created, it is populated into the output action list of the smart contract. From the low-level perspective, the output action list is a linked list where each action is represented as a cell.
 
 Finally, in the action phase, created actions are executed in the order they were populated into the output action list.
 

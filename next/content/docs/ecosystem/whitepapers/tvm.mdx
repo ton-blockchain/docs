@@ -85,7 +85,7 @@ One should bear in mind that one always can implement compilers from statically 
 A preliminary list of value types supported by TVM is as follows:
 
 - *Integer* — Signed 257-bit integers, representing integer numbers in the range $-2^{256}\ldots2^{256}-1$, as well as a special "not-a-number" value $\texttt{NaN}$.
-- *Cell* — A *TVM cell* consists of at most 1023 bits of data, and of at most four references to other cells. All persistent data (including TVM code) in the TON Blockchain is represented as a [collection of TVM cells](/foundations/whitepapers/ton#2-5-14-“everything-is-a-bag-of-cells”-philosophy).
+- *Cell* — A *TVM cell* consists of at most 1023 bits of data, and of at most four references to other cells. All persistent data (including TVM code) in the TON Blockchain is represented as a [collection of TVM cells](/ecosystem/whitepapers/ton#2-5-14-“everything-is-a-bag-of-cells”-philosophy).
 - *Tuple* — An ordered collection of up to 255 components, having arbitrary value types, possibly distinct. May be used to represent non-persistent values of arbitrary algebraic data types.
 - *Null* — A type with exactly one value $\bot$, used for representing empty lists, empty branches of binary trees, absence of return value in some situations, and so on.
 - *Slice* — A *TVM cell slice*, or *slice* for short, is a contiguous "sub-cell" of an existing cell, containing some of its bits of data and some of its references. Essentially, a slice is a read-only view for a subcell of a cell. Slices are used for unpacking data previously stored (or serialized) in a cell or a tree of cells.
@@ -471,7 +471,7 @@ The exact way in which the TVM code (e.g., TVM assembly code) is transformed int
 
 ### 3.1.10. "Everything is a bag of cells" paradigm
 
-All the data used by the TON Blockchain, including the blocks themselves and the blockchain state, can be represented—and are represented—as collections, or [bags of cells](/foundations/whitepapers/ton#2-5-14-“everything-is-a-bag-of-cells”-philosophy). We see that TVM's [structure of data](#3-1-8-all-values-of-algebraic-data-types-are-trees-of-cells) and [code](#3-1-9-tvm-code-is-a-tree-of-cells) nicely fits into this "everything is a bag of cells" paradigm. In this way, TVM can naturally be used to execute smart contracts in the TON Blockchain, and the TON Blockchain can be used to store the code and persistent data of these smart contracts between invocations of TVM. (Of course, both TVM and the TON Blockchain have been designed so that this would become possible.)
+All the data used by the TON Blockchain, including the blocks themselves and the blockchain state, can be represented—and are represented—as collections, or [bags of cells](/ecosystem/whitepapers/ton#2-5-14-“everything-is-a-bag-of-cells”-philosophy). We see that TVM's [structure of data](#3-1-8-all-values-of-algebraic-data-types-are-trees-of-cells) and [code](#3-1-9-tvm-code-is-a-tree-of-cells) nicely fits into this "everything is a bag of cells" paradigm. In this way, TVM can naturally be used to execute smart contracts in the TON Blockchain, and the TON Blockchain can be used to store the code and persistent data of these smart contracts between invocations of TVM. (Of course, both TVM and the TON Blockchain have been designed so that this would become possible.)
 
 ## 3.2   Data manipulation instructions and cells
 
@@ -933,7 +933,7 @@ In this way, the called subroutine can return control to the caller by switching
 
 Similarly to $\texttt{JMPX}$ and $\texttt{RET}$, $\texttt{CALLX}$ also has special (rarely used) forms, which allow us to explicitly specify the number $n''$ of arguments passed from the current stack to the called subroutine (by default, $n''$ equals the depth of the current stack, i.e., it is passed in its entirety). Furthermore, a second number $n'''$ can be specified, used to set $\texttt{nargs}$ of the modified $\texttt{cc}$ continuation before storing it into the new $\texttt{c0}$; the new $\texttt{nargs}$ equals the depth of the old stack minus $n''$ plus $n'''$. This means that the caller is willing to pass exactly $n''$ arguments to the called subroutine, and is willing to accept exactly $n'''$ results in their stead.
 
-Such forms of $\texttt{CALLX}$ and $\texttt{RET}$ are mostly intended for library functions that accept functional arguments and want to invoke them safely. Another application is related to the "virtualization support" of TVM, which enables TVM code to run other TVM code inside a "virtual TVM machine". Such virtualization techniques might be useful for implementing sophisticated [payment channels](/foundations/whitepapers/ton#5-ton-payments) in the TON Blockchain.
+Such forms of $\texttt{CALLX}$ and $\texttt{RET}$ are mostly intended for library functions that accept functional arguments and want to invoke them safely. Another application is related to the "virtualization support" of TVM, which enables TVM code to run other TVM code inside a "virtual TVM machine". Such virtualization techniques might be useful for implementing sophisticated [payment channels](/ecosystem/whitepapers/ton#5-ton-payments) in the TON Blockchain.
 
 ### 4.1.11. $\texttt{CALLCC}$: call with current continuation
 

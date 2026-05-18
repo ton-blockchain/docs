@@ -4,7 +4,7 @@ title: "Automatic serialization"
 description: ""
 ---
 
-All data in TON, such as messages, storage, etc., is represented as [cells](/foundations/serialization/cells). The Tolk type system is designed to express cell contents, enabling auto-serialization through `fromCell` and `toCell`:
+All data in TON, such as messages, storage, etc., is represented as [cells](/ecosystem/primitives/serialization/cells). The Tolk type system is designed to express cell contents, enabling auto-serialization through `fromCell` and `toCell`:
 
 ```tolk
 struct Point {
@@ -24,7 +24,7 @@ fun demo() {
 
 ## Type serialization
 
-A `struct` can define [a serialization](/languages/tolk/types/overall-serialization) prefix. 32-bit prefixes are commonly used as opcodes for incoming and outgoing messages:
+A `struct` can define [a serialization](/ecosystem/tolk/types/overall-serialization) prefix. 32-bit prefixes are commonly used as opcodes for incoming and outgoing messages:
 
 ```tolk
 struct (0x7362d09c) TransferNotification {
@@ -162,8 +162,8 @@ Typical failure cases include:
 
 Common exception codes:
 
-- [9 – cell underflow](/tvm/exit-codes#9%3A-cell-underflow);
-- [5 – out of range](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
+- [9 – cell underflow](/ecosystem/tvm/exit-codes#9%3A-cell-underflow);
+- [5 – out of range](/ecosystem/tvm/exit-codes#5%3A-integer-out-of-expected-range).
 
 Some behaviors are configurable. For example, to allow extra data:
 
@@ -336,7 +336,7 @@ Frequently used fields should remain in the struct; less-frequent fields can be 
 
 ## What if serialization is unavailable?
 
-A common mistake is using `int`. [It cannot be serialized](/languages/tolk/types/numbers#stack-layout-and-serialization); instead, use `int32`, `uint64`, etc.
+A common mistake is using `int`. [It cannot be serialized](/ecosystem/tolk/types/numbers#stack-layout-and-serialization); instead, use `int32`, `uint64`, etc.
 
 ```tolk
 struct Storage {
@@ -360,7 +360,7 @@ hint: replace `int` with `int32` / `uint64` / `coins` / etc.
 
 ## Integration with message sending
 
-Auto-serialization can be applied when [sending messages](/languages/tolk/features/message-sending) to other contracts:
+Auto-serialization can be applied when [sending messages](/ecosystem/tolk/features/message-sending) to other contracts:
 
 ```tolk
 val reply = createMessage({
@@ -374,7 +374,7 @@ reply.send(SEND_MODE_REGULAR);
 
 ## `lazy` for deserialization
 
-Tolk provides a special keyword [`lazy`](/languages/tolk/features/lazy-loading) for use with auto-deserialization.
+Tolk provides a special keyword [`lazy`](/ecosystem/tolk/features/lazy-loading) for use with auto-deserialization.
 The compiler loads only the requested fields, rather than the entire struct.
 
 ```tolk

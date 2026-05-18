@@ -10,7 +10,7 @@ When drawing a trace, messages are usually drawn on the edges, and the addresses
 
 ### Start of the trace
 
-Most often, a trace begins with an [external message](/foundations/messages/external-in). It is the first one, since there is no message that could generate an external-in. However, trace may be started not only by external messages but also by [tick-tock transactions](/foundations/messages/overview#transactions), commonly used within TON Blockchain [system contracts](/foundations/system). Traces can also start with split and merge transactions, but since they are not currently implemented, this will not occur in a real network.
+Most often, a trace begins with an [external message](/ecosystem/primitives/messages/external-in). It is the first one, since there is no message that could generate an external-in. However, trace may be started not only by external messages but also by [tick-tock transactions](/ecosystem/primitives/messages/overview#transactions), commonly used within TON Blockchain [system contracts](/ecosystem/primitives/system). Traces can also start with split and merge transactions, but since they are not currently implemented, this will not occur in a real network.
 
 <div
   className="flex justify-center my-4"
@@ -22,7 +22,7 @@ Most often, a trace begins with an [external message](/foundations/messages/exte
   />
 </div>
 
-As a result, messages in the trace are partially ordered by their [logical time (lt)](/foundations/whitepapers/tblkch#1-4-1-logical-time), reflecting their logical dependencies. The diagram shows transactions on independent accounts, each triggered by an incoming message, with `lt` values indicated for every message. It is important to note that in the network in general, lt is formed as follows:
+As a result, messages in the trace are partially ordered by their [logical time (lt)](/ecosystem/whitepapers/tblkch#1-4-1-logical-time), reflecting their logical dependencies. The diagram shows transactions on independent accounts, each triggered by an incoming message, with `lt` values indicated for every message. It is important to note that in the network in general, lt is formed as follows:
 
 - lt transactions = lt incoming message + 1
 - lt outgoing message = lt transaction + outgoing message index
@@ -40,7 +40,7 @@ In [Tonviewer](https://tonviewer.com/), traces are visualized as [directed acycl
 
 ## Examples
 
-The NFT transfer illustrates a single operation that consists of multiple messages. To learn how to read traces, follow [this article](/ecosystem/explorers/tonviewer#steps-to-read-a-trace).
+The NFT transfer illustrates a single operation that consists of multiple messages. To learn how to read traces, follow [this article](/infrastructure/explorers/tonviewer#steps-to-read-a-trace).
 
 This trace is started with an external message and can be inspected in [Tonviewer](https://tonviewer.com/transaction/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb)
 
@@ -60,4 +60,4 @@ Here is the [example](https://tonviewer.com/transaction/9effb91e18be732033fe6aa8
 
 ## Access using API
 
-To fetch traces data, use the [`GET /traces`](/ecosystem/api/toncenter/v3/actions-and-traces/get-traces) endpoint. This method allows finding a trace if any of its parameters are known.
+To fetch traces data, use the [`GET /traces`](/applications/api/toncenter/v3/actions-and-traces/get-traces) endpoint. This method allows finding a trace if any of its parameters are known.

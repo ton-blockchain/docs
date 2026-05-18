@@ -72,7 +72,7 @@ In [Blueprint][bp] tests, exit codes from the [compute phase](#compute) are spec
 {/*
   <Aside>
 
-  Read more about expecting specific exit codes: [Transactions with intentional errors](/book/debug#tests-errors).
+  Read more about expecting specific exit codes: [Transactions with intentional errors](/ecosystem/contract-dev/blueprint/debug#tests-errors).
 
   </Aside>
   */}
@@ -145,7 +145,7 @@ fun onInternalMessage() {
 
 ### 3: Stack overflow
 
-If there are too many elements copied into a closure continuation, an error with exit code 3 is thrown: `Stack overflow`. This occurs rarely unless you're deep in the [Fift and TVM assembly](/languages/fift/fift-and-tvm-assembly) trenches:
+If there are too many elements copied into a closure continuation, an error with exit code 3 is thrown: `Stack overflow`. This occurs rarely unless you're deep in the [Fift and TVM assembly](/ecosystem/languages/fift/fift-and-tvm-assembly) trenches:
 
 ```tolk title="Tolk"
 // Remember kids, don't try to overflow the stack at home!
@@ -391,9 +391,9 @@ fun onInternalMessage() {
 
 ### 10: Dictionary error
 
-In Tolk, the `map<K, V>` type is an abstraction over the ["hash" map dictionaries of TVM](/languages/func/dictionaries).
+In Tolk, the `map<K, V>` type is an abstraction over the ["hash" map dictionaries of TVM](/ecosystem/languages/func/dictionaries).
 
-If there is incorrect manipulation of dictionaries, such as improper assumptions about their memory layout, an error with exit code 10 is thrown: `Dictionary error`. Note that Tolk prevents you from getting this error unless you perform [TVM assembly](/languages/fift/fift-and-tvm-assembly) work yourself:
+If there is incorrect manipulation of dictionaries, such as improper assumptions about their memory layout, an error with exit code 10 is thrown: `Dictionary error`. Note that Tolk prevents you from getting this error unless you perform [TVM assembly](/ecosystem/languages/fift/fift-and-tvm-assembly) work yourself:
 
 ```tolk title="Tolk"
 import "@stdlib/tvm-dicts";

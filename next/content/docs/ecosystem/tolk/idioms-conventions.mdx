@@ -4,11 +4,11 @@ title: "Idioms and conventions"
 description: ""
 ---
 
-After learning of [basic syntax](/languages/tolk/basic-syntax), study the common patterns, conventions, and best practices to write idiomatic Tolk code.
+After learning of [basic syntax](/ecosystem/tolk/basic-syntax), study the common patterns, conventions, and best practices to write idiomatic Tolk code.
 
 ## Declare each contract with a `contract` directive
 
-Place a [`contract` declaration](/languages/tolk/features/contract-abi) at the top of every entrypoint file. It names the contract and lists its public shapes — at minimum, the storage struct and the union of accepted incoming messages. The compiler uses this information to emit a machine-readable ABI, which in turn powers TypeScript wrappers, explorers, the step-by-step debugger, and other client-side tooling.
+Place a [`contract` declaration](/ecosystem/tolk/features/contract-abi) at the top of every entrypoint file. It names the contract and lists its public shapes — at minimum, the storage struct and the union of accepted incoming messages. The compiler uses this information to emit a machine-readable ABI, which in turn powers TypeScript wrappers, explorers, the step-by-step debugger, and other client-side tooling.
 
 ```tolk
 contract JettonWallet {
@@ -21,7 +21,7 @@ Use the contract's PascalCase name as the file name: `JettonWallet.tolk`, `Jetto
 
 ## Prefer automatic serialization to manual one
 
-Manual work with slices and builders is error-prone and tedious. By comparison, [auto-serialization](/languages/tolk/features/auto-serialization) with structures helps express data with types and prevents many related bugs.
+Manual work with slices and builders is error-prone and tedious. By comparison, [auto-serialization](/ecosystem/tolk/features/auto-serialization) with structures helps express data with types and prevents many related bugs.
 
 ```tolk
 struct Holder {
@@ -41,7 +41,7 @@ fun demo(data: Holder) {
 
 ## Prefer typed cells with `Cell<T>`
 
-All data in TON is stored in cells. To express data relation clearly and to aid in [serialization](/languages/tolk/features/auto-serialization#controlling-cell-references-typed-cells), use cells with well-typed contents: `Cell<T>`.
+All data in TON is stored in cells. To express data relation clearly and to aid in [serialization](/ecosystem/tolk/features/auto-serialization#controlling-cell-references-typed-cells), use cells with well-typed contents: `Cell<T>`.
 
 ```tolk
 struct Holder {
@@ -64,7 +64,7 @@ fun getDeepData(value: Holder) {
 
 ## Use lazy data loading
 
-When reading data from cells, add the [`lazy` keyword](/languages/tolk/features/lazy-loading):
+When reading data from cells, add the [`lazy` keyword](/ecosystem/tolk/features/lazy-loading):
 
 - `lazy SomeStruct.fromCell(c)` over `SomeStruct.fromCell(c)`
 - `lazy typedCell.load()` over `typedCell.load()`
@@ -81,7 +81,7 @@ get fun publicKey() {
 
 ## Use type aliases to express custom serialization logic
 
-Serialization may require custom rules which are not covered by existing types. Tolk allows defining custom [serialization rules for type aliases](/languages/tolk/types/overall-serialization#type-aliases):
+Serialization may require custom rules which are not covered by existing types. Tolk allows defining custom [serialization rules for type aliases](/ecosystem/tolk/types/overall-serialization#type-aliases):
 
 ```tolk
 // The custom type alias over a regular, untyped slice
@@ -147,7 +147,7 @@ fun demo(input: slice) {
 
 ## Use contract storage as a structure
 
-[Contract storage](/languages/tolk/features/contract-storage) is a regular `struct`, serialized into persistent on-chain data.
+[Contract storage](/ecosystem/tolk/features/contract-storage) is a regular `struct`, serialized into persistent on-chain data.
 
 Add `load` and `store` methods for convenience:
 
@@ -167,7 +167,7 @@ fun Storage.save(self) {
 
 ## Express messages as structs with 32-bit prefixes
 
-By convention, every message in TON has an _opcode_: a unique 32-bit number. In Tolk, every [`struct`](/languages/tolk/syntax/structures-fields) can have a serialization prefix of arbitrary length. Use 32-bit prefixes to express message opcodes.
+By convention, every message in TON has an _opcode_: a unique 32-bit number. In Tolk, every [`struct`](/ecosystem/tolk/syntax/structures-fields) can have a serialization prefix of arbitrary length. Use 32-bit prefixes to express message opcodes.
 
 ```tolk
 struct (0x12345678) CounterIncrement {
@@ -175,16 +175,16 @@ struct (0x12345678) CounterIncrement {
 }
 ```
 
-When implementing [Jettons](/standard/tokens/jettons/overview), [NFTs](/standard/tokens/nft/overview), or other standard contracts, use predefined opcodes according to the specification. Otherwise, opcodes are ad hoc.
+When implementing [Jettons](/ecosystem/standard/tokens/jettons/overview), [NFTs](/ecosystem/standard/tokens/nft/overview), or other standard contracts, use predefined opcodes according to the specification. Otherwise, opcodes are ad hoc.
 
 ## Use unions to handle incoming messages
 
 The suggested pattern:
 
-1. Each [incoming message](/languages/tolk/features/message-handling) is made a struct with an opcode.
+1. Each [incoming message](/ecosystem/tolk/features/message-handling) is made a struct with an opcode.
 1. Structs are combined into a union type.
 1. Union is used to lazily load data from the message body slice.
-1. Finally, result is [pattern matched](/languages/tolk/syntax/pattern-matching) over union variants.
+1. Finally, result is [pattern matched](/ecosystem/tolk/syntax/pattern-matching) over union variants.
 
 ```tolk
 struct (0x12345678) CounterIncrement {
@@ -299,12 +299,12 @@ fun demoDeploy() {
 ```
 
 <Aside type="tip">
-  See the [Tolk contract examples](/languages/tolk/examples#jetton) page for selected contracts from the [`tolk-bench`](https://github.com/ton-blockchain/tolk-bench).
+  See the [Tolk contract examples](/ecosystem/tolk/examples#jetton) page for selected contracts from the [`tolk-bench`](https://github.com/ton-blockchain/tolk-bench).
 </Aside>
 
 ## Target certain shards when deploying sibling contracts
 
-Specify the prefix length and the contract address to aim for the [same shard](/languages/tolk/features/message-sending#shard-based-deployment). For example, sharded jetton wallet must be deployed to the same shard as the owner's wallet.
+Specify the prefix length and the contract address to aim for the [same shard](/ecosystem/tolk/features/message-sending#shard-based-deployment). For example, sharded jetton wallet must be deployed to the same shard as the owner's wallet.
 
 ```tolk
 val deployMsg = createMessage({
@@ -320,7 +320,7 @@ val deployMsg = createMessage({
 
 ## Emit events and logs to off-chain world during development
 
-[External messages](/languages/tolk/features/message-sending#universal-createexternallogmessage) with a special address `none` are used to emit events and logs to the outer world. Indexers catch such messages and provide a picture of on-chain activity.
+[External messages](/ecosystem/tolk/features/message-sending#universal-createexternallogmessage) with a special address `none` are used to emit events and logs to the outer world. Indexers catch such messages and provide a picture of on-chain activity.
 
 External messages cost less gas than internal ones and help track events during contract development. They provide a simple way to emit structured logs that indexers and debugging tools can consume.
 
@@ -347,7 +347,7 @@ fun demo() {
 
 ## Return several state values as a structure from a get method
 
-When a [contract getter](/languages/tolk/features/contract-getters) needs to return several values, introduce a structure. Avoid returning unnamed tensors like `(int, int, int)`. Field names provide clear metadata for client wrappers and human readers.
+When a [contract getter](/ecosystem/tolk/features/contract-getters) needs to return several values, introduce a structure. Avoid returning unnamed tensors like `(int, int, int)`. Field names provide clear metadata for client wrappers and human readers.
 
 ```tolk
 struct JettonWalletDataReply {
@@ -369,7 +369,7 @@ get fun get_wallet_data(): JettonWalletDataReply {
 
 ## Validate user input with assertions
 
-After parsing an incoming message, validate required fields with [`assert`](/languages/tolk/syntax/exceptions#assert-statement):
+After parsing an incoming message, validate required fields with [`assert`](/ecosystem/tolk/syntax/exceptions#assert-statement):
 
 ```tolk
 assert (msg.seqno == storage.seqno) throw E_INVALID_SEQNO;
@@ -385,7 +385,7 @@ Consistent file structure across projects simplifies navigation:
 - Supply `errors.tolk` with constants or enums.
 - Supply `storage.tolk` with storage and helper methods.
 - Supply `messages.tolk` with incoming and outgoing messages.
-- Have `MyContract.tolk` as an entrypoint, named after the contract in PascalCase. Place a [`contract` declaration](/languages/tolk/features/contract-abi) at the top of the file and keep all `get fun` and entrypoint functions within it; use [imports](/languages/tolk/syntax/imports) to bring in shared code.
+- Have `MyContract.tolk` as an entrypoint, named after the contract in PascalCase. Place a [`contract` declaration](/ecosystem/tolk/features/contract-abi) at the top of the file and keep all `get fun` and entrypoint functions within it; use [imports](/ecosystem/tolk/syntax/imports) to bring in shared code.
 
 When developing several related contracts simultaneously, keep them in the same codebase. A contract file can `import` another contract — its types are exposed to the importer, while its `onInternalMessage` and `get fun` stay private to the original contract. For instance, struct `SomeMessage` outgoing for contract A can be incoming for contract B; or contract A may need to know B's storage to compute the deploy address.
 
@@ -393,7 +393,7 @@ When developing several related contracts simultaneously, keep them in the same 
 
 All symbols across different files share the same namespace and must have unique names project-wide. There are no modules or exports.
 
-Use [methods](/languages/tolk/syntax/functions-methods) to avoid name collisions:
+Use [methods](/ecosystem/tolk/syntax/functions-methods) to avoid name collisions:
 
 ```tolk
 fun Struct1.validate(self) { /* ... */ }
@@ -437,14 +437,14 @@ fun blockchain.logicalTime(): int /* ... */;
 
 ## Use optional addresses to have address defaults
 
-A nullable [address](/languages/tolk/types/address) `address?` is a pattern for an optional address, sometimes called _"maybe address"_:
+A nullable [address](/ecosystem/tolk/types/address) `address?` is a pattern for an optional address, sometimes called _"maybe address"_:
 
 - `null` represents the address `none`.
 - `address` represents an internal address.
 
 ## Calculate CRC32 or SHA256 at compile-time
 
-Several [compile-time methods](/languages/tolk/types/strings#compile-time-methods) operate on constant [strings](/languages/tolk/types/strings):
+Several [compile-time methods](/ecosystem/tolk/types/strings#compile-time-methods) operate on constant [strings](/ecosystem/tolk/types/strings):
 
 ```tolk
 // Calculates CRC32 of a string
@@ -456,7 +456,7 @@ const hash = "some_crypto_key".sha256()
 
 ## Work with strings
 
-Tolk provides a dedicated [`string` type](/languages/tolk/types/strings) backed by snake-encoded cells. Use the [`StringBuilder`](/languages/tolk/types/strings#stringbuilder) for concatenation:
+Tolk provides a dedicated [`string` type](/ecosystem/tolk/types/strings) backed by snake-encoded cells. Use the [`StringBuilder`](/ecosystem/tolk/types/strings#stringbuilder) for concatenation:
 
 ```tolk
 import "@stdlib/strings"
@@ -467,11 +467,11 @@ var str = StringBuilder.create()
          .build();
 ```
 
-For fixed-size binary data, use [`bitsN` or `bytesN` types](/languages/tolk/types/cells#fixed-size-slices).
+For fixed-size binary data, use [`bitsN` or `bytesN` types](/ecosystem/tolk/types/cells#fixed-size-slices).
 
 ## Avoid micro-optimization
 
-The [compiler applies many optimizations](/languages/tolk/features/compiler-optimizations): it automatically inlines functions, reduces stack allocations, and handles the underlying work. Attempts to outsmart the compiler yield negligible effects, either positive or negative.
+The [compiler applies many optimizations](/ecosystem/tolk/features/compiler-optimizations): it automatically inlines functions, reduces stack allocations, and handles the underlying work. Attempts to outsmart the compiler yield negligible effects, either positive or negative.
 
 Prefer readability over manual optimizations:
 

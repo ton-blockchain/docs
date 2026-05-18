@@ -5,7 +5,7 @@ sidebarTitle: "@ton/mcp"
 description: ""
 ---
 
-The [`@ton/mcp` server][mcp-repo] enables AI agents to operate TON wallets and perform common blockchain operations through the [Model Context Protocol (MCP)][mcp-spec] or CLI using [agent skills][skills-spec]. It handles private keys and signing internally, so agents interact only with high-level intents and confirmation flows. The server is built on top of [WalletKit](/ecosystem/walletkit/overview).
+The [`@ton/mcp` server][mcp-repo] enables AI agents to operate TON wallets and perform common blockchain operations through the [Model Context Protocol (MCP)][mcp-spec] or CLI using [agent skills][skills-spec]. It handles private keys and signing internally, so agents interact only with high-level intents and confirmation flows. The server is built on top of [WalletKit](/applications/walletkit/overview).
 
 The latest alpha release is available on [npm][mcp-npm]. Run it locally with:
 
@@ -342,9 +342,9 @@ Serverless mode operates in [single-wallet mode](#single-wallet-mode) only and a
   path="TONCENTER_API_KEY"
   type="string"
 >
-  API key for [TON Center](/ecosystem/api/toncenter/introduction). Raises the default rate limit from 1 request per second to the limit of the selected plan. Without a key, the server uses a built-in shared key suitable for low-volume development and experiments.
+  API key for [TON Center](/applications/api/toncenter/introduction). Raises the default rate limit from 1 request per second to the limit of the selected plan. Without a key, the server uses a built-in shared key suitable for low-volume development and experiments.
 
-  For production workloads, [obtain a dedicated key](/ecosystem/api/toncenter/get-api-key).
+  For production workloads, [obtain a dedicated key](/applications/api/toncenter/get-api-key).
 </ParamField>
 
 <ParamField

@@ -5,7 +5,7 @@ sidebarTitle: "WebSocket"
 description: ""
 ---
 
-[WebSocket](https://en.wikipedia.org/wiki/WebSocket) transport of the [Streaming API](/ecosystem/api/toncenter/streaming/overview) is the preferred interface for persistent and bidirectional communication with dynamic subscription patterns.
+[WebSocket](https://en.wikipedia.org/wiki/WebSocket) transport of the [Streaming API](/applications/api/toncenter/streaming/overview) is the preferred interface for persistent and bidirectional communication with dynamic subscription patterns.
 
 ## Usage
 
@@ -49,14 +49,14 @@ Subscribe operation replaces the entire subscription snapshot for the current co
   type="string[]"
   required="true"
 >
-  One or more event types to receive: `transactions`, `actions`, `trace`, `trace_invalidated`, `account_state_change`, `jettons_change`. The [event types section](/ecosystem/api/toncenter/streaming/reference#event-types) and [notification schemas section](/ecosystem/api/toncenter/streaming/reference#notification-schemas) provide the exact payload structure for each event.
+  One or more event types to receive: `transactions`, `actions`, `trace`, `trace_invalidated`, `account_state_change`, `jettons_change`. The [event types section](/applications/api/toncenter/streaming/reference#event-types) and [notification schemas section](/applications/api/toncenter/streaming/reference#notification-schemas) provide the exact payload structure for each event.
 </ParamField>
 
 <ParamField
   path="addresses"
   type="string[]"
 >
-  Wallet or contract addresses to monitor. Accepts [valid TON address formats](/foundations/addresses/formats). May be left empty when subscribing only to a `"trace"`, otherwise required for non-trace event types.
+  Wallet or contract addresses to monitor. Accepts [valid TON address formats](/ecosystem/primitives/addresses/formats). May be left empty when subscribing only to a `"trace"`, otherwise required for non-trace event types.
 </ParamField>
 
 <ParamField
@@ -92,7 +92,7 @@ Subscribe operation replaces the entire subscription snapshot for the current co
   path="action_types"
   type="string[]"
 >
-  Optional action type filter. Applies only to `"actions"`. Refer to a list of [available action types in API v3](/ecosystem/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
+  Optional action type filter. Applies only to `"actions"`. Refer to a list of [available action types in API v3](/applications/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
 </ParamField>
 
 <ParamField
@@ -144,7 +144,7 @@ Unsubscribe operation removes one or more addresses or trace hashes from the act
   path="addresses"
   type="string[]"
 >
-  Wallet or contract addresses to remove from monitoring. Accepts [valid TON address formats](/foundations/addresses/formats).
+  Wallet or contract addresses to remove from monitoring. Accepts [valid TON address formats](/ecosystem/primitives/addresses/formats).
 </ParamField>
 
 <ParamField
@@ -208,5 +208,5 @@ It is recommended to send `ping` request every 15 seconds to keep the connection
 
 ## Next steps
 
-- Skim the server [notification reference](/ecosystem/api/toncenter/streaming/reference)
-- [Get an API key](/ecosystem/api/toncenter/get-api-key)
+- Skim the server [notification reference](/applications/api/toncenter/streaming/reference)
+- [Get an API key](/applications/api/toncenter/get-api-key)

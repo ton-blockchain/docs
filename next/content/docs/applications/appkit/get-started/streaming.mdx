@@ -11,7 +11,7 @@ Treat the stream as a fast cache, not as proof of settlement. The underlying tra
 
 ## Before you begin
 
-A streaming provider has to be registered on the AppKit instance before any watcher will fire. The default `ApiClient` does not stream — you register a streaming provider separately on `appKit.streamingManager`. See [Providers → How they are registered](/ecosystem/appkit/howto/providers#how-they-are-registered) for the registration pattern, and use `hasStreamingProvider(appKit, network)` from `@ton/appkit` as the runtime check before subscribing.
+A streaming provider has to be registered on the AppKit instance before any watcher will fire. The default `ApiClient` does not stream — you register a streaming provider separately on `appKit.streamingManager`. See [Providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered) for the registration pattern, and use `hasStreamingProvider(appKit, network)` from `@ton/appkit` as the runtime check before subscribing.
 
 ## Mount global watchers
 
@@ -45,5 +45,5 @@ A stream is a hint, not proof. Verify the final state on a backend before delive
 
 ## What to do next
 
-- Continue to [Add DeFi providers](/ecosystem/appkit/get-started/providers) when the app needs swap or staking flows.
-- For task-level patterns that combine sends with settlement tracking, see [Streaming](/ecosystem/appkit/howto/streaming) in How to.
+- Continue to [Add DeFi providers](/applications/appkit/get-started/providers) when the app needs swap or staking flows.
+- For task-level patterns that combine sends with settlement tracking, see [Streaming](/applications/appkit/howto/streaming) in How to.

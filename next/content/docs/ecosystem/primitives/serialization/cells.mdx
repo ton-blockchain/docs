@@ -38,10 +38,10 @@ TVM supports four types of exotic cells:
 
 | Type ID | Description                                               |
 | ------- | --------------------------------------------------------- |
-| `0x01`  | [Pruned branch](/foundations/serialization/pruned)        |
-| `0x02`  | [Library reference](/foundations/serialization/library)   |
-| `0x03`  | [Merkle proof](/foundations/serialization/merkle)         |
-| `0x04`  | [Merkle update](/foundations/serialization/merkle-update) |
+| `0x01`  | [Pruned branch](/ecosystem/primitives/serialization/pruned)        |
+| `0x02`  | [Library reference](/ecosystem/primitives/serialization/library)   |
+| `0x03`  | [Merkle proof](/ecosystem/primitives/serialization/merkle)         |
+| `0x04`  | [Merkle update](/ecosystem/primitives/serialization/merkle-update) |
 
 ## Level of a cell
 
@@ -78,7 +78,7 @@ this is to use the so-called _standard cell representation_, `CellRepr(c)`. The 
 
 In this way, $2 + \lceil\frac{b}{8}\rceil + 2r + 32r$ bytes of `CellRepr(c)` are obtained. Thus, we got the serialization of `c`.
 
-However, the serialization of graphs formed by cells is arranged differently; see [bag of cells](/foundations/serialization/boc) for details.
+However, the serialization of graphs formed by cells is arranged differently; see [bag of cells](/ecosystem/primitives/serialization/boc) for details.
 
 ## Cell manipulation
 
@@ -87,7 +87,7 @@ Cells are read-only and immutable, but there are two major sets of ordinary cell
 - Cell creation (or serialization) instructions, which are used to construct new cells from previously stored values and cells.
 - Cell parsing (or deserialization) instructions, which are used to extract or load data previously stored into cells via serialization instructions.
 
-All cell manipulation instructions require transforming values of `Cell` type into either [builder](/tvm/builders-and-slices) or [slice](/tvm/builders-and-slices) types before such cells can be modified or inspected.
+All cell manipulation instructions require transforming values of `Cell` type into either [builder](/ecosystem/tvm/builders-and-slices) or [slice](/ecosystem/tvm/builders-and-slices) types before such cells can be modified or inspected.
 
 Libraries like [`@ton/core`](https://github.com/ton-core/ton) and [`@ton-community/assets-sdk`](https://github.com/ton-community/assets-sdk) provide efficient cell handling.
 Below are examples of sequential cell creation, populating it with data, and then parsing.

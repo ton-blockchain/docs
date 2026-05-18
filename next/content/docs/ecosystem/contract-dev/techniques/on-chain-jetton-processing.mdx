@@ -6,7 +6,7 @@ description: ""
 ---
 
 <Aside type="note">
-  Understand [the jetton architecture](/standard/tokens/jettons/overview) before reading this article.
+  Understand [the jetton architecture](/ecosystem/standard/tokens/jettons/overview) before reading this article.
 </Aside>
 
 Contracts routinely process jettons for DEX, escrow, and lending protocols by handling `JettonNotify` messages from jetton wallets. However, since anyone can send these messages, receiving contracts must verify the message sender has the correct jetton wallet address.
@@ -32,7 +32,7 @@ There are three approaches to verify `JettonNotify` messages, depending on the l
 
 ## Manual wallet management
 
-If the jetton type is known in advance, [calculate the corresponding jetton wallet address off-chain](https://docs.ton.org/standard/tokens/jettons/find) and set it via a message after deployment. It is impossible to hardcode the jetton wallet address in the contract’s [`StateInit`](/foundations/messages/deploy) because the wallet address depends on the contract address and creates a circular dependency. This is the most efficient approach, because it only requires one address comparison.
+If the jetton type is known in advance, [calculate the corresponding jetton wallet address off-chain](https://docs.ton.org/standard/tokens/jettons/find) and set it via a message after deployment. It is impossible to hardcode the jetton wallet address in the contract’s [`StateInit`](/ecosystem/primitives/messages/deploy) because the wallet address depends on the contract address and creates a circular dependency. This is the most efficient approach, because it only requires one address comparison.
 
 The following example of a receiving contract handles `JettonNotify` messages for a trusted jetton wallet address that can be set by the owner of the contract.
 
@@ -228,9 +228,9 @@ If a jetton contract doesn't implement TEP-89, it is possible to compute the jet
   Jettons that do not implement the TEP-89 messages for computing a wallet address on-chain are rare. [TONCO DEX](https://tonco.io/) rejects them, while platforms such as [DeDust](https://dedust.io/) only allow them after a manual approval.
 </Aside>
 
-With the state of a jetton minter, the [RUNVM](/tvm/instructions#db4-runvm) instruction can emulate the execution of the `get_wallet_address` [get-method](/tvm/get-method) to derive the wallet address for any owner.
+With the state of a jetton minter, the [RUNVM](/ecosystem/tvm/instructions#db4-runvm) instruction can emulate the execution of the `get_wallet_address` [get-method](/ecosystem/tvm/get-method) to derive the wallet address for any owner.
 
-Use the following helper function. It relies on [Fift](/languages/fift/overview) because it's impossible to assign a type to `c7`. It executes the `get_wallet_address` method of a jetton minter on-chain, and calculates the corresponding wallet address for a given owner.
+Use the following helper function. It relies on [Fift](/ecosystem/languages/fift/overview) because it's impossible to assign a type to `c7`. It executes the `get_wallet_address` method of a jetton minter on-chain, and calculates the corresponding wallet address for a given owner.
 
 ```mermaid
 sequenceDiagram
@@ -281,7 +281,7 @@ fun calculateJettonWallet(owner: address, jettonData: cell, jettonCode: cell, je
 
 ### Minters without vanity addresses
 
-Minter address and `StateInit` will match if the jetton minter was not deployed with [a vanity contract](/contract-dev/vanity). The logic for the contract that handles `JettonNotify` messages is thus:
+Minter address and `StateInit` will match if the jetton minter was not deployed with [a vanity contract](/ecosystem/contract-dev/techniques/vanity). The logic for the contract that handles `JettonNotify` messages is thus:
 
 1. Get the `StateInit` of the jetton minter off-chain.
 1. Deploy the receiver contract with the address of the jetton minter in its data.
@@ -296,4 +296,4 @@ Minter address and `StateInit` will match if the jetton minter was not deployed 
 
 If the jetton minter was deployed with a vanity contract, or otherwise lacks `get_wallet_address` method, or `get_wallet_address` returns incorrect addresses, use the current state of the contract instead.
 
-A full [state proof](/foundations/proofs/overview) is required to prove that the state is currently at the jetton minter address.
+A full [state proof](/ecosystem/primitives/proofs/overview) is required to prove that the state is currently at the jetton minter address.

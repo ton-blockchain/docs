@@ -24,10 +24,10 @@ message$_
 = Message X;
 ```
 
-Unlike [incoming](/foundations/messages/external-in) external messages, a third party can't manipulate the contents of outgoing external messages, so there is no need to sign them.
+Unlike [incoming](/ecosystem/primitives/messages/external-in) external messages, a third party can't manipulate the contents of outgoing external messages, so there is no need to sign them.
 
-- `src` — an [internal address](/foundations/addresses/overview#internal-addresses) of the contract that sends the message. It has to be a valid address, but is not important, as it will be overwritten by the address of sender after the message is sent.
-- `dest` — any valid [external address](/foundations/addresses/overview#external-addresses).
+- `src` — an [internal address](/ecosystem/primitives/addresses/overview#internal-addresses) of the contract that sends the message. It has to be a valid address, but is not important, as it will be overwritten by the address of sender after the message is sent.
+- `dest` — any valid [external address](/ecosystem/primitives/addresses/overview#external-addresses).
 - `created_at` — arbitrary value, overwritten with the `created_at` field of the transaction in which the contract sent this message.
 - `created_lt` — arbitrary value, overwritten with the `created_lt` field of the transaction, incremented by one.
 
@@ -37,7 +37,7 @@ For an outbound external message, `init` field also can store arbitrary data, as
 
 ## Message modes
 
-As outbound external messages do not carry any Toncoin value, the price of their handling is paid similarly to [`SendPayFwdFeesSeparately`](/foundations/messages/modes) mode. However, using any mode other than [`SendIgnoreErrors`](/foundations/messages/modes), [`SendBounceIfActionFail`](/foundations/messages/modes), or [`SendPayFwdFeesSeparately`](/foundations/messages/modes) for outbound external messages results in [exit code `34`](/tvm/exit-codes#34:-invalid-or-unsupported-action). In this case, regardless of whether the [`SendIgnoreErrors`](/foundations/messages/modes) mode was used, the action phase will fail. Mode [`SendPayFwdFeesSeparately`](/foundations/messages/modes) does not change the message behavior.
+As outbound external messages do not carry any Toncoin value, the price of their handling is paid similarly to [`SendPayFwdFeesSeparately`](/ecosystem/primitives/messages/modes) mode. However, using any mode other than [`SendIgnoreErrors`](/ecosystem/primitives/messages/modes), [`SendBounceIfActionFail`](/ecosystem/primitives/messages/modes), or [`SendPayFwdFeesSeparately`](/ecosystem/primitives/messages/modes) for outbound external messages results in [exit code `34`](/ecosystem/tvm/exit-codes#34:-invalid-or-unsupported-action). In this case, regardless of whether the [`SendIgnoreErrors`](/ecosystem/primitives/messages/modes) mode was used, the action phase will fail. Mode [`SendPayFwdFeesSeparately`](/ecosystem/primitives/messages/modes) does not change the message behavior.
 
 ## Example in Tolk
 

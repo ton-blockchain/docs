@@ -30,11 +30,11 @@ If a contract does not compile after conversion, refer to the [GitHub repository
 
 ## Refactoring
 
-- Use the modern [`onInternalMessage`](/languages/tolk/features/message-handling#oninternalmessage).
-- Extract a [`Storage` struct](/languages/tolk/features/contract-storage) with `toCell` and `fromCell`.
-- Refactor incoming messages into [structs](/languages/tolk/syntax/structures-fields#serialization-prefixes-and-opcodes) with 32-bit opcodes – incrementally, one message at a time.
-- Define a union of possible messages and match it using [`lazy`](/languages/tolk/features/lazy-loading).
-- Extract outgoing messages into structs and [send](/languages/tolk/features/message-sending) them.
+- Use the modern [`onInternalMessage`](/ecosystem/tolk/features/message-handling#oninternalmessage).
+- Extract a [`Storage` struct](/ecosystem/tolk/features/contract-storage) with `toCell` and `fromCell`.
+- Refactor incoming messages into [structs](/ecosystem/tolk/syntax/structures-fields#serialization-prefixes-and-opcodes) with 32-bit opcodes – incrementally, one message at a time.
+- Define a union of possible messages and match it using [`lazy`](/ecosystem/tolk/features/lazy-loading).
+- Extract outgoing messages into structs and [send](/ecosystem/tolk/features/message-sending) them.
 
 <Aside
   type="tip"
@@ -45,4 +45,4 @@ If a contract does not compile after conversion, refer to the [GitHub repository
 
 ## Examples
 
-The [Tolk contract examples](/languages/tolk/examples) page features some contracts from the [Tolk vs. FunC benchmarks](https://github.com/ton-blockchain/tolk-bench) repository, all converted step by step using the migration tool. Check the Git history for each migration.
+The [Tolk contract examples](/ecosystem/tolk/examples) page features some contracts from the [Tolk vs. FunC benchmarks](https://github.com/ton-blockchain/tolk-bench) repository, all converted step by step using the migration tool. Check the Git history for each migration.

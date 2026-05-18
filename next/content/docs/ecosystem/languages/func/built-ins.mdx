@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,7 +21,7 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 ## Reserved keywords
@@ -82,7 +82,7 @@ FunC reserves the following symbols and words. These cannot be used as identifie
 
 ## Built-ins
 
-This section covers extra language constructs that are not part of the core but are still important for functionality. Although they could be implemented in [stdlib.fc](/languages/func/stdlib), keeping them as built-in features allows the FunC optimizer to work more efficiently.
+This section covers extra language constructs that are not part of the core but are still important for functionality. Although they could be implemented in [stdlib.fc](/ecosystem/languages/func/stdlib), keeping them as built-in features allows the FunC optimizer to work more efficiently.
 
 In addition, FunC does not allow the built-in names in this section to be used as identifiers. However, there is an exception: [built-ins with non-symbolic names](#built-ins-with-non-symbolic-names) _can_ be used as identifiers for local variables.
 
@@ -112,7 +112,7 @@ In addition, FunC does not allow the built-in names in this section to be used a
 
 Each one of the above names is a function wrapping the corresponding operator.
 
-For example, `_+_` can be understood as wrapping the [`+` operator](/languages/func/operators#addition%2C-%2B):
+For example, `_+_` can be understood as wrapping the [`+` operator](/ecosystem/languages/func/operators#addition%2C-%2B):
 
 ```func
 int _+_(int a, int b) { return a + b; }
@@ -175,7 +175,7 @@ apply(+);   ;; DOES NOT COMPILE
 
 #### `~divmod`
 
-Same as [`divmod`](#divmod), but allows using [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`divmod`](#divmod), but allows using [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 Example:
 
@@ -202,7 +202,7 @@ int mod = a~divmod(b);
 
 #### `~moddiv`
 
-Same as [`moddiv`](#moddiv), but allows using [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`moddiv`](#moddiv), but allows using [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 Example:
 
@@ -225,7 +225,7 @@ int div = a~moddiv(b);
 int muldiv(int factor1, int factor2, int divisor)
 ```
 
-`muldiv` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/languages/func/operators#division%2C-%2F).
+`muldiv` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/ecosystem/languages/func/operators#division%2C-%2F).
 It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `muldivr`
@@ -234,7 +234,7 @@ It uses a 513-bit intermediate result to prevent overflow if the final result fi
 int muldivr(int factor1, int factor2, int divisor)
 ```
 
-`muldivr` performs a multiply-then-divide operation `(factor1 * factor2) ~/ divisor`, where `~/` is the [rounding division operator](/languages/func/operators#rounding-division%2C-%2F).
+`muldivr` performs a multiply-then-divide operation `(factor1 * factor2) ~/ divisor`, where `~/` is the [rounding division operator](/ecosystem/languages/func/operators#rounding-division%2C-%2F).
 It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `muldivc`
@@ -243,7 +243,7 @@ It uses a 513-bit intermediate result to prevent overflow if the final result fi
 int muldivc(int factor1, int factor2, int divisor)
 ```
 
-`muldivc` performs a multiply-then-divide operation `(factor1 * factor2) ^/ divisor`, where `^/` is the [ceiling division operator](/languages/func/operators#ceiling-division%2C-%5E%2F).
+`muldivc` performs a multiply-then-divide operation `(factor1 * factor2) ^/ divisor`, where `^/` is the [ceiling division operator](/ecosystem/languages/func/operators#ceiling-division%2C-%5E%2F).
 It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `muldivmod`
@@ -252,7 +252,7 @@ It uses a 513-bit intermediate result to prevent overflow if the final result fi
 (int, int) muldivmod(int factor1, int factor2, int divisor)
 ```
 
-`muldivmod` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/languages/func/operators#division%2C-%2F),
+`muldivmod` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/ecosystem/languages/func/operators#division%2C-%2F),
 and returns the quotient and remainder of such division. It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `true`
@@ -279,7 +279,7 @@ forall X -> int null?(X val)
 
 `null?` checks if the given argument is `null`. Returns `0` if the argument is not `null`, and `-1` otherwise.
 
-For more info, see [null values](/languages/func/types#null-values).
+For more info, see [null values](/ecosystem/languages/func/types#null-values).
 
 #### `throw`
 
@@ -288,7 +288,7 @@ For more info, see [null values](/languages/func/types#null-values).
 ```
 
 Triggers an exception, which interrupts the execution flow.
-`throw` takes only one argument, the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
+`throw` takes only one argument, the error code. See [TVM error codes](/ecosystem/tvm/exit-codes) for details about error codes.
 
 #### `throw_if`
 
@@ -298,7 +298,7 @@ Triggers an exception, which interrupts the execution flow.
 
 Triggers an exception only if the provided condition is true, i.e., if the condition is `-1`.
 It receives two arguments: the error code, which defines the exception type, and the condition.
-See [TVM error codes](/tvm/exit-codes) for details about error codes.
+See [TVM error codes](/ecosystem/tvm/exit-codes) for details about error codes.
 
 #### `throw_unless`
 
@@ -308,7 +308,7 @@ See [TVM error codes](/tvm/exit-codes) for details about error codes.
 
 Triggers an exception only if the provided condition is false, i.e., if the condition is `0`.
 It receives two arguments: the error code, which defines the exception type, and the condition.
-See [TVM error codes](/tvm/exit-codes) for details about error codes.
+See [TVM error codes](/ecosystem/tvm/exit-codes) for details about error codes.
 
 #### `throw_arg`
 
@@ -319,9 +319,9 @@ forall X -> () throw_arg(X arg, int error)
 Triggers an exception, which interrupts the execution flow.
 
 The first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement).
+processed in [`try..catch` statements](/ecosystem/languages/func/statements#try-catch-statement).
 Refer to the `try..catch` statement page for an example on how to use the first argument.
-The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
+The second argument is the error code. See [TVM error codes](/ecosystem/tvm/exit-codes) for details about error codes.
 
 #### `throw_arg_if`
 
@@ -332,8 +332,8 @@ forall X -> () throw_arg_if(X arg, int error, int condition)
 Triggers an exception only if the provided condition is true, i.e., if the condition is `-1`.
 
 Similarly to [`throw_arg`](#throw-arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
-The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
+processed in [`try..catch` statements](/ecosystem/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
+The second argument is the error code. See [TVM error codes](/ecosystem/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
 #### `throw_arg_unless`
@@ -345,8 +345,8 @@ forall X -> () throw_arg_unless(X arg, int error, int condition)
 Triggers an exception only if the provided condition is false, i.e., if the condition is `0`.
 
 Similarly to [`throw_arg`](#throw-arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
-The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
+processed in [`try..catch` statements](/ecosystem/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
+The second argument is the error code. See [TVM error codes](/ecosystem/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
 #### `load_int`
@@ -403,7 +403,7 @@ Stores an unsigned `len`-bit integer `x` in builder `b`. Returns the modified bu
 (builder, ()) ~store_int(builder b, int x, int len)
 ```
 
-Same as [`store_int`](#store-int), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`store_int`](#store-int), but adapted to use [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 #### `~store_uint`
 
@@ -411,7 +411,7 @@ Same as [`store_int`](#store-int), but adapted to use [modifying notation](/lang
 (builder, ()) ~store_uint(builder b, int x, int len)
 ```
 
-Same as [`store_uint`](#store-uint), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`store_uint`](#store-uint), but adapted to use [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 #### `load_bits`
 
@@ -507,7 +507,7 @@ Moves `v` to the top of the stack. It returns the argument `v`.
 forall X -> (X, ()) ~touch(X v)
 ```
 
-`~touch` is identical to [`touch`](#touch), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+`~touch` is identical to [`touch`](#touch), but adapted to use [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 #### `touch2`
 
@@ -523,7 +523,7 @@ Moves the components of the tensor `t` to the top of the stack; first component 
 forall X, Y -> ((X, Y), ()) ~touch2((X, Y) t)
 ```
 
-`~touch2` is identical to [`touch2`](#touch2), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+`~touch2` is identical to [`touch2`](#touch2), but adapted to use [modifying notation](/ecosystem/languages/func/expressions#modifying-notation).
 
 #### `~dump`
 
@@ -532,7 +532,7 @@ forall X -> (X, ()) ~dump(X value)
 ```
 
 Outputs value `value` to the debug log. It returns the argument `value` and the unit value `()`.
-[Modifying notation](/languages/func/expressions#modifying-notation) can be used on this function.
+[Modifying notation](/ecosystem/languages/func/expressions#modifying-notation) can be used on this function.
 
 In case `value` is a slice containing ASCII characters, it is preferable to use [`~strdump`](#strdump) if the intention is
 to print the ASCII string in the debug log. Otherwise, `~dump` will print the slice's contents as bits.
@@ -544,7 +544,7 @@ forall X -> (X, ()) ~strdump(X s)
 ```
 
 Outputs to the debug log the ASCII string encoded in slice `s`. It returns the argument `s` and the unit value `()`.
-[Modifying notation](/languages/func/expressions#modifying-notation) can be used on this function.
+[Modifying notation](/ecosystem/languages/func/expressions#modifying-notation) can be used on this function.
 
 If the argument `s` is not a slice containing ASCII characters, the debug log will show an error.
 
@@ -554,7 +554,7 @@ If the argument `s` is not a slice containing ASCII characters, the debug log wi
 () run_method0 (int method_id)
 ```
 
-Executes the 0 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 0 argument function with [ID](/ecosystem/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function()
@@ -566,7 +566,7 @@ The `run_method0` is useful for dynamically executing methods at run-time.
 For example, receiving the method ID to execute in the incoming internal message.
 
 <Aside>
-  Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/languages/func/functions#method-id-specifier):
+  Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/ecosystem/languages/func/functions#method-id-specifier):
 
   ```func
   () test() method_id(1234)
@@ -592,7 +592,7 @@ For example, receiving the method ID to execute in the incoming internal message
 forall X -> () run_method1 (int method_id, X arg1)
 ```
 
-Executes the 1 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`, and passes `arg1` as argument to the function.
+Executes the 1 argument function with [ID](/ecosystem/languages/func/functions#method-id-specifier) `method_id`, and passes `arg1` as argument to the function.
 The function with ID `method_id` must have a signature of the form:
 
 ```func
@@ -629,7 +629,7 @@ As with [`run_method0`](#run-method0), function `run_method1` is useful for dyna
 forall X, Y -> () run_method2 (int method_id, X arg1, Y arg2)
 ```
 
-Executes the 2 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 2 argument function with [ID](/ecosystem/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function(T1 a1, T2 a2)
@@ -646,7 +646,7 @@ The same observations and warnings apply as with [`run_method1`](#run-method1).
 forall X, Y, Z -> () run_method3 (int method_id, X arg1, Y arg2, Z arg3)
 ```
 
-Executes the 3 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 3 argument function with [ID](/ecosystem/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function(T1 a1, T2 a2, T3 a3)

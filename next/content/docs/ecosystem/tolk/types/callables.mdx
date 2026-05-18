@@ -46,7 +46,7 @@ fun demo() {
 
 ## Lambda functions
 
-Tolk supports [lambda functions](/languages/tolk/syntax/functions-methods):
+Tolk supports [lambda functions](/ecosystem/tolk/syntax/functions-methods):
 
 ```tolk
 fun demo() {
@@ -134,7 +134,7 @@ Closures combine with generics, nesting, and smart casts: a lambda captures the 
 
 Continuations are executable cells representing TVM bitcode. A callable is a typed `continuation`.
 
-Tolk provides the low-level type `continuation`. For example, the TVM register [`c3`](/tvm/registers) contains the smart contract code. Some functions are available in the standard library:
+Tolk provides the low-level type `continuation`. For example, the TVM register [`c3`](/ecosystem/tvm/registers) contains the smart contract code. Some functions are available in the standard library:
 
 ```tolk
 import "@stdlib/tvm-lowlevel"
@@ -142,4 +142,4 @@ import "@stdlib/tvm-lowlevel"
 
 ## Stack layout and serialization
 
-A callable is backed by the [TVM `CONT`](/languages/tolk/types/overall-tvm-stack). Callable values cannot be [serialized](/languages/tolk/types/overall-serialization).
+A callable is backed by the [TVM `CONT`](/ecosystem/tolk/types/overall-tvm-stack). Callable values cannot be [serialized](/ecosystem/tolk/types/overall-serialization).

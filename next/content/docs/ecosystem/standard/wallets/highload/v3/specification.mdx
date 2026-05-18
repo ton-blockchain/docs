@@ -13,7 +13,7 @@ This page provides a complete technical specification for Highload Wallet v3, co
 Understand the internal architecture, data structures, and operational mechanics of Highload Wallet v3. This reference page explains how the wallet processes high-throughput transaction flows securely.
 
 <Aside type="tip">
-  For practical usage, see [How-to guides](/standard/wallets/highload/v3/create).
+  For practical usage, see [How-to guides](/ecosystem/standard/wallets/highload/v3/create).
 </Aside>
 
 ## What is Highload Wallet v3?
@@ -30,7 +30,7 @@ v3 solves architectural issues that could lock funds in v2 and consumes less gas
 
 ## TL-B schema
 
-[TL-B (Type Language - Binary)](/languages/tl-b/overview) is a domain-specific language designed to describe data structures in TON. The schemas below define the binary layout of the contract's storage, external messages, and internal messages.
+[TL-B (Type Language - Binary)](/ecosystem/languages/tl-b/overview) is a domain-specific language designed to describe data structures in TON. The schemas below define the binary layout of the contract's storage, external messages, and internal messages.
 
 ### Storage structure
 
@@ -86,7 +86,7 @@ When the wallet receives an external message, it verifies that the 512-bit signa
 <Aside
   type="caution"
 >
-  The public key is not the wallet address. The address is [derived](/foundations/addresses/derive) from the contract's [`StateInit`](/foundations/messages/deploy).
+  The public key is not the wallet address. The address is [derived](/ecosystem/primitives/addresses/derive) from the contract's [`StateInit`](/ecosystem/primitives/messages/deploy).
 </Aside>
 
 ---
@@ -103,7 +103,7 @@ The `subwallet_id` is part of the contract's initial state. Changing it produces
 One private key manages multiple "virtual" wallets for organizational or accounting purposes.
 
 **Recommendation:**\
-Use `subwallet_id: 0x10ad` (4269) to avoid conflicts with other wallet types (standard wallets or vesting wallets) derived from the same keypair. See [How to create Highload Wallet v3](/standard/wallets/highload/v3/create) for details.
+Use `subwallet_id: 0x10ad` (4269) to avoid conflicts with other wallet types (standard wallets or vesting wallets) derived from the same keypair. See [How to create Highload Wallet v3](/ecosystem/standard/wallets/highload/v3/create) for details.
 
 ---
 
@@ -413,9 +413,9 @@ Exit code `38`.
 ### `send_mode` (8 bits)
 
 **Purpose:**\
-Specifies the [send mode](/foundations/messages/modes) for the internal message.
+Specifies the [send mode](/ecosystem/primitives/messages/modes) for the internal message.
 
-**Link:** [send\_raw\_message modes](/languages/func/stdlib#send-raw-message)
+**Link:** [send\_raw\_message modes](/ecosystem/languages/func/stdlib#send-raw-message)
 
 ---
 
@@ -435,7 +435,7 @@ The contract validates `message_to_send` **after committing storage** to prevent
    The `src` field must be `addr_none` (empty address)
 
 1. **State-init must not be present:**\
-   State-init validation is too expensive in gas and is rarely needed. For contract deployment, use the [batch transfer pattern](/standard/wallets/highload/v3/send-batch-transfers) with an action list
+   State-init validation is too expensive in gas and is rarely needed. For contract deployment, use the [batch transfer pattern](/ecosystem/standard/wallets/highload/v3/send-batch-transfers) with an action list
 
 1. **Bounced messages are ignored:**\
    If the `bounced` flag is set, the message is silently ignored (no error)
@@ -504,7 +504,7 @@ State-init validation is complex and gas-intensive, while deploying contracts fr
 **Workaround for batch transfers:**\
 Send an internal message to the wallet itself with opcode `0xae42e5a4` (`internal_transfer`) and an action list containing up to **254 outgoing messages** (not 255, because one action slot is reserved for [`set_code` protection](#protection-against-set-code)).
 
-**How to implement:** [Send batch transfers](/standard/wallets/highload/v3/send-batch-transfers)
+**How to implement:** [Send batch transfers](/ecosystem/standard/wallets/highload/v3/send-batch-transfers)
 
 ---
 
@@ -589,7 +589,7 @@ Highload Wallet v3 provides several read-only methods for monitoring and verific
 **Use case:**\
 Before sending a message, check if a `query_id` was already used to avoid replay errors.
 
-**Link:** [How to verify if a message is processed](/standard/wallets/highload/v3/verify-is-processed)
+**Link:** [How to verify if a message is processed](/ecosystem/standard/wallets/highload/v3/verify-is-processed)
 
 ---
 
@@ -628,13 +628,13 @@ Because the contract calls `set_code(old_code)` as a protection mechanism, one a
 
 **Tests and examples:** See the [tests/](https://github.com/ton-blockchain/highload-wallet-contract-v3/tree/main/tests) directory in the repository for reference implementation and usage patterns.
 
-**Link:** [How-to guides](/standard/wallets/highload/v3/create)
+**Link:** [How-to guides](/ecosystem/standard/wallets/highload/v3/create)
 
 ---
 
 ## See also
 
-- [How to create Highload Wallet v3](/standard/wallets/highload/v3/create)
-- [How to send single transfer](/standard/wallets/highload/v3/send-single-transfer)
-- [How to send batch transfers](/standard/wallets/highload/v3/send-batch-transfers)
-- [How to verify if a message is processed](/standard/wallets/highload/v3/verify-is-processed)
+- [How to create Highload Wallet v3](/ecosystem/standard/wallets/highload/v3/create)
+- [How to send single transfer](/ecosystem/standard/wallets/highload/v3/send-single-transfer)
+- [How to send batch transfers](/ecosystem/standard/wallets/highload/v3/send-batch-transfers)
+- [How to verify if a message is processed](/ecosystem/standard/wallets/highload/v3/verify-is-processed)

@@ -197,12 +197,12 @@ The usual report looks like this:
 Apart from the header statistics, the line-by-line coverage report is the most informative. Most fields are self‑explanatory; the code section shows per‑instruction hit counts (blue) and gas cost (red). This helps you analyze both coverage and gas efficiency.
 
 <Aside>
-  To understand the TVM assembly output, read [TVM](/foundations/whitepapers/tvm).
+  To understand the TVM assembly output, read [TVM](/ecosystem/whitepapers/tvm).
 </Aside>
 
 ## Limitations
 
-Note that when code of other contracts is stored directly in the code of the contract ([Tact](/languages/tact) does that automatically if a contract system does not contain circular dependencies), that affects the overall code coverage percentage.
+Note that when code of other contracts is stored directly in the code of the contract ([Tact](/ecosystem/languages/tact) does that automatically if a contract system does not contain circular dependencies), that affects the overall code coverage percentage.
 
 To mitigate this effect in coverage estimation, add a circular dependency. For example, import a file with the following content.
 

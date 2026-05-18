@@ -55,7 +55,7 @@ Trace is determined by its `trace_external_hash_norm`.
 Subscriptions that include `"actions"` can receive multiple notifications for the same trace as finality increases.
 
 <Aside type="note">
-  Unlike [traces](#traces) and [transactions](#transactions), actions do not exist on-chain and in blockchain history. Instead, actions are aggregated based on the internal logic of TON Center's [API v3](/ecosystem/api/toncenter/v3/overview).
+  Unlike [traces](#traces) and [transactions](#transactions), actions do not exist on-chain and in blockchain history. Instead, actions are aggregated based on the internal logic of TON Center's [API v3](/applications/api/toncenter/v3/overview).
 </Aside>
 
 Trace is determined by its `trace_external_hash_norm`.
@@ -70,7 +70,7 @@ Trace is determined by its `trace_external_hash_norm`.
 | `metadata`                 | `object`   | Optional mapping of token addresses to metadata (jetton or NFT).         |
 
 <Aside type="note">
-  Use `action_types` when subscribing via [SSE](/ecosystem/api/toncenter/streaming/sse) or a [WebSocket](/ecosystem/api/toncenter/streaming/wss) to filter received `actions`. Refer to a list of [available action types in API v3](/ecosystem/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
+  Use `action_types` when subscribing via [SSE](/applications/api/toncenter/streaming/sse) or a [WebSocket](/applications/api/toncenter/streaming/wss) to filter received `actions`. Refer to a list of [available action types in API v3](/applications/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
 </Aside>
 
 ```jsonc title="Notification example"
@@ -125,7 +125,7 @@ This event is emitted only for `"confirmed"` and `"finalized"` finality levels.
 | `type`     | `string`       | Always `"account_state_change"`.                                                                                                                                                                                                   |
 | `finality` | `string`       | `"confirmed"` or `"finalized"`.                                                                                                                                                                                                    |
 | `account`  | `string`       | Account address in raw format, e.g., `0:abc...RAW_ADDRESS`.                                                                                                                                                                        |
-| `state`    | `AccountState` | Account state without full code and data [BoCs](/foundations/serialization/boc). Includes state hash, nanoToncoin balance, [account status](/foundations/status), data and code hashes. All hashes are given in the Base64 format. |
+| `state`    | `AccountState` | Account state without full code and data [BoCs](/ecosystem/primitives/serialization/boc). Includes state hash, nanoToncoin balance, [account status](/foundations/status), data and code hashes. All hashes are given in the Base64 format. |
 
 ```jsonc title="Notification example"
 {
@@ -233,8 +233,8 @@ Subscriptions that allow speculative states can later receive `"trace_invalidate
 
 ## See also
 
-- [Streaming API overview](/ecosystem/api/toncenter/streaming/overview)
-- [SSE](/ecosystem/api/toncenter/streaming/sse)
-- [WebSocket](/ecosystem/api/toncenter/streaming/wss)
-- [API key](/ecosystem/api/toncenter/get-api-key)
-- [API authentication](/ecosystem/api/toncenter/v3-authentication)
+- [Streaming API overview](/applications/api/toncenter/streaming/overview)
+- [SSE](/applications/api/toncenter/streaming/sse)
+- [WebSocket](/applications/api/toncenter/streaming/wss)
+- [API key](/applications/api/toncenter/get-api-key)
+- [API authentication](/applications/api/toncenter/v3-authentication)

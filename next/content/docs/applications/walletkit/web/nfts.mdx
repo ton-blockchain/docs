@@ -6,10 +6,10 @@ description: ""
 ---
 
 <Aside>
-  [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
+  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Aside>
 
-[NFTs](/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
+[NFTs](/ecosystem/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/ecosystem/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
 
 To work with NFTs, the wallet service needs to handle [NFT ownership queries](#ownership) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-in-the-wallet-service).
 
@@ -162,7 +162,7 @@ stopMonitoring();
 
 ## Transfers from dApps
 
-When a connected dApp requests an NFT transfer, the wallet service follows the same flow as [Toncoin transfers](/ecosystem/walletkit/web/toncoin#transfers-from-dapps): the dApp sends a transaction request through the bridge, WalletKit emulates it and presents a preview, the user approves or declines, and the result is returned to the dApp.
+When a connected dApp requests an NFT transfer, the wallet service follows the same flow as [Toncoin transfers](/applications/walletkit/web/toncoin#transfers-from-dapps): the dApp sends a transaction request through the bridge, WalletKit emulates it and presents a preview, the user approves or declines, and the result is returned to the dApp.
 
 ```ts title="TypeScript"
 kit.onTransactionRequest(async (event) => {
@@ -201,7 +201,7 @@ As with Toncoin transfers, the wallet service should not block the UI while wait
 
 ## Transfers in the wallet service
 
-NFT transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/ecosystem/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
+NFT transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
 
 <Aside
   type="danger"
@@ -276,12 +276,12 @@ async function sendNft(
 
 NFTs:
 
-- [NFT overview](/standard/tokens/nft/overview)
-- [NFT metadata](/standard/tokens/nft/metadata)
+- [NFT overview](/ecosystem/standard/tokens/nft/overview)
+- [NFT metadata](/ecosystem/standard/tokens/nft/metadata)
 
 General:
 
-- [Handle transaction requests](/ecosystem/walletkit/web/events#handle-ontransactionrequest)
-- [Transaction fees](/foundations/fees)
-- [WalletKit overview](/ecosystem/walletkit/overview)
-- [TON Connect overview](/ecosystem/ton-connect/overview)
+- [Handle transaction requests](/applications/walletkit/web/events#handle-ontransactionrequest)
+- [Transaction fees](/ecosystem/primitives/fees)
+- [WalletKit overview](/applications/walletkit/overview)
+- [TON Connect overview](/applications/ton-connect/overview)

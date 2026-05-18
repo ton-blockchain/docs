@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,7 +21,7 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 ## Number literals
@@ -36,16 +36,16 @@ FunC supports decimal and hexadecimal integer literals, including those with lea
 FunC allows a broad range of identifiers for functions and variable names. Any single-line string that meets the following conditions qualifies as a valid identifier:
 
 - It **does not** contain special symbols: `;`, `,`, `(`, `)`, `[`, `]`, spaces including tabs, `~`, and `.`.
-- It **does not** start as a [comment](/languages/func/comments) or a [string literal](#string-literals) (i.e., with `"` at the beginning).
+- It **does not** start as a [comment](/ecosystem/languages/func/comments) or a [string literal](#string-literals) (i.e., with `"` at the beginning).
 - It is **not** a [number literal](#number-literals).
 - It is **not** an underscore `_`.
-- It is **not** a [reserved keyword](/languages/func/built-ins#reserved-keywords).
-- It is **not** the name of a [built-in](/languages/func/built-ins#built-ins).
+- It is **not** a [reserved keyword](/ecosystem/languages/func/built-ins#reserved-keywords).
+- It is **not** the name of a [built-in](/ecosystem/languages/func/built-ins#built-ins).
 
 Additionally, **function** names in function definitions can start with `.` or `~`.
 
 <Aside>
-  FunC allows an exception regarding identifiers for local variables. Local variables can use the name of a [built-in with a non-symbolic name](/languages/func/built-ins#built-ins-with-non-symbolic-names).
+  FunC allows an exception regarding identifiers for local variables. Local variables can use the name of a [built-in with a non-symbolic name](/ecosystem/languages/func/built-ins#built-ins-with-non-symbolic-names).
 </Aside>
 
 **Examples of valid identifiers:**
@@ -187,7 +187,7 @@ const c = "abcdef"s;   ;; c has the slice x{abcdef}, where abcdef is the
 
 ### String with suffix `a`
 
-Suffix `a` interprets the string as an address and creates a slice containing a [`MsgAddressInt` structure](/foundations/addresses/overview#internal-addresses) from the address.
+Suffix `a` interprets the string as an address and creates a slice containing a [`MsgAddressInt` structure](/ecosystem/primitives/addresses/overview#internal-addresses) from the address.
 
 ```func
 ;; c has slice x{9FE6666666666666666666666666666666666666666666666666666666666666667_}

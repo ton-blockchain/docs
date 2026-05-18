@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,29 +21,29 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 FunC offers a range of built-in types covering all the types the TVM has. On the other hand, FunC has no custom user-defined types like records or classes.
 
 ## Atomic types
 
-Each of these types occupies a single entry on the [TVM stack](/tvm/overview#tvm-state).
+Each of these types occupies a single entry on the [TVM stack](/ecosystem/tvm/overview#tvm-state).
 
 |           |                                                                                                                                                                                                                                                                                 |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `int`     | a 257-bit signed integer type. Overflow checks are enabled by default and trigger an exception.                                                                                                                                                                                 |
-| `cell`    | a [TVM cell type](/foundations/serialization/cells) for persistent data storage on TON Blockchain. Data is organized in a [bag of cells](/foundations/serialization/boc), with each cell containing up to 1023 bits of arbitrary data and up to four references to other cells. |
+| `cell`    | a [TVM cell type](/ecosystem/primitives/serialization/cells) for persistent data storage on TON Blockchain. Data is organized in a [bag of cells](/ecosystem/primitives/serialization/boc), with each cell containing up to 1023 bits of arbitrary data and up to four references to other cells. |
 | `slice`   | a read-only view of a cell that allows sequential access to its data and references. A cell can be converted into a slice, extracting stored bits and references without modifying the original cell.                                                                           |
 | `builder` | a mutable structure used to construct cells by adding data and references before finalizing them into a new cell.                                                                                                                                                               |
 | `tuple`   | an ordered collection of up to 255 elements, each capable of holding a value of any type.                                                                                                                                                                                       |
-| `cont`    | a [TVM continuation](/tvm/continuations) employed for execution flow management in [TVM instructions](/tvm/instructions).                                                                                                                                                       |
+| `cont`    | a [TVM continuation](/ecosystem/tvm/continuations) employed for execution flow management in [TVM instructions](/ecosystem/tvm/instructions).                                                                                                                                                       |
 
 ### Special null value
 
 Any atomic type allows the special value `null` which represents the absence of an actual value of that type. For example, a function that searches the position of an integer in a list may return `null` to signify that it could not find the integer.
 
-The `null` value can be obtained by calling the function [`null()`](/languages/func/stdlib#null). For example, in this snippet, an integer variable is declared and initialized with `null`:
+The `null` value can be obtained by calling the function [`null()`](/ecosystem/languages/func/stdlib#null). For example, in this snippet, an integer variable is declared and initialized with `null`:
 
 ```func
 int a = null();   ;; a has value null
@@ -53,17 +53,17 @@ Since `null` is a valid value for any atomic type, keep the following in mind wh
 
 - Functions that return an atomic type may return `null`.
 - Functions that expect an atomic type as input could also accept `null`.
-- For [library functions](/languages/func/stdlib) specifications explicitly indicate when `null` is acceptable as a valid input or output.
+- For [library functions](/ecosystem/languages/func/stdlib) specifications explicitly indicate when `null` is acceptable as a valid input or output.
 
-Example: [`cell_depth(cell c)`](/languages/func/stdlib#cell-depth) receives a `cell` as input, and its specification states that if the input cell is `null`, the function returns `0`.
+Example: [`cell_depth(cell c)`](/ecosystem/languages/func/stdlib#cell-depth) receives a `cell` as input, and its specification states that if the input cell is `null`, the function returns `0`.
 
 ### No boolean type
 
 FunC does not have a boolean type. Instead, booleans are represented as integers:
 
 - `false` is `0`, `true` is `-1`, a 257-bit integer with all bits set to `1`.
-- Logical operations are performed using [bitwise operations](/languages/func/operators).
-- In [conditional statements](/languages/func/statements#conditional-statements), [loops](/languages/func/statements#loops), and [conditional expressions](/languages/func/operators#ternary%2C-%3F%3A) any nonzero integer is regarded as `true`.
+- Logical operations are performed using [bitwise operations](/ecosystem/languages/func/operators).
+- In [conditional statements](/ecosystem/languages/func/statements#conditional-statements), [loops](/ecosystem/languages/func/statements#loops), and [conditional expressions](/ecosystem/languages/func/operators#ternary%2C-%3F%3A) any nonzero integer is regarded as `true`.
 
 ## Typed holes
 
@@ -87,7 +87,7 @@ _ someFunction(int a) {
 
 the type checker infers that `_` has type `int`, as the return expression `a + 1` is of type `int`.
 
-See [Function declarations](/languages/func/functions#function-declaration) for more details.
+See [Function declarations](/ecosystem/languages/func/functions#function-declaration) for more details.
 
 ## Composite types
 
@@ -197,7 +197,7 @@ For example,
   Type variables in polymorphic functions cannot be instantiated with tensor types. The only exception is a tensor of a single element `(a)`, where `a` is not a tensor type itself. The compiler treats `(a)` as equivalent to `a`.
 </Aside>
 
-For more details, see the [Polymorphism with forall](/languages/func/functions#polymorphism-with-forall) section.
+For more details, see the [Polymorphism with forall](/ecosystem/languages/func/functions#polymorphism-with-forall) section.
 
 ## User-defined types
 

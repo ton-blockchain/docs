@@ -82,7 +82,7 @@ Let's break down these data structures.
 
 ## Message structure
 
-Message structure for V5 wallet contract is quite cumbersome and hard to read, it's made for optimal (de-)serialization and not optimized for understanding. It is described in [TL-B](/languages/tl-b/overview) languages and includes snake-cell pattern. We will try to get a grip of it by breaking down core data structures and how they are used.
+Message structure for V5 wallet contract is quite cumbersome and hard to read, it's made for optimal (de-)serialization and not optimized for understanding. It is described in [TL-B](/ecosystem/languages/tl-b/overview) languages and includes snake-cell pattern. We will try to get a grip of it by breaking down core data structures and how they are used.
 
 You can skip to [Examples section](#examples), where we would use existing high-level libraries that abstract low level logic from the user.
 
@@ -183,11 +183,11 @@ graph LR
 
 ## Signed Request
 
-Signed message is a message that was signed using owners private key from his dedicated keypair, method from asymmetric cryptography. Later this message will be verified on-chain using public key stored in wallet smart contract - [read more](/standard/wallets/how-it-works#how-ownership-verification-works) about how ownership verification works.
+Signed message is a message that was signed using owners private key from his dedicated keypair, method from asymmetric cryptography. Later this message will be verified on-chain using public key stored in wallet smart contract - [read more](/ecosystem/standard/wallets/how-it-works#how-ownership-verification-works) about how ownership verification works.
 
-Before V5 standard, there was only one way to deliver signed message to wallet contract - via external-in message. However, external messages has certain limitations, e.g. you can only send external-out messages from the smart contracts themselves. This means that it wasn't possible to deliver signed message from inside the blockchain, from another smart contract. V5 standard adds this functionality, partially enabling [gasless transaction](/standard/wallets/v5#preparing-for-gasless-transactions).
+Before V5 standard, there was only one way to deliver signed message to wallet contract - via external-in message. However, external messages has certain limitations, e.g. you can only send external-out messages from the smart contracts themselves. This means that it wasn't possible to deliver signed message from inside the blockchain, from another smart contract. V5 standard adds this functionality, partially enabling [gasless transaction](/ecosystem/standard/wallets/v5#preparing-for-gasless-transactions).
 
-Besides `W5InnerRequest` field that contains actual actions that will be performed, `W5SignedRequest` structure contains usual wallet message fields that were in-place in previous versions, read more about them [here](/standard/wallets/how-it-works).
+Besides `W5InnerRequest` field that contains actual actions that will be performed, `W5SignedRequest` structure contains usual wallet message fields that were in-place in previous versions, read more about them [here](/ecosystem/standard/wallets/how-it-works).
 
 ## Examples
 
@@ -280,7 +280,7 @@ function packExtendedActionsRec(extendedActions: OutActionExtended[]): Cell {
 }
 ```
 
-Now we have to deal with basic action serialization. However, since these are the messages that are described in [`block.tlb`](/languages/tl-b/overview), we can use contract-agnostic code from serialization library to store them.
+Now we have to deal with basic action serialization. However, since these are the messages that are described in [`block.tlb`](/ecosystem/languages/tl-b/overview), we can use contract-agnostic code from serialization library to store them.
 
 Here is a code snippet for storing V5 wallet actions as per `Inner Request` TL-B:
 
@@ -347,7 +347,7 @@ There are several additional arguments that we need to create signed message bes
 - `privateKey`
 - `validUntil`
 
-You can read more about where to obtain them and what there purpose is in [How it works](/standard/wallets/how-it-works) section.
+You can read more about where to obtain them and what there purpose is in [How it works](/ecosystem/standard/wallets/how-it-works) section.
 
 In this code snippet we will learn how to create signed serialized message.
 

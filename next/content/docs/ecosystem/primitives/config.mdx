@@ -18,10 +18,10 @@ TON features a complex configuration consisting of many technical parameters, so
 
 This material should be read alongside the parameter list.
 
-You can view the parameter values in the [current configuration](https://tonviewer.com/config), and the method of writing them into [cells](/foundations/serialization/boc) is outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/languages/tl-b/overview) format.
+You can view the parameter values in the [current configuration](https://tonviewer.com/config), and the method of writing them into [cells](/ecosystem/primitives/serialization/boc) is outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/ecosystem/languages/tl-b/overview) format.
 
 <Aside>
-  Configuration values are TL-B typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc).
+  Configuration values are TL-B typed cells serialized into [Bags of Cells (BoC)](/ecosystem/primitives/serialization/boc).
 </Aside>
 
 All parameters are in place, and you won't get lost. For your convenience, please use the right sidebar for quick navigation.
@@ -38,7 +38,7 @@ This parameter is the address of a special smart contract that stores the blockc
 
 ## Param 1: elector address
 
-This parameter is the address of the [elector smart contract](/foundations/system), responsible for appointing validators, distributing rewards, and voting on changes to blockchain parameters.
+This parameter is the address of the [elector smart contract](/ecosystem/primitives/system), responsible for appointing validators, distributing rewards, and voting on changes to blockchain parameters.
 
 [Parameter #1 on mainnet](https://tonviewer.com/config#1)
 
@@ -164,7 +164,7 @@ This parameter represents the configuration of a workchain in the TON Blockchain
 
 ## Param 13: complaint cost
 
-This parameter defines the cost of filing complaints about the incorrect operation of validators in the [elector smart contract](/foundations/system).
+This parameter defines the cost of filing complaints about the incorrect operation of validators in the [elector smart contract](/ecosystem/primitives/system).
 
 [Parameter #13 on mainnet](https://tonviewer.com/config#13)
 
@@ -353,7 +353,7 @@ Note: Param 20 defines gas settings for the masterchain; Param 21 defines gas se
 - `freeze_due_limit` and `delete_due_limit`: Limits of accumulated storage fees (in nanotons) at which a contract is frozen and deleted, respectively.
 
 <Aside>
-  You can find more about `gas_credit` and other parameters in the section of external messages [here](/tvm/instructions#external-messages).
+  You can find more about `gas_credit` and other parameters in the section of external messages [here](/ecosystem/tvm/instructions#external-messages).
 </Aside>
 
 [Parameter #20 on mainnet](https://tonviewer.com/config#20) | [Parameter #21 on mainnet](https://tonviewer.com/config#21)
@@ -578,7 +578,7 @@ precompiled_contracts_config#c0 list:(HashmapE 256 PrecompiledSmc) = Precompiled
 _ PrecompiledContractsConfig = ConfigParam 45;
 ```
 
-More details about precompiled contracts are on [this page](/foundations/precompiled).
+More details about precompiled contracts are on [this page](/ecosystem/primitives/precompiled).
 
 [Parameter #45 on mainnet](https://tonviewer.com/config#45)
 
@@ -639,8 +639,8 @@ This parameter relates to bridges for wrapping tokens from other networks into t
 After thoroughly reviewing this article, it is highly recommended that you dedicate time to a more in-depth study of the following documents:
 
 - The original descriptions are present, but they may be limited, in the documents:
-  - [The Open Network Whitepaper](/foundations/whitepapers/ton)
-  - [Telegram Open Network Blockchain](/foundations/whitepapers/tblkch)
+  - [The Open Network Whitepaper](/ecosystem/whitepapers/ton)
+  - [Telegram Open Network Blockchain](/ecosystem/whitepapers/tblkch)
 
 - Source code:
   - [`mc-config.h`](https://github.com/ton-blockchain/ton/blob/fc9542f5e223140fcca833c189f77b1a5ae2e184/crypto/block/mc-config.h)

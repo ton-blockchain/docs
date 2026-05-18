@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,7 +21,7 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
 This page lists all the operators in FunC in decreasing order of their precedence, with examples of usage.
@@ -29,7 +29,7 @@ This page lists all the operators in FunC in decreasing order of their precedenc
 ## Table of operators
 
 <Aside>
-  Currently, all the unary and binary operators are integer operators. Logical operators are bitwise integer operators (cf. [absence of boolean type](/languages/func/types#no-boolean-type)).
+  Currently, all the unary and binary operators are integer operators. Logical operators are bitwise integer operators (cf. [absence of boolean type](/ecosystem/languages/func/types#no-boolean-type)).
 </Aside>
 
 The following table lists operators in order of decreasing precedence, from highest to lowest.
@@ -61,7 +61,7 @@ For example:
 - `3 /% 5 /% 7` does _not_ compile, neither `(3 /% 5) /% 7` nor `3 /% (5 /% 7)`.
 
 <Aside>
-  In expressions, all operators should be separated from their arguments, otherwise the expression is interpreted as an [identifier](/languages/func/literals#identifiers).
+  In expressions, all operators should be separated from their arguments, otherwise the expression is interpreted as an [identifier](/ecosystem/languages/func/literals#identifiers).
 
   For example:
 
@@ -130,7 +130,7 @@ int answer = 42;
 ~ (~ 0);      ;; 0
 ```
 
-The `~` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/languages/func/types#no-boolean-type) for `true` and `false`:
+The `~` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/ecosystem/languages/func/types#no-boolean-type) for `true` and `false`:
 
 ```func
 ~ 0;          ;; -1,  NOT false is true
@@ -163,7 +163,7 @@ All binary operators are infix operators, i.e., placed in the middle of the two 
 ### Multiplication, `*`
 
 The asterisk (multiplication) operator `*` is used for multiplication of two values.
-Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Going beyond the range of the integer type will result in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 int five = 5;
@@ -177,7 +177,7 @@ The slash (division) operator `/` is used for integer division of two values, wh
 is positive and away from zero if the result is negative. This is also called [rounding down](https://en.wikipedia.org/wiki/Rounding#Rounding_down)
 or rounding toward negative infinity.
 
-An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+An attempt to divide by zero results in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 1) / 5;        ;; -1, rounding down away from 0
@@ -194,7 +194,7 @@ The caret-slash (ceiling division) operator `^/` is used for integer division of
 is positive and toward zero if the result is negative. This is also called [rounding up](https://en.wikipedia.org/wiki/Rounding#Rounding_up)
 or rounding toward positive infinity.
 
-An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+An attempt to divide by zero results in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 1) ^/ 5;       ;; 0, rounding up toward 0
@@ -212,7 +212,7 @@ tie-breaking rule for half values: if the fractional part is `0.5`, it is trunca
 if the result is negative. This is also called [rounding half up](https://en.wikipedia.org/wiki/Rounding#Rounding_half_up)
 or rounding half toward positive infinity.
 
-An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+An attempt to divide by zero results in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) ~/ 5;      ;; -1, rounding -1.2 to nearest integer
@@ -229,7 +229,7 @@ The percent sign (modulo) operator `%` is used for obtaining the modulo of integ
 Concretely, `a % b` is defined as `a - (b * (a / b))`, where `/` is the [division operator](#division%2C-%2F), `*` is the [multiplication operator](#multiplication%2C),
 and `-` is the [subtraction operator](#subtraction%2C).
 
-If `b` in the expression `a % b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a % b` is `0`, the result is an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) % 5;       ;; 4, result of formula: -6 - (5 * (-6 / 5))
@@ -258,7 +258,7 @@ operands with the `^/` operator.
 Concretely, `a ^% b` is defined as `a - (b * (a ^/ b))`, where `^/` is the [ceiling division operator](#ceiling-division%2C-%5E%2F),
 `*` is the [multiplication operator](#multiplication%2C), and `-` is the [subtraction operator](#subtraction%2C).
 
-If `b` in the expression `a ^% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a ^% b` is `0`, the result is an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) ^% 5;       ;; -1, result of formula: -6 - (5 * (-6 ^/ 5))
@@ -279,7 +279,7 @@ Concretely, `a ~% b` is defined as `a - (b * (a ~/ b))`, where `~/` is the [roun
 `*` is the [multiplication operator](#multiplication%2C),
 and `-` is the [subtraction operator](#subtraction%2C).
 
-If `b` in the expression `a ~% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a ~% b` is `0`, the result is an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) ~% 5;       ;; -1, result of formula: -6 - (5 * (-6 ~/ 5))
@@ -292,11 +292,11 @@ If `b` in the expression `a ~% b` is `0`, the result is an error with [exit code
 
 ### Division and modulo, `/%`
 
-The slash-percent sign (division and modulo) operator `/%` returns a two element [tensor](/languages/func/types#tensor-types), where the first element is the result
+The slash-percent sign (division and modulo) operator `/%` returns a two element [tensor](/ecosystem/languages/func/types#tensor-types), where the first element is the result
 of applying the [division operator](#division%2C-%2F) `/` on the operands,
 and the second element is the result of applying the [modulo operator](#modulo%2C-%25) on the operands.
 
-If `b` in the expression `a /% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a /% b` is `0`, the result is an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) /% 5;       ;; (-2, 4), which is: (-6 / 5, -6 % 5)
@@ -316,7 +316,7 @@ If `b` in the expression `a /% b` is `0`, the result is an error with [exit code
 ```
 
 The reason for this non-associativity of `/%` is that it returns a 2-element tensor. This means that you must decompose the tensor before using the values.
-See more about decomposition notation in the [variable declaration](/languages/func/expressions#variable-declaration) section.
+See more about decomposition notation in the [variable declaration](/ecosystem/languages/func/expressions#variable-declaration) section.
 
 ```func
 (int x, int y) = 10 /% 2;    ;; x stores 5, y stores 0
@@ -337,7 +337,7 @@ This makes it possible to “store” up to 257 boolean values per integer, as a
 1 & 1;     ;; 1,  & is idempotent, as expected of logical AND
 ```
 
-The `&` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/languages/func/types#no-boolean-type) for `true` and `false`:
+The `&` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/ecosystem/languages/func/types#no-boolean-type) for `true` and `false`:
 
 ```func
 0 & 0;          ;; 0,   false AND false is false
@@ -355,7 +355,7 @@ Hence, `&` can work as logical AND when computing boolean conditions:
 ### Addition, `+`
 
 The plus (addition) operator `+` is used for adding numbers together.
-Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Going beyond the range of the integer type will result in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 2 + 2;      ;; 4
@@ -365,7 +365,7 @@ Going beyond the range of the integer type will result in an error with [exit co
 ### Subtraction, `-`
 
 The minus (subtraction) operator `-` is used for subtracting numbers from each other.
-Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Going beyond the range of the integer type will result in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 2 - 2;    ;; 0
@@ -385,7 +385,7 @@ This is useful when we want to apply a specific [bitmask](https://en.wikipedia.o
 1 & 1;     ;; 1,  | is idempotent, as expected of logical OR
 ```
 
-The `|` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/languages/func/types#no-boolean-type) for `true` and `false`:
+The `|` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/ecosystem/languages/func/types#no-boolean-type) for `true` and `false`:
 
 ```func
 0 | 0;          ;; 0,    false OR false is false
@@ -416,7 +416,7 @@ It is useful for inverting selected bits of an operand (also called toggling or 
 1 ^ 1;     ;; 0,
 ```
 
-The `^` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/languages/func/types#no-boolean-type) for `true` and `false`:
+The `^` operator also behaves as expected on `-1` and `0`, which are the [emulated values](/ecosystem/languages/func/types#no-boolean-type) for `true` and `false`:
 
 ```func
 0 ^ 0;          ;; 0,    false XOR false is false
@@ -456,7 +456,7 @@ Excess bits shifted off from the left are discarded, and zero bits are shifted i
 `x << n` is a more efficient way to multiply `x` by `2^n`.
 In other words, `x << n` is equivalent to `x * 2^n`, where `2^n` is exponentiation of `2` by `n` and `*` is standard arithmetical multiplication.
 
-Exceeding the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Exceeding the range of the integer type will result in an error with [exit code 4](/ecosystem/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
 
 ```func
 2 << 1;   ;; 4,  since 2 * 2^1 = 4
@@ -565,7 +565,7 @@ The `!=` can only compare integers.
 ### Ternary, `?:`
 
 The conditional (ternary) operator `?:` is the only operator that takes three operands: a condition followed by a question mark
-(`?`), then an [expression](/languages/func/expressions) to execute (the "consequent" expression) if the condition evaluates to an integer different from `0`, followed by a colon (`:`),
+(`?`), then an [expression](/ecosystem/languages/func/expressions) to execute (the "consequent" expression) if the condition evaluates to an integer different from `0`, followed by a colon (`:`),
 and finally the expression to execute (the "alternative" expression) if the condition evaluates to `0`.
 This operator is frequently used as an alternative to an `if...else` statement.
 
@@ -584,7 +584,7 @@ Both the consequent and alternative expressions must have the same type. The con
 
 ### Assignment, `=`
 
-The assignment operator `=` is used to assign the result of an [expression](/languages/func/expressions) to a variable. After execution, the `=` operator returns the value assigned to the variable.
+The assignment operator `=` is used to assign the result of an [expression](/ecosystem/languages/func/expressions) to a variable. After execution, the `=` operator returns the value assigned to the variable.
 
 ```func
 a = 5;       ;; Assigns 5 to variable a, and returns 5
@@ -610,7 +610,7 @@ The operator `=` is right associative:
                    ;; From here onwards, a and b have value 5.
 ```
 
-The assignment operator can also occur in [variable declarations](/languages/func/expressions#variable-declaration), which are also expressions:
+The assignment operator can also occur in [variable declarations](/ecosystem/languages/func/expressions#variable-declaration), which are also expressions:
 
 ```func
 int x = 5;        ;; Declares integer variable x with value 5, and returns 5.

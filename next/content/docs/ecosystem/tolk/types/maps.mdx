@@ -222,8 +222,8 @@ Iterates over a map in ascending or descending order.
 
 These structures are rarely used and are not part of the Tolk type system.
 
-- Augmented hashmaps and [Merkle proofs](/foundations/proofs/overview): implement interaction manually.
-- Prefix dictionaries: `import @stdlib/tvm-dicts` and use [assembly functions](/languages/tolk/features/asm-functions).
+- Augmented hashmaps and [Merkle proofs](/ecosystem/primitives/proofs/overview): implement interaction manually.
+- Prefix dictionaries: `import @stdlib/tvm-dicts` and use [assembly functions](/ecosystem/tolk/features/asm-functions).
 
 ## Keys are auto-serialized
 
@@ -356,5 +356,5 @@ if (prev.isFound) {
 
 ## Stack layout and serialization
 
-- An empty map is represented as [TVM `NULL`](/languages/tolk/types/overall-tvm-stack) and is [serialized as `0`](/languages/tolk/types/overall-serialization).
+- An empty map is represented as [TVM `NULL`](/ecosystem/tolk/types/overall-tvm-stack) and is [serialized as `0`](/ecosystem/tolk/types/overall-serialization).
 - A non-empty map is represented as a TVM `CELL` and is serialized as `1` followed by a reference.

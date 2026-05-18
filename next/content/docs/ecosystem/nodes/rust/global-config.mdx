@@ -28,7 +28,7 @@ The global config contains three top-level sections:
 
 `dht` defines properties for bootstrap [distributed hash table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) servers used to find peers during initial node setup. It contains three parameters:
 
-- `k` and `a` – DHT configuration parameters. In a [Kademlia-based DHT](/foundations/whitepapers/ton#3-2-ton-dht-kademlia-like-distributed-hash-table):
+- `k` and `a` – DHT configuration parameters. In a [Kademlia-based DHT](/ecosystem/whitepapers/ton#3-2-ton-dht-kademlia-like-distributed-hash-table):
   - `k` – the maximum number of nodes stored in a routing bucket.
   - `a` – parallel lookup parameter specifying the number of nodes queried concurrently during a DHT lookup operation.
 - `static_nodes` – an array of node objects. Each node includes:

@@ -7,7 +7,7 @@ description: ""
 Tolk provides constructs for controlling contract flow.
 
 - Use `if`, `assert`, and loops for conditional logic.
-- Use `match` expression for [pattern matching](/languages/tolk/syntax/pattern-matching).
+- Use `match` expression for [pattern matching](/ecosystem/tolk/syntax/pattern-matching).
 
 ## `if` statement
 
@@ -21,7 +21,7 @@ if (condition) {
 }
 ```
 
-A condition must be a [`bool`](/languages/tolk/types/booleans). Integers are not implicitly converted — write the comparison explicitly:
+A condition must be a [`bool`](/ecosystem/tolk/types/booleans). Integers are not implicitly converted — write the comparison explicitly:
 
 ```tolk
 if (someInt != 0) {
@@ -29,7 +29,7 @@ if (someInt != 0) {
 }
 ```
 
-The same rule applies to `while`, `do while`, ternary, [`assert`](/languages/tolk/syntax/exceptions#assert-statement), and the unary `!` operator. There is no gas overhead — the compiler strips the `!= 0` comparison off whenever it would translate to a redundant TVM instruction.
+The same rule applies to `while`, `do while`, ternary, [`assert`](/ecosystem/tolk/syntax/exceptions#assert-statement), and the unary `!` operator. There is no gas overhead — the compiler strips the `!= 0` comparison off whenever it would translate to a redundant TVM instruction.
 
 The body of `if` and `else` must be enclosed in `{ ... }`:
 
@@ -46,7 +46,7 @@ if (condition) {
 
 ## `assert` statement
 
-`assert` throws an [exceptions](/languages/tolk/syntax/exceptions) if a condition is false.
+`assert` throws an [exceptions](/ecosystem/tolk/syntax/exceptions) if a condition is false.
 
 ```tolk
 assert (condition) throw ERR_CODE;
@@ -62,7 +62,7 @@ if (!condition) {
 
 ## `match` expression
 
-`match` is used to perform different actions for different values of a variable. A common use case is routing values of a [union type](/languages/tolk/types/unions):
+`match` is used to perform different actions for different values of a variable. A common use case is routing values of a [union type](/ecosystem/tolk/types/unions):
 
 ```tolk
 fun demo(v: A | B | C) {

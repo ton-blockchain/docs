@@ -186,7 +186,7 @@ verify  Ed25519(signature, hash, publicKey)
 Field encodings are defined in the [`ton_proof` signature specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md#address-proof-signature-ton_proof). The verifier should:
 
 1. Check that the address derived from `walletStateInit` matches the reported account address — this binds the stateInit to the wallet whose proof you are verifying.
-1. Resolve the wallet's public key. First call [`tryExtractPublicKey`](/ecosystem/ton-connect/how-to/sign-data#extracting-the-public-key) from the sign-data guide on the stateInit; if it returns `null` (unknown contract), fall back to the on-chain `get_public_key` getter. The wallet-reported `publicKey` is not trusted — the address-bound stateInit is the authoritative source.
+1. Resolve the wallet's public key. First call [`tryExtractPublicKey`](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) from the sign-data guide on the stateInit; if it returns `null` (unknown contract), fall back to the on-chain `get_public_key` getter. The wallet-reported `publicKey` is not trusted — the address-bound stateInit is the authoritative source.
 1. Verify the Ed25519 signature over the reconstructed hash.
 1. Reject proofs outside your time window (15 minutes is a common default).
 1. Reject proofs whose `AppDomain` does not match your dApp domain.
@@ -302,9 +302,9 @@ For browser calls to a different origin, add a CORS middleware or proxy API rout
 
 ## See also
 
-- [Get started](/ecosystem/ton-connect/get-started) — React, Next.js, vanilla JS, and headless SDK quick-starts.
-- [Sign data § Extracting the public key](/ecosystem/ton-connect/how-to/sign-data#extracting-the-public-key) — the wallet public-key extraction the `ton_proof` verifier depends on.
+- [Get started](/applications/ton-connect/get-started) — React, Next.js, vanilla JS, and headless SDK quick-starts.
+- [Sign data § Extracting the public key](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) — the wallet public-key extraction the `ton_proof` verifier depends on.
 - [`ton_proof` signature specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/connect.md#address-proof-signature-ton_proof)
-- [Disconnect a session](/ecosystem/ton-connect/how-to/disconnect)
-- [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
-- [TON Connect manifest](/ecosystem/ton-connect/core-concepts#manifest)
+- [Disconnect a session](/applications/ton-connect/how-to/disconnect)
+- [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
+- [TON Connect manifest](/applications/ton-connect/core-concepts#manifest)

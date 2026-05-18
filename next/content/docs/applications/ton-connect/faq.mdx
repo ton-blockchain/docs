@@ -39,7 +39,7 @@ For the full implementer guide, see the [Wallet Guidelines](https://github.com/t
 
 Use the `ton_proof` connect item. The wallet returns a signature that binds the user's address, your domain, a timestamp, and a server-issued nonce. The backend verifies the signature against the user's public key (extracted from `walletStateInit` or fetched via the on-chain `get_public_key` method) and issues a session token.
 
-Walkthrough: [Connect a wallet → Authenticate with `ton_proof`](/ecosystem/ton-connect/how-to/connect#authenticate-with-ton_proof). Reference example: [`ton-connect/demo-dapp-backend`](https://github.com/ton-connect/demo-dapp-backend).
+Walkthrough: [Connect a wallet → Authenticate with `ton_proof`](/applications/ton-connect/how-to/connect#authenticate-with-ton_proof). Reference example: [`ton-connect/demo-dapp-backend`](https://github.com/ton-connect/demo-dapp-backend).
 
 ## Why is there no `accountChanged` event?
 
@@ -57,4 +57,4 @@ Bounded by the wallet's `maxMessages` field in its `SendTransaction` feature. Co
 
 ## See also
 
-- [Troubleshooting](/ecosystem/ton-connect/troubleshooting) — error codes and manifest fetch failures.
+- [Troubleshooting](/applications/ton-connect/troubleshooting) — error codes and manifest fetch failures.

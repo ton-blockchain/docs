@@ -60,7 +60,7 @@ cell private_data = begin_cell()
 
 ## Account destruction race conditions
 
-Destroying accounts using [send mode](/foundations/messages/modes) `128 + 32` without proper checks can lead to fund loss in race conditions.
+Destroying accounts using [send mode](/ecosystem/primitives/messages/modes) `128 + 32` without proper checks can lead to fund loss in race conditions.
 
 ### Vulnerable code
 
@@ -112,13 +112,13 @@ Replay protection is a security mechanism that prevents an attacker from [reusin
 
 ## Unconditional accepting of external messages
 
-Incoming [external messages](/foundations/messages/external-in) do not transfer funds. Receiving smart contract must pay for their processing from its balance. Upon receiving an external message, a smart contract can spend some free gas ([`gas_credit`](/foundations/config#param-20-and-21%3A-gas-prices)) in order to decide whether it is ready to accept it, and then pay for its further processing.
+Incoming [external messages](/ecosystem/primitives/messages/external-in) do not transfer funds. Receiving smart contract must pay for their processing from its balance. Upon receiving an external message, a smart contract can spend some free gas ([`gas_credit`](/foundations/config#param-20-and-21%3A-gas-prices)) in order to decide whether it is ready to accept it, and then pay for its further processing.
 
-External messages are usually accepted through the [`ACCEPT`](/tvm/instructions#f800-accept) TVM instruction, which sets `gas_limit` to its maximum possible value specified in the network configuration, and sets `gas_credit` to zero. From this point on, the contract will have to pay for the entire processing of the incoming message.
+External messages are usually accepted through the [`ACCEPT`](/ecosystem/tvm/instructions#f800-accept) TVM instruction, which sets `gas_limit` to its maximum possible value specified in the network configuration, and sets `gas_credit` to zero. From this point on, the contract will have to pay for the entire processing of the incoming message.
 
 Therefore, if `ACCEPT` is not guarded by a condition, an attacker might repeatedly send messages, and spend the entire balance of the contract.
 
-The [`SETGASLIMIT`](/tvm/instructions#f801-setgaslimit) instruction can lead to the same issue.
+The [`SETGASLIMIT`](/ecosystem/tvm/instructions#f801-setgaslimit) instruction can lead to the same issue.
 
 ### Vulnerable code
 
@@ -150,7 +150,7 @@ Exit codes `0` and `1` indicate normal execution of the compute phase of the tra
 
 ## Gas limitation
 
-Be careful with the [Out of gas error](/tvm/exit-codes#13%3A-out-of-gas-error). It cannot be handled, so try to pre-calculate the gas consumption whenever possible. This will help avoid wasting extra gas, as the transaction will fail anyway.
+Be careful with the [Out of gas error](/ecosystem/tvm/exit-codes#13%3A-out-of-gas-error). It cannot be handled, so try to pre-calculate the gas consumption whenever possible. This will help avoid wasting extra gas, as the transaction will fail anyway.
 
 ### Secure implementation
 
@@ -298,7 +298,7 @@ Furthermore, once a signature is used in a transaction, it becomes publicly visi
 
 ## Return gas excesses carefully
 
-If excess gas is not returned to the sender, funds accumulate in contracts over time. This is suboptimal. Add a function to rake out excess, but popular contracts like [Jetton wallet](/standard/tokens/jettons/how-it-works) return it to the sender with a message using the `0xd53276db` opcode.
+If excess gas is not returned to the sender, funds accumulate in contracts over time. This is suboptimal. Add a function to rake out excess, but popular contracts like [Jetton wallet](/ecosystem/standard/tokens/jettons/how-it-works) return it to the sender with a message using the `0xd53276db` opcode.
 
 ### Secure gas handling
 
@@ -384,7 +384,7 @@ contract AnotherContract(
 
 ## TON address representation issues
 
-[TON addresses](/foundations/addresses/formats) have multiple formats that must be handled correctly.
+[TON addresses](/ecosystem/primitives/addresses/formats) have multiple formats that must be handled correctly.
 
 ### Address formats
 

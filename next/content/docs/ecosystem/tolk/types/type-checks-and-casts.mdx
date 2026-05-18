@@ -47,7 +47,7 @@ fun main() {
 
 ## Smart casts
 
-Once a variable is checked, the compiler narrows its type. For instance, if a variable [could be `null`](/languages/tolk/types/nullable) before the check, and the condition is confirmed to be true, the variable's type will not allow `null` in the true block anymore.
+Once a variable is checked, the compiler narrows its type. For instance, if a variable [could be `null`](/ecosystem/tolk/types/nullable) before the check, and the condition is confirmed to be true, the variable's type will not allow `null` in the true block anymore.
 
 ```tolk
 if (lastCell != null) {
@@ -57,7 +57,7 @@ if (lastCell != null) {
 
 ## Operator `is` for union types
 
-Given a [union type](/languages/tolk/types/unions) `T1 | T2 | ...`, the `is` operator performs a runtime type test, narrowing the type.
+Given a [union type](/ecosystem/tolk/types/unions) `T1 | T2 | ...`, the `is` operator performs a runtime type test, narrowing the type.
 
 ```tolk
 fun demo(v: int | Point | cell) {
@@ -91,7 +91,7 @@ fun analyzeStorage(nCells: int, lastCell: cell?) {
 
 When non-trivial type transformations are required, the `as` operator overrides the restrictions by performing an unsafe type cast.
 
-For instance, `bool` cannot be assigned directly to `int`. However, a direct cast using the `as` operator is valid since booleans are represented as [TVM](/tvm/overview) integers: `true` is -1, and `false` is 0.
+For instance, `bool` cannot be assigned directly to `int`. However, a direct cast using the `as` operator is valid since booleans are represented as [TVM](/ecosystem/tvm/overview) integers: `true` is -1, and `false` is 0.
 
 ```tolk
 var number: int = true as int; // -1

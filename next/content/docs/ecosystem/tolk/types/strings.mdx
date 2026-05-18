@@ -5,7 +5,7 @@ sidebarTitle: "Strings"
 description: ""
 ---
 
-Tolk provides a dedicated `string` type. At the TVM level, a string is a [cell](/languages/tolk/types/cells) that stores data in snake format: a chain of cells where each cell holds a portion of the string and a reference to the next.
+Tolk provides a dedicated `string` type. At the TVM level, a string is a [cell](/ecosystem/tolk/types/cells) that stores data in snake format: a chain of cells where each cell holds a portion of the string and a reference to the next.
 
 ## String literals
 
@@ -183,7 +183,7 @@ var link = StringBuilder.create()
 
 ## TEP-compliant encoding
 
-Per the [token metadata standard](/standard/tokens/metadata), strings returned from get-methods must contain prefixes for off-chain explorers and APIs:
+Per the [token metadata standard](/ecosystem/standard/tokens/metadata), strings returned from get-methods must contain prefixes for off-chain explorers and APIs:
 
 - `0x00` + `"<STRING>"` — a regular snake-encoded string
 - `0x01` + `"<STRING>"` — an off-chain content URL

@@ -17,7 +17,7 @@ By the end of this guide, you will:
 
 ## Prerequisites
 
-- Completed [wallet creation](/standard/wallets/highload/v3/create) with funded balance
+- Completed [wallet creation](/ecosystem/standard/wallets/highload/v3/create) with funded balance
 - Sent at least one transfer (single or batch)
 - Know the `query_id` and `created_at` values used in the transfer
 
@@ -30,7 +30,7 @@ Highload Wallet v3 uses a two-transaction pattern. To verify full processing, yo
 
 Even if `processed?` returns `true`, the internal transaction may have failed. Full verification requires checking both transactions.
 
-See [Message sending flow](/standard/wallets/highload/v3/specification#message-sending-flow) for the complete two-transaction pattern.
+See [Message sending flow](/ecosystem/standard/wallets/highload/v3/specification#message-sending-flow) for the complete two-transaction pattern.
 
 ## Helper functions
 
@@ -147,7 +147,7 @@ console.log('✓ Query marked as processed');
 <Aside type="note">
   **What `processed?` tells you:** This GET method only confirms that the `query_id` was marked as processed in the wallet's storage. It does **not** confirm that the internal transaction succeeded or that messages were sent.
 
-  See [`processed?` method](/standard/wallets/highload/v3/specification#processed%3F-method-details) in the specification for details.
+  See [`processed?` method](/ecosystem/standard/wallets/highload/v3/specification#processed%3F-method-details) in the specification for details.
 </Aside>
 
 ## Step 2: Find and verify external transaction
@@ -202,7 +202,7 @@ if (!externalCompute.success || externalCompute.exitCode !== 0) {
 console.log('✓ External transaction succeeded');
 ```
 
-If the external transaction failed, see [Exit codes](/standard/wallets/highload/v3/specification#exit-codes) for troubleshooting.
+If the external transaction failed, see [Exit codes](/ecosystem/standard/wallets/highload/v3/specification#exit-codes) for troubleshooting.
 
 ## Step 3: Find and verify internal transaction
 
@@ -291,7 +291,7 @@ if (messagesFailed > 0) {
 >
   **Partial failures:** Even if the action phase succeeds overall, some individual messages may fail. Check `skippedActions` to detect partial failures. If `skippedActions > 0`, some messages in the batch were not sent.
 
-  The `totalActions - 1` calculation accounts for the [`set_code` protection](/standard/wallets/highload/v3/specification#protection-against-set-code) action.
+  The `totalActions - 1` calculation accounts for the [`set_code` protection](/ecosystem/standard/wallets/highload/v3/specification#protection-against-set-code) action.
 </Aside>
 
 ## Expected outputs
@@ -321,7 +321,7 @@ if (messagesFailed > 0) {
 ❌ External transaction failed: exit code 35
 ```
 
-The `query_id` is marked as processed, but the transaction failed during validation. See [Exit codes](/standard/wallets/highload/v3/specification#exit-codes) for troubleshooting.
+The `query_id` is marked as processed, but the transaction failed during validation. See [Exit codes](/ecosystem/standard/wallets/highload/v3/specification#exit-codes) for troubleshooting.
 
 ### Internal transaction failure
 

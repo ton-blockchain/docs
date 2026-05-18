@@ -6,7 +6,7 @@ description: ""
 
 Tolk supports union types such as `T1 | T2 | T3`.
 
-A union type represents a value that can be one of several types. [Pattern matching](/languages/tolk/syntax/pattern-matching) is used to distinguish union variants. A special case `T | null` is written as `T?` and referred to as a [nullable type](/languages/tolk/types/nullable).
+A union type represents a value that can be one of several types. [Pattern matching](/ecosystem/tolk/syntax/pattern-matching) is used to distinguish union variants. A special case `T | null` is written as `T?` and referred to as a [nullable type](/ecosystem/tolk/types/nullable).
 
 ```tolk
 struct (0x12345678) Increment { /* ... */ }
@@ -134,7 +134,7 @@ fun demo(v: A | B) {
 
 ## `lazy` matching for unions
 
-In [message-handling](/languages/tolk/features/message-handling), union values are commonly parsed using `lazy`:
+In [message-handling](/ecosystem/tolk/features/message-handling), union values are commonly parsed using `lazy`:
 
 ```tolk
 fun onInternalMessage(in: InMessage) {
@@ -145,7 +145,7 @@ fun onInternalMessage(in: InMessage) {
 }
 ```
 
-This pattern is referred to as [`lazy` match](/languages/tolk/features/lazy-loading):
+This pattern is referred to as [`lazy` match](/ecosystem/tolk/features/lazy-loading):
 
 1. No union is allocated on the stack upfront; loading is deferred until needed.
 1. `match` operates by inspecting the slice prefix (opcode), instead of checking a type identifier on the stack.
@@ -154,13 +154,13 @@ Union types continue to work correctly without `lazy` and follow the same type-s
 
 ## `void` as a union variant
 
-`T | void` is a valid serializable union meaning "T or empty slice" — `void` carries no bits and does not participate in the prefix tree. This is useful for chains like wallet-v5's payload format: parse cells until refs run out. See [void-never](/languages/tolk/types/void-never#void-inside-unions-for-serialization).
+`T | void` is a valid serializable union meaning "T or empty slice" — `void` carries no bits and does not participate in the prefix tree. This is useful for chains like wallet-v5's payload format: parse cells until refs run out. See [void-never](/ecosystem/tolk/types/void-never#void-inside-unions-for-serialization).
 
 ## Stack layout and serialization
 
-Union types have a complex [stack layout](/languages/tolk/types/overall-tvm-stack), commonly referred to as tagged unions.
+Union types have a complex [stack layout](/ecosystem/tolk/types/overall-tvm-stack), commonly referred to as tagged unions.
 
-[Serialization](/languages/tolk/types/overall-serialization) depends on whether the union consists of structures with manual serialization prefixes:
+[Serialization](/ecosystem/tolk/types/overall-serialization) depends on whether the union consists of structures with manual serialization prefixes:
 
 - if yes; for example, `struct (0x1234) A`, those prefixes are used;
 - if no, the compiler automatically generates a prefix tree; for example, `T1 | T2` is called `Either` type: `0` + `T1` or `1` + `T2`.

@@ -4,11 +4,11 @@ title: "Transaction fees"
 description: ""
 ---
 
-Fees in TON align with the [execution phases](/foundations/phases) of a transaction:
+Fees in TON align with the [execution phases](/ecosystem/primitives/phases) of a transaction:
 
-- Storage fees are charged in the [storage phase](/foundations/phases#storage-phase).
-- Compute fees are charged in the [compute phase](/foundations/phases#compute-phase).
-- Forward and action fees are charged in the [action](/foundations/phases#action-phase) and [bounce phases](/foundations/phases#bounce-phase).
+- Storage fees are charged in the [storage phase](/ecosystem/primitives/phases#storage-phase).
+- Compute fees are charged in the [compute phase](/ecosystem/primitives/phases#compute-phase).
+- Forward and action fees are charged in the [action](/ecosystem/primitives/phases#action-phase) and [bounce phases](/ecosystem/primitives/phases#bounce-phase).
 - Import fees apply at the start of smart contract execution, not a specific phase.
 
 The total transaction fee is the sum of these components.
@@ -49,7 +49,7 @@ account_storage$_ last_trans_lt:uint64
 
 ## Compute fees
 
-All computation is measured in gas units. A TVM operation typically has a fixed gas cost, but that is [not always the case](/tvm/gas). Network configuration defines gas prices; users cannot override them.
+All computation is measured in gas units. A TVM operation typically has a fixed gas cost, but that is [not always the case](/ecosystem/tvm/gas). Network configuration defines gas prices; users cannot override them.
 
 ### Flat gas limit
 
@@ -88,15 +88,15 @@ The formula excludes the message root cell because it mainly contains headers. `
 
 ### Action fee
 
-Action fee is the portion of `fwdFee` granted to the validator of the message's source [shard](/foundations/shards#blockchain-sharding). The remaining `fwdFee - actionFee` amount goes to the validator of the destination shard.
+Action fee is the portion of `fwdFee` granted to the validator of the message's source [shard](/ecosystem/primitives/shards#blockchain-sharding). The remaining `fwdFee - actionFee` amount goes to the validator of the destination shard.
 
-Action fee exists only for [internal messages](/foundations/messages/internal#internal-messages).
+Action fee exists only for [internal messages](/ecosystem/primitives/messages/internal#internal-messages).
 
 ```cpp
 action_fee = floor(fwd_fee * first_frac / 2^16)
 ```
 
-Starting with Global Version 4, a failed [SENDMSG action](/foundations/actions/send#send-message) incurs a penalty proportional to the attempted message size. It is calculated as:
+Starting with Global Version 4, a failed [SENDMSG action](/ecosystem/primitives/actions/send#send-message) incurs a penalty proportional to the attempted message size. It is calculated as:
 
 ```cpp
 fine_per_cell = floor((cell_price >> 16) / 4)

@@ -5,16 +5,16 @@ sidebarTitle: "Use a vanity contract"
 description: ""
 ---
 
-A [vanity contract](https://github.com/ton-community/vanity-contract) allows customization of the address of a smart contract being deployed. It does this by making its own [`StateInit`](/foundations/messages/deploy) depend on constant data that is randomly generated many times until a desired address is found. It is often used to deploy contracts with a specific prefix or suffix so the address is visible in block explorers.
+A [vanity contract](https://github.com/ton-community/vanity-contract) allows customization of the address of a smart contract being deployed. It does this by making its own [`StateInit`](/ecosystem/primitives/messages/deploy) depend on constant data that is randomly generated many times until a desired address is found. It is often used to deploy contracts with a specific prefix or suffix so the address is visible in block explorers.
 
-The contract code and data are included in the vanity deploy message. The vanity contract is first deployed with a `StateInit` that produces the [desired address](/foundations/addresses/overview#account-id), and then immediately sets its actual state from the payload. This is a special case of [upgrading](/contract-dev/upgrades) contract's code.
+The contract code and data are included in the vanity deploy message. The vanity contract is first deployed with a `StateInit` that produces the [desired address](/ecosystem/primitives/addresses/overview#account-id), and then immediately sets its actual state from the payload. This is a special case of [upgrading](/ecosystem/contract-dev/techniques/upgrades) contract's code.
 
 ## Prerequisites
 
 - OpenCL-capable GPU
 - [Python 3](https://www.python.org/downloads/)
 - [`pyopencl`](https://pypi.org/project/pyopencl/)
-- [Blueprint](/contract-dev/blueprint/overview)
+- [Blueprint](/ecosystem/contract-dev/blueprint/overview)
 
 ## How it works
 
@@ -60,7 +60,7 @@ Because a contract address is derived from the `StateInit` hash, changing the `s
 
 To generate the `salt`, copy the code from [`src/generator`](https://github.com/ton-community/vanity-contract/tree/6baeb39500de0fee79bd241047699ca65ee71f55/src/generator) in the same [repository](https://github.com/ton-community/vanity-contract). It includes the `run.py` script and the `vanity.cl` OpenCL kernel.
 
-Run the command with the desired search parameters, including `-w` for the [workchain](/foundations/addresses/overview#workchain-id) and the owner address allowed to perform the deployment. The example below searches on the basechain for the specified suffix.
+Run the command with the desired search parameters, including `-w` for the [workchain](/ecosystem/primitives/addresses/overview#workchain-id) and the owner address allowed to perform the deployment. The example below searches on the basechain for the specified suffix.
 
 ```bash
 python3 run.py -w 0 --end '<SUFFIX>' --case-sensitive <OWNER_ADDR>
@@ -95,7 +95,7 @@ Speed: 203 Mh/s, miss: 2, found: 3
 Speed: 203 Mh/s, miss: 3, found: 3
 ```
 
-The more specific the search, the rarer the matches, and the more compute is required to find one. A 4-character match typically appears in a few seconds on a laptop. TON [user-friendly addresses](/foundations/addresses/formats#user-friendly-format) are base64, so each character encodes 6 bits; four characters correspond to 24 bits, i.e., about 1 in 2<sup>24</sup> trials on average. Once a `salt` is found, it can be used to deploy an arbitrary smart contract at that address.
+The more specific the search, the rarer the matches, and the more compute is required to find one. A 4-character match typically appears in a few seconds on a laptop. TON [user-friendly addresses](/ecosystem/primitives/addresses/formats#user-friendly-format) are base64, so each character encodes 6 bits; four characters correspond to 24 bits, i.e., about 1 in 2<sup>24</sup> trials on average. Once a `salt` is found, it can be used to deploy an arbitrary smart contract at that address.
 
 ## Deploy the contract
 
@@ -112,7 +112,7 @@ body:
     data: new contract's data
 ```
 
-This example uses [Blueprint](/contract-dev/blueprint/overview) to create and send this message. Define a vanity contract wrapper at `wrappers/VanityContract.ts`:
+This example uses [Blueprint](/ecosystem/contract-dev/blueprint/overview) to create and send this message. Define a vanity contract wrapper at `wrappers/VanityContract.ts`:
 
 ```ts title="TypeScript" expandable
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';

@@ -5,7 +5,7 @@ sidebarTitle: "Server-Sent Events"
 description: ""
 ---
 
-[Server-Sent Events (SSE)](https://en.wikipedia.org/wiki/Server-sent_events) transport of the [Streaming API](/ecosystem/api/toncenter/streaming/overview) uses a single `POST` request to establish the connection and specify the subscription. No further messages are sent by the client on this connection.
+[Server-Sent Events (SSE)](https://en.wikipedia.org/wiki/Server-sent_events) transport of the [Streaming API](/applications/api/toncenter/streaming/overview) uses a single `POST` request to establish the connection and specify the subscription. No further messages are sent by the client on this connection.
 
 ## Usage
 
@@ -35,14 +35,14 @@ Send one `POST` request to the SSE endpoint with a JSON body that defines the su
   type="string[]"
   required="true"
 >
-  One or more event types to receive: `transactions`, `actions`, `trace`, `trace_invalidated`, `account_state_change`, `jettons_change`. The [event types section](/ecosystem/api/toncenter/streaming/reference#event-types) and [notification schemas section](/ecosystem/api/toncenter/streaming/reference#notification-schemas) provide the exact payload structure for each event.
+  One or more event types to receive: `transactions`, `actions`, `trace`, `trace_invalidated`, `account_state_change`, `jettons_change`. The [event types section](/applications/api/toncenter/streaming/reference#event-types) and [notification schemas section](/applications/api/toncenter/streaming/reference#notification-schemas) provide the exact payload structure for each event.
 </ParamField>
 
 <ParamField
   path="addresses"
   type="string[]"
 >
-  Wallet or contract addresses to monitor. Accepts [valid TON address formats](/foundations/addresses/formats). Optional when subscribing only to a `"trace"`, otherwise required.
+  Wallet or contract addresses to monitor. Accepts [valid TON address formats](/ecosystem/primitives/addresses/formats). Optional when subscribing only to a `"trace"`, otherwise required.
 </ParamField>
 
 <ParamField
@@ -78,7 +78,7 @@ Send one `POST` request to the SSE endpoint with a JSON body that defines the su
   path="action_types"
   type="string[]"
 >
-  Optional action type filter. Applies only to `"actions"`. Refer to a list of [available action types in API v3](/ecosystem/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
+  Optional action type filter. Applies only to `"actions"`. Refer to a list of [available action types in API v3](/applications/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
 </ParamField>
 
 <ParamField
@@ -152,7 +152,7 @@ Ignore SSE lines that begin with `:`.
 
 ### Rate limit on reconnect (429 error)
 
-If a client reconnects immediately after a disconnect, the previous connection may still be open for \~1 minute. The reconnect attempt receives a 429 error. Use exponential backoff or [an enterprise plan API key](/ecosystem/api/toncenter/get-api-key).
+If a client reconnects immediately after a disconnect, the previous connection may still be open for \~1 minute. The reconnect attempt receives a 429 error. Use exponential backoff or [an enterprise plan API key](/applications/api/toncenter/get-api-key).
 
 ### POST-only subscription
 
@@ -170,5 +170,5 @@ When using `"account_state_change"` or `"jettons_change"` at `"confirmed"` final
 
 ## Next steps
 
-- Skim the server [notification reference](/ecosystem/api/toncenter/streaming/reference)
-- [Get an API key](/ecosystem/api/toncenter/get-api-key)
+- Skim the server [notification reference](/applications/api/toncenter/streaming/reference)
+- [Get an API key](/applications/api/toncenter/get-api-key)

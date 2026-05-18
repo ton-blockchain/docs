@@ -31,11 +31,11 @@ TON Connect allows connecting TON wallets to the frontend of web applications or
 
 Start here:
 
-- [Get started](/ecosystem/ton-connect/get-started) — install the SDK, host a manifest, render a Connect button. React, Next.js, and vanilla JS recipes in one page.
-- [How-to recipes](/ecosystem/ton-connect/how-to/connect) — [connect](/ecosystem/ton-connect/how-to/connect), [disconnect](/ecosystem/ton-connect/how-to/disconnect), [send a transaction](/ecosystem/ton-connect/how-to/send-transaction), [sign data](/ecosystem/ton-connect/how-to/sign-data), [gasless transfers](/ecosystem/ton-connect/how-to/sign-message-gasless), [embedded requests](/ecosystem/ton-connect/how-to/embedded-request), [filter wallets](/ecosystem/ton-connect/how-to/filter-wallets), [WalletConnect support](/ecosystem/ton-connect/how-to/walletconnect-support).
-- [Core concepts](/ecosystem/ton-connect/core-concepts) — architecture, bridges, sessions, universal links, manifest, registry, feature negotiation, security model.
+- [Get started](/applications/ton-connect/get-started) — install the SDK, host a manifest, render a Connect button. React, Next.js, and vanilla JS recipes in one page.
+- [How-to recipes](/applications/ton-connect/how-to/connect) — [connect](/applications/ton-connect/how-to/connect), [disconnect](/applications/ton-connect/how-to/disconnect), [send a transaction](/applications/ton-connect/how-to/send-transaction), [sign data](/applications/ton-connect/how-to/sign-data), [gasless transfers](/applications/ton-connect/how-to/sign-message-gasless), [embedded requests](/applications/ton-connect/how-to/embedded-request), [filter wallets](/applications/ton-connect/how-to/filter-wallets), [WalletConnect support](/applications/ton-connect/how-to/walletconnect-support).
+- [Core concepts](/applications/ton-connect/core-concepts) — architecture, bridges, sessions, universal links, manifest, registry, feature negotiation, security model.
 
-When something breaks, jump to [Troubleshooting](/ecosystem/ton-connect/troubleshooting) — error codes and manifest 404 / CORS — or the [FAQ](/ecosystem/ton-connect/faq) for design-choice questions.
+When something breaks, jump to [Troubleshooting](/applications/ton-connect/troubleshooting) — error codes and manifest 404 / CORS — or the [FAQ](/applications/ton-connect/faq) for design-choice questions.
 
 <Aside type="note">
 TON Connect does not provide integration with the TON blockchain. You need to implement it manually or use [AppKit](/ecosystem/appkit/overivew) — an SDK for integrating TON into dApps.
@@ -45,17 +45,17 @@ TON Connect does not provide integration with the TON blockchain. You need to im
 
 TON Connect does not provide an SDK for wallets. If you're a wallet developer, take one of these approaches:
 
-- Implement the protocol directly based on the [TON Connect specification](https://github.com/the-ton-tech/ton-connect/tree/feature/refine-protocol). Additionally, you can use [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) for interfaces.
-- Use [WalletKit](/ecosystem/walletkit/overview) — an SDK for wallet services with built-in support for TON Connect
+- Implement the protocol directly based on the [TON Connect specification](https://github.com/the-ton-tech/ton-connect/tree/feature/refine-protocol). Additionally, you can use [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) for interfaces.
+- Use [WalletKit](/applications/walletkit/overview) — an SDK for wallet services with built-in support for TON Connect
 
 ## API reference
 
 The dApp-facing packages live in the [`ton-connect/sdk`](https://github.com/ton-connect/sdk) monorepo:
 
-- [`@tonconnect/ui-react`](/ecosystem/ton-connect/api-reference/ui-react) — hooks and prebuilt components for React.
-- [`@tonconnect/ui`](/ecosystem/ton-connect/api-reference/ui) — framework-agnostic UI, same components without React bindings.
-- [`@tonconnect/sdk`](/ecosystem/ton-connect/api-reference/sdk) — headless connector for server-side flows or custom UI.
-- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — wire-format types and session cryptography for wallet/SDK implementers.
+- [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react) — hooks and prebuilt components for React.
+- [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) — framework-agnostic UI, same components without React bindings.
+- [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk) — headless connector for server-side flows or custom UI.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types and session cryptography for wallet/SDK implementers.
 
 ## Examples
 
@@ -66,4 +66,4 @@ Here you can find a working end-to-end example of an application using TON Conne
 - [Protocol specification](https://github.com/the-ton-tech/ton-connect/tree/feature/refine-protocol) — bridge, RPC, session, and connect
 - [Public wallet registry](https://github.com/ton-connect/wallets-list) — the `wallets-v2.json` file each wallet registers in
 - [HTTP bridge reference implementation](https://github.com/ton-connect/bridge) — Go bridge implementation.
-- [`@tonconnect/protocol`](/ecosystem/ton-connect/api-reference/protocol) — types and helpers shared between the SDK and wallets
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — types and helpers shared between the SDK and wallets

@@ -8,7 +8,7 @@ description: ""
 
 
 <Aside type="note">
-  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+  The official smart contract language of TON Blockchain is [Tolk](/ecosystem/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
 
@@ -21,10 +21,10 @@ description: ""
     noZoom={true}
   />
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/ecosystem/tolk/from-func/tolk-vs-func).
 </Aside>
 
-FunC, or more specifically, the Fift assembler, reserves several function names with predefined [IDs](/languages/func/functions#method-id-specifier):
+FunC, or more specifically, the Fift assembler, reserves several function names with predefined [IDs](/ecosystem/languages/func/functions#method-id-specifier):
 
 - [`recv_internal`](#receive-internal) and [`main`](#main) have `id = 0`
 - [`recv_external`](#receive-external) has `id = -1`
@@ -36,7 +36,7 @@ Every program must include a function with `id = 0`, meaning it must define eith
 
 #### Receive internal
 
-The `recv_internal` function is invoked when a smart contract receives an inbound [internal message](/foundations/messages/internal).
+The `recv_internal` function is invoked when a smart contract receives an inbound [internal message](/ecosystem/primitives/messages/internal).
 
 Any of the following `recv_internal` declarations can be used:
 
@@ -56,7 +56,7 @@ There,
 - `in_msg_body` is the inbound message body, equal to the body field in `in_msg_cell`. The body is given as a cell slice.
 
 <Aside>
-  Each time a contract receives a message, the [TVM initializes](/tvm/initialization) and pushes into the stack the following four pieces of data, in this order:
+  Each time a contract receives a message, the [TVM initializes](/ecosystem/tvm/initialization) and pushes into the stack the following four pieces of data, in this order:
 
   - The balance of the contract.
   - The coins included in the inbound message.
@@ -87,7 +87,7 @@ There,
 
   `in_msg_body` will get assigned the value at the top of the stack (which corresponds to the message body slice), and `in_msg_cell` will receive the second value from the top of the stack (which corresponds to the message as a cell). The rest of values in the stack remain unassigned to variables during the execution of `recv_internal`, meaning that they will remain unused in the stack and will be dropped once the TVM finishes execution.
 
-  The declarations of `recv_internal` with fewer arguments consume slightly less gas, because each unused value in the stack is automatically dropped from the stack once `recv_internal` finishes execution, without the need to spend gas by explicitly executing a DROP instruction, which is an alias of [`s0 POP`](/tvm/instructions#3-pop).
+  The declarations of `recv_internal` with fewer arguments consume slightly less gas, because each unused value in the stack is automatically dropped from the stack once `recv_internal` finishes execution, without the need to spend gas by explicitly executing a DROP instruction, which is an alias of [`s0 POP`](/ecosystem/tvm/instructions#3-pop).
 </Aside>
 
 <Aside
@@ -110,7 +110,7 @@ If the intention of the code is to handle inbound internal messages, it is prefe
 
 #### Receive external
 
-The `recv_external` function handles inbound [external messages](/foundations/messages/external-in). It allows declarations similar to those for [`recv_internal`](#receive-internal):
+The `recv_external` function handles inbound [external messages](/ecosystem/primitives/messages/external-in). It allows declarations similar to those for [`recv_internal`](#receive-internal):
 
 ```func
 () recv_external(int balance, int msg_value, cell in_msg_cell, slice in_msg_body)

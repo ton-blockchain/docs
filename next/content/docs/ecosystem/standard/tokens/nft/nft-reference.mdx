@@ -7,7 +7,7 @@ description: ""
 
 The NFT standard ([TEP-62](https://github.com/ton-blockchain/TEPs/blob/0d7989fba6f2d9cb08811bf47263a9b314dc5296/text/0062-nft-standard.md)) describes the required messages and get-methods. The NFT royalty standard ([TEP-66](https://github.com/ton-blockchain/TEPs/blob/0d7989fba6f2d9cb08811bf47263a9b314dc5296/text/0066-nft-royalty-standard.md)) describes a standard way to implement royalty information for NFT sales. The token data standard ([TEP-64](https://github.com/ton-blockchain/TEPs/blob/0d7989fba6f2d9cb08811bf47263a9b314dc5296/text/0064-token-data-standard.md)) describes available formats for metadata of tokens. A widely used [reference implementation](https://github.com/ton-blockchain/token-contract/tree/1182ad99413242f09925d50e70ccb7e0e09f94d4/nft) follows these standards for simple NFTs with only the essential mechanics. This page explains the reference implementation, what you can extend, and what must remain unchanged.
 
-The [nft-contract repository](https://github.com/ton-blockchain/nft-contract) contains multiple smart contracts written in [FunC](/languages/func/overview) language, including additional ones for NFT sales. This page describes the collection and item smart contracts, as they are the only necessary ones per standard.
+The [nft-contract repository](https://github.com/ton-blockchain/nft-contract) contains multiple smart contracts written in [FunC](/ecosystem/languages/func/overview) language, including additional ones for NFT sales. This page describes the collection and item smart contracts, as they are the only necessary ones per standard.
 
 ## Collection
 
@@ -29,7 +29,7 @@ All other behavior is implementation‑specific. This includes any kind of modif
 | Deploy batch of items, `op=2` (inbound internal message, owner-only) | Optional                                       |
 | Change owner, `op=3` (inbound internal message, owner-only)          | Optional                                       |
 
-Here, `op` means a 32‑bit operation code placed at the start of an internal message body. Contracts use it to dispatch messages to different handlers. The numeric values are local to this contract; they just need to be unique within its dispatcher. See the [Messages overview](/foundations/messages/overview) for more background.
+Here, `op` means a 32‑bit operation code placed at the start of an internal message body. Contracts use it to dispatch messages to different handlers. The numeric values are local to this contract; they just need to be unique within its dispatcher. See the [Messages overview](/ecosystem/primitives/messages/overview) for more background.
 
 ### Storage
 
@@ -60,17 +60,17 @@ Storage loading and saving is implemented with simple functions `load_data` and 
 }
 ```
 
-The `content` [cell](/foundations/serialization/cells) in this contract contains 2 cells in [references](/foundations/serialization/cells): `collection_content` containing metadata of the collection itself, and `common_content` containing the common prefix for individual items' metadata.
+The `content` [cell](/ecosystem/primitives/serialization/cells) in this contract contains 2 cells in [references](/ecosystem/primitives/serialization/cells): `collection_content` containing metadata of the collection itself, and `common_content` containing the common prefix for individual items' metadata.
 
 The `royalty_params` cell contains 3 values: `royalty_factor` which is a numerator, `royalty_base` which is a denominator, and `royalty_address` which is the address where royalties are sent.
 
 ### Child contracts
 
-The collection and item contracts implement a classic [parent–child pattern](/contract-dev/contract-sharding), where the collection acts as the parent and items are children. Therefore, the collection implements functionality to deploy its children, and the contract keeps the `nft_item_code` field in storage.
+The collection and item contracts implement a classic [parent–child pattern](/ecosystem/contract-dev/techniques/contract-sharding), where the collection acts as the parent and items are children. Therefore, the collection implements functionality to deploy its children, and the contract keeps the `nft_item_code` field in storage.
 
-The contract uses helper functions to compose [`StateInit`](/foundations/messages/deploy) — roughly, the package that holds a contract’s initial code and data used to derive its address and deploy it — calculate addresses, and send deploy messages for NFT items.
+The contract uses helper functions to compose [`StateInit`](/ecosystem/primitives/messages/deploy) — roughly, the package that holds a contract’s initial code and data used to derive its address and deploy it — calculate addresses, and send deploy messages for NFT items.
 
-First, `calculate_nft_item_state_init` composes a `StateInit` cell of an NFT item with a given `item_index`. It composes a data cell following the expected storage schema of the item contract. Then the data and code cells are placed in a final `StateInit` cell following the format required by the TON blockchain. It uses the `store_dict` builder to encode optional references; it does not store dictionaries. This can be replaced with a more self‑explanatory [`store_maybe_ref`](/languages/func/stdlib#store-maybe-ref) builder which does the same thing. It stores a single bit `0` in a builder if the cell is null, otherwise bit `1` and a cell as a reference.
+First, `calculate_nft_item_state_init` composes a `StateInit` cell of an NFT item with a given `item_index`. It composes a data cell following the expected storage schema of the item contract. Then the data and code cells are placed in a final `StateInit` cell following the format required by the TON blockchain. It uses the `store_dict` builder to encode optional references; it does not store dictionaries. This can be replaced with a more self‑explanatory [`store_maybe_ref`](/ecosystem/languages/func/stdlib#store-maybe-ref) builder which does the same thing. It stores a single bit `0` in a builder if the cell is null, otherwise bit `1` and a cell as a reference.
 
 ```func
 cell calculate_nft_item_state_init(int item_index, cell nft_item_code) {
@@ -79,7 +79,7 @@ cell calculate_nft_item_state_init(int item_index, cell nft_item_code) {
 }
 ```
 
-The `calculate_nft_item_address` function takes `state_init` composed by `calculate_nft_item_state_init`, along with `wc` (the [workchain](/foundations/glossary#workchain) for the resulting address). It calculates the address by hashing the `StateInit` and composing a [`MsgAddressInt`](/foundations/addresses/overview#internal-addresses) slice according to the format required by the TON blockchain.
+The `calculate_nft_item_address` function takes `state_init` composed by `calculate_nft_item_state_init`, along with `wc` (the [workchain](/foundations/glossary#workchain) for the resulting address). It calculates the address by hashing the `StateInit` and composing a [`MsgAddressInt`](/ecosystem/primitives/addresses/overview#internal-addresses) slice according to the format required by the TON blockchain.
 
 ```func
 slice calculate_nft_item_address(int wc, cell state_init) {
@@ -91,7 +91,7 @@ slice calculate_nft_item_address(int wc, cell state_init) {
 }
 ```
 
-`deploy_nft_item` builds the `StateInit`, derives the address, and sends the deploy message. It calls `calculate_nft_item_state_init` to compose the `StateInit`, then `calculate_nft_item_address` with `workchain()` to derive the contract's workchain (reference implementation uses `0` for [basechain](/foundations/addresses/overview#workchain-id)), and finally composes and sends the deploy message with the `StateInit` and content (using [`send_raw_message`](/languages/func/stdlib#send-raw-message)).
+`deploy_nft_item` builds the `StateInit`, derives the address, and sends the deploy message. It calls `calculate_nft_item_state_init` to compose the `StateInit`, then `calculate_nft_item_address` with `workchain()` to derive the contract's workchain (reference implementation uses `0` for [basechain](/ecosystem/primitives/addresses/overview#workchain-id)), and finally composes and sends the deploy message with the `StateInit` and content (using [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message)).
 
 ```func
 () deploy_nft_item(int item_index, cell nft_item_code, int amount, cell nft_content) impure {
@@ -110,13 +110,13 @@ slice calculate_nft_item_address(int wc, cell state_init) {
 
 Note on `.store_uint(0x18, 6)` and `.store_uint(0x10, 6)`:
 
-- These 6 leading bits encode the start of `CommonMsgInfo` for an internal message: `int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress …` (see [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout)). Concretely, the 6 bits are:
+- These 6 leading bits encode the start of `CommonMsgInfo` for an internal message: `int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress …` (see [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout)). Concretely, the 6 bits are:
 
   - `tag` = `0` — selects `int_msg_info$0` (internal message info).
-  - `ihr_disabled` — set to `1` to disable IHR (Instant Hypercube Routing). IHR is a legacy delivery mode and is not used in TON; contracts should always keep it disabled. See [Hypercube routing](/foundations/shards).
-  - `bounce` — if `1`, the message will bounce back on errors during compute/action phases; if `0`, it will not bounce. We use `bounce=1` (0x18) for deploys to child items so the collection gets its funds back on failure, and `bounce=0` (0x10) for royalty replies to avoid bounces and ensure crediting wallets/uninitialized addresses. See [Bounce phase](/foundations/phases#bounce-phase).
+  - `ihr_disabled` — set to `1` to disable IHR (Instant Hypercube Routing). IHR is a legacy delivery mode and is not used in TON; contracts should always keep it disabled. See [Hypercube routing](/ecosystem/primitives/shards).
+  - `bounce` — if `1`, the message will bounce back on errors during compute/action phases; if `0`, it will not bounce. We use `bounce=1` (0x18) for deploys to child items so the collection gets its funds back on failure, and `bounce=0` (0x10) for royalty replies to avoid bounces and ensure crediting wallets/uninitialized addresses. See [Bounce phase](/ecosystem/primitives/phases#bounce-phase).
   - `bounced` — set to `0` in outbound messages you build. This bit is meaningful only for inbound messages: when the blockchain generates a bounce, the inbound copy has `bounced=1`. Validators construct such bounce messages themselves; your outbound value does not make a message “bounced”. In normal sends, keep it `0`.
-  - `src` — we serialize `addr_none` (the `00` tag). Validators replace it with the current contract address during the action phase, so you don’t need to spend bits storing the full source address. See [`send_raw_message`](/languages/func/stdlib#send-raw-message).
+  - `src` — we serialize `addr_none` (the `00` tag). Validators replace it with the current contract address during the action phase, so you don’t need to spend bits storing the full source address. See [`send_raw_message`](/ecosystem/languages/func/stdlib#send-raw-message).
 
   Therefore:
 
@@ -128,19 +128,19 @@ Note on `.store_uint(0x18, 6)` and `.store_uint(0x10, 6)`:
 Note on `.store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)`:
 
 - The right‑hand argument (bit width) is the total size of the remaining header fields we serialize in one shot, in this order (mapped to the TL‑B schema):
-  - `1` — `ExtraCurrencyCollection` presence bit inside `value:CurrencyCollection` (see [`CurrencyCollection`](/foundations/whitepapers/tblkch#3-1-6-representing-collections-of-arbitrary-currencies) and the [credit phase](/foundations/whitepapers/tblkch#4-3-4-description-of-a-credit-phase)).
-  - `4` — length prefix for `ihr_fee:Grams` (encoded as `VarUInteger 16`: 4‑bit length `len` then `len` bytes; writing `0000` here encodes zero). See [`LDGRAMS`](/tvm/instructions#fa00-ldgrams).
-  - `4` — length prefix for `fwd_fee:Grams` (same `VarUInteger 16` rule; `0000` means zero). See [`LDGRAMS`](/tvm/instructions#fa00-ldgrams).
-  - `64` — `created_lt:uint64` from `CommonMsgInfo` (we write `0`; validators rewrite the actual logical time). See [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout).
-  - `32` — `created_at:uint32` from `CommonMsgInfo` (we write `0`; validators rewrite the block Unix time). See [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout).
-  - `1` — `init:(Maybe (Either StateInit ^StateInit))` presence flag (0 = no `StateInit`, 1 = present). See [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout).
-  - `1` — selector for the `Either` inside `init` (0 = inline `StateInit` follows, 1 = `^StateInit` by reference). In our case it is `1`, and `.store_ref(state_init)` follows. See [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout).
-  - `1` — selector for `body:(Either X ^X)` (0 = inline body follows, 1 = body is provided by reference). In our case it is `1`, and `.store_ref(nft_content)` follows. See [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+  - `1` — `ExtraCurrencyCollection` presence bit inside `value:CurrencyCollection` (see [`CurrencyCollection`](/ecosystem/whitepapers/tblkch#3-1-6-representing-collections-of-arbitrary-currencies) and the [credit phase](/ecosystem/whitepapers/tblkch#4-3-4-description-of-a-credit-phase)).
+  - `4` — length prefix for `ihr_fee:Grams` (encoded as `VarUInteger 16`: 4‑bit length `len` then `len` bytes; writing `0000` here encodes zero). See [`LDGRAMS`](/ecosystem/tvm/instructions#fa00-ldgrams).
+  - `4` — length prefix for `fwd_fee:Grams` (same `VarUInteger 16` rule; `0000` means zero). See [`LDGRAMS`](/ecosystem/tvm/instructions#fa00-ldgrams).
+  - `64` — `created_lt:uint64` from `CommonMsgInfo` (we write `0`; validators rewrite the actual logical time). See [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
+  - `32` — `created_at:uint32` from `CommonMsgInfo` (we write `0`; validators rewrite the block Unix time). See [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
+  - `1` — `init:(Maybe (Either StateInit ^StateInit))` presence flag (0 = no `StateInit`, 1 = present). See [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
+  - `1` — selector for the `Either` inside `init` (0 = inline `StateInit` follows, 1 = `^StateInit` by reference). In our case it is `1`, and `.store_ref(state_init)` follows. See [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
+  - `1` — selector for `body:(Either X ^X)` (0 = inline body follows, 1 = body is provided by reference). In our case it is `1`, and `.store_ref(nft_content)` follows. See [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 - The left‑hand value `4 + 2 + 1` sets the three one‑bit selectors at the end of this header block to `1` (while earlier bits remain `0`). In order, they encode:
   - `init` is present (`Maybe …` = 1),
   - `init` is stored by reference (`Either StateInit ^StateInit` = 1),
-  - body is stored by reference (`Either X ^X` = 1). See [message layout](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+  - body is stored by reference (`Either X ^X` = 1). See [message layout](/ecosystem/whitepapers/tblkch#3-1-7-message-layout).
 
 This idiom is a terse way to zero‑initialize the residual CommonMsgInfo/Message fields and set only the required selector bits, instead of writing several consecutive `.store_uint(0, …)` calls followed by individual one‑bit writes.
 
@@ -183,7 +183,7 @@ Then it parses `op` and `query_id` from incoming message body, and loads the sto
 
 #### Request royalty parameters
 
-The `get_royalty_params` message is the only inbound message handling required by TEP-66. On receipt, the contract sends a `report_royalty_params` message back to the sender with the `royalty_params` field from storage. The helper `send_royalty_params` is mostly boilerplate: it sends a [non‑bounceable](/foundations/addresses/formats) message (see [bounce behavior](/foundations/phases#bounce-phase)) with a body following the standard and carries the value of the incoming message.
+The `get_royalty_params` message is the only inbound message handling required by TEP-66. On receipt, the contract sends a `report_royalty_params` message back to the sender with the `royalty_params` field from storage. The helper `send_royalty_params` is mostly boilerplate: it sends a [non‑bounceable](/ecosystem/primitives/addresses/formats) message (see [bounce behavior](/ecosystem/primitives/phases#bounce-phase)) with a body following the standard and carries the value of the incoming message.
 
 Why non‑bounceable? The reply can go to any sender, including wallets or even uninitialized accounts. Making the response non‑bounceable ensures the value forwarded with `mode = 64` credits the requester even if it cannot execute code. It also avoids accidental bounces.
 
@@ -224,7 +224,7 @@ Then there are 3 features: deploy single item (opcode `1`), deploy a batch of it
 
 #### Deploy single item
 
-It parses the incoming message and expects it to contain 3 values: `item_index:uint64`, `amount:Coins`, and `content:^Cell` ([TL‑B](/languages/tl-b/overview) notation — the `^` means this field is stored in a separate referenced cell, i.e., the message carries a reference to a child [cell](/foundations/serialization/cells) that contains the content). It checks the item index to be less than or equal to the `next_item_index` from storage. Then it calls a helper function `deploy_nft_item`, which deploys the new NFT item. Lastly, if the item index equals `next_item_index`, it increments `next_item_index` to update the last item index.
+It parses the incoming message and expects it to contain 3 values: `item_index:uint64`, `amount:Coins`, and `content:^Cell` ([TL‑B](/ecosystem/languages/tl-b/overview) notation — the `^` means this field is stored in a separate referenced cell, i.e., the message carries a reference to a child [cell](/ecosystem/primitives/serialization/cells) that contains the content). It checks the item index to be less than or equal to the `next_item_index` from storage. Then it calls a helper function `deploy_nft_item`, which deploys the new NFT item. Lastly, if the item index equals `next_item_index`, it increments `next_item_index` to update the last item index.
 
 ```func
 () recv_internal(cell in_msg_full, slice in_msg_body) impure {
@@ -246,9 +246,9 @@ It parses the incoming message and expects it to contain 3 values: `item_index:u
 
 #### Batch deploy items
 
-This feature is useful when you need to deploy many NFTs at once, for example when minting some initial items. It takes a single `deploy_list` dictionary from the message where keys are item indices and values are cells containing amounts of TON to attach to deployment, and content cells, similar to the values parsed by the singular deploy feature above. It traverses the dictionary in ascending order of indices and limits the batch to ≤249 items to stay comfortably under the [action list limit](/foundations/limits#message-and-transaction-limits) of 255 actions per transaction. This reference contract chooses a lower cap than the maximum as a safety margin.
+This feature is useful when you need to deploy many NFTs at once, for example when minting some initial items. It takes a single `deploy_list` dictionary from the message where keys are item indices and values are cells containing amounts of TON to attach to deployment, and content cells, similar to the values parsed by the singular deploy feature above. It traverses the dictionary in ascending order of indices and limits the batch to ≤249 items to stay comfortably under the [action list limit](/ecosystem/primitives/limits#message-and-transaction-limits) of 255 actions per transaction. This reference contract chooses a lower cap than the maximum as a safety margin.
 
-The logic is straightforward. The loop uses [`~udict::delete_get_min(64)`](/languages/func/stdlib#dict-delete-get-min) to get and delete the item with the minimum unsigned 64‑bit key. It does that on each iteration and increments `counter` each iteration to avoid exceeding the action list limit. The deployment logic is the same as for the singular deployment feature above.
+The logic is straightforward. The loop uses [`~udict::delete_get_min(64)`](/ecosystem/languages/func/stdlib#dict-delete-get-min) to get and delete the item with the minimum unsigned 64‑bit key. It does that on each iteration and increments `counter` each iteration to avoid exceeding the action list limit. The deployment logic is the same as for the singular deployment feature above.
 
 ```func
 () recv_internal(cell in_msg_full, slice in_msg_body) impure {
@@ -353,7 +353,7 @@ Since item content in the off‑chain format is a URL pointing to a JSON with al
 
 Composing a full URL means joining these two strings, which this method does. This is the most common approach, but it's possible to implement any custom logic for composing item content, like calculating the suffix right in the get‑method from the index and allowing items to not hold any additional content.
 
-The common prefix for content is stored as a second reference in the `content` cell from the collection's contract storage. The resulting cell is then composed with an off‑chain tag `0x01`, followed by a common prefix joined with individual content in [snake format](/standard/tokens/metadata#snake-data-encoding).
+The common prefix for content is stored as a second reference in the `content` cell from the collection's contract storage. The resulting cell is then composed with an off‑chain tag `0x01`, followed by a common prefix joined with individual content in [snake format](/ecosystem/standard/tokens/metadata#snake-data-encoding).
 
 ```func
 cell get_nft_content(int index, cell individual_nft_content) method_id {
@@ -431,7 +431,7 @@ There is a boilerplate helper function for sending messages in this contract, fo
 }
 ```
 
-The `recv_internal` function begins with boilerplate code for parsing flags, the sender address, and estimating the forward fee. The forward fee estimation assumes that all outbound messages will not be larger than the inbound message, and calculates the original forward fee of the inbound message as an upper bound. The `muldiv` operation multiplying the `fwd_fee` by 3 and dividing by 2 is an outdated way of doing that, as there exists a `get_original_fwd_fee` function which mostly does the same thing (see [TVM instructions → `GETORIGINALFWDFEE`](/tvm/instructions#f83a-getoriginalfwdfee)).
+The `recv_internal` function begins with boilerplate code for parsing flags, the sender address, and estimating the forward fee. The forward fee estimation assumes that all outbound messages will not be larger than the inbound message, and calculates the original forward fee of the inbound message as an upper bound. The `muldiv` operation multiplying the `fwd_fee` by 3 and dividing by 2 is an outdated way of doing that, as there exists a `get_original_fwd_fee` function which mostly does the same thing (see [TVM instructions → `GETORIGINALFWDFEE`](/ecosystem/tvm/instructions#f83a-getoriginalfwdfee)).
 
 ```func
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {

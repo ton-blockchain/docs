@@ -46,11 +46,11 @@ Techniques to avoid name collisions:
    - Good: `ReturnExcessesBack`, `WalletStorage`.
    - Bad: `Excesses`, `Storage`.
 1. Group integer constants to enums.
-1. [Prefer methods to global-scope functions](/languages/tolk/idioms-conventions#prefer-methods-to-functions).
+1. [Prefer methods to global-scope functions](/ecosystem/tolk/idioms-conventions#prefer-methods-to-functions).
 
 ## Repeated symbols across contracts
 
-When developing multiple contracts, each contract has its own file and compilation target. Place a [`contract` declaration](/languages/tolk/features/contract-abi) in every entrypoint file:
+When developing multiple contracts, each contract has its own file and compilation target. Place a [`contract` declaration](/ecosystem/tolk/features/contract-abi) in every entrypoint file:
 
 ```tolk
 // file: ContractA.tolk

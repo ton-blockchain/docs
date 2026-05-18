@@ -23,7 +23,7 @@ By the end of this guide, you will:
 
 ## Prerequisites
 
-- Completed [wallet creation](/standard/wallets/highload/v3/create) with funded balance and saved configuration in `.wallet.json`
+- Completed [wallet creation](/ecosystem/standard/wallets/highload/v3/create) with funded balance and saved configuration in `.wallet.json`
 
 ## Step 1: Load wallet configuration
 
@@ -84,11 +84,11 @@ for (let i = 1; i <= 10; i++) {
 Each message in the batch:
 
 - **`type: 'sendMsg'`** — specifies that this is an outgoing message action
-- **`mode`** — [send mode](/foundations/messages/modes) for each individual message
+- **`mode`** — [send mode](/ecosystem/primitives/messages/modes) for each individual message
 - **`outMsg`** — the internal message to send
 
 <Aside type="tip">
-  **Batch limit:** You can send up to **254 messages** per transaction. This limit exists because one action slot is reserved for [`set_code` protection](/standard/wallets/highload/v3/specification#protection-against-set-code).
+  **Batch limit:** You can send up to **254 messages** per transaction. This limit exists because one action slot is reserved for [`set_code` protection](/ecosystem/standard/wallets/highload/v3/specification#protection-against-set-code).
 </Aside>
 
 ## Step 3: Send the batch
@@ -128,13 +128,13 @@ console.log(`Created At: ${createdAt}`);
 - Use `HighloadQueryId.fromSeqno(n)` to create a specific query ID
 - Provides `getNext()` method to increment to the next unique ID
 - Total range: 8,380,416 unique IDs
-- See [Query ID structure](/standard/wallets/highload/v3/specification#query-id-structure) for details
+- See [Query ID structure](/ecosystem/standard/wallets/highload/v3/specification#query-id-structure) for details
 
 **`createdAt`** — Message timestamp for expiration:
 
 - Set to 30 seconds **before** current time: `Math.floor(Date.now() / 1000) - 30`
 - Compensates for blockchain time lag (lite-servers use last block time, not current time)
-- See [Timestamp validation](/standard/wallets/highload/v3/specification#timestamp-validation) for why this is necessary
+- See [Timestamp validation](/ecosystem/standard/wallets/highload/v3/specification#timestamp-validation) for why this is necessary
 
 **`value`** — Compute fee for the internal transaction:
 
@@ -153,10 +153,10 @@ console.log(`Created At: ${createdAt}`);
 
 Batch transfers use a two-transaction pattern: the external message marks the `query_id` as processed and sends an internal message to itself with the action list, then the internal transaction processes the actions and sends all outgoing messages.
 
-See [Message sending flow](/standard/wallets/highload/v3/specification#message-sending-flow) for the complete validation sequence.
+See [Message sending flow](/ecosystem/standard/wallets/highload/v3/specification#message-sending-flow) for the complete validation sequence.
 
 ## Next steps
 
 You can send multiple batches in parallel, each with a unique `query_id`.
 
-To verify that your batch was fully processed, see [How to verify message is processed](/standard/wallets/highload/v3/verify-is-processed).
+To verify that your batch was fully processed, see [How to verify message is processed](/ecosystem/standard/wallets/highload/v3/verify-is-processed).

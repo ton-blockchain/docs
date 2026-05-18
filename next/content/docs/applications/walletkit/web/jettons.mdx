@@ -6,10 +6,10 @@ description: ""
 ---
 
 <Aside>
-  [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
+  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Aside>
 
-[Jettons](/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each Jetton has a separate master (minter) contract and an individual wallet contract for each holder.
+[Jettons](/ecosystem/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each Jetton has a separate master (minter) contract and an individual wallet contract for each holder.
 
 For example, USDT on TON is implemented as a Jetton, and its minter contract address is `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`. By providing this address and the recipient's TON wallet contract address, WalletKit knows which tokens to send and to whom.
 
@@ -19,7 +19,7 @@ To work with Jettons, the wallet service needs to handle [Jetton balances](#bala
   type="caution"
   title="Decimals matter"
 >
-  Each Jetton stores a [`decimals`](/standard/tokens/metadata#decimals) parameter in its metadata. Transferring without accounting for `decimals` can result in sending drastically more tokens than expected — irreversible on mainnet.
+  Each Jetton stores a [`decimals`](/ecosystem/standard/tokens/metadata#decimals) parameter in its metadata. Transferring without accounting for `decimals` can result in sending drastically more tokens than expected — irreversible on mainnet.
 
   Mitigation: Always retrieve and apply the correct `decimals` value. Test on testnet first.
 </Aside>
@@ -164,7 +164,7 @@ stopMonitoring();
 
 ## Transfers from dApps
 
-When a connected dApp requests a Jetton transfer, the wallet service follows the same flow as [Toncoin transfers](/ecosystem/walletkit/web/toncoin#transfers-from-dapps): the dApp sends a transaction request through the bridge, WalletKit emulates it and presents a preview, the user approves or declines, and the result is returned to the dApp.
+When a connected dApp requests a Jetton transfer, the wallet service follows the same flow as [Toncoin transfers](/applications/walletkit/web/toncoin#transfers-from-dapps): the dApp sends a transaction request through the bridge, WalletKit emulates it and presents a preview, the user approves or declines, and the result is returned to the dApp.
 
 ```ts title="TypeScript"
 kit.onTransactionRequest(async (event) => {
@@ -203,7 +203,7 @@ As with Toncoin transfers, the wallet service should not block the UI while wait
 
 ## Transfers in the wallet service
 
-Jetton transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/ecosystem/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
+Jetton transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
 
 <Aside
   type="danger"
@@ -274,13 +274,13 @@ async function sendJetton(
 
 Jettons:
 
-- [Jettons overview](/standard/tokens/jettons/overview)
-- [Jetton transfers](/standard/tokens/jettons/transfer)
-- [Token metadata and decimals](/standard/tokens/metadata#decimals)
+- [Jettons overview](/ecosystem/standard/tokens/jettons/overview)
+- [Jetton transfers](/ecosystem/standard/tokens/jettons/transfer)
+- [Token metadata and decimals](/ecosystem/standard/tokens/metadata#decimals)
 
 General:
 
-- [Handle transaction requests](/ecosystem/walletkit/web/events#handle-ontransactionrequest)
-- [Transaction fees](/foundations/fees)
-- [WalletKit overview](/ecosystem/walletkit/overview)
-- [TON Connect overview](/ecosystem/ton-connect/overview)
+- [Handle transaction requests](/applications/walletkit/web/events#handle-ontransactionrequest)
+- [Transaction fees](/ecosystem/primitives/fees)
+- [WalletKit overview](/applications/walletkit/overview)
+- [TON Connect overview](/applications/ton-connect/overview)

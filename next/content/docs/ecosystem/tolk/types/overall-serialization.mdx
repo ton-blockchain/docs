@@ -5,7 +5,7 @@ sidebarTitle: "Serialization"
 description: ""
 ---
 
-This page assumes prior knowledge of the [TL-B](/languages/tl-b/overview) and [TVM](/tvm/overview). It serves as a concise low-level reference.
+This page assumes prior knowledge of the [TL-B](/ecosystem/languages/tl-b/overview) and [TVM](/ecosystem/tvm/overview). It serves as a concise low-level reference.
 
 A consolidated summary of how Tolk types are serialized into TL-B–compatible binary data.
 
@@ -248,7 +248,7 @@ enum Role {
 }
 ```
 
-Input values are validated during deserialization. For `enum Role: int8`, any input value outside the range of defined enum variants, e.g., \< 0 or > 2, triggers [exception 5](/tvm/exit-codes).
+Input values are validated during deserialization. For `enum Role: int8`, any input value outside the range of defined enum variants, e.g., \< 0 or > 2, triggers [exception 5](/ecosystem/tvm/exit-codes).
 
 Values not explicitly listed in the enum definition are also rejected:
 
@@ -422,7 +422,7 @@ Shaped components are serialized sequentially: serialization is identical to ten
 ## `map<K, V>`
 
 - Maybe reference: `0` for empty or `1+ref` for dictionary contents
-- TL-B: [`HashmapE n X`](/languages/tl-b/complex-and-non-trivial-examples#hashmap)
+- TL-B: [`HashmapE n X`](/ecosystem/languages/tl-b/complex-and-non-trivial-examples#hashmap)
 - Stored using `STDICT`
 - Loaded using `LDDICT`
 

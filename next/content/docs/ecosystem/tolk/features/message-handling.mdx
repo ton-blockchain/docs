@@ -6,11 +6,11 @@ description: ""
 
 Each Tolk contract has special entrypoints – reserved functions that handle different message types. Handling an incoming message uses ordinary language constructs.
 
-A contract file typically begins with a [`contract` declaration](/languages/tolk/features/contract-abi) that names the contract and lists its public shapes — including the union of incoming messages.
+A contract file typically begins with a [`contract` declaration](/ecosystem/tolk/features/contract-abi) that names the contract and lists its public shapes — including the union of incoming messages.
 
 ## `onInternalMessage`
 
-Contracts primarily handle [internal messages](/foundations/messages/internal#internal-messages). Users interact with contracts through their wallets, which send internal messages to the contract. The entrypoint is declared as follows:
+Contracts primarily handle [internal messages](/ecosystem/primitives/messages/internal#internal-messages). Users interact with contracts through their wallets, which send internal messages to the contract. The entrypoint is declared as follows:
 
 ```tolk
 fun onInternalMessage(in: InMessage) {
@@ -22,7 +22,7 @@ The basic guidelines are:
 
 - For each incoming message, declare a `struct` with a unique 32-bit prefix, opcode.
 - Declare a union type that represents all supported messages.
-- Reference the union from `incomingMessages:` in the [`contract` declaration](/languages/tolk/features/contract-abi).
+- Reference the union from `incomingMessages:` in the [`contract` declaration](/ecosystem/tolk/features/contract-abi).
 - Parse this union from `in.body` and `match` over structures.
 
 ```tolk
@@ -61,19 +61,19 @@ fun onInternalMessage(in: InMessage) {
 
 ### Example breakdown
 
-- [`struct`](/languages/tolk/types/structures) declares business data, including messages and storage.
+- [`struct`](/ecosystem/tolk/types/structures) declares business data, including messages and storage.
 - `(0x12345678)` defines a message opcode, 32-bit. Unique prefixes are used to route binary data in `in.body`.
-- `AllowedMessage` is a type alias for a [union type](/languages/tolk/types/unions).
+- `AllowedMessage` is a type alias for a [union type](/ecosystem/tolk/types/unions).
 - `in: InMessage` provides access to message properties such as `in.body` and `in.senderAddress`.
-- `T.fromSlice` [parses binary data into `T`](/languages/tolk/features/auto-serialization). When combined with [`lazy`](/languages/tolk/features/lazy-loading), parsing is performed on demand.
-- [`match`](/languages/tolk/syntax/pattern-matching) routes a union type. Within each branch, the type of `msg` is narrowed, smart cast.
-- `throw 0xFFFF` is a standard reaction to an unrecognized message. Contracts typically ignore empty messages, which represent balance top-ups with an empty body. For this reason, `throw` is guarded by [`if`](/languages/tolk/syntax/conditions-loops) or `assert`.
+- `T.fromSlice` [parses binary data into `T`](/ecosystem/tolk/features/auto-serialization). When combined with [`lazy`](/ecosystem/tolk/features/lazy-loading), parsing is performed on demand.
+- [`match`](/ecosystem/tolk/syntax/pattern-matching) routes a union type. Within each branch, the type of `msg` is narrowed, smart cast.
+- `throw 0xFFFF` is a standard reaction to an unrecognized message. Contracts typically ignore empty messages, which represent balance top-ups with an empty body. For this reason, `throw` is guarded by [`if`](/ecosystem/tolk/syntax/conditions-loops) or `assert`.
 
 Bounced messages are not handled by `onInternalMessage`.
 
 ### Define and modify contract storage
 
-[Contract storage](/languages/tolk/features/contract-storage) is defined as a regular structure. Storage types commonly define `load` and `save` methods to access persistent contract data:
+[Contract storage](/ecosystem/tolk/features/contract-storage) is defined as a regular structure. Storage types commonly define `load` and `save` methods to access persistent contract data:
 
 ```tolk
 struct Storage {
@@ -131,7 +131,7 @@ The modern approach uses the `InMessage` type. It simplifies message handling an
 
 ## `onBouncedMessage`
 
-`onBouncedMessage` is a special entrypoint for handling [bounced messages](/foundations/messages/internal#bounces).
+`onBouncedMessage` is a special entrypoint for handling [bounced messages](/ecosystem/primitives/messages/internal#bounces).
 
 ```tolk
 fun onBouncedMessage(in: InMessageBounced) {
@@ -143,7 +143,7 @@ fun onBouncedMessage(in: InMessageBounced) {
 
 ### `BounceMode` in `createMessage`
 
-When [sending a message](/languages/tolk/features/message-sending) using `createMessage`, the `bounce` behavior must be specified:
+When [sending a message](/ecosystem/tolk/features/message-sending) using `createMessage`, the `bounce` behavior must be specified:
 
 ```tolk
 val msg1 = createMessage({
@@ -222,8 +222,8 @@ fun onBouncedMessage(in: InMessageBounced) {
 
 ## `onExternalMessage`
 
-In addition to internal messages, a contract can handle [external messages](/foundations/messages/external-in) originating off-chain.
-For example, [wallet contracts](/standard/wallets/how-it-works) process external messages and perform signature validation using a public key.
+In addition to internal messages, a contract can handle [external messages](/ecosystem/primitives/messages/external-in) originating off-chain.
+For example, [wallet contracts](/ecosystem/standard/wallets/how-it-works) process external messages and perform signature validation using a public key.
 
 ```tolk
 fun onExternalMessage(inMsg: slice) {

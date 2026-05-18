@@ -19,7 +19,7 @@ Three payload variants cover three use cases:
 
 ## Calling `signData`
 
-`tonConnectUi.signData(payload)` is the entry point. The wallet must be connected when you call it, or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal — a compliant wallet then handles connect and sign in one tap. See [Connect-and-act in one tap](/ecosystem/ton-connect/how-to/embedded-request). Without either, the SDK throws.
+`tonConnectUi.signData(payload)` is the entry point. The wallet must be connected when you call it, or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal — a compliant wallet then handles connect and sign in one tap. See [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request). Without either, the SDK throws.
 
 ### Text
 
@@ -92,7 +92,7 @@ See [Bridge specification § `trace_id`](https://github.com/the-ton-tech/ton-con
 
 ## Detecting wallet support
 
-The SDK rejects requests whose `type` is not supported by the connected wallet before they reach the bridge — calling `signData({ type: 'cell', ... })` against a wallet that lists only `['text']` throws. To restrict the wallet picker to wallets that support a given type, see [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets).
+The SDK rejects requests whose `type` is not supported by the connected wallet before they reach the bridge — calling `signData({ type: 'cell', ... })` against a wallet that lists only `['text']` throws. To restrict the wallet picker to wallets that support a given type, see [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets).
 
 ## Verifying `text` and `binary` signatures
 
@@ -102,7 +102,7 @@ To verify on the backend:
 
 1. Reconstruct `message` from the response fields.
 2. Compute `sha256(message)`.
-3. Look up the user's Ed25519 `publicKey` — extract it from `walletStateInit` (see below), then fall back to calling `get_public_key` on-chain. Never trust `publicKey` from the wallet response directly. See [Connect a wallet § backend verification](/ecosystem/ton-connect/how-to/connect#backend-verification).
+3. Look up the user's Ed25519 `publicKey` — extract it from `walletStateInit` (see below), then fall back to calling `get_public_key` on-chain. Never trust `publicKey` from the wallet response directly. See [Connect a wallet § backend verification](/applications/ton-connect/how-to/connect#backend-verification).
 4. Verify the Ed25519 signature against the digest.
 5. Reject if `Timestamp` is older than your tolerance window — 15 minutes is a common bound.
 6. Reject if `domain` is not your domain.
@@ -320,5 +320,5 @@ The `SCHEMA_HASH` constant is the CRC-32 of the exact UTF-8 schema string the dA
 
 - [`signData` RPC specification](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/rpc.md#signdata)
 - [`signData` wallet guide](https://github.com/the-ton-tech/ton-connect/blob/feature/refine-protocol/spec/guides/sign-data.md)
-- [Filter wallets by required features](/ecosystem/ton-connect/how-to/filter-wallets)
-- [Connect a wallet § backend verification](/ecosystem/ton-connect/how-to/connect#backend-verification) — for looking up the user's public key
+- [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
+- [Connect a wallet § backend verification](/applications/ton-connect/how-to/connect#backend-verification) — for looking up the user's public key

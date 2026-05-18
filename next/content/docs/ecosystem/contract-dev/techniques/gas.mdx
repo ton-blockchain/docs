@@ -21,7 +21,7 @@ flowchart LR
   This article covers abstract contracts system, not connected to any existing project. However, it's primarily applicable to contract systems that use a carry-value pattern.
 </Aside>
 
-It is important to understand that there is _no separate_ message balance and contract balance. After the message is received, coins from the message are stored to the contract balance, and then the contract is executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help to properly divide contract balance in the action phase. This diagram of a possible value flow illustrates this.
+It is important to understand that there is _no separate_ message balance and contract balance. After the message is received, coins from the message are stored to the contract balance, and then the contract is executed. [Sending message modes](/ecosystem/primitives/messages/modes) and [reserve actions](/ecosystem/primitives/actions/reserve) help to properly divide contract balance in the action phase. This diagram of a possible value flow illustrates this.
 
 ```mermaid
 flowchart LR
@@ -108,7 +108,7 @@ Conversion of gas to Toncoin on-chain using currently set blockchain config para
 let fee = getComputeFee(hardcodedGasValue, isAccountInMasterchain);
 ```
 
-This function uses the [`GETGASFEE`](/tvm/instructions#f836-getgasfee) TVM opcode.
+This function uses the [`GETGASFEE`](/ecosystem/tvm/instructions#f836-getgasfee) TVM opcode.
 
 ### Forward fees
 
@@ -126,9 +126,9 @@ where
 - `msgSizeInCells` is the number of cells in the message.
 - `msgSizeInBits` is the number of bits in all the cells of the message.
 
-In Tolk, `cell.calculateSizeStrict()` can be used to compute `msgSizeInCells` and `msgSizeInBits`. In TVM, it's implemented as [`CDATASIZE`](/tvm/instructions#f941-cdatasize) instruction.
+In Tolk, `cell.calculateSizeStrict()` can be used to compute `msgSizeInCells` and `msgSizeInBits`. In TVM, it's implemented as [`CDATASIZE`](/ecosystem/tvm/instructions#f941-cdatasize) instruction.
 
-In Tolk, the formula above is implemented in `calculateForwardFee()`. In TVM, it's implemented as [`GETFORWARDFEE`](/tvm/instructions#f838-getforwardfee) instruction.
+In Tolk, the formula above is implemented in `calculateForwardFee()`. In TVM, it's implemented as [`GETFORWARDFEE`](/ecosystem/tvm/instructions#f838-getforwardfee) instruction.
 
 ```tact
 let sizeMsg = computeDataSize(
@@ -148,10 +148,10 @@ let fwdFee = getForwardFee(
 >
   The `computeDataSize()` function consumes large, unpredictable amount of gas. If at all it is possible to precompute the size, it is recommended to do so.
 
-  If required, the function has the second argument: maximum number of cells to visit. Usually it is set to 8192 since it is the [limit for message size](/foundations/limits#message-and-transaction-limits). It might be used to limit amount of spent gas.
+  If required, the function has the second argument: maximum number of cells to visit. Usually it is set to 8192 since it is the [limit for message size](/ecosystem/primitives/limits#message-and-transaction-limits). It might be used to limit amount of spent gas.
 </Aside>
 
-In Tolk, both computations can be performed with a call to `msg.send()` with mode 1024. In TVM, it's implemented as [`SENDRAWMSG`](/tvm/instructions#fb00-sendrawmsg). It will consume approximately the same amount of gas.
+In Tolk, both computations can be performed with a call to `msg.send()` with mode 1024. In TVM, it's implemented as [`SENDRAWMSG`](/ecosystem/tvm/instructions#fb00-sendrawmsg). It will consume approximately the same amount of gas.
 
 ### Optimized forward fee calculation
 
@@ -166,9 +166,9 @@ fun onInternalMessage(in: InMessage) {
 
 ### Complex forward fee calculation
 
-Assume the contract receives a message with an unknown size and forwards it further adding fields with total of `a` bits and `b` cells to the message, e.g., [`StateInit`](/foundations/messages/deploy).
+Assume the contract receives a message with an unknown size and forwards it further adding fields with total of `a` bits and `b` cells to the message, e.g., [`StateInit`](/ecosystem/primitives/messages/deploy).
 
-For this case, in Tolk, there is a function `calculateForwardFeeWithoutLumpPrice()`. In TVM, it's implemented as [`GETFORWARDFEESIMPLE`](/tvm/instructions#f83c-getforwardfeesimple). This function does not take `lumpPrice` into account.
+For this case, in Tolk, there is a function `calculateForwardFeeWithoutLumpPrice()`. In TVM, it's implemented as [`GETFORWARDFEESIMPLE`](/ecosystem/tvm/instructions#f83c-getforwardfeesimple). This function does not take `lumpPrice` into account.
 
 ```tolk title="Tolk"
 fun onInternalMessage(in: InMessage) {
@@ -265,11 +265,11 @@ receive(msg: UserIn) {
 
 #### Cover storage on demand
 
-The order of phases [depends](/foundations/phases) on the `bounce` flag of an incoming message. If all messages in the protocol are unbounceable, then the storage phase comes after the credit phase. So, the contract's storage fees are deducted from the joint balance of the contract and incoming message. In this case the pattern where the contract's balance is zero and incoming messages cover storage fees can be applied.
+The order of phases [depends](/ecosystem/primitives/phases) on the `bounce` flag of an incoming message. If all messages in the protocol are unbounceable, then the storage phase comes after the credit phase. So, the contract's storage fees are deducted from the joint balance of the contract and incoming message. In this case the pattern where the contract's balance is zero and incoming messages cover storage fees can be applied.
 
 It is impossible to know in advance what the storage fee due will be on the contract, so a threshold must be selected depending on the network configuration. It is a good practice to use [`freeze_due_limit`](/foundations/config#param-20-and-21%3A-gas-prices) as the threshold. Otherwise, the contract likely is already frozen and a transaction chain is likely to fail anyway.
 
-This pattern can be generalized to both bounceable and unbounceable messages with `myStorageDue()` function that returns [`storage_fees_due`](/foundations/phases#storage-phase)
+This pattern can be generalized to both bounceable and unbounceable messages with `myStorageDue()` function that returns [`storage_fees_due`](/ecosystem/primitives/phases#storage-phase)
 
 This approach affects code of internal contracts.
 

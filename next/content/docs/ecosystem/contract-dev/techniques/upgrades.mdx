@@ -6,16 +6,16 @@ description: ""
 
 The address of a contract is determined by its [initial code and state](/foundations/status). A contract can upgrade its code while preserving its address. This is useful for fixing bugs, adding features, or adapting to protocol changes without migrating to a new address.
 
-Upgrades are critical when other contracts reference the contract being upgraded. For example, [NFT items](/standard/tokens/nft/how-it-works) reference their collection contract. The collection admin cannot modify these references stored in existing NFT items. Without upgrades, fixing bugs or adding features would require deploying a new collection and migrating all items—an expensive and complex process. Upgrades solve this by allowing the collection contract to evolve in place while preserving all existing references.
+Upgrades are critical when other contracts reference the contract being upgraded. For example, [NFT items](/ecosystem/standard/tokens/nft/how-it-works) reference their collection contract. The collection admin cannot modify these references stored in existing NFT items. Without upgrades, fixing bugs or adding features would require deploying a new collection and migrating all items—an expensive and complex process. Upgrades solve this by allowing the collection contract to evolve in place while preserving all existing references.
 
-The pattern is also essential for [vanity](/contract-dev/vanity) contracts and protocols such as distributed exchange (DEX) where preserving the contract address is critical.
+The pattern is also essential for [vanity](/ecosystem/contract-dev/techniques/vanity) contracts and protocols such as distributed exchange (DEX) where preserving the contract address is critical.
 
 ## How upgrades work
 
 Tolk provides two functions for upgrades.
 
-- `contract.setCodePostponed(code: cell)` — schedules the code to be replaced during the [action phase](/foundations/phases#action-phase). The new code takes effect after the current transaction completes.
-- `contract.setData(data: cell)` — immediately replaces the contract's persistent storage. This happens during the [compute phase](/foundations/phases#compute-phase), before the transaction ends.
+- `contract.setCodePostponed(code: cell)` — schedules the code to be replaced during the [action phase](/ecosystem/primitives/phases#action-phase). The new code takes effect after the current transaction completes.
+- `contract.setData(data: cell)` — immediately replaces the contract's persistent storage. This happens during the [compute phase](/ecosystem/primitives/phases#compute-phase), before the transaction ends.
 
 Key difference: `setCodePostponed()` applies changes _after_ the current transaction, while `setData()` applies changes _immediately_. This means the new code won't run until the next message arrives, but the new data is already active.
 
@@ -228,7 +228,7 @@ Hot upgrades solve this by scheduling a code change and immediately calling a mi
 1. Admin sends upgrade message. The message contains new code cell and optional additional data
 1. Contract verifies sender. Checks that the sender is the admin address
 1. Schedule code change. `setCodePostponed()` schedules the code replacement
-1. Switch to new code. `setTvmRegisterC3()` immediately activates the new code in register [C3](/tvm/registers#c3-—-function-selector)
+1. Switch to new code. `setTvmRegisterC3()` immediately activates the new code in register [C3](/ecosystem/tvm/registers#c3-—-function-selector)
 1. Call migration. Invoke `hotUpgradeData()` which now runs with the new code
 1. Migration executes. The function reads old storage, transforms it, and writes new storage
 

@@ -16,9 +16,9 @@ Creating a wallet involves several steps
 
 The following algorithm is used by wallet apps, and has to be replicated if the same wallet address should be generated programmatically.
 
-A wallet account's address is [derived](/foundations/addresses/derive) from [`StateInit`](/foundations/messages/deploy) that stores in its `data` field two values:
+A wallet account's address is [derived](/ecosystem/primitives/addresses/derive) from [`StateInit`](/ecosystem/primitives/messages/deploy) that stores in its `data` field two values:
 
-- `public_key`, dependent on the [mnemonic](/standard/wallets/mnemonics);
+- `public_key`, dependent on the [mnemonic](/ecosystem/standard/wallets/mnemonics);
 - `wallet_id`, a special [salt-like](https://en.wikipedia.org/wiki/Salt_\(cryptography\)) field, dependent on the wallet contract type and the `network_id`.
 
 <Aside type="note">
@@ -29,7 +29,7 @@ This means that the mnemonic alone does not determine an address uniquely: `wall
 
 ### Default `wallet_id` values
 
-| Network | [V4R2](/standard/wallets/v4) | [V5](/standard/wallets/v5) |
+| Network | [V4R2](/ecosystem/standard/wallets/v4) | [V5](/ecosystem/standard/wallets/v5) |
 | ------- | ---------------------------- | -------------------------- |
 | Mainnet | `0x29a9a317` (698983191)     | `0x7FFFFF11` (2147483409)  |
 | Testnet | `0x29a9a317` (698983191)     | `0x7FFFFFFD` (2147483645)  |
@@ -142,7 +142,7 @@ const main = async () => {
 void main();
 ```
 
-This wallet contract instance can be used to [send messages](/standard/wallets/v5-api) to the blockchain.
+This wallet contract instance can be used to [send messages](/ecosystem/standard/wallets/v5-api) to the blockchain.
 
 ## Comments
 
@@ -157,8 +157,8 @@ Wallet apps can attach short human-readable notes — commonly called _comments_
 Because comments ride inside ordinary internal messages, the format works identically for:
 
 - native Toncoin transfers between wallets;
-- [Jetton transfers](/standard/tokens/jettons/api#forward-payload-formats), where the wallet forwards an internal message to the token wallet along with the comment payload;
-- [NFT transfers](/standard/tokens/nft/api#forward-payload-formats), where the comment travels in the same forwarding message that moves the ownership record.
+- [Jetton transfers](/ecosystem/standard/tokens/jettons/api#forward-payload-formats), where the wallet forwards an internal message to the token wallet along with the comment payload;
+- [NFT transfers](/ecosystem/standard/tokens/nft/api#forward-payload-formats), where the comment travels in the same forwarding message that moves the ownership record.
 
 ### Attaching a comment when sending
 
@@ -166,8 +166,8 @@ To include a comment in an outgoing transfer, construct an internal message body
 
 1. Allocate a cell.
 1. Store the 32-bit zero opcode.
-1. Store the text as a [byte string](/standard/tokens/metadata#snake-data-encoding) (UTF-8 encoded).
-1. Send the internal message along with the desired Toncoin, [Jettons](/standard/tokens/jettons/how-it-works), or [NFT](/standard/tokens/nft/how-it-works) payload.
+1. Store the text as a [byte string](/ecosystem/standard/tokens/metadata#snake-data-encoding) (UTF-8 encoded).
+1. Send the internal message along with the desired Toncoin, [Jettons](/ecosystem/standard/tokens/jettons/how-it-works), or [NFT](/ecosystem/standard/tokens/nft/how-it-works) payload.
 
 Receivers that follow the convention will display the decoded text to the user. Contracts that do not recognize the opcode will simply ignore it or treat the message body as opaque data, so comments are backward-compatible with existing transfers.
 

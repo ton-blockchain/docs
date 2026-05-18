@@ -6,11 +6,11 @@ description: ""
 
 In TON, all data is stored in and represented as _cells_.
 
-Tolk provides low-level functions for constructing and parsing cells manually, as well as [automatic serialization](/languages/tolk/features/auto-serialization) of structures to and from cells.
+Tolk provides low-level functions for constructing and parsing cells manually, as well as [automatic serialization](/ecosystem/tolk/features/auto-serialization) of structures to and from cells.
 
 ## Cells
 
-[Cells](/foundations/serialization/cells) are a data structure that can hold up to 1023 bits of data and up to 4 references to other cells. They are read-only and immutable once created.
+[Cells](/ecosystem/primitives/serialization/cells) are a data structure that can hold up to 1023 bits of data and up to 4 references to other cells. They are read-only and immutable once created.
 
 ### Untyped cells
 
@@ -116,7 +116,7 @@ fun demo() {
 ### Embed constant slices into a contract
 
 <Aside type="note">
-  Tolk has a dedicated [`string`](/languages/tolk/types/strings) type backed by snake-encoded cells. The examples below show how to embed constant slices with low-level binary data.
+  Tolk has a dedicated [`string`](/ecosystem/tolk/types/strings) type backed by snake-encoded cells. The examples below show how to embed constant slices with low-level binary data.
 </Aside>
 
 Use `"...".literalSlice()` to create a constant slice from a string literal:
@@ -169,7 +169,7 @@ Constructing a cell is generally expensive in terms of gas, but `b.endCell().beg
 
 ## Automatic construction and parsing
 
-Structures are [auto-serializable](/languages/tolk/features/auto-serialization) to and from cells when their fields are well-typed. Prefer using structures over manual work with builders and slices.
+Structures are [auto-serializable](/ecosystem/tolk/features/auto-serialization) to and from cells when their fields are well-typed. Prefer using structures over manual work with builders and slices.
 
 ### Marshall to and from cells
 
@@ -213,7 +213,7 @@ val smth: Something = s.loadAny(); // with T deduced as Something
 ```
 
 <Aside type="note">
-  Notice that `T.fromSlice(s)` does not mutate a slice `s`, while `s.loadAny<T>()` does. This is due to how Tolk handles [mutability](/languages/tolk/syntax/mutability): all `s.loadXYZ()` methods mutate a slice, but functions in the form `doSomething(s)` do not.
+  Notice that `T.fromSlice(s)` does not mutate a slice `s`, while `s.loadAny<T>()` does. This is due to how Tolk handles [mutability](/ecosystem/tolk/syntax/mutability): all `s.loadXYZ()` methods mutate a slice, but functions in the form `doSomething(s)` do not.
 </Aside>
 
 Similarly, `storeAny<T>()` for a builder accepts any serializable value:
@@ -262,6 +262,6 @@ A field with this type must appear last in a struct: no more data exists after r
 
 ## Stack layout and serialization
 
-Structure fields of `cell` and `Cell<T>` types which are [serialized](/languages/tolk/types/overall-serialization) as references to corresponding [TVM](/languages/tolk/types/overall-tvm-stack) cells, with nullable types `?` serialized as 0 when the value is `null` and 1, followed by the cell reference otherwise.
+Structure fields of `cell` and `Cell<T>` types which are [serialized](/ecosystem/tolk/types/overall-serialization) as references to corresponding [TVM](/ecosystem/tolk/types/overall-tvm-stack) cells, with nullable types `?` serialized as 0 when the value is `null` and 1, followed by the cell reference otherwise.
 
 The primitive types `builder` and `slice` cannot be serialized. Use `bitsN` and `RemainingBitsAndRefs` types instead.
