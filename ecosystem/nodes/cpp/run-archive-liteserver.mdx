@@ -19,7 +19,7 @@ Running an archive liteserver requires significant storage and network resources
 
 - 16-core CPU
 - 128 GB RAM
-- At least 16TB of SSD storage, 20TB if you will not use ZFS with compression (NVMe recommended), or Provisioned 64k+ IOPS storage
+- At least 16TB of NVMe Gen4+ SSD storage (Enterprise grade preferred), 20TB if you will not use ZFS with compression, or Provisioned 64k+ IOPS storage. If using non-Enterprise SSDs, you must disable Autonomous Power State Transition (APST) on the SSD and enable the `performance` PCIe ASPM policy at the system level (e.g., `echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy`).
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), ~16 TB/month at peak load
 - Fixed (static) public IP address
 
@@ -121,7 +121,55 @@ exit
 ssh <USERNAME>@<SERVER_IP> [-p <SSH_PORT>]
 ```
 
-### 1.6 Harden server security
+### 1.6 Benchmark server performance
+
+Before installing, verify that the server meets performance requirements. Inadequate disk or network performance is the most common cause of validator instability.
+
+#### 1.6.1 Network latency
+
+Check latency to TON beacon nodes. Expect approximately 50 milliseconds to the nearest beacon and up to 300 milliseconds to the farthest:
+
+```bash
+ping beacon-eu-01.toncenter.com -c 6
+ping beacon-apac-01.toncenter.com -c 6
+```
+
+#### 1.6.2 Disk IOPS
+
+Install `fio` and run a random read/write benchmark:
+
+```bash
+sudo apt install -y fio
+fio --randrepeat=1 --ioengine=psync --direct=1 --gtod_reduce=1 --name=tlstest --bs=4k --iodepth=1 --size=40G  --readwrite=randrw --numjobs=1 --group_reporting --filename=/var/ton-work/testfile --time_based=1 --runtime=60
+rm /var/ton-work/testfile
+```
+
+Minimum acceptable results:
+
+| Metric | Minimum  |
+| ------ | -------- |
+| Read   | 10k IOPS |
+| Write  | 10k IOPS |
+
+<Aside
+  type="caution"
+>
+  If disk performance is below these thresholds, the liteserver may fail to keep up with the network. Upgrade storage before proceeding.
+</Aside>
+
+#### 1.6.3 Network bandwidth
+
+Verify network throughput with `speedtest-cli`:
+
+```bash
+sudo apt install -y speedtest-cli
+speedtest-cli
+```
+
+Ensure download and upload speeds meet the [1 Gbit/s requirement](/ecosystem/nodes/cpp/run-archive-liteserver#1-1-minimal-hardware-requirements).
+
+
+### 1.7 Harden server security
 
 <Aside
   type="caution"
@@ -256,11 +304,10 @@ Upon successful completion of the installation, you will see the following line 
 
 This process starts automatically after installation and can take from one to several days depending on your server performance.
 
-You can monitor the progress using the MyTonCtrl console:
+You can monitor the progress using MyTonCtrl:
 
 ```bash
-mytonctrl
-MyTonCtrl> status
+mytonctrl --cmd status
 ```
 
 Check the field **Local validator initial sync status**. The value indicates how old the last imported block was and should decrease over time.
@@ -279,7 +326,6 @@ sudo grep -A5 '"liteservers"' -n /var/ton-work/db/config.json | grep '"port"' | 
 Update security groups or configure `ufw` on bare-metal hosts:
 
 ```bash
-sudo apt install -y ufw
 sudo ufw allow <NODE_UDP_PORT>
 sudo ufw allow <LITESERVER_PORT>
 sudo ufw status
@@ -289,11 +335,10 @@ sudo ufw status
 
 This process starts automatically after the importing process finishes and can take from one to several days depending on your server performance.
 
-You can monitor the progress using the MyTonCtrl console:
+You can monitor the progress using MyTonCtrl:
 
 ```bash
-mytonctrl
-MyTonCtrl> status
+mytonctrl --cmd status
 ```
 
 Check the field **Local validator initial sync status**. The value indicates how old the last imported block was. On a fully synchronized node, this value should be less than 20 seconds.
@@ -328,11 +373,11 @@ Before performing any updates, it is highly recommended to create a ZFS snapshot
 sudo zfs snapshot data/ton-work@before-update-$(date +%Y-%m-%d)
 ```
 
-To update your node software and MyTonCtrl to the latest versions, use the MyTonCtrl console:
+Update your node software and MyTonCtrl to the latest versions:
 
 ```bash
-MyTonCtrl> update master
-MyTonCtrl> upgrade master
+mytonctrl --cmd "update master"
+mytonctrl --cmd "upgrade master"
 ```
 
 These commands will check for new versions of the TON node binaries and MyTonCtrl, download them, and apply the updates.
@@ -426,8 +471,7 @@ sudo zfs send -c data/ton-work@backup-date | ssh user@remote_host "sudo zfs recv
 To see detailed logs of the block import process, increase the log verbosity from the MyTonCtrl console:
 
 ```bash
-mytonctrl
-MyTonCtrl> installer set_node_argument --verbosity 3
+mytonctrl --cmd "installer set_node_argument --verbosity 3"
 ```
 
 Then follow the log file from a separate terminal:
@@ -445,13 +489,26 @@ You should see entries like:
 Set verbosity back to `1` after checking logs to avoid excessive disk I/O overhead:
 
 ```bash
-mytonctrl
-MyTonCtrl> installer set_node_argument --verbosity 1
+mytonctrl --cmd "installer set_node_argument --verbosity 1"
 ```
 
 ### Performance issues
 
 If you see logs like `Importing archive for masterchain seqno #... from net` accompanied by timeout errors, it likely indicates that your storage performance is insufficient to keep up with the block import process. Ensure your disk meets the IOPS requirements listed in [section 1.1](#step-1-prepare-environment).
+
+To verify your disk and system performance, you can run the built-in `mytonctrl` benchmark:
+
+1. Stop the validator service:
+```bash
+sudo systemctl stop validator.service
+```
+
+2. Run the benchmark:
+```bash
+mytonctrl --cmd benchmark
+```
+
+For stable liteserver operation, the benchmark score should be **greater than 70%**.
 
 ## Support
 
