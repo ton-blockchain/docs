@@ -22,13 +22,13 @@ There is no established solution for real-time jetton swap market data; however,
 
 ## On-chain API
 
-Currently, it is not possible to retrieve **historical** jetton prices on-chain - since TON contracts [are limited by storage](/learn-more/from-ethereum#limited-contract-storage), it is quite hard to implement such an API fully on-chain. However, it is possible to retrieve **current** prices via the Request-Response pattern on some DEXes; refer to the specific service documentation to learn more about it.
+Currently, it is not possible to retrieve **historical** jetton prices on-chain - since TON contracts [are limited by storage](/overview/learn-more/from-ethereum#limited-contract-storage), it is quite hard to implement such an API fully on-chain. However, it is possible to retrieve **current** prices via the Request-Response pattern on some DEXes; refer to the specific service documentation to learn more about it.
 
 <Aside>
-  Since the TON [execution model is asynchronous](/learn-more/from-ethereum#execution-model), the jetton price might change between the moment of the response from the price provider and the moment the contract processes the response. Consider this factor in smart contract logic.
+  Since the TON [execution model is asynchronous](/overview/learn-more/from-ethereum#execution-model), the jetton price might change between the moment of the response from the price provider and the moment the contract processes the response. Consider this factor in smart contract logic.
 </Aside>
 
-For example, on the [DeDust](https://dedust.io) DEX, it is possible to retrieve pool information on-chain using an internal message with the following [TL-B](/ecosystem/languages/tl-b/overview) schema:
+For example, on the [DeDust](https://dedust.io) DEX, it is possible to retrieve pool information on-chain using an internal message with the following [TL-B](/blockchain-basics/languages/tl-b/overview) schema:
 
 ```tlb
 provide_pool_state#6e24728d query_id:uint64 include_assets:Bool = InMsgBody;
@@ -37,7 +37,7 @@ take_pool_state#bddd4954 query_id:uint64 reserve0:Coins reserve1:Coins total_sup
                          assets:(Maybe ^[ asset0:Asset asset1:Asset ]) = InMsgBody;
 ```
 
-Here is a smart contract snippet in [Tolk](/ecosystem/tolk/overview) illustrating how you can send the 'provide' message:
+Here is a smart contract snippet in [Tolk](/blockchain-basics/tolk/overview) illustrating how you can send the 'provide' message:
 
 ```tolk title="Tolk"
 struct (0x6e24728d) ProvideDeDustPool {

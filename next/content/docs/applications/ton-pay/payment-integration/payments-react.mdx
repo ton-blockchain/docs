@@ -116,7 +116,7 @@ The `pay` function returns the following fields:
   type="SendTransactionResponse"
   required
 >
-  Transaction result returned by TON Connect. It contains the signed transaction [bag of cells](/ecosystem/primitives/serialization/boc) and additional transaction details.
+  Transaction result returned by TON Connect. It contains the signed transaction [bag of cells](/blockchain-basics/primitives/serialization/boc) and additional transaction details.
 </ResponseField>
 
 <ResponseField
@@ -406,7 +406,7 @@ try {
 <Accordion
   title="If the transaction fails with Invalid recipient address"
 >
-  1. Verify that the recipient address is [a valid TON address](/ecosystem/primitives/addresses/formats).
+  1. Verify that the recipient address is [a valid TON address](/blockchain-basics/primitives/addresses/formats).
   1. Ensure the address format matches the selected chain; mainnet or testnet.
   1. Verify that the address includes the full base64 representation with workchain.
 </Accordion>

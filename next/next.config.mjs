@@ -8,6 +8,7 @@ const docsRoot = fileURLToPath(new URL(".", import.meta.url))
 
 /** @type {import('next').NextConfig} */
 const config = {
+  output: "export",
   reactStrictMode: true,
   serverExternalPackages: ["typescript", "twoslash"],
   images: {unoptimized: true},

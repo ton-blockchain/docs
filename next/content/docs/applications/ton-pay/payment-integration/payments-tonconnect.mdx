@@ -373,7 +373,7 @@ The message object passed to `sendTransaction` must include these fields:
   type="string"
   required
 >
-  Recipient wallet address in [user-friendly format](/ecosystem/primitives/addresses/formats).
+  Recipient wallet address in [user-friendly format](/blockchain-basics/primitives/addresses/formats).
 </ResponseField>
 
 <ResponseField
@@ -481,7 +481,7 @@ async function handleTransaction() {
   const validUntil = Math.floor(Date.now() / 1000) + 300; // 5 minutes
   ```
 
-- Ensure the sender address from TON Connect matches the format expected by the backend. Use the [user-friendly format](/ecosystem/primitives/addresses/formats) consistently.
+- Ensure the sender address from TON Connect matches the format expected by the backend. Use the [user-friendly format](/blockchain-basics/primitives/addresses/formats) consistently.
 
   ```typescript
   const address = useTonAddress(true); // true = user-friendly format
@@ -556,7 +556,7 @@ async function handleTransaction() {
   title="If sendTransaction throws Invalid address format"
 >
   1. Ensure the `from` address matches the connected wallet address.
-  1. Verify that the recipient address is [a valid TON address](/ecosystem/primitives/addresses/formats).
+  1. Verify that the recipient address is [a valid TON address](/blockchain-basics/primitives/addresses/formats).
   1. Use the wallet address provided by the SDK to avoid format mismatches:
 
   ```typescript

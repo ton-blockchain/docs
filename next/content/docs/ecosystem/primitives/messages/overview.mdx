@@ -17,12 +17,12 @@ message$_
 = Message X;
 ```
 
-- `init` is an optional field of [`StateInit`](/ecosystem/primitives/messages/deploy) type used to initialize the contract state, stored either in-place or in a ref of the cell with a message.
+- `init` is an optional field of [`StateInit`](/blockchain-basics/primitives/messages/deploy) type used to initialize the contract state, stored either in-place or in a ref of the cell with a message.
 - `body` is the actual message content that can be stored either in-place or in a reference. Typically, it is the payload of the message that will be read by the receiver.
 - `info` describes the type of the message, and fields specific to messages of this type:
-  - [Internal messages](/ecosystem/primitives/messages/internal) are messages from one contract to another.
+  - [Internal messages](/blockchain-basics/primitives/messages/internal) are messages from one contract to another.
   - [Incoming external](/ecosystem/primitives/messages/external-in) messages are messages from the outside world to the contract.
-  - [Outbound external](/ecosystem/primitives/messages/external-out) messages are messages from the contract to the outside world. They can be interpreted as logs.
+  - [Outbound external](/blockchain-basics/primitives/messages/external-out) messages are messages from the contract to the outside world. They can be interpreted as logs.
 
 ## Transactions
 
@@ -61,12 +61,12 @@ Each transaction has the following structure:
 = Transaction;
 ```
 
-Transactions implement the concept of `AccountChain` described in the [TON Blockchain whitepaper](/ecosystem/whitepapers/tblkch#1-2-1-the-infinite-sharding-paradigm-isp-applied-to-blockchain-block-and-state). Each account state can be interpreted as a separate blockchain, so transactions follow a strict order defined by the `prev_trans_hash` field. Thanks to the TON consensus protocol, a transaction becomes final when the first masterchain block references it by storing the hash of the corresponding `ShardChain` state, which in turn stores the hash of the `AccountChain` state.
+Transactions implement the concept of `AccountChain` described in the [TON Blockchain whitepaper](/blockchain-basics/whitepapers/tblkch#1-2-1-the-infinite-sharding-paradigm-isp-applied-to-blockchain-block-and-state). Each account state can be interpreted as a separate blockchain, so transactions follow a strict order defined by the `prev_trans_hash` field. Thanks to the TON consensus protocol, a transaction becomes final when the first masterchain block references it by storing the hash of the corresponding `ShardChain` state, which in turn stores the hash of the `AccountChain` state.
 
 Because transactions form the `AccountChain`, each one carries a logical timestamp, `lt`, that strictly increases with every new transaction of the account. The `now` field stores the Unix time when the transaction was created.
 
-The `state_update` field is a [Merkle update](/ecosystem/primitives/serialization/merkle-update) that captures the difference between the previous and current state of the account. The [contract status](/foundations/status) before and after the transaction is duplicated for convenience.
+The `state_update` field is a [Merkle update](/blockchain-basics/primitives/serialization/merkle-update) that captures the difference between the previous and current state of the account. The [contract status](/blockchain-basics/primitives/status) before and after the transaction is duplicated for convenience.
 
-Other fields, such as `in_msg`, `out_msgs`, and `outmsg_cnt`, relate to the [messages](/ecosystem/primitives/messages/overview) processed and emitted during the transaction. A trace may start from a transaction rather than a message, in which case `in_msg` is `Nothing`. However, a trace cannot continue without messages: if it contains `n` transactions it must contain at least `n-1` messages. Consequently, a trace can include at most one non-ordinary transaction, because messages can trigger only an [ordinary transaction](/ecosystem/primitives/messages/ordinary-tx).
+Other fields, such as `in_msg`, `out_msgs`, and `outmsg_cnt`, relate to the [messages](/ecosystem/primitives/messages/overview) processed and emitted during the transaction. A trace may start from a transaction rather than a message, in which case `in_msg` is `Nothing`. However, a trace cannot continue without messages: if it contains `n` transactions it must contain at least `n-1` messages. Consequently, a trace can include at most one non-ordinary transaction, because messages can trigger only an [ordinary transaction](/blockchain-basics/primitives/messages/ordinary-tx).
 
-The `total_fees` field stores the total number of [fees](/ecosystem/primitives/fees) paid by the transaction. These fees may eventually be paid in extra currencies, but that feature is not implemented yet.
+The `total_fees` field stores the total number of [fees](/blockchain-basics/primitives/fees) paid by the transaction. These fees may eventually be paid in extra currencies, but that feature is not implemented yet.

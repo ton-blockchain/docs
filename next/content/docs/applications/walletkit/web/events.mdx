@@ -62,7 +62,7 @@ kit.onTransactionRequest(async (event) => {
 
 If a dApp is connected to the wallet service, the former can request to sign data with the private key used by the selected TON wallet, which fires the `signData` request over the bridge. The wallet service then handles it with the `onSignDataRequest` method of the WalletKit.
 
-The data to sign can be of several kinds: `text`, `binary`, or a raw [`cell`](/ecosystem/primitives/serialization/cells).
+The data to sign can be of several kinds: `text`, `binary`, or a raw [`cell`](/blockchain-basics/primitives/serialization/cells).
 
 ```ts title="TypeScript"
 kit.onSignDataRequest(async (event) => {

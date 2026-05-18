@@ -9,7 +9,7 @@ description: ""
   [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Aside>
 
-[Jettons](/ecosystem/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each Jetton has a separate master (minter) contract and an individual wallet contract for each holder.
+[Jettons](/blockchain-basics/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each Jetton has a separate master (minter) contract and an individual wallet contract for each holder.
 
 For example, USDT on TON is implemented as a Jetton, and its minter contract address is `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`. By providing this address and the recipient's TON wallet contract address, WalletKit knows which tokens to send and to whom.
 
@@ -19,7 +19,7 @@ To work with Jettons, the wallet service needs to handle [Jetton balances](#bala
   type="caution"
   title="Decimals matter"
 >
-  Each Jetton stores a [`decimals`](/ecosystem/standard/tokens/metadata#decimals) parameter in its metadata. Transferring without accounting for `decimals` can result in sending drastically more tokens than expected — irreversible on mainnet.
+  Each Jetton stores a [`decimals`](/blockchain-basics/standard/tokens/metadata#decimals) parameter in its metadata. Transferring without accounting for `decimals` can result in sending drastically more tokens than expected — irreversible on mainnet.
 
   Mitigation: Always retrieve and apply the correct `decimals` value. Test on testnet first.
 </Aside>
@@ -274,13 +274,13 @@ async function sendJetton(
 
 Jettons:
 
-- [Jettons overview](/ecosystem/standard/tokens/jettons/overview)
-- [Jetton transfers](/ecosystem/standard/tokens/jettons/transfer)
-- [Token metadata and decimals](/ecosystem/standard/tokens/metadata#decimals)
+- [Jettons overview](/blockchain-basics/standard/tokens/jettons/overview)
+- [Jetton transfers](/blockchain-basics/standard/tokens/jettons/transfer)
+- [Token metadata and decimals](/blockchain-basics/standard/tokens/metadata#decimals)
 
 General:
 
 - [Handle transaction requests](/applications/walletkit/web/events#handle-ontransactionrequest)
-- [Transaction fees](/ecosystem/primitives/fees)
+- [Transaction fees](/blockchain-basics/primitives/fees)
 - [WalletKit overview](/applications/walletkit/overview)
 - [TON Connect overview](/applications/ton-connect/overview)

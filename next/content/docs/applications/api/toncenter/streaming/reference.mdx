@@ -125,7 +125,7 @@ This event is emitted only for `"confirmed"` and `"finalized"` finality levels.
 | `type`     | `string`       | Always `"account_state_change"`.                                                                                                                                                                                                   |
 | `finality` | `string`       | `"confirmed"` or `"finalized"`.                                                                                                                                                                                                    |
 | `account`  | `string`       | Account address in raw format, e.g., `0:abc...RAW_ADDRESS`.                                                                                                                                                                        |
-| `state`    | `AccountState` | Account state without full code and data [BoCs](/ecosystem/primitives/serialization/boc). Includes state hash, nanoToncoin balance, [account status](/foundations/status), data and code hashes. All hashes are given in the Base64 format. |
+| `state`    | `AccountState` | Account state without full code and data [BoCs](/blockchain-basics/primitives/serialization/boc). Includes state hash, nanoToncoin balance, [account status](/blockchain-basics/primitives/status), data and code hashes. All hashes are given in the Base64 format. |
 
 ```jsonc title="Notification example"
 {
