@@ -146,7 +146,7 @@ fun createRefPayload(ref: cell) {
     // but like this: '1' + ref
     val payload = beginCell()
             .storeBool(true).storeRef(ref)
-            .asSlice();
+            .toSlice();
 }
 ```
 
