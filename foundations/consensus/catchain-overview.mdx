@@ -37,7 +37,7 @@ The protocol implements a [CRDT](https://en.wikipedia.org/wiki/Conflict-free_rep
 
 ## Choosing neighbor nodes
 
-Catchain selects [five](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/catchain/catchain-receiver.cpp#L36) neighbors at random and periodically refreshes the list each random interval between [60 and 120 seconds](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/catchain/catchain-receiver.cpp#L989) in the current configuration. Note that the neighbor relation is not symmetric: if B is a neighbor of A, it does not imply that A is also a neighbor of B.
+Catchain selects [five](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/catchain/catchain-receiver.cpp#L36) neighbors at random and periodically refreshes the list each random interval between [60 and 120 seconds](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/catchain/catchain-receiver.cpp#L989) in the current configuration. Note that the neighbor relation is not symmetric: if `B` is a neighbor of `A`, it does not imply that `A` is also a neighbor of `B`.
 
 <Aside type="tip">
   In the current implementation, [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) is used to pick the random interval for refreshing the neighbor list. It is seeded with values from [`std::random_device`](https://en.cppreference.com/w/cpp/numeric/random/random_device.html), whose behavior is platform-dependent.
@@ -45,7 +45,7 @@ Catchain selects [five](https://github.com/ton-blockchain/ton/blob/34823b1ea378e
 
 ## Message identification
 
-The `seqno` of each node is the count of messages that node has sent in the current round. A node must increment this number after each round. Nodes not following that rule are considered Byzantine. The Catchain protocol detects such nodes, as described in [Handling Byzantine nodes](#handling-byzantine-nodes).
+The `seqno` of each node is the count of messages that node has sent in the current round. A node must increment this number after each send message. Nodes not following that rule are considered Byzantine. The Catchain protocol detects such nodes, as described in [Handling Byzantine nodes](#handling-byzantine-nodes).
 
 Every Catchain message is uniquely identified by the pair `(sender; sender's seqno, body hash)`.
 
@@ -79,7 +79,7 @@ This property means that $\forall A, B, C: depends(A, B) \&\& depends(B, C) -> d
 
 ### Detecting forks (duplicate message IDs)
 
-If an actor issues two messages with the same identifier `(A; i)` but different payloads, the situation is called a fork. Any honest validator who observes it constructs a proof consisting of the block identifier and two distinct signatures. Since all public keys are known, this proof can be broadcast to the neighbors, and then further across the network. Every honest participant who receives the proof starts ignoring all messages from node A starting from `(A, i)`, as well as all messages that depend on `(A, j) where j >= i` messages.
+If an actor issues two messages with the same identifier `(A; i)` but different payloads, the situation is called a fork. Any honest validator who observes it constructs a proof consisting of the block identifier and two distinct signatures. Since all public keys are known, this proof can be broadcast to the neighbors, and then further across the network. Every honest participant who receives the proof starts ignoring all messages from node `A` starting from `(A, i)`, as well as all messages that depend on `(A, j)`, where `j >= i`.
 
 <Aside type="tip">
   According to the original design, when Catchain is used for the TON blockchain consensus, a fork proof can be submitted to the [Elector](/foundations/system#elector) smart contract. However, this idea has not been implemented.
