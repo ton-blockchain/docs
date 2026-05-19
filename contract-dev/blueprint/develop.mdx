@@ -1,8 +1,13 @@
 ---
-title: "Smart contract development"
+title: "Smart contract development with Blueprint"
+sidebarTitle: "Smart contract development"
 ---
 
 import { Aside } from "/snippets/aside.jsx";
+
+<Aside type="note">
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
 
 Ensure your current directory is the root of the project initialized with `npm create ton@latest`.
 
@@ -166,7 +171,7 @@ export class Counter implements Contract {
 
 ### Sending messages
 
-Message sending methods allow your application to trigger contract execution by sending [internal or external messages](/foundations/transaction). These methods handle the construction of message bodies and transaction parameters.
+Message sending methods allow your application to trigger contract execution by sending [internal or external messages](/foundations/messages/ordinary-tx). These methods handle the construction of message bodies and transaction parameters.
 
 All sending methods follow a similar pattern and should start with `send`:
 

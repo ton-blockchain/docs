@@ -266,7 +266,7 @@ Use the vesting contract directly as a validator wallet.
 
 1. Request whitelisting of Elector address: `-1:3333333333333333333333333333333333333333333333333333333333333333`
 
-1. [Import](/ecosystem/node/mytonctrl/wallet) the private key and vesting address into MyTonCtrl and use it as a standard wallet-v3.
+1. [Import](/ecosystem/nodes/cpp/mytonctrl/wallet) the private key and vesting address into MyTonCtrl and use it as a standard wallet-v3.
 
    **Important**: Direct staking does not use owner wallet contract for management. Instead, it uses the vesting contract's public key and private key directly. By default, vesting.ton.org sets the vesting contract's public key to match the owner wallet's public key. Therefore, when importing into MyTonCtrl, use the seed phrase from the owner wallet.
 
@@ -298,7 +298,7 @@ Create a single nominator pool and stake through it. This is the recommended app
    - Body: empty message
 1. Manage staking through MyTonCtrl with the pool contract
 
-For detailed setup instructions, see [MyTonCtrl single nominator pool mode](/ecosystem/node/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode).
+For detailed setup instructions, see [MyTonCtrl single nominator pool mode](/ecosystem/nodes/cpp/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode).
 
 <Aside
   type="tip"
@@ -496,7 +496,7 @@ For Bemo v1, the process is similar:
 
 ### Standard nominator pools
 
-[Standard nominator pools](https://docs.ton.org/v3/documentation/smart-contracts/contracts-specs/nominator-pool) are the original TON staking pools where multiple nominators can pool their stakes together with a validator.
+Standard nominator pools are the original TON staking pools where multiple nominators can pool their stakes together with a validator.
 
 **Requirements**:
 
@@ -629,8 +629,7 @@ To verify:
 - [Vesting contract source code](https://github.com/ton-blockchain/vesting-contract)
 - [Vesting contract technical documentation](https://github.com/ton-blockchain/vesting-contract/blob/main/README.md)
 - [Vesting contract instruction (old and low level)](https://github.com/ton-blockchain/vesting-contract/blob/main/instruction.md)
-- [Run a single nominator pool with vesting](https://docs.ton.org/v3/guidelines/smart-contracts/howto/single-nominator-pool#run-a-single-nominator-pool-with-a-vesting-contract)
-- [Single nominator pool documentation](https://docs.ton.org/v3/documentation/smart-contracts/contracts-specs/single-nominator-pool)
+  single-nominator-pool#run-a-single-nominator-pool-with-a-vesting-contract)
 - [Standard wallets documentation](/standard/wallets/history)
 - [Staking organization scenarios on TON](/ecosystem/staking/overview)
 

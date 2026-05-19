@@ -1,6 +1,13 @@
 ---
-title: "Reference"
+title: "Reference for testing with Blueprint"
+sidebarTitle: "Reference"
 ---
+
+import { Aside } from "/snippets/aside.jsx";
+
+<Aside type="note">
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
 
 Blueprint provides comprehensive testing capabilities for TON smart contracts using the TON Sandbox emulator and test utilities. This reference covers all available testing APIs, methods, and utilities.
 
@@ -14,13 +21,6 @@ Blueprint provides comprehensive testing capabilities for TON smart contracts us
 - [Utility functions](#utility-functions) — helper functions for testing
 - [Test utilities and matchers](#test-utilities-and-matchers) — Jest/Chai assertion extensions and testing utilities
 - [Network configuration](#network-configuration) — custom blockchain configs
-
-**Related Documentation:**
-
-- [Blueprint testing overview](/contract-dev/testing/overview) — getting started with testing
-- [Testing guidelines](/contract-dev/testing/styleguide) — best practices and patterns
-- [Testing on real network](/contract-dev/testing/testing-on-real-network) — mainnet/testnet testing
-- [Blueprint benchmarks](/contract-dev/blueprint/benchmarks) — performance testing and optimization
 
 ## Environment setup
 

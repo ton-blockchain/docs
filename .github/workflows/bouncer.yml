@@ -1,0 +1,42 @@
+name: 🏀 Bouncer
+# aka 🚪 Supervisor
+
+on:
+  pull_request_target: # do NOT use actions/checkout!
+    # any branches
+    branches: ["**"]
+    # on creation, on new commits, and description edits
+    types: [opened, synchronize, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-bouncer
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  enforce-better-titles:
+    name: "Conventional Commits titles"
+    runs-on: ubuntu-latest
+    steps:
+      # pr title check
+      - name: "Check that the title conforms to the simplified version of Conventional Commits"
+        if: ${{ !cancelled() }}
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          # language=JavaScript
+          script: |
+            const title = context.payload.pull_request.title;
+            const types = 'feat|fix|chore|refactor|test';
+            const pattern = new RegExp(`^(revert: )?(${types})(?:\\/(${types}))?!?(\\([^\\)]+\\))?!?: [a-zA-Z].{1,200}`);
+            const matches = title.match(pattern) !== null;
+            if (!matches) {
+              core.setFailed([
+                'Title of this pull request does not conform to the simplified version of Conventional Commits used in the documentation',
+                `Received: ${title}`,
+                'Expected to find a type of: feat, fix, chore, refactor, or test, followed by the parts outlined here: https://www.conventionalcommits.org/en/v1.0.0/',
+              ].join('\n'));
+              process.exit(1);
+            }

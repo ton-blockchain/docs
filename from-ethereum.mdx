@@ -44,8 +44,6 @@ Executing a large transaction on Ethereum or any other EVM-based blockchain come
 
 Another difference is in the [get methods](/tvm/get-method). Both Ethereum and TON support them, allowing data to be retrieved from contracts without paying fees. However, in TON, get methods cannot be called on-chain: a contract cannot synchronously retrieve data from another contract during a transaction. This is a consequence of TON's asynchronous model: by the moment transaction that called a get method would start its execution, data might already change.
 
-To understand how any DeFi protocol or complex on-chain system works with these limitations, read about the [carry-value pattern](/contract-dev/carry-value).
-
 ### Account model
 
 In Ethereum, there are two types of accounts: externally owned accounts (EOA), and contract accounts. EOAs are human-controlled entities, each represented by a private-public key pair. They sign transactions and each has its own balance; the community often refers to them as "wallets".
@@ -72,16 +70,16 @@ Instead, [sharding](/contract-dev/contract-sharding) should be used.
 
 ### Tooling
 
-The recommended programming language for smart contract development in TON is [Tolk](/languages/tolk). Other established languages are also used in the ecosystem; more information about them is available [here](/languages/tact).
+The recommended programming language for smart contract development in TON is [Tolk](/tolk/overview). Other established languages also exist and are still used, albeit in legacy status.
 
-For off-chain software, Typescript is the most adopted language in TON. Most of the [tooling](/contract-dev/blueprint/overview), bindings and [SDKs](/ecosystem/sdks) are implemented in Typescript.
+For off-chain software, TypeScript is the most adopted language in TON. Most of the tooling, bindings and [SDKs](/ecosystem/sdks) are implemented in TypeScript.
 
-| Use case                              | Ethereum tool         | TON counterpart                                                                                                |
-| :------------------------------------ | --------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Blockchain interaction                | Ethers, Web3.js, Viem | [`@ton/ton`](https://www.npmjs.com/package/@ton/ton), [Asset-sdk](https://github.com/ton-community/assets-sdk) |
-| Wallet connection protocol            | Walletconnect, Wagmi  | [TonConnect](https://github.com/ton-connect)                                                                   |
-| Dev environment framework / scripting | Hardhat, Truffle      | [Blueprint](https://github.com/ton-org/blueprint)                                                              |
-| Simulation engine                     | Revm & Reth           | [Sandbox](https://github.com/ton-org/sandbox)                                                                  |
+| Use case                              | Ethereum tool             | TON counterparts                                                                                                |
+| :------------------------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Blockchain interaction                | Ethers, Web3.js, Viem     | [`@ton/ton`](https://www.npmjs.com/package/@ton/ton), [Asset-sdk](https://github.com/ton-community/assets-sdk)  |
+| Wallet connection protocol            | WalletConnect, Wagmi      | [TON Connect](https://github.com/ton-connect)                                                                   |
+| Dev environment framework / scripting | Hardhat, Truffle, Foundry | [Acton](https://github.com/ton-blockchain/acton), [Blueprint](https://github.com/ton-org/blueprint)             |
+| Simulation engine                     | Revm & Reth               | [Emulator within Acton](https://github.com/ton-blockchain/acton), [Sandbox](https://github.com/ton-org/sandbox) |
 
 For low-level manipulation of TON-specific data structures, there is [`@ton/core`](https://www.npmjs.com/package/@ton/core). Another library with wrappers for most important contracts and HTTP APIs is [`@ton/ton`](https://www.npmjs.com/package/@ton/ton).
 
@@ -110,6 +108,6 @@ Due to significant differences in execution models, most of the standards in TON
 | Non-fungible token standard             | ERC-721                                 | [NFT standard (TEP-0062)](/standard/tokens/nft/overview)           |
 | Token metadata                          | ERC-4955 (Not exactly, but close match) | [Token Data Standard (TEP-0064)](/standard/tokens/metadata)        |
 | NFT royalty standard                    | EIP-2981                                | [NFT Royalty Standard (TEP-0066)](/standard/tokens/nft/comparison) |
-| DNS-like registry                       | ENS (EIP-137)                           | [DNS Standard (TEP-0081)](/services/dns)                           |
+| DNS-like registry                       | ENS (EIP-137)                           | [DNS Standard (TEP-0081)](/foundations/web3/overview)              |
 | Soulbound / account-bound token concept | EIP-4973                                | [SBT Standard (TEP-0085)](/standard/tokens/nft/comparison#sbt)     |
 | Wallet connection protocol              | WalletConnect / EIP-1193                | [TonConnect (TEP-0115)](/ecosystem/ton-connect/overview)           |
