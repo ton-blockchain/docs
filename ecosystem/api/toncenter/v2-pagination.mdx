@@ -1,5 +1,5 @@
 ---
-title: "Pagination"
+title: "How to paginate Toncenter v2 results"
 sidebarTitle: "Pagination"
 ---
 
@@ -21,10 +21,10 @@ All other v2 endpoints return single objects or fixed results and do not support
   type="caution"
   title="URL encoding"
 >
-  Transaction hashes are base64-encoded and may contain `+`, `/`, and `=` characters. These must be URL-encoded when passed as query parameters: `+` → `%2B`, `/` → `%2F`, `=` → `%3D`. Most HTTP libraries handle this automatically, but this is important when constructing URLs manually.
+  Transaction hashes are base64-encoded and may contain `+`, `/`, and `=` characters. These must be URL-encoded when passed as query parameters: `+` → `%2B`, `/` → `%2F`, `=` → `%3D`. Most HTTP libraries handle this automatically. When constructing URLs manually, encode `+`, `/`, and `=` explicitly or the cursor will not match the server-side value.
 </Aside>
 
-## getTransactions
+## `getTransactions`
 
 Returns the transaction history of a given account. Results are ordered by logical time in descending order (newest first).
 
@@ -48,7 +48,7 @@ All pagination parameters are optional. They are omitted for the first request a
   This table only lists pagination-related parameters. See the [`getTransactions` reference](/ecosystem/api/toncenter/v2/accounts/list-account-transactions) for all available parameters.
 </Aside>
 
-### Paginating through transactions
+### Paginate through transactions
 
 <Steps>
   <Step
@@ -160,7 +160,9 @@ All pagination parameters are optional. They are omitted for the first request a
   title="Full pagination script"
 >
   ```javascript
-  const address = "EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2";
+  // Replace with a account address you want to paginate, for example:
+  // const address = "EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2";
+  const ADDRESS = "<ACCOUNT_ADDRESS>";
   const LIMIT = 5;
 
   async function main() {
@@ -251,9 +253,9 @@ Use `to_lt` to stop pagination at a specific logical time instead of iterating t
 curl "https://toncenter.com/api/v2/getTransactions?address=EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2&limit=20&lt=66822814000007&to_lt=66784070000010"
 ```
 
-This returns transactions between the two logical times, which is useful when syncing only recent activity.
+This returns only transactions between the two logical times, so a sync job can re-fetch a bounded window rather than walking the full history.
 
-## getBlockTransactions
+## `getBlockTransactions`
 
 Returns a list of short transaction identifiers for all transactions in a given block.
 
@@ -276,7 +278,7 @@ All pagination parameters are optional. They are omitted for the first request a
   This table only lists pagination-related parameters. See the [`getBlockTransactions` reference](/ecosystem/api/toncenter/v2/blocks/list-block-transactions) for all available parameters.
 </Aside>
 
-### Paginating through block transactions
+### Paginate through block transactions
 
 <Steps>
   <Step
@@ -469,7 +471,7 @@ All pagination parameters are optional. They are omitted for the first request a
   ```
 </Accordion>
 
-## getBlockTransactionsExt
+## `getBlockTransactionsExt`
 
 Returns full transaction details for all transactions in a given block. Pagination works the same way as [`getBlockTransactions`](#getblocktransactions), using `after_lt` and `after_hash` as cursors with the `incomplete` field as the end of results signal. The only difference is that this endpoint returns complete transaction objects instead of short identifiers.
 
@@ -477,7 +479,7 @@ Returns full transaction details for all transactions in a given block. Paginati
 
 Pagination parameters are identical to [`getBlockTransactions`](#getblocktransactions). See the [`getBlockTransactionsExt` reference](/ecosystem/api/toncenter/v2/blocks/list-block-transactions-extended-details) for all available parameters.
 
-### Paginating through extended block transactions
+### Paginate through extended block transactions
 
 <Steps>
   <Step
