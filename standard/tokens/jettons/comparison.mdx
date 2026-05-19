@@ -3,6 +3,8 @@ title: "Jetton implementations comparison"
 sidebarTitle: "Comparison"
 ---
 
+import { Aside } from '/snippets/aside.jsx';
+
 This article will compare different implementations of the TEP-74 standard and explore the best version for each use case.
 
 ## In short
@@ -35,7 +37,15 @@ For a long time, this version was the most widely adopted in the community. The 
 
 With the USDT release on TON, an advanced version of the Jetton contract was developed. This version introduces many new TVM gas assertion techniques, as well as extended functionality. Since USDT is a centralized asset, there are specific requirements and restrictions for its operations. More specifically, there is no _burn_ opcode, which means that formally, the Governance contract is not TEP-compliant, as Jetton burn functionality is part of the standard. Also, the Minter contract includes a _governance_ mechanism that allows users to perform any actions on other Jetton Wallets.
 
-Another noticeable advantage of this implementation is extensive testing. All previous versions didn't test edge cases of config changes that will affect storage / forward fees. This test suite became the foundation for all future Jetton versions.
+Another noticeable advantage of this implementation is extensive testing. All previous versions did not test edge cases of config changes that will affect storage or forward fees. This test suite became the foundation for all future Jetton versions.
+
+<Aside
+  type="caution"
+>
+  On TON, multiple jettons can share the same name — a counterfeit jetton may look identical to the real USDT but have no value. Verify legitimacy by confirming [USDT's jetton master address](https://tonviewer.com/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?section=jetton).
+
+  See important [recommendations when processing jettons](/payments/jettons#security-considerations).
+</Aside>
 
 ### Notcoin contract
 

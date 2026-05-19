@@ -128,12 +128,7 @@ export const JourneyStep = ({ title, icon, iconType, href, cta, children }) => {
           href="/start-here"
         />
         <JourneyStep
-          title="Writing your first smart contract"
-          iconType="solid"
-          href="/contract-dev/first-smart-contract"
-        />
-        <JourneyStep
-          title="Using a TON wallet"
+          title="Use a TON wallet"
           iconType="solid"
           href="/ecosystem/wallet-apps/tonkeeper"
         />
@@ -177,8 +172,18 @@ export const JourneyStep = ({ title, icon, iconType, href, cta, children }) => {
         description="Build, debug, and deploy smart contracts on TON."
       >
        <JourneyStep
-          title="Tools to build"
-          href="/contract-dev/blueprint/overview"
+          title="Acton toolchain"
+          href="/contract-dev/acton"
+        >
+        </JourneyStep>
+        <JourneyStep
+          title="JetBrains IDE plugin"
+          href="/contract-dev/ide/jetbrains"
+        >
+        </JourneyStep>
+        <JourneyStep
+          title="VS Code extension"
+          href="/contract-dev/ide/vscode"
         >
         </JourneyStep>
         <JourneyStep
@@ -189,11 +194,6 @@ export const JourneyStep = ({ title, icon, iconType, href, cta, children }) => {
         <JourneyStep
           title="TVM instructions"
           href="/tvm/instructions"
-        >
-        </JourneyStep>
-        <JourneyStep
-          title="Debugging smart contracts"
-          href="/contract-dev/debug"
         >
         </JourneyStep>
       </Journey>

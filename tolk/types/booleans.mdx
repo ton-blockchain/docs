@@ -21,18 +21,18 @@ var valid = isSignatureValid(...);    // bool
 var end = someSlice.isEmpty();        // bool
 ```
 
-## Logical operators accept both `int` and `bool`
+## Conditions and logical operators require `bool`
 
-- Operator `!x` supports both `bool` and `int`.
-- The condition of `if` and similar statements accepts both `bool` and `int`, where it treats the latter as `true` if the value is not equal to 0, and as `false` otherwise.
-- Logical operators `&&` and `||` accept both `bool` and `int`. For example, `a && b` evaluates to `true` when both operands are `true` or both operands are non-zero integers.
+- The condition of `if`, `while`, `do while`, ternary, and `assert` must be a `bool`. Integers are not implicitly converted: write `if (x != 0)` rather than `if (x)`.
+- The unary `!` operator requires a `bool`: write `if (x == 0)` rather than `if (!x)`.
+- Logical operators `&&` and `||` short-circuit and accept both `bool` and `int` operands.
 
 Arithmetic operators are restricted to integers.
 
 ```tolk
 valid && end;  // ok
 valid & end;   // ok, bitwise & | ^ also work if both are bools
-if (!end)      // ok
+if (!end)      // ok, end is bool
 
 valid + end;   // error
 8 & valid;     // error, int & bool not allowed
