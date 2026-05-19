@@ -3,17 +3,19 @@ title: "Whitepapers comments"
 sidebarTitle: "Comments"
 ---
 
-Clarifications and status notes for the whitepapers.
+Descriptions in the original [whitepapers](/foundations/whitepapers/overview) are not aligned with actual blockchain sources. This page provides clarifications and status updates for the whitepapers, highlighting features that have not been implemented and correcting descriptions of those that have been.
 
 ## TON Virtual Machine, `tvm.pdf`
 
 ### 1.3.2. List of control registers
 
-The zero element of the `c7` tuple is an environment information (which itself is also a tuple). The remaining 255 slots are used for global variables. [`[i] SETGLOB`](/tvm/instructions#f87_-setglob) modifies `c7`, inserting an element with index `i`, [`[i] GETGLOB`](/tvm/instructions#f85_-getglob) reads `i`-th element from `c7`. See [TVM > Registers](/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables) for details.
+The zero element of the `c7` tuple is an environment information (which itself is also a tuple). The remaining 255 slots are used for global variables. [`[i] SETGLOB`](/tvm/instructions#f87_-setglob) modifies `c7`, inserting an element with index `i`, [`[i] GETGLOB`](/tvm/instructions#f85_-getglob) reads `i`-th element from `c7`.
+
+See the [TVM registers](/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables) page for details.
 
 ### 4.4. Continuations as objects
 
-It is possible to construct such objects, however, no high-level language implemented it yet.
+Tolk implements this via [callable types](/tolk/types/callables) — first-class function values of the form `fun(...) -> ...`, including lambda expressions that capture outer-scope variables.
 
 ### 4.5.7. List of predefined exceptions
 
@@ -27,7 +29,7 @@ Currently only codepage `0` implemented.
 
 Basic gas price is `10 + b`, not `10 + b + 5r`. The [TVM gas documentation](/tvm/gas) explains these details.
 
-Provided instruction list is obsolete. Consider use [TVM > Instructions](/tvm/instructions).
+Provided instruction list is obsolete: use [TVM instructions](/tvm/instructions) instead.
 
 ### B.2. Step function of TVM
 
@@ -77,42 +79,42 @@ My-wordlist @
 
 ## The Open Network, `ton.pdf`
 
-### 2.1.3
+### 2.1.3. Messages and Instant Hypercube Routing
 
-Is not implemented.
+Is not implemented. As of today, only the [Hypercube Routing (HR)](https://en.wikipedia.org/wiki/Hypercube_internetwork_topology) is implemented.
 
-### 2.1.6.
+### 2.1.6. Identification of workchains
 
-Workchain is int32, for now masterchain has ID equal to -1.
+The workchain identifier is a **signed** 32-bit integer (`int32`), not unsigned. The _masterchain_ has ID `-1`, and the _basechain_ has ID `0`.
 
 ### 2.1.7. Creation and activation of new workchains
 
-Only workchain zero exists.
+The only active workchain is the basechain (ID `0`). The validator-consensus activation flow has never been exercised to add another workchain.
 
 ### 2.1.18. TON coins and multi-currency workchains
 
-Product-ready only TON, `extra_currencies` not fully implemented.
+Product-ready only TON, `extra_currencies` is not fully implemented.
 
-### 2.1.20.
+### 2.1.20. TON Virtual Machine
 
-Cells up to 1023 data bits, not 128 data bytes
+Cells up to 1023 data bits, not 128 data bytes.
 
-### 2.2.5.
+### 2.2.5. TL, or the Type Language
 
 Learn more in the [TL-B overview](/languages/tl-b/overview).
 
 ### 2.4.20. Instant Hypercube Routing: fast path for messages
 
-Not fully implemented.
+Not implemented.
 
 ### 2.6.4. Fishermen: obtaining money by pointing out others' mistakes
 
-Not fully implemented.
+Not implemented.
 
-### 4.1.8. Decentralized mixed services, or fog services  **\[NOT IMPLEMENTED]**
+### 4.1.9. Decentralized mixed services, or fog services
 
-Not fully in Cocoon. (Cocoon is not implemented)
+[Cocoon](https://github.com/TelegramMessenger/cocoon).
 
-# 5. TON Payments
+### 5. TON Payments
 
-Not fully implemented, only via smart contracts.
+Partially implemented via specialized [smart contracts](https://github.com/ton-blockchain/payment-channels).
