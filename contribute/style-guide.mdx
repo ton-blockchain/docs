@@ -3,6 +3,8 @@ title: "Documentation style guide"
 sidebarTitle: "Style guide"
 ---
 
+import { Aside } from '/snippets/aside.jsx';
+
 This guide covers the basics: how to structure pages, write examples, and keep docs consistent and safe.
 
 ## Write for the reader
@@ -72,17 +74,22 @@ Add a Caution or Warning when a step moves funds, changes fees or withdrawals, e
 
 On long guides with many risky commands, combine a clear page‑level warning at the top (covering risk, scope, rollback where feasible, and environment) with short local notes next to each critical step. Local notes can be brief if they point back to the main warning.
 
-Pattern
+Pattern:
 
-> Warning — funds at risk
-> Running the next command on mainnet transfers funds irreversibly.
-> Safer first (testnet):
+````
+<Aside
+  type="caution"
+  title="Funds at risk"
 >
-> ```bash
-> jetton transfer --to <ADDR> --amount <AMOUNT> --network testnet
-> ```
->
-> If you must use mainnet: no rollback; on‑chain transfers are final.
+  Running the next command on mainnet transfers funds irreversibly. Try on the testnet first:
+
+  ```bash
+  jetton transfer --to <ADDR> --amount <AMOUNT> --network testnet
+  ```
+
+  On-chain fund transfers on testnet and mainnet are irreversible.
+</Aside>
+````
 
 Default to testnet in task pages. Make destructive flags opt‑in and document mitigations.
 

@@ -112,6 +112,17 @@ At the TVM level, every enum is represented as `int`. Casting between the enum a
 
 During deserialization with `fromCell()`, the compiler validates that encoded integers correspond to valid enum values.
 
+### Enums are assignable to integers
+
+Enums are distinct types, but enum values can be assigned to `int` (and `intN`) variables without an explicit `as` cast:
+
+```tolk
+var x: int = Color.Red;
+var y: int32 = VmExitCode.OutOfGasError;
+```
+
+This is most useful for enums that represent TVM exit codes, operation ids, modes, and other numeric constants.
+
 ## Usage in `throw` and `assert`
 
 Enums are allowed in `throw` and `assert`:
