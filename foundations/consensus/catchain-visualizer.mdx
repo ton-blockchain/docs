@@ -33,5 +33,5 @@ To understand this simulation, read the [Catchain whitepaper](/foundations/white
 - Catchain dependency handling is simplified: if a node sees a message but lacks one of its parents, it asks peers for that missing block without a vector-time sync.
 - Quorums use equal weights (counts), not stake weights.
 - Submits are auto-scheduled per priority window; retries and network sync differ from the real catchain and validator logic.
-- Null candidate is assumed after its delay
+- Null candidate is assumed after its delay.
 - `VoteFor` and slow-mode handling is simplified.
