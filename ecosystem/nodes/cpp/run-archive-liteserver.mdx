@@ -25,11 +25,11 @@ Running an archive liteserver requires significant storage and network resources
 - 16-core CPU
 - 128 GB RAM
 - At least 16 TB of NVMe Gen4+ SSD storage (Enterprise grade preferred), 20 TB if ZFS compression is disabled, or Provisioned 64k+ IOPS storage. If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level (e.g., `echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy`).
-- 1 Gbit/s symmetric connectivity (both inbound and outbound), ~16 TB/month at peak load
+- 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
 
 <Aside type="tip">
-  Currently, uncompressed archive data requires approximately 20 TB. Using ZFS with compression reduces this to ~16 TB.
+  Currently, uncompressed archive data requires approximately 20 TB. Using ZFS with compression reduces this to \~16 TB.
 </Aside>
 
 ### 1.2 OS and system requirements
@@ -38,7 +38,7 @@ Running an archive liteserver requires significant storage and network resources
 - Python 3.10 or higher
 - Open Files Limit must be set above 4,000,000
 
-### 1.3 Subscribe to official channels  
+### 1.3 Subscribe to official channels
 
 Subscribe and follow the announcements provided for liteservers in the following Telegram channels:
 
@@ -70,6 +70,7 @@ cat /sys/block/nvme0n1/queue/physical_block_size
 If the result is `4096`, the `-o ashift=12` parameter must be used during pool creation.
 
 Define placeholders:
+
 - `<DISK>` - the target disk device identifier (e.g., `/dev/nvme1n1`).
 - `<DISK1>`, `<DISK2>`, `<DISK3>` - additional disk device identifiers.
 
@@ -89,7 +90,9 @@ Create a ZFS pool named `data`. Use `-o ashift=12` for 4K blocks (standard for m
   ```
 </CodeGroup>
 
-<Aside type="caution">
+<Aside
+  type="caution"
+>
   Combining disks in a stripe (JBOD) increases the total capacity but also the risk of data loss: if a single drive fails, the entire pool is lost. If sufficient disks are available, consider using `mirror` or `raidz` for redundancy.
 </Aside>
 
@@ -123,8 +126,11 @@ sudo usermod -aG sudo <USERNAME>
 ```
 
 Define placeholders:
+
 - `<USERNAME>` - name of the non-root operator user.
+
 - `<SERVER_IP>` - public IP address of the server.
+
 - `<SSH_PORT>` - custom SSH port number configured in Step 1.7.
 
 - Switch to the new operator account by reconnecting via SSH:
@@ -228,6 +234,7 @@ Match Address <ALLOWED_IP>
 ```
 
 Define placeholders:
+
 - `<SSH_PORT>` - a custom non-default port number (for example, `2222`).
 - `<ALLOWED_IP>` - IP address or subnet permitted to connect via SSH.
 - `<USERNAME>` - name of the operator user.
@@ -299,7 +306,7 @@ Run the installer from the operator account with `sudo` so it can create system 
   ```
 </CodeGroup>
 
-Installation runs in the background.  
+Installation runs in the background.
 
 Monitor the progress using the following command:
 
@@ -317,7 +324,7 @@ During the download process, the log contains entries like the following:
 [info]    28.04.2026, 11:43:20.700 (UTC)  <ThreadPoolExecutor-0_1>DOWNLOADED fd41a820efc4f459bb1518c45fcc23023b0a95d9446c683705802bfb9d50a0c9
 ```
 
-Upon successful completion of the installation, the following line appears in the log: 
+Upon successful completion of the installation, the following line appears in the log:
 
 ```text
 [5/5] Mytonctrl installation completed
@@ -355,6 +362,7 @@ sudo ufw status
 ```
 
 Define placeholders:
+
 - `<NODE_UDP_PORT>` - UDP port of the validator engine.
 - `<LITESERVER_PORT>` - TCP port of the liteserver.
 
@@ -380,7 +388,7 @@ Set up alerting in MyTonCtrl to get a notification of critical issues with the a
 
 Set up monitoring dashboards for RAM, disk, network, CPU usage, and other metrics.
 
-For system-level metrics, [integrate Prometheus with node_exporter with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
+For system-level metrics, [integrate Prometheus with node\_exporter with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
 
 It is critical to use the monitoring system to:
 
@@ -420,9 +428,11 @@ Once the update is verified as successful and the node is running correctly, del
 ZFS creates snapshots for easy rollbacks if data corruption occurs.
 
 Define placeholders:
+
 - `<SNAPSHOT_NAME>` - unique identifier for the snapshot.
 
 #### Create a snapshot
+
 Snapshots can be created without stopping the node:
 
 ```bash
@@ -430,6 +440,7 @@ sudo zfs snapshot data/ton-work@<SNAPSHOT_NAME>
 ```
 
 #### List snapshots
+
 To see all existing snapshots for the `data/ton-work` dataset:
 
 ```bash
@@ -438,7 +449,10 @@ sudo zfs list -t snapshot data/ton-work
 
 #### Roll back to a snapshot
 
-<Aside type="caution" title="Data loss risk">
+<Aside
+  type="caution"
+  title="Data loss risk"
+>
   Rolling back to a snapshot overwrites all database changes made since the snapshot was created. Stop the validator service before performing the rollback:
 
   ```bash
@@ -454,6 +468,7 @@ sudo zfs list -t snapshot data/ton-work
 </Aside>
 
 #### Delete a snapshot
+
 Delete the snapshot when it is no longer needed:
 
 ```bash
@@ -473,6 +488,7 @@ sudo zfs send -pc -nv data/ton-work@<SNAPSHOT_NAME>
 ```
 
 Expected output:
+
 ```text
 full send of data/ton-work@<SNAPSHOT_NAME> estimated size is 4.07T
 total estimated size is 4.07T
@@ -481,6 +497,7 @@ total estimated size is 4.07T
 To save the snapshot to a file, use the `-c` flag to preserve `lz4` compression (without it, the file will be significantly larger):
 
 Define placeholders:
+
 - `<BACKUP_PATH>` - destination path on the external storage (e.g., `/mnt/backup/backup_ton_work.zfs`).
 
 ```bash
@@ -497,6 +514,7 @@ sudo zfs send -c data/ton-work@<SNAPSHOT_NAME> > <BACKUP_PATH>
 Stream a snapshot directly to a remote ZFS-enabled server:
 
 Define placeholders:
+
 - `<REMOTE_USER>` - username on the remote host.
 - `<REMOTE_HOST>` - IP address or hostname of the remote host.
 - `<REMOTE_POOL>` - name of the remote ZFS pool.
@@ -540,11 +558,13 @@ Logs containing "Importing archive for masterchain seqno #... from net" accompan
 To verify disk and system performance, run the built-in `mytonctrl` benchmark:
 
 1. Stop the validator service:
+
 ```bash
 sudo systemctl stop validator.service
 ```
 
 2. Run the benchmark:
+
 ```bash
 mytonctrl --cmd benchmark
 ```
@@ -553,7 +573,7 @@ For stable liteserver operation, the benchmark score should be **greater than 70
 
 ## Support
 
-For technical assistance, join the official support channel: [@ton_node_help](https://t.me/ton_node_help).
+For technical assistance, join the official support channel: [@ton\_node\_help](https://t.me/ton_node_help).
 
 ## See also
 
