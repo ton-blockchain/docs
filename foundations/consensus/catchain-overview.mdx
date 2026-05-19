@@ -67,7 +67,7 @@ These messages do not have an order by default. In an asynchronous system they c
 
 ## Handling Byzantine nodes
 
-The key goal is not to allow Byzantine nodes to break the partial order of the messages in Catchain. It can be broken by violating one of three key properties.
+The key goal is not to allow Byzantine nodes to break the partial order of the messages in Catchain. It can be broken by violating one of three key properties: anti-symmetry, transitivity, irreflexivity.
 
 ### Anti-symmetry
 
@@ -102,4 +102,4 @@ Every 0.1-0.2 seconds, a node selects three random neighbors out of its five and
 
 ## Encryption
 
-All the steps above happen inside a private ADNL overlay. There is no shared session key; instead each pair of nodes derives its own key that is used to encrypt message bodies. In practice this means that an external observer in the TON blockchain cannot read the messages that validators exchange with each other.
+All the steps above happen inside a private ADNL overlay. There is no shared session key — instead, each pair of nodes derives its own key to encrypt message bodies. In practice, this means that an external observer on the TON blockchain cannot read the messages that validators exchange.
