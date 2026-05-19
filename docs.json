@@ -23,6 +23,11 @@
     "appearance": "dark",
     "background": "/resources/logo/og-image-bg.svg"
   },
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-S6KJE2LF00"
+    }
+  },
   "styling": {
     "eyebrows": "breadcrumbs",
     "codeblocks": {
@@ -74,6 +79,7 @@
             "group": "AI",
             "expanded": true,
             "pages": [
+              "ecosystem/ai/overview",
               "ecosystem/ai/mcp",
               "ecosystem/ai/wallets"
             ]
@@ -186,7 +192,9 @@
               "ecosystem/appkit/init",
               "ecosystem/appkit/toncoin",
               "ecosystem/appkit/jettons",
-              "ecosystem/appkit/nfts"
+              "ecosystem/appkit/nfts",
+              "ecosystem/appkit/swap",
+              "ecosystem/appkit/stake"
             ]
           },
           {
@@ -229,9 +237,14 @@
                   "ecosystem/walletkit/android/webview"
                 ]
               },
-              "ecosystem/walletkit/qa-guide",
-              "ecosystem/walletkit/native-web",
-              "ecosystem/walletkit/browser-extension"
+              {
+                "group": "Manual implementation",
+                "pages": [
+                  "ecosystem/walletkit/qa-guide",
+                  "ecosystem/walletkit/native-web",
+                  "ecosystem/walletkit/browser-extension"
+                ]
+              }
             ]
           },
           {
@@ -371,23 +384,23 @@
               "standard/wallets/how-it-works",
               "standard/wallets/mnemonics",
               "standard/wallets/comparison",
-              "standard/wallets/performance",
               "standard/wallets/interact",
-              "standard/wallets/history",
-              "standard/wallets/v4",
+              "standard/wallets/gasless",
               {
-                "group": "V5",
+                "group": "Wallet V5",
+                "tag": "latest",
                 "pages": [
                   "standard/wallets/v5",
                   "standard/wallets/v5-api"
                 ]
               },
+              "standard/wallets/v4",
               {
-                "group": "Highload Wallets",
+                "group": "Highload wallets",
                 "pages": [
                   "standard/wallets/highload/overview",
                   {
-                    "group": "Highload Wallet v3",
+                    "group": "Highload wallet v3",
                     "pages": [
                       "standard/wallets/highload/v3/create",
                       "standard/wallets/highload/v3/send-single-transfer",
@@ -397,7 +410,7 @@
                     ]
                   },
                   {
-                    "group": "Highload Wallet v2",
+                    "group": "Highload wallet v2",
                     "pages": [
                       "standard/wallets/highload/v2/specification"
                     ]
@@ -406,13 +419,16 @@
               },
               "standard/wallets/lockup",
               {
-                "group": "Preprocessed Wallet V2",
+                "group": "Preprocessed wallet",
+                "tag": "v2",
                 "pages": [
-                  "standard/wallets/preprocessed-v2/specification",
-                  "standard/wallets/preprocessed-v2/interact"
+                  "standard/wallets/preprocessed-v2/interact",
+                  "standard/wallets/preprocessed-v2/specification"
                 ]
               },
-              "standard/wallets/restricted"
+              "standard/wallets/restricted",
+              "standard/wallets/performance",
+              "standard/wallets/history"
             ]
           },
           {
@@ -427,13 +443,13 @@
                   "standard/tokens/jettons/overview",
                   "standard/tokens/jettons/how-it-works",
                   "standard/tokens/jettons/comparison",
-                  "standard/tokens/jettons/mintless/overview",
                   "standard/tokens/jettons/mint",
+                  "standard/tokens/jettons/transfer",
                   "standard/tokens/jettons/burn",
                   "standard/tokens/jettons/find",
-                  "standard/tokens/jettons/transfer",
                   "standard/tokens/jettons/wallet-data",
                   "standard/tokens/jettons/supply-data",
+                  "standard/tokens/jettons/mintless/overview",
                   "standard/tokens/jettons/mintless/deploy",
                   "standard/tokens/jettons/api"
                 ]
@@ -443,15 +459,15 @@
                 "pages": [
                   "standard/tokens/nft/overview",
                   "standard/tokens/nft/how-it-works",
+                  "standard/tokens/nft/sbt",
+                  "standard/tokens/nft/comparison",
                   "standard/tokens/nft/deploy",
                   "standard/tokens/nft/transfer",
                   "standard/tokens/nft/metadata",
                   "standard/tokens/nft/verify",
-                  "standard/tokens/nft/comparison",
-                  "standard/tokens/nft/sbt",
-                  "standard/tokens/nft/reference",
-                  "standard/tokens/nft/nft-2.0",
-                  "standard/tokens/nft/api"
+                  "standard/tokens/nft/api",
+                  "standard/tokens/nft/nft-reference",
+                  "standard/tokens/nft/nft-2.0"
                 ]
               },
               "standard/tokens/airdrop"
@@ -463,20 +479,45 @@
       {
         "group": "Contract development",
         "pages": [
-          "contract-dev/first-smart-contract",
+          "contract-dev/acton",
           {
             "group": "IDEs and editor plugins",
             "pages": [
-              "contract-dev/ide/overview",
               "contract-dev/ide/vscode",
               "contract-dev/ide/jetbrains"
             ]
           },
           {
-            "group": "Development environment",
+            "group": "Techniques",
+            "expanded": true,
+            "pages": [
+              "contract-dev/techniques/signing",
+              "contract-dev/techniques/contract-sharding",
+              "contract-dev/techniques/security",
+              "contract-dev/techniques/gas",
+              "contract-dev/techniques/on-chain-jetton-processing",
+              "contract-dev/techniques/using-on-chain-libraries",
+              "contract-dev/techniques/random",
+              "contract-dev/techniques/upgrades",
+              "contract-dev/techniques/vanity",
+              "contract-dev/techniques/zero-knowledge"
+            ]
+          },
+          {
+            "group": "Blueprint",
+            "tag": "legacy",
             "pages": [
               "contract-dev/blueprint/overview",
+              "contract-dev/blueprint/first-smart-contract",
               "contract-dev/blueprint/develop",
+              {
+                "group": "Testing",
+                "pages": [
+                  "contract-dev/testing/overview",
+                  "contract-dev/testing/reference"
+                ]
+              },
+              "contract-dev/blueprint/debug",
               "contract-dev/blueprint/deploy",
               "contract-dev/blueprint/coverage",
               "contract-dev/blueprint/benchmarks",
@@ -484,25 +525,7 @@
               "contract-dev/blueprint/cli",
               "contract-dev/blueprint/api"
             ]
-          },
-          {
-            "group": "Testing",
-            "pages": [
-              "contract-dev/testing/overview",
-              "contract-dev/testing/reference"
-            ]
-          },
-          "contract-dev/debug",
-          "contract-dev/signing",
-          "contract-dev/contract-sharding",
-          "contract-dev/security",
-          "contract-dev/gas",
-          "contract-dev/on-chain-jetton-processing",
-          "contract-dev/using-on-chain-libraries",
-          "contract-dev/random",
-          "contract-dev/upgrades",
-          "contract-dev/vanity",
-          "contract-dev/zero-knowledge"
+          }
         ]
       },
       {
@@ -559,6 +582,7 @@
               "tolk/features/message-handling",
               "tolk/features/contract-storage",
               "tolk/features/contract-getters",
+              "tolk/features/contract-abi",
               "tolk/features/message-sending",
               "tolk/features/auto-serialization",
               "tolk/features/lazy-loading",
@@ -577,76 +601,6 @@
             ]
           },
           "tolk/changelog"
-        ]
-      },
-      {
-        "group": "Other languages",
-        "pages": [
-          {
-            "group": "TL-B",
-            "pages": [
-              "languages/tl-b/overview",
-              "languages/tl-b/syntax-and-semantics",
-              "languages/tl-b/simple-examples",
-              "languages/tl-b/complex-and-non-trivial-examples",
-              "languages/tl-b/tep-examples",
-              "languages/tl-b/tooling"
-            ]
-          },
-          {
-            "group": "Fift",
-            "pages": [
-              "languages/fift/overview",
-              "languages/fift/fift-and-tvm-assembly",
-              "languages/fift/deep-dive",
-              "languages/fift/multisig",
-              "languages/fift/whitepaper"
-            ]
-          },
-          {
-            "group": "FunC",
-            "pages": [
-              "languages/func/overview",
-              "languages/func/cookbook",
-              {
-                "group": "Language",
-                "expanded": true,
-                "pages": [
-                  "languages/func/comments",
-                  "languages/func/types",
-                  "languages/func/literals",
-                  "languages/func/operators",
-                  "languages/func/expressions",
-                  "languages/func/statements",
-                  {
-                    "group": "Program declarations",
-                    "expanded": true,
-                    "pages": [
-                      "languages/func/declarations-overview",
-                      "languages/func/functions",
-                      "languages/func/special-functions",
-                      "languages/func/asm-functions",
-                      "languages/func/global-variables",
-                      "languages/func/compiler-directives"
-                    ]
-                  },
-                  "languages/func/built-ins",
-                  "languages/func/dictionaries"
-                ]
-              },
-              {
-                "group": "Libraries",
-                "expanded": true,
-                "pages": [
-                  "languages/func/stdlib",
-                  "languages/func/libraries"
-                ]
-              },
-              "languages/func/changelog",
-              "languages/func/known-issues"
-            ]
-          },
-          "languages/tact"
         ]
       },
       {
@@ -675,6 +629,17 @@
       {
         "group": "Blockchain foundations",
         "pages": [
+          {
+            "group": "TL-B",
+            "pages": [
+              "foundations/tlb/overview",
+              "foundations/tlb/syntax-and-semantics",
+              "foundations/tlb/simple-examples",
+              "foundations/tlb/complex-and-non-trivial-examples",
+              "foundations/tlb/tep-examples",
+              "foundations/tlb/tooling"
+            ]
+          },
           {
             "group": "Serialization",
             "pages": [
@@ -763,7 +728,71 @@
         ]
       },
       {
-        "group": "Contribute",
+        "group": "Legacy languages",
+        "pages": [
+          {
+            "group": "Fift",
+            "pages": [
+              "languages/fift/overview",
+              "languages/fift/types",
+              "languages/fift/basic-values",
+              "languages/fift/variables",
+              "languages/fift/control",
+              "languages/fift/fift-assembler",
+              "languages/fift/fift-and-tvm-assembly",
+              "languages/fift/deep-dive",
+              "languages/fift/multisig",
+              "languages/fift/whitepaper"
+            ]
+          },
+          {
+            "group": "FunC",
+            "pages": [
+              "languages/func/overview",
+              "languages/func/cookbook",
+              {
+                "group": "Language",
+                "expanded": true,
+                "pages": [
+                  "languages/func/comments",
+                  "languages/func/types",
+                  "languages/func/literals",
+                  "languages/func/operators",
+                  "languages/func/expressions",
+                  "languages/func/statements",
+                  {
+                    "group": "Program declarations",
+                    "expanded": true,
+                    "pages": [
+                      "languages/func/declarations-overview",
+                      "languages/func/functions",
+                      "languages/func/special-functions",
+                      "languages/func/asm-functions",
+                      "languages/func/global-variables",
+                      "languages/func/compiler-directives"
+                    ]
+                  },
+                  "languages/func/built-ins",
+                  "languages/func/dictionaries"
+                ]
+              },
+              {
+                "group": "Libraries",
+                "expanded": true,
+                "pages": [
+                  "languages/func/stdlib",
+                  "languages/func/libraries"
+                ]
+              },
+              "languages/func/changelog",
+              "languages/func/known-issues"
+            ]
+          },
+          "languages/tact"
+        ]
+      },
+      {
+        "group": "Contributing",
         "pages": [
           "contribute/style-guide",
           {
@@ -956,7 +985,7 @@
     },
     {
       "source": "/v3/documentation/smart-contracts/overview",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
@@ -966,7 +995,7 @@
     },
     {
       "source": "/v3/documentation/smart-contracts/getting-started/ide-plugins",
-      "destination": "/contract-dev/ide/overview",
+      "destination": "/contract-dev/ide/vscode",
       "permanent": true
     },
     {
@@ -1026,7 +1055,7 @@
     },
     {
       "source": "/v3/documentation/smart-contracts/transaction-fees/fees",
-      "destination": "/contract-dev/gas",
+      "destination": "/contract-dev/techniques/gas",
       "permanent": true
     },
     {
@@ -1106,12 +1135,12 @@
     },
     {
       "source": "/v3/documentation/smart-contracts/tolk/environment-setup",
-      "destination": "contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/documentation/smart-contracts/tolk/counter-smart-contract",
-      "destination": "contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
@@ -1276,7 +1305,7 @@
     },
     {
       "source": "/v3/documentation/dapps/assets/usdt",
-      "destination": "https://old-docs.ton.org/v3/documentation/dapps/assets/usdt",
+      "destination": "/standard/tokens/jettons/comparison#stablecoin-contract",
       "permanent": true
     },
     {
@@ -1296,7 +1325,7 @@
     },
     {
       "source": "/v3/documentation/dapps/defi/subscriptions",
-      "destination": "https://old-docs.ton.org/v3/documentation/dapps/defi/subscriptions",
+      "destination": "/standard/wallets/v4",
       "permanent": true
     },
     {
@@ -1402,6 +1431,21 @@
     {
       "source": "/v3/documentation/network/protocols/adnl/low-level",
       "destination": "https://old-docs.ton.org/v3/documentation/network/protocols/adnl/low-level",
+      "permanent": true
+    },
+    {
+      "source": "/learn/overviews/ton-blockchain",
+      "destination": "/start-here",
+      "permanent": true
+    },
+    {
+      "source": "/learn/overviews/cells",
+      "destination": "/foundations/serialization/cells",
+      "permanent": true
+    },
+    {
+      "source": "/learn/overviews/addresses",
+      "destination": "/foundations/addresses/overview",
       "permanent": true
     },
     {
@@ -1571,82 +1615,97 @@
     },
     {
       "source": "/v3/guidelines/quick-start/getting-started",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/blockchain-interaction/reading-from-network",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/blockchain-interaction/writing-to-network",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/setup-environment",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/func-tolk-folder/blueprint-sdk-overview",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/func-tolk-folder/storage-and-get-methods",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/func-tolk-folder/processing-messages",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/func-tolk-folder/deploying-to-network",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/tact-folder/tact-blueprint-sdk-overview",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/tact-folder/tact-storage-and-get-methods",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/quick-start/developing-smart-contracts/tact-folder/tact-deploying-to-network",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/get-started-with-ton",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/develop/onboarding-challenge",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
       "permanent": true
     },
     {
       "source": "/guidelines/hello-world",
-      "destination": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
+      "permanent": true
+    },
+    {
+      "source": "/first-smart-contract",
+      "destination": "/contract-dev/blueprint/first-smart-contract",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/debug",
+      "destination": "/contract-dev/blueprint/debug",
       "permanent": true
     },
     {
       "source": "/guidelines/smat-contracts-guidelines",
-      "destination": "/contract-dev/debug",
+      "destination": "/contract-dev/blueprint/debug",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/guidelines",
-      "destination": "/contract-dev/debug",
+      "destination": "/contract-dev/blueprint/debug",
       "permanent": true
     },
     {
@@ -1691,27 +1750,27 @@
     },
     {
       "source": "/guidelines/security-measures",
-      "destination": "/contract-dev/security",
+      "destination": "/contract-dev/techniques/security",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/security/overview",
-      "destination": "/contract-dev/security",
+      "destination": "/contract-dev/techniques/security",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/security/common-vulnerabilities",
-      "destination": "/contract-dev/security",
+      "destination": "/contract-dev/techniques/security",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/security/secure-programming",
-      "destination": "/contract-dev/security",
+      "destination": "/contract-dev/techniques/security",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/security/things-to-focus",
-      "destination": "/contract-dev/security",
+      "destination": "/contract-dev/techniques/security",
       "permanent": true
     },
     {
@@ -1721,12 +1780,12 @@
     },
     {
       "source": "/v3/guidelines/smart-contracts/security/random-number-generation",
-      "destination": "/contract-dev/random",
+      "destination": "/contract-dev/techniques/random",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/security/random",
-      "destination": "/contract-dev/random",
+      "destination": "/contract-dev/techniques/random",
       "permanent": true
     },
     {
@@ -1766,7 +1825,7 @@
     },
     {
       "source": "/v3/guidelines/smart-contracts/howto/shard-optimization",
-      "destination": "/contract-dev/contract-sharding",
+      "destination": "/contract-dev/techniques/contract-sharding",
       "permanent": true
     },
     {
@@ -2011,7 +2070,7 @@
     },
     {
       "source": "/v3/guidelines/dapps/asset-processing/compressed-nfts",
-      "destination": "https://old-docs.ton.org/v3/guidelines/dapps/asset-processing/compressed-nfts",
+      "destination": "/standard/tokens/nft/comparison#cnft",
       "permanent": true
     },
     {
@@ -2022,6 +2081,11 @@
     {
       "source": "/guidelines/nft-processing",
       "destination": "/standard/tokens/nft/overview",
+      "permanent": true
+    },
+    {
+      "source": "/standard/tokens/nft/reference",
+      "destination": "/standard/tokens/nft/nft-reference",
       "permanent": true
     },
     {
@@ -2076,7 +2140,7 @@
     },
     {
       "source": "/v3/guidelines/nodes/running-nodes/staking-with-nominator-pools",
-      "destination": "https://old-docs.ton.org/v3/guidelines/nodes/running-nodes/staking-with-nominator-pools",
+      "destination": "/ecosystem/staking/nominator-pools",
       "permanent": true
     },
     {
@@ -2341,12 +2405,12 @@
     },
     {
       "source": "/v3/contribute/README",
-      "destination": "https://old-docs.ton.org/v3/contribute/README",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
       "source": "/v3/contribute",
-      "destination": "https://old-docs.ton.org/v3/contribute",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
@@ -2356,22 +2420,22 @@
     },
     {
       "source": "/v3/contribute/content-standardization",
-      "destination": "https://old-docs.ton.org/v3/contribute/content-standardization",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
       "source": "/v3/contribute/typography",
-      "destination": "https://old-docs.ton.org/v3/contribute/typography",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
       "source": "/v3/contribute/localization-program/translation-style-guide",
-      "destination": "https://old-docs.ton.org/v3/contribute/localization-program/translation-style-guide",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
       "source": "/v3/contribute/maintainers",
-      "destination": "https://old-docs.ton.org/v3/contribute/maintainers",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
@@ -3026,7 +3090,7 @@
     },
     {
       "source": "/v3/contribute/participate",
-      "destination": "https://old-docs.ton.org/v3/contribute/participate",
+      "destination": "/contribute/style-guide",
       "permanent": true
     },
     {
@@ -3386,7 +3450,7 @@
     },
     {
       "source": "/contract-dev/using-onchain-libraries",
-      "destination": "/contract-dev/using-on-chain-libraries",
+      "destination": "/contract-dev/techniques/using-on-chain-libraries",
       "permanent": true
     },
     {
@@ -3522,6 +3586,91 @@
     {
       "source": "/languages/tolk/:slug*",
       "destination": "/tolk/:slug*",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/signing",
+      "destination": "/contract-dev/techniques/signing",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/contract-sharding",
+      "destination": "/contract-dev/techniques/contract-sharding",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/gas",
+      "destination": "/contract-dev/techniques/gas",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/on-chain-jetton-processing",
+      "destination": "/contract-dev/techniques/on-chain-jetton-processing",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/using-on-chain-libraries",
+      "destination": "/contract-dev/techniques/using-on-chain-libraries",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/random",
+      "destination": "/contract-dev/techniques/random",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/upgrades",
+      "destination": "/contract-dev/techniques/upgrades",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/vanity",
+      "destination": "/contract-dev/techniques/vanity",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/zero-knowledge",
+      "destination": "/contract-dev/techniques/zero-knowledge",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/security",
+      "destination": "/contract-dev/techniques/security",
+      "permanent": true
+    },
+    {
+      "source": "/contract-dev/ide/overview",
+      "destination": "/contract-dev/ide/vscode",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/overview",
+      "destination": "/foundations/tlb/overview",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/syntax-and-semantics",
+      "destination": "/foundations/tlb/syntax-and-semantics",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/simple-examples",
+      "destination": "/foundations/tlb/simple-examples",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/complex-and-non-trivial-examples",
+      "destination": "/foundations/tlb/complex-and-non-trivial-examples",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/tep-examples",
+      "destination": "/foundations/tlb/tep-examples",
+      "permanent": true
+    },
+    {
+      "source": "/languages/tl-b/tooling",
+      "destination": "/foundations/tlb/tooling",
       "permanent": true
     }
   ]

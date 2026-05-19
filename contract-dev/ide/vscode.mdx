@@ -146,7 +146,7 @@ Extension provides support for TON Blockchain languages and tools in VSCode and 
     horizontal="true"
     href="#integrations"
   >
-    Work with Blueprint projects, Sandbox TON emulator, and other popular tools for TON development
+    Work with Acton projects and other tools for TON development
   </Card>
 </Columns>
 
@@ -171,7 +171,7 @@ Tolk support includes:
 - Various inlay hints, including hints for types and parameter names.
 - On-the-fly inspections with quick fixes
 - Signature help inside calls
-- Build, test, and debug [Blueprint](/contract-dev/blueprint/overview)-based projects
+- Build, test, and debug [Acton](/contract-dev/acton)-based projects
 - Flexible toolchain management
 
 ### FunC
@@ -194,7 +194,7 @@ FunC support includes:
 - Types and documentation on hover
 - Inlay hints for method IDs
 - On-the-fly inspections
-- Build, test, and debug [Blueprint](/contract-dev/blueprint/overview)-based projects
+- Build, test, and debug [Acton](/contract-dev/acton)-based projects
 
 ### Fift
 
@@ -265,12 +265,23 @@ Additionally, BoC support includes:
 
 ### Integrations
 
-The extension integrates with:
+The extension integrates with [Acton](/contract-dev/acton) — a recommended modern all-in-one Tolk smart contract development environment.
 
-- [Sandbox](#sandbox) — Local TON emulator used to [test](/contract-dev/testing/overview) smart contracts
-- [Blueprint](/contract-dev/blueprint/overview) — a popular development environment for TON smart contract development
+<Aside
+  type="note"
+  title="Older integrations"
+>
+  [Plugin versions `v0.6.0` and below](https://marketplace.visualstudio.com/items?itemName=ton-core.vscode-ton) also offer support for:
+
+  - [Blueprint](/contract-dev/blueprint/overview) — comprehensive TypeScript development environment for TON smart contract development
+  - [Sandbox](#sandbox) — Local TON emulator used to [test](/contract-dev/testing/overview) smart contracts
+
+  Since version `v1.0.0`, Acton is used as the primary TON development toolchain.
+</Aside>
 
 #### Sandbox
+
+<Badge color="red">Available only in versions `v0.6.0` and below</Badge>
 
 There is a graphical interface for local TON Blockchain emulation testing. By using it in Blueprint-based projects or any projects that use Sandbox (`@ton/sandbox`) for contract emulation, one can:
 
@@ -525,6 +536,8 @@ This extension provides a wide range of options configurable in the [settings ed
 
 #### Sandbox
 
+<Badge color="red">Available only in versions `v0.6.0` and below</Badge>
+
 <ParamField
   path="ton.sandbox.port"
   type="number"
@@ -566,6 +579,8 @@ The <kbd>Ctrl+Shift+P</kbd> on Windows and Linux (and <kbd>⌘+⇧+P</kbd> on ma
 - `Tolk: Manage toolchains` — modifies the config
 
 #### Sandbox
+
+<Badge color="red">Available only in versions `v0.6.0` and below</Badge>
 
 Work everywhere:
 

@@ -133,13 +133,13 @@ For local development and testing, use the [manifest file from this demo dApp](h
     AppKit,
     AppKitProvider,
     // Enables TON wallet connections
-    TonConnectConnector,
+    createTonConnectConnector,
   } from '@ton/appkit-react';
   import '@ton/appkit-react/styles.css';
 
   const kit = new AppKit({
     connectors: [
-      new TonConnectConnector({
+      createTonConnectConnector({
         tonConnectOptions: {
           // Public link to the application manifest JSON file.
           // For local development and testing, use the one from a demo dApp:
@@ -159,12 +159,12 @@ For local development and testing, use the [manifest file from this demo dApp](h
   import {
     AppKit,
     // Enables TON wallet connections
-    TonConnectConnector,
+    createTonConnectConnector,
   } from '@ton/appkit';
 
   const kit = new AppKit({
     connectors: [
-      new TonConnectConnector({
+      createTonConnectConnector({
         tonConnectOptions: {
           // Public link to the application manifest JSON file.
           // For local development and testing, use the one from a demo dApp:
@@ -178,34 +178,61 @@ For local development and testing, use the [manifest file from this demo dApp](h
 
 ### Providers
 
-The [setup with connectors](#connectors) connects to TON wallets via services such as [Tonkeeper](/ecosystem/wallet-apps/tonkeeper). To enable advanced DeFi operations like asset swaps, configure DeFi providers.
+The [setup with connectors](#connectors) connects to TON wallets via services such as [Tonkeeper](/ecosystem/wallet-apps/tonkeeper). To enable advanced DeFi operations like asset swaps or staking, configure DeFi providers.
 
-[Omniston](https://ston.fi/omniston) is the primary swap provider. To set it up:
+Supported swap providers:
+
+- [Omniston](https://ston.fi/omniston). Requires the `@ston-fi/omniston-sdk` package.
+- [DeDust](https://dedust.io). Has no additional dependencies.
+
+Supported staking providers:
+
+- [Tonstakers](https://tonstakers.com) is the primary staking provider.
+
+AppKit uses the first registered swap provider by default. Pass `providerId` when requesting a quote to target a specific provider.
 
 <Steps>
   <Step
-    title="Install the SDK"
+    title="Install the SDK for Omniston"
+    noAnchor="true"
   >
+    Swaps with Omniston require its SDK to be installed:
+
     ```shell
     npm i @ston-fi/omniston-sdk
     ```
   </Step>
 
   <Step
-    title="Set up the swap provider"
+    title="Set up one or more providers"
+    noAnchor="true"
   >
     ```ts
     // Or @ton/appkit-react for React
-    import { AppKit, Network } from '@ton/appkit';
+    import { AppKit } from '@ton/appkit';
 
-    // Omniston as a swap provider
+    // Swap providers
     import { OmnistonSwapProvider } from '@ton/appkit/swap/omniston';
+    import { DeDustSwapProvider } from '@ton/appkit/swap/dedust';
+
+    // Tonstakers as a staking provider
+    import { createTonstakersProvider } from '@ton/appkit/staking/tonstakers';
 
     const kit = new AppKit({
-      // Set up a swap provider
-      providers: [new OmnistonSwapProvider({
-        /* custom configuration options */
-      })],
+      // Providers setup
+      providers: [
+        // AppKit uses the first registered swap provider by default.
+        new OmnistonSwapProvider({
+          /* custom configuration options, none are required */
+        }),
+        new DeDustSwapProvider({
+          /* custom configuration options, none are required */
+        }),
+        // Staking
+        createTonstakersProvider({
+          /* custom configuration options, none are required */
+        }),
+      ],
     });
     ```
   </Step>
@@ -257,14 +284,16 @@ The following initialization example sets up everything at once:
     AppKitProvider,
     Network,
     // Wallet connector
-    TonConnectConnector,
+    createTonConnectConnector,
   } from '@ton/appkit-react';
 
   // Styles
   import '@ton/appkit-react/styles.css';
 
-  // DeFi provider
-  import { OmnistonSwapProvider } from '@ston-fi/omniston-sdk';
+  // DeFi providers
+  import { OmnistonSwapProvider } from '@ton/appkit/swap/omniston';
+  import { DeDustSwapProvider } from '@ton/appkit/swap/dedust';
+  import { createTonstakersProvider } from '@ton/appkit/staking/tonstakers';
 
   // TanStack Query
   import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -298,7 +327,7 @@ The following initialization example sets up everything at once:
     // 2. Configure connectors.
     connectors: [
       // Enables connections with TON wallet services, such as Tonkeeper or MyTonWallet.
-      new TonConnectConnector({
+      createTonConnectConnector({
         tonConnectOptions: {
           // Public link to the application manifest JSON file.
           // For local development and testing, use the one from a demo dApp:
@@ -306,8 +335,14 @@ The following initialization example sets up everything at once:
         },
       }),
     ],
-    // 3. Configure DeFi providers.
-    providers: [new OmnistonSwapProvider()],
+    // 3. Configure providers.
+    providers: [
+      // AppKit uses the first registered swap provider by default.
+      new OmnistonSwapProvider(),
+      new DeDustSwapProvider(),
+      // Staking
+      createTonstakersProvider(),
+    ],
   });
 
   // 4. Wrap the rest of the app in a QueryClientProvider and an AppKitProvider.
@@ -328,11 +363,13 @@ The following initialization example sets up everything at once:
     AppKit,
     Network,
     // Wallet connector
-    TonConnectConnector,
+    createTonConnectConnector,
   } from '@ton/appkit';
 
-  // DeFi provider
-  import { OmnistonSwapProvider } from '@ston-fi/omniston-sdk';
+  // DeFi providers
+  import { OmnistonSwapProvider } from '@ton/appkit/swap/omniston';
+  import { DeDustSwapProvider } from '@ton/appkit/swap/dedust';
+  import { createTonstakersProvider } from '@ton/appkit/staking/tonstakers';
 
   // Initialization
   const kit = new AppKit({
@@ -353,7 +390,7 @@ The following initialization example sets up everything at once:
     // 2. Configure connectors.
     connectors: [
       // Enables connections with TON wallet services, such as Tonkeeper or MyTonWallet.
-      new TonConnectConnector({
+      createTonConnectConnector({
         tonConnectOptions: {
           // Public link to the application manifest JSON file.
           // For local development and testing, use the one from a demo dApp:
@@ -361,8 +398,14 @@ The following initialization example sets up everything at once:
         },
       }),
     ],
-    // 3. Configure DeFi providers.
-    providers: [new OmnistonSwapProvider()],
+    // 3. Configure providers.
+    providers: [
+      // AppKit uses the first registered swap provider by default.
+      new OmnistonSwapProvider(),
+      new DeDustSwapProvider(),
+      // Staking
+      createTonstakersProvider(),
+    ],
   });
   ```
 </CodeGroup>
@@ -455,7 +498,7 @@ kit.swapManager.registerProvider(swapProvider);
   path="connectors"
   type="Connector[] | undefined"
 >
-  Array of connectors that enable wallet connections. The primary connector is `TonConnectConnector`.
+  Array of connectors that enable wallet connections. The primary connector is `TonConnectConnector`, which is created by dedicated function.
 
   Each connector must expose the following methods:
 
@@ -485,7 +528,7 @@ kit.swapManager.registerProvider(swapProvider);
   path="providers"
   type="Providers[] | undefined"
 >
-  Array of DeFi providers that enable additional functionality, such as asset swaps via [Omniston](https://ston.fi/omniston).
+  Array of DeFi or auxiliary providers that enable additional functionality, such as asset swaps via [Omniston](https://ston.fi/omniston).
 </ParamField>
 
 ## Relation to TON Connect libraries
@@ -503,6 +546,7 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 <Steps>
   <Step
     title="Ensure the TON Connect UI package is of the latest version"
+    noAnchor="true"
   >
     Ensure that TON Connect packages are of the latest version:
 
@@ -513,6 +557,7 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 
   <Step
     title="Initialize AppKit and replace TonConnectUIProvider"
+    noAnchor="true"
   >
     Use `AppKitProvider` in place of the `TonConnectUIProvider`:
 
@@ -522,13 +567,13 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
       // Replaces <TonConnectUIProvider>
       AppKitProvider,
       // Wallet connector
-      TonConnectConnector,
+      createTonConnectConnector,
     } from '@ton/appkit-react';
     import '@ton/appkit-react/styles.css';
 
     const kit = new AppKit({
       connectors: [
-        new TonConnectConnector({
+        createTonConnectConnector({
           // In place of props on the TonConnectUIProvider
           tonConnectOptions: {
             // Public link to the application manifest JSON file.
@@ -554,6 +599,7 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 
   <Step
     title="Keep existing hooks as is"
+    noAnchor="true"
   >
     The `AppKitProvider` bridges to TON Connect under the hood. Existing few `@tonconnect/ui-react` hooks, such as `useTonAddress()`, `useTonWallet()`, and others, will continue to work inside the `AppKitProvider` automatically.
   </Step>
@@ -566,6 +612,7 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 <Steps>
   <Step
     title="Ensure the TON Connect UI package is of the latest version"
+    noAnchor="true"
   >
     ```shell
     npm up @tonconnect/ui --save
@@ -574,18 +621,19 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 
   <Step
     title="Initialize AppKit and reuse TonConnectUI object"
+    noAnchor="true"
   >
     It is possible to reuse the existing `TonConnectUI` object when configuring AppKit [connectors](#connectors):
 
     ```ts
     import {
       AppKit,
-      TonConnectConnector,
+      createTonConnectConnector,
     } from '@ton/appkit';
 
     const kit = new AppKit({
       connectors: [
-        new TonConnectConnector({
+        createTonConnectConnector({
           // Pass the existing TonConnectUI instance object
           tonConnectUI
         }),
@@ -597,7 +645,7 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 
     ```ts
     // Passing the existing TonConnectUI instance object
-    kit.addConnector(new TonConnectConnector({ tonConnectUI }));
+    kit.addConnector(createTonConnectConnector({ tonConnectUI }));
     ```
 
     Refer to the [complete initialization setup](#complete-setup) for all the possible AppKit configuration options.
@@ -605,6 +653,7 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 
   <Step
     title="Replace method calls with exported functions"
+    noAnchor="true"
   >
     Instead of consolidating everything within the instantiated `TonConnectUI` object, AppKit offers several tree-shakable functions that enhance and expand the capabilities of the existing `TonConnectUI` functionality. Refer to [relevant how-to pages](/ecosystem/appkit/overview#quick-start) for concrete examples.
   </Step>
