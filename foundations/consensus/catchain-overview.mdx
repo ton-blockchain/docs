@@ -63,7 +63,7 @@ A Catchain message can declare any other messages by any node as a dependency. T
   alt="Example message flow, animated GIF"
 />
 
-These messages do not have an order by default. In an asynchronous system they can be received in any order. Declaring message dependencies helps to establish a partial ordering on all messages in general and on each node in particular. This is possible because in Catchain the dependency relation is antisymmetric, transitive, and irreflexive.
+These messages do not have an order by default. In an asynchronous system they can be received in any order. Declaring message dependencies helps to establish a partial ordering on all messages in general and on each node in particular. This is possible because in Catchain the dependency relation is anti-symmetric, transitive, and irreflexive.
 
 ## Handling Byzantine nodes
 
@@ -71,7 +71,7 @@ The key goal is not to allow Byzantine nodes to break the partial order of the m
 
 ### Anti-symmetry
 
-This property means that $\forall A, B: depends(A, B) -> !depends(B, A)$. Catchain preserves this property: when `A` depends on `B`, `B` is included in the `body hash` field of `A`. Therefore `B` cannot depend on `A`, as its `body hash` must include `A`.
+This property means that $\forall A, B: depends(A, B) -> !depends(B, A)$. Catchain preserves this property: when `A` depends on `B`, `B` is included in the `body hash` field of `A`. Therefore, `B` cannot depend on `A`, as its `body hash` must include `A`.
 
 ### Transitivity
 
@@ -91,7 +91,7 @@ Every message `(X; i)` (except the genesis message `(X; 0)`) depends on `(X; i -
 
 ## Node state
 
-The node state stores information about all messages processed by the current node. Since messages are ordered for each node, denote this information by the vector <code>(A<sub>i</sub>, B<sub>j</sub>, C<sub>k</sub>, D<sub>m</sub> ...)</code>. This vector tracks the last processed message for each validator. If A<sub>i</sub> is stored and A<sub>i+2</sub> arrives, the node must download A<sub>i+1</sub>.
+The node state stores information about all messages processed by the current node. Since messages are ordered for each node, denote this information by the vector <code>(A<sub>i</sub>, B<sub>j</sub>, C<sub>k</sub>, D<sub>m</sub> ...)</code>. This vector tracks the last processed message for each validator. If <code>A<sub>i</sub></code> is stored and <code>A<sub>i+2</sub></code> arrives, the node must download <code>A<sub>i+1</sub></code>.
 
 ## Dependency retrieval process
 
