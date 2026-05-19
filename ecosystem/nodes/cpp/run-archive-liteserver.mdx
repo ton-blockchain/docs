@@ -268,11 +268,11 @@ Run the installer from the operator account with `sudo` so it can create system 
 
 <CodeGroup>
   ```bash Mainnet
-  nohup sudo bash install.sh -m liteserver -n mainnet --archive > mytonctrl_installation.log 2>&1 &
+  sudo -v && nohup sudo bash install.sh -m liteserver -n mainnet --archive > mytonctrl_installation.log 2>&1 &
   ```
 
   ```bash Testnet
-  nohup sudo bash install.sh -m liteserver -n testnet --archive > mytonctrl_installation.log 2>&1 &
+  sudo -v && nohup sudo bash install.sh -m liteserver -n testnet --archive > mytonctrl_installation.log 2>&1 &
   ```
 </CodeGroup>
 
