@@ -56,7 +56,7 @@ export default async function Page(props: PageProps) {
         <LLMCopyButton content={llmText} />
         <ViewOptions
           markdownUrl={`/llms.mdx${page.url}.md`}
-          githubUrl={`https://github.com/ton-org/docs/blob/main/${page.path}`}
+          // githubUrl={`https://github.com/ton-org/docs/blob/main/${page.path}`}
         />
       </div>
       <DocsBody>
