@@ -1,6 +1,7 @@
 import {createOpenAPI} from "fumadocs-openapi/server"
 import {createAPIPage} from "fumadocs-openapi/ui"
 import path from "node:path"
+import {PrettyJsonResultDisplay} from "./openapi-result-display"
 
 /**
  * Server-side OpenAPI bundle that exposes the toncenter v2, v3, and
@@ -22,7 +23,15 @@ export const openapiServer = createOpenAPI({
  * operation: paths starting with `/api/v3/` resolve against `toncenter-v3`,
  * everything else falls back to `toncenter-v2`.
  */
-export const APIPage = createAPIPage(openapiServer)
+export const APIPage = createAPIPage(openapiServer, {
+  client: {
+    playground: {
+      components: {
+        ResultDisplay: PrettyJsonResultDisplay,
+      },
+    },
+  },
+})
 
 const SMC_INDEX_ROUTES = new Set([
   "/lifecheck",
