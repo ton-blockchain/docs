@@ -1,9 +1,11 @@
 ---
 id: ecosystem/ton-connect/how-to/walletconnect-support
 title: "Add WalletConnect support"
-sidebarTitle: "WalletConnect support"
+sidebarTitle: "Enable WalletConnect"
 description: ""
 ---
+
+## Overview
 
 Adding [WalletConnect](https://walletconnect.network/) as a secondary connection option lets users on custodial wallets such as Fireblocks reach your TON Connect dApp without leaving their existing WalletConnect flow.
 
@@ -57,7 +59,7 @@ initializeWalletConnect(UniversalConnector, {
 });
 ```
 
-Once initialised, a `WalletConnect` entry appears at the bottom of the All Wallets list in the TON Connect modal. Selecting it hands the connection off to Reown's modal. The connected account is delivered back through the same `onStatusChange` callback used for native TON Connect wallets.
+Once initialized, a `WalletConnect` entry appears at the bottom of the All Wallets list in the TON Connect modal. Selecting it hands the connection off to Reown's modal. The connected account is delivered back through the same `onStatusChange` callback used for native TON Connect wallets.
 
 ![WalletConnect entry at the bottom of the TON Connect All Wallets modal](/resources/images/ton-connect/walletconnect-support-modal.png)
 

@@ -5,10 +5,11 @@ sidebarTitle: "Filter wallets"
 description: ""
 ---
 
+## Overview
 
 `walletsRequiredFeatures` limits the wallet picker to wallets that advertise the capabilities your dApp depends on. The SDK compares each wallet's advertised features against the option and removes any wallet that does not match. For the protocol-level feature catalogue, see [`Feature` specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature).
 
-## With `TonConnectUI`
+## Use with `TonConnectUI`
 
 ```ts
 import { TonConnectUI } from '@tonconnect/ui';
@@ -31,7 +32,7 @@ const tonConnectUi = new TonConnectUI({
 });
 ```
 
-## With `TonConnectUIProvider` (React)
+## Use with `TonConnectUIProvider` (React)
 
 ```tsx
 import { TonConnectUIProvider } from '@tonconnect/ui-react';

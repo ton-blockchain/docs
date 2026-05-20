@@ -2348,7 +2348,7 @@ type GetConnectorsReturnType = readonly Connector[];
 | `connectWallet`\*       | <code>(network?: <a href="#network">Network</a>) => Promise\<void></code> | Initiate a wallet connection flow on the given network.                                                                                                                                                    |
 | `disconnectWallet`\*    | `() => Promise<void>`                                                     | Disconnect the currently connected wallet, if any.                                                                                                                                                         |
 | `getConnectedWallets`\* | <code>() => <a href="#walletinterface">WalletInterface</a>\[]</code>      | Wallets currently connected through this connector.                                                                                                                                                        |
-| `tonConnectUI`\*        | `TonConnectUI \| null`                                                    | Underlying `TonConnectUI` instance — `null` during SSR or before the connector has been initialised. Apps that need to drive the modal directly (e.g. custom UI flows) can read this and call its methods. |
+| `tonConnectUI`\*        | `TonConnectUI \| null`                                                    | Underlying `TonConnectUI` instance — `null` during SSR or before the connector has been initialized. Apps that need to drive the modal directly (e.g. custom UI flows) can read this and call its methods. |
 
 #### TonConnectConnectorConfig
 

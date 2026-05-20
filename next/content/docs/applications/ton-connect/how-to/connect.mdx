@@ -5,6 +5,7 @@ sidebarTitle: "Connect a wallet"
 description: ""
 ---
 
+## Overview
 
 Connecting a wallet is the first step in any TON Connect flow. The dApp presents a wallet picker, the user picks a wallet, and the wallet returns the user's account information over the bridge. Optionally, the dApp can also request `ton_proof` — a signature proving the user owns the connected address.
 
@@ -64,7 +65,7 @@ function Status() {
 
 The vanilla SDK exposes the same state through `tonConnectUi.wallet`, `tonConnectUi.account`, and the `onStatusChange` subscription.
 
-### Customise the modal
+### Customize the modal
 
 ```tsx
 import { useTonConnectUI, THEME } from '@tonconnect/ui-react';
@@ -95,7 +96,7 @@ const universalLink = tc.connector.connect({
 window.location.href = universalLink;
 ```
 
-### Restoring a previous connection
+### Restore a previous connection
 
 The SDK calls `restoreConnection()` automatically on mount. Use `useIsConnectionRestored` (or the `connector.onStatusChange` callback for vanilla) to know when the restore attempt has settled — only after that should you decide whether the user is connected.
 
