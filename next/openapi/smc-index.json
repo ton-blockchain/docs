@@ -30,15 +30,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "APIKeyHeader": []
-                    },
-                    {
-                        "APIKeyQuery": []
-                    }
-                ]
+                }
             }
         },
         "/getNominator": {
@@ -46,14 +38,6 @@
                 "summary": "Get Nominator Method",
                 "description": "Get nominator data in given pool (the only in list) or, if pool is not specified, in all pools where nominator stakes.",
                 "operationId": "get_nominator_method_api_smc_index_getNominator_get",
-                "security": [
-                    {
-                        "APIKeyHeader": []
-                    },
-                    {
-                        "APIKeyQuery": []
-                    }
-                ],
                 "parameters": [
                     {
                         "name": "nominator",
@@ -118,14 +102,6 @@
                 "summary": "Get Pool Method",
                 "description": "Get pool data with all its nominators.",
                 "operationId": "get_pool_method_api_smc_index_getPool_get",
-                "security": [
-                    {
-                        "APIKeyHeader": []
-                    },
-                    {
-                        "APIKeyQuery": []
-                    }
-                ],
                 "parameters": [
                     {
                         "name": "pool",
@@ -168,14 +144,6 @@
                 "summary": "Get Nominator Bookings Method",
                 "description": "Get nominator bookings (debits and credits) in specified pool.",
                 "operationId": "get_nominator_bookings_method_api_smc_index_getNominatorBookings_get",
-                "security": [
-                    {
-                        "APIKeyHeader": []
-                    },
-                    {
-                        "APIKeyQuery": []
-                    }
-                ],
                 "parameters": [
                     {
                         "name": "nominator",
@@ -288,14 +256,6 @@
                 "summary": "Get Nominator Earnings Method",
                 "description": "Get nominator income in specified pool with his stake on each timepoint.",
                 "operationId": "get_nominator_earnings_method_api_smc_index_getNominatorEarnings_get",
-                "security": [
-                    {
-                        "APIKeyHeader": []
-                    },
-                    {
-                        "APIKeyQuery": []
-                    }
-                ],
                 "parameters": [
                     {
                         "name": "nominator",
@@ -404,14 +364,6 @@
                 "summary": "Get Pool Bookings Method",
                 "description": "Get all the bookings (debits and credits) in specified pool.",
                 "operationId": "get_pool_bookings_method_api_smc_index_getPoolBookings_get",
-                "security": [
-                    {
-                        "APIKeyHeader": []
-                    },
-                    {
-                        "APIKeyQuery": []
-                    }
-                ],
                 "parameters": [
                     {
                         "name": "pool",
