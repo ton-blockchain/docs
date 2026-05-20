@@ -1,8 +1,10 @@
+import Image from "next/image"
 import Link from "next/link"
 import {HomeLayout} from "fumadocs-ui/layouts/home"
 import {baseOptions} from "@/lib/layout.shared"
 import {ArrowRight, LifeBuoy, Send, Users} from "lucide-react"
 import type {ReactNode} from "react"
+import logoTonGray from "@/public/logo-ton-gray.svg"
 
 interface JourneyStepProps {
   title: string
@@ -103,9 +105,13 @@ export default function Page() {
           </div>
 
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-            <img
-              src="/logo-ton-gray.svg"
+            <Image
+              src={logoTonGray}
               alt="TON logo"
+              width={128}
+              height={128}
+              sizes="128px"
+              priority
               className="hidden lg:block h-32 w-auto mr-4 dark:invert-0"
             />
             <div className="max-w-2xl text-left">
