@@ -23,7 +23,6 @@
     "migrate-content": "tsx ./scripts/migrate-content.mjs",
     "nav:apply": "tsx ./scripts/apply-nav.mjs",
     "nav:apply:plan": "tsx ./scripts/apply-nav.mjs --dry-run",
-    "nav:editor": "NAV_EDITOR=1 next dev -p 3001",
     "sync": "npm run migrate-content && npm run nav:apply"
   },
   "dependencies": {

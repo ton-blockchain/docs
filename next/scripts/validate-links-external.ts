@@ -12,8 +12,11 @@ const CONTENT_ROOT = path.posix.join("content", "docs")
 const TIMEOUT_MS = 15_000
 const CONCURRENCY = 8
 
-function whitelist(_url: string): boolean {
-  return false
+function whitelist(url: string): boolean {
+  // RFC 2606 reserves example.{com,net,org} and *.example.{com,net,org}
+  // for documentation. Such URLs are intentional placeholders in code
+  // snippets; fetching them always fails.
+  return /^https?:\/\/([a-z0-9-]+\.)*example\.(com|net|org)(\/|$)/i.test(url)
 }
 
 function toRedirectMode(url: URL): RequestRedirect {

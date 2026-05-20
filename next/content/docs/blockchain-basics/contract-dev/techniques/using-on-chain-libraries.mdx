@@ -78,7 +78,7 @@ const DEFAULT_DURATION = 3600 * 24 * 365 * 10  // 10 years, can top-up any time
 const MAX_LIBRARY_CELLS = 1000 // Network config limit for library cells
 const PUBLIC_LIBRARY_MODE = 2 // Public library mode for masterchain contracts
 
-// https://docs.ton.org/tvm/instructions#fb06-setlibcode
+// https://docs.ton.org/blockchain-basics/tvm/instructions#fb06-setlibcode
 fun setLibCode(code: cell, mode: int): void
     asm "SETLIBCODE"
 

@@ -704,7 +704,7 @@ interface TonConnectOptions {
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `manifestUrl` | `string` | *Optional*. URL to the [manifest](https://github.com/ton-connect/docs/blob/main/requests-responses.md#app-manifest) with the dApp metadata that the wallet displays to the user. If not passed, the SDK loads the manifest from `${window.location.origin}/tonconnect-manifest.json`. |
+| `manifestUrl` | `string` | *Optional*. URL to the [manifest](https://github.com/ton-blockchain/ton-connect/blob/main/spec/manifest.md) with the dApp metadata that the wallet displays to the user. If not passed, the SDK loads the manifest from `${window.location.origin}/tonconnect-manifest.json`. |
 | `storage` | `IStorage` | *Optional*. Storage to save protocol data. For browser default is `localStorage`. If you use SDK with Node.js, you have to specify this field. |
 | `eventDispatcher` | `EventDispatcher<SdkActionEvent>` | *Optional*. Event dispatcher to track user actions. By default, it uses `window.dispatchEvent` for browser environment. |
 | `walletsListSource` | `string` | *Optional*. Redefine wallets list source URL. Must be a link to a json file with [following structure](https://github.com/ton-connect/wallets-list) |
@@ -743,8 +743,8 @@ interface WalletConnectionSourceHTTP {
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `universalLink` | `string` | Base part of the wallet universal url. The link should support [Ton Connect parameters](https://github.com/ton-connect/docs/blob/main/bridge.md#universal-link). |
-| `bridgeUrl` | `string` | URL of the wallet's implementation of the [HTTP bridge](https://github.com/ton-connect/docs/blob/main/bridge.md#http-bridge). |
+| `universalLink` | `string` | Base part of the wallet universal url. The link should support [Ton Connect parameters](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#universal-link). |
+| `bridgeUrl` | `string` | URL of the wallet's implementation of the [HTTP bridge](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#http-bridge). |
 
 ### `WalletConnectionSourceJS`
 
@@ -824,9 +824,9 @@ interface WalletInfoRemote {
 | `aboutUrl` | `string` | Info or landing page of your wallet. May be useful for TON newcomers. |
 | `features` | `Feature[]` | *Optional*. List of features supported by the wallet. |
 | `platforms` | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | OS and browsers where the wallet could be installed |
-| `universalLink` | `string` | Base part of the wallet universal url. The link should support [Ton Connect parameters](https://github.com/ton-connect/docs/blob/main/bridge.md#universal-link). |
-| `deepLink` | `string` | *Optional*. Native wallet app deepLink. The link should support [Ton Connect parameters](https://github.com/ton-connect/docs/blob/main/bridge.md#universal-link). |
-| `bridgeUrl` | `string` | URL of the wallet's implementation of the [HTTP bridge](https://github.com/ton-connect/docs/blob/main/bridge.md#http-bridge). |
+| `universalLink` | `string` | Base part of the wallet universal url. The link should support [Ton Connect parameters](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#universal-link). |
+| `deepLink` | `string` | *Optional*. Native wallet app deepLink. The link should support [Ton Connect parameters](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#universal-link). |
+| `bridgeUrl` | `string` | URL of the wallet's implementation of the [HTTP bridge](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#http-bridge). |
 
 ### `WalletInfoInjectable`
 
@@ -1564,7 +1564,7 @@ Returns `boolean`.
 
 ### `toUserFriendlyAddress()`
 
-Converts raw TON address to no-bounceable user-friendly format. [See details](https://ton.org/docs/learn/overviews/addresses#user-friendly-address)
+Converts raw TON address to no-bounceable user-friendly format. [See details](/blockchain-basics/primitives/addresses/overview#user-friendly-address)
 
 ```ts
 function toUserFriendlyAddress(hexAddress: string, testOnly: boolean = false): string;
@@ -1573,7 +1573,7 @@ function toUserFriendlyAddress(hexAddress: string, testOnly: boolean = false): s
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `hexAddress` | `string` | Raw TON address formatted as `"0:<hex string without 0x>"`. |
-| `testOnly` | `boolean` | *Optional*. Convert address to test-only form. [See details](https://ton.org/docs/learn/overviews/addresses#user-friendly-address) Defaults to `false`. |
+| `testOnly` | `boolean` | *Optional*. Convert address to test-only form. [See details](/blockchain-basics/primitives/addresses/overview#user-friendly-address) Defaults to `false`. |
 
 Returns `string`.
 

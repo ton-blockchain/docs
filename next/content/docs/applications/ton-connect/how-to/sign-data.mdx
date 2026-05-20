@@ -49,7 +49,7 @@ const result = await tonConnectUi.signData({
 
 ### Cell
 
-Use `cell` when a smart contract will verify the signature. The wallet hashes a TON cell, not a flat byte string; you also send the [TL-B](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-language) schema so the wallet can decode the cell on-screen.
+Use `cell` when a smart contract will verify the signature. The wallet hashes a TON cell, not a flat byte string; you also send the [TL-B](/blockchain-basics/languages/tl-b/overview) schema so the wallet can decode the cell on-screen.
 
 ```ts
 const result = await tonConnectUi.signData({

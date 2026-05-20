@@ -32,7 +32,7 @@ There are three approaches to verify `JettonNotify` messages, depending on the l
 
 ## Manual wallet management
 
-If the jetton type is known in advance, [calculate the corresponding jetton wallet address off-chain](https://docs.ton.org/standard/tokens/jettons/find) and set it via a message after deployment. It is impossible to hardcode the jetton wallet address in the contract’s [`StateInit`](/blockchain-basics/primitives/messages/deploy) because the wallet address depends on the contract address and creates a circular dependency. This is the most efficient approach, because it only requires one address comparison.
+If the jetton type is known in advance, [calculate the corresponding jetton wallet address off-chain](/blockchain-basics/standard/tokens/jettons/find) and set it via a message after deployment. It is impossible to hardcode the jetton wallet address in the contract’s [`StateInit`](/blockchain-basics/primitives/messages/deploy) because the wallet address depends on the contract address and creates a circular dependency. This is the most efficient approach, because it only requires one address comparison.
 
 The following example of a receiving contract handles `JettonNotify` messages for a trusted jetton wallet address that can be set by the owner of the contract.
 
@@ -250,7 +250,7 @@ sequenceDiagram
 fun calculateJettonWallet(owner: address, jettonData: cell, jettonCode: cell, jettonMinter: address): address asm """
     c7 PUSHCTR
     // Unpack environment information from c7
-    // https://docs.ton.org/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables
+    // https://docs.ton.org/blockchain-basics/tvm/registers#c7--environment-information-and-global-variables
     0 INDEX
     SWAP
     8 SETINDEX

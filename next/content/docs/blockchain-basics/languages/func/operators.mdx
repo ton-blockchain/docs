@@ -376,7 +376,7 @@ Going beyond the range of the integer type will result in an error with [exit co
 
 The bar (bitwise OR) operator `|` applies a [bitwise OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR), which performs the
 logical OR operation on each pair of corresponding bits of the operands.
-This is useful when we want to apply a specific [bitmask](https://en.wikipedia.org/wiki/Mask_\(computing\)).
+This is useful when we want to apply a specific [bitmask](https://en.wikipedia.org/wiki/Mask_%28computing%29).
 
 ```func
 2 & 1;     ;; 3,
@@ -435,7 +435,7 @@ is the same as the sign of the left operand.
 
 `x >> n` is a more efficient way to divide `x` by `2^n`, where the division truncation is done by flooring.
 In other words, `x >> n` is equivalent to `floor(x / 2^n)`, where `floor` is the [floor function](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions),
-`2^n` is exponentiation of `2` by `n`, and `/` is standard [arithmetical division](https://en.wikipedia.org/wiki/Division_\(mathematics\)).
+`2^n` is exponentiation of `2` by `n`, and `/` is standard [arithmetical division](https://en.wikipedia.org/wiki/Division_%28mathematics%29).
 
 ```func
 2 >> 1;       ;; 1,  since floor(2 / 2^1) = 1
@@ -470,7 +470,7 @@ The caret-double greater than (ceiling shift right) operator computes an efficie
 the division truncation is done by ceiling.
 
 In other words, `x ^>> n` is equivalent to `ceil(x / 2^n)`, where `ceil` is the [ceil function](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions),
-`2^n` is exponentiation of `2` by `n`, and `/` is standard [arithmetical division](https://en.wikipedia.org/wiki/Division_\(mathematics\)).
+`2^n` is exponentiation of `2` by `n`, and `/` is standard [arithmetical division](https://en.wikipedia.org/wiki/Division_%28mathematics%29).
 
 ```func
 2 ^>> 1;       ;; 1,  since ceil(2 / 2^1) = 1
@@ -485,7 +485,7 @@ In other words, `x ^>> n` is equivalent to `ceil(x / 2^n)`, where `ceil` is the 
 The tilde-double greater than (rounding shift right) operator computes an efficient way to divide the left operand by `2^n`, where `n` is the right operand and
 the division truncation is done by [rounding half up](https://en.wikipedia.org/wiki/Rounding#Rounding_half_up).
 In other words, `x ~>> n` is equivalent to `floor(x / 2^n + 0.5)`, where `floor` is the [floor function](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions),
-`2^n` is exponentiation of `2` by `n`, `/` is standard [arithmetical division](https://en.wikipedia.org/wiki/Division_\(mathematics\)), and `+` is standard arithmetical addition.
+`2^n` is exponentiation of `2` by `n`, `/` is standard [arithmetical division](https://en.wikipedia.org/wiki/Division_%28mathematics%29), and `+` is standard arithmetical addition.
 
 ```func
 15 ~>> 3;       ;; 2,  since floor(15 / 2^3 + 0.5) = 2

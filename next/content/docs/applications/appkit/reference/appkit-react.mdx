@@ -1500,7 +1500,7 @@ Compact pill button used as the trigger for a token picker — shows the token i
 return (
     <TokenSelector
         title="TON"
-        icon="https://ton.org/download/ton_symbol.png"
+        icon="https://cdn.example.com/ton_symbol.png"
         iconFallback="T"
         onClick={() => console.log('Open token picker')}
     />
@@ -1984,7 +1984,7 @@ Square logo / avatar primitive — renders an `<img>` when `src` loads successfu
 **Example**
 
 ```tsx
-return <Logo size={48} src="https://ton.org/download/ton_symbol.png" alt="TON" fallback="T" />;
+return <Logo size={48} src="https://cdn.example.com/ton_symbol.png" alt="TON" fallback="T" />;
 ```
 
 #### LogoWithNetwork
@@ -2009,7 +2009,7 @@ return (
         src="https://cdn.example.com/usdt.png"
         alt="USDT"
         fallback="U"
-        networkSrc="https://ton.org/download/ton_symbol.png"
+        networkSrc="https://cdn.example.com/ton_symbol.png"
         networkAlt="TON"
     />
 );
