@@ -1,7 +1,10 @@
 import {createOpenAPI} from "fumadocs-openapi/server"
 import {createAPIPage} from "fumadocs-openapi/ui"
 import path from "node:path"
-import {PrettyJsonResultDisplay} from "./openapi-result-display"
+import {
+  ExpandedByDefaultCollapsiblePanel,
+  PrettyJsonResultDisplay,
+} from "./openapi-result-display"
 
 /**
  * Server-side OpenAPI bundle that exposes the toncenter v2, v3, and
@@ -28,6 +31,7 @@ export const APIPage = createAPIPage(openapiServer, {
     playground: {
       components: {
         ResultDisplay: PrettyJsonResultDisplay,
+        CollapsiblePanel: ExpandedByDefaultCollapsiblePanel,
       },
     },
   },
