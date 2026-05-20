@@ -96,7 +96,7 @@ TON achieves transaction [finality](https://docs.ton.org/payments/overview#trans
 
 `sendTransaction` returning a `boc` means **the user signed**. Settlement is a separate state — verify with `getTransactionStatus(appKit, { boc })`, which returns `'unknown' | 'pending' | 'completed' | 'failed'` along with `totalMessages`, `pendingMessages`, and `onchainMessages` for trace progress. Treat only `status === 'completed'` as final.
 
-Applications should not block the UI while waiting for confirmation. Show a "signed / confirming" state, let [Streaming](/applications/appkit/howto/streaming) push live updates, and act on `completed` when it arrives. For finding a transaction by external message hash and applying normalization, see the [message lookup guide](/ecosystem/ton-connect/message-lookup).
+Applications should not block the UI while waiting for confirmation. Show a "signed / confirming" state, let [Streaming](/applications/appkit/howto/streaming) push live updates, and act on `completed` when it arrives.
 
 ## Common failures
 

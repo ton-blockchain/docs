@@ -270,8 +270,6 @@ Therefore, to reliably confirm the transaction delivery and status, one needs to
 
 That said, the wallet service should not block the UI while waiting for such confirmation. After all, with [continuous wallet balance monitoring](#continuous-balance-monitoring) and subsequent transaction requests, users will receive the latest information either way. Confirmations are only needed to reliably display a list of past transactions, including the most recent ones.
 
-For detailed transaction tracking and message lookups, the [message lookup guide](/ecosystem/ton-connect/message-lookup) covers finding transactions by external message hash, waiting for confirmations, and applying message normalization.
-
 ## Transfers in the wallet service
 
 Transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.

@@ -537,7 +537,7 @@ export const redirects = [
   },
   {
     "source": "/develop/dapps/README",
-    "destination": "/v3/guidelines/dapps/overview",
+    "destination": "/overview/start-here",
     "permanent": true
   },
   {
@@ -587,7 +587,7 @@ export const redirects = [
   },
   {
     "source": "/develop/dapps/ton-connect/business",
-    "destination": "/v3/guidelines/ton-connect/overview#why-use-ton-connect",
+    "destination": "/applications/ton-connect/overview",
     "permanent": true
   },
   {
@@ -597,12 +597,12 @@ export const redirects = [
   },
   {
     "source": "/develop/dapps/ton-connect/integration",
-    "destination": "/v3/guidelines/ton-connect/frameworks/react",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
     "source": "/develop/dapps/ton-connect/manifest",
-    "destination": "/v3/guidelines/ton-connect/creating-manifest",
+    "destination": "/applications/ton-connect/core-concepts",
     "permanent": true
   },
   {
@@ -612,7 +612,7 @@ export const redirects = [
   },
   {
     "source": "/develop/dapps/ton-connect/react",
-    "destination": "/v3/guidelines/ton-connect/frameworks/react",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
@@ -697,7 +697,7 @@ export const redirects = [
   },
   {
     "source": "/develop/data-formats/exotic-cells",
-    "destination": "/v3/documentation/data-formats/cells/exotic",
+    "destination": "/blockchain-basics/primitives/serialization/cells",
     "permanent": true
   },
   {
@@ -867,7 +867,7 @@ export const redirects = [
   },
   {
     "source": "/develop/howto/config-params",
-    "destination": "/v3/documentation/network/config-params/update",
+    "destination": "/blockchain-basics/primitives/system",
     "permanent": true
   },
   {
@@ -997,7 +997,7 @@ export const redirects = [
   },
   {
     "source": "/develop/smart-contracts/guidelines/get-methods",
-    "destination": "/v3/guidelines/smart-contracts/get-methods",
+    "destination": "/blockchain-basics/contract-dev/blueprint/deploy",
     "permanent": true
   },
   {
@@ -1022,7 +1022,7 @@ export const redirects = [
   },
   {
     "source": "/develop/smart-contracts/guidelines/processing",
-    "destination": "/v3/documentation/smart-contracts/transaction-fees/forward-fees",
+    "destination": "/blockchain-basics/primitives/fees",
     "permanent": true
   },
   {
@@ -1612,12 +1612,12 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/appkit/concepts",
-    "destination": "/appkit/concepts",
+    "destination": "/applications/appkit/overview",
     "permanent": true
   },
   {
     "source": "/ecosystem/appkit/concepts/appkit",
-    "destination": "/appkit/concepts/appkit",
+    "destination": "/applications/appkit/howto/appkit",
     "permanent": true
   },
   {
@@ -1627,7 +1627,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/appkit/concepts/networks",
-    "destination": "/appkit/concepts/networks",
+    "destination": "/applications/appkit/howto/networks",
     "permanent": true
   },
   {
@@ -1637,12 +1637,12 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/appkit/concepts/providers",
-    "destination": "/appkit/concepts/providers",
+    "destination": "/applications/appkit/howto/providers",
     "permanent": true
   },
   {
     "source": "/ecosystem/appkit/concepts/sign-data",
-    "destination": "/appkit/concepts/sign-data",
+    "destination": "/applications/appkit/howto/sign-data",
     "permanent": true
   },
   {
@@ -1652,7 +1652,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/appkit/concepts/streaming",
-    "destination": "/appkit/concepts/streaming",
+    "destination": "/applications/appkit/howto/streaming",
     "permanent": true
   },
   {
@@ -1662,27 +1662,27 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/appkit/concepts/ui-widgets",
-    "destination": "/appkit/concepts/ui-widgets",
+    "destination": "/applications/appkit/howto/use-ui-widgets",
     "permanent": true
   },
   {
     "source": "/ecosystem/appkit/concepts/wallets-and-connectors",
-    "destination": "/appkit/concepts/wallets-and-connectors",
+    "destination": "/applications/appkit/get-started/connectors",
     "permanent": true
   },
   {
     "source": "/ecosystem/appkit/concepts/work-with-jettons",
-    "destination": "/appkit/concepts/work-with-jettons",
+    "destination": "/applications/appkit/howto/send-jettons",
     "permanent": true
   },
   {
     "source": "/ecosystem/appkit/concepts/work-with-nfts",
-    "destination": "/appkit/concepts/work-with-nfts",
+    "destination": "/applications/appkit/howto/nfts",
     "permanent": true
   },
   {
     "source": "/ecosystem/appkit/concepts/work-with-toncoin",
-    "destination": "/appkit/concepts/work-with-toncoin",
+    "destination": "/applications/appkit/howto/send-toncoin",
     "permanent": true
   },
   {
@@ -1897,7 +1897,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/node/mytonctrl/:slug*",
-    "destination": "/ecosystem/nodes/cpp/mytonctrl/:slug*",
+    "destination": "/blockchain-basics/nodes/cpp/mytonctrl/:slug*",
     "permanent": true
   },
   {
@@ -2152,7 +2152,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/ton-connect/appkit/:slug*",
-    "destination": "/ecosystem/appkit/:slug*",
+    "destination": "/applications/appkit/:slug*",
     "permanent": true
   },
   {
@@ -2162,7 +2162,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/ton-connect/dapp",
-    "destination": "/ton-connect/dapp",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
@@ -2217,12 +2217,12 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/ton-connect/manifest",
-    "destination": "/ton-connect/manifest",
+    "destination": "/applications/ton-connect/core-concepts",
     "permanent": true
   },
   {
     "source": "/ecosystem/ton-connect/message-lookup",
-    "destination": "/ton-connect/message-lookup",
+    "destination": "/applications/ton-connect/overview",
     "permanent": true
   },
   {
@@ -2242,12 +2242,12 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/ton-connect/wallet-connect",
-    "destination": "/ton-connect/wallet-connect",
+    "destination": "/applications/ton-connect/how-to/walletconnect-support",
     "permanent": true
   },
   {
     "source": "/ecosystem/ton-connect/walletkit/:slug*",
-    "destination": "/ecosystem/walletkit/:slug*",
+    "destination": "/applications/walletkit/:slug*",
     "permanent": true
   },
   {
@@ -2727,12 +2727,12 @@ export const redirects = [
   },
   {
     "source": "/guidelines/dapp-guide",
-    "destination": "/ecosystem/ton-connect/dapp",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
     "source": "/guidelines/dapps",
-    "destination": "/",
+    "destination": "/overview/start-here",
     "permanent": true
   },
   {
@@ -2742,17 +2742,17 @@ export const redirects = [
   },
   {
     "source": "/guidelines/how-to",
-    "destination": "/",
+    "destination": "/overview/start-here",
     "permanent": true
   },
   {
     "source": "/guidelines/install-ton-connect",
-    "destination": "/ecosystem/ton-connect/dapp",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
     "source": "/guidelines/integrate-dapp",
-    "destination": "/guidelines/dapp-guide",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
@@ -3007,7 +3007,7 @@ export const redirects = [
   },
   {
     "source": "/languages/tolk/:slug*",
-    "destination": "/tolk/:slug*",
+    "destination": "/blockchain-basics/tolk/:slug*",
     "permanent": true
   },
   {
@@ -4642,7 +4642,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/dapps/dapps-overview",
-    "destination": "/",
+    "destination": "/overview/start-here",
     "permanent": true
   },
   {
@@ -4682,7 +4682,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/data-formats/cells/exotic",
-    "destination": "/foundations/serialization/cells#kinds-of-cells",
+    "destination": "/blockchain-basics/primitives/serialization/cells",
     "permanent": true
   },
   {
@@ -4752,7 +4752,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/data-formats/tlb/exotic-cells",
-    "destination": "/v3/documentation/data-formats/cells/exotic",
+    "destination": "/blockchain-basics/primitives/serialization/cells",
     "permanent": true
   },
   {
@@ -4847,7 +4847,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/infra/nodes/mytonctrl/mytonctrl-errors",
-    "destination": "/v3/documentation/nodes/mytonctrl/errors",
+    "destination": "/blockchain-basics/nodes/cpp/setup-mytonctrl",
     "permanent": true
   },
   {
@@ -4857,7 +4857,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/infra/nodes/mytonctrl/mytonctrl-status",
-    "destination": "/v3/documentation/nodes/mytonctrl/status",
+    "destination": "/blockchain-basics/nodes/cpp/setup-mytonctrl",
     "permanent": true
   },
   {
@@ -4912,7 +4912,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/network/config-params/update",
-    "destination": "/foundations/system#config",
+    "destination": "/blockchain-basics/primitives/system",
     "permanent": true
   },
   {
@@ -4922,7 +4922,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/network/configs/config-params",
-    "destination": "/v3/documentation/network/config-params/update",
+    "destination": "/blockchain-basics/primitives/system",
     "permanent": true
   },
   {
@@ -5007,7 +5007,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/nodes/mytonctrl/errors",
-    "destination": "/ecosystem/nodes/cpp/setup-mytonctrl#troubleshooting-imports",
+    "destination": "/blockchain-basics/nodes/cpp/setup-mytonctrl",
     "permanent": true
   },
   {
@@ -5017,7 +5017,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/nodes/mytonctrl/status",
-    "destination": "/ecosystem/nodes/cpp/setup-mytonctrl#verify-services-and-synchronization",
+    "destination": "/blockchain-basics/nodes/cpp/setup-mytonctrl",
     "permanent": true
   },
   {
@@ -5332,7 +5332,7 @@ export const redirects = [
   },
   {
     "source": "/v3/documentation/smart-contracts/transaction-fees/forward-fees",
-    "destination": "/foundations/fees#forward-fee",
+    "destination": "/blockchain-basics/primitives/fees",
     "permanent": true
   },
   {
@@ -5402,7 +5402,7 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/dapps/apis-sdks/analytics-and-data",
-    "destination": "/ecosystem/analytics#analytics-and-data-providers",
+    "destination": "/overview/infrastructure/analytics",
     "permanent": true
   },
   {
@@ -5482,7 +5482,7 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/dapps/overview",
-    "destination": "/",
+    "destination": "/overview/start-here",
     "permanent": true
   },
   {
@@ -5767,7 +5767,7 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/smart-contracts/get-methods",
-    "destination": "/contract-dev/blueprint/deploy#executing-get-methods",
+    "destination": "/blockchain-basics/contract-dev/blueprint/deploy",
     "permanent": true
   },
   {
@@ -5882,17 +5882,17 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/ton-connect/business/ton-connect-comparison",
-    "destination": "/v3/guidelines/ton-connect/overview#why-use-ton-connect",
+    "destination": "/applications/ton-connect/overview",
     "permanent": true
   },
   {
     "source": "/v3/guidelines/ton-connect/business/ton-connect-for-business",
-    "destination": "/v3/guidelines/ton-connect/overview#why-use-ton-connect",
+    "destination": "/applications/ton-connect/overview",
     "permanent": true
   },
   {
     "source": "/v3/guidelines/ton-connect/business/ton-connect-for-security",
-    "destination": "/v3/guidelines/ton-connect/overview#why-use-ton-connect",
+    "destination": "/applications/ton-connect/overview",
     "permanent": true
   },
   {
@@ -5917,17 +5917,17 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/ton-connect/creating-manifest",
-    "destination": "/ecosystem/ton-connect/manifest",
+    "destination": "/applications/ton-connect/core-concepts",
     "permanent": true
   },
   {
     "source": "/v3/guidelines/ton-connect/frameworks/python",
-    "destination": "/ecosystem/ton-connect/dapp",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
     "source": "/v3/guidelines/ton-connect/frameworks/react",
-    "destination": "/ecosystem/ton-connect/dapp",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
@@ -5962,7 +5962,7 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/ton-connect/guidelines/transaction-by-external-message",
-    "destination": "/ecosystem/ton-connect/message-lookup",
+    "destination": "/applications/ton-connect/how-to/embedded-request",
     "permanent": true
   },
   {
@@ -5977,7 +5977,7 @@ export const redirects = [
   },
   {
     "source": "/v3/guidelines/ton-connect/quick-start",
-    "destination": "/ecosystem/ton-connect/dapp",
+    "destination": "/applications/ton-connect/get-started",
     "permanent": true
   },
   {
