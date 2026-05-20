@@ -1620,7 +1620,6 @@
             }
           ]
         },
-
         {
           "slug": "api",
           "group": "APIs",
@@ -1643,15 +1642,11 @@
                   "id": "ecosystem/api/toncenter/get-api-key"
                 },
                 {
-                  "group": "API v2",
-                  "openapi": {
-                    "source": "ecosystem/api/toncenter/v2.json",
-                    "directory": "ecosystem/api/toncenter/v2"
-                  },
+                  "group": "TON Center API v2",
                   "pages": [
                     {
                       "id": "ecosystem/api/toncenter/v2/overview",
-                      "slug": "v2/overview"
+                      "slug": "v2-overview"
                     },
                     {
                       "id": "ecosystem/api/toncenter/v2-authentication"
@@ -1661,19 +1656,175 @@
                     },
                     {
                       "id": "ecosystem/api/toncenter/v2-tonlib-types"
+                    },
+                    {
+                      "group": "API reference",
+                      "slug": "v2",
+                      "openapi": {
+                        "source": "ecosystem/api/toncenter/v2.json",
+                        "directory": "ecosystem/api/toncenter/v2"
+                      },
+                      "pages": [
+                        {
+                          "group": "Accounts",
+                          "slug": "accounts",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/accounts/get-address-balance"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/accounts/get-address-information"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/accounts/get-address-state"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/accounts/get-extended-address-information"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/accounts/get-token-data"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/accounts/get-wallet-information"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Blocks",
+                          "slug": "blocks",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-block-header"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-consensus-block"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-masterchain-block-signatures"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-masterchain-info"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-outbound-message-queue-size"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-shard-block-proof"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/get-shards"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/blocks/lookup-block"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Configuration",
+                          "slug": "configuration",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/configuration/get-all-config-parameters"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/configuration/get-config-parameter"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/configuration/get-libraries"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "JSON-RPC",
+                          "slug": "rpc",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/rpc/json-rpc-endpoint"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Get-methods",
+                          "slug": "run-method",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/run-method/run-get-method"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/run-method/run-get-method-standard"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Send",
+                          "slug": "send",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/send/estimate-fee"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/send/send-boc"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/send/send-boc-return-hash"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Transactions",
+                          "slug": "transactions",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/get-block-transactions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/get-block-transactions-extended"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/get-transactions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/get-transactions-standard"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/try-locate-result-transaction"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/try-locate-source-transaction"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/transactions/try-locate-transaction"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Utilities",
+                          "slug": "utils",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v2/utils/detect-address"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/utils/detect-hash"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/utils/pack-address"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v2/utils/unpack-address"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
                 {
-                  "group": "API v3",
-                  "openapi": {
-                    "source": "ecosystem/api/toncenter/v3.yaml",
-                    "directory": "ecosystem/api/toncenter/v3"
-                  },
+                  "group": "TON Center API v3",
                   "pages": [
                     {
                       "id": "ecosystem/api/toncenter/v3/overview",
-                      "slug": "v3/overview"
+                      "slug": "v3-overview"
                     },
                     {
                       "id": "ecosystem/api/toncenter/v3-errors"
@@ -1683,6 +1834,193 @@
                     },
                     {
                       "id": "ecosystem/api/toncenter/v3-pagination"
+                    },
+                    {
+                      "group": "API reference",
+                      "slug": "v3",
+                      "openapi": {
+                        "source": "ecosystem/api/toncenter/v3.yaml",
+                        "directory": "ecosystem/api/toncenter/v3"
+                      },
+                      "pages": [
+                        {
+                          "group": "Accounts",
+                          "slug": "accounts",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/accounts/address-book"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/accounts/get-account-states"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/accounts/get-wallet-states"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/accounts/metadata"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Actions and traces",
+                          "slug": "actions-and-traces",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-actions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-pending-actions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-pending-traces"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-traces"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Legacy (v2)",
+                          "slug": "apiv2",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/apiv2/estimate-fee"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/apiv2/get-address-information"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/apiv2/get-wallet-information"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/apiv2/run-get-method"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/apiv2/send-message"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Blockchain data",
+                          "slug": "blockchain-data",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-adjacent-transactions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-blocks"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state-1"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-info"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-messages"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-pending-transactions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-transactions"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-transactions-by-masterchain-block"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/blockchain-data/get-transactions-by-message"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "DNS",
+                          "slug": "dns",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/dns/get-dns-records"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Jettons",
+                          "slug": "jettons",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-burns"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-masters"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-transfers"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-wallets"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Multisig",
+                          "slug": "multisig",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/multisig/get-multisig-orders"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/multisig/get-multisig-wallets"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "NFTs",
+                          "slug": "nfts",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/nfts/get-nft-collections"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/nfts/get-nft-items"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/nfts/get-nft-transfers"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Stats",
+                          "slug": "stats",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/stats/get-top-accounts-by-balance"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Utilities",
+                          "slug": "utils",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/utils/decode-opcodes-and-bodies"
+                            },
+                            {
+                              "id": "ecosystem/api/toncenter/v3/utils/decode-opcodes-and-bodies-1"
+                            }
+                          ]
+                        },
+                        {
+                          "group": "Vesting",
+                          "slug": "vesting",
+                          "pages": [
+                            {
+                              "id": "ecosystem/api/toncenter/v3/vesting/get-vesting-contracts"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -1732,290 +2070,6 @@
                       "id": "ecosystem/api/toncenter/smc-index/lifecheck-method"
                     }
                   ]
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/accounts/get-address-balance",
-                  "slug": "v2/accounts/get-address-balance"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/accounts/get-address-information",
-                  "slug": "v2/accounts/get-address-information"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/accounts/get-address-state",
-                  "slug": "v2/accounts/get-address-state"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/accounts/get-extended-address-information",
-                  "slug": "v2/accounts/get-extended-address-information"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/accounts/get-token-data",
-                  "slug": "v2/accounts/get-token-data"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/accounts/get-wallet-information",
-                  "slug": "v2/accounts/get-wallet-information"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-block-header",
-                  "slug": "v2/blocks/get-block-header"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-consensus-block",
-                  "slug": "v2/blocks/get-consensus-block"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-masterchain-block-signatures",
-                  "slug": "v2/blocks/get-masterchain-block-signatures"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-masterchain-info",
-                  "slug": "v2/blocks/get-masterchain-info"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-outbound-message-queue-size",
-                  "slug": "v2/blocks/get-outbound-message-queue-size"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-shard-block-proof",
-                  "slug": "v2/blocks/get-shard-block-proof"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/get-shards",
-                  "slug": "v2/blocks/get-shards"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/blocks/lookup-block",
-                  "slug": "v2/blocks/lookup-block"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/configuration/get-all-config-parameters",
-                  "slug": "v2/configuration/get-all-config-parameters"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/configuration/get-config-parameter",
-                  "slug": "v2/configuration/get-config-parameter"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/configuration/get-libraries",
-                  "slug": "v2/configuration/get-libraries"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/rpc/json-rpc-endpoint",
-                  "slug": "v2/rpc/json-rpc-endpoint"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/run-method/run-get-method",
-                  "slug": "v2/run-method/run-get-method"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/run-method/run-get-method-standard",
-                  "slug": "v2/run-method/run-get-method-standard"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/send/estimate-fee",
-                  "slug": "v2/send/estimate-fee"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/send/send-boc",
-                  "slug": "v2/send/send-boc"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/send/send-boc-return-hash",
-                  "slug": "v2/send/send-boc-return-hash"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/get-block-transactions",
-                  "slug": "v2/transactions/get-block-transactions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/get-block-transactions-extended",
-                  "slug": "v2/transactions/get-block-transactions-extended"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/get-transactions",
-                  "slug": "v2/transactions/get-transactions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/get-transactions-standard",
-                  "slug": "v2/transactions/get-transactions-standard"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/try-locate-result-transaction",
-                  "slug": "v2/transactions/try-locate-result-transaction"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/try-locate-source-transaction",
-                  "slug": "v2/transactions/try-locate-source-transaction"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/transactions/try-locate-transaction",
-                  "slug": "v2/transactions/try-locate-transaction"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/utils/detect-address",
-                  "slug": "v2/utils/detect-address"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/utils/detect-hash",
-                  "slug": "v2/utils/detect-hash"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/utils/pack-address",
-                  "slug": "v2/utils/pack-address"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v2/utils/unpack-address",
-                  "slug": "v2/utils/unpack-address"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/accounts/address-book",
-                  "slug": "v3/accounts/address-book"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/accounts/get-account-states",
-                  "slug": "v3/accounts/get-account-states"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/accounts/get-wallet-states",
-                  "slug": "v3/accounts/get-wallet-states"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/accounts/metadata",
-                  "slug": "v3/accounts/metadata"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-actions",
-                  "slug": "v3/actions-and-traces/get-actions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-pending-actions",
-                  "slug": "v3/actions-and-traces/get-pending-actions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-pending-traces",
-                  "slug": "v3/actions-and-traces/get-pending-traces"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/actions-and-traces/get-traces",
-                  "slug": "v3/actions-and-traces/get-traces"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/apiv2/estimate-fee",
-                  "slug": "v3/apiv2/estimate-fee"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/apiv2/get-address-information",
-                  "slug": "v3/apiv2/get-address-information"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/apiv2/get-wallet-information",
-                  "slug": "v3/apiv2/get-wallet-information"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/apiv2/run-get-method",
-                  "slug": "v3/apiv2/run-get-method"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/apiv2/send-message",
-                  "slug": "v3/apiv2/send-message"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-adjacent-transactions",
-                  "slug": "v3/blockchain-data/get-adjacent-transactions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-blocks",
-                  "slug": "v3/blockchain-data/get-blocks"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state",
-                  "slug": "v3/blockchain-data/get-masterchain-block-shard-state"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-block-shard-state-1",
-                  "slug": "v3/blockchain-data/get-masterchain-block-shard-state-1"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-masterchain-info",
-                  "slug": "v3/blockchain-data/get-masterchain-info"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-messages",
-                  "slug": "v3/blockchain-data/get-messages"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-pending-transactions",
-                  "slug": "v3/blockchain-data/get-pending-transactions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-transactions",
-                  "slug": "v3/blockchain-data/get-transactions"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-transactions-by-masterchain-block",
-                  "slug": "v3/blockchain-data/get-transactions-by-masterchain-block"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/blockchain-data/get-transactions-by-message",
-                  "slug": "v3/blockchain-data/get-transactions-by-message"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/dns/get-dns-records",
-                  "slug": "v3/dns/get-dns-records"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-burns",
-                  "slug": "v3/jettons/get-jetton-burns"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-masters",
-                  "slug": "v3/jettons/get-jetton-masters"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-transfers",
-                  "slug": "v3/jettons/get-jetton-transfers"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/jettons/get-jetton-wallets",
-                  "slug": "v3/jettons/get-jetton-wallets"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/multisig/get-multisig-orders",
-                  "slug": "v3/multisig/get-multisig-orders"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/multisig/get-multisig-wallets",
-                  "slug": "v3/multisig/get-multisig-wallets"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/nfts/get-nft-collections",
-                  "slug": "v3/nfts/get-nft-collections"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/nfts/get-nft-items",
-                  "slug": "v3/nfts/get-nft-items"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/nfts/get-nft-transfers",
-                  "slug": "v3/nfts/get-nft-transfers"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/stats/get-top-accounts-by-balance",
-                  "slug": "v3/stats/get-top-accounts-by-balance"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/utils/decode-opcodes-and-bodies",
-                  "slug": "v3/utils/decode-opcodes-and-bodies"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/utils/decode-opcodes-and-bodies-1",
-                  "slug": "v3/utils/decode-opcodes-and-bodies-1"
-                },
-                {
-                  "id": "ecosystem/api/toncenter/v3/vesting/get-vesting-contracts",
-                  "slug": "v3/vesting/get-vesting-contracts"
                 }
               ]
             },

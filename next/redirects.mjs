@@ -171,6 +171,16 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/applications/api/toncenter/v2/overview",
+    "destination": "/applications/api/toncenter/v2-overview",
+    "permanent": true
+  },
+  {
+    "source": "/applications/api/toncenter/v3/overview",
+    "destination": "/applications/api/toncenter/v3-overview",
+    "permanent": true
+  },
+  {
     "source": "/applications/appkit/get-started",
     "destination": "/applications/appkit/get-started/get-started",
     "permanent": true
@@ -1312,7 +1322,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/api/toncenter/v2/overview",
-    "destination": "/applications/api/toncenter/v2/overview",
+    "destination": "/applications/api/toncenter/v2-overview",
     "permanent": true
   },
   {
@@ -1582,7 +1592,7 @@ export const redirects = [
   },
   {
     "source": "/ecosystem/api/toncenter/v3/overview",
-    "destination": "/applications/api/toncenter/v3/overview",
+    "destination": "/applications/api/toncenter/v3-overview",
     "permanent": true
   },
   {
@@ -3887,7 +3897,7 @@ export const redirects = [
   },
   {
     "source": "/tools/api/toncenter/v2/overview",
-    "destination": "/applications/api/toncenter/v2/overview",
+    "destination": "/applications/api/toncenter/v2-overview",
     "permanent": true
   },
   {
@@ -4157,7 +4167,7 @@ export const redirects = [
   },
   {
     "source": "/tools/api/toncenter/v3/overview",
-    "destination": "/applications/api/toncenter/v3/overview",
+    "destination": "/applications/api/toncenter/v3-overview",
     "permanent": true
   },
   {
