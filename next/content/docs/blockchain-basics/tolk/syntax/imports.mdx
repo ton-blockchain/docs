@@ -3,6 +3,12 @@ id: tolk/syntax/imports
 title: "Imports and name resolution"
 sidebarTitle: "Imports"
 description: ""
+keywords:
+  - "cannot import get fun from another file"
+  - "import error get fun entrypoint Tolk"
+  - "get fun not importable across files"
+  - "Tolk entrypoint import restriction"
+  - "onInternalMessage cannot be imported"
 ---
 
 In practice, contract code is split across multiple files. Projects with multiple contracts share a single codebase, including messages, storage layouts, and related logic. Symbols defined in one file can be used in another by importing that file. After an import, all its public symbols are available to the importing file.
