@@ -141,7 +141,13 @@ export const {staticGET: GET} = createFromSource(visibleSource, {
       title: page.data.title ?? "",
       description: page.data.description,
       url: page.url,
-      id: page.url,
+      // fumadocs' buildDocuments emits sub-docs as `${id}-${N}`. Using the
+      // raw URL collides when two pages exist as `foo` and `foo-1` (OpenAPI
+      // generator sometimes emits both): the first page's 2nd sub-doc id
+      // (`foo-1`) clashes with the second page's primary id. Appending `#`
+      // — which cannot appear in a fumadocs path URL — keeps page ids and
+      // sub-doc ids in disjoint key spaces.
+      id: `${page.url}#`,
       structuredData: {headings: sd.headings, contents},
     }
   },
