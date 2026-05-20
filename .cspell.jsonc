@@ -57,6 +57,7 @@
         "ShardChain->shardchain",
         "StateInit->`StateInit`",
         "TLB->TL-B",
+        "TONAPI->TonAPI",
         "Toncenter->TON Center",
         "toncoins->Toncoin",
         "Toncoins->Toncoin",
@@ -84,6 +85,12 @@
       ]
     },
     {
+      "filename": "tolk/features/compiler-optimizations.mdx",
+      "ignoreWords": [
+        "fifting",
+      ]
+    },
+    {
       "filename": "**/api/**/*.{json,yml,yaml}",
       "ignoreWords": [
         "smc",
@@ -102,6 +109,22 @@
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
       ]
+    },
+    {
+      "filename": "resources/grammars/*.json",
+      "ignoreWords": [
+        "tlb",
+      ],
+      "dictionaries": [
+        "!deny-list", // turns off the dictionary
+        "!2lw-deny-list", // turns off the dictionary
+      ]
+    },
+    {
+      "filename": "ecosystem/ai/mcp.mdx",
+      "ignoreWords": [
+        "mcp", // lowercase in the title
+      ],
     }
   ],
   "ignorePaths": [
@@ -110,6 +133,7 @@
     "foundations/whitepapers/ton.mdx",
     "foundations/whitepapers/tvm.mdx",
     "languages/fift/whitepaper.mdx",
+    "tolk/features/standard-library.mdx",
     // Generated files
     "tvm/instructions.mdx",
     // Binaries
@@ -160,6 +184,7 @@
     //
     // Custom patterns
     //
+    "url: \".*?\"", // frontmatter url field
     "\\s*[^\\s]*?=[\"'\\{]", // arbitrary JSX attribute names
     "=\\s*\".*?\"", // string values of JSX attributes
     "=\\s*'.*?'", // string values of JSX attributes
@@ -171,5 +196,6 @@
     "^import[ \\t].+$", // import ...
     "/^export[ \\t].+?(?=\\r?\\n\\r?\\n)/gms", // export ...
     "(?<!\\\\)\\{(?:[^{}]|\\{(?:[^{}]|\\{[^{}]*\\})*\\})*\\}", // jsx expressions in {}
+    "openapi: .+$", // part of the frontmatter on OpenAPI-generated MDX pages
   ],
 }
