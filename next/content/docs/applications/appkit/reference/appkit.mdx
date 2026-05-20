@@ -1798,7 +1798,7 @@ Constructor: `new CryptoOnrampManager()`
 
 #### CryptoOnrampProvider
 
-Abstract base class implemented by crypto-onramp providers (Layerswap, swaps.xyz, custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
+Abstract base class implemented by crypto-onramp providers ([Layerswap](https://layerswap.io), [swaps.xyz](https://docs.swaps.xyz), custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
 
 Constructor: `new CryptoOnrampProvider()`
 
@@ -1812,7 +1812,7 @@ Constructor: `new LayerswapCryptoOnrampProvider(config)`
 | --------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `config`        | <code><a href="#layerswapproviderconfig">LayerswapProviderConfig</a></code> | Optional [`LayerswapProviderConfig`](#layerswapproviderconfig). Defaults are filled in for any field left undefined. |
 | `config.apiKey` | `string`                                                                    | Optional API key. Forwarded as `X-LS-APIKEY` when provided.                                                          |
-| `config.apiUrl` | `string`                                                                    | Override the base API URL. Defaults to [https://api.layerswap.io/api/v2](https://api.layerswap.io/api/v2).           |
+| `config.apiUrl` | `string`                                                                    | Override the base API URL. Defaults to `https://api.layerswap.io/api/v2` (see [Layerswap API V2](https://api.layerswap.io/swagger/index.html)).           |
 
 #### SwapsXyzCryptoOnrampProvider
 
@@ -1824,7 +1824,7 @@ Constructor: `new SwapsXyzCryptoOnrampProvider(config)`
 | ---------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `config`\*             | [`SwapsXyzProviderConfig`](#swapsxyzproviderconfig) | Configuration carrying the required `apiKey` plus optional URL/sender overrides.                                                                                           |
 | `config.apiKey`\*      | `string`                                            | API key issued by swaps.xyz (passed as `x-api-key`)                                                                                                                        |
-| `config.apiUrl`        | `string`                                            | Override the base API URL. Defaults to [https://api-v2.swaps.xyz/api](https://api-v2.swaps.xyz/api).                                                                       |
+| `config.apiUrl`        | `string`                                            | Override the base API URL. Defaults to `https://api-v2.swaps.xyz/api` (see [Swaps API Documentation](https://docs.swaps.xyz).                                                                       |
 | `config.defaultSender` | `string`                                            | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
 
 ### DeFi
@@ -2725,7 +2725,7 @@ Configuration accepted by [`createLayerswapProvider`](#createlayerswapprovider).
 | Field    | Type     | Description                                                                                                |
 | -------- | -------- | ---------------------------------------------------------------------------------------------------------- |
 | `apiKey` | `string` | Optional API key. Forwarded as `X-LS-APIKEY` when provided.                                                |
-| `apiUrl` | `string` | Override the base API URL. Defaults to [https://api.layerswap.io/api/v2](https://api.layerswap.io/api/v2). |
+| `apiUrl` | `string` | Override the base API URL. Defaults to `https://api.layerswap.io/api/v2` (see [Layerswap API V2](https://api.layerswap.io/swagger/index.html). |
 
 #### LayerswapQuoteMetadata
 
@@ -2745,7 +2745,7 @@ Configuration accepted by [`createSwapsXyzProvider`](#createswapsxyzprovider).
 | Field           | Type     | Description                                                                                                                                                                |
 | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apiKey`\*      | `string` | API key issued by swaps.xyz (passed as `x-api-key`)                                                                                                                        |
-| `apiUrl`        | `string` | Override the base API URL. Defaults to [https://api-v2.swaps.xyz/api](https://api-v2.swaps.xyz/api).                                                                       |
+| `apiUrl`        | `string` | Override the base API URL. Defaults to `https://api-v2.swaps.xyz/api` (see [Swaps API Documentation](https://docs.swaps.xyz).                                                                       |
 | `defaultSender` | `string` | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
 
 #### SwapsXyzQuoteMetadata

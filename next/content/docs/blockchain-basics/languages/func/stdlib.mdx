@@ -842,7 +842,7 @@ slice begin_parse(cell c) asm "CTOS";
 ```
 
 Converts a `cell` into a `slice`. The input `c` must be either an ordinary or exotic cell.
-See [TVM.pdf](https://ton.org/tvm.pdf), 3.1.2. If `c` is exotic, it is automatically converted into an ordinary cell `c'`
+See the [TVM whitepaper](/blockchain-basics/whitepapers/tvm), 3.1.2. If `c` is exotic, it is automatically converted into an ordinary cell `c'`
 before being transformed into a `slice`.
 
 #### `end_parse`
@@ -1188,7 +1188,7 @@ Checks whether the given `cell c` is `null`. In most cases, a `null` cell repres
   In most cases, this will cause an exception. However, in rare cases, it may lead to incorrect values being written or read. Developers should avoid such code.
 </Aside>
 
-As stated in [TVM.pdf](https://ton.org/tvm.pdf):
+As stated in [TVM.pdf](/blockchain-basics/whitepapers/tvm):
 
 > Dictionaries can be represented in two different ways as TVM stack values:
 >
