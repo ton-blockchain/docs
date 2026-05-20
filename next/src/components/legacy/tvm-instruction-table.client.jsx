@@ -1381,6 +1381,21 @@ export const TvmInstructionTable = () => {
   const tableStyles = useMemo(
     () => `
 .tvm-instruction-app {
+  --gray-50: 249 250 251;
+  --gray-100: 243 244 246;
+  --gray-200: 229 231 235;
+  --gray-300: 209 213 219;
+  --gray-400: 156 163 175;
+  --gray-600: 75 85 99;
+  --gray-700: 55 65 81;
+  --gray-800: 31 41 55;
+  --gray-900: 17 24 39;
+  --gray-950: 9 14 26;
+  --primary: 0 152 234;
+  --primary-light: 92 196 247;
+  --primary-dark: 0 116 182;
+  --background-light: 255 255 255;
+
   --tvm-border: var(--mint-border-color, rgb(var(--gray-400) / 0.24));
   --tvm-border-strong: rgb(var(--gray-400) / 0.32);
   --tvm-surface: var(--mint-surface-elevated, rgb(var(--background-light)));
@@ -1420,6 +1435,21 @@ export const TvmInstructionTable = () => {
 }
 
 :where(.dark) .tvm-instruction-app {
+  --gray-50: 24 24 27;
+  --gray-100: 244 244 245;
+  --gray-200: 63 63 70;
+  --gray-300: 82 82 91;
+  --gray-400: 161 161 170;
+  --gray-600: 212 212 216;
+  --gray-700: 228 228 231;
+  --gray-800: 39 39 42;
+  --gray-900: 24 24 27;
+  --gray-950: 14 14 16;
+  --primary: 92 196 247;
+  --primary-light: 140 210 252;
+  --primary-dark: 0 152 234;
+  --background-light: 14 14 16;
+
   --tvm-border: rgb(var(--gray-800) / 0.65);
   --tvm-border-strong: rgb(var(--gray-600) / 0.85);
   --tvm-surface: rgb(var(--gray-950));
@@ -3588,7 +3618,7 @@ export const TvmInstructionTable = () => {
   }, []);
 
   return (
-    <div className="tvm-instruction-app">
+    <div className="not-prose tvm-instruction-app w-full max-w-none">
       <style>{tableStyles}</style>
 
       <div className="tvm-instruction-toolbar">
