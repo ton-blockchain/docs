@@ -26,7 +26,7 @@ Skips the [nullability](/languages/tolk/types/nullable) check: `someVar!`.
 
 ### Unary operators `!` `~` `-` `+`
 
-[Logical negation](/languages/tolk/types/booleans) `!x`, bitwise not `~x`, unary `-x` and `+x`.
+[Logical negation](/languages/tolk/types/booleans) `!x` (requires a `bool`), bitwise not `~x`, unary `-x` and `+x`.
 
 ### Operators `as` `is` `!is`
 
@@ -64,7 +64,7 @@ Assignment and augmented assignments.
 
 Returns the left operand if it is not `null`; otherwise, evaluates and returns the right operand. See [nullable types](/languages/tolk/types/nullable#null-coalescing-operator).
 
-### Ternary `... ? ... : ...`
+### Ternary `... ? ... : ...` (same priority)
 
 Ternary expressions are available in [conditions](/languages/tolk/syntax/conditions-loops).
 

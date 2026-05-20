@@ -344,6 +344,36 @@ struct WithUnion {
 }
 ```
 
+### `void` as a union variant — empty slice
+
+A union variant of type `void` has no representation on the wire — it's matched by an empty slice (zero bits, zero refs). The other variants form a normal prefix tree among themselves and are unaffected.
+
+```tolk
+struct (0x01) Some { x: int32 }
+
+// either Some (0x01 + int32) — or empty slice
+type SomeOrEnd = Some | void
+
+// either 32 bits — or empty slice
+type Int32OrEnd = int32 | void
+
+// 0+int32, 1+int64, or empty slice
+type WideOrEnd = int32 | int64 | void
+```
+
+- On pack: writing the `void` variant emits **nothing**.
+- On unpack: when the input slice is empty, the deserialized value is the `void` variant; otherwise, normal prefix-tree dispatch is used.
+- `void` must be the **last** variant of a serializable union (otherwise the prefix dispatch would be ambiguous); the compiler enforces this when generating opcodes.
+
+In `match`, the `void` arm is written as `void => ...`:
+
+```tolk
+match (msg) {
+    Some => { /* read Some.x */ }
+    void => { /* slice was empty */ }
+}
+```
+
 ## Tensors `(T1, T2, ...)`
 
 Tensor components are serialized sequentially, akin to `struct` fields.
