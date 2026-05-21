@@ -18,7 +18,9 @@ import { TvmInstructionTable } from "/snippets/tvm-instruction-table.jsx"
 
 ### Opcodes
 
-TVM instructions are encoded by sequences of bits, not all the same length, but a multiple of a byte in total. The immediate arguments form a part of the instruction and have no special demarcation in a bitstream. This leads to some instructions sharing the same opcode _prefix_. For instance, the `NOP` instruction has the full opcode `0x00`, which represents eight consecutive zero bits or a null byte. At the same time, the `XCHG_0I` family of instructions starts with `0x0`, i.e., four consecutive zero bits, then continues with a four-bit immediate argument ranging from `0x1` to `0xF`.
+TVM instructions are encoded as variable-length bit sequences, with each instruction being a multiple of a byte. The immediate arguments form a part of the instruction and have no special demarcation in a bitstream. This leads to some instructions sharing the same opcode _prefix_.
+
+For instance, the `NOP` instruction has the full opcode `0x00`, which represents 8 consecutive zero bits (a null byte). At the same time, the `XCHG_0I` family of instructions starts with `0x0`, which is 4 consecutive zero bits, then continues with a 4-bit immediate argument ranging from `0x1` to `0xF`.
 
 The `opcode` column lists instruction prefixes without arguments in hexadecimal, representing the corresponding bit sequences that are always multiples of 4. Yet, the `opcode` _box_ on an instruction card shows the full [TL-B](/foundations/tlb/overview) schema for the instruction, including immediate arguments.
 
