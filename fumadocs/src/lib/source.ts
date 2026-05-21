@@ -6,6 +6,21 @@ import { docsContentRoute, docsImageRoute, docsRoute } from './shared';
 export const source = loader({
   baseUrl: docsRoute,
   source: docs.toFumadocsSource(),
+  pageTree: {
+    transformers: [
+      {
+        file(node, filePath) {
+          if (!filePath) return node
+          const file = this.storage.read(filePath)
+          if (file?.format !== "page") return node
+          const {sidebarTitle} = file.data as {sidebarTitle?: string}
+          if (!sidebarTitle) return node
+          node.name = sidebarTitle
+          return node
+        },
+      },
+    ],
+  },
   plugins: [],
 });
 
