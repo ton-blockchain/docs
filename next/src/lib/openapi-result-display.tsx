@@ -32,7 +32,7 @@ export function PrettyJsonResultDisplay({data, className, ...rest}: ResultDispla
     <DefaultResultDisplay
       data={prettified}
       {...rest}
-      className={cn("order-last border-t border-b-0 mt-0", className)}
+      className={cn("order-last border-t border-b-0 mt-4", className)}
     />
   )
 }
