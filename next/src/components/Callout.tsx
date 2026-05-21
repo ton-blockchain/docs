@@ -4,7 +4,7 @@ import {twMerge as cn} from "tailwind-merge"
 
 export type CalloutType = "info" | "warn" | "error" | "success" | "warning" | "idea"
 
-const iconClass = "size-5 -me-0.5 fill-(--callout-color) text-fd-card"
+const iconClass = "size-5 mt-0.5 -me-0.5 fill-(--callout-color) text-fd-card"
 
 export function Callout({
   children,
@@ -68,7 +68,7 @@ export function CalloutContainer({
           error: <CircleX className={iconClass} />,
           success: <CircleCheck className={iconClass} />,
           idea: (
-            <Lightbulb className="size-5 -me-0.5 fill-(--callout-color) text-(--callout-color)" />
+            <Lightbulb className="size-5 mt-0.5 -me-0.5 fill-(--callout-color) text-(--callout-color)" />
           ),
         }[type]}
       <div className="flex flex-col gap-2 min-w-0 flex-1">{children}</div>
@@ -78,7 +78,7 @@ export function CalloutContainer({
 
 export function CalloutTitle({children, className, ...props}: ComponentProps<"p">) {
   return (
-    <p className={cn("font-medium my-0!", className)} {...props}>
+    <p className={cn("font-medium leading-6 my-0!", className)} {...props}>
       {children}
     </p>
   )
