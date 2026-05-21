@@ -66,6 +66,21 @@ figure.shiki > div[role="region"] {
   background-color: var(--color-fd-background);
 }
 
+@media (max-width: 47.99rem) {
+  div.size-9.md\:size-5 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-fd-border);
+    border-radius: 0.5rem;
+    background-color: color-mix(in oklch, var(--color-fd-muted) 60%, transparent);
+  }
+  div.size-9.md\:size-5 > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
 /* ===== Landing-page shell (TON-rebranded from Acton) ===== */
 
 .home-shell {
