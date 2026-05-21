@@ -1,9 +1,11 @@
 ---
 id: ecosystem/appkit/howto/streaming
-title: "Streaming"
-sidebarTitle: "Streaming"
+title: "Use streaming"
+sidebarTitle: "Use streaming"
 description: ""
 ---
+
+## Overview
 
 Streaming in AppKit is a per-network subscription layer that turns provider events into live balance, jetton, and transaction updates for the app.
 
@@ -11,7 +13,7 @@ Streaming in AppKit is a per-network subscription layer that turns provider even
 
 Streaming complements point-in-time API reads. Instead of asking an API client for the latest state after every interaction, the app subscribes to changes for an address on a specific network.
 
-The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain. Provider registration is covered on [Providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered).
+The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a Toncenter or TonAPI websocket stream. Registering another provider for the same network replaces the previous stream for that chain. Provider registration is covered on [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered).
 
 ## Subscription lifetime
 
@@ -21,7 +23,7 @@ When the underlying transport drops and reconnects, the SDK does not replay even
 
 ## Before you begin
 
-You need a connected wallet (for the default-address `useWatch*` hooks) and a streaming provider registered on the AppKit instance. See [Providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered).
+You need a connected wallet (for the default-address `useWatch*` hooks) and a streaming provider registered on the AppKit instance. See [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered).
 
 ## Watch from React
 
@@ -170,6 +172,6 @@ export function StreamingHealth() {
 
 ## Related pages
 
-- [Providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered)
-- [Networks](/applications/appkit/howto/networks)
+- [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered)
+- [Configure networks](/applications/appkit/howto/networks)
 - [Read balances](/applications/appkit/howto/read-balances)

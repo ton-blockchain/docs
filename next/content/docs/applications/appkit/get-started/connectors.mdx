@@ -5,6 +5,8 @@ sidebarTitle: "Add wallet connectors"
 description: ""
 ---
 
+## Overview
+
 Wire up a connector so AppKit can talk to a wallet. A connector is the transport that carries requests to the wallet and responses back — it does not sign, and is not itself a wallet. Signing always happens inside the user's wallet application. AppKit cares about the connector's `id`, `type`, `metadata`, and the methods it exposes (`connectWallet`, `disconnectWallet`, `getConnectedWallets`, `destroy`). The protocol underneath is hidden.
 
 ## Before you begin
@@ -32,7 +34,7 @@ export const appKit = new AppKit({
 
 ## Render a connect button
 
-Drop `<TonConnectButton />` somewhere in the tree to open the wallet picker. The button assumes the React providers are already mounted — see [Installation → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
+Drop `<TonConnectButton />` somewhere in the tree to open the wallet picker. The button assumes the React providers are already mounted — see [Install AppKit → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
 
 For most apps, this drop-in component is the right starting point. `<TonConnectButton />` from `@ton/appkit-react` owns the connect modal, the session lifecycle (open, restore on reload, expire), and the connected-address display. When the UI needs a tailored wallet list, use `useConnectors` and `useConnect` directly. That pattern is documented in [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet).
 
@@ -48,7 +50,7 @@ export function Header() {
 
 Do not assume every connector supports every flow. Check capability before sending a request and treat user rejection as a normal outcome on every action. Connector errors and chain errors are different failure classes and need different recovery paths.
 
-## What to do next
+## Next steps
 
 - Continue to [Add networks](/applications/appkit/get-started/networks) to configure mainnet alongside testnet and pick an API client.
 - For the custom-selector pattern, vanilla JS connect, and error handling, see [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet).

@@ -5,6 +5,8 @@ sidebarTitle: "Use UI widgets"
 description: ""
 ---
 
+## Overview
+
 `@ton/appkit-react` exports ready-to-use components for the most common AppKit flows. Drop them into your tree and connect callbacks. The default styles ship in `@ton/appkit-react/styles.css`.
 
 ## How it works
@@ -15,7 +17,7 @@ Use the default UI when the built-in flow fits. Use render props when the widget
 
 ## Before you begin
 
-You need the React providers mounted and the styles imported once at the entry file. See [Installation → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
+You need the React providers mounted and the styles imported once at the entry file. See [Install AppKit → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
 
 ```tsx
 import '@ton/appkit-react/styles.css';
@@ -230,7 +232,7 @@ The required prop is `tokens`. `defaultFromSymbol`, `defaultToSymbol`, `defaultS
 
 ## Staking widget
 
-`<StakingWidget />` is the complete staking UI: stake/unstake tabs, amount input, balance readout, current APY, exchange rate, and provider. The widget reads the registered staking provider (Tonstakers ships bundled — see [Providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered)) and handles quote, build, and the wallet call internally.
+`<StakingWidget />` is the complete staking UI: stake/unstake tabs, amount input, balance readout, current APY, exchange rate, and provider. The widget reads the registered staking provider (Tonstakers ships bundled — see [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered)) and handles quote, build, and the wallet call internally.
 
 ```tsx
 import { StakingWidget } from '@ton/appkit-react';
@@ -303,4 +305,4 @@ See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit
 - [AppKit reference](/applications/appkit/reference/reference)
 - [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet)
 - [Send Toncoin](/applications/appkit/howto/send-toncoin)
-- [NFTs](/applications/appkit/howto/nfts)
+- [Manage NFTs](/applications/appkit/howto/nfts)

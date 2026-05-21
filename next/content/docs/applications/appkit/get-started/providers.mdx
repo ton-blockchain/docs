@@ -5,6 +5,8 @@ sidebarTitle: "Add DeFi providers"
 description: ""
 ---
 
+## Overview
+
 Plug in a swap or staking provider when the app needs DeFi flows. Each provider sits on the AppKit instance and supplies data: prices, quotes, and the transactions that the user will sign. The wallet still signs; the provider only prepares.
 
 A provider is not a wallet and not a connector. AppKit treats whatever it returns as external input — useful for showing prices, balances, and quotes, but never as proof of settlement.
@@ -58,8 +60,8 @@ The staking hooks (`useStakingQuote`, `useBuildStakeTransaction`) start returnin
 
 Provider responses are external data. Validate critical outcomes server side before changing product state — wallet acceptance is not settlement, and a swap quote is not a price guarantee.
 
-## What to do next
+## Next steps
 
 - Continue to [Use UI widgets](/applications/appkit/get-started/using-ui-widgets) to render full swap and staking UIs with one component each.
-- For task-level walkthroughs, see [Swaps](/applications/appkit/howto/swaps) and [Staking](/applications/appkit/howto/staking).
-- See [Providers](/applications/appkit/howto/providers) for the full provider model — including the streaming and API client roles not covered here.
+- For task-level walkthroughs, see [Perform swaps](/applications/appkit/howto/swaps) and [Staking](/applications/appkit/howto/staking).
+- See [Use providers](/applications/appkit/howto/providers) for the full provider model — including the streaming and API client roles not covered here.

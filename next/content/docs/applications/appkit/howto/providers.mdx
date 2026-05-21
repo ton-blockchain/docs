@@ -1,9 +1,11 @@
 ---
 id: ecosystem/appkit/howto/providers
-title: "Providers"
-sidebarTitle: "Providers"
+title: "Use providers"
+sidebarTitle: "Use providers"
 description: ""
 ---
+
+## Overview
 
 Providers connect AppKit to external data sources and DeFi services. AppKit uses four provider-related components: the **API client** that reads chain state, the **streaming provider** that delivers live updates, the **swap provider** that quotes and builds DEX transactions, and the **staking provider** that quotes and builds staking transactions. Each component is managed by the matching manager on the `AppKit` instance.
 
@@ -22,7 +24,7 @@ A provider is not a wallet and not a connector. The wallet still signs every tra
 
 ## Swaps
 
-A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Swaps](/applications/appkit/howto/swaps) for the full quote-then-build flow.
+A swap provider integrates a DEX or aggregator. It returns a **quote** for a route (input asset, output asset, amount, fees, and execution assumptions), then builds a `TransactionRequest` when the user accepts the quote. AppKit does not price markets itself; `SwapManager` coordinates the registered providers. Bundled options include Omniston and DeDust. See [Perform swaps](/applications/appkit/howto/swaps) for the full quote-then-build flow.
 
 ## Staking
 
@@ -30,7 +32,7 @@ A staking provider quotes a stake or unstake intent for a specific pool or proto
 
 Liquid-staking positions may appear in the wallet as derivative balances, such as tsTON. AppKit exposes pool metadata and APY as provider-supplied **display data**, not a guarantee of future yield or redemption timing.
 
-Unstake mechanics — instant, delayed, or round-end — are provider-specific. The bundled staking provider is Tonstakers. See [Staking](/applications/appkit/howto/staking) for the full flow.
+Unstake mechanics — instant, delayed, or round-end — are provider-specific. The bundled staking provider is Tonstakers. See [Stake and unstake](/applications/appkit/howto/staking) for the full flow.
 
 ## How they are registered
 
@@ -102,6 +104,6 @@ Apps that integrate their own DEX or staking backend implement the same provider
 ## Related pages
 
 - [AppKit](/applications/appkit/howto/appkit)
-- [Swaps](/applications/appkit/howto/swaps)
-- [Staking](/applications/appkit/howto/staking)
-- [Streaming](/applications/appkit/howto/streaming)
+- [Perform swaps](/applications/appkit/howto/swaps)
+- [Stake and unstake](/applications/appkit/howto/staking)
+- [Use streaming](/applications/appkit/howto/streaming)

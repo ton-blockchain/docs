@@ -5,11 +5,15 @@ sidebarTitle: "Prepare your project"
 description: ""
 ---
 
+## Before you start
+
 Before adding AppKit, you need a JavaScript project with a module bundler. If you already have one, skip the scaffold step. The Buffer polyfill is required either way — AppKit's dependencies (`@ton/core` and `@ton/crypto`) use Node.js' `Buffer` global, which browsers don't expose and bundlers (Vite, esbuild, Rollup, Parcel) don't polyfill automatically. Without it, the first call into `@ton/core` — usually address parsing — throws `ReferenceError: Buffer is not defined`.
 
 The polyfill must run before any AppKit import. Load it from a dedicated module in the HTML entry, ahead of the application script — relying on import order inside the entry file alone is fragile.
 
 The steps below use Vite. The same pattern applies to any module-based bundler (Webpack, Parcel, Rollup): a dedicated polyfill module referenced from the HTML entry, before the application script.
+
+## Steps
 
 <Steps>
   <Step
@@ -68,7 +72,7 @@ The steps below use Vite. The same pattern applies to any module-based bundler (
 
 <Columns cols={2}>
   <Card
-    title="React"
+    title="Install AppKit in a React app"
     icon="atom"
     href="/applications/appkit/get-started/installation/react-app"
   >
@@ -76,7 +80,7 @@ The steps below use Vite. The same pattern applies to any module-based bundler (
   </Card>
 
   <Card
-    title="Vanilla JS"
+    title="Install AppKit in a Vanilla JS app"
     icon="globe"
     href="/applications/appkit/get-started/installation/vanilla-js"
   >

@@ -5,11 +5,13 @@ sidebarTitle: "Use basic getter hooks"
 description: ""
 ---
 
+## Overview
+
 Read the connected wallet's state from React using AppKit's getter hooks. They re-render when the underlying state changes and do not themselves start wallet actions — transactions and signatures use mutation hooks such as `useTransferTon`, `useSignText`, and `useSendTransaction`.
 
 ## Before you begin
 
-You need the React providers in place. See [Installation → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
+You need the React providers in place. See [Install AppKit → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application).
 
 ## Three return shapes
 
@@ -59,7 +61,7 @@ Treat hook data as the latest read, not as a settlement check. Verify chain effe
 
 See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) that uses `useBalance`, `useJettons`, and `useNfts` to render wallet state — [try it live](https://appkit-minter.vercel.app/).
 
-## What to do next
+## Next steps
 
 - Move on to [Send transactions](/applications/appkit/get-started/sending-transactions) — at that point you'll have a working app.
 - For a full walkthrough of reading TON, jetton, and NFT data, see [Read balances](/applications/appkit/howto/read-balances).

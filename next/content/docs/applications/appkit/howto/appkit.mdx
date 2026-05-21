@@ -1,9 +1,11 @@
 ---
 id: ecosystem/appkit/howto/appkit
-title: "AppKit"
-sidebarTitle: "AppKit"
+title: "Set up AppKit"
+sidebarTitle: "Set up AppKit"
 description: ""
 ---
+
+## Overview
 
 TON Connect's **AppKit** is an open-source SDK that integrates web2 and web3 applications with TON. It enables wallet connection, authorization, balance tracking, asset transfers, and data signing.
 
@@ -11,7 +13,7 @@ The framework-independent core lives in `@ton/appkit`. React bindings live in `@
 
 AppKit prepares requests, tracks application state, and connects your interface to wallets and providers. Wallets still sign transactions and data. Your backend still verifies orders, signatures, and business rules.
 
-## Features
+## AppKit features
 
 - **TON Connect**: integrates with the standard wallet infrastructure for TON.
 - **Wallet management**: access connected wallets from registered connectors.
@@ -56,7 +58,7 @@ Read actions that target the selected wallet (`getBalance`, `getJettons`, `getNf
 
 ## React integration
 
-`@ton/appkit-react` provides hooks for the main AppKit actions and watchers. Mount `AppKitProvider` once at the root inside a TanStack `QueryClientProvider`, then call hooks anywhere below it. See [Installation → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application) for the full mount.
+`@ton/appkit-react` provides hooks for the main AppKit actions and watchers. Mount `AppKitProvider` once at the root inside a TanStack `QueryClientProvider`, then call hooks anywhere below it. See [Install AppKit → Wrap the application](/applications/appkit/get-started/installation/react-app#wrap-the-application) for the full mount.
 
 Most async data hooks return TanStack Query results such as `{ data, isLoading, error, refetch }`, and mutation hooks return `{ mutate, mutateAsync, isPending, error }`. Watch hooks such as `useWatchBalance` return `void` and keep the related query cache fresh while mounted. Wallet state hooks read AppKit's local store directly: `useSelectedWallet()` returns `[wallet, setWalletId]`, while `useConnectedWallets()` and `useConnectors()` return arrays.
 
@@ -71,6 +73,6 @@ Most async data hooks return TanStack Query results such as `{ data, isLoading, 
 ## Related pages
 
 - [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet)
-- [Providers](/applications/appkit/howto/providers)
+- [Use providers](/applications/appkit/howto/providers)
 - [Send Toncoin](/applications/appkit/howto/send-toncoin)
 - [Sign data](/applications/appkit/howto/sign-data)

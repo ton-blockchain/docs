@@ -5,13 +5,15 @@ sidebarTitle: "Stream live updates"
 description: ""
 ---
 
+## Overview
+
 Subscribe to balance, jetton, and transaction updates pushed by a streaming provider so the UI reflects chain changes without polling. Use it whenever you would otherwise refetch on a timer.
 
 Treat the stream as a fast cache, not as proof of settlement. The underlying transport is a long-lived connection; it can disconnect and reconnect while the chain advances, and after reconnect updates resume from the provider's current view, which may skip in-flight transitions.
 
 ## Before you begin
 
-A streaming provider has to be registered on the AppKit instance before any watcher will fire. The default `ApiClient` does not stream — you register a streaming provider separately on `appKit.streamingManager`. See [Providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered) for the registration pattern, and use `hasStreamingProvider(appKit, network)` from `@ton/appkit` as the runtime check before subscribing.
+A streaming provider has to be registered on the AppKit instance before any watcher will fire. The default `ApiClient` does not stream — you register a streaming provider separately on `appKit.streamingManager`. See [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered) for the registration pattern, and use `hasStreamingProvider(appKit, network)` from `@ton/appkit` as the runtime check before subscribing.
 
 ## Mount global watchers
 
@@ -43,7 +45,7 @@ Each status names a different stage and carries a different meaning. `pending` m
 
 A stream is a hint, not proof. Verify the final state on a backend before delivering value or settling an order, and re-check after every reconnect — the stream may have missed transitions while disconnected.
 
-## What to do next
+## Next steps
 
 - Continue to [Add DeFi providers](/applications/appkit/get-started/providers) when the app needs swap or staking flows.
-- For task-level patterns that combine sends with settlement tracking, see [Streaming](/applications/appkit/howto/streaming) in How to.
+- For task-level patterns that combine sends with settlement tracking, see [Use streaming](/applications/appkit/howto/streaming) in the How to section.

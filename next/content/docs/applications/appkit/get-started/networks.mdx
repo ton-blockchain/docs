@@ -5,6 +5,8 @@ sidebarTitle: "Add networks"
 description: ""
 ---
 
+## Overview
+
 Declare every chain the app can read. A network in AppKit is the chain context AppKit uses to read data and to compare wallet state against the app's expected chain — each network is identified by a `Network` value with a `chainId` and carries an `apiClient` that reads chain state for that chain.
 
 A single `AppKit` instance can hold more than one network. The user picks at connect time, and a flow can move between networks without rebuilding the instance.
@@ -50,7 +52,7 @@ const appKit = new AppKit({
 });
 ```
 
-## What to do next
+## Next steps
 
 - Continue to [Use basic getter hooks](/applications/appkit/get-started/basic-getter-hooks) to read the connected wallet's state from the configured networks.
-- For multiple networks, custom chains, the default network, and mismatch handling, see [Networks](/applications/appkit/howto/networks).
+- For multiple networks, custom chains, the default network, and mismatch handling, see [Configure networks](/applications/appkit/howto/networks).

@@ -5,6 +5,8 @@ sidebarTitle: "Send transactions"
 description: ""
 ---
 
+## Overview
+
 Assemble a `TransactionRequest`, ask the connected wallet to sign and broadcast it, and wait for the chain to settle the result. AppKit ships three layers over this flow: UI components that wrap the full mutation lifecycle, mutation hooks that expose the same lifecycle without UI, and core actions that just make the wallet call.
 
 Reaching this page means you have a working app: install, connect, read, send. The pages after this one — streaming, DeFi providers, and UI widgets — layer on improvements rather than baseline functionality.
@@ -48,7 +50,7 @@ Wallet acceptance is not settlement. Always pair a send with [Stream live update
 
 See a [working example](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) of TON, jetton, and NFT transfers built with these mutations — [try it live](https://appkit-minter.vercel.app/).
 
-## What to do next
+## Next steps
 
 You now have the baseline working app. From here, layer on improvements:
 
@@ -56,4 +58,4 @@ You now have the baseline working app. From here, layer on improvements:
 - [Add DeFi providers](/applications/appkit/get-started/providers) when the app needs swaps or staking.
 - [Use UI widgets](/applications/appkit/get-started/using-ui-widgets) to drop in ready-made flows.
 
-For task-level walkthroughs, see [Send Toncoin](/applications/appkit/howto/send-toncoin), [Send jettons](/applications/appkit/howto/send-jettons), and [NFTs](/applications/appkit/howto/nfts).
+For task-level walkthroughs, see [Send Toncoin](/applications/appkit/howto/send-toncoin), [Send jettons](/applications/appkit/howto/send-jettons), and [Mange NFTs](/applications/appkit/howto/nfts).
