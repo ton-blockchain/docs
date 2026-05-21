@@ -6,6 +6,14 @@ The plan:
 
 - Gradually move all pages
   - Add required components
+    - Port Aside -> replace with Callouts or have a mapping
+    - Port Image -> combine with img or ImageZoom
+    - Port FileTree -> map onto existing components
+    - Port Icon: this should include fontawesome icons port too
+    - Port Cards
+    - Port other Mintlify components in use (`<[A-Z]`)
+    - When porting per-page custom components, adjust their styles
+  - Use Inter font, use brand colors, use TON logo
   - Add enhancements made in `ton-blockchain/acton`
   - Add some enhancements made in `the-ton-tech/ton-docs-private`
   - Fix issues with styles and etc.

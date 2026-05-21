@@ -8,7 +8,8 @@ import {
   DocsTitle,
   // MarkdownCopyButton,
   // ViewOptionsPopover,
-} from 'fumadocs-ui/layouts/docs/page';
+} from 'fumadocs-ui/layouts/notebook/page';
+// } from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { getMDXComponents } from '@/components/mdx';
@@ -27,7 +28,7 @@ export default async function Page(props: PageProps<'/[[...slug]]'>) {
       toc={page.data.toc}
       full={page.data.full}
       tableOfContent={{
-        style: "normal", // clerk
+        style: "clerk",
       }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
