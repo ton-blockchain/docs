@@ -3,9 +3,34 @@ title: "Instructions"
 description: "Interactive reference for TVM instructions"
 mode: "wide"
 ---
+
+import { Aside } from "/snippets/aside.jsx"
+
+<Aside type="tip">
+  The [notation](#notation) section below explains how the table encodes TVM instruction opcodes and immediate arguments in binary.
+</Aside>
+
 import { TvmInstructionTable } from "/snippets/tvm-instruction-table.jsx"
 
 <TvmInstructionTable />
+
+## Notation
+
+### Opcodes
+
+TVM instructions are encoded as variable-length bit sequences, with each instruction being a multiple of a byte. The immediate arguments form a part of the instruction and have no special demarcation in a bitstream. This leads to some instructions sharing the same opcode _prefix_.
+
+For instance, the `NOP` instruction has the full opcode `0x00`, which represents 8 consecutive zero bits (a null byte). At the same time, the `XCHG_0I` family of instructions starts with `0x0`, which is 4 consecutive zero bits, then continues with a 4-bit immediate argument ranging from `0x1` to `0xF`.
+
+The `opcode` column lists instruction prefixes without arguments in hexadecimal, representing the corresponding bit sequences that are always multiples of 4. Yet, the `opcode` _box_ on an instruction card shows the full [TL-B](/foundations/tlb/overview) schema for the instruction, including immediate arguments.
+
+### Stack slots
+
+The `s[i]` notation refers to the `i`-th stack slot counting from the top, and the top being the `0`-th slot. Particular stack slots are referenced directly as `s0`, `s1` and so forth in TASM, Fift and documentation, and are encoded simply by index in the binary.
+
+### Bracket formulas
+
+The `[32(c+1)] PLDUZ` notation means a value for `c` should be chosen, the calculation performed, and the result substituted. For example, with `c = 2`, the instruction is written as `96 PLDUZ` in Fift. The value `96` is the actual number of bits to read, while the bitstream stores only the value for `c`, and the TVM performs the calculation on its own.
 
 {/* STATIC_START tvm_instructions */}
 <div hidden>
