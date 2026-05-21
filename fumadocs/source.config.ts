@@ -3,7 +3,7 @@ import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import { z } from "zod";
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
-import { rehypeCodeDefaultOptions, remarkMdxMermaid } from 'fumadocs-core/mdx-plugins';
+import { rehypeCodeDefaultOptions, remarkMdxMermaid, remarkMdxFiles, } from 'fumadocs-core/mdx-plugins';
 import { transformerTwoslash } from 'fumadocs-twoslash';
 import { createFileSystemTypesCache } from 'fumadocs-twoslash/cache-fs';
 
@@ -43,7 +43,7 @@ export default defineConfig({
         })
       ],
     },
-    remarkPlugins: [remarkMath, remarkMdxMermaid],
+    remarkPlugins: [remarkMath, remarkMdxMermaid, remarkMdxFiles],
     // NOTE: KaTeX support should be placed before everything else!
     rehypePlugins: (v) => [rehypeKatex, ...v],
   },

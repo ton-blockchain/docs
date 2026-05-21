@@ -6,5 +6,6 @@ export const docsContentRoute = '/llms.mdx';
 export const gitConfig = {
   user: 'docs',
   repo: 'ton-org',
-  branch: 'main',
+  branch: 'fuma', // TODO: replace with main when getting ready to merge
+  subfolder: 'fumadocs/',
 };
