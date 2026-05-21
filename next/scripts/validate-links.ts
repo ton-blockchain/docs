@@ -327,6 +327,23 @@ function normalizeSlug(href: string): string {
   return stripped === "" ? "/" : stripped
 }
 
+/** Next.js catch-all route param, e.g. `/foo/:slug*`. */
+function hasSlugWildcard(url: string): boolean {
+  return /\/:\w+\*$/.test(url)
+}
+
+function stripSlugWildcard(url: string): string {
+  return normalizeSlug(url.replace(/\/:\w+\*$/, ""))
+}
+
+function pagesUnderPrefix(pageSlugs: ReadonlySet<string>, base: string): boolean {
+  const prefix = base.endsWith("/") ? base : `${base}/`
+  for (const slug of pageSlugs) {
+    if (slug === base || slug.startsWith(prefix)) return true
+  }
+  return false
+}
+
 function splitHrefAnchor(href: string): {path: string; anchor: string | null} {
   // Strip the query string before splitting — query params never resolve to
   // a different page on disk (e.g. `?playground=open`).
@@ -399,7 +416,11 @@ interface ExtractedLink {
 
 const MD_LINK_RE = /\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
 const HREF_RE = /\bhref\s*=\s*["']([^"']+)["']/g
-const SRC_RE = /\bsrc\s*=\s*["']([^"']+)["']/g
+// Match `src=`, `darkSrc=`, and any other custom `*Src=` JSX prop. The
+// mintlify `<Image>` (and similar) take a `darkSrc` companion to `src` for
+// dark-mode swaps; without picking those up, every `-dark.png` half of a
+// pair shows up as an orphan asset in Pass G.
+const SRC_RE = /\b(?:[a-zA-Z]+S|s)rc\s*=\s*["']([^"']+)["']/g
 
 function extractLinks(content: string): ExtractedLink[] {
   const out: ExtractedLink[] = []
@@ -598,6 +619,12 @@ async function buildPageIndex(): Promise<{
   const pages: PageRecord[] = []
   const pageBySlug = new Map<string, PageRecord>()
   const pageSlugs = new Set<string>()
+  // `/` is a real route (src/app/page.tsx, the marketing landing page) but
+  // it has no MDX in content/docs/. Add it explicitly so Pass B does not
+  // report the upstream `index.mdx` slug as "no live page or redirect".
+  if (existsSync(path.join(NEXT_ROOT, "src", "app", "page.tsx"))) {
+    pageSlugs.add("/")
+  }
   const rels = walkFiles(CONTENT_ROOT, rel => rel.endsWith(".mdx"))
   for (const rel of rels) {
     const abs = path.join(CONTENT_ROOT, rel)
@@ -665,6 +692,19 @@ function deriveLegacyUrls(
     out.add(normalizeSlug(r.source))
   }
   for (const rel of upstreamMdxRel) {
+    // Upstream pages whose frontmatter is `url: https://…` are external
+    // hand-off pages — the new site has no body to migrate, and Mintlify
+    // emits a client-side redirect to that URL. Skip them so Pass B
+    // doesn't flag "no live page or redirect" for slugs that were never
+    // intended to live on the new domain.
+    try {
+      const raw = fs.readFileSync(path.join(REPO_ROOT, rel), "utf8")
+      const fm = parseFm(raw)
+      const url = parseScalarField(fm.frontmatter, "url")
+      if (url && isExternalUrl(url)) continue
+    } catch {
+      // Fall through: a read failure shouldn't change historical behavior.
+    }
     const noExt = rel.replace(/\.mdx$/, "")
     if (noExt === "index") {
       out.add("/")
@@ -909,6 +949,17 @@ function runPassB(idx: Indices): {
       if (isExternalUrl(final) || pageSlugs.has(final)) {
         okCount++
         continue
+      }
+      // Wildcard catch-all (`/foo/:slug*` → `/bar/:slug*`) cannot equal any
+      // literal page slug. Treat it as resolved when at least one page
+      // exists under the destination's base prefix — Next.js will route
+      // the actual slugged URL to a real page at runtime.
+      if (hasSlugWildcard(final)) {
+        const base = stripSlugWildcard(final)
+        if (base && pagesUnderPrefix(pageSlugs, base)) {
+          okCount++
+          continue
+        }
       }
       issues.push({
         legacyUrl,
@@ -1224,13 +1275,23 @@ function runPassE(idx: Indices): {diffs: FrontmatterDiff[]; skipped: boolean} {
   if (!HAS_LEGACY_DOCS) return {diffs: [], skipped: true}
   const {upstreamFrontmatter, newFrontmatter} = idx
   const diffs: FrontmatterDiff[] = []
+  // Upstream-empty → current-has-value is an addition, not a loss; the new
+  // MDX is the source of truth after cutover (per pass docs). We only flag
+  // genuine regressions: a value disappearing or being rewritten.
+  const isRegression = (upstream: string | undefined, current: string | undefined) => {
+    const u = upstream ?? ""
+    const c = current ?? ""
+    if (u === c) return false
+    if (u === "") return false
+    return true
+  }
   for (const [id, upstream] of upstreamFrontmatter) {
     const current = newFrontmatter.get(id)
     if (!current) continue // page no longer exists in the new tree
-    if ((upstream.title ?? "") !== (current.title ?? "")) {
+    if (isRegression(upstream.title, current.title)) {
       diffs.push({id, field: "title", upstream: upstream.title, current: current.title})
     }
-    if ((upstream.description ?? "") !== (current.description ?? "")) {
+    if (isRegression(upstream.description, current.description)) {
       diffs.push({
         id,
         field: "description",
@@ -1624,14 +1685,17 @@ async function main(): Promise<void> {
 
   if (flags.checkAssets) {
     const {orphans} = runPassG(idx)
-    if (orphans.length > 0) regressionCount += orphans.length
+    // Orphan assets are SEO hygiene (crawl-budget waste / deploy bloat),
+    // not correctness regressions: they don't break any reachable URL. We
+    // surface them loudly so cleanup PRs have a punchlist, but don't gate
+    // CI on them — matches how prettier/eslint are advisory in next-build.yml.
     if (flags.verbose && orphans.length > 0) {
       for (const o of orphans.slice(0, 25)) {
         console.warn(`    orphan asset: ${o.url}  (${o.rel})`)
       }
       if (orphans.length > 25) console.warn(`    ... and ${orphans.length - 25} more`)
     }
-    console.log(`  assets: ${idx.assetUrls.size} indexed, ${orphans.length} orphan(s)`)
+    console.log(`  assets: ${idx.assetUrls.size} indexed, ${orphans.length} orphan(s) (advisory)`)
   }
 
   // -------------------------------------------------------------------------

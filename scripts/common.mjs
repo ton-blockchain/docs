@@ -170,9 +170,19 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
    */
   const commonIgnoreMap = Object.freeze({
     files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) => join(dir, it)),
-    dirs: ['.git', '.github', '.idea', '.vscode', '__MACOSX', 'node_modules', '__pycache__', 'stats'].map((it) =>
-      join(dir, it),
-    ),
+    dirs: [
+      '.git',
+      '.github',
+      '.idea',
+      '.vscode',
+      '.claude',
+      '.references',
+      '__MACOSX',
+      'node_modules',
+      '__pycache__',
+      'stats',
+      'next',
+    ].map((it) => join(dir, it)),
   });
 
   /**
@@ -181,7 +191,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
    */
   const extIgnoreMap = Object.freeze({
     mdx: {
-      files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) => join(dir, it)),
+      files: ['index.mdx', 'contribute/style-guide-extended.mdx', 'learn-more/glossary.mdx'].map((it) => join(dir, it)),
       dirs: [
         // Snippets and page parts
         'snippets',
