@@ -67,10 +67,8 @@ function JourneyCard({title, description, steps}: JourneyProps) {
         {title}
       </h3>
       <p className="text-pretty text-base text-fd-muted-foreground">{description}</p>
-      <div
-        className="mt-3 overflow-x-auto no-scrollbar [scroll-snap-type:x_proximity] max-sm:[mask-image:linear-gradient(to_right,black_calc(100%-32px),transparent)]"
-      >
-        <div className="flex flex-row gap-4 py-1 pr-4">
+      <div className="mt-3 -mx-6 overflow-x-auto no-scrollbar [scroll-snap-type:x_proximity] [scroll-padding-left:1.5rem]">
+        <div className="flex w-max flex-row gap-4 py-1 px-6">
           {steps.map(step => (
             <Link
               key={step.href}
