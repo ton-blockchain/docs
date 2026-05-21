@@ -154,7 +154,7 @@ export default function Page() {
         <section
           id="troubleshooting"
           tabIndex={-1}
-          className="mt-12 flex flex-col gap-4 focus:outline-none"
+          className="mt-12 flex flex-col gap-4 focus:outline-none max-md:hidden"
         >
           <div>
             <h2 className="text-balance text-2xl font-semibold tracking-tight text-fd-foreground">
