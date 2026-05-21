@@ -94,7 +94,7 @@ export default function Page() {
     <HomeLayout {...baseOptions()}>
       <main className="mx-auto w-full max-w-5xl px-6 pb-24">
         <section className="relative isolate py-8 sm:py-12 lg:py-16">
-          <div aria-hidden className="absolute inset-x-0 -top-40 -z-10 overflow-hidden blur-3xl">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-40 -z-10 overflow-hidden blur-3xl">
             <div
               style={{
                 clipPath:
