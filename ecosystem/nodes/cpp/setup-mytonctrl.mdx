@@ -34,8 +34,7 @@ MyTonCtrl is highly recommended to install on the following distributions:
 ### Network and ports
 
 - Obtain a static public IPv4 address for each node.
-- Forward a single UDP port from the internet to the node and leave all outbound ports open. The port is assigned, randomly on MyTonCtrl installation but can be set before via `VALIDATOR_PORT` env variable.
-  To check the port after installation, refer to the `Node ports` field on `status` command output.
+- Forward a single UDP port from the internet to the node and leave all outbound ports open. The port is assigned randomly during MyTonCtrl installation but can be set before via the `VALIDATOR_PORT` environment variable. To check the port after installation, refer to the `Node ports` field on `status` command output.
 
 ### Prepare the operator account
 
@@ -76,7 +75,7 @@ mytonctrl
 MyTonCtrl> status
 ```
 
-Wait until the node is synchronized.
+Wait until the node is synchronized: verify that `Local validator out of sync` and `Masterchain out of sync` both show ≤3 seconds.
 
 ### Baseline maintenance tasks
 
@@ -87,17 +86,21 @@ Wait until the node is synchronized.
 
 ### Operational discipline
 
+For all nodes:
+
 - Track network announcements via [`@tonstatus`](https://t.me/tonstatus) and enable notifications.
 - Keep hardware aligned with the [minimum system requirements](#hardware-sizing-by-role); upgrade storage promptly if metrics show saturation.
-  For validators:
+
+For validator nodes:
+
 - Monitor RAM, disk, CPU, and bandwidth dashboards. Contact [`@validators_help_bot`](https://t.me/validators_help_bot) if metrics or efficiency drop below target.
-- Re-run `check_ef` or consult the [efficiency API](https://toncenter.com/api/qos/index.html#/) when diagnosing performance.
+- Rerun `check_ef` or consult the [efficiency API](https://toncenter.com/api/qos/index.html#/) when diagnosing performance.
 
 ## Liteserver quickstart
 
 ### Activate liteserver services
 
-If the node was not installed with `liteserver` mode enabled,
+If the node was not installed with `liteserver` mode enabled, activate it via `enable_mode liteserver`:
 
 ```bash
 MyTonCtrl> enable_mode liteserver
@@ -106,19 +109,19 @@ MyTonCtrl> status_modes
 
 ### Configure endpoints and proxies
 
+Print the local liteserver configuration — its IP, port, and public key:
+
 ```bash
 MyTonCtrl> installer plsc
 ```
 
-You'll get data of the local liteserver with its IP, port and public key.
-
-or
+Create a new network config:
 
 ```bash
 MyTonCtrl> installer clcf
 ```
 
-You'll get full network config, ready to be used in clients to connect to the local liteserver.
+The command writes a `/usr/bin/ton/local.config.json` file with the full network configuration, ready for clients to connect to the local liteserver.
 
 ### Open the liteserver port
 
