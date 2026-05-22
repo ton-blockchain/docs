@@ -1,9 +1,11 @@
 ---
 id: ecosystem/ton-pay/payment-integration/payments-tonconnect
-title: "How to send payments using TON Connect"
-sidebarTitle: "Payments using TON Connect"
+title: "Send payments using TON Connect"
+sidebarTitle: "Send payments (TON Connect)"
 description: ""
 ---
+
+## Overview
 
 Use TON Connect native `sendTransaction` method when:
 
@@ -11,7 +13,7 @@ Use TON Connect native `sendTransaction` method when:
 - TON Connect is already used elsewhere in the application.
 - Access to TON Connect-specific APIs is required, such as status change listeners or custom wallet adapters.
 
-## Integration overview
+## Integration steps
 
 Direct TON Connect integration follows these steps:
 
@@ -711,7 +713,7 @@ export function TestnetPayment({ amount }: { amount: number }) {
 
 <CardGroup cols={2}>
   <Card
-    title="Webhook integration"
+    title="Webhooks"
     icon="webhook"
     href="/applications/ton-pay/payment-integration/transfer"
   >
@@ -719,7 +721,7 @@ export function TestnetPayment({ amount }: { amount: number }) {
   </Card>
 
   <Card
-    title="Transaction status"
+    title="Check payment status"
     icon="search"
     href="/applications/ton-pay/payment-integration/status-info"
   >

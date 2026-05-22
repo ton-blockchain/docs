@@ -335,11 +335,11 @@ const unsubscribe = watchConnectors(appKit, {
 // Later: unsubscribe();
 ```
 
-### Crypto Onramp
+### Crypto on-ramp
 
 #### createCryptoOnrampDeposit
 
-Create a crypto-onramp deposit from a quote previously obtained via [`getCryptoOnrampQuote`](#getcryptoonrampquote) — the returned [`CryptoOnrampDeposit`](#cryptoonrampdeposit) carries the address and amount the user must send on the source chain.
+Create a crypto on-ramp deposit from a quote previously obtained via [`getCryptoOnrampQuote`](#getcryptoonrampquote) — the returned [`CryptoOnrampDeposit`](#cryptoonrampdeposit) carries the address and amount the user must send on the source chain.
 
 | Parameter                 | Type                                                                                       | Description                                                                                           |
 | ------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -374,7 +374,7 @@ Returns: <code>ProviderFactory\<<a href="#swapsxyzcryptoonrampprovider">SwapsXyz
 
 #### getCryptoOnrampProvider
 
-Get a registered crypto-onramp provider by id, or the default provider when no id is given. Throws when no provider matches — or when no id is passed and no default has been registered.
+Get a registered crypto on-ramp provider by id, or the default provider when no id is given. Throws when no provider matches — or when no id is passed and no default has been registered.
 
 | Parameter    | Type                                                                | Description                                                                    |
 | ------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -393,7 +393,7 @@ console.log('Crypto onramp provider:', provider.providerId);
 
 #### getCryptoOnrampProviders
 
-List every crypto-onramp provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)'s `providers` and those added later through [`registerProvider`](#registerprovider).
+List every crypto on-ramp provider registered on this AppKit instance — both those passed via [`AppKitConfig`](#appkitconfig)'s `providers` and those added later through [`registerProvider`](#registerprovider).
 
 | Parameter  | Type                | Description       |
 | ---------- | ------------------- | ----------------- |
@@ -413,7 +413,7 @@ console.log(
 
 #### getCryptoOnrampQuote
 
-Quote a crypto-to-TON onramp — given a source asset/chain and target TON asset, returns the rate, expected amount, and provider metadata needed to call [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit).
+Quote a crypto-to-TON on-ramp — given a source asset/chain and target TON asset, returns the rate, expected amount, and provider metadata needed to call [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit).
 
 | Parameter                         | Type                                                          | Description                                                                                                                                                                     |
 | --------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -433,7 +433,7 @@ Returns: <code><a href="#getcryptoonrampquotereturntype">GetCryptoOnrampQuoteRet
 
 #### getCryptoOnrampStatus
 
-Read the current status of a crypto-onramp deposit by id — typically polled until the result is `'success'` or `'failed'`.
+Read the current status of a crypto on-ramp deposit by id — typically polled until the result is `'success'` or `'failed'`.
 
 | Parameter              | Type                                                            | Description                                                         |
 | ---------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------- |
@@ -446,13 +446,13 @@ Returns: <code><a href="#getcryptoonrampstatusreturntype">GetCryptoOnrampStatusR
 
 #### watchCryptoOnrampProviders
 
-Subscribe to crypto-onramp provider lifecycle — fires `onChange` whenever a new provider is registered or the default crypto-onramp provider switches.
+Subscribe to crypto on-ramp provider lifecycle — fires `onChange` whenever a new provider is registered or the default crypto on-ramp provider switches.
 
 | Parameter               | Type                                                                            | Description                                                                                                   |
 | ----------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `appKit`\*              | [`AppKit`](#appkit)                                                             | Runtime instance.                                                                                             |
 | `parameters`\*          | [`WatchCryptoOnrampProvidersParameters`](#watchcryptoonrampprovidersparameters) | Update callback.                                                                                              |
-| `parameters.onChange`\* | `() => void`                                                                    | Callback fired whenever a crypto-onramp provider is registered or the default crypto-onramp provider changes. |
+| `parameters.onChange`\* | `() => void`                                                                    | Callback fired whenever a crypto on-ramp provider is registered or the default crypto on-ramp provider changes. |
 
 Returns: <code><a href="#watchcryptoonrampprovidersreturntype">WatchCryptoOnrampProvidersReturnType</a></code> — Unsubscribe function — call it to stop receiving updates.
 
@@ -460,7 +460,7 @@ Returns: <code><a href="#watchcryptoonrampprovidersreturntype">WatchCryptoOnramp
 
 #### registerProvider
 
-Register a DeFi / onramp provider at runtime — equivalent to passing it via [`AppKitConfig`](#appkitconfig)'s `providers` at construction, but available after AppKit is up. AppKit emits `provider:registered`, picked up by domain-specific subscribers like [`watchSwapProviders`](#watchswapproviders) and [`watchCryptoOnrampProviders`](#watchcryptoonrampproviders).
+Register a DeFi / on-ramp provider at runtime — equivalent to passing it via [`AppKitConfig`](#appkitconfig)'s `providers` at construction, but available after AppKit is up. AppKit emits `provider:registered`, picked up by domain-specific subscribers like [`watchSwapProviders`](#watchswapproviders) and [`watchCryptoOnrampProviders`](#watchcryptoonrampproviders).
 
 | Parameter    | Type                                                  | Description                               |
 | ------------ | ----------------------------------------------------- | ----------------------------------------- |
@@ -1776,7 +1776,7 @@ Strongly-typed event emitter built on a string event name → payload type map. 
 
 Constructor: `new EventEmitter()`
 
-### Crypto Onramp
+### Crypto on-ramp
 
 #### CryptoOnrampError
 
@@ -1798,7 +1798,7 @@ Constructor: `new CryptoOnrampManager()`
 
 #### CryptoOnrampProvider
 
-Abstract base class implemented by crypto-onramp providers ([Layerswap](https://layerswap.io), [swaps.xyz](https://docs.swaps.xyz), custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
+Abstract base class implemented by crypto on-ramp providers ([Layerswap](https://layerswap.io), [swaps.xyz](https://docs.swaps.xyz), custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
 
 Constructor: `new CryptoOnrampProvider()`
 
@@ -1831,7 +1831,7 @@ Constructor: `new SwapsXyzCryptoOnrampProvider(config)`
 
 #### DefiError
 
-Base error thrown across all DeFi domains (swap, staking, onramp, crypto-onramp). Subclassed by [`SwapError`](#swaperror), [`StakingError`](#stakingerror), [`CryptoOnrampError`](#cryptoonramperror) and the internal onramp error — catch the base when you don't care which domain produced the failure.
+Base error thrown across all DeFi domains (swap, staking, on-ramp, crypto on-ramp). Subclassed by [`SwapError`](#swaperror), [`StakingError`](#stakingerror), [`CryptoOnrampError`](#cryptoonramperror) and the internal on-ramp error — catch the base when you don't care which domain produced the failure.
 
 Constructor: `new DefiError(message, code, details)`
 
@@ -2515,7 +2515,7 @@ Event-name → payload map shared between AppKit and walletkit. AppKit extends i
 | `provider:registered`\*      | <code><a href="#baseproviderupdate">BaseProviderUpdate</a></code> | Fired by a DeFi manager when a provider is registered through it (carries the provider's id and kind).       |
 | `provider:default-changed`\* | <code><a href="#baseproviderupdate">BaseProviderUpdate</a></code> | Fired by a DeFi manager when its default provider is set or cleared (carries the new default's id and kind). |
 
-### Crypto Onramp
+### Crypto on-ramp
 
 #### CreateCryptoOnrampDepositOptions
 
@@ -2538,10 +2538,10 @@ type CreateCryptoOnrampDepositReturnType = Promise<CryptoOnrampDeposit>;
 
 #### CryptoOnrampDeposit
 
-Deposit details returned by a crypto onramp provider.
+Deposit details returned by a crypto on-ramp provider.
 
 The user must send `amount` of `sourceCurrencyAddress` to `address` on `sourceChain`
-to complete the onramp. The provider then delivers the target crypto to the user's TON address.
+to complete the on-ramp. The provider then delivers the target crypto to the user's TON address.
 
 | Field                     | Type     | Description                                                            |
 | ------------------------- | -------- | ---------------------------------------------------------------------- |
@@ -2557,7 +2557,7 @@ to complete the onramp. The provider then delivers the target crypto to the user
 
 #### CryptoOnrampDepositParams
 
-Parameters for creating a crypto onramp deposit.
+Parameters for creating a crypto on-ramp deposit.
 
 The recipient is taken from `quote.recipientAddress` set at quote time.
 
@@ -2569,21 +2569,21 @@ The recipient is taken from `quote.recipientAddress` set at quote time.
 
 #### CryptoOnrampProviderInterface
 
-Interface that all crypto onramp providers must implement
+Interface that all crypto on-ramp providers must implement
 
 | Field                    | Type                                                                                                                                                                            | Description                                                                                                                                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`\*                 | `'crypto-onramp'`                                                                                                                                                               | Provider kind discriminator pinned to `'crypto-onramp'` so [`registerProvider`](#registerprovider) routes it to the crypto-onramp manager.                                                    |
+| `type`\*                 | `'crypto-onramp'`                                                                                                                                                               | Provider kind discriminator pinned to `'crypto-onramp'` so [`registerProvider`](#registerprovider) routes it to the crypto on-ramp manager.                                                    |
 | `providerId`\*           | `string`                                                                                                                                                                        | Unique identifier for the provider                                                                                                                                                            |
 | `getMetadata`\*          | <code>() => <a href="#cryptoonrampprovidermetadata">CryptoOnrampProviderMetadata</a></code>                                                                                     | Get static metadata for the provider (display name, logo, url).                                                                                                                               |
-| `getQuote`\*             | <code>(params: <a href="#cryptoonrampquoteparams">CryptoOnrampQuoteParams</a>\<TQuoteOptions>) => Promise\<<a href="#cryptoonrampquote">CryptoOnrampQuote</a>></code>           | Get a quote for onramping from another crypto asset into a TON asset                                                                                                                          |
+| `getQuote`\*             | <code>(params: <a href="#cryptoonrampquoteparams">CryptoOnrampQuoteParams</a>\<TQuoteOptions>) => Promise\<<a href="#cryptoonrampquote">CryptoOnrampQuote</a>></code>           | Get a quote for on-ramping from another crypto asset into a TON asset                                                                                                                          |
 | `createDeposit`\*        | <code>(params: <a href="#cryptoonrampdepositparams">CryptoOnrampDepositParams</a>\<TDepositOptions>) => Promise\<<a href="#cryptoonrampdeposit">CryptoOnrampDeposit</a>></code> | Create a deposit for a previously obtained quote                                                                                                                                              |
 | `getStatus`\*            | <code>(params: <a href="#cryptoonrampstatusparams">CryptoOnrampStatusParams</a>) => Promise\<<a href="#cryptoonrampstatus">CryptoOnrampStatus</a>></code>                       | Get the status of a deposit                                                                                                                                                                   |
 | `getSupportedNetworks`\* | <code>() => <a href="#network">Network</a>\[]</code>                                                                                                                            | Networks this provider can operate on. Consumers should check before calling provider methods. Implementations may return a static list or compute it dynamically (e.g. from runtime config). |
 
 #### CryptoOnrampProviderMetadata
 
-Static metadata for a crypto-onramp provider.
+Static metadata for a crypto on-ramp provider.
 
 | Field                       | Type      | Description                                                                                                                                             |
 | --------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -2605,7 +2605,7 @@ Used in provider configuration to override fields of the provider's metadata.
 
 #### CryptoOnrampQuote
 
-Crypto onramp quote response with pricing information.
+Crypto on-ramp quote response with pricing information.
 
 | Field                     | Type                  | Description                                                                    |
 | ------------------------- | --------------------- | ------------------------------------------------------------------------------ |
@@ -2616,18 +2616,18 @@ Crypto onramp quote response with pricing information.
 | `targetAmount`\*          | `string`              | Amount of target crypto to receive.                                            |
 | `rate`\*                  | `string`              | Exchange rate (amount of target per 1 unit of source)                          |
 | `recipientAddress`\*      | `string`              | TON address that will receive the target crypto.                               |
-| `providerId`\*            | `string`              | Identifier of the crypto onramp provider.                                      |
+| `providerId`\*            | `string`              | Identifier of the crypto on-ramp provider.                                      |
 | `metadata`                | `TMetadata = unknown` | Provider-specific metadata for the quote (e.g. raw response needed to execute) |
 
 #### CryptoOnrampQuoteParams
 
-Parameters for requesting a crypto-to-crypto onramp quote.
+Parameters for requesting a crypto-to-crypto on-ramp quote.
 
 The target network is always TON, so only the source side is parameterised.
 
 | Field                     | Type                         | Description                                                                                                                                                                     |
 | ------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `amount`\*                | `string`                     | Amount to onramp (either source or target crypto, depending on isSourceAmount)                                                                                                  |
+| `amount`\*                | `string`                     | Amount to on-ramp (either source or target crypto, depending on isSourceAmount)                                                                                                  |
 | `sourceCurrencyAddress`\* | `string`                     | Source crypto currency address (contract address or 0x0... for native)                                                                                                          |
 | `sourceChain`\*           | `string`                     | Source chain identifier in CAIP-2 format (e.g. 'eip155:1' for Ethereum mainnet, 'eip155:42161' for Arbitrum One). Providers map this to their own chain identifiers internally. |
 | `targetCurrencyAddress`\* | `string`                     | Target crypto currency address on TON (contract address or 0x0... for native)                                                                                                   |
@@ -2638,7 +2638,7 @@ The target network is always TON, so only the source side is parameterised.
 
 #### CryptoOnrampStatus
 
-Final state of a crypto-onramp deposit returned by [`getCryptoOnrampStatus`](#getcryptoonrampstatus) — `'success'` (delivered to the recipient), `'pending'` (still in flight), or `'failed'` (provider could not complete the deposit).
+Final state of a crypto on-ramp deposit returned by [`getCryptoOnrampStatus`](#getcryptoonrampstatus) — `'success'` (delivered to the recipient), `'pending'` (still in flight), or `'failed'` (provider could not complete the deposit).
 
 ```ts
 type CryptoOnrampStatus = 'success' | 'pending' | 'failed';
@@ -2683,7 +2683,7 @@ Options for [`getCryptoOnrampQuote`](#getcryptoonrampquote) — extends [`Crypto
 
 | Field                     | Type                         | Description                                                                                                                                                                     |
 | ------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `amount`\*                | `string`                     | Amount to onramp (either source or target crypto, depending on isSourceAmount)                                                                                                  |
+| `amount`\*                | `string`                     | Amount to on-ramp (either source or target crypto, depending on isSourceAmount)                                                                                                  |
 | `sourceCurrencyAddress`\* | `string`                     | Source crypto currency address (contract address or 0x0... for native)                                                                                                          |
 | `sourceChain`\*           | `string`                     | Source chain identifier in CAIP-2 format (e.g. 'eip155:1' for Ethereum mainnet, 'eip155:42161' for Arbitrum One). Providers map this to their own chain identifiers internally. |
 | `targetCurrencyAddress`\* | `string`                     | Target crypto currency address on TON (contract address or 0x0... for native)                                                                                                   |
@@ -2771,7 +2771,7 @@ Parameters accepted by [`watchCryptoOnrampProviders`](#watchcryptoonrampprovider
 
 | Field        | Type         | Description                                                                                                   |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------- |
-| `onChange`\* | `() => void` | Callback fired whenever a crypto-onramp provider is registered or the default crypto-onramp provider changes. |
+| `onChange`\* | `() => void` | Callback fired whenever a crypto on-ramp provider is registered or the default crypto on-ramp provider changes. |
 
 #### WatchCryptoOnrampProvidersReturnType
 
@@ -2785,7 +2785,7 @@ type WatchCryptoOnrampProvidersReturnType = () => void;
 
 #### DefiManagerAPI
 
-Shape every DeFi domain manager (swap, staking, onramp, crypto-onramp) satisfies — provider registration, default-provider selection and lookups. Mostly relevant when authoring a new domain manager.
+Shape every DeFi domain manager (swap, staking, on-ramp, crypto on-ramp) satisfies — provider registration, default-provider selection and lookups. Mostly relevant when authoring a new domain manager.
 
 | Field                    | Type                                                                            | Description                                                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -2799,7 +2799,7 @@ Shape every DeFi domain manager (swap, staking, onramp, crypto-onramp) satisfies
 
 #### DefiProvider
 
-Base interface implemented by every DeFi provider (swap, staking, onramp, crypto-onramp) — exposes `providerId`, `type` and `getSupportedNetworks`. Domain-specific provider interfaces extend this with quote/build/status methods.
+Base interface implemented by every DeFi provider (swap, staking, on-ramp, crypto on-ramp) — exposes `providerId`, `type` and `getSupportedNetworks`. Domain-specific provider interfaces extend this with quote/build/status methods.
 
 | Field                    | Type                                                          | Description                                                                                                                                                                                   |
 | ------------------------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -2826,7 +2826,7 @@ Context that AppKit's DeFi managers inject into a [`ProviderInput`](#providerinp
 
 #### ProviderInput
 
-Either a ready-made DeFi/onramp provider instance or a factory that produces one — the value accepted by [`AppKitConfig`](#appkitconfig)'s `providers` and [`registerProvider`](#registerprovider).
+Either a ready-made DeFi/on-ramp provider instance or a factory that produces one — the value accepted by [`AppKitConfig`](#appkitconfig)'s `providers` and [`registerProvider`](#registerprovider).
 
 ```ts
 type ProviderInput = T | ProviderFactory<T>;
@@ -4438,7 +4438,7 @@ Default id assigned to the TonConnect connector when none is supplied to [`creat
 const TONCONNECT_DEFAULT_CONNECTOR_ID = 'tonconnect';
 ```
 
-### Crypto Onramp
+### Crypto on-ramp
 
 #### CryptoOnrampErrorCode
 
