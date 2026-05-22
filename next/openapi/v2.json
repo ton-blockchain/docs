@@ -729,7 +729,15 @@
         "operationId": "getMasterchainBlockSignatures_get",
         "parameters": [
           {
-            "$ref": "#/components/parameters/seqno"
+            "name": "seqno",
+            "in": "query",
+            "description": "Masterchain block sequence number (block height). Used to query state at a specific point in time. If omitted, returns the current state.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 68213743
           }
         ],
         "responses": {
@@ -870,7 +878,15 @@
             "$ref": "#/components/parameters/shard"
           },
           {
-            "$ref": "#/components/parameters/seqnoOptional"
+            "name": "seqno",
+            "in": "query",
+            "description": "Block sequence number to look up. Provide this, `lt`, or `unixtime` to identify the block. If omitted, returns the current block.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 73082262
           },
           {
             "name": "lt",
@@ -932,8 +948,15 @@
         "operationId": "getShards_get",
         "parameters": [
           {
-            "$ref": "#/components/parameters/seqno",
-            "description": "Seqno of masterchain block"
+            "name": "seqno",
+            "in": "query",
+            "description": "Seqno of masterchain block",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 68213743
           }
         ],
         "responses": {
@@ -1066,6 +1089,11 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/RunGetMethodRequest"
+              },
+              "example": {
+                "address": "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs",
+                "method": "get_jetton_data",
+                "stack": []
               }
             }
           },
@@ -1119,6 +1147,11 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/RunGetMethodStdRequest"
+              },
+              "example": {
+                "address": "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs",
+                "method": "get_jetton_data",
+                "stack": []
               }
             }
           },
@@ -1272,6 +1305,11 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/EstimateFeeRequest"
+              },
+              "example": {
+                "address": "EQAPgRDXZBQAWp8KfetNFZOLHNjbIt8_Fg7VtIM3c1q7YtHM",
+                "body": "te6cckEBBAEAkQABoXNpZ25///8R/////wAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAECCg7DyG0CAgMAAABgQgAHwIhrsgoALU+FPvWmisnFjmxtkW+fiwdq2kGbua1dsQAAAAAAAAAAAAAAAAAASigcDQ==",
+                "ignore_chksig": true
               }
             }
           },
@@ -1482,7 +1520,8 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "example": 0
           },
           {
             "name": "seqno",
@@ -1582,14 +1621,17 @@
           {
             "name": "libraries",
             "in": "query",
-            "description": "Hashes of libraries",
-            "required": false,
+            "description": "Hashes of libraries to fetch. Provide one or more library cell hashes in hex format.",
+            "required": true,
             "schema": {
               "type": "array",
               "items": {
-                "type": "#/components/schemas/TonHash"
+                "$ref": "#/components/schemas/TonHash"
               }
-            }
+            },
+            "example": [
+              "8f452d7a4dfd74066b682365177259ed05734435be76b5fd4bd5d8af2b7c3d68"
+            ]
           }
         ],
         "responses": {
@@ -1634,6 +1676,12 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/JsonRpcRequest"
+              },
+              "example": {
+                "jsonrpc": "2.0",
+                "id": "1",
+                "method": "getMasterchainInfo",
+                "params": {}
               }
             }
           },
@@ -1715,7 +1763,8 @@
         "schema": {
           "$ref": "#/components/schemas/TonAddr"
         },
-        "description": "The account address to query."
+        "description": "The account address to query.",
+        "example": "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"
       },
       "hash": {
         "name": "hash",
@@ -1723,7 +1772,8 @@
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TonHash"
-        }
+        },
+        "example": "b113a994b5024a16719f69139328eb759596c38a25f59028b146fecdc3621dfe"
       },
       "hashOptional": {
         "name": "hash",
@@ -1741,7 +1791,8 @@
         "schema": {
           "type": "integer",
           "format": "int32"
-        }
+        },
+        "example": 0
       },
       "shard": {
         "name": "shard",
@@ -1751,7 +1802,8 @@
         "schema": {
           "type": "string",
           "x-usrv-cpp-type": "std::int64_t"
-        }
+        },
+        "example": "8000000000000000"
       },
       "seqno": {
         "name": "seqno",
@@ -1761,7 +1813,8 @@
         "schema": {
           "type": "integer",
           "format": "int32"
-        }
+        },
+        "example": 73082262
       },
       "seqnoOptional": {
         "name": "seqno",
@@ -1875,7 +1928,8 @@
         "schema": {
           "$ref": "#/components/schemas/TonAddr"
         },
-        "description": "Source account address."
+        "description": "Source account address.",
+        "example": "EQDOz0WkOipe6e8v0ExU_VNozZUfRFMTWjuuBkRSndpy9fp_"
       },
       "destinationAddress": {
         "name": "destination",
@@ -1884,7 +1938,8 @@
         "schema": {
           "$ref": "#/components/schemas/TonAddr"
         },
-        "description": "Destination account address."
+        "description": "Destination account address.",
+        "example": "EQDOj8JxAaq_1ZUE7o4O6pX7PxIsRu9uqq8lLAdBDtB_L-OH"
       },
       "createdLt": {
         "name": "created_lt",
@@ -1894,7 +1949,8 @@
         "schema": {
           "type": "string",
           "x-usrv-cpp-type": "std::int64_t"
-        }
+        },
+        "example": "78473359000006"
       }
     },
     "responses": {

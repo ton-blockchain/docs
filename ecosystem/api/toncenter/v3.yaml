@@ -26,6 +26,8 @@ paths:
           type: array
           items:
             type: string
+        example:
+          - EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       - name: include_boc
         in: query
         description: 'Include code and data BOCs. Default: true'
@@ -264,6 +266,8 @@ paths:
           type: array
           items:
             type: string
+        example:
+          - EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       responses:
         '200':
           description: OK
@@ -292,6 +296,7 @@ paths:
         required: true
         schema:
           type: string
+        example: EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       - name: use_v2
         in: query
         description: Use method from api/v2. Not recommended
@@ -323,16 +328,20 @@ paths:
       - name: hash
         in: query
         description: Transaction hash.
+        required: true
         schema:
           type: string
+        example: 6XDJwadlnDFW+HLKm/OoDTpiwOAyoyNMLHCcWYc0omk=
       - name: direction
         in: query
         description: Direction of message.
+        required: true
         schema:
           type: string
           enum:
           - in
           - out
+        example: in
       responses:
         '200':
           description: OK
@@ -473,6 +482,9 @@ paths:
           type: array
           items:
             type: string
+        example:
+          - '0xf8a7ea5'
+          - '0x178d4519'
       - name: bodies
         in: query
         description: List of message bodies to decode (base64 or hex)
@@ -508,6 +520,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DecodeRequest'
+            example:
+              opcodes:
+                - '0xf8a7ea5'
+                - '0x178d4519'
       responses:
         '200':
           description: OK
@@ -540,6 +556,7 @@ paths:
         description: Domain name to search for. DNS records with this exact domain name will be returned.
         schema:
           type: string
+        example: foundation.ton
       - name: limit
         in: query
         description: Limit number of queried rows. Use with *offset* to batch read.
@@ -585,6 +602,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/V2EstimateFeeRequest'
+            example:
+              address: EQAPgRDXZBQAWp8KfetNFZOLHNjbIt8_Fg7VtIM3c1q7YtHM
+              body: te6cckEBBAEAkQABoXNpZ25///8R/////wAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAECCg7DyG0CAgMAAABgQgAHwIhrsgoALU+FPvWmisnFjmxtkW+fiwdq2kGbua1dsQAAAAAAAAAAAAAAAAAASigcDQ==
+              ignore_chksig: true
       responses:
         '200':
           description: OK
@@ -948,6 +969,7 @@ paths:
         schema:
           type: integer
           format: int32
+        example: 68213743
       responses:
         '200':
           description: OK
@@ -977,6 +999,7 @@ paths:
         schema:
           type: integer
           format: int32
+        example: 68213743
       - name: limit
         in: query
         description: Limit number of queried rows. Use with *offset* to batch read.
@@ -1197,6 +1220,8 @@ paths:
           type: array
           items:
             type: string
+        example:
+          - EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       responses:
         '200':
           description: OK
@@ -1230,11 +1255,14 @@ paths:
       - name: multisig_address
         in: query
         description: 'Address of corresponding multisig. Max: 1024.'
+        required: true
         explode: true
         schema:
           type: array
           items:
             type: string
+        example:
+          - EQA4qyJqpTzdWEIIgW-OUkg3Jhrl4vrGkqYkzNCxR-fk70Cd
       - name: parse_actions
         in: query
         description: Parser order actions
@@ -1292,11 +1320,14 @@ paths:
       - name: address
         in: query
         description: 'Multisig contract address in any form. Max: 1024.'
+        required: true
         explode: true
         schema:
           type: array
           items:
             type: string
+        example:
+          - EQA4qyJqpTzdWEIIgW-OUkg3Jhrl4vrGkqYkzNCxR-fk70Cd
       - name: wallet_address
         in: query
         description: 'Address of signer or proposer wallet in any form. Max: 1024.'
@@ -1605,8 +1636,10 @@ paths:
       - name: account
         in: query
         description: List of account addresses to get actions. Can be sent in hex, base64 or base64url form.
+        required: true
         schema:
           type: string
+        example: EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       - name: ext_msg_hash
         in: query
         description: Find actions by trace external hash
@@ -1654,8 +1687,10 @@ paths:
       - name: account
         in: query
         description: List of account addresses to get transactions. Can be sent in hex, base64 or base64url form.
+        required: true
         schema:
           type: string
+        example: EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       - name: ext_msg_hash
         in: query
         description: Find trace by external hash
@@ -1689,11 +1724,14 @@ paths:
       - name: account
         in: query
         description: List of account addresses to get transactions. Can be sent in hex, base64 or base64url form.
+        required: true
         explode: true
         schema:
           type: array
           items:
             type: string
+        example:
+          - EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       - name: trace_id
         in: query
         description: Find transactions by trace id.
@@ -1746,6 +1784,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/V2RunGetMethodRequest'
+            example:
+              address: EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
+              method: get_jetton_data
+              stack: []
       responses:
         '200':
           description: OK
@@ -2067,6 +2109,7 @@ paths:
         schema:
           type: integer
           format: int32
+        example: 68213743
       - name: limit
         in: query
         description: Limit number of queried rows. Use with *offset* to batch read.
@@ -2118,8 +2161,10 @@ paths:
       - name: msg_hash
         in: query
         description: Message hash. Acceptable in hex, base64 and base64url forms.
+        required: true
         schema:
           type: string
+        example: 2jgA4GAQZXcA7ZlrdQ7IA+EhY8KHg8ccLRqKpzA/T2A=
       - name: body_hash
         in: query
         description: Hash of message body.
@@ -2180,11 +2225,14 @@ paths:
       - name: contract_address
         in: query
         description: 'Vesting contract address in any form. Max: 1000.'
+        required: true
         explode: true
         schema:
           type: array
           items:
             type: string
+        example:
+          - EQA5OSku0NViTdvki1NQwlU-SBmCI2CYFOLer9Cx__KZX95d
       - name: wallet_address
         in: query
         description: 'Wallet address to filter by owner or sender. Max: 1000.'
@@ -2245,6 +2293,7 @@ paths:
         required: true
         schema:
           type: string
+        example: UQDve6CLVbaaXQTd54gI-XK8iR63SsaSgcoRZ9byuSFdahyg
       - name: use_v2
         in: query
         description: Use method from api/v2. Not recommended
@@ -2282,6 +2331,8 @@ paths:
           type: array
           items:
             type: string
+        example:
+          - EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
       responses:
         '200':
           description: OK
