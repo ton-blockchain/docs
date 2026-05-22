@@ -60,7 +60,7 @@ The interactive wizard walks through:
 
 1. Selecting mainnet vs. testnet (or supplying a custom network config).
 1. Choosing the initial mode (`validator` or `liteserver`).
-1. Optionally, downloading blockchain dumps via TON Storage (recommended for archive builds).
+1. Optionally downloading blockchain dumps via TON Storage (recommended for archive builds).
 1. Whether to run post-download tasks in the background (useful when pulling large dumps).
 
 Refer to the [MyTonCtrl overview](/ecosystem/nodes/cpp/mytonctrl/overview#install-mytonctrl) for installer flags and environment variables when you need unattended deployments.
@@ -79,8 +79,7 @@ Wait until the node is synchronized: verify that `Local validator out of sync` a
 
 ### Baseline maintenance tasks
 
-- `MyTonCtrl> create_backup` creates a snapshot of the current state (private keys and configs). Highly recommended to
-  make backup of the node and store it in a secure space.
+- `MyTonCtrl> create_backup` creates a snapshot of the current state (private keys and configs). It is highly recommended to make a backup of the node and store it in a secure space.
 - `MyTonCtrl> update` updates MyTonCtrl CLI.
 - `MyTonCtrl> upgrade` updates Node software.
 
