@@ -79,7 +79,7 @@ cell calculate_nft_item_state_init(int item_index, cell nft_item_code) {
 }
 ```
 
-The `calculate_nft_item_address` function takes `state_init` composed by `calculate_nft_item_state_init`, along with `wc` (the [workchain](/foundations/glossary#workchain) for the resulting address). It calculates the address by hashing the `StateInit` and composing a [`MsgAddressInt`](/blockchain-basics/primitives/addresses/overview#internal-addresses) slice according to the format required by the TON blockchain.
+The `calculate_nft_item_address` function takes `state_init` composed by `calculate_nft_item_state_init`, along with `wc` (the [workchain](/overview/learn-more/glossary#workchain) for the resulting address). It calculates the address by hashing the `StateInit` and composing a [`MsgAddressInt`](/blockchain-basics/primitives/addresses/overview#internal-addresses) slice according to the format required by the TON blockchain.
 
 ```func
 slice calculate_nft_item_address(int wc, cell state_init) {

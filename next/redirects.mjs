@@ -2536,6 +2536,11 @@ export const redirects = [
     "permanent": true
   },
   {
+    "source": "/foundations/glossary",
+    "destination": "/overview/learn-more/glossary",
+    "permanent": true
+  },
+  {
     "source": "/foundations/limits",
     "destination": "/blockchain-basics/primitives/limits",
     "permanent": true
@@ -3097,7 +3102,7 @@ export const redirects = [
   },
   {
     "source": "/learn/glossary",
-    "destination": "/foundations/glossary",
+    "destination": "/overview/learn-more/glossary",
     "permanent": true
   },
   {
@@ -4572,7 +4577,7 @@ export const redirects = [
   },
   {
     "source": "/v3/concepts/glossary",
-    "destination": "/foundations/glossary",
+    "destination": "/overview/learn-more/glossary",
     "permanent": true
   },
   {
