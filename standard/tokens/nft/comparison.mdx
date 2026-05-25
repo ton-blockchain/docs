@@ -36,9 +36,13 @@ A cNFT (compressed NFT) combines a [standard NFT](/standard/tokens/nft/overview)
 
 ### Additional: Royalty
 
-Royalty is defined at the collection level and exposed via `get_royalty_params` ([TEP‑66](https://github.com/ton-blockchain/TEPs/blob/1e5b2c4c8290d88d6bc3ddc4729812e3ac232c00/text/0066-nft-royalty-standard.md)). Any collection implementation can follow this model.
+Royalty is defined at the collection level and exposed via `get_royalty_params` ([TEP-66](https://github.com/ton-blockchain/TEPs/blob/1e5b2c4c8290d88d6bc3ddc4729812e3ac232c00/text/0066-nft-royalty-standard.md)). Any collection implementation can follow this model.
 
-Marketplaces can rely on this model and pay royalties to the collection creator regardless of how the collection was deployed.
+Marketplaces can attempt to pay royalties to the collection creator regardless of how the collection was deployed.
+
+<Aside type="note">
+  Some NFT implementations included **obligatory** royalties, which required careful off-chain restrictions and management, thus limiting the distribution and promoting violations.
+</Aside>
 
 ## Item
 
