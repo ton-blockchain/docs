@@ -1,5 +1,5 @@
 ---
-title: "Blockchain config"
+title: "Blockchain configuration"
 sidebarTitle: "Config"
 ---
 
@@ -7,26 +7,80 @@ import { Aside } from '/snippets/aside.jsx';
 import { Image } from '/snippets/image.jsx';
 
 <Aside>
-  You can view live values by using [Tonviewer](https://tonviewer.com/config).
+  View live values on [Tonscan](https://tonscan.org/config) or [Tonviewer](https://tonviewer.com/config).
 </Aside>
 
-This page provides a description of the configuration parameters used in the TON Blockchain.
-
-TON features a complex configuration consisting of many technical parameters, some of which are utilized by the blockchain itself, while others serve the ecosystem. However, only a limited number of individuals fully understand the significance of these parameters. This article aims to offer users a straightforward explanation of each parameter and its purpose.
-
-If you are wondering about changing blockchain config in local test setup (e.g. in Sandbox), you can read about it [here](/ecosystem/blueprint/reference#updateconfig).
+TON features a complex configuration comprising many technical parameters, some of which are used by the blockchain itself, while others serve the ecosystem. However, only a limited number of individuals fully understand the significance of these parameters. This article aims to provide users with an overview of configuration parameters, their modification processes, and a straightforward explanation of each parameter and its purpose.
 
 ## Prerequisites
 
-This material should be read alongside the parameter list.
-
-You can view the parameter values in the [current configuration](https://tonviewer.com/config), and the method of writing them into [cells](/foundations/serialization/boc) is outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/languages/tl-b/overview) format.
+The parameter values in the [current configuration](https://tonviewer.com/config), and the method of writing them into [cells](/foundations/serialization/boc) are outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/languages/tl-b/overview) format.
 
 <Aside>
   Configuration values are TL-B typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc).
 </Aside>
 
 All parameters are in place, and you won't get lost. For your convenience, please use the right sidebar for quick navigation.
+
+### Overview
+
+The **configuration parameters** are specific values that influence the behavior of validators and fundamental smart contracts on the TON blockchain. The current values of all configuration parameters are stored as a distinct part of the masterchain state and are retrieved whenever necessary. Consequently, we can refer to the values of the configuration parameters concerning a particular masterchain block. Each shardchain block includes a reference to the most recently known masterchain block; the values from the corresponding masterchain state are considered active for this shardchain block and are used during its generation and validation.
+
+For masterchain blocks, the state of the previous masterchain block is used to extract the active configuration parameters. Therefore, even if certain configuration parameters are attempted to be modified within a masterchain block, any changes will only take effect in the subsequent masterchain block.
+
+Each configuration parameter is identified by a signed 32-bit integer known as the **configuration parameter index**, or simply the **index**. The value of a configuration parameter is always a `Cell`. In some cases, certain configuration parameters may be absent, and it is generally assumed that the value of these missing parameters is `Null`. Additionally, there is a list of **mandatory** configuration parameters that must always be present. This list is stored in configuration parameter `#9`.
+
+All configuration parameters are combined into a **configuration dictionary**, which is a `HashmapE 32 ^Cell` with signed 32-bit keys (the configuration parameter indices) and values that consist of exactly one cell reference. In other words, a configuration dictionary is a value of the TL-B type `HashmapE 32 ^Cell`. The collection of all configuration parameters is retained in the masterchain state as a value of the TL-B type `ConfigParams`:
+
+```tlb
+_ config_addr:bits256 config:^(HashmapE 32 ^Cell) = ConfigParams;
+```
+
+In addition to the configuration dictionary, `ConfigParams` contains `config_addr`—the 256-bit address of the configuration smart contract within the masterchain. Further details on the configuration smart contract will be provided later.
+
+The configuration dictionary, which contains the active values of all configuration parameters, is accessible to all smart contracts through a special TVM register called `c7` during the execution of a transaction. Specifically, when a smart contract is executed, `c7` is initialized as a tuple. This tuple consists of a single element, which is another tuple containing several "context" values that are useful for executing the smart contract, such as the current Unix time (as recorded in the block header).
+
+The tenth entry of this inner tuple (i.e., the one indexed with zero-based index 9) contains a `Cell` representing the configuration dictionary. This configuration dictionary can be accessed by using the TVM instructions `PUSH c7; FIRST; INDEX 9` or the equivalent instruction `CONFIGROOT`. Furthermore, special TVM instructions like `CONFIGPARAM` and `CONFIGOPTPARAM` streamline this process by combining the previous actions with a dictionary lookup, allowing smart contracts to retrieve any configuration parameter by its index.
+
+It is important to note that all configuration parameters are readily accessible to all smart contracts, whether they operate on the masterchain or shardchain. As a result, smart contracts can inspect these parameters and utilize them for specific checks. For instance, a smart contract might extract data storage prices for different WorkChains from a configuration parameter in order to calculate the cost of storing a piece of user-provided data.
+
+The values of configuration parameters are not arbitrary. Specifically, if the configuration parameter index `i` is non-negative, then its value must correspond to a valid value of the TL-B type `ConfigParam i`. Validators enforce this restriction and do not accept changes to configuration parameters with non-negative indices unless the values are valid for the corresponding TL-B type.
+
+The structure of these parameters is defined in the source file [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/block/block.tlb), where `ConfigParam i` is specified for different values of `i`. For example:
+
+```tlb
+_config_addr: bits256 = ConfigParam 0;
+_elector_addr: bits256 = ConfigParam 1;
+
+// Root TON DNS resolver
+_dns_root_addr: bits256 = ConfigParam 4;
+
+// Current network and TVM version
+capabilities#c4 version:uint32 capabilities:uint64 = GlobalVersion;
+_GlobalVersion = ConfigParam 8; // all zeros if absent
+```
+
+The configuration parameter `#8` includes a `Cell` that has no references and contains exactly 104 data bits. The first eight bits are allocated for `11000100` (`0xc4`), followed by 32 bits that represent the currently enabled "global version". This is followed by a 64-bit integer with flags that correspond to the currently enabled capabilities. A more detailed description of all configuration parameters will be provided in an appendix to the TON blockchain documentation. In the meantime, you can review the TL-B scheme in [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/block/block.tlb) to see how different parameters are utilized in the validator sources.
+
+Unlike configuration parameters with non-negative indices, those with negative indices can hold arbitrary values. Validators do not enforce any restrictions on these values. As a result, they can be used to store essential information, such as the Unix time when specific smart contracts are set to begin operating. This information is not critical for block generation but is necessary for some fundamental smart contracts.
+
+### Changing configuration parameters
+
+The current values of configuration parameters are stored in a special section of the masterchain state. But how are they changed?
+
+There is a special smart contract known as the **configuration smart contract** that resides in the masterchain. Its address is specified by the `config_addr` field in `ConfigParams`. The first cell reference in its data must contain an up-to-date copy of all configuration parameters. When a new masterchain block is generated, the configuration smart contract is accessed using its address (`config_addr`), and the new configuration dictionary is extracted from the first cell reference of its data.
+
+Following some validity checks—like ensuring that any value with a non-negative 32-bit index `i` is indeed a valid TL-B type (`ConfigParam i`)—the validator copies this new configuration dictionary into the portion of the masterchain that contains `ConfigParams`. This operation occurs after all transactions have been created, meaning only the final version of the new configuration dictionary stored in the smart contract is evaluated.
+
+If the validity checks fail, the existing configuration dictionary remains unchanged, ensuring that the configuration smart contract cannot install invalid parameter values. If the new configuration dictionary is identical to the current one, no checks are performed, and no changes are made.
+
+All changes to configuration parameters are executed by the configuration smart contract, which defines the rules for modifying these parameters. Currently, the contract supports two methods for changing them:
+
+- **External message**: This method involves an external message signed by a specific private key, which corresponds to a public key stored in the configuration smart contract's data. This approach is typically used in the testnet and, possibly, in smaller private test networks controlled by a single entity, as it allows the operator to easily modify any configuration parameter values.
+
+  It is important to note that this public key can be changed through a special external message signed by the previous key, and if changed to zero, this mechanism becomes disabled. This means the method can be used for fine-tuning right after launch and then permanently disabled.
+
+- **Configuration proposals**: This method involves creating "configuration proposals" that validators vote on. Generally, a configuration proposal must gather votes from more than 3/4 (75%) of all validators by weight, and this requires approval in multiple rounds (i.e., several consecutive sets of validators must confirm the proposed parameter change). This serves as the distributed governance mechanism for the TON blockchain Mainnet.
 
 ## Param 0: config address
 
@@ -632,9 +686,7 @@ This parameter relates to bridges for wrapping tokens from other networks into t
 
 ## Negative parameters
 
-<Aside>
-  Validators enforce TL-B validity only for configuration parameters with non-negative indices. Values with negative indices are not validated against a specific `ConfigParam i` type. See the explanation in [Configuration parameters](/foundations/config) section.
-</Aside>
+Validators enforce TL-B validity only for configuration parameters with non-negative indices. Values with negative indices are **not** validated against a specific `ConfigParam i` type.
 
 ## Next steps
 
