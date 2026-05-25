@@ -1,0 +1,201 @@
+// The .jsonc extension allows free use of comments and trailing commas.
+// The file is named with a dot in front to discourage frequent editing —
+// target dictionaries are located in the resources/dictionaries/ directory.
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en-US",
+  "dictionaryDefinitions": [
+    {
+      // Allowed words
+      "name": "main-list",
+      "path": "resources/dictionaries/custom.txt",
+      "addWords": true,
+    },
+    {
+      // Banned words with no clear or correct replacements
+      // For a few words with those, see the flagWords property later in this file
+      "name": "deny-list",
+      "path": "resources/dictionaries/ban.txt"
+    },
+    {
+      "name": "2lw-deny-list",
+      "path": "resources/dictionaries/two-letter-words-ban.txt"
+    },
+    {
+      "name": "tvm-instructions",
+      "path": "resources/dictionaries/tvm-instructions.txt"
+    }
+  ],
+  "dictionaries": [
+    "main-list",
+    "deny-list",
+    "2lw-deny-list",
+    "tvm-instructions",
+  ],
+  "useGitignore": true,
+  "files": [
+    "**/*.{md,mdx}",
+    "**/*.{js,jsx,mjs}",
+  ],
+  "minWordLength": 3,
+  "overrides": [
+    // Enable case sensitivity for Markdown and MDX files only
+    {
+      "filename": "**/*.{md,mdx}",
+      "caseSensitive": true,
+      // Known incorrect spellings and correct suggestions
+      "flagWords": [
+        "AccountChain->accountchain",
+        "BaseChain->basechain",
+        "boc->BoC",
+        "BOC->BoC",
+        "Github->GitHub",
+        "id->ID",
+        "Id->ID",
+        "MasterChain->masterchain",
+        "ShardChain->shardchain",
+        "StateInit->`StateInit`",
+        "TLB->TL-B",
+        "TONAPI->TonAPI",
+        "Toncenter->TON Center",
+        "toncoins->Toncoin",
+        "Toncoins->Toncoin",
+        "WorkChain->workchain",
+        "zkProofs->ZK-proofs",
+        "zkProof->ZK-proof",
+      ],
+    },
+    // Do not check for banned words (denylists or flagWords) in certain files
+    {
+      "filename": "contribute/style-guide*.mdx",
+      "ignoreWords": [
+        "tos",
+        "DOI",
+        "boc",
+        "BOC",
+      ],
+      "ignoreRegExpList": [
+        "\\b[tT]on[a-zA-Z]+\\b", // ton or Ton-prefixed words
+        "\\b[a-zA-Z]+Chain\\b", // Chain-suffixed words
+      ],
+      "dictionaries": [
+        "!deny-list", // turns off the dictionary
+        "!2lw-deny-list", // turns off the dictionary
+      ]
+    },
+    {
+      "filename": "tolk/features/compiler-optimizations.mdx",
+      "ignoreWords": [
+        "fifting",
+      ]
+    },
+    {
+      "filename": "**/api/**/*.{json,yml,yaml}",
+      "ignoreWords": [
+        "smc",
+      ],
+      "dictionaries": [
+        "!deny-list", // turns off the dictionary
+        "!2lw-deny-list", // turns off the dictionary
+      ]
+    },
+    {
+      "filename": "**/*.{js,jsx,mjs}",
+      "ignoreWords": [
+        "Dests",
+      ],
+      "dictionaries": [
+        "!deny-list", // turns off the dictionary
+        "!2lw-deny-list", // turns off the dictionary
+      ]
+    },
+    {
+      "filename": "resources/grammars/*.json",
+      "ignoreWords": [
+        "tlb",
+      ],
+      "dictionaries": [
+        "!deny-list", // turns off the dictionary
+        "!2lw-deny-list", // turns off the dictionary
+      ]
+    },
+    {
+      "filename": "ecosystem/ai/mcp.mdx",
+      "ignoreWords": [
+        "mcp", // lowercase in the title
+      ],
+    }
+  ],
+  "ignorePaths": [
+    // Some whitepapers
+    "foundations/whitepapers/tblkch.mdx",
+    "foundations/whitepapers/ton.mdx",
+    "foundations/whitepapers/tvm.mdx",
+    "languages/fift/whitepaper.mdx",
+    "tolk/features/standard-library.mdx",
+    // Generated files
+    "tvm/instructions.mdx",
+    // Binaries
+    "**/*.boc",
+    // Code
+    "**/*.fc",
+    "**/*.fif",
+    "**/*.fift",
+    "**/*.func",
+    "**/*.tact",
+    "**/*.tasm",
+    "**/*.tlb",
+    "**/*.tolk",
+    "**/*.py*",
+    "**/*.{ts,tsx}",
+    "**/*.css",
+    // Miscellaneous
+    "**/*.git*",
+    "**/*.svg",
+    "**/*.txt",
+    "CODEOWNERS",
+    "LICENSE-*",
+    "snippets/tvm-instruction-table.jsx",
+    "snippets/catchain-visualizer.jsx"
+  ],
+  "ignoreRegExpList": [
+    //
+    // Predefined patterns from:
+    // https://github.com/streetsidesoftware/cspell/blob/main/packages/cspell-lib/src/lib/Settings/DefaultSettings.ts
+    //
+    "SpellCheckerDisable",
+    "SpellCheckerIgnoreInDocSetting",
+    "Urls",
+    "Email",
+    "RsaCert",
+    "SshRsa",
+    "Base64MultiLine",
+    "Base64SingleLine",
+    "CommitHash",
+    "CommitHashLink",
+    "CStyleHexValue",
+    "CSSHexValue",
+    "SHA",
+    "HashStrings",
+    "UnicodeRef",
+    "UUID",
+    "href",
+    //
+    // Custom patterns
+    //
+    "url: \".*?\"", // frontmatter url field
+    "\\s*[^\\s]*?=[\"'\\{]", // arbitrary JSX attribute names
+    "=\\s*\".*?\"", // string values of JSX attributes
+    "=\\s*'.*?'", // string values of JSX attributes
+    "(?<!\\\\)\\$(?:\\\\.|[^$\\\\])*?\\$", // inline math
+    "/(?<!\\\\)\\$\\$[\\s\\S]*?\\$\\$/g", // block math
+    "(?<!\\\\)``.*?``", // inline code with double backticks
+    "(?<!\\\\)`.*?`", // inline code
+    "/^([ \\t]*```).*([\\s\\S]*?)^\\1$/gmx", // block code
+    "^import[ \\t].+$", // import ...
+    "/^export[ \\t].+?(?=\\r?\\n\\r?\\n)/gms", // export ...
+    "(?<!\\\\)\\{(?:[^{}]|\\{(?:[^{}]|\\{[^{}]*\\})*\\})*\\}", // jsx expressions in {}
+    "openapi: .+$", // part of the frontmatter on OpenAPI-generated MDX pages
+  ],
+}

@@ -1,6 +1,6 @@
-# Mintlify Starter Kit
+# TON Docs
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+**[Follow the full quickstart guide](https://www.mintlify.com/docs/quickstart)**
 
 ## Development
 
@@ -20,25 +20,39 @@ View your local preview at `http://localhost:3000`.
 
 ### Spell checks
 
-Mintlify does them in each PR with the help of [Vale](https://vale.sh/). To also use Vale locally and run corresponding "scripts" in `package.json`, see: [Vale installation docs](https://vale.sh/docs/install).
+> \[!NOTE]
+> Automatic spelling checks are performed for changed files in each Pull Request.
 
-Then, run the following commands:
+To check spelling of **all** files, run:
 
 ```shell
-# Enables MDX support for Vale
-npm install -g mdx2vast
+npm run check:spell
 
-# Syncronizes necessary packages and add-ons
-vale sync
+# or simply:
+
+npm run spell
 ```
 
-#### Adding new words to the spell checking dictionary
+To check spelling of some **selected** files, run:
 
-The dictionaries (_vocabularies_) for custom words is placed under `.vale/config/vocabularies/Custom`: the `accept.txt` file describes all allowed entries, while `reject.txt` file states all invalid entries that must be rejected.
+```shell
+npm run spell:some <FILES...>
+```
 
-See more info on dictionaries here: [Vale vocabularies docs](https://vale.sh/docs/keys/vocab).
+#### Adding new words to the spellchecking dictionary
+
+The dictionaries (or vocabularies) for custom words are placed under `resources/dictionaries`. There, each dictionary describes additional allowed or invalid entries.
+
+The primary dictionary is `resources/dictionaries/custom.txt` — extend it in case a word exists in American English but was flagged by CSpell as invalid, or in cases where the word does not exist and shall be prohibited. For the latter, add words to `resources/dictionaries/ban.txt` with the `!` prefix when there are no clear correct replacements.
+
+If an existing two-letter word was flagged as forbidden, remove it from the `resources/dictionaries/two-letter-words-ban.txt` file. However, if a word happened to be a part of a bigger word, e.g., `CL` in `OpenCL`, do not ban it and instead add the bigger word to the primary dictionary in `resources/dictionaries/custom.txt`.
+
+See more: [CSpell docs on custom dictionaries](https://cspell.org/docs/dictionaries/custom-dictionaries).
 
 ### Format checks
+
+> \[!NOTE]
+> Automatic formatting checks are performed for changed files in each Pull Request.
 
 To check formatting of **all** files, run:
 
@@ -58,6 +72,10 @@ To check and fix formatting of some **selected** files, run:
 npm run fmt:some <FILES...>
 ```
 
+## Using components and snippets
+
+See the [`snippets/` directory](./snippets) and the corresponding docs in [`contribute/snippets/` MDX files](./contribute/snippets/).
+
 ## Publishing changes
 
 [Mintlify's GitHub app](https://dashboard.mintlify.com/settings/organization/github-app) is connected to this repository. Thus, changes are deployed to production automatically after pushing to the default branch (`main`).
@@ -73,3 +91,10 @@ npm run fmt:some <FILES...>
 
 - [Mintlify documentation](https://mintlify.com/docs)
 - [Mintlify community](https://mintlify.com/community)
+
+## License
+
+This project is dual-licensed:
+
+- All documentation and non-code text are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- All code snippets are licensed under [MIT](https://opensource.org/license/mit)
