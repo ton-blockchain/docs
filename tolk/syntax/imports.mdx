@@ -36,13 +36,13 @@ All top-level symbols must have unique names.
 
 - There is no `export const ...` or `export fun ...` declarations needed.
 - All constants, functions, and other top-level declarations are visible by default.
-- No module‑private symbols exist.
+- No module-private symbols exist.
 
 As a result, all top-level symbols across imported files must have unique names. Declaring `fun log()` in multiple files causes a duplicate declaration error when both files are imported.
 
 Techniques to avoid name collisions:
 
-1. Use long, descriptive names for top-level symbols, especially in multi‑contract projects.
+1. Use long, descriptive names for top-level symbols, especially in multi-contract projects.
    - Good: `ReturnExcessesBack`, `WalletStorage`.
    - Bad: `Excesses`, `Storage`.
 1. Group integer constants to enums.
