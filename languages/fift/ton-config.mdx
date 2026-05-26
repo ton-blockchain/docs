@@ -330,24 +330,29 @@ Voting for a configuration proposal is limited to the current validators listed 
 
 - The operator then invokes a special Fift script, [`config-proposal-vote-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-req.fif), found in the `crypto/smartcont` directory of the source tree. They must indicate both `val-idx` and `config-proposal-id` as arguments:
 
+  ```bash
+  fift -s config-proposal-vote-req.fif -i 0 64654898543692093106630260209820256598623953458404398631153796624848083036321
   ```
-    $ fift -s config-proposal-vote-req.fif -i 0 64654898543692093106630260209820256598623953458404398631153796624848083036321
-    Creating a request to vote for configuration proposal 0x8ef1603180dad5b599fa854806991a7aa9f280dbdb81d67ce1bedff9d66128a1 on behalf of validator with index 0
-    566F744500008EF1603180DAD5B599FA854806991A7AA9F280DBDB81D67CE1BEDFF9D66128A1
-    Vm90RQAAjvFgMYDa1bWZ-oVIBpkaeqnygNvbgdZ84b7f-dZhKKE=
-    Saved to file validator-to-sign.req
+
+  Expected output:
+
+  ```text
+  Creating a request to vote for configuration proposal 0x8ef1603180dad5b599fa854806991a7aa9f280dbdb81d67ce1bedff9d66128a1 on behalf of validator with index 0
+  566F744500008EF1603180DAD5B599FA854806991A7AA9F280DBDB81D67CE1BEDFF9D66128A1
+  Vm90RQAAjvFgMYDa1bWZ-oVIBpkaeqnygNvbgdZ84b7f-dZhKKE=
+  Saved to file validator-to-sign.req
   ```
 
 - The vote request must then be signed using the current validator’s private key, with the command `sign <validator-key-id> 566F744...28A1` in the `validator-engine-console` connected to the validator.
 
-- Next, the [`config-proposal-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-signed.fif) script is invoked. This script has similar arguments to `config-proposal-req.fif`, but it also requires two additional arguments: the base64 representation of the public key used to sign the vote request and the base64 representation of the signature.
+- Next, the [`config-proposal-vote-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-signed.fif) script is invoked. This script takes the same arguments as `config-proposal-vote-req.fif`, plus two more: the base64-encoded validator public key used to sign the vote request, and the base64-encoded signature.
 
 - This process generates a file named `vote-msg-body.boc`, which contains the body of an internal message carrying a signed vote for this configuration proposal.
 
 - After that, `vote-msg-body.boc` must be sent in an internal message from any smart contract residing in the masterchain (typically from the controlling smart contract of the validator) along with a small amount of Toncoin for processing (usually, 1.5 Toncoin is sufficient). This step follows the same procedure used during validator elections. The command is typically structured as follows:
 
-  ```
-  $ fift -s [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif) my_wallet_id -1:5555555555555555555555555555555555555555555555555555555555555555 1 1.5 -B vote-msg-body.boc
+  ```bash
+  fift -s wallet.fif my_wallet_id -1:5555555555555555555555555555555555555555555555555555555555555555 1 1.5 -B vote-msg-body.boc
   ```
 
   (if a simple wallet controls the validator), followed by sending the resulting file `wallet-query.boc` from the Lite Client:
@@ -376,12 +381,12 @@ Voting for a configuration proposal is limited to the current validators listed 
 
 ### An automated way of voting on configuration proposals
 
-The automation provided by the command `createelectionbid` in `validator-engine-console` facilitates participation in validator elections. Similarly, both `validator-engine` and `validator-engine-console` automate most of the steps mentioned in the previous section, allowing you to generate a `vote-msg-body.boc` that can be used with the controlling wallet.
+The `create-election-bid` command in `validator-engine-console` automates participation in validator elections. In the same spirit, `validator-engine` and `validator-engine-console` automate most of the steps in the previous section and produce a `vote-msg-body.boc` suitable for sending from the controlling wallet.
 
-To use this method, you need to install the Fift scripts [`config-proposal-vote-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-req.fif) and [`config-proposal-vote-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-signed.fif) in the same directory that the validator-engine uses to locate [`validator-elect-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/validator-elect-req.fif) and [`validator-elect-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/validator-elect-signed.fif). Once you have those files set up, you can create the `vote-msg-body.boc` by executing the following command in the validator-engine-console:
+To use this method, install the Fift scripts [`config-proposal-vote-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-req.fif) and [`config-proposal-vote-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-signed.fif) in the same directory that the validator-engine uses to locate [`validator-elect-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/validator-elect-req.fif) and [`validator-elect-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/validator-elect-signed.fif). Once you have those files set up, you can create the `vote-msg-body.boc` by executing the following command in the validator-engine-console:
 
-```bash title="lite-client"
-createproposalvote 64654898543692093106630260209820256598623953458404398631153796624848083036321 vote-msg-body.boc
+```bash title="validator-engine-console"
+create-proposal-vote 64654898543692093106630260209820256598623953458404398631153796624848083036321 vote-msg-body.boc
 ```
 
 This command will generate the `vote-msg-body.boc`, which contains the body of the internal message to be sent to the configuration smart contract.
