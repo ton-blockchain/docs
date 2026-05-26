@@ -30,10 +30,10 @@ For masterchain blocks, the state of the previous masterchain block is used to e
 
 Each configuration parameter is identified by a signed 32-bit integer known as the **configuration parameter index**, or simply the **index**. The value of a configuration parameter is always a `Cell`. In some cases, certain configuration parameters may be absent, and it is generally assumed that the value of these missing parameters is `Null`. Additionally, there is a list of **mandatory** configuration parameters that must always be present. This list is stored in configuration parameter `#9`.
 
-All configuration parameters are combined into a **configuration dictionary**, which is a `HashmapE 32 ^Cell` with signed 32-bit keys (the configuration parameter indices) and values that consist of exactly one cell reference. In other words, a configuration dictionary is a value of the TL-B type `HashmapE 32 ^Cell`. The collection of all configuration parameters is retained in the masterchain state as a value of the TL-B type `ConfigParams`:
+All configuration parameters are combined into a **configuration dictionary** with signed 32-bit keys (the configuration parameter indices) and values that consist of exactly one cell reference. The collection of all configuration parameters is retained in the masterchain state as a value of the TL-B type `ConfigParams`:
 
 ```tlb
-_ config_addr:bits256 config:^(HashmapE 32 ^Cell) = ConfigParams;
+_ config_addr:bits256 config:^(Hashmap 32 ^Cell) = ConfigParams;
 ```
 
 In addition to the configuration dictionary, `ConfigParams` contains `config_addr`—the 256-bit address of the configuration smart contract within the masterchain. Further details on the configuration smart contract will be provided later.
@@ -49,15 +49,12 @@ The values of configuration parameters are not arbitrary. Specifically, if the c
 The structure of these parameters is defined in the source file [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/block/block.tlb), where `ConfigParam i` is specified for different values of `i`. For example:
 
 ```tlb
-_config_addr: bits256 = ConfigParam 0;
-_elector_addr: bits256 = ConfigParam 1;
+_ config_addr:bits256 = ConfigParam 0;
+_ elector_addr:bits256 = ConfigParam 1;
+_ dns_root_addr:bits256 = ConfigParam 4;  // root TON DNS resolver
 
-// Root TON DNS resolver
-_dns_root_addr: bits256 = ConfigParam 4;
-
-// Current network and TVM version
 capabilities#c4 version:uint32 capabilities:uint64 = GlobalVersion;
-_GlobalVersion = ConfigParam 8; // all zeros if absent
+_ GlobalVersion = ConfigParam 8;  // all zero if absent
 ```
 
 The configuration parameter `#8` includes a `Cell` that has no references and contains exactly 104 data bits. The first eight bits are allocated for `11000100` (`0xc4`), followed by 32 bits that represent the currently enabled "global version". This is followed by a 64-bit integer with flags that correspond to the currently enabled capabilities. A more detailed description of all configuration parameters will be provided in an appendix to the TON blockchain documentation. In the meantime, you can review the TL-B scheme in [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/block/block.tlb) to see how different parameters are utilized in the validator sources.

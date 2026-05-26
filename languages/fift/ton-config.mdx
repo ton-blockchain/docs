@@ -12,7 +12,7 @@ This article provides step-by-step instructions for changing these parameters ba
 ## Prerequisites
 
 - General knowledge of [TON blockchain configuration parameters](/foundations/config) and how they can be changed.
-- Familiarity with [Fift](/language/fift/overview); installed [`fift` binary](/languages/fift/overview#installation).
+- Familiarity with [Fift](/languages/fift/overview); installed [`fift` binary](/languages/fift/overview#installation).
 - Familiarity with [Liteserver (`lite-client`)](/ecosystem/nodes/overview#interacting-with-ton-nodes); installed [`lite-client` binary](https://github.com/ton-blockchain/ton/releases/latest).
 
 ## Creating configuration proposals
@@ -94,7 +94,8 @@ We observe that `config.version!`, excluding the last `8 config!`, effectively a
 
 ```fift
 #!/usr/bin/fift -s
-[`"TonUtil.fif"`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/fift/lib/TonUtil.fif) include
+// https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/fift/lib/TonUtil.fif
+"TonUtil.fif" include
 
 1 constant capIhr
 2 constant capCreateStats
@@ -199,7 +200,9 @@ The parameters for the `proposal_storage_price` get-method include the following
   - **Do first (testnet)**: verify addresses and amounts on TON Testnet.
 </Aside>
 
-To create this proposal, we need to pay 2.3408 Toncoin. It's advisable to add at least 1.5 Toncoin to cover the processing fees. Therefore, we will send a total of 4 Toncoin with the request (any excess Toncoin will be returned). We will then use [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif) (or the appropriate Fift script for our wallet) to execute a transfer from our wallet to the configuration smart contract, including the 4 Toncoin and the body from `config-msg-body.boc`. This process typically looks like:
+To create this proposal, we need to pay 2.3408 Toncoin. It is advisable to add at least 1.5 Toncoin to cover the processing fees. Therefore, we will send a total of 4 Toncoin with the request — any excess Toncoin will be returned. We will then use [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif) or the appropriate Fift script for our wallet to execute a transfer from the wallet to the configuration smart contract, attaching 4 Toncoin and the body from `config-msg-body.boc`.
+
+This process typically looks as follows:
 
 ```bash
 fift -s wallet.fif my-wallet -1:5555555555555555555555555555555555555555555555555555555555555555 31 4. -B config-msg-body.boc
