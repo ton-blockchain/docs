@@ -543,7 +543,7 @@ If the argument `s` is not a slice containing ASCII characters, the debug log wi
 () run_method0 (int method_id)
 ```
 
-Executes the 0 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 0 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function()
@@ -555,7 +555,7 @@ The `run_method0` is useful for dynamically executing methods at run-time.
 For example, receiving the method ID to execute in the incoming internal message.
 
 <Aside>
-  Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/languages/func/functions#method-id-specifier):
+  Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/languages/func/functions#method_id-specifier):
 
   ```func
   () test() method_id(1234)
@@ -581,7 +581,7 @@ For example, receiving the method ID to execute in the incoming internal message
 forall X -> () run_method1 (int method_id, X arg1)
 ```
 
-Executes the 1 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`, and passes `arg1` as argument to the function.
+Executes the 1 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`, and passes `arg1` as argument to the function.
 The function with ID `method_id` must have a signature of the form:
 
 ```func
@@ -618,7 +618,7 @@ As with [`run_method0`](#run-method0), function `run_method1` is useful for dyna
 forall X, Y -> () run_method2 (int method_id, X arg1, Y arg2)
 ```
 
-Executes the 2 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 2 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function(T1 a1, T2 a2)
@@ -635,7 +635,7 @@ The same observations and warnings apply as with [`run_method1`](#run-method1).
 forall X, Y, Z -> () run_method3 (int method_id, X arg1, Y arg2, Z arg3)
 ```
 
-Executes the 3 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 3 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function(T1 a1, T2 a2, T3 a3)
