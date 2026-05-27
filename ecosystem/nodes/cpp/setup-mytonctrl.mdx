@@ -1,0 +1,187 @@
+---
+title: "Run a node with MyTonCtrl"
+description: "Provision hardware, install MyTonCtrl, and follow runbooks for validator, liteserver, or archive roles."
+---
+
+import { Aside } from '/snippets/aside.jsx';
+
+<Aside
+  type="caution"
+  title="Handle validator keys like production secrets."
+>
+  Keep recovery phrases offline, restrict shell access, and rehearse new procedures on testnet before touching wallets that hold real stake.
+</Aside>
+
+## Plan the environment
+
+### Supported operating systems
+
+MyTonCtrl is highly recommended to install on the following distributions:
+
+- Ubuntu 22.04 LTS
+- Ubuntu 24.04 LTS
+
+### Hardware sizing by role
+
+| Role               | CPU                                       | RAM    | Storage                                  | Network         | Traffic                              | Notes                                                            |
+| ------------------ | ----------------------------------------- | ------ | ---------------------------------------- | --------------- | ------------------------------------ | ---------------------------------------------------------------- |
+| Validator node     | 16 dedicated cores (32 threads preferred) | 128 GB | ≥1 TB NVMe SSD or provisioned 64k+ IOPS  | ≥1 Gbps up/down | 64 TB/month typical (peaks \~100 TB) | Leave headroom for elections and snapshots.                      |
+| Liteserver         | 16 cores                                  | 128 GB | ≥1 TB NVMe SSD                           | ≥1 Gbps         | \~16 TB/month peaks                  | Hetzner/OVH are acceptable for liteservers (not for validators). |
+| Archive liteserver | 16 cores                                  | 128 GB | ≥20 TB NVMe or ZFS pool with compression | ≥1 Gbps         | ≥16 TB/month                         | Plan for continuous growth; monitor ZFS capacity.                |
+
+> Disk latency is the common bottleneck. Benchmark storage before going live (`MyTonCtrl> benchmark`).
+
+### Network and ports
+
+- Obtain a static public IPv4 address for each node.
+- Forward a single UDP port from the internet to the node and leave all outbound ports open. The port is assigned randomly during MyTonCtrl installation but can be set before via the `VALIDATOR_PORT` environment variable. To check the port after installation, refer to the `Node ports` field on `status` command output.
+
+### Prepare the operator account
+
+If you still need a dedicated operator, create and switch to it before installing MyTonCtrl:
+
+```bash
+sudo adduser <USERNAME>
+sudo usermod -aG sudo <USERNAME>
+# reconnect as the new user
+ssh <USERNAME>@<SERVER_IP>
+```
+
+## Install MyTonCtrl
+
+Run the installer from the operator account with `sudo` so it can create system users and services:
+
+```bash
+wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
+sudo bash install.sh
+```
+
+The interactive wizard walks through:
+
+1. Selecting mainnet vs. testnet (or supplying a custom network config).
+1. Choosing the initial mode (`validator` or `liteserver`).
+1. Optionally downloading blockchain dumps via TON Storage (recommended for archive builds).
+1. Whether to run post-download tasks in the background (useful when pulling large dumps).
+
+Refer to the [MyTonCtrl overview](/ecosystem/nodes/cpp/mytonctrl/overview#install-mytonctrl) for installer flags and environment variables when you need unattended deployments.
+
+### Verify services and synchronization
+
+After installation, launch MyTonCtrl console via `mytonctrl` command and check the status:
+
+```bash
+mytonctrl
+
+MyTonCtrl> status
+```
+
+Wait until the node is synchronized: verify that `Local validator out of sync` and `Masterchain out of sync` both show ≤3 seconds.
+
+### Baseline maintenance tasks
+
+- `MyTonCtrl> create_backup` creates a snapshot of the current state (private keys and configs). It is highly recommended to make a backup of the node and store it in a secure space.
+- `MyTonCtrl> update` updates MyTonCtrl CLI.
+- `MyTonCtrl> upgrade` updates Node software.
+
+### Operational discipline
+
+For all nodes:
+
+- Track network announcements via [`@tonstatus`](https://t.me/tonstatus) and enable notifications.
+- Keep hardware aligned with the [minimum system requirements](#hardware-sizing-by-role); upgrade storage promptly if metrics show saturation.
+
+For validator nodes:
+
+- Monitor RAM, disk, CPU, and bandwidth dashboards. Contact [`@validators_help_bot`](https://t.me/validators_help_bot) if metrics or efficiency drop below target.
+- Rerun `check_ef` or consult the [efficiency API](https://toncenter.com/api/qos/index.html#/) when diagnosing performance.
+
+## Liteserver quickstart
+
+### Activate liteserver services
+
+If the node was not installed with `liteserver` mode enabled, activate it via `enable_mode liteserver`:
+
+```bash
+MyTonCtrl> enable_mode liteserver
+MyTonCtrl> status_modes
+```
+
+### Configure endpoints and proxies
+
+Print the local liteserver configuration — its IP, port, and public key:
+
+```bash
+MyTonCtrl> installer plsc
+```
+
+Create a new network config:
+
+```bash
+MyTonCtrl> installer clcf
+```
+
+The command writes a `/usr/bin/ton/local.config.json` file with the full network configuration, ready for clients to connect to the local liteserver.
+
+### Open the liteserver port
+
+1. Update security groups or configure `ufw` on bare-metal hosts:
+
+   ```bash
+   sudo apt install -y ufw
+   sudo ufw allow ssh
+   sudo ufw allow <port>
+   sudo ufw enable
+   sudo ufw status
+   ```
+
+1. Confirm connectivity by initializing a lite-client using the generated config.
+
+## Archive liteserver quickstart
+
+**You need:** liteserver mode enabled, ≥12 TB of fast storage, and ZFS installed for handling compressed dumps.
+
+### Prepare storage with ZFS
+
+```bash
+sudo apt install -y zfsutils-linux
+sudo zpool create data <disk>
+sudo zfs set compression=lz4 data
+sudo zfs create data/ton-work
+sudo zfs set mountpoint=/var/ton-work data/ton-work
+```
+
+Use a dedicated SSD-backed pool and monitor free space—archive size grows continually (check the [archive dump index](https://archival-dump.ton.org/)).
+
+### Install and download archive data
+
+[Run the installer](#install-mytonctrl), choose `liteserver` mode, and answer **Yes (1)** when prompted to download archive blocks via TON Storage. Allow the job to continue in the background—the download may take days.
+
+Track progress in MyTonCtrl logs and wait for `status` → `Local validator out of sync` field to become green number before serving traffic.
+
+### Troubleshooting imports
+
+Increase verbosity temporarily to review archive import logs, then revert:
+
+```bash
+MyTonCtrl> installer set_node_argument --verbosity 3
+tail -f /var/ton-work/log*
+# ...review output...
+MyTonCtrl> installer set_node_argument --verbosity 1
+```
+
+If you see repeated `Importing archive ... from net` messages, investigate storage latency—IOPS may be insufficient.
+
+### Snapshot and recovery tips
+
+- Use ZFS snapshots (`zfs snapshot data/ton-work@<label>`) for fast rollbacks.
+- To restore, stop services before `zfs rollback`: `sudo systemctl stop validator`.
+- Keep off-site backups of `/var/ton-work/keys` and `create_backup` archives.
+
+## Monitoring and support
+
+- Subscribe to [`@tonstatus`](https://t.me/tonstatus) and [`@tonstatus_notifications`](https://t.me/tonstatus_notifications) for real-time validator alerts.
+- Use the private alert bot once your node is stable: `MyTonCtrl> enable_mode alert-bot` then configure credentials per the [alerting guide](/ecosystem/nodes/cpp/mytonctrl/alerting).
+- Contact validator support via [`@validators_help_bot`](https://t.me/validators_help_bot); regular node operators can use [`@ton_node_help`](https://t.me/ton_node_help).
+- Audit node health weekly: `status_fast`, `check_ef`, disk usage (`du -sh /var/ton-work/db`), and snapshot consistency.
+
+Once comfortable with these workflows, dive into the [detailed command references](/ecosystem/nodes/cpp/mytonctrl/overview) for advanced automation.

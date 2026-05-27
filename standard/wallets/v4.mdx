@@ -1,9 +1,10 @@
 ---
 title: "Wallet V4"
-sidebarTitle: "V4"
+sidebarTitle: "Wallet V4"
 ---
 
 import { Aside } from '/snippets/aside.jsx';
+import { Image } from '/snippets/image.jsx';
 
 | Contract version | Hash                                                               | Link                                                                                                                                                                                                                                             |
 | ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -14,7 +15,7 @@ This version retains all the functionality of the previous versions and introduc
 
 Plugins enable developers to implement custom logic that integrates with wallet functionality. When a plugin is installed on a wallet through a signed transaction, it can force wallet to send internal message with predefined opcode (`0xf06c7567`) and any available Toncoin amount to specified addresses. Plugins are separate smart contracts that can implement their own custom logic.
 
-Here you can view [wallet V4 source code](https://github.com/ton-blockchain/wallet-contract).
+View the original [wallet V4 source code](https://github.com/ton-blockchain/wallet-contract) or the code of an [example subscription plugin](https://github.com/ton-blockchain/wallet-contract/blob/main/func/simple-subscription-plugin.fc).
 
 ## Plugins
 
@@ -27,7 +28,7 @@ Here you can view [wallet V4 source code](https://github.com/ton-blockchain/wall
 <Aside
   type="caution"
 >
-  Due to security reasons mentioned above, it is not possible to install plugins using [TonConnect](/ecosystem/ton-connect/overview).
+  Due to security reasons mentioned above, it is not possible to install plugins using [TON Connect](/ecosystem/ton-connect/overview).
 </Aside>
 
 Plugins are essentially other smart contracts on TON that developers are free to implement as they wish. In relation to the wallet, they are simply addresses of smart contracts stored in a dictionary in the wallet's persistent memory. These plugins are allowed to request funds and remove themselves from the "allowed list" by sending internal messages to the wallet.
@@ -110,28 +111,11 @@ Next, let's explore the types of messages:
 
 The simple send operation processes a chain of messages, where each message contains a mode and a reference to the actual message cell:
 
-```mermaid
-graph TB
-    A["External Message Body"] --> B["opcode = 0x0"]
-    B --> C["Message Chain Processing"]
-
-    C --> D["Message 1"]
-    D --> E["mode: 8 bits"]
-    D --> F["^Cell: Message 1"]
-
-    C --> G["Message 2"]
-    G --> H["mode: 8 bits"]
-    G --> I["^Cell: Message 2"]
-
-    C --> J["..."]
-    J --> K["Up to 4 messages total"]
-
-    style A fill:#e1f5fe
-    style E fill:#fff3e0
-    style F fill:#f3e5f5
-    style H fill:#fff3e0
-    style I fill:#f3e5f5
-```
+<Image
+  src="/resources/images/wallets/simple_opcode_light.svg"
+  darkSrc="/resources/images/wallets/simple_opcode_dark.svg"
+  alt="Simple send operation message chain"
+/>
 
 **Processing logic:**
 

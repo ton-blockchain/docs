@@ -47,11 +47,14 @@ const checkUnique = (config) => {
   const navLinksSet = getNavLinksSet(config);
   const navLinks = getNavLinks(config);
   if (navLinks.length != navLinksSet.size) {
+    const duplicates = navLinks.filter(
+      (val, idx) => navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1
+    );
     return {
       ok: false,
       error: composeErrorList(
         'Found duplicate navigation paths:',
-        navLinks.filter((val, idx) => navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1),
+        duplicates,
         'Navigation paths in docs.json must be unique!',
       ),
     };
@@ -59,7 +62,6 @@ const checkUnique = (config) => {
   // Otherwise
   return { ok: true };
 };
-
 /**
  * Check that all navigation .mdx pages exist.
  *
@@ -90,11 +92,11 @@ const checkExist = (config) => {
  * Check that all existing non-API .mdx pages are covered by `config`.
  *
  * @param config {Readonly<DocsConfig>} Local docs.json configuration
- * @return {CheckResult}
+ * @return {Promise<CheckResult>}
  */
-const checkCover = (config) => {
+const checkCover = async (config) => {
   const uniqPages = getNavLinksSet(config);
-  const parser = initMdxParser();
+  const parser = await initMdxParser();
   /** @type string[] */
   const stubPages = [];
 
@@ -173,7 +175,7 @@ const main = async () => {
 
   if (shouldRunAll || argCover) {
     console.log('🏁 Checking the coverage of .mdx pages by docs.json...');
-    handleCheckResult(checkCover(config), 'All non-API, regular .mdx pages without stubs are present in docs.json.');
+    handleCheckResult(await checkCover(config), 'All non-API, regular .mdx pages without stubs are present in docs.json.');
   }
 
   // In case of errors, exit with code 1
