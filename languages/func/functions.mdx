@@ -393,7 +393,7 @@ forall X, Y -> [Y, X] pair_swap([X, Y] pair) {
 }
 ```
 
-This function declares two type variables `X` and `Y`. The function uses these two type variables to declare an argument `pair` of type `[X, Y]`, i.e., a [tuple](/languages/func/types#tuple-types) where the first component is of type `X` and the second component of type `Y`. The function then swaps the components of the tuple and returns a tuple of type `[Y, X]`.
+This function declares two type variables `X` and `Y`. The function uses these two type variables to declare an argument `pair` of type `[X, Y]`, i.e., a [tuple](/languages/func/types#tuple-type) where the first component is of type `X` and the second component of type `Y`. The function then swaps the components of the tuple and returns a tuple of type `[Y, X]`.
 
 That `pair_swap` is polymorphic means that it can be called with tuples of type `[int, int]`, `[int, cell]`, `[cell, slice]`, `[[int, int], cell]`, etc.
 
