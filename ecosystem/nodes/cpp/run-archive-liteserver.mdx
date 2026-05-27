@@ -24,12 +24,13 @@ Running an archive liteserver requires significant storage and network resources
 
 - 16-core CPU
 - 128 GB RAM
-- At least 16 TB of NVMe Gen4+ SSD storage (Enterprise grade preferred), 20 TB if ZFS compression is disabled, or Provisioned 64k+ IOPS storage. If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level (e.g., `echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy`).
+- At least 16 TB of NVMe Gen4+ SSD storage (Enterprise grade preferred), 20 TB if ZFS compression is disabled, or Provisioned 64k+ IOPS storage.
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
 
 <Aside type="tip">
   Currently, uncompressed archive data requires approximately 20 TB. Using ZFS with compression reduces this to \~16 TB.
+  If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level (e.g., `echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy`).
 </Aside>
 
 ### 1.2 OS and system requirements
