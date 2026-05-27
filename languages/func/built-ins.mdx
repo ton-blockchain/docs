@@ -140,7 +140,7 @@ apply(+);   ;; DOES NOT COMPILE
 
 [`null?`](#null%3F)   [`throw`](#throw)   [`throw_if`](#throw_if)   [`throw_unless`](#throw_unless)
 
-[`throw_arg`](#throw-arg)   [`throw_arg_if`](#throw-arg-if)   [`throw_arg_unless`](#throw-arg-unless)   [`load_int`](#load-int)
+[`throw_arg`](#throw_arg)   [`throw_arg_if`](#throw-arg-if)   [`throw_arg_unless`](#throw-arg-unless)   [`load_int`](#load-int)
 
 [`load_uint`](#load_uint)   [`preload_int`](#preload-int)   [`preload_uint`](#preload-uint)   [`store_int`](#store_int)
 
@@ -320,8 +320,8 @@ forall X -> () throw_arg_if(X arg, int error, int condition)
 
 Triggers an exception only if the provided condition is true, i.e., if the condition is `-1`.
 
-Similarly to [`throw_arg`](#throw-arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
+Similarly to [`throw_arg`](#throw_arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
+processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw_arg).
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
@@ -333,8 +333,8 @@ forall X -> () throw_arg_unless(X arg, int error, int condition)
 
 Triggers an exception only if the provided condition is false, i.e., if the condition is `0`.
 
-Similarly to [`throw_arg`](#throw-arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
+Similarly to [`throw_arg`](#throw_arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
+processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw_arg).
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
