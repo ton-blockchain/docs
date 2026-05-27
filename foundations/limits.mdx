@@ -60,15 +60,15 @@ There are two sources of network parameter definitions: <br />
 
 | Name                  | Description                                  | Value    | Units     | Type   | Defined in                                      |
 | --------------------- | -------------------------------------------- | -------- | --------- | ------ | ----------------------------------------------- |
-| `bytes_underload`     | Block size limit for underload state         | 131072   | bytes     | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `bytes_soft_limit`    | Block size soft limit                        | 524288   | bytes     | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `bytes_hard_limit`    | Absolute maximum block size in bytes         | 1048576  | bytes     | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `gas_underload`       | Block gas limit for underload state          | 2000000  | gas units | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `gas_soft_limit`      | Block gas soft limit                         | 10000000 | gas units | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `gas_hard_limit`      | Absolute maximum block gas                   | 20000000 | gas units | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `lt_delta_underload`  | Logical time delta limit for underload state | 1000     | lt units  | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `lt_delta_soft_limit` | Logical time delta soft limit                | 5000     | lt units  | uint32 | [config23](/foundations/config#param-22-and-23) |
-| `lt_delta_hard_limit` | Absolute maximum logical time delta          | 10000    | lt units  | uint32 | [config23](/foundations/config#param-22-and-23) |
+| `bytes_underload`     | Block size limit for underload state         | 131072   | bytes     | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `bytes_soft_limit`    | Block size soft limit                        | 524288   | bytes     | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `bytes_hard_limit`    | Absolute maximum block size in bytes         | 1048576  | bytes     | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `gas_underload`       | Block gas limit for underload state          | 2000000  | gas units | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `gas_soft_limit`      | Block gas soft limit                         | 10000000 | gas units | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `gas_hard_limit`      | Absolute maximum block gas                   | 20000000 | gas units | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `lt_delta_underload`  | Logical time delta limit for underload state | 1000     | lt units  | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `lt_delta_soft_limit` | Logical time delta soft limit                | 5000     | lt units  | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
+| `lt_delta_hard_limit` | Absolute maximum logical time delta          | 10000    | lt units  | uint32 | [config23](/foundations/config#param-22-and-23-block-limits) |
 
 ## Message forwarding costs
 
@@ -96,21 +96,21 @@ There are two sources of network parameter definitions: <br />
 | `mc_block_gas_limit`     | Maximum gas per masterchain block               | 2500000     | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
 | `mc_freeze_due_limit`    | Storage fees for contract freezing              | 100000000   | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
 | `mc_delete_due_limit`    | Storage fees for contract deletion              | 1000000000  | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
-| `mc_bytes_underload`     | Block size limit for underload state            | 131072      | bytes         | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_bytes_soft_limit`    | Block size soft limit                           | 524288      | bytes         | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_bytes_hard_limit`    | Absolute maximum block size in bytes            | 1048576     | bytes         | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_gas_underload`       | Block gas limit for underload state             | 200000      | gas units     | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_gas_soft_limit`      | Block gas soft limit                            | 1000000     | gas units     | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_gas_hard_limit`      | Absolute maximum block gas                      | 2500000     | gas units     | uint32 | [config22](/foundations/config#param-22-and-23) |
+| `mc_bytes_underload`     | Block size limit for underload state            | 131072      | bytes         | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_bytes_soft_limit`    | Block size soft limit                           | 524288      | bytes         | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_bytes_hard_limit`    | Absolute maximum block size in bytes            | 1048576     | bytes         | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_gas_underload`       | Block gas limit for underload state             | 200000      | gas units     | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_gas_soft_limit`      | Block gas soft limit                            | 1000000     | gas units     | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_gas_hard_limit`      | Absolute maximum block gas                      | 2500000     | gas units     | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_lump_price`          | Base price for message forwarding               | 10000000    | nanotons      | uint64 | [config24](/foundations/config#param-24-and-25) |
 | `mc_bit_price`           | Cost per 65536 bits of message forwarding       | 655360000   | nanotons/bit  | uint64 | [config24](/foundations/config#param-24-and-25) |
 | `mc_cell_price`          | Cost per 65536 cells for message forwarding     | 65536000000 | nanotons/cell | uint64 | [config24](/foundations/config#param-24-and-25) |
 | `mc_ihr_factor`          | Factor for immediate hypercube routing cost     | 98304       | factor        | uint32 | [config24](/foundations/config#param-24-and-25) |
 | `mc_first_frac`          | Fraction for first transition in message route  | 21845       | fraction      | uint32 | [config24](/foundations/config#param-24-and-25) |
 | `mc_next_frac`           | Fraction for subsequent transitions in route    | 21845       | fraction      | uint32 | [config24](/foundations/config#param-24-and-25) |
-| `mc_lt_delta_underload`  | Logical time delta limit for underload state    | 1000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_lt_delta_soft_limit` | Logical time delta soft limit                   | 5000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23) |
-| `mc_lt_delta_hard_limit` | Absolute maximum logical time delta             | 10000       | lt units      | uint32 | [config22](/foundations/config#param-22-and-23) |
+| `mc_lt_delta_underload`  | Logical time delta limit for underload state    | 1000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_lt_delta_soft_limit` | Logical time delta soft limit                   | 5000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
+| `mc_lt_delta_hard_limit` | Absolute maximum logical time delta             | 10000       | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_catchain_lifetime`   | masterchain catchain groups lifetime in seconds | 250         | seconds       | uint32 | [config28](/foundations/config#param-28)        |
 
 ## Validator parameters
