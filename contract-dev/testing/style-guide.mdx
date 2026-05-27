@@ -1,11 +1,15 @@
 ---
-title: "Testing styleguide"
-sidebarTitle: "Styleguide"
+title: "Testing style guide for Blueprint projects"
+sidebarTitle: "Style guide"
 ---
 
 import { Aside } from '/snippets/aside.jsx';
 
-This guide explains how to write tests for TON smart contracts.
+<Aside type="note">
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
+
+This guide explains how to write tests for smart contracts in Blueprint.
 
 <Aside type="tip">
   Full code examples from this guide are available in the [testing styleguide repository](https://github.com/ton-org/docs-examples/tree/main/Testing/Styleguide).
@@ -31,7 +35,7 @@ it('should reject increment from non-owner', async () => { });
 
 Use `const` for all variable declarations. Immutable bindings prevent accidental reassignments and make test behavior predictable. Tests using `let` with shared hooks can silently use wrong contract instances when setup changes.
 
-```typescript expandable 
+```typescript expandable
 // ❌ Bad - using let
 let blockchain: Blockchain;
 let contract: SandboxContract<Contract>;
@@ -40,7 +44,7 @@ beforeEach(async () => {
     blockchain = await Blockchain.create();
     contract = blockchain.openContract(await Contract.fromInit());
 });
-    
+
 it('should do smth', async () => {
     await contract.sendSmth();
 });
@@ -65,18 +69,18 @@ Make each test completely independent. Test execution order can change. Dependen
 describe('Contract operations', () => {
     let blockchain: Blockchain;
     let contract: SandboxContract<MyContract>;
-    
+
     beforeAll(async () => {
         blockchain = await Blockchain.create();
         contract = blockchain.openContract(MyContract.createFromConfig({}, code));
         await contract.sendDeploy(deployer.getSender(), toNano('0.05'));
     });
-    
+
     it('should increment counter', async () => {
         await contract.sendIncrement(user.getSender(), toNano('0.1'));
         expect(await contract.getCounter()).toBe(1n);
     });
-    
+
     it('should decrement counter', async () => {
         // This test depends on the previous test's state
         await contract.sendDecrement(user.getSender(), toNano('0.1'));
@@ -96,15 +100,15 @@ describe('Contract operations', () => {
         await contract.sendIncrement(user.getSender(), toNano('0.1'));
         expect(await contract.getCounter()).toBe(1n);
     });
-    
+
     it('should decrement counter from one', async () => {
         const blockchain = await Blockchain.create();
         const contract = blockchain.openContract(MyContract.createFromConfig({}, code));
         await contract.sendDeploy(deployer.getSender(), toNano('0.05'));
-        
+
         // Set up the required state
         await contract.sendIncrement(user.getSender(), toNano('0.1'));
-        
+
         await contract.sendDecrement(user.getSender(), toNano('0.1'));
         expect(await contract.getCounter()).toBe(0n);
     });
@@ -121,10 +125,10 @@ it('should handle user operations', async () => {
     // some code
     await contract.sendIncrement(user.getSender(), toNano('0.1'));
     expect(await contract.getCounter()).toBe(1n);
-    
+
     await contract.sendDecrement(user.getSender(), toNano('0.1'));
     expect(await contract.getCounter()).toBe(0n);
-    
+
     expect(await contract.getOwner()).toEqualAddress(user.address);
 });
 ```
@@ -145,7 +149,7 @@ it('should decrement counter', async () => {
 });
 
 it('should set correct owner', async () => {
-    // some code 
+    // some code
     expect(await contract.getOwner()).toEqualAddress(user.address);
 });
 ```
@@ -220,7 +224,7 @@ test.skip("find minimal amount of TON for protocol", async () => {
         const { user, child, parent } = await setup();
         const message: SomeMessage = { $$type: "SomeMessage" };
         const sendResult = await child.send(user.getSender(), { value: amount }, message);
-        
+
         expect(sendResult.transactions).toHaveTransaction({
             from: parent.address,
             to: user.address,
@@ -234,7 +238,7 @@ test.skip("find minimal amount of TON for protocol", async () => {
 
     while (L + 1n < R) {
         let M = (L + R) / 2n;
-        
+
         try {
             await checkAmount(M);
             R = M;

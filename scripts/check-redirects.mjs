@@ -16,10 +16,8 @@
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 // Node.js
-import { existsSync, statSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
-import { spawnSync } from 'node:child_process';
 
 // Common utils
 import {
@@ -53,39 +51,45 @@ const checkUnique = (config) => {
   const redirects = getRedirects(config);
   const redirectSources = redirects.map((it) => it.source);
   const duplicates = redirectSources.filter((source, index) => redirectSources.indexOf(source) !== index);
+  /** @type string[] */
+  const errors = [];
   if (duplicates.length !== 0) {
-    return {
-      ok: false,
-      error: composeErrorList(
+    errors.push(
+      composeErrorList(
         'Found duplicate sources in the redirects array:',
         duplicates,
         'Redirect sources in docs.json must be unique!',
       ),
-    };
+    );
   }
   /** @param src {string} */
   const fmt = (src) => prefixWithSlash(src).replace(/#.*$/, '').replace(/\?.*$/, '');
   const loops = redirects.filter((it) => fmt(it.source) == fmt(it.destination)).map((it) => it.source);
   if (loops.length !== 0) {
-    return {
-      ok: false,
-      error: composeErrorList(
+    errors.push(
+      composeErrorList(
         'Found sources that lead to themselves, i.e., circular references:',
         loops,
         'Redirect sources in docs.json must not self-reference in destinations!',
       ),
-    };
+    );
   }
   const navLinks = getNavLinksSet(config);
   const navOverrides = redirectSources.filter((it) => navLinks.has(fmt(it)));
   if (navOverrides.length !== 0) {
-    return {
-      ok: false,
-      error: composeErrorList(
+    errors.push(
+      composeErrorList(
         'Found sources that override pages in the docs.json structure:',
         navOverrides,
         'Redirect sources in docs.json must not replace existing paths!',
       ),
+    );
+  }
+  // If there are any errors
+  if (errors.length !== 0) {
+    return {
+      ok: false,
+      error: errors.join('\n...and '),
     };
   }
   // Otherwise
@@ -99,40 +103,165 @@ const checkUnique = (config) => {
  * @return {CheckResult}
  */
 const checkExist = (config) => {
-  const uniqDestinations = [...new Set(getRedirects(config).map((it) => it.destination))];
-  let todoDestsExist = false;
-  let repoIssuesDestsExist = false;
-  const missingDests = uniqDestinations.filter((it) => {
-    if (it.startsWith('http')) {
-      if (it.includes('github.com/ton-org/docs/issues')) {
-        repoIssuesDestsExist = true;
+  // All redirects
+  const redirects = getRedirects(config);
+
+  // Tracking found special destinations
+  const specialDestinationsExist = {
+    todos: false,
+    issues: false,
+    olderDocs: false,
+    otherGithubLinks: false,
+    wikiLinks: false,
+    eolWildcards: false,
+    otherExternalLinks: false,
+  };
+
+  /**
+   * @param path {string}
+   * @returns boolean
+   */
+  const pathIsSpecial = (path) => {
+    // Links
+    if (path.startsWith('http')) {
+      if (path.includes('github.com/ton-org/docs/issues')) {
+        specialDestinationsExist.issues = true;
+      } else if (path.includes('github.com/')) {
+        specialDestinationsExist.otherGithubLinks = true;
+      } else if (path.includes('en.wikipedia.org/')) {
+        specialDestinationsExist.wikiLinks = true;
+      } else if (path.includes('old-docs.ton.org/')) {
+        specialDestinationsExist.olderDocs = true;
+      } else {
+        specialDestinationsExist.otherExternalLinks = true;
       }
-      return false;
+      return true;
     }
-    if (it.startsWith('TODO')) {
-      todoDestsExist = true;
-      return false;
+    // TODOs
+    if (path.startsWith('TODO')) {
+      specialDestinationsExist.todos = true;
+      return true;
     }
-    const rel = it.replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
-    return (
-      [rel === '' ? `index.mdx` : `${rel}/index.mdx`, `${rel}.mdx`, `${rel}`].some(
-        (path) => existsSync(path) && statSync(path).isFile(),
-      ) === false
-    );
-  });
-  if (repoIssuesDestsExist) {
-    console.log(composeWarning('Found GitHub issue destinations!'));
+    // End-of-line wildcard redirects
+    if (path.endsWith('/:slug*')) {
+      specialDestinationsExist.eolWildcards = true;
+      return true;
+    }
+    // Otherwise
+    return false;
+  };
+
+  /**
+   * @param path {string}
+   * @returns {{ files: 'one'; path: string } | { files: 'many'; paths: string[] } | { files: 'none' }}
+   */
+  const pathFindFiles = (path) => {
+    const cleanedPath = path.replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
+    const existingFiles = [
+      cleanedPath === '' ? `index.mdx` : `${cleanedPath}/index.mdx`,
+      `${cleanedPath}.mdx`,
+      `${cleanedPath}`,
+    ].filter((it) => existsSync(it) && statSync(it).isFile());
+
+    if (existingFiles.length === 0) {
+      return { files: 'none' };
+    }
+    if (existingFiles.length === 1) {
+      return { files: 'one', path: existingFiles[0] };
+    }
+    return { files: 'many', paths: existingFiles };
+  };
+
+  /**
+   * Recursively look for the destination up to N times deep.
+   * After that, the search function should forcibly terminate
+   * and produce an error with a complete trace.
+   *
+   * This is tied to the limitations of the documentation framework.
+   * DO NOT INCREASE without prior testing. Or ever.
+   */
+  const maxRecursionLevelPerRedirect = 3;
+
+  /**
+   * @param path {string}
+   * @param attemptsLeft {number}
+   * @param trace {string[]}
+   * @returns {{ ok: boolean; trace: string[] }}
+   */
+  const pathFindWithTrace = (path, attemptsLeft, trace) => {
+    if (attemptsLeft > 3) {
+      return {
+        ok: false,
+        trace: trace.concat(`Cannot have redirects more than 3 levels deep, received: ${attemptsLeft}`),
+      };
+    }
+    if (attemptsLeft <= 0) {
+      return { ok: false, trace: trace.concat(`Recursed too deep already, skipping: ${path}`) };
+    }
+    if (pathIsSpecial(path)) {
+      return { ok: true, trace: trace.concat(`The destination is special, skipping: ${path}`) };
+    }
+    const foundFiles = pathFindFiles(path);
+    if (foundFiles.files === 'one') {
+      return { ok: true, trace: trace.concat(`Found a file under the destination: ${path} → ${foundFiles.path}`) };
+    }
+    if (foundFiles.files === 'many') {
+      return {
+        ok: false,
+        trace: trace.concat(
+          `Multiple files found under the same destination: ${path} → ${foundFiles.paths.join(', ')}`,
+        ),
+      };
+    }
+    // None, need to look in redirect sources or bail.
+    const redirectSource = redirects.find((it) => it.source === path.replace(/#.*$/, ''));
+    if (!redirectSource) {
+      return {
+        ok: false,
+        trace: trace.concat(`No file nor a deeper redirect found for this destination: ${path}`),
+      };
+    }
+    // Otherwise, perform the next iteration with the new destination path.
+    return pathFindWithTrace(redirectSource.destination, attemptsLeft - 1, trace.concat(path));
+  };
+
+  // Main part
+  const uniqDests = [...new Set(redirects.map((it) => it.destination))];
+  const processedDests = uniqDests.map((it) => pathFindWithTrace(it, maxRecursionLevelPerRedirect, []));
+  const invalidatedTraces = processedDests
+    .filter((it) => {
+      if (process.env.DEBUG && process.env.DEBUG === 'true') {
+        console.log(it);
+      }
+      // Trace must be non-zero
+      return !it.ok && it.trace.length !== 0;
+    })
+    .map((it) => it.trace);
+  if (specialDestinationsExist.issues) {
+    console.log(composeWarning('Found GitHub docs repo issue destinations!'));
   }
-  if (todoDestsExist) {
+  if (specialDestinationsExist.todos) {
     console.log(composeWarning('Found TODO-prefixed destinations!'));
   }
-  if (missingDests.length !== 0) {
+  if (specialDestinationsExist.olderDocs) {
+    console.log(composeWarning('Found destinations that point to old-docs.ton.org!'));
+  }
+  // NOTE: this and other special destinations are not currently needed, but their checks must be required in the future.
+  // if (specialDestinationsExist.otherExternalLinks) {
+  //   console.log(composeWarning('Found third-party URLs outside of GitHub or English Wikipedia!'));
+  // }
+  if (invalidatedTraces.length !== 0) {
     return {
       ok: false,
       error: composeErrorList(
-        'Nonexistent destinations found:',
-        missingDests,
-        'Some redirect destinations in docs.json do not exist!',
+        'Unreachable or nonexistent redirect destinations found:',
+        invalidatedTraces.map((it) => {
+          if (it.length === 1) {
+            return it.join('');
+          }
+          return it.slice(0, -1).join('\n  → ') + '\n  → ' + it.slice(-1).join('');
+        }),
+        'Some redirect destinations in docs.json do not exist or are unreachable!',
       ),
     };
   }
@@ -144,35 +273,21 @@ const checkExist = (config) => {
  * Check redirects against the previous TON Documentation URLs.
  * Ensures that old routes point to new files or even anchors.
  *
- * @param td {string} Temporary directory path
  * @param config {Readonly<DocsConfig>} Parsed docs.json configuration
  * @return {Promise<CheckResult>}
  */
-const checkPrevious = async (td, config) => {
-  // 1. Clone previous TON Docs in a temporary directory
-  //    in order to obtain the sidebars.js module
-  const tonDocsPath = join(td, 'ton-docs');
-  const cloneRes = spawnSync('git', ['clone', '--depth=1', 'https://github.com/ton-community/ton-docs', tonDocsPath], {
-    encoding: 'utf8',
-    timeout: 1_000 * 60 * 10,
-  });
-  if (cloneRes.status != 0) {
+const checkPrevious = async (config) => {
+  // 1. Take the sidebars.js module from the previous TON Docs
+  const sidebarsPath = join('scripts', 'sidebars');
+  if (!existsSync(join(sidebarsPath, 'sidebars.js'))) {
     return {
       ok: false,
-      error: `${cloneRes.error ?? cloneRes.stdout}`,
-    };
-  }
-
-  // 2. Process sidebars.js and extract all URLs
-  const sidebarsPath = join(tonDocsPath, 'sidebars.js');
-  if (!existsSync(sidebarsPath)) {
-    return {
-      ok: false,
-      error: composeError(`sidebars.js was not found in ${tonDocsPath}`),
+      error: composeError(`sidebars.js was not found in ${sidebarsPath}`),
     };
   }
   /** @type Readonly<Sidebars> */
-  const sidebarsModule = Object.freeze((await import(sidebarsPath)).default);
+  const sidebarsModule = Object.freeze((await import('./sidebars/sidebars.js')).default);
+  // 2. Process sidebars.js and extract all URLs
   const sidebarsKeys = Object.keys(sidebarsModule);
   /** @type string[] */
   const prevLinks = [];
@@ -265,8 +380,12 @@ const checkUpstream = async (localConfig) => {
   }
 
   const redirectSources = getRedirects(localConfig).map((it) => it.source);
+  const eolWildcards = redirectSources.filter((it) => it.endsWith('/:slug*')).map((it) => it.replace(/\/:slug\*$/, ''));
   const missingSources = upstreamOnlyLinks.filter(
-    (it) => !redirectSources.includes(it) && !redirectSources.includes(it.replace(/\/index$/, '')),
+    (it) =>
+      !redirectSources.includes(it) &&
+      !redirectSources.includes(it.replace(/\/index$/, '')) &&
+      !eolWildcards.some((w) => it.startsWith(w)),
   );
   if (missingSources.length !== 0) {
     return {
@@ -274,7 +393,10 @@ const checkUpstream = async (localConfig) => {
       error: composeErrorList(
         'Missing pages or redirects for the following upstream URLs:',
         missingSources,
-        `Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream docs.json!\n${ansiYellow('Possible fix:')} merge the main branch into the current one to keep docs.json up to date, or add new redirects to account for removed or renamed pages.`,
+        [
+          'Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream docs.json!',
+          `${ansiYellow('How to fix:')} if you did not rename, move, or delete any pages from docs.json, merge the latest main branch into your branch. Otherwise, add necessary redirects pointing to existing pages.`,
+        ].join('\n'),
       ),
     };
   }
@@ -287,8 +409,8 @@ const main = async () => {
   const config = getConfig();
   console.log(); // intentional break
 
-  // Creating the temporary directory
-  const td = mkdtempSync(join(tmpdir(), 'td'));
+  // Environment variables
+  const allowNet = Boolean(process.env.ALLOW_NET ?? false);
 
   // Running either one check or all checks
   const rawArgs = process.argv.slice(2);
@@ -323,21 +445,22 @@ const main = async () => {
 
   if (shouldRunAll || argExist) {
     console.log('🏁 Checking the existence of redirect destinations in docs.json...');
-    handleCheckResult(checkExist(config), 'All destinations exist.');
+    handleCheckResult(checkExist(config), 'All non-TODO, local destinations exist.');
   }
 
   if (shouldRunAll || argPrevious) {
     console.log('🏁 Checking redirects against the previous TON Documentation...');
-    handleCheckResult(await checkPrevious(td, config), 'Full coverage.');
+    handleCheckResult(await checkPrevious(config), 'Full coverage.');
   }
 
   if (shouldRunAll || argUpstream) {
     console.log('🏁 Checking redirects against the upstream docs.json structure...');
-    handleCheckResult(await checkUpstream(config), 'Full coverage.');
+    if (allowNet) {
+      handleCheckResult(await checkUpstream(config), 'Full coverage.');
+    } else {
+      console.log('Skipped: ALLOW_NET env variable is unset or empty.');
+    }
   }
-
-  // Removing the temporary directory
-  rmSync(td, { recursive: true });
 
   // In case of errors, exit with code 1
   if (errored) {

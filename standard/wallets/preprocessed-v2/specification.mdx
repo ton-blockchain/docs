@@ -1,5 +1,5 @@
 ---
-title: "Preprocessed Wallet V2 — specification"
+title: "Preprocessed wallet v2: Specification"
 sidebarTitle: "Specification"
 ---
 
@@ -93,8 +93,8 @@ The sequence number is limited to 16 bits (instead of 32 bits used in other wall
 **Protection mechanism:**\
 Even if an attacker intercepts an old message, they cannot replay it because the sequence number will no longer match the current value in storage.
 
-**Wrap‑around note:**\
-See [Replay protection mechanism](#replay-protection-mechanism) for guidance on wrap‑around and `valid_until` windows.
+**Wrap-around note:**\
+See [Replay protection mechanism](#replay-protection-mechanism) for guidance on wrap-around and `valid_until` windows.
 
 ## External message structure
 
@@ -233,11 +233,11 @@ Preprocessed Wallet V2 uses sequence numbers and time-based expiration to preven
 - Shorter for high-frequency operations
 - Longer for batch operations with network delays
 
-### Wrap‑around and validity window
+### Wrap-around and validity window
 
-When `seq_no` wraps (65535 → 0), previously sent messages that used the same numeric `seq_no` remain non‑applicable if their `valid_until` has already expired. Safety relies on the dual check: current `seq_no` equality and unexpired `valid_until`.
+When `seq_no` wraps (65535 → 0), previously sent messages that used the same numeric `seq_no` remain non-applicable if their `valid_until` has already expired. Safety relies on the dual check: current `seq_no` equality and unexpired `valid_until`.
 
-Do not set `valid_until` excessively far in the future. A very long validity window increases the chance that, after wrap‑around, an old message with the same `seq_no` is still valid. Keep the window short (for example, ≤ 60 seconds) unless you have a specific operational reason.
+Do not set `valid_until` excessively far in the future. A very long validity window increases the chance that, after wrap-around, an old message with the same `seq_no` is still valid. Keep the window short (for example, ≤ 60 seconds) unless you have a specific operational reason.
 
 ### Signature verification
 
