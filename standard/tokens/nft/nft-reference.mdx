@@ -246,7 +246,7 @@ It parses the incoming message and expects it to contain 3 values: `item_index:u
 
 This feature is useful when you need to deploy many NFTs at once, for example when minting some initial items. It takes a single `deploy_list` dictionary from the message where keys are item indices and values are cells containing amounts of TON to attach to deployment, and content cells, similar to the values parsed by the singular deploy feature above. It traverses the dictionary in ascending order of indices and limits the batch to ≤249 items to stay comfortably under the [action list limit](/foundations/limits#message-and-transaction-limits) of 255 actions per transaction. This reference contract chooses a lower cap than the maximum as a safety margin.
 
-The logic is straightforward. The loop uses [`~udict::delete_get_min(64)`](/languages/func/stdlib#dict-delete-get-min) to get and delete the item with the minimum unsigned 64-bit key. It does that on each iteration and increments `counter` each iteration to avoid exceeding the action list limit. The deployment logic is the same as for the singular deployment feature above.
+The logic is straightforward. The loop uses [`~udict::delete_get_min(64)`](/languages/func/stdlib#dict_delete_get_min) to get and delete the item with the minimum unsigned 64-bit key. It does that on each iteration and increments `counter` each iteration to avoid exceeding the action list limit. The deployment logic is the same as for the singular deployment feature above.
 
 ```func
 () recv_internal(cell in_msg_full, slice in_msg_body) impure {
