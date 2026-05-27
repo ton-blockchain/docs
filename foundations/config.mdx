@@ -430,10 +430,10 @@ This parameter provides the configuration for the `Catchain` protocol in the TON
 
 ## Param 29: consensus config
 
-This parameter provides the configuration for the consensus protocol above `Catchain` ([Param 28](#param-28-catchain-config)) in the TON Blockchain. The consensus protocol is a crucial component of a blockchain network, and it ensures that all nodes agree on the state of the distributed ledger.
+This parameter provides the configuration for the consensus protocol above `Catchain` ([Param 28](#param-28-catchain-config)) in the TON Blockchain. The consensus protocol is a crucial component of a blockchain network: it ensures that all nodes agree on the state of the distributed ledger.
 
 <Aside>
-  `ConfigParam 29` has evolved through several constructors. The latest, `consensus_config_v4#d9`, is defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782). It extends `consensus_config_v3#d8` with a new `use_quic:Bool` (taking one bit from `flags`, which shrinks from 7 to 6 bits) and an additional `catchain_max_blocks_coeff:uint32` field at the end.
+  `ConfigParam 29` has evolved through several updates. The latest constructor, `consensus_config_v4#d9`, is defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782). It extends `consensus_config_v3#d8` with a new `use_quic:Bool` field, taking one bit from `flags`, which shrinks from 7 to 6 bits. It also adds `catchain_max_blocks_coeff:uint32` field at the end.
 </Aside>
 
 ### Configuration parameters
@@ -464,11 +464,15 @@ This parameter provides the configuration for the consensus protocol above `Catc
 
 - `catchain_max_blocks_coeff`: The coefficient limiting the rate of block generation in `Catchain`, [description](https://github.com/ton-blockchain/ton/blob/master/doc/catchain-dos.md).
 
-For up-to-date values, see [Parameter #29 on mainnet](https://tonviewer.com/config#29).
+<Aside type="note">
+  For up-to-date values, see [Parameter #29 on mainnet](https://tonviewer.com/config#29).
+</Aside>
 
-#### On-chain schema
+### On-chain schema
 
-`ConfigParam 29` is a tagged union: validators must accept any of the legacy constructors so old serialized configs keep parsing, but new on-chain values are written using the latest tag. The current set defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782) is:
+`ConfigParam 29` is a tagged union: validators must accept all of its constructors, including legacy ones. This ensures that older serialized configurations continue to be valid while newer on-chain values are written using the latest tag.
+
+The current set defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782) is:
 
 ```tlb
 consensus_config#d6 round_candidates:# { round_candidates >= 1 }
@@ -500,7 +504,9 @@ _ ConsensusConfig = ConfigParam 29;
 ```
 
 <Aside>
-  `consensus_config_v4#d9` was introduced together with the [Catchain 2.0 / Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) migration tracked by [Param 30](#param-30-consensus-extension). The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
+  `consensus_config_v4#d9` was introduced together with the [Catchain 2.0 / Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) migration tracked by [Param 30](#param-30-consensus-extension).
+
+  The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
 </Aside>
 
 [Parameter #29 on mainnet](https://tonviewer.com/config#29)
@@ -539,8 +545,7 @@ new_consensus_config_all#10
 _ NewConsensusConfigAll = ConfigParam 30;
 ```
 
-The `simplex_config_v2#22` constructor moves noncritical configuration parameters into a sparse dictionary.
-There are two optional refs in `new_consensus_config_all#10`. If a ref is absent, then the pre-2.0 Catchain config is active for the corresponding class of chains:
+The `simplex_config_v2#22` constructor moves noncritical configuration parameters into a sparse dictionary. There are two optional refs in `new_consensus_config_all#10`. If a ref is absent, then the pre-2.0 Catchain config is active for the corresponding class of chains:
 
 | Field   | Type                        | Meaning                                                 |
 | ------- | --------------------------- | ------------------------------------------------------- |
@@ -564,7 +569,7 @@ Inherited from [Param 29](/foundations/config#param-29-consensus-config):
 - `max_block_bytes` — maximum block size.
 - `max_collated_bytes` — maximum size of serialized block correctness proofs.
 
-The `noncritical_params` dictionary contains tunable timing and DoS-protection parameters that can be changed via a config update without altering the `block.tlb` layout:
+The `noncritical_params` dictionary contains adjustable timing and DoS-protection parameters that can be changed via a config update without altering the `block.tlb` layout:
 
 - The key is an 8-bit parameter ID.
 - The value is always a raw 32-bit word.
