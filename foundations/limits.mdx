@@ -111,15 +111,15 @@ There are two sources of network parameter definitions: <br />
 | `mc_lt_delta_underload`  | Logical time delta limit for underload state    | 1000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_lt_delta_soft_limit` | Logical time delta soft limit                   | 5000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_lt_delta_hard_limit` | Absolute maximum logical time delta             | 10000       | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
-| `mc_catchain_lifetime`   | masterchain catchain groups lifetime in seconds | 250         | seconds       | uint32 | [config28](/foundations/config#param-28)        |
+| `mc_catchain_lifetime`   | masterchain catchain groups lifetime in seconds | 250         | seconds       | uint32 | [config28](/foundations/config#param-28-catchain-config)        |
 
 ## Validator parameters
 
 | Name                        | Description                                         | Value      | Units    | Type   | Defined in                               |
 | --------------------------- | --------------------------------------------------- | ---------- | -------- | ------ | ---------------------------------------- |
-| `shard_catchain_lifetime`   | shardchain catchain groups lifetime in seconds      | 250        | seconds  | uint32 | [config28](/foundations/config#param-28) |
-| `shard_validators_lifetime` | shardchain validators group lifetime in seconds     | 1000       | seconds  | uint32 | [config28](/foundations/config#param-28) |
-| `shard_validators_num`      | Number of validators in shardchain validation group | 23         | count    | uint32 | [config28](/foundations/config#param-28) |
+| `shard_catchain_lifetime`   | shardchain catchain groups lifetime in seconds      | 250        | seconds  | uint32 | [config28](/foundations/config#param-28-catchain-config) |
+| `shard_validators_lifetime` | shardchain validators group lifetime in seconds     | 1000       | seconds  | uint32 | [config28](/foundations/config#param-28-catchain-config) |
+| `shard_validators_num`      | Number of validators in shardchain validation group | 23         | count    | uint32 | [config28](/foundations/config#param-28-catchain-config) |
 | `masterchain_block_fee`     | Reward for block creation                           | 1700000000 | nanotons | Grams  | [config14](/foundations/config#param-14) |
 | `basechain_block_fee`       | Basechain block fee                                 | 1000000000 | nanotons | Grams  | [config14](/foundations/config#param-14) |
 
