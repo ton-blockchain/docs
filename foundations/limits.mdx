@@ -53,8 +53,8 @@ There are two sources of network parameter definitions: <br />
 | ------------------ | --------------------------------------------- | ---------- | ------------- | ------ | ----------------------------------------------- |
 | `freeze_due_limit` | Storage fees (nanotons) for contract freezing | 100000000  | nanotons      | uint64 | [config21](/foundations/config#param-20-and-21-gas-prices) |
 | `delete_due_limit` | Storage fees (nanotons) for contract deletion | 1000000000 | nanotons      | uint64 | [config21](/foundations/config#param-20-and-21-gas-prices) |
-| `bit_price_ps`     | Storage price for one bit for 65536 seconds   | 1          | nanotons/bit  | uint64 | [config18](/foundations/config#param-18)        |
-| `cell_price_ps`    | Storage price for one cell for 65536 seconds  | 500        | nanotons/cell | uint64 | [config18](/foundations/config#param-18)        |
+| `bit_price_ps`     | Storage price for one bit for 65536 seconds   | 1          | nanotons/bit  | uint64 | [config18](/foundations/config#param-18-storage-prices)        |
+| `cell_price_ps`    | Storage price for one cell for 65536 seconds  | 500        | nanotons/cell | uint64 | [config18](/foundations/config#param-18-storage-prices)        |
 
 ## Block size limits
 
@@ -85,8 +85,8 @@ There are two sources of network parameter definitions: <br />
 
 | Name                     | Description                                     | Value       | Units         | Type   | Defined in                                      |
 | ------------------------ | ----------------------------------------------- | ----------- | ------------- | ------ | ----------------------------------------------- |
-| `mc_bit_price_ps`        | Storage price for one bit for 65536 seconds     | 1000        | nanotons/bit  | uint64 | [config18](/foundations/config#param-18)        |
-| `mc_cell_price_ps`       | Storage price for one cell for 65536 seconds    | 500000      | nanotons/cell | uint64 | [config18](/foundations/config#param-18)        |
+| `mc_bit_price_ps`        | Storage price for one bit for 65536 seconds     | 1000        | nanotons/bit  | uint64 | [config18](/foundations/config#param-18-storage-prices)        |
+| `mc_cell_price_ps`       | Storage price for one cell for 65536 seconds    | 500000      | nanotons/cell | uint64 | [config18](/foundations/config#param-18-storage-prices)        |
 | `mc_flat_gas_limit`      | Gas below `flat_gas_limit` on masterchain       | 100         | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
 | `mc_flat_gas_price`      | VM launch cost on masterchain                   | 1000000     | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
 | `mc_gas_price`           | Gas price on masterchain                        | 655360000   | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
@@ -127,4 +127,4 @@ There are two sources of network parameter definitions: <br />
 
 | Name          | Description                                  | Value | Units   | Type     | Defined in                               |
 | ------------- | -------------------------------------------- | ----- | ------- | -------- | ---------------------------------------- |
-| `utime_since` | Initial Unix timestamp for price application | 0     | seconds | UnixTime | [config18](/foundations/config#param-18) |
+| `utime_since` | Initial Unix timestamp for price application | 0     | seconds | UnixTime | [config18](/foundations/config#param-18-storage-prices) |
