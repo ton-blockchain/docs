@@ -560,7 +560,7 @@ set_data(begin_cell().store_dict(dictionary_cell).end_cell());
 ### How to iterate dictionaries
 
 To iterate a dictionary from the smallest to biggest key, first call a [`dict_get_min?` primitive](/languages/func/stdlib#dict-get-min%3F) to obtain the smallest key in the dictionary,
-and then call a [`dict_get_next?` primitive](/languages/func/stdlib#dict-get-next%3F) inside a loop while checking a flag for existence of further key-value pairs to process.
+and then call a [`dict_get_next?` primitive](/languages/func/stdlib#dict_get_next) inside a loop while checking a flag for existence of further key-value pairs to process.
 
 Similarly, to iterate a dictionary from the biggest to smallest key, first call a [`dict_get_max?` primitive](/languages/func/stdlib#dict-get-max%3F) to obtain the biggest key in the dictionary,
 and then call a [`dict_get_prev?` primitive](/languages/func/stdlib#dict-get-prev%3F) inside a loop while checking a flag for existence of further key-value pairs to process.
@@ -617,7 +617,7 @@ while (flag) {
 - [`dict_set` primitives](/languages/func/stdlib#dict_set)
 - [`dict_get_min?` primitives](/languages/func/stdlib#dict-get-min%3F)
 - [`dict_get_max?` primitives](/languages/func/stdlib#dict-get-max%3F)
-- [`dict_get_next?` primitives](/languages/func/stdlib#dict-get-next%3F)
+- [`dict_get_next?` primitives](/languages/func/stdlib#dict_get_next)
 - [`dict_get_prev?` primitives](/languages/func/stdlib#dict-get-prev%3F)
 
 ### How to delete a value from a dictionary
