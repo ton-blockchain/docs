@@ -144,7 +144,7 @@ apply(+);   ;; DOES NOT COMPILE
 
 [`load_uint`](#load-uint)   [`preload_int`](#preload-int)   [`preload_uint`](#preload-uint)   [`store_int`](#store-int)
 
-[`store_uint`](#store-uint)   [`~store_int`](#store-int-2)   [`~store_uint`](#store-uint-2)   [`load_bits`](#load-bits)
+[`store_uint`](#store_uint)   [`~store_int`](#store-int-2)   [`~store_uint`](#store-uint-2)   [`load_bits`](#load-bits)
 
 [`preload_bits`](#preload-bits)   [`int_at`](#int-at)   [`cell_at`](#cell-at)   [`slice_at`](#slice-at)
 
@@ -400,7 +400,7 @@ Same as [`store_int`](#store-int), but adapted to use [modifying notation](/lang
 (builder, ()) ~store_uint(builder b, int x, int len)
 ```
 
-Same as [`store_uint`](#store-uint), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`store_uint`](#store_uint), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
 
 #### `load_bits`
 
