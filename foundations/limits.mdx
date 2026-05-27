@@ -39,20 +39,20 @@ There are two sources of network parameter definitions: <br />
 | ------------------- | ----------------------------------------------------------------------- | -------- | ------------- | ----------- | ------------------------------------------------------------------------------------------------------------------- |
 | `free_stack_depth`  | Stack depth without gas consumption                                     | 32       | stack entries | enum\_value | [vm.h:120](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/vm/vm.h#L120) |
 | `runvm_gas_price`   | VM start gas consumption                                                | 40       | gas units     | enum\_value | [vm.h:122](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/vm/vm.h#L122) |
-| `flat_gas_limit`    | Gas below `flat_gas_limit` is provided at the price of `flat_gas_price` | 100      | gas units     | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
-| `flat_gas_price`    | Costs of launching the TON Virtual Machine                              | 40000    | nanotons      | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
-| `gas_price`         | Price of gas in the network in nanotons per 65536 gas units             | 26214400 | nanotons      | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
-| `special_gas_limit` | Limit on gas for special (system) contract transactions                 | 1000000  | gas units     | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
-| `gas_limit`         | Maximum amount of gas per transaction                                   | 1000000  | gas units     | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
-| `gas_credit`        | Gas credit for checking external messages                               | 10000    | gas units     | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
-| `block_gas_limit`   | Maximum gas per block                                                   | 10000000 | gas units     | uint64      | [config21](/foundations/config#param-20-and-21)                                                                     |
+| `flat_gas_limit`    | Gas below `flat_gas_limit` is provided at the price of `flat_gas_price` | 100      | gas units     | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
+| `flat_gas_price`    | Costs of launching the TON Virtual Machine                              | 40000    | nanotons      | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
+| `gas_price`         | Price of gas in the network in nanotons per 65536 gas units             | 26214400 | nanotons      | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
+| `special_gas_limit` | Limit on gas for special (system) contract transactions                 | 1000000  | gas units     | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
+| `gas_limit`         | Maximum amount of gas per transaction                                   | 1000000  | gas units     | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
+| `gas_credit`        | Gas credit for checking external messages                               | 10000    | gas units     | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
+| `block_gas_limit`   | Maximum gas per block                                                   | 10000000 | gas units     | uint64      | [config21](/foundations/config#param-20-and-21-gas-prices)                                                                     |
 
 ## Storage fees and limits
 
 | Name               | Description                                   | Value      | Units         | Type   | Defined in                                      |
 | ------------------ | --------------------------------------------- | ---------- | ------------- | ------ | ----------------------------------------------- |
-| `freeze_due_limit` | Storage fees (nanotons) for contract freezing | 100000000  | nanotons      | uint64 | [config21](/foundations/config#param-20-and-21) |
-| `delete_due_limit` | Storage fees (nanotons) for contract deletion | 1000000000 | nanotons      | uint64 | [config21](/foundations/config#param-20-and-21) |
+| `freeze_due_limit` | Storage fees (nanotons) for contract freezing | 100000000  | nanotons      | uint64 | [config21](/foundations/config#param-20-and-21-gas-prices) |
+| `delete_due_limit` | Storage fees (nanotons) for contract deletion | 1000000000 | nanotons      | uint64 | [config21](/foundations/config#param-20-and-21-gas-prices) |
 | `bit_price_ps`     | Storage price for one bit for 65536 seconds   | 1          | nanotons/bit  | uint64 | [config18](/foundations/config#param-18)        |
 | `cell_price_ps`    | Storage price for one cell for 65536 seconds  | 500        | nanotons/cell | uint64 | [config18](/foundations/config#param-18)        |
 
@@ -87,15 +87,15 @@ There are two sources of network parameter definitions: <br />
 | ------------------------ | ----------------------------------------------- | ----------- | ------------- | ------ | ----------------------------------------------- |
 | `mc_bit_price_ps`        | Storage price for one bit for 65536 seconds     | 1000        | nanotons/bit  | uint64 | [config18](/foundations/config#param-18)        |
 | `mc_cell_price_ps`       | Storage price for one cell for 65536 seconds    | 500000      | nanotons/cell | uint64 | [config18](/foundations/config#param-18)        |
-| `mc_flat_gas_limit`      | Gas below `flat_gas_limit` on masterchain       | 100         | gas units     | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_flat_gas_price`      | VM launch cost on masterchain                   | 1000000     | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_gas_price`           | Gas price on masterchain                        | 655360000   | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_special_gas_limit`   | Special contract gas limit on masterchain       | 70000000    | gas units     | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_gas_limit`           | Maximum gas per transaction on masterchain      | 1000000     | gas units     | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_gas_credit`          | Gas credit for checking external messages       | 10000       | gas units     | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_block_gas_limit`     | Maximum gas per masterchain block               | 2500000     | gas units     | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_freeze_due_limit`    | Storage fees for contract freezing              | 100000000   | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21) |
-| `mc_delete_due_limit`    | Storage fees for contract deletion              | 1000000000  | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21) |
+| `mc_flat_gas_limit`      | Gas below `flat_gas_limit` on masterchain       | 100         | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_flat_gas_price`      | VM launch cost on masterchain                   | 1000000     | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_gas_price`           | Gas price on masterchain                        | 655360000   | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_special_gas_limit`   | Special contract gas limit on masterchain       | 70000000    | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_gas_limit`           | Maximum gas per transaction on masterchain      | 1000000     | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_gas_credit`          | Gas credit for checking external messages       | 10000       | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_block_gas_limit`     | Maximum gas per masterchain block               | 2500000     | gas units     | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_freeze_due_limit`    | Storage fees for contract freezing              | 100000000   | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
+| `mc_delete_due_limit`    | Storage fees for contract deletion              | 1000000000  | nanotons      | uint64 | [config20](/foundations/config#param-20-and-21-gas-prices) |
 | `mc_bytes_underload`     | Block size limit for underload state            | 131072      | bytes         | uint32 | [config22](/foundations/config#param-22-and-23) |
 | `mc_bytes_soft_limit`    | Block size soft limit                           | 524288      | bytes         | uint32 | [config22](/foundations/config#param-22-and-23) |
 | `mc_bytes_hard_limit`    | Absolute maximum block size in bytes            | 1048576     | bytes         | uint32 | [config22](/foundations/config#param-22-and-23) |
