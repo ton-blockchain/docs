@@ -8,8 +8,8 @@ import {
   DocsTitle,
   // MarkdownCopyButton,
   // ViewOptionsPopover,
-} from 'fumadocs-ui/layouts/notebook/page';
-// } from 'fumadocs-ui/layouts/docs/page';
+// } from 'fumadocs-ui/layouts/notebook/page';
+} from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { getMDXComponents } from '@/components/mdx';
