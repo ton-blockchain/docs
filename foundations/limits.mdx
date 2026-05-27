@@ -74,12 +74,12 @@ There are two sources of network parameter definitions: <br />
 
 | Name         | Description                                          | Value      | Units         | Type   | Defined in                                      |
 | ------------ | ---------------------------------------------------- | ---------- | ------------- | ------ | ----------------------------------------------- |
-| `lump_price` | Base price for message forwarding                    | 400000     | nanotons      | uint64 | [config25](/foundations/config#param-24-and-25) |
-| `bit_price`  | Cost per 65536 bits of message forwarding            | 26214400   | nanotons/bit  | uint64 | [config25](/foundations/config#param-24-and-25) |
-| `cell_price` | Cost per 65536 cells for message forwarding          | 2621440000 | nanotons/cell | uint64 | [config25](/foundations/config#param-24-and-25) |
-| `ihr_factor` | Factor for immediate hypercube routing cost          | 98304      | factor        | uint32 | [config25](/foundations/config#param-24-and-25) |
-| `first_frac` | Fraction for first transition in message route       | 21845      | fraction      | uint32 | [config25](/foundations/config#param-24-and-25) |
-| `next_frac`  | Fraction for subsequent transitions in message route | 21845      | fraction      | uint32 | [config25](/foundations/config#param-24-and-25) |
+| `lump_price` | Base price for message forwarding                    | 400000     | nanotons      | uint64 | [config25](/foundations/config#param-24-and-25-message-price) |
+| `bit_price`  | Cost per 65536 bits of message forwarding            | 26214400   | nanotons/bit  | uint64 | [config25](/foundations/config#param-24-and-25-message-price) |
+| `cell_price` | Cost per 65536 cells for message forwarding          | 2621440000 | nanotons/cell | uint64 | [config25](/foundations/config#param-24-and-25-message-price) |
+| `ihr_factor` | Factor for immediate hypercube routing cost          | 98304      | factor        | uint32 | [config25](/foundations/config#param-24-and-25-message-price) |
+| `first_frac` | Fraction for first transition in message route       | 21845      | fraction      | uint32 | [config25](/foundations/config#param-24-and-25-message-price) |
+| `next_frac`  | Fraction for subsequent transitions in message route | 21845      | fraction      | uint32 | [config25](/foundations/config#param-24-and-25-message-price) |
 
 ## Masterchain specific parameters
 
@@ -102,12 +102,12 @@ There are two sources of network parameter definitions: <br />
 | `mc_gas_underload`       | Block gas limit for underload state             | 200000      | gas units     | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_gas_soft_limit`      | Block gas soft limit                            | 1000000     | gas units     | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_gas_hard_limit`      | Absolute maximum block gas                      | 2500000     | gas units     | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
-| `mc_lump_price`          | Base price for message forwarding               | 10000000    | nanotons      | uint64 | [config24](/foundations/config#param-24-and-25) |
-| `mc_bit_price`           | Cost per 65536 bits of message forwarding       | 655360000   | nanotons/bit  | uint64 | [config24](/foundations/config#param-24-and-25) |
-| `mc_cell_price`          | Cost per 65536 cells for message forwarding     | 65536000000 | nanotons/cell | uint64 | [config24](/foundations/config#param-24-and-25) |
-| `mc_ihr_factor`          | Factor for immediate hypercube routing cost     | 98304       | factor        | uint32 | [config24](/foundations/config#param-24-and-25) |
-| `mc_first_frac`          | Fraction for first transition in message route  | 21845       | fraction      | uint32 | [config24](/foundations/config#param-24-and-25) |
-| `mc_next_frac`           | Fraction for subsequent transitions in route    | 21845       | fraction      | uint32 | [config24](/foundations/config#param-24-and-25) |
+| `mc_lump_price`          | Base price for message forwarding               | 10000000    | nanotons      | uint64 | [config24](/foundations/config#param-24-and-25-message-price) |
+| `mc_bit_price`           | Cost per 65536 bits of message forwarding       | 655360000   | nanotons/bit  | uint64 | [config24](/foundations/config#param-24-and-25-message-price) |
+| `mc_cell_price`          | Cost per 65536 cells for message forwarding     | 65536000000 | nanotons/cell | uint64 | [config24](/foundations/config#param-24-and-25-message-price) |
+| `mc_ihr_factor`          | Factor for immediate hypercube routing cost     | 98304       | factor        | uint32 | [config24](/foundations/config#param-24-and-25-message-price) |
+| `mc_first_frac`          | Fraction for first transition in message route  | 21845       | fraction      | uint32 | [config24](/foundations/config#param-24-and-25-message-price) |
+| `mc_next_frac`           | Fraction for subsequent transitions in route    | 21845       | fraction      | uint32 | [config24](/foundations/config#param-24-and-25-message-price) |
 | `mc_lt_delta_underload`  | Logical time delta limit for underload state    | 1000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_lt_delta_soft_limit` | Logical time delta soft limit                   | 5000        | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
 | `mc_lt_delta_hard_limit` | Absolute maximum logical time delta             | 10000       | lt units      | uint32 | [config22](/foundations/config#param-22-and-23-block-limits) |
