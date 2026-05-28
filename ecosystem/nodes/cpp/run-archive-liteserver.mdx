@@ -23,7 +23,7 @@ Running an archive liteserver requires large storage and network capacity:
 - 16-core CPU
 - 128 GB RAM
 - NVMe Gen4+ SSD storage (Enterprise grade preferred), sustaining at least 64,000 provisioned IOPS:
-  - at least 16 TB with ZFS `lz4` compression enabled, or
+  - at least 16 TB with ZFS [`lz4`](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)) compression enabled, or
   - at least 20 TB without compression
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
@@ -75,11 +75,6 @@ cat /sys/block/nvme0n1/queue/physical_block_size
 
 If the result is `4096`, the `-o ashift=12` parameter must be used during pool creation.
 
-Define placeholders:
-
-- `<DISK>` - the target disk device identifier (e.g., `/dev/nvme1n1`).
-- `<DISK1>`, `<DISK2>`, `<DISK3>` - additional disk device identifiers.
-
 #### 1.4.3 Create a storage pool
 
 Create a ZFS pool named `data`. Use `-o ashift=12` for 4K blocks (standard for most NVMe drives):
@@ -95,6 +90,11 @@ Create a ZFS pool named `data`. Use `-o ashift=12` for 4K blocks (standard for m
   sudo zpool create -o ashift=12 data <DISK1> <DISK2> <DISK3>
   ```
 </CodeGroup>
+
+There,
+
+- `<DISK>` is the target disk device identifier, e.g., `/dev/nvme1n1`;
+- `<DISK1>`, `<DISK2>`, and `<DISK3>` are additional disk device identifiers.
 
 <Aside
   type="caution"
@@ -123,35 +123,29 @@ sudo zfs set mountpoint=/var/ton-work data/ton-work
 
 To create a dedicated operator user and switch to it before installing MyTonCtrl:
 
-- Create a non-root user:
+1. Create a non-root user:
 
-```bash
-# Create a non-root operator user
-sudo adduser <USERNAME>
-sudo usermod -aG sudo <USERNAME>
-```
+  ```bash
+  # Create a non-root operator user
+  sudo adduser <USERNAME>
+  sudo usermod -aG sudo <USERNAME>
+  ```
 
-Define placeholders:
+1. Switch to the new operator account by reconnecting via SSH:
 
-- `<USERNAME>` - name of the non-root operator user.
+   <CodeGroup>
+     ```bash title="Standard port"
+     # Option 1: Reconnect using the standard port
+     exit
+     ssh <USERNAME>@<SERVER_IP>
+     ```
 
-- `<SERVER_IP>` - public IP address of the server.
-
-- `<SSH_PORT>` - custom SSH port number configured in Step 1.7.
-
-- Switch to the new operator account by reconnecting via SSH:
-
-```bash
-# Option 1: Reconnect using the standard port
-exit
-ssh <USERNAME>@<SERVER_IP>
-```
-
-```bash
-# Option 2: Reconnect using the custom SSH port
-exit
-ssh <USERNAME>@<SERVER_IP> -p <SSH_PORT>
-```
+     ```bash title="Custom SSH port"
+     # Option 2: Reconnect using the custom SSH port
+     exit
+     ssh <USERNAME>@<SERVER_IP> -p <SSH_PORT>
+     ```
+   </CodeGroup>
 
 ### 1.6 Benchmark server performance
 
@@ -176,7 +170,7 @@ fio --randrepeat=1 --ioengine=psync --direct=1 --gtod_reduce=1 --name=tlstest --
 rm /var/ton-work/testfile
 ```
 
-The `--refill_buffers` and `--buffer_compress_percentage=0` flags force incompressible data. Without them, `lz4` on the `data/ton-work` dataset collapses `fio`'s zero-filled writes and reports IOPS far above what the archive import sustains.
+The `--refill_buffers` and `--buffer_compress_percentage=0` flags force incompressible data. Without them, LZ4 on the `data/ton-work` dataset collapses `fio`'s zero-filled writes and reports IOPS far above what the archive import sustains.
 
 Minimum acceptable results:
 
@@ -223,35 +217,31 @@ Apply the following SSH configuration changes in `/etc/ssh/sshd_config`:
 
 - Enable key-based authentication and disable password login:
 
-```text
-PasswordAuthentication no
-PubkeyAuthentication yes
-```
+  ```text
+  PasswordAuthentication no
+  PubkeyAuthentication yes
+  ```
 
 - Disable root login:
 
-```text
-PermitRootLogin no
-```
+  ```text
+  PermitRootLogin no
+  ```
 
-- Change the default SSH port:
+- Change the default SSH port, e.g., to `2222`:
 
-```text
-Port <SSH_PORT>
-```
+  ```text
+  Port <SSH_PORT>
+  ```
 
-- Restrict SSH access to specific IP addresses using the `Match Address` directive:
+- Restrict SSH access to specific permitted IP addresses using the `Match Address` directive:
 
-```text
-Match Address <ALLOWED_IP>
-  AllowUsers <USERNAME>
-```
+  ```text
+  Match Address <ALLOWED_IP>
+    AllowUsers <USERNAME>
+  ```
 
-Define placeholders:
-
-- `<SSH_PORT>` - a custom non-default port number (for example, `2222`).
-- `<ALLOWED_IP>` - IP address or subnet permitted to connect via SSH.
-- `<USERNAME>` - name of the operator user.
+  There, `<USERNAME>` is the name of the operator user.
 
 Restart the SSH service after changes:
 
@@ -381,10 +371,10 @@ sudo ufw allow <LITESERVER_PORT>
 sudo ufw status
 ```
 
-Define placeholders:
+There,
 
-- `<NODE_UDP_PORT>` - UDP port of the validator engine.
-- `<LITESERVER_PORT>` - TCP port of the liteserver.
+- `<NODE_UDP_PORT>` is the UDP port of the validator engine;
+- `<LITESERVER_PORT>` is the TCP port of the liteserver.
 
 ### 2.3 Final synchronization of archive liteserver
 
@@ -462,13 +452,9 @@ Once the update is verified as successful and the node is running correctly, del
 
 ZFS creates snapshots for easy rollbacks if data corruption occurs.
 
-Define placeholders:
-
-- `<SNAPSHOT_NAME>` - unique identifier for the snapshot.
-
 #### Create a snapshot
 
-Snapshots can be created without stopping the node:
+Snapshots can be created under a unique identifier without stopping the node :
 
 ```bash
 sudo zfs snapshot data/ton-work@<SNAPSHOT_NAME>
@@ -529,16 +515,14 @@ full send of data/ton-work@<SNAPSHOT_NAME> estimated size is 4.07T
 total estimated size is 4.07T
 ```
 
-To save the snapshot to a file, use the `-c` flag to preserve `lz4` compression. Without it, the file expands to the uncompressed size of the dataset:
-
-Define placeholders:
-
-- `<BACKUP_PATH>` - destination path on the external storage (e.g., `/mnt/backup/backup_ton_work.zfs`).
+To save the snapshot to a file, use the `-c` flag to preserve LZ4 compression. Without it, the file expands to the uncompressed size of the dataset:
 
 ```bash
-# Ensure the destination directory exists and has enough free space
+# Ensure the destination directory exists and has enough free space!
 sudo zfs send -c data/ton-work@<SNAPSHOT_NAME> > <BACKUP_PATH>
 ```
+
+Example destination path on the external storage: `/mnt/backup/backup_ton_work.zfs`
 
 <Aside type="note">
   Exporting large datasets can take several hours. For example, a 4.07 TB snapshot may take approximately 2 hours to export, depending on disk throughput.
@@ -548,15 +532,15 @@ sudo zfs send -c data/ton-work@<SNAPSHOT_NAME> > <BACKUP_PATH>
 
 Stream a snapshot directly to a remote ZFS-enabled server:
 
-Define placeholders:
-
-- `<REMOTE_USER>` - username on the remote host.
-- `<REMOTE_HOST>` - IP address or hostname of the remote host.
-- `<REMOTE_POOL>` - name of the remote ZFS pool.
-
 ```bash
 sudo zfs send -c data/ton-work@<SNAPSHOT_NAME> | ssh <REMOTE_USER>@<REMOTE_HOST> "sudo zfs recv <REMOTE_POOL>/ton-work"
 ```
+
+There,
+
+- `<REMOTE_USER>` is the username on the remote host;
+- `<REMOTE_HOST>` is an IP address or hostname of the remote host;
+- `<REMOTE_POOL>` is the name of the remote ZFS pool.
 
 ## Troubleshooting
 
