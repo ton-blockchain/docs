@@ -21,7 +21,7 @@ This guide explains how to run a validator TON node with MyTonCtrl from scratch.
 ### 1.1 Maintain costs and expenses
 
 - 200 TON per month on the validator hot wallet for its operational transactions.
-- Validator deposit stake [1 400 000 TON \~ 4 000 000 TON](/ecosystem/nodes/cpp/run-validator#step-4-set-optimal-stake-for-validator) to cover both validation rounds.
+- Validator deposit stake [1 400 000 TON \~ 4 000 000 TON](#step-4-set-optimal-stake-for-validator) to cover both validation rounds.
 - 100 TB/month traffic at a peak load.
 
 ### 1.2 Minimal hardware requirements
@@ -91,7 +91,7 @@ Configure the network on the server according to the following:
 
 - All outgoing connections are allowed.
 - A static external IP address.
-- [One UDP port open for incoming connections.](/ecosystem/nodes/cpp/run-validator#2-4-verify-validator’s-port)
+- [One UDP port open for incoming connections.](#2-4-verify-validators-port)
 
 ### 1.5 Follow network announcements
 
@@ -175,7 +175,7 @@ sudo apt install -y speedtest-cli
 speedtest-cli
 ```
 
-Ensure download and upload speeds meet the [1 Gbit/s requirement](/ecosystem/nodes/cpp/run-validator#1-2-minimal-hardware-requirements).
+Ensure download and upload speeds meet the [1 Gbit/s requirement](#1-2-minimal-hardware-requirements).
 
 ### 1.8 Harden server security
 
@@ -226,7 +226,7 @@ sudo systemctl restart sshd
 
 #### Firewall configuration
 
-Enable the firewall and allow only the SSH port. The validator UDP port is added after installation in [step 2.5](/ecosystem/nodes/cpp/run-validator#2-5-check-validator's-port).
+Enable the firewall and allow only the SSH port. The validator UDP port is added after installation in [step 2.5](#2-5-check-validator's-port).
 
 ```bash
 sudo ufw allow <SSH_PORT>/tcp
@@ -252,7 +252,7 @@ sudo ufw status
 
 #### Encrypt sensitive directories (optional)
 
-For additional protection, store validator keys and configuration on an encrypted partition. Create an encrypted volume and symlink the [backup directories](/ecosystem/nodes/cpp/run-validator#5-5-organize-validator-backup) from it.
+For additional protection, store validator keys and configuration on an encrypted partition. Create an encrypted volume and symlink the [backup directories](#5-5-organize-validator-backup) from it.
 
 <Aside type="tip">
   After moving directories to the encrypted partition, create symlinks in their original locations so that MyTonCtrl and the validator service continue to function without path changes.
@@ -509,7 +509,7 @@ That also reflects in Tonviewer; the status will be displayed as `Active`
 
 ### 3.6 Create a pool
 
-Create a [single nominator pool](https://docs.ton.org/v3/documentation/smart-contracts/contracts-specs/single-nominator-pool) for secure stake management. As the `owner-address`, specify the beneficiary wallet address that will stake the owner's funds and receive rewards.
+Create a [single nominator pool](/v3/documentation/smart-contracts/contracts-specs/single-nominator-pool) for secure stake management. As the `owner-address`, specify the beneficiary wallet address that will stake the owner's funds and receive rewards.
 
 <Aside
   type="danger"
@@ -632,7 +632,7 @@ Test deposit to stake workflow. Any user can deposit to the pool via a standard 
 
 ### 3.11 Test withdrawal from pool
 
-Test withdrawal workflow. Only the [owner's cold wallet](/ecosystem/nodes/cpp/run-validator#3-6-create-a-pool) can request a withdrawal.
+Test withdrawal workflow. Only the [owner's cold wallet](#3-6-create-a-pool) can request a withdrawal.
 Send a withdrawal request, a message with `w` comment from `owner` wallet to the single nominator pool address:
 
 <Image
@@ -828,7 +828,7 @@ Before sending funds to the pool:
 
 - Verify that the pool address is correct and uses the **bounceable** format.
 - Confirm that the pool smart contract is still active and not frozen. A pool can become frozen if the entire balance is consumed by storage fees between creation and funding.
-- Follow the [test deposit and withdrawal procedure](/ecosystem/nodes/cpp/run-validator#3-10-test-deposit-to-pool) before depositing the full stake.
+- Follow the [test deposit and withdrawal procedure](#3-10-test-deposit-to-pool) before depositing the full stake.
 
 <Aside type="tip">
   By default, MyTonCtrl splits the pool balance 50/50 between odd and even validation cycles. Ensure the total stake is sufficient to participate in both cycles: `balance > min_stake * 2`.
@@ -844,7 +844,7 @@ MyTonCtrl> mg validator_wallet_001 <POOL_ADDRESS> 5
 
 ### 5.3 Withdraw funds from the pool
 
-Only the owner wallet can withdraw funds. Follow the [test withdrawal procedure](/ecosystem/nodes/cpp/run-validator#3-11-test-withdrawal-from-pool) using the same method.
+Only the owner wallet can withdraw funds. Follow the [test withdrawal procedure](#3-11-test-withdrawal-from-pool) using the same method.
 
 ### 5.4 Follow the TON announcements channel
 
@@ -914,7 +914,7 @@ Set up dashboards to monitor validators using the APIs provided below.
 
 If a validator processes less than 90% of the expected blocks during a validation round, they will be fined 101 TON.
 
-Learn more about the [slashing policy](https://old-docs.ton.org/v3/documentation/nodes/validation/staking-incentives#decentralized-system-of-penalties).
+Learn more about the [slashing policy](/v3/documentation/nodes/validation/staking-incentives#decentralized-system-of-penalties).
 
 ### 5.10 Maintain validator
 
@@ -942,7 +942,7 @@ Check the following indicators:
   Validator efficiency may show 0% at the beginning of a cycle until the validator signs its first blocks. This is normal behavior.
 </Aside>
 
-Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/ecosystem/explorers/overview). For greater observability, [set up the monitoring](/ecosystem/nodes/cpp/run-validator#5-7-set-up-monitoring) of various validator metrics.
+Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/ecosystem/explorers/overview). For greater observability, [set up the monitoring](#5-7-set-up-monitoring) of various validator metrics.
 
 ## Troubleshoot common issues
 
@@ -950,7 +950,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 
 - Verify that the validator UDP port is open: `sudo ufw status`.
 - Check network connectivity to beacon nodes: `ping beacon-eu-01.toncenter.com -c 6`.
-- Ensure disk IOPS meet minimum requirements. Re-run the [benchmark](/ecosystem/nodes/cpp/run-validator#disk-iops).
+- Ensure disk IOPS meet minimum requirements. Re-run the [benchmark](#disk-iops).
 - Check service logs: `journalctl -u validator -f`.
 
 ### Validator efficiency is below 90%
@@ -958,7 +958,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 - Confirm the node is fully synchronized (`Local validator out of sync` ≤ 3 seconds).
 - Check disk performance. Slow storage is the most common cause of low efficiency.
 - Verify that no other resource-intensive processes compete for CPU or RAM.
-- Review hardware against [minimum requirements](/ecosystem/nodes/cpp/run-validator#1-2-minimal-hardware-requirements).
+- Review hardware against [minimum requirements](#1-2-minimal-hardware-requirements).
 
 ### Pool is not participating in elections
 

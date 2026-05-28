@@ -599,14 +599,14 @@ The serialization of a hashmap into a tree of cells (or, more generally, into a 
 ```
 bit#_ _:(## 1) = Bit;
 
-hm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n) 
+hm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n)
           {n = (~m) + l} node:(HashmapNode m X) = Hashmap n X;
 
 hmn_leaf#_ {X:Type} value:X = HashmapNode 0 X;
-hmn_fork#_ {n:#} {X:Type} left:^(Hashmap n X) 
+hmn_fork#_ {n:#} {X:Type} left:^(Hashmap n X)
            right:^(Hashmap n X) = HashmapNode (n + 1) X;
 
-hml_short$0 {m:#} {n:#} len:(Unary ~n) 
+hml_short$0 {m:#} {n:#} len:(Unary ~n)
             s:(n * Bit) = HmLabel ~n m;
 hml_long$10 {m:#} n:(#<= m) s:(n * Bit) = HmLabel ~n m;
 hml_same$11 {m:#} v:Bit n:(#<= m) = HmLabel ~n m;
@@ -688,15 +688,15 @@ The corresponding Patricia tree consists of a root $A$, two intermediate nodes $
 The corresponding value of type $\texttt{HashmapE}$ 16 ($\texttt{\#\#}$ 16) may be written in human-readable form as:
 
 ```
-(hme_root$1 
-  root:^(hm_edge label:(hml_same$11 v:0 n:8) node:(hm_fork 
-    left:^(hm_edge label:(hml_short$0 len:$110 s:$00) 
+(hme_root$1
+  root:^(hm_edge label:(hml_same$11 v:0 n:8) node:(hm_fork
+    left:^(hm_edge label:(hml_short$0 len:$110 s:$00)
       node:(hm_fork
-        left:^(hm_edge label:(hml_long$10 n:4 s:$1101) 
+        left:^(hm_edge label:(hml_long$10 n:4 s:$1101)
           node:(hm_leaf value:169))
-        right:^(hm_edge label:(hml_long$10 n:4 s:$0001) 
+        right:^(hm_edge label:(hml_long$10 n:4 s:$0001)
           node:(hm_leaf value:289))))
-    right:^(hm_edge label:(hml_long$10 n:7 s:$1101111) 
+    right:^(hm_edge label:(hml_long$10 n:7 s:$1101111)
       node:(hm_leaf value:57121)))))
 ```
 
@@ -704,7 +704,7 @@ The serialization of this data structure into a tree of cells consists of six ce
 
 ```
 A := 1
-A.0 := 11 0 01000 
+A.0 := 11 0 01000
 A.0.0 := 0 110 00
 A.0.0.0 := 10 100 1101 0000000010101001
 A.0.0.1 := 10 100 0001 0000000100100001
@@ -807,21 +807,21 @@ TVM provides some support for [dictionaries, or hashmaps](#3-3-hashmaps%2C-or-di
 The [serialization](#3-3-3-serialization-of-hashmaps) of a *VarHashmap* into a tree of cells (or, more generally, into a *Slice*) is defined by a TL-B scheme:
 
 ```
-vhm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n) 
-           {n = (~m) + l} node:(VarHashmapNode m X) 
+vhm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n)
+           {n = (~m) + l} node:(VarHashmapNode m X)
            = VarHashmap n X;
 vhmn_leaf$00 {n:#} {X:Type} value:X = VarHashmapNode n X;
-vhmn_fork$01 {n:#} {X:Type} left:^(VarHashmap n X) 
-             right:^(VarHashmap n X) value:(Maybe X) 
+vhmn_fork$01 {n:#} {X:Type} left:^(VarHashmap n X)
+             right:^(VarHashmap n X) value:(Maybe X)
              = VarHashmapNode (n + 1) X;
-vhmn_cont$1 {n:#} {X:Type} branch:bit child:^(VarHashmap n X) 
+vhmn_cont$1 {n:#} {X:Type} branch:bit child:^(VarHashmap n X)
             value:X = VarHashmapNode (n + 1) X;
 
 nothing$0 {X:Type} = Maybe X;
 just$1 {X:Type} value:X = Maybe X;
 
 vhme_empty$0 {n:#} {X:Type} = VarHashmapE n X;
-vhme_root$1 {n:#} {X:Type} root:^(VarHashmap n X) 
+vhme_root$1 {n:#} {X:Type} root:^(VarHashmap n X)
             = VarHashmapE n X;
 ```
 
@@ -832,16 +832,16 @@ One special case of a dictionary with variable-length keys is that of a *prefix 
 The serialization of a prefix code is defined by the following TL-B scheme:
 
 ```
-phm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n) 
-           {n = (~m) + l} node:(PfxHashmapNode m X) 
+phm_edge#_ {n:#} {X:Type} {l:#} {m:#} label:(HmLabel ~l n)
+           {n = (~m) + l} node:(PfxHashmapNode m X)
            = PfxHashmap n X;
 
 phmn_leaf$0 {n:#} {X:Type} value:X = PfxHashmapNode n X;
-phmn_fork$1 {n:#} {X:Type} left:^(PfxHashmap n X) 
+phmn_fork$1 {n:#} {X:Type} left:^(PfxHashmap n X)
             right:^(PfxHashmap n X) = PfxHashmapNode (n + 1) X;
 
 phme_empty$0 {n:#} {X:Type} = PfxHashmapE n X;
-phme_root$1 {n:#} {X:Type} root:^(PfxHashmap n X) 
+phme_root$1 {n:#} {X:Type} root:^(PfxHashmap n X)
             = PfxHashmapE n X;
 ```
 
@@ -918,7 +918,7 @@ Consider the $\texttt{CALLX}$ or $\texttt{EXECUTE}$ primitive, which takes a con
 
 Apart from doing the stack manipulations described in [4.1.6](#4-1-6-switching-to-another-continuation:-and) and [4.1.7](#4-1-7-determining-the-number-of-arguments-passed-to-the-next-continuation) and setting the new [control registers](#4-1-8-restoring-control-registers-from-the-new-continuation), these primitives perform several additional steps:
 
-1. After the top $n''$ values are [removed](#4-1-7-determining-the-number-of-arguments-passed-to-the-next-continuation) from the current stack, the (usually empty) remainder is not discarded, but instead is stored in the (old) current continuation $\texttt{cc}$.  
+1. After the top $n''$ values are [removed](#4-1-7-determining-the-number-of-arguments-passed-to-the-next-continuation) from the current stack, the (usually empty) remainder is not discarded, but instead is stored in the (old) current continuation $\texttt{cc}$.
 
 2. The old value of the special register $\texttt{c0}$ is saved into the (previously empty) savelist $\texttt{cc.save}$.
 
@@ -2340,19 +2340,19 @@ The "global variables" may be helpful in implementing some high-level smart-cont
 The message and address manipulation primitives listed below serialize and deserialize values according to the following [TL-B scheme](#3-3-4-brief-explanation-of-tl-b-schemes):
 ```
 addr_none$00 = MsgAddressExt;
-addr_extern$01 len:(## 9) external_address:(bits len) 
+addr_extern$01 len:(## 9) external_address:(bits len)
              = MsgAddressExt;
 anycast_info$_ depth:(#<= 30) { depth >= 1 }
    rewrite_pfx:(bits depth) = Anycast;
-addr_std$10 anycast:(Maybe Anycast) 
+addr_std$10 anycast:(Maybe Anycast)
    workchain_id:int8 address:bits256  = MsgAddressInt;
-addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9) 
+addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9)
    workchain_id:int32 address:(bits addr_len) = MsgAddressInt;
 _ _:MsgAddressInt = MsgAddress;
 _ _:MsgAddressExt = MsgAddress;
 
 int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-  src:MsgAddress dest:MsgAddressInt 
+  src:MsgAddress dest:MsgAddressInt
   value:CurrencyCollection ihr_fee:Grams fwd_fee:Grams
   created_lt:uint64 created_at:uint32 = CommonMsgInfoRelaxed;
 ext_out_msg_info$11 src:MsgAddress dest:MsgAddressExt
@@ -2447,9 +2447,9 @@ vm_stk_tinyint#01 value:int64 = VmStackValue;
 vm_stk_int#0201_ value:int257 = VmStackValue;
 vm_stk_nan#02FF = VmStackValue;
 vm_stk_cell#03 cell:^Cell = VmStackValue;
-_ cell:^Cell st_bits:(## 10) end_bits:(## 10) 
-  { st_bits <= end_bits } 
-  st_ref:(#<= 4) end_ref:(#<= 4) 
+_ cell:^Cell st_bits:(## 10) end_bits:(## 10)
+  { st_bits <= end_bits }
+  st_ref:(#<= 4) end_ref:(#<= 4)
   { st_ref <= end_ref } = VmCellSlice;
 vm_stk_slice#04 _:VmCellSlice  = VmStackValue;
 vm_stk_builder#05 cell:^Cell = VmStackValue;
@@ -2464,7 +2464,7 @@ The TVM stack can be serialized as follows:
 
 ```
 vm_stack#_ depth:(## 24) stack:(VmStackList depth) = VmStack;
-vm_stk_cons#_ {n:#} head:VmStackValue tail:^(VmStackList n) 
+vm_stk_cons#_ {n:#} head:VmStackValue tail:^(VmStackList n)
   = VmStackList (n + 1);
 vm_stk_nil#_ = VmStackList 0;
 ```
@@ -2482,7 +2482,7 @@ _ cregs:(HashmapE 4 VmStackValue) = VmSaveList;
 Gas limits in TVM can be serialized as follows:
 
 ```
-gas_limits#_ remaining:int64 _:^[ 
+gas_limits#_ remaining:int64 _:^[
   max_limit:int64 cur_limit:int64 credit:int64 ]
   = VmGasLimits;
 ```
@@ -2502,13 +2502,13 @@ Continuations in TVM can be serialized as follows:
 ```
 vmc_std$00 nargs:(## 22) stack:(Maybe VmStack) save:VmSaveList
    cp:int16 code:VmCellSlice = VmCont;
-vmc_envelope$01 nargs:(## 22) stack:(Maybe VmStack) 
+vmc_envelope$01 nargs:(## 22) stack:(Maybe VmStack)
    save:VmSaveList next:^VmCont = VmCont;
 vmc_quit$1000 exit_code:int32 = VmCont;
 vmc_quit_exc$1001 = VmCont;
 vmc_until$1010 body:^VmCont after:^VmCont = VmCont;
 vmc_again$1011 body:^VmCont = VmCont;
-vmc_while_cond$1100 cond:^VmCont body:^VmCont 
+vmc_while_cond$1100 cond:^VmCont body:^VmCont
    after:^VmCont = VmCont;
 vmc_while_body$1101 cond:^VmCont body:^VmCont
    after:^VmCont = VmCont;
@@ -2520,17 +2520,17 @@ vmc_pushint$1111 value:int32 next:^VmCont = VmCont;
 The total state of TVM can be serialized as follows:
 
 ```
-vms_init$00 cp:int16 step:int32 gas:GasLimits 
+vms_init$00 cp:int16 step:int32 gas:GasLimits
   stack:(Maybe VmStack) save:VmSaveList code:VmCellSlice
   lib:VmLibraries = VmState;
-vms_exception$01 cp:int16 step:int32 gas:GasLimits 
-  exc_no:int32 exc_arg:VmStackValue 
+vms_exception$01 cp:int16 step:int32 gas:GasLimits
+  exc_no:int32 exc_arg:VmStackValue
   save:VmSaveList lib:VmLibraries = VmState;
 vms_running$10 cp:int16 step:int32 gas:GasLimits stack:VmStack
   save:VmSaveList code:VmCellSlice lib:VmLibraries
   = VmState;
-vms_finished$11 cp:int16 step:int32 gas:GasLimits 
-  exit_code:int32 no_gas:Boolean stack:VmStack 
+vms_finished$11 cp:int16 step:int32 gas:GasLimits
+  exit_code:int32 no_gas:Boolean stack:VmStack
   save:VmSaveList lib:VmLibraries = VmState;
 ```
 
@@ -2569,7 +2569,7 @@ The TON Blockchain adopts this approach to validate the runs of TVM (e.g., those
 ### B.2.7. Codepage $-2$
 
 This bootstrapping process could be iterated even further, by providing an emulator of the stripped-down version of TVM written for an even simpler version of TVM that supports only boolean values (or integers 0 and 1)—a "codepage $-2$". All 64-bit arithmetic used in codepage $-1$ would then need to be defined by means of boolean operations, thus providing a reference implementation for the stripped-down version of TVM used in codepage $-1$. In this way, if some of the TON Blockchain validators did not agree on the results of their 64-bit arithmetic, they could regress to this reference implementation to find the correct answer.<a id="ref-fn30"></a><sup>[30](#fn30)</sup>
- 
+
 ---
 
 
@@ -2728,7 +2728,7 @@ We have used 29 operations; assuming one-byte encodings for all stack operations
 Notice as well that we have implicitly used the commutativity of multiplication in this code, computing $de-bf$ instead of $ed-bf$ as specified in high-level language source code. If we were not allowed to do so, an extra $\texttt{XCHG s1}$ would need to be inserted before the third $\texttt{IMUL}$, increasing the total size of the code by one operation and one byte.
 
 The code presented above might have been produced by a rather unsophisticated compiler that simply computed all expressions and subexpressions in the order they appear, then rearranged the arguments near the [top of the stack](#2-2-2-basic-stack-manipulation-primitives-suffice) before each operation. The only "manual" optimization done here involves computing $ec$ before $af$; one can check that the other order would lead to slightly shorter code of 28 operations and bytes (or 29, if we are not allowed to use the commutativity of multiplication), but the $\texttt{ROT}$ optimization would not be applicable.
- 
+
 ### C.1.6. Stack machine with compound stack primitives
 
 A stack machine with [compound stack](#2-2-3-compound-stack-manipulation-primitives) primitives would not significantly improve code density of the code presented above, at least in terms of bytes used. The only difference is that, if we were not allowed to use commutativity of multiplication, the extra $\texttt{XCHG s1}$ inserted before the third $\texttt{IMUL}$ might be combined with two previous operations $\texttt{XCHG s3}$, $\texttt{PUSH s2}$ into one compound operation $\texttt{PUXC s2,s3}$; we provide the resulting code below. To make this less redundant, we show a version of the code that computes subexpression $af$ before $ec$ as specified in the original source file. We see that this replaces six operations (starting from line 15) with five other operations, and disables the $\texttt{ROT}$ optimization:
@@ -3353,7 +3353,7 @@ By contrast, the heavily optimized (with respect to size) code for register mach
 
 <span id="fn25">**25**</span> This is not exactly true. A more precise statement is that usually the codepage of the newly-created continuation is a known function of the current codepage. [Back ↑](#ref-fn25)
 
-<span id="fn26">**26**</span> This is another important mechanism of backward compatibility. All values of newly-added types, as well as values belonging to extended original types that do not belong to the original types (e.g., 513-bit integers that do not fit into 257 bits in the example above), are treated by all instructions (except stack manipulation instructions, which are naturally polymorphic, [Polymorphism of stack manipulation primitives](#2-3-3-polymorphism-of-stack-manipulation-primitives)) in the old codepages as "values of incorrect type", and generate type-checking exceptions accordingly. [Back ↑](#ref-fn26)
+<span id="fn26">**26**</span> This is another important mechanism of backward compatibility. All values of newly-added types, as well as values belonging to extended original types that do not belong to the original types (e.g., 513-bit integers that do not fit into 257 bits in the example above), are treated by all instructions (except stack manipulation instructions, which are [naturally polymorphic](#2-2-6-stack-manipulation-instructions-are-polymorphic)) in the old codepages as "values of incorrect type", and generate type-checking exceptions accordingly. [Back ↑](#ref-fn26)
 
 <span id="fn27">**27**</span> If the cell dumps are hexadecimal, encodings consisting of an integral number of hexadecimal digits (i.e., having length divisible by four bits) might be equally convenient. [Back ↑](#ref-fn27)
 

@@ -32,7 +32,7 @@ The total state of TVM consists of the following components:
 - [**Control registers**](/tvm/registers). A small fixed set of special registers, denoted as `c0`, `c1`, ..., `c5`, and `c7` (`c6` does not exist).
 - [**Gas counter**](/tvm/gas). Tracks remaining computation budget. Each instruction decrements gas. When counter hits zero/negative value, an exception is raised, and the run aborts.
 - **Current continuation (`cc`)**. A special register that stores a list of the next instructions to execute. Similar to the instruction pointer in traditional architectures.
-- **Current codepage (`cp`)**. Determines how to decode the next instruction in `cc`. Different codepages may implement different instruction sets, allowing for adding new features to TVM without affecting old smart contracts. Currently, only codepage `0` (`cp0`) is implemented. Smart contract runs [`SETCP0`](/tvm/instructions#ff-setcp) instruction to explicitly use codepage `0`.
+- **Current codepage (`cp`)**. Determines how to decode the next instruction in `cc`. Different codepages may implement different instruction sets, allowing for adding new features to TVM without affecting old smart contracts. Currently, only codepage `0` (`cp0`) is implemented. Smart contract runs [`SETCP0`](/tvm/instructions#ffnn-setcp) instruction to explicitly use codepage `0`.
 
 ## TVM data types
 

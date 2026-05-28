@@ -67,7 +67,7 @@ If the `forward_payload` contains a binary message for interacting with the dest
 
 <Aside type="caution">Verify that item belongs to collection via [get method in collection](/standard/tokens/nft/api#get_nft_address_by_index), see more [here](/standard/tokens/nft/verify)</Aside>
 
-#### get\_nft\_data()
+#### `get_nft_data()`
 
 No arguments. Outputs:
 
@@ -83,7 +83,7 @@ No arguments. Outputs:
 
 ### NFT Collection
 
-#### get\_collection\_data()
+#### `get_collection_data()`
 
 No arguments. Outputs:
 
@@ -93,13 +93,13 @@ No arguments. Outputs:
 | `collection_content` | `Cell`       | collection content in a format that complies with TEP-64 |
 | `owner_address`      | `MsgAddress` | collection owner address, zero address if no owner       |
 
-#### get\_nft\_address\_by\_index()
+#### `get_nft_address_by_index()`
 
 Argument: `index` as `int`.
 
 Output: `address` as `MsgAddress`.
 
-#### get\_nft\_content()
+#### `get_nft_content()`
 
 Arguments:
 
@@ -127,7 +127,7 @@ Output: `full_content` as `Cell`.
 | `denominator`           | `uint16`     | royalty denominator                     |
 | `destination`           | `MsgAddress` | address to send royalty                 |
 
-### royalty\_params()
+### `royalty_params()`
 
 No arguments. Outputs:
 
@@ -208,7 +208,7 @@ Royalty share is `numerator / denominator`. For example, if `numerator = 11` and
 | `revoked_at` | `uint64`      | unix time when SBT was revoked, 0 if it was not       |
 | `content`    | `Maybe ^Cell` | SBT's content if `with_content` was true, null if not |
 
-#### get\_nft\_data()
+#### `get_nft_data()`
 
 Same as [NFT standard](/standard/tokens/nft/api#get_nft_data). No arguments. Outputs:
 
@@ -220,7 +220,7 @@ Same as [NFT standard](/standard/tokens/nft/api#get_nft_data). No arguments. Out
 | `owner_address`      | `MsgAddress` | SBT owner's address                                                       |
 | `individual_content` | `Cell`       | individual SBT content in any format                                      |
 
-#### get\_authority\_address()
+#### `get_authority_address()`
 
 No arguments. Outputs:
 
@@ -230,7 +230,7 @@ No arguments. Outputs:
 
 <Aside type="note">This method is mandatory for SBT. If there is no authority it should return `addr_none` (2 zero bits).</Aside>
 
-#### get\_revoked\_time()
+#### `get_revoked_time()`
 
 No arguments. Outputs:
 

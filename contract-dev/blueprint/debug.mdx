@@ -68,7 +68,7 @@ it('should deploy correctly', async () => {
 
 ## Dump values from a contract
 
-There are three TVM debug [instructions](/tvm/instructions#fe-debug): `DUMPSTK`, `STRDUMP`, and `DUMP`.
+There are three TVM debug [instructions](/tvm/instructions#feij-debug): `DUMPSTK`, `STRDUMP`, and `DUMP`.
 
 These instructions are wrapped in functions with different names in each language:
 
@@ -127,7 +127,7 @@ default exception handler, terminating vm with exit code 9
 
 <Aside type="tip">
   To investigate the error in more detail, examine the TVM source code for the `LDU` instruction.
-  Sometimes several instructions are implemented within a single `exec_*` method. For example, [LDU](/tvm/instructions#d3-ldu) (`load_uint`), [LDI](/tvm/instructions#d2-ldi) (`load_int`) and it's preload versions (`preload_uint`and`preload_int`).
+  Sometimes several instructions are implemented within a single `exec_*` method. For example, [`LDU`](/tvm/instructions#d3cc-ldu) (`load_uint`), [`LDI`](/tvm/instructions#d2cc-ldi) (`load_int`) and it's preload versions (`preload_uint`and`preload_int`).
 
   Check how `LDU` [is implemented](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/crypto/vm/cellops.cpp#L981).
 </Aside>

@@ -43,15 +43,15 @@ graph LR
 
 **Comparison table**
 
-| Criteria                     | Invoice-based deposits                                                                                      | Unique deposit addresses                                                                 |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Security exposure            | One shared hot wallet; a key leak drains the full pool                                                      | Each wallet isolates funds; compromise affects only the impacted user                    |
-| User input requirements      | User must include an invoice ID comment; missing or malformed comments need manual recovery workflows       | User only needs the destination address                                                  |
-| Parsing and validation       | Backend parses comments on every deposit and matches to invoices                                            | No parsing; deposit attribution is address-based                                         |
-| Deployment and storage costs | Deploy and maintain a single wallet; [storage rent](/foundations/fees#storage-fee) limited to that contract | Deploy many wallets; storage rent and deployment gas scale with user count               |
-| Monitoring workload          | Poll one address; comment parsing adds CPU but [RPC calls](/ecosystem/api/overview) stay low                | Track many addresses; RPC queries and state tracking grow with the active user base      |
-| Withdrawal handling          | [Highload wallet](/standard/wallets/highload/overview) can batch withdrawals from one balance               | Need sweeps or coordinated withdrawals from many wallets; extra gas and sequencing logic |
-| Sharding behavior            | All activity hits [one shard](/foundations/shards); throughput limited by that shard                        | Wallets are distributed across shards; helps spread load                                 |
+| Criteria                     | Invoice-based deposits                                                                                       | Unique deposit addresses                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Security exposure            | One shared hot wallet; a key leak drains the full pool                                                       | Each wallet isolates funds; compromise affects only the impacted user                    |
+| User input requirements      | User must include an invoice ID comment; missing or malformed comments need manual recovery workflows        | User only needs the destination address                                                  |
+| Parsing and validation       | Backend parses comments on every deposit and matches to invoices                                             | No parsing; deposit attribution is address-based                                         |
+| Deployment and storage costs | Deploy and maintain a single wallet; [storage rent](/foundations/fees#storage-fees) limited to that contract | Deploy many wallets; storage rent and deployment gas scale with user count               |
+| Monitoring workload          | Poll one address; comment parsing adds CPU but [RPC calls](/ecosystem/api/overview) stay low                 | Track many addresses; RPC queries and state tracking grow with the active user base      |
+| Withdrawal handling          | [Highload wallet](/standard/wallets/highload/overview) can batch withdrawals from one balance                | Need sweeps or coordinated withdrawals from many wallets; extra gas and sequencing logic |
+| Sharding behavior            | All activity hits [one shard](/foundations/shards); throughput limited by that shard                         | Wallets are distributed across shards; helps spread load                                 |
 
 ## Invoice-based deposits
 

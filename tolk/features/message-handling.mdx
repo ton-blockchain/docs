@@ -8,7 +8,7 @@ A contract file typically begins with a [`contract` declaration](/languages/tolk
 
 ## `onInternalMessage`
 
-Contracts primarily handle [internal messages](/foundations/messages/internal#internal-messages). Users interact with contracts through their wallets, which send internal messages to the contract. The entrypoint is declared as follows:
+Contracts primarily handle [internal messages](/foundations/messages/internal). Users interact with contracts through their wallets, which send internal messages to the contract. The entrypoint is declared as follows:
 
 ```tolk
 fun onInternalMessage(in: InMessage) {

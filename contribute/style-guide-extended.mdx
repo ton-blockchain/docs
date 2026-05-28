@@ -163,7 +163,7 @@ Rules (binding).
 - Emojis in compact tables **MAY** be used sparingly as visual indicators only when they follow a widely understood convention (for example, `✅` / `❌` for supported/not supported, or `★` to mark a recommended option) and **MUST** be paired with a text label in the same cell or a descriptive header (e.g., “Supported — Yes/No”). Do not rely on an emoji alone to convey meaning, and **MUST NOT** use decorative or non-standard pictograms (for example, a play triangle to indicate videos). (Why: paired, conventional icons preserve clarity for screen readers, localization, and cases where emojis don’t render.)
 - Even where emojis are technically allowed (code/output or compact tables), they **SHOULD** be rare and **MUST** have a clear purpose. If the same meaning is clear without the emoji, remove it. (Why: conventional text remains clearer for global readers and translators.)
 - Use plain terms over legalese/Latinisms. “Use” not “utilize”; “before” not “prior to.” (Why: common words improve comprehension and reduce rereads; they are also translated more consistently.)
-- Avoid first-person pronouns (“we”, “I”, “our”). When an organization, product, or service is the actor, use its proper name (e.g., “Tonkeeper”, “TON”) or a neutral noun (“the node”, “the SDK”). Prefer imperative instructions without “you”. See [§5.8](#58-dont-get-personal) and [§5.10](#510-pronouns-and-person-references). (Why: neutral, explicit actors read cleanly and translate reliably.)
+- Avoid first-person pronouns (“we”, “I”, “our”). When an organization, product, or service is the actor, use its proper name (e.g., “Tonkeeper”, “TON”) or a neutral noun (“the node”, “the SDK”). Prefer imperative instructions without “you”. See [§5.8](#5-8-dont-get-personal) and [§5.10](#5-10-pronouns-and-person-references). (Why: neutral, explicit actors read cleanly and translate reliably.)
 
 Marketing and promotional language (ban).
 
@@ -209,7 +209,7 @@ Objective. Make sentences easy to parse on first read. (Why: clear, low-friction
 
   - Good: “The API returns JSON.”
   - Bad: “The API will return JSON.”
-- Prefer imperative instructions without addressing the reader (“you”). Avoid first-person pronouns (“we”, “I”, “our”); when an organization, product, or service is the actor, use its proper name (e.g., “TON Center”, “TON”). See [§5.8](#58-dont-get-personal) and [§5.10](#510-pronouns-and-person-references). (Why: imperative, neutral phrasing keeps actors clear without personal address.)
+- Prefer imperative instructions without addressing the reader (“you”). Avoid first-person pronouns (“we”, “I”, “our”); when an organization, product, or service is the actor, use its proper name (e.g., “TON Center”, “TON”). See [§5.8](#5-8-dont-get-personal) and [§5.10](#5-10-pronouns-and-person-references). (Why: imperative, neutral phrasing keeps actors clear without personal address.)
 
 ### 5.2 Plain, precise wording
 
@@ -430,7 +430,7 @@ Objective. Remove ambiguity and increase scan speed with consistent mechanics. (
 ### 6.6 Blockquotes
 
 - Blockquotes **MUST** be reserved for literal quotations from a source (another page in these docs or an external source). Include attribution inline or in the sentence introducing the quote; internal quotes **SHOULD** link to the exact anchor; external quotes **SHOULD** link to the canonical HTTPS source. (Why: clear attribution preserves trust and lets readers verify context.)
-- Blockquotes **MUST NOT** be used for callouts/admonitions, warnings, tips, examples, emphasis, or general instructions. Use the `<Aside>` component for callouts (see [§11.2](#112-how-to-write-the-callout), [Appendix A](#a-admonition-levels-and-usage)) and headings/lists for structure. (Why: misusing blockquotes harms structure, accessibility, and localization.)
+- Blockquotes **MUST NOT** be used for callouts/admonitions, warnings, tips, examples, emphasis, or general instructions. Use the `<Aside>` component for callouts (see [§11.2](#11-2-how-to-write-the-callout), [Appendix A](#a-admonition-levels-and-usage)) and headings/lists for structure. (Why: misusing blockquotes harms structure, accessibility, and localization.)
 - Visual callouts (Note/Tip/Caution/Warning) **MUST** use only the `<Aside>` component. The only supported `type` values are `"note"`, `"tip"`, `"caution"`, and `"danger"`; do **NOT** use other components or type values. \[HIGH] (Why: a single component and fixed types keep rendering, accessibility, and localization consistent.)
 - Short phrases or UI/log strings **SHOULD** use inline quotation marks instead of a blockquote. Tokens and identifiers **MUST** use code font, not blockquotes. (Why: inline quotes and code font are more precise and copy-friendly.)
 - Keep quotations brief (prefer ≤ two sentences or one short paragraph). For longer material, summarize in your own words and link to the source. (Why: long quotes impede scanning and duplicate external content.)
@@ -720,7 +720,7 @@ Objective. Reduce duplication and let readers jump straight to detail. (Why: dir
   - Good: `"For more details, see [Validator setup](/validator-setup)."`
   - Good: `"Related guide: [Set up a validator](/validator-setup)."`
 
-- Link labels **SHOULD** be plain text or inline code for identifiers (see [§6.2](#62-quotation-marks-and-emphasis) for emphasis restrictions on link text). (Why: unstyled labels keep links readable and avoid redundant visual emphasis.)
+- Link labels **SHOULD** be plain text or inline code for identifiers (see [§6.2](#6-2-quotation-marks-and-emphasis) for emphasis restrictions on link text). (Why: unstyled labels keep links readable and avoid redundant visual emphasis.)
 
 - Standalone "stub" sentences whose only job is to say "See …" or "Read here …" followed by a link (for example, `[Read here](/standard/wallets/mnemonics) to learn more.` or `See [mnemonics](/standard/wallets/mnemonics) for more details.`) **MUST NOT** appear in running prose. Instead, attach the link to the relevant term or phrase in a normal sentence (for example, `The [mnemonics guide](/standard/wallets/mnemonics) explains why.`). (Why: inline links keep the text flowing and avoid postponing useful links to trailing meta-sentences.) \[HIGH]
 
@@ -801,8 +801,8 @@ Objective. Enforce a single source of truth for terms and casing. (Why: one auth
 
 - A project term bank **MUST** define canonical terms, spellings, hyphenation, casing, and banned variants with replacements (e.g., allowlist/denylist for whitelist/blacklist). (Why: clear entries stop ad-hoc wording and mixed casing from spreading.)
 - You **MUST** consult the term bank before introducing new names; additions **SHOULD** be reviewed by editors. (Why: gatekeeping new terms prevents drift and conflicting synonyms.)
-- The term bank **SHOULD** mark which terms are link-worthy for first-use cross-links and record their canonical doc URLs. First-use linking rules in [§12.2](#122-what-to-link-and-what-not) **SHOULD** apply only to terms above this importance threshold to avoid over-linking minor notions. (Why: a curated set of link-worthy terms keeps pages readable while still making key concepts discoverable.)
-- Flags, parameters, error codes, and data types documented in guides **MUST** be included in this link-worthy set so first-use links in [§12.2](#122-what-to-link-and-what-not) always have a canonical target. This includes TVM exit codes, send modes, reserve modes, and other numeric constants with documented semantics. (Why: treating these technical items as link-worthy ensures readers can jump straight to their reference definitions.) \[HIGH]
+- The term bank **SHOULD** mark which terms are link-worthy for first-use cross-links and record their canonical doc URLs. First-use linking rules in [§12.2](#12-2-what-to-link-and-what-not) **SHOULD** apply only to terms above this importance threshold to avoid over-linking minor notions. (Why: a curated set of link-worthy terms keeps pages readable while still making key concepts discoverable.)
+- Flags, parameters, error codes, and data types documented in guides **MUST** be included in this link-worthy set so first-use links in [§12.2](#12-2-what-to-link-and-what-not) always have a canonical target. This includes TVM exit codes, send modes, reserve modes, and other numeric constants with documented semantics. (Why: treating these technical items as link-worthy ensures readers can jump straight to their reference definitions.) \[HIGH]
 
 ### 13.2 General casing rules
 
@@ -830,7 +830,7 @@ Non-exhaustive; finalize in the term bank. (Why: examples guide writers now, whi
 ### 13.5 Placeholder names
 
 - In commands and prose, placeholders **MUST** be `<ANGLE_CASE>` with descriptive names: `<WALLET_ADDR>`, `<AMOUNT_TON>`, `<RPC_URL>`. (Why: a single, visible pattern reduces copy/paste mistakes.)
-- In programming-language code, placeholders **MAY** use `UPPER_SNAKE` without angle brackets when `< >` would clash with syntax (see [§10.1](#101-general-rules)). (Why: avoids syntax errors while keeping placeholders obvious.)
+- In programming-language code, placeholders **MAY** use `UPPER_SNAKE` without angle brackets when `< >` would clash with syntax (see [§10.1](#10-1-general-rules)). (Why: avoids syntax errors while keeping placeholders obvious.)
 - **MUST NOT** use `{curly}` or `[square]` placeholder syntax in copy-pasteable commands, as they are easy to misread as literal characters. (Why: braces/brackets are often treated as literals by shells and new users.) \[HIGH]
 
 ### 13.6 Banned and preferred terms
@@ -902,7 +902,7 @@ Objective. Ensure content is usable by all readers and easy to localize. (Why: a
 ### 15.3 Localization readiness
 
 - Prefer stable terminology from the term bank ([Appendix B](#b-banned-and-preferred-terms) references) to minimize translation drift. (Why: consistent terms reduce rework and inconsistent translations.)
-- Dates/times already follow ISO conventions (see [§14.3](#143-dates-and-times)), which **SHOULD** simplify localization. (Why: ISO formats are unambiguous across locales and require minimal adaptation.)
+- Dates/times already follow ISO conventions (see [§14.3](#14-3-dates-and-times)), which **SHOULD** simplify localization. (Why: ISO formats are unambiguous across locales and require minimal adaptation.)
 
 Rationale: Clear, inclusive writing and accessible assets improve comprehension for global audiences and translation tools.
 
@@ -996,7 +996,7 @@ Objective. Keep repository structure and UI labels consistent. (Why: predictable
 
 - When an index-style page genuinely needs card-like tiles, you **MAY** use `<Card>`; keep the content inside each card minimal and avoid duplicating information from the linked pages. (Why: cards should support navigation, not introduce a second layer of prose.)
 
-- More generally, follow the “minimal styling” workflow from [§6.2](#62-quotation-marks-and-emphasis): components such as `<Card>`, `<Aside>`, `<Image>`, or tab containers **SHOULD** appear only when they improve comprehension or navigation, not as decoration. (Why: reduced decorative chrome makes structure and behavior stand out.)
+- More generally, follow the “minimal styling” workflow from [§6.2](#6-2-quotation-marks-and-emphasis): components such as `<Card>`, `<Aside>`, `<Image>`, or tab containers **SHOULD** appear only when they improve comprehension or navigation, not as decoration. (Why: reduced decorative chrome makes structure and behavior stand out.)
 
 ## 17. Content hygiene and timeless writing
 
