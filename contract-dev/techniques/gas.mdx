@@ -122,7 +122,7 @@ fwdFee = lumpPrice
 
 where
 
-- `lumpPrice` is the fixed value [from config](/foundations/config#param-24-and-25%3A-message-price) paid once for the message.
+- `lumpPrice` is the fixed value [from config](/foundations/config#param-24-and-25-message-price) paid once for the message.
 - `msgSizeInCells` is the number of cells in the message.
 - `msgSizeInBits` is the number of bits in all the cells of the message.
 
@@ -267,7 +267,7 @@ receive(msg: UserIn) {
 
 The order of phases [depends](/foundations/phases) on the `bounce` flag of an incoming message. If all messages in the protocol are unbounceable, then the storage phase comes after the credit phase. So, the contract's storage fees are deducted from the joint balance of the contract and incoming message. In this case the pattern where the contract's balance is zero and incoming messages cover storage fees can be applied.
 
-It is impossible to know in advance what the storage fee due will be on the contract, so a threshold must be selected depending on the network configuration. It is a good practice to use [`freeze_due_limit`](/foundations/config#param-20-and-21%3A-gas-prices) as the threshold. Otherwise, the contract likely is already frozen and a transaction chain is likely to fail anyway.
+It is impossible to know in advance what the storage fee due will be on the contract, so a threshold must be selected depending on the network configuration. It is a good practice to use [`freeze_due_limit`](/foundations/config#param-20-and-21-gas-prices) as the threshold. Otherwise, the contract likely is already frozen and a transaction chain is likely to fail anyway.
 
 This pattern can be generalized to both bounceable and unbounceable messages with `myStorageDue()` function that returns [`storage_fees_due`](/foundations/phases#storage-phase)
 
