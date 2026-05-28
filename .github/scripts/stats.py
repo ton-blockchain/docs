@@ -8,11 +8,11 @@ Docs stats tool
 - Optional: history (last commit per UTC day, committer date) and simple charts
 
 Usage:
-  python3 scripts/stats.py            # latest
-  python3 scripts/stats.py latest     # same as above
-  python3 scripts/stats.py history    # build stats/history.{jsonl,csv}
-  python3 scripts/stats.py charts     # render simple charts from history.csv
-  python3 scripts/stats.py all        # latest + history + charts
+  python3 .github/scripts/stats.py            # latest
+  python3 .github/scripts/stats.py latest     # same as above
+  python3 .github/scripts/stats.py history    # build stats/history.{jsonl,csv}
+  python3 .github/scripts/stats.py charts     # render simple charts from history.csv
+  python3 .github/scripts/stats.py all        # latest + history + charts
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DOCS_JSON_PATH = REPO_ROOT / "docs.json"
 STATS_DIR = REPO_ROOT / "stats"
 CHART_DIR = STATS_DIR / "charts"

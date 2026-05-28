@@ -131,12 +131,14 @@ def generate_table(endpoints: list) -> str:
             display_tag = tag
             if tag.lower() == 'api/v2':
                 display_tag = 'Legacy (v2)'
+            elif tag.lower() == 'blockchain data':
+                display_tag = 'Blockchain data'
             elif tag.islower():
                 display_tag = tag.capitalize()
 
             method_display = f"[`{method} {path}`]({link})"
 
-            lines.append(f"| **{display_tag}** | {method_display} | {summary} |")
+            lines.append(f"| {display_tag} | {method_display} | {summary} |")
 
     return '\n'.join(lines)
 

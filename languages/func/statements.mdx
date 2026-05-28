@@ -150,7 +150,7 @@ if (cond) {
 }
 ```
 
-The alternative cases can also include the `elseifnot` keyword, which allows the inclusion of [`ifnot` statements](#ifnot%E2%80%A6else-statement) in the alternatives:
+The alternative cases can also include the `elseifnot` keyword, which allows the inclusion of [`ifnot` statements](#ifnot-else-statement) in the alternatives:
 
 ```func
 if (cond) {
@@ -166,7 +166,7 @@ if (cond) {
 
 ### `ifnot...else` statement
 
-The `ifnot...else` statement is equivalent to the [`if...else` statement](#if%E2%80%A6else-statement) but with the condition negated using the [bitwise `~` operator](/languages/func/operators#bitwise-not%2C).
+The `ifnot...else` statement is equivalent to the [`if...else` statement](#if-else-statement) but with the condition negated using the [bitwise `~` operator](/languages/func/operators#bitwise-not%2C).
 
 More specifically:
 
@@ -229,7 +229,7 @@ ifnot (cond) {
 }
 ```
 
-The alternative cases can also include the `elseif` keyword, which allows the inclusion of standard [`if` statements](#if%E2%80%A6else-statement) in the alternatives:
+The alternative cases can also include the `elseif` keyword, which allows the inclusion of standard [`if` statements](#if-else-statement) in the alternatives:
 
 ```func
 ifnot (cond) {      ;; ifnot
@@ -336,7 +336,7 @@ However, certain [TVM state components](/foundations/whitepapers/tvm#1-4-total-s
 - Codepage settings
 - Gas counters
 
-As a result, all gas consumed within the `try` block is still accounted for, and any modifications carried out by operations that change gas limits (e.g., [`accept_message`](/languages/func/stdlib#accept-message) or [`set_gas_limit`](/languages/func/stdlib#set-gas-limit)) will remain in effect.
+As a result, all gas consumed within the `try` block is still accounted for, and any modifications carried out by operations that change gas limits (e.g., [`accept_message`](/languages/func/stdlib#accept_message) or [`set_gas_limit`](/languages/func/stdlib#set_gas_limit)) will remain in effect.
 
 In this example:
 
@@ -372,7 +372,7 @@ try {
 ;; x has value 0
 ```
 
-In the above example, [`throw_arg(-1, 100)`](/languages/func/built-ins#throw-arg) produces an exception with error code `100` and exception parameter `-1`. However, since the exception parameter can be of any type, which may vary depending on the exception, FunC cannot determine its type at compile time in the `catch` block.
+In the above example, [`throw_arg(-1, 100)`](/languages/func/built-ins#throw_arg) produces an exception with error code `100` and exception parameter `-1`. However, since the exception parameter can be of any type, which may vary depending on the exception, FunC cannot determine its type at compile time in the `catch` block.
 
 This requires the developer to manually cast the exception parameter. In the example, casting of the exception parameter is achieved with the [assembler](/languages/func/functions#assembler-function-body-definition) and [polymorphic](/languages/func/functions#polymorphism-with-forall) function `cast_to_int`, which receives an argument of any type and returns the same argument as an integer by wrapping the [`NOP` (no operation) TVM instruction](/tvm/instructions#00-nop):
 

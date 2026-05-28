@@ -21,12 +21,12 @@ This guide explains how to run a validator TON node with MyTonCtrl from scratch.
 ### 1.1 Maintain costs and expenses
 
 - 200 TON per month on the validator hot wallet for its operational transactions.
-- Validator deposit stake [700 000 TON \~ 4 000 000 TON](/ecosystem/nodes/cpp/run-validator#step-4:-set-optimal-stake-for-validator).
+- Validator deposit stake [1 400 000 TON \~ 4 000 000 TON](/ecosystem/nodes/cpp/run-validator#step-4-set-optimal-stake-for-validator) to cover both validation rounds.
 - 100 TB/month traffic at a peak load.
 
 ### 1.2 Minimal hardware requirements
 
-- 16-core CPU (for example, Intel Xeon E-2388G or equivalent)
+- 8-core / 16-thread CPU (for example, Intel Xeon E-2388G or equivalent)
 - 128 GB RAM
 - 2 × 1.92 TB NVMe SSD, each with 250,000+ read IOPS and 83,000+ write IOPS
 - 1 Gbit/s network connectivity
@@ -40,22 +40,13 @@ This guide explains how to run a validator TON node with MyTonCtrl from scratch.
 
 ### 1.3 Software requirements
 
-- Ubuntu 22.04 LTS or 24.04 LTS
-- Python 3.10 or higher
-- Clang 16.0.0 or higher
+- Ubuntu 22.04 LTS or 24.04 LTS: check with `cat /etc/os-release`
+- Python 3.10 or higher: check with `python3 --version`
+- Clang 21.0.0 or higher: check with `clang --version`
 
 ```bash
-# Check Ubuntu version
 cat /etc/os-release
-```
-
-```bash
-# Check Python version
 python3 --version
-```
-
-```bash
-# Check Clang version
 clang --version
 ```
 
@@ -68,26 +59,29 @@ clang --version
 <Accordion
   title="Update Clang..."
 >
+  If running `clang --version` shows a version of 21 or higher, skip the steps below.
+
+  <CodeGroup>
+    ```bash title="Ubuntu 22.04"
+    sudo apt install lsb-release wget software-properties-common gnupg
+    wget https://apt.llvm.org/llvm.sh
+    chmod +x llvm.sh
+    sudo ./llvm.sh 21 clang
+    ```
+
+    ```bash title="Ubuntu 24.04"
+    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm-snapshot.asc
+    echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm-snapshot.asc] http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm.list
+    sudo apt -y update
+    sudo apt install -y clang-21
+    ```
+  </CodeGroup>
+
+  Update the default `clang` in the system:
+
   ```bash
-  # Check Clang version
-  clang --version
-  # If version 16, skip the steps below.
-
-  # Required for Ubuntu 22.04. Update current Clang to clang-16
-  sudo apt update
-  sudo apt install -y lsb-release wget software-properties-common gnupg
-  sudo wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
-  wget https://apt.llvm.org/llvm.sh
-  chmod +x llvm.sh
-  sudo ./llvm.sh 16 clang
-
-  # Change default Clang
-  sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-16 100
-  sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-16 100
-
-  # Required for Ubuntu 24.04. Install clang-16
-  sudo apt install -y clang-16
-
+  sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 200
+  sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 200
   ```
 </Accordion>
 
@@ -101,16 +95,18 @@ Configure the network on the server according to the following:
 
 ### 1.5 Follow network announcements
 
-Subscribe and follow the instructions provided for validators with Telegram channels.
+Subscribe and follow the instructions provided for validators in the following Telegram channels:
 
-<Aside type="tip">
-  Do not ignore announcements for TON Testnet; validators that violate the maintenance rules are fined and excluded from the network.
+| Channel                                        | Network     |
+| ---------------------------------------------- | ----------- |
+| [`@tonstatus`](https://t.me/tonstatus)         | TON Mainnet |
+| [`@testnetstatus`](https://t.me/testnetstatus) | TON Testnet |
+
+<Aside
+  type="caution"
+>
+  Do not ignore announcements in these channels. Validators that violate the maintenance rules are fined and excluded from the network.
 </Aside>
-
-| Channel                                      | Network     |
-| -------------------------------------------- | ----------- |
-| [@tonstatus](https://t.me/tonstatus)         | TON Mainnet |
-| [@testnetstatus](https://t.me/testnetstatus) | TON Testnet |
 
 ### 1.6 Prepare validator user
 
@@ -333,6 +329,13 @@ Run the validator installation. Installation takes approximately 20 minutes:
      cp -r /var/ton-work/db_old/keyring /var/ton-work/db/keyring
      sudo chown -R validator:validator /var/ton-work/db
      ```
+
+  1. Start the services again:
+
+     ```bash
+     sudo systemctl start validator.service
+     sudo systemctl start mytoncore.service
+     ```
 </Accordion>
 
 ### 2.3 Verify status results
@@ -401,7 +404,7 @@ Then make sure with `sudo ufw status`.
 
 ### 2.6 Verify node synchronization
 
-Wait until the node is fully synchronized, which takes approximately 3 hours (depending on the network connection). Check the field `Local validator initial sync status: x`, the value x should become less than 20.
+Wait until the node is fully synchronized, which takes approximately 3 hours (depending on the network connection). During this process, `Local validator initial sync status` shows the current synchronization phase. Once the displayed value drops below 20, the initial synchronization is complete and `Local validator out of sync` should show ≤ 3 seconds.
 
 <Image
   src="/resources/images/nodes/run-validator/run-validator-8.png"
@@ -613,8 +616,7 @@ MyTonCtrl> pools_list
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`. Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
 </Aside>
 
-Test deposit to stake workflow. Any user can deposit to the pool via a standard direct TON transfer.
-Credit decent sum around 10 TON:
+Test deposit to stake workflow. Any user can deposit to the pool via a standard direct TON transfer. Credit decent sum around 10 TON:
 
 <Image
   src="/resources/images/nodes/run-validator/run-validator-21.png"
@@ -717,13 +719,13 @@ For example:
 ```
 
 ```json Not runnable
-"cycle_id" : 1764052744,
+"cycle_id" : 1764052745,
 "min_stake": 674810775114391,  // ~ 674 811 TON
 "max_stake": 2024432325343173, // ~ 2 024 432 TON
 ```
 
 <Aside type="tip">
-  Values retrieved in nanotons, divide this by $10^9$ to get TON units.
+  Values retrieved in nanotons, divide this by 10<sup>9</sup> to get TON units.
 </Aside>
 
 ### 4.2 Retrieve stakes boundary values
@@ -812,7 +814,7 @@ Make sure pair stakes are appropriately circulated, then focus on monitoring val
 
 ### 5.1 Fund the validator hot wallet
 
-Keep at least 200 TON on the validator hot wallet. This balance covers operational fees for approximately one month.
+Keep at least 600 TON on the validator hot wallet. This should be enough to cover operational fees for approximately 3 months.
 
 To check the current balance:
 
@@ -846,7 +848,7 @@ Only the owner wallet can withdraw funds. Follow the [test withdrawal procedure]
 
 ### 5.4 Follow the TON announcements channel
 
-Follow the [@tonstatus](https://t.me/tonstatus) channel, turn on notifications, and be prepared for urgent updates if needed.
+Follow the [`@tonstatus`](https://t.me/tonstatus) channel, turn on notifications, and be prepared for urgent updates.
 
 ### 5.5 Organize validator backup
 
@@ -879,13 +881,13 @@ Set up monitoring dashboards for RAM, disk, network, CPU usage, and other metric
 
 - For on-chain validator metrics, use the [`ton-validators-metrics` system](https://github.com/the-ton-tech/ton-validators-metrics).
 - For system-level metrics, [integrate Prometheus with `node_exporter` with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
-- For technical assistance, contact [@mytonctrl\_help\_bot](https://t.me/mytonctrl_help_bot).
+- For technical assistance, contact [`@mytonctrl_help_bot`](https://t.me/mytonctrl_help_bot).
 
 ### 5.8 Monitor the efficiency
 
 Set up dashboards to monitor validators using the APIs provided below.
 
-1. Track penalized validators on each round with [@tonstatus\_notifications](https://t.me/tonstatus_notifications).
+1. Track penalized validators on each round with [`@tonstatus_notifications`](https://t.me/tonstatus_notifications).
 1. Use [Validation API](https://elections.toncenter.com/docs) to obtain information about current and past validation rounds (cycles) - including the timing of rounds, which validators participated, their stakes, and more. Information regarding current and past elections for each validation round is also available.
 1. Use this [API](https://toncenter.com/api/qos/index.html#/) to obtain information about the efficiency of validators over time.
 
@@ -930,8 +932,8 @@ Check the following indicators:
 
 | Indicator                        | Expected value                          |
 | -------------------------------- | --------------------------------------- |
-| Local validator out of sync      | Less than 20 seconds                    |
-| Masterchain out of sync          | Less than 20 seconds                    |
+| Local validator out of sync      | ≤ 3 seconds                             |
+| Masterchain out of sync          | ≤ 3 seconds                             |
 | Validator efficiency             | Above 90%                               |
 | Validator index                  | Visible in status output                |
 | Validator participation position | Between 200 and 250 for optimal staking |
@@ -939,8 +941,6 @@ Check the following indicators:
 <Aside type="tip">
   Validator efficiency may show 0% at the beginning of a cycle until the validator signs its first blocks. This is normal behavior.
 </Aside>
-
-Confirm that the validator participates in elections and recovers stakes on time by monitoring the pool balance in a [blockchain explorer](https://tonviewer.com/).
 
 Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/ecosystem/explorers/overview). For greater observability, [set up the monitoring](/ecosystem/nodes/cpp/run-validator#5-7-set-up-monitoring) of various validator metrics.
 
@@ -955,7 +955,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 
 ### Validator efficiency is below 90%
 
-- Confirm the node is fully synchronized (`Local validator out of sync` \< 20).
+- Confirm the node is fully synchronized (`Local validator out of sync` ≤ 3 seconds).
 - Check disk performance. Slow storage is the most common cause of low efficiency.
 - Verify that no other resource-intensive processes compete for CPU or RAM.
 - Review hardware against [minimum requirements](/ecosystem/nodes/cpp/run-validator#1-2-minimal-hardware-requirements).
@@ -971,7 +971,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 
 - Wait for the full cycle to complete. Stake recovery is not immediate.
 - Check the elector contract status using a [blockchain explorer](/ecosystem/explorers/overview).
-- Contact [@mytonctrl\_help\_bot](https://t.me/mytonctrl_help_bot) if the stake is not returned after the cycle ends.
+- Contact [`@mytonctrl_help_bot`](https://t.me/mytonctrl_help_bot) if the stake is not returned after the cycle ends.
 
 ### Pool contract is frozen
 
@@ -979,4 +979,4 @@ A pool contract may freeze if its entire balance is consumed by storage fees. Th
 
 ## Support
 
-Contact technical support [@mytonctrl\_help\_bot](https://t.me/mytonctrl_help_bot). This bot is for validators only and will not assist with questions for regular nodes.
+Contact technical support [`@mytonctrl_help_bot`](https://t.me/mytonctrl_help_bot). This bot is for validators only and will not assist with questions for regular nodes.
