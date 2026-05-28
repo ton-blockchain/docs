@@ -20,7 +20,7 @@ An archive liteserver node stores the entire block history of the TON blockchain
 
 ### 1.1 Minimal hardware requirements
 
-Running an archive liteserver requires significant storage and network resources.
+Running an archive liteserver requires significant storage and network resources:
 
 - 16-core CPU
 - 128 GB RAM
@@ -29,8 +29,15 @@ Running an archive liteserver requires significant storage and network resources
 - Fixed (static) public IP address
 
 <Aside type="tip">
-  Currently, uncompressed archive data requires approximately 20 TB. Using ZFS with compression reduces this to \~16 TB.
-  If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level (e.g., `echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy`).
+  Uncompressed archive data requires approximately 20 TB. Using ZFS with compression reduces this to \~16 TB.
+</Aside>
+
+<Aside type="caution">
+  If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level:
+
+  ```bash
+  echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy
+  ```
 </Aside>
 
 ### 1.2 OS and system requirements
@@ -45,8 +52,8 @@ Subscribe and follow the announcements provided for liteservers in the following
 
 | Channel                                      | Network     |
 | -------------------------------------------- | ----------- |
-| [@tonstatus](https://t.me/tonstatus)         | TON Mainnet |
-| [@testnetstatus](https://t.me/testnetstatus) | TON Testnet |
+| [`@tonstatus`](https://t.me/tonstatus)         | TON Mainnet |
+| [`@testnetstatus`](https://t.me/testnetstatus) | TON Testnet |
 
 ### 1.4 Install ZFS and prepare volume
 
@@ -197,12 +204,11 @@ Ensure download and upload speeds meet the [1 Gbit/s requirement](/ecosystem/nod
 
 ### 1.7 Harden server security
 
-<Aside
-  type="caution"
-  title="Security baseline"
->
-  Apply these hardening steps before exposing the server to the network.
-</Aside>
+Apply security hardening steps before exposing the server to the network:
+
+- [SSH hardening](#ssh-hardening)
+- [Firewall configuration](#firewall-configuration)
+- [Additional security measures](#additional-security-measures)
 
 #### SSH hardening
 
@@ -389,19 +395,21 @@ Set up alerting in MyTonCtrl to get a notification of critical issues with the a
 
 Set up monitoring dashboards for RAM, disk, network, CPU usage, and other metrics.
 
-For system-level metrics, [integrate Prometheus with node\_exporter with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
-
 It is critical to use the monitoring system to:
 
-- monitor server stability
-- monitor synchronization parameters
-- check for memory leaks
+- monitor server stability;
+- monitor synchronization parameters;
+- check for memory leaks.
 
-For technical assistance, contact [@mytonctrl\_help\_bot](https://t.me/mytonctrl_help_bot).
+For system-level metrics, [integrate Prometheus with `node_exporter` with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
+
+For technical assistance, contact [`@mytonctrl_help_bot`](https://t.me/mytonctrl_help_bot).
 
 ### 3.3 Perform software updates
 
-Follow the @tonstatus channel, turn on notifications, and be prepared for urgent updates if needed.
+<Aside type="note">
+  Follow the [`@tonstatus`](https://t.me/tonstatus) channel, turn on notifications, and be prepared for urgent updates.
+</Aside>
 
 Before performing updates, create a ZFS snapshot of the data. This allows a quick rollback if the update process fails or corrupts the database.
 
@@ -416,11 +424,7 @@ mytonctrl --cmd "update master"
 mytonctrl --cmd "upgrade master"
 ```
 
-These commands will check for new versions of the TON node binaries and MyTonCtrl, download them, and apply the updates.
-
-<Aside type="note">
-  The update process may cause temporary node downtime as the binaries are replaced and services are restarted.
-</Aside>
+These commands will check for new versions of the TON node binaries and MyTonCtrl, download them, and apply the updates. The update process may cause temporary node downtime as the binaries are replaced and services are restarted.
 
 Once the update is verified as successful and the node is running correctly, delete the snapshot to reclaim disk space.
 
@@ -506,8 +510,8 @@ Define placeholders:
 sudo zfs send -c data/ton-work@<SNAPSHOT_NAME> > <BACKUP_PATH>
 ```
 
-<Aside type="tip">
-  Exporting large datasets is a time-consuming process. For example, a 4.07 TB snapshot may take approximately 2 hours to export depending on the disk speed.
+<Aside type="note">
+  Exporting large datasets can take several hours. For example, a 4.07 TB snapshot may take approximately 2 hours to export, depending on disk throughput.
 </Aside>
 
 #### Transfer a snapshot via SSH
@@ -574,9 +578,10 @@ For stable liteserver operation, the benchmark score should be **greater than 70
 
 ## Support
 
-For technical assistance, join the official support channel: [@ton\_node\_help](https://t.me/ton_node_help).
+For technical assistance, join the official support channel: [`@ton_node_help`](https://t.me/ton_node_help).
 
 ## See also
 
+- [Run a validator node with MyTonCtrl](/ecosystem/nodes/cpp/run-validator)
+- [Setup a node with MyTonCtrl](/ecosystem/nodes/cpp/setup-mytonctrl)
 - [TON node types](/ecosystem/nodes/overview)
-- [Run a node with MyTonCtrl](/ecosystem/nodes/cpp/setup-mytonctrl)
