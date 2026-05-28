@@ -11,8 +11,8 @@ An archive liteserver node stores the entire block history of the TON blockchain
 
 ## Prerequisites
 
-- A server meeting the [minimal hardware requirements](#11-minimal-hardware-requirements)
-- An OS meeting the [requirements](#12-os-and-system-requirements)
+- A server meeting the [minimal hardware requirements](#1-1-minimal-hardware-requirements)
+- An OS meeting the [software requirements](#1-2-os-and-system-requirements)
 
 ## Step 1: Prepare environment
 
@@ -23,7 +23,7 @@ Running an archive liteserver requires large storage and network capacity:
 - 16-core CPU
 - 128 GB RAM
 - NVMe Gen4+ SSD storage (Enterprise grade preferred), sustaining at least 64,000 provisioned IOPS:
-  - at least 16 TB with ZFS lz4 compression enabled, or
+  - at least 16 TB with ZFS `lz4` compression enabled, or
   - at least 20 TB without compression
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
@@ -200,7 +200,7 @@ sudo apt install -y speedtest-cli
 speedtest-cli
 ```
 
-Ensure download and upload speeds meet the [1 Gbit/s requirement](/ecosystem/nodes/cpp/run-archive-liteserver#11-minimal-hardware-requirements).
+Ensure download and upload speeds meet the [1 Gbit/s requirement](#1-1-minimal-hardware-requirements).
 
 ### 1.7 Harden server security
 
@@ -261,7 +261,7 @@ sudo systemctl restart sshd
 
 #### Firewall configuration
 
-Enable the firewall and allow only the SSH port. The node UDP port and liteserver port are added after installation in [open the node UDP port and the liteserver port](/ecosystem/nodes/cpp/run-archive-liteserver#221-open-the-node-udp-port-and-the-liteserver-port).
+Enable the firewall and allow only the SSH port. The node UDP port and liteserver port are added after installation in [open the node UDP port and the liteserver port](#2-2-1-open-the-node-udp-port-and-the-liteserver-port).
 
 ```bash
 sudo apt install -y ufw
@@ -594,7 +594,7 @@ MyTonCtrl> installer set_node_argument --verbosity 1
 
 ### Performance issues
 
-Logs containing "Importing archive for masterchain seqno #... from net" accompanied by timeout errors indicate insufficient storage performance. Ensure the disk meets the IOPS requirements listed in [Minimal hardware requirements](/ecosystem/nodes/cpp/run-archive-liteserver#11-minimal-hardware-requirements).
+Logs containing "Importing archive for masterchain seqno #... from net" accompanied by timeout errors indicate insufficient storage performance. Ensure the disk meets the IOPS requirements listed in [Minimal hardware requirements](#1-1-minimal-hardware-requirements).
 
 To verify disk and system performance, run the built-in `mytonctrl` benchmark:
 
