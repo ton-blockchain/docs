@@ -23,7 +23,7 @@ Running an archive liteserver requires large storage and network capacity:
 - 16-core CPU
 - 128 GB RAM
 - NVMe Gen4+ SSD storage (Enterprise grade preferred), sustaining at least 64,000 provisioned IOPS:
-  - at least 16 TB with ZFS [`lz4`](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)) compression enabled, or
+  - at least 16 TB with ZFS [`lz4`](https://en.wikipedia.org/wiki/LZ4_\(compression_algorithm\)) compression enabled, or
   - at least 20 TB without compression
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
@@ -125,11 +125,11 @@ To create a dedicated operator user and switch to it before installing MyTonCtrl
 
 1. Create a non-root user:
 
-  ```bash
-  # Create a non-root operator user
-  sudo adduser <USERNAME>
-  sudo usermod -aG sudo <USERNAME>
-  ```
+   ```bash
+   # Create a non-root operator user
+   sudo adduser <USERNAME>
+   sudo usermod -aG sudo <USERNAME>
+   ```
 
 1. Switch to the new operator account by reconnecting via SSH:
 
