@@ -93,7 +93,9 @@
     {
       "filename": "**/api/**/*.{json,yml,yaml}",
       "ignoreWords": [
+        "multisigs",
         "smc",
+        "Uninited",
       ],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
@@ -124,6 +126,12 @@
       "filename": "ecosystem/ai/mcp.mdx",
       "ignoreWords": [
         "mcp", // lowercase in the title
+      ],
+    },
+    {
+      "filename": "docs.json",
+      "ignoreWords": [
+        "subsecond", // without a hyphen in the filename
       ],
     }
   ],
