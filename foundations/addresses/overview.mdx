@@ -1,44 +1,40 @@
 ---
-title: "Overview"
+title: "Addresses overview"
+sidebarTitle: "Overview"
 ---
 
 import { Aside } from '/snippets/aside.jsx';
 
-TON implements **Actor model**. In it, every entity (smart contract), including even wallets, is a program which manages its own balance and persistent storage and is identified by its address. Each actor:
+TON implements an [actor model](https://en.wikipedia.org/wiki/Actor_model), where entities, including wallets, are _smart contracts_ that exchange messages. Each smart contract is hosted on a distinct _account_ that manages its balance and persistent storage. These accounts have identifiable _addresses_, used for sending and receiving messages on the blockchain.
 
-- processes incoming messages, one at a time, and for each:
-    - updates its internal state, and;
-    - generates outgoing messages.
+Each actor (account) processes incoming messages on its address one at a time, updating its internal state and generating outgoing messages. While multiple accounts can share the same code, each maintains its own storage and balance. To uphold this separation, each account address is unique.
 
-There can be multiple contracts which have the same code, but each program only manages its own storage and balance. To uphold this separation, every actor must have a unique address. This section explains how these addresses are structured and why they are fundamental to the TON architecture.
-
-There are several types of addresses used in the TON blockchain. Here, we will focus on the two most important ones for developers: **internal** and **external**.
-Every account in the TON blockchain has an internal address. External addresses are intended to be used by off-chain software.
+On the TON blockchain, there are several types of addresses. The two most relevant ones for developers are [_internal_](#internal-addresses) and [_external_](#external-addresses). Every account has an internal address, while external addresses are intended for use by off-chain software.
 
 ## Internal addresses
 
-Each smart contract deployed on TON blockchain has this type of the address. Let's look at the corresponding TL-B schemes:
+Each smart contract deployed on TON has an internal address. The corresponding TL-B schemes are:
 
-```
+```tlb
 addr_std$10 anycast:(Maybe Anycast)
    workchain_id:int8 address:bits256 = MsgAddressInt;
 addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9)
    workchain_id:int32 address:(bits addr_len) = MsgAddressInt.
 ```
 
-As we can see, there are two constructors:
+There are two constructors:
 
 - `addr_std`: standardized addresses with a fixed length that are suitable for [SHA256 encryption](https://en.wikipedia.org/wiki/SHA-2). Must be used whenever possible.
-- `addr_var`: represents addresses in workchains with a _large_ `workchain_id`, or addresses with a length not equal to 256. Currently, it is not used and is intended for future extensions.
+- `addr_var`: represents addresses in workchains with a _large_ 32-bit `workchain_id`, or addresses with a length not equal to 256. Currently, it is not used and is intended for future extensions.
 
 And four components:
 
-- `workchain_id`: the workchain id (signed 8- or 32-bit integer).
-- `address`: an address of the account (64-512 bits, depending on the workchain). In order not to confuse this field with a whole address, it is usually called `account_id` or a **hash part** of address.
+- `workchain_id`: the workchain ID — a signed 8-bit integer in case of `addr_std` and a 32-bit integer in case of `addr_var`.
+- `address`: an address of the account — from 64 to 512 bits, depending on the workchain. To avoid confusion with a full address, this field is usually called `account_id` or a **hash** part of address.
 - `addr_len`: a length of the non-standardized address.
-- `anycast`: not currently used in the blockchain and is always replaced with a zero bit. It was designed to implement shard splitting of _global_ (or _large_) accounts, but then was deprecated since [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#anycast-addresses-and-address-rewrite).
+- `anycast`: not currently used in the blockchain and is always replaced with a zero bit. It was designed to implement shard splitting for _global_ (or _large_) accounts, but was later deprecated in [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#anycast-addresses-and-address-rewrite).
 
-### Workchain id
+### Workchain ID
 
 TON Blockchain is actually a collection of blockchains, with workchain being one of them. TON supports up to `2^32` unique workchains, each with its own rules and even virtual machines. The 8- or 32-bit `workchain_id` prefix in smart contract addresses ensures interoperability, allowing contracts to send and receive messages across different workchains.
 
@@ -49,25 +45,23 @@ Currently, two workchains are active:
 
 Both use **256-bit addresses** for accounts.
 
-### Account id
+### Account ID
 
-In the currently used workchains, account id is defined as the hash of contract's initial state ([`StateInit`](/foundations/messages/deploy)) structure which holds its code and data.
+In the currently used workchains, the account ID is defined as the hash of the contract's initial state ([`StateInit`](/foundations/messages/deploy)) structure, which holds its code and data:
 
+```text
+account_id = hash(initial_code, initial_data)
 ```
-account_id = StateInit {code: initial_code, data: initial_data}.toCell().hash()
-```
 
-An uninitialized contract can only be deployed by providing `StateInit` which matches hash part of its address; so, for each pair (`initial_code`, `initial_data`), there exists a specific set of account ids to which a smart contract with such code and data can be deployed (it isn't only one ID, as [TVM 11](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#version-11) and onwards allows rewriting a short prefix to put contract in another shard).
+Uninitialized account can only become active by providing a `StateInit` that matches its account ID (hash) in the incoming message. If the [`fixed_prefix_length` is set](/foundations/messages/deploy#deploying-to-specific-shard), the first respective bits of the destination account ID are not compared with the `StateInit` hash — only the remaining bits must match. That short prefix is used to [deploy a contract in the specific shard](/foundations/messages/deploy#deploying-to-specific-shard).
 
-<Aside type="tip">
-  Although the deployed smart contract code and data may change during its lifetime, the address where it's deployed does not change.
+As such, for each pair of `initial_code` and `initial_data`, there exists a specific set of account IDs to which a smart contract with such code and data can be deployed. Account IDs are crucial for sharding and for delivering messages between shards during [Hypercube Routing](/foundations/shards).
+
+<Aside type="note">
+  Although the deployed smart contract code and data may change during its lifetime, the address where it is deployed does **not** change.
 </Aside>
 
-<Aside type="tip">
-  There are contracts which, as their first action, transform into another contract with specified code and data. They are called "vanity contracts" as they, by expanding set of possible account ids, allow to find a subjectively prettier address for the new contract.
-</Aside>
-
-Additionally, a 64-bit prefix of account id is considered in the sharding process and delivering messages from one shard to another during [Hypercube Routing](/foundations/shards).
+Some contracts can transform into another contract with specified code and data as their first action. They are called [vanity](/contract-dev/techniques/vanity) contracts because they allow for a wider range of account IDs, helping to find a subjectively prettier address for the new contract. Their off-chain generation parts try different `StateInit` values, often by changing a salt, until the resulting account ID has a desired prefix or suffix. After deployment, the contract can set its runtime code and data to the intended contract state, retaining the address obtained with the initial `StateInit`.
 
 ## External addresses
 
@@ -91,10 +85,10 @@ addr_extern$01 len:(## 9) external_address:(bits len)
 - **Every actor is a smart contract**, each with a unique address for message routing.
 - **Main internal address fields**:
   - `workchain_id` (8- or 32-bit): identifies the workchain.
-  - `account_id` (256-bit): a hash of the contract’s initial code and data.
-- **Active workchains**: masterchain and basechain, both using 256-bit ids.
-- **Flexibility**: TON supports up to `2^32` workchains, allowing future chains to customize address lengths (64–512 bits).
-- **External addresses**: may be used by external software for its own purposes but are ignored by the TON Blockchain software.
+  - `account_id` (256-bit in active workchains): a hash of the contract's initial code and data.
+- **Active workchains**: masterchain and basechain, both using 256-bit IDs.
+- **Flexibility**: TON supports up to `2^32` workchains, allowing future chains to customize address lengths from 64 to 512 bits.
+- **External addresses**: may be used by external software but are ignored on-chain.
 
 ## Next steps
 

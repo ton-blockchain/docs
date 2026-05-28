@@ -1,9 +1,10 @@
 ---
-title: "Wallet V5 API"
-sidebarTitle: "How to interact"
+title: "Wallet V5 interface: messages and get methods"
+sidebarTitle: "Messages and get methods"
 ---
 
 import { Aside } from "/snippets/aside.jsx";
+import { Image } from '/snippets/image.jsx';
 
 This article provides overview of wallet V5 public interfaces, how to interact with them and serialize used data structures.
 
@@ -23,7 +24,7 @@ Let's first explore message structure, that is used to perform different actions
 
 ## TL-B
 
-This is TL-B for V5 wallet actions, it includes some [complex TL-B patterns](/languages/tl-b/complex-and-non-trivial-examples.mdx). You can also find it on [GitHub](https://github.com/ton-blockchain/wallet-contract-v5/blob/321186127e8cc5e395ad3b2f1870839237c56f5f/types.tlb), in the wallet repo.
+This is TL-B for V5 wallet actions, it includes some [complex TL-B patterns](/foundations/tlb/complex-and-non-trivial-examples). You can also find it on [GitHub](https://github.com/ton-blockchain/wallet-contract-v5/blob/321186127e8cc5e395ad3b2f1870839237c56f5f/types.tlb), in the wallet repo.
 
 ```tlb expandable
 // Contract state
@@ -410,14 +411,14 @@ export function createWalletTransferV5R1<T extends WalletV5SendArgs>(
 
 
     // now we store common part for both messages
-    signingMessage.storeUint(args.timeout || Math.floor(Date.now() / 1e3) + 60, 32); // Default timeout: 60 seconds
+    signingMessage.storeUint(args.validUntil, 32);
 
     signingMessage
         .storeUint(args.seqno, 32)
         .store(storeOutListExtendedV5(args.actions));
 
     // now we need to sign message
-    const signature = sign(signingMessage.endCell().hash(), args.secretKey);
+    const signature = sign(signingMessage.endCell().hash(), args.privateKey);
 
     return beginCell().storeBuilder(signingMessage).storeBuffer(signature).endCell();
 }
@@ -455,30 +456,17 @@ const boc = beginCell()
   .toBoc();
 ```
 
-You can send this BoC to the network in any convenient way, e.g. with API provider like [TonCenter /message](https://toncenter.com/api/v3/index.html#/api%2Fv2/api_v3_post_v2_message) or with your own [liteserver](/ecosystem/node/overview).
+You can send this BoC to the network in any convenient way, e.g. with API provider like [TonCenter /message](https://toncenter.com/api/v3/index.html#/api%2Fv2/api_v3_post_v2_message) or with your own [liteserver](/ecosystem/nodes/overview).
 
 #### Sending internal\_extension and internal\_signed
 
 These two types of messages are internal messages, meaning that they need to come from another contract. However strange that may sound, the easiest way to send internal message from another contract is to ask another wallet contract to send internal message to our wallet contract with body that will contain our constructed message.
 
-```mermaid
-graph LR
-    A["👤 User"] --> B["📱 V4 Wallet Contract<br/>(Sender)"]
-
-    B -->|"Internal message with body:<br/>🔐 internal_signed (#73696e74)<br/>or<br/>🔧 internal_extension (#6578746e)"| C["🏦 V5 Wallet Contract<br/>(Receiver)"]
-
-    C --> D["⚡ Execute Actions<br/>on V5 wallet"]
-
-    classDef user fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef v4wallet fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    classDef v5wallet fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
-    classDef action fill:#ffebee,stroke:#d32f2f,stroke-width:2px
-
-    class A user
-    class B v4wallet
-    class C v5wallet
-    class D action
-```
+<Image
+  src="/resources/images/wallets/internal_message_light.svg"
+  darkSrc="/resources/images/wallets/internal_message_dark.svg"
+  alt="Internal message flow"
+/>
 
 For simplicity, we will use wallet V4 contract with existing client serialization library that will take care of all low level stuff.
 

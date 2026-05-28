@@ -1,10 +1,19 @@
 ---
-title: "Reserved functions"
+title: "Reserved functions of FunC"
 sidebarTitle: "Reserved functions"
 noindex: "true"
 ---
 
-FunC, or more specifically, the Fift assembler, reserves several function names with predefined [IDs](./functions#method-id-specifier):
+import { Aside } from '/snippets/aside.jsx';
+import { Image } from '/snippets/image.jsx';
+
+<Aside type="note">
+  The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
+
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+</Aside>
+
+FunC, or more specifically, the Fift assembler, reserves several function names with predefined [IDs](/languages/func/functions#method-id-specifier):
 
 - [`recv_internal`](#receive-internal) and [`main`](#main) have `id = 0`
 - [`recv_external`](#receive-external) has `id = -1`

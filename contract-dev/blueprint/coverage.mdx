@@ -1,9 +1,14 @@
 ---
-title: "Collecting test coverage"
+title: "Collecting test coverage with Blueprint"
+sidebarTitle: "Collecting test coverage"
 ---
 
 import { Aside } from "/snippets/aside.jsx";
 import { Image } from "/snippets/image.jsx";
+
+<Aside type="note">
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
 
 <Aside>
   This page covers coverage calculated on TVM assembly instructions. Path- and source-line coverage is not implemented.
@@ -189,7 +194,7 @@ The usual report looks like this:
   src="/resources/images/coverage-report.png"
 />
 
-Apart from the header statistics, the line-by-line coverage report is the most informative. Most fields are self‑explanatory; the code section shows per‑instruction hit counts (blue) and gas cost (red). This helps you analyze both coverage and gas efficiency.
+Apart from the header statistics, the line-by-line coverage report is the most informative. Most fields are self-explanatory; the code section shows per-instruction hit counts (blue) and gas cost (red). This helps you analyze both coverage and gas efficiency.
 
 <Aside>
   To understand the TVM assembly output, read [TVM](/foundations/whitepapers/tvm).
