@@ -32,7 +32,7 @@ There are three approaches to verify `JettonNotify` messages, depending on the l
 
 ## Manual wallet management
 
-If the jetton type is known in advance, [calculate the corresponding jetton wallet address off-chain](https://docs.ton.org/standard/tokens/jettons/find) and set it via a message after deployment. It is impossible to hardcode the jetton wallet address in the contract’s [`StateInit`](/foundations/messages/deploy) because the wallet address depends on the contract address and creates a circular dependency. This is the most efficient approach, because it only requires one address comparison.
+If the jetton type is known in advance, [calculate the corresponding jetton wallet address off-chain](/standard/tokens/jettons/find) and set it via a message after deployment. It is impossible to hardcode the jetton wallet address in the contract’s [`StateInit`](/foundations/messages/deploy) because the wallet address depends on the contract address and creates a circular dependency. This is the most efficient approach, because it only requires one address comparison.
 
 The following example of a receiving contract handles `JettonNotify` messages for a trusted jetton wallet address that can be set by the owner of the contract.
 
@@ -228,7 +228,7 @@ If a jetton contract doesn't implement TEP-89, it is possible to compute the jet
   Jettons that do not implement the TEP-89 messages for computing a wallet address on-chain are rare. [TONCO DEX](https://tonco.io/) rejects them, while platforms such as [DeDust](https://dedust.io/) only allow them after a manual approval.
 </Aside>
 
-With the state of a jetton minter, the [RUNVM](/tvm/instructions#db4-runvm) instruction can emulate the execution of the `get_wallet_address` [get-method](/tvm/get-method) to derive the wallet address for any owner.
+With the state of a jetton minter, the [`RUNVM`](/tvm/instructions#db4fff-runvm) instruction can emulate the execution of the `get_wallet_address` [get-method](/tvm/get-method) to derive the wallet address for any owner.
 
 Use the following helper function. It relies on [Fift](/languages/fift/overview) because it's impossible to assign a type to `c7`. It executes the `get_wallet_address` method of a jetton minter on-chain, and calculates the corresponding wallet address for a given owner.
 

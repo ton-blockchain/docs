@@ -76,13 +76,13 @@ Please note that the current version of this document describes a preliminary te
    3. [Slice primitives](#5-3-slice-primitives)
    4. [Cell hash operations](#5-4-cell-hash-operations)
    5. [Bag-of-cells operations](#5-5-bag-of-cells-operations)
-   6. [Binary file I/O and Bytes manipulation](#5-6-binary-file-i-o-and-bytes-manipulation)
+   6. [Binary file I/O and Bytes manipulation](#5-6-binary-file-i%2Fo-and-bytes-manipulation)
 
 6. [**TON-specific operations**](#6-ton-specific-operations)
    1. [Ed25519 cryptography](#6-1-ed25519-cryptography)
    2. [Smart-contract address parser](#6-2-smart-contract-address-parser)
    3. [Dictionary manipulation](#6-3-dictionary-manipulation)
-   4. [Invoking TVM from Fift](#6-4-invoking-t-v-m-from-fift)
+   4. [Invoking TVM from Fift](#6-4-invoking-tvm-from-fift)
 
 7. [**Using the Fift assembler**](#7-using-the-fift-assembler)
    1. [Loading the Fift assembler](#7-1-loading-the-fift-assembler)
@@ -1189,7 +1189,7 @@ On the other hand, if the word is active, then it is always executed, even if `s
 
 When the Fift interpreter encounters a word that is absent from the dictionary, it invokes the primitive (number) to attempt to parse it as an integer or fractional literal. If this attempt succeeds, then the special value `'nop` is pushed, and the interpretation proceeds in the same way as if an active word were encountered. In other words, if state is zero, then the literal is simply left in the stack; otherwise, (compile) is invoked to modify the current _WordList_ so that it would push the literal when executed.
 
-### 5.4 Defining new active words
+### 4.4 Defining new active words
 
 New active words are defined similarly to new ordinary words, but using `::` instead of `:`. For instance,
 

@@ -27,7 +27,7 @@ To check whether an event is relevant, use a flag variable of type integer.
 The flag can either be `0`, representing `false`, or `-1`, representing `true`.
 See [absence of boolean type](/languages/func/types#no-boolean-type).
 
-When checking the flag in [if..else statements](/languages/func/statements#if-else-statement), it is unnecessary to use
+When checking the flag in [`if...else` statements](/languages/func/statements#if-else-statement), it is unnecessary to use
 the [`==` operator](/languages/func/operators#equality%2C-%3D%3D), since a `0` evaluates to `false`, and any nonzero value is
 considered to be `true` in `if..else` statements.
 
@@ -102,7 +102,7 @@ while (msg.slice_refs_empty?() != -1) { ;; Iterate while there are refs to proce
 
 ### How to write a do until loop
 
-Use a [`do..until` loop](/languages/func/statements#until-loop) when the loop must execute at least once.
+Use a [`do...until` loop](/languages/func/statements#do-until-loop) when the loop must execute at least once.
 
 ```func
 int flag = 0;
@@ -658,7 +658,7 @@ names~udict_delete?(256, 27);
 ### How to determine if a tuple is empty
 
 When working with `tuples`, checking for existing values before extracting them is crucial.
-Extracting a value from an empty tuple will result in an error: ["not a tuple of valid size" - `exit code 7`](/tvm/exit-codes#7).
+Extracting a value from an empty tuple will result in an error: ["not a tuple of valid size" - `exit code 7`](/tvm/exit-codes#7%3A-type-check-error).
 
 ```func
 ;; Declare the tlen assembler function because it's not present in stdlib
@@ -1965,7 +1965,7 @@ Refer to the sending messages page for further details on sending modes in the `
 
 ### How to send a deploy message
 
-When sending a deploy message, prepare a [`StateInit`](/foundations/messages/deploy) cell, as done in the recipe [How to build a `StateInit` cell](#how-to-build-a-StateInit-cell). Once the `StateInit` cell is ready, prepare a message cell in which the message body is included with the headers, or the message body is included as a separate cell.
+When sending a deploy message, prepare a [`StateInit`](/foundations/messages/deploy) cell, as done in the recipe [How to build a `StateInit` cell](#how-to-build-a-stateinit-cell). Once the `StateInit` cell is ready, prepare a message cell in which the message body is included with the headers, or the message body is included as a separate cell.
 
 The following function illustrates the case for the message body included in the same cell as the headers. The function receives the destination address, the amount to send, the `StateInit` cell, and the message body as a slice.
 
@@ -2320,7 +2320,7 @@ As an example, let's say there is a need to perform the following calculation fo
 
 `(xp + zp) * (xp - zp)`.
 
-Since these operations are commonly used in cryptography, modulo operator for montgomery curves should be used.
+Since these operations are commonly used in cryptography, modulo operator for Montgomery curves should be used.
 
 **Note:**
 Variable names like `xp+zp` are valid as long as there are no spaces between the operators.
@@ -2338,7 +2338,7 @@ Variable names like `xp+zp` are valid as long as there are no spaces between the
 }
 ```
 
-**Reference:** [`muldivmod`](/tvm/instructions#A98C)
+**Reference:** [`MULDIVMOD`](/tvm/instructions#a98c-muldivmod)
 
 ### How to raise a number to a power
 
@@ -2484,7 +2484,7 @@ slice result = string.end_cell().begin_parse();
 - [`end_cell`](/languages/func/stdlib#end_cell)
 - [`begin_parse`](/languages/func/stdlib#begin_parse)
 - [`null`](/languages/func/stdlib#null)
-- [`divmod`](/languages/func/stdlib#divmod)
+- [`divmod`](/languages/func/built-ins#divmod)
 - [`store_uint`](/languages/func/stdlib#store_uint)
 - [List-style lists](/languages/func/stdlib#lisp-style-lists)
 
@@ -2590,4 +2590,4 @@ slice generate_external_address (int address) {
 
 Since there is a need to find the exact number of bits occupied by the address, [declare an asm function](#how-to-write-custom-functions-using-asm-keyword) with the `UBITSIZE` opcode. This function will return the minimum number of bits required to store a given number.
 
-**Reference:** [TVM instructions](/tvm/instructions#B603)
+**Reference:** [TVM instructions](/tvm/instructions#b603-ubitsize)

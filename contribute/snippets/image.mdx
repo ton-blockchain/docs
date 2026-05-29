@@ -6,13 +6,13 @@ sidebarTitle: "Image"
 import { Aside } from '/snippets/aside.jsx';
 import { Image } from '/snippets/image.jsx';
 
-To display an image, use the `<Image>` component. It allows displaying either a single image for all themes ([`src`](#src)) or one image per light theme (`src`) and one image for the dark theme ([`darkSrc`](#darksrc)).
+To display an image, use the `<Image>` component. It allows displaying either a single image for all themes ([`src`](#src-required)) or one image per light theme (`src`) and one image for the dark theme ([`darkSrc`](#darksrc)).
 
 <Aside>
   When an `src` path points to the SVG image and there is no [`darkSrc`](#darksrc) alternative, image colors will be inverted in the dark theme.
 </Aside>
 
-Additionally, you can specify the [`href`](#href) property, making an image double as a clickable link. When doing so, the [`target`](#href) property allows to change the browsing context of the link.
+Additionally, you can specify the [`href`](#href) property, making an image double as a clickable link. When doing so, the [`target`](#href) property allows changing the browsing context of the link.
 
 <Aside>
   Making an image into a clickable link disables image zoom capabilities.
@@ -109,13 +109,13 @@ See more: [`alt` attribute on the `<img>` image embed element, MDN](https://deve
 ### `darkSrc`
 
 <Aside>
-  The value of this property is ignored unless the [`src` property](#src) is set.
+  The value of this property is ignored unless the [`src` property](#src-required) is set.
 </Aside>
 
 **type:** `string` <br />
-**default:** [`src`](#src) value
+**default:** [`src`](#src-required) value
 
-Similar to the [`src` property](#src), but specifies the image file URL for the dark theme only.
+Similar to the [`src` property](#src-required), but specifies the image file URL for the dark theme only.
 
 ### `darkAlt`
 

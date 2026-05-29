@@ -374,7 +374,7 @@ try {
 
 In the above example, [`throw_arg(-1, 100)`](/languages/func/built-ins#throw_arg) produces an exception with error code `100` and exception parameter `-1`. However, since the exception parameter can be of any type, which may vary depending on the exception, FunC cannot determine its type at compile time in the `catch` block.
 
-This requires the developer to manually cast the exception parameter. In the example, casting of the exception parameter is achieved with the [assembler](/languages/func/functions#assembler-function-body-definition) and [polymorphic](/languages/func/functions#polymorphism-with-forall) function `cast_to_int`, which receives an argument of any type and returns the same argument as an integer by wrapping the [`NOP` (no operation) TVM instruction](/tvm/instructions#00-nop):
+This requires the developer to manually cast the exception parameter. In the example, casting of the exception parameter is achieved with the [assembler](/languages/func/asm-functions#assembler-function-definition) and [polymorphic](/languages/func/functions#forall-declarator) function `cast_to_int`, which receives an argument of any type and returns the same argument as an integer by wrapping the [`NOP` (no operation) TVM instruction](/tvm/instructions#00-nop):
 
 ```func
 forall X -> int cast_to_int(X x) asm "NOP";

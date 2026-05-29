@@ -76,7 +76,7 @@ There,
 
   `in_msg_body` will get assigned the value at the top of the stack (which corresponds to the message body slice), and `in_msg_cell` will receive the second value from the top of the stack (which corresponds to the message as a cell). The rest of values in the stack remain unassigned to variables during the execution of `recv_internal`, meaning that they will remain unused in the stack and will be dropped once the TVM finishes execution.
 
-  The declarations of `recv_internal` with fewer arguments consume slightly less gas, because each unused value in the stack is automatically dropped from the stack once `recv_internal` finishes execution, without the need to spend gas by explicitly executing a DROP instruction, which is an alias of [`s0 POP`](/tvm/instructions#3-pop).
+  The declarations of `recv_internal` with fewer arguments consume slightly less gas, because each unused value in the stack is automatically dropped from the stack once `recv_internal` finishes execution, without the need to spend gas by explicitly executing a DROP instruction, which is an alias of [`s0 POP`](/tvm/instructions#3i-pop).
 </Aside>
 
 <Aside
