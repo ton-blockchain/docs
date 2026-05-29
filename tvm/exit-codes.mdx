@@ -581,9 +581,12 @@ If the configuration is absent, the default values are:
 
 ## Tolk compiler
 
-TODO: there is an exit code, btw!
+Tolk utilizes exit codes below 128. Note that exit codes used by Tolk indicate contract errors which can occur when using Tolk-generated code and are therefore thrown in the transaction's [compute phase](#compute-phase), not during compilation.
 
-Tolk utilizes exit codes from 128 to 255. Note that exit codes used by Tolk indicate contract errors which can occur when using Tolk-generated code and are therefore thrown in the transaction's [compute phase](#compute-phase), not during compilation.
+- **0:** When the `onBouncedMessage()` handler is not defined, all bounced messages are rejected with an [exit code 0](#0-normal-termination), which is considered a normal termination.
+- **5:** If there is an exhaustive enum `match` fallthrough or an enum deserialization range or membership check, an [exit code 5: integer out of expected range](#5-integer-out-of-expected-range) is thrown.
+- **9:** If there is a slice or array deserialization invalidation, an [exit code 9: cell underflow](#9-cell-underflow) is thrown.
+- **63:** If there is an opcode (or prefix) mismatch when unpacking a struct, a Tolk-specific exit code 63 is thrown. Additionally, it is the default exit code for `throwIfOpcodeDoesNotMatch()` function, which can be overridden.
 
 [tlb]: /languages/tl-b/overview
 [tvm]: /tvm/overview
