@@ -10,18 +10,7 @@ import { Image } from '/snippets/image.jsx';
 <Aside type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
-
-  <Image
-    src="/resources/images/tmp-func-fift-light.png"
-    darkSrc="/resources/images/tmp-func-fift-dark.png"
-    alt="Preview of a possible future placement of FunC and Fift languages in the sidebar."
-    width={294}
-    height={190}
-    noZoom={true}
-  />
-
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
 </Aside>
 
 Every function declaration or definition follows a common pattern. The general form is:
@@ -125,7 +114,7 @@ A function can receive zero or more argument declarations, each declaration sepa
   This defines a function `inc` with the inferred type `int -> int`, meaning `x` is automatically recognized as an `int`.
 
 <Aside>
-  Even though a function may appear to take multiple arguments, it takes a single [tensor type](/languages/func/types#tensor-types) argument. For more details on this distinction, refer to the [function call](/languages/func/expressions#function-call) section.
+  Even though a function may appear to take multiple arguments, it takes a single [tensor type](/languages/func/types#tensor-type) argument. For more details on this distinction, refer to the [function call](/languages/func/expressions#function-call) section.
 
   However, for convenience, the individual components of this tensor are conventionally referred to as function arguments.
 </Aside>
@@ -404,7 +393,7 @@ forall X, Y -> [Y, X] pair_swap([X, Y] pair) {
 }
 ```
 
-This function declares two type variables `X` and `Y`. The function uses these two type variables to declare an argument `pair` of type `[X, Y]`, i.e., a [tuple](/languages/func/types#tuple-types) where the first component is of type `X` and the second component of type `Y`. The function then swaps the components of the tuple and returns a tuple of type `[Y, X]`.
+This function declares two type variables `X` and `Y`. The function uses these two type variables to declare an argument `pair` of type `[X, Y]`, i.e., a [tuple](/languages/func/types#tuple-type) where the first component is of type `X` and the second component of type `Y`. The function then swaps the components of the tuple and returns a tuple of type `[Y, X]`.
 
 That `pair_swap` is polymorphic means that it can be called with tuples of type `[int, int]`, `[int, cell]`, `[cell, slice]`, `[[int, int], cell]`, etc.
 

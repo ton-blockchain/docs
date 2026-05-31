@@ -10,18 +10,7 @@ import { Image } from '/snippets/image.jsx';
 <Aside type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
-
-  <Image
-    src="/resources/images/tmp-func-fift-light.png"
-    darkSrc="/resources/images/tmp-func-fift-dark.png"
-    alt="Preview of a possible future placement of FunC and Fift languages in the sidebar."
-    width={294}
-    height={190}
-    noZoom={true}
-  />
-
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
 </Aside>
 
 FunC offers a range of built-in types covering all the types the TVM has. On the other hand, FunC has no custom user-defined types like records or classes.
@@ -55,7 +44,7 @@ Since `null` is a valid value for any atomic type, keep the following in mind wh
 - Functions that expect an atomic type as input could also accept `null`.
 - For [library functions](/languages/func/stdlib) specifications explicitly indicate when `null` is acceptable as a valid input or output.
 
-Example: [`cell_depth(cell c)`](/languages/func/stdlib#cell-depth) receives a `cell` as input, and its specification states that if the input cell is `null`, the function returns `0`.
+Example: [`cell_depth(cell c)`](/languages/func/stdlib#cell_depth) receives a `cell` as input, and its specification states that if the input cell is `null`, the function returns `0`.
 
 ### No boolean type
 
@@ -87,7 +76,7 @@ _ someFunction(int a) {
 
 the type checker infers that `_` has type `int`, as the return expression `a + 1` is of type `int`.
 
-See [Function declarations](/languages/func/functions#function-declaration) for more details.
+See [Function declarations](/languages/func/functions) for more details.
 
 ## Composite types
 
@@ -197,7 +186,7 @@ For example,
   Type variables in polymorphic functions cannot be instantiated with tensor types. The only exception is a tensor of a single element `(a)`, where `a` is not a tensor type itself. The compiler treats `(a)` as equivalent to `a`.
 </Aside>
 
-For more details, see the [Polymorphism with forall](/languages/func/functions#polymorphism-with-forall) section.
+For more details, see the [`forall` declarator](/languages/func/functions#forall-declarator) section.
 
 ## User-defined types
 

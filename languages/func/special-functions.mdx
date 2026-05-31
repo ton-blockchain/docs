@@ -10,21 +10,10 @@ import { Image } from '/snippets/image.jsx';
 <Aside type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
-
-  <Image
-    src="/resources/images/tmp-func-fift-light.png"
-    darkSrc="/resources/images/tmp-func-fift-dark.png"
-    alt="Preview of a possible future placement of FunC and Fift languages in the sidebar."
-    width={294}
-    height={190}
-    noZoom={true}
-  />
-
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
 </Aside>
 
-FunC, or more specifically, the Fift assembler, reserves several function names with predefined [IDs](/languages/func/functions#method-id-specifier):
+FunC, or more specifically, the Fift assembler, reserves several function names with predefined [IDs](/languages/func/functions#method_id-specifier):
 
 - [`recv_internal`](#receive-internal) and [`main`](#main) have `id = 0`
 - [`recv_external`](#receive-external) has `id = -1`
@@ -87,7 +76,7 @@ There,
 
   `in_msg_body` will get assigned the value at the top of the stack (which corresponds to the message body slice), and `in_msg_cell` will receive the second value from the top of the stack (which corresponds to the message as a cell). The rest of values in the stack remain unassigned to variables during the execution of `recv_internal`, meaning that they will remain unused in the stack and will be dropped once the TVM finishes execution.
 
-  The declarations of `recv_internal` with fewer arguments consume slightly less gas, because each unused value in the stack is automatically dropped from the stack once `recv_internal` finishes execution, without the need to spend gas by explicitly executing a DROP instruction, which is an alias of [`s0 POP`](/tvm/instructions#3-pop).
+  The declarations of `recv_internal` with fewer arguments consume slightly less gas, because each unused value in the stack is automatically dropped from the stack once `recv_internal` finishes execution, without the need to spend gas by explicitly executing a DROP instruction, which is an alias of [`s0 POP`](/tvm/instructions#3i-pop).
 </Aside>
 
 <Aside

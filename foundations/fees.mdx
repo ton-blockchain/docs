@@ -16,8 +16,8 @@ The total transaction fee is the sum of these components.
 Validators set fee levels through voting:
 
 - Storage fees are set in [config parameter 18](/foundations/config#param-18:-storage-prices).
-- Compute fees are set in [config parameters 20 and 21](/foundations/config#param-20-and-21:-gas-prices).
-- Forward, import, and action fees are set in [config parameters 24 and 25](/foundations/config#param-24-and-25:-message-price).
+- Compute fees are set in [config parameters 20 and 21](/foundations/config#param-20-and-21-gas-prices).
+- Forward, import, and action fees are set in [config parameters 24 and 25](/foundations/config#param-24-and-25-message-price).
 
 ## Storage fees
 
@@ -79,7 +79,7 @@ fwdFee = lumpPrice + ceil(bodyFwdFee / 2^16)
 
 where:
 
-- `lumpPrice` is the fixed value [from config](/foundations/config#param-24-and-25%3A-message-price) paid once for the message.
+- `lumpPrice` is the fixed value [from config](/foundations/config#param-24-and-25-message-price) paid once for the message.
 - `msgSizeInCells` is the number of cells in the message.
 - `msgSizeInBits` is the number of bits in all the cells of the message.
 - `bitsInRoot` is the number of bits in the root cell of the message.
@@ -88,15 +88,15 @@ The formula excludes the message root cell because it mainly contains headers. `
 
 ### Action fee
 
-Action fee is the portion of `fwdFee` granted to the validator of the message's source [shard](/foundations/shards#blockchain-sharding). The remaining `fwdFee - actionFee` amount goes to the validator of the destination shard.
+Action fee is the portion of `fwdFee` granted to the validator of the message's source [shard](/foundations/shards). The remaining `fwdFee - actionFee` amount goes to the validator of the destination shard.
 
-Action fee exists only for [internal messages](/foundations/messages/internal#internal-messages).
+Action fee exists only for [internal messages](/foundations/messages/internal).
 
 ```cpp
 action_fee = floor(fwd_fee * first_frac / 2^16)
 ```
 
-Starting with Global Version 4, a failed [SENDMSG action](/foundations/actions/send#send-message) incurs a penalty proportional to the attempted message size. It is calculated as:
+Starting with Global Version 4, a failed [`SENDMSG` action](/foundations/actions/send) incurs a penalty proportional to the attempted message size. It is calculated as:
 
 ```cpp
 fine_per_cell = floor((cell_price >> 16) / 4)

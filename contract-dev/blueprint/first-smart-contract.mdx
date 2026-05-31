@@ -1,16 +1,21 @@
 ---
-title: "Your first smart contract"
+title: "Write your first smart contract with Blueprint"
+sidebarTitle: "First smart contract"
 ---
 
 import { Aside } from "/snippets/aside.jsx";
 import { FenceTable } from "/snippets/fence-table.jsx";
 
-This tutorial covers building, deploying, and interacting with a smart contract on TON from start to finish.
+<Aside type="note">
+  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+</Aside>
+
+This tutorial covers building, deploying, and interacting with a smart contract on TON from start to finish using [Blueprint](/contract-dev/blueprint/).
 
 ## Prerequisites
 
 - Basic programming: variables, functions, if/else statements
-- Basic familiarity with a command‑line interface and executing commands
+- Basic familiarity with a command-line interface and executing commands
 - Node.js—`v22` or later— [download here](https://nodejs.org/)
   - Check if installed: `node -v` in terminal
 - Installed [TON wallet](/ecosystem/wallet-apps/tonkeeper) with [Toncoin on testnet](/ecosystem/wallet-apps/get-coins)
@@ -287,6 +292,18 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     title="Create a wrapper file"
   >
     To deploy, create a wrapper class. Wrappers make it easy to interact with contracts from TypeScript.
+    A wrapper is an off-chain helper that represents a deployed contract, builds message bodies as cells, sends messages, and wraps get-method calls and response parsing.
+
+    Keeping scripts and tests behind the same wrapper helps:
+
+    - encode message bodies consistently,
+    - parse get-method results in one place,
+    - keep deployment and address-derivation logic together,
+    - avoid repeating low-level cell-building code in every script.
+
+    Blueprint creates `./wrappers/FirstContract.ts` when it scaffolds the project, and the Tolk compiler emits a `contract.abi.json` describing the contract's messages and get methods. In this tutorial the wrapper is edited manually, which is the recommended path for Tolk today. For naming conventions and the deeper pattern, see [Wrappers in Blueprint](/contract-dev/blueprint/develop#wrappers).
+
+    In this step, update `./wrappers/FirstContract.ts` for the counter contract.
 
     Open the `./wrappers/FirstContract.ts` file and replace its content with the following code:
 

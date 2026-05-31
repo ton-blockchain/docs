@@ -10,18 +10,7 @@ import { Image } from '/snippets/image.jsx';
 <Aside type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  FunC pages will be moved down in the sidebar in mid-April 2026. Here is the preview of a possible future placement, right between "Blockchain foundations" and "Contribute" sections:
-
-  <Image
-    src="/resources/images/tmp-func-fift-light.png"
-    darkSrc="/resources/images/tmp-func-fift-dark.png"
-    alt="Preview of a possible future placement of FunC and Fift languages in the sidebar."
-    width={294}
-    height={190}
-    noZoom={true}
-  />
-
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
 </Aside>
 
 Expressions in FunC combine literals, variables, operators, and function calls to produce a value when evaluated.
@@ -38,7 +27,7 @@ An expression in FunC can be:
 We focus on variable declarations and function calls, since the other kind of expressions are explained in their respective articles.
 
 As a general rule, all sub-expressions inside an expression are evaluated from left to right,
-except in cases where [asm stack rearrangement](/languages/func/functions#rearranging-stack-entries) explicitly defines the order.
+except in cases where [asm stack rearrangement](/languages/func/asm-functions#rearranging-stack-entries) explicitly defines the order.
 
 ## Variable declaration
 
@@ -52,7 +41,7 @@ returns the value produced by `expr`, in addition to defining variable `iden` wi
 
 For instance: `(int x = 3) + x;` declares `x` and assigns to it the value `3`. The result of the expression `(int x = 3)` is therefore `3`, which means that `(int x = 3) + x` evaluates to `6`, since `x` has value `3` after the declaration.
 
-Here are further examples of variable declarations, where each line is independent from the other ones. It is possible to use the keyword `var` to let the type checker infer the type, see [hole types](/languages/func/types#hole-type).
+Here are further examples of variable declarations, where each line is independent from the other ones. It is possible to use the keyword `var` to let the type checker infer the type, see [typed holes](/languages/func/types#typed-holes).
 
 ```func
 int x = 2;

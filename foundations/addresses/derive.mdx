@@ -61,7 +61,7 @@ The `calculateAddress` function uses the [`AutoDeployAddress`](/languages/tolk/f
 
 ### On-chain — contract sharding
 
-When working with the [contract sharding](/contract-dev/contract-sharding) pattern, child contracts usually have a `StateInit` that depends on the parent. In the example below, the dependence is implemented by adding the parent address to the child `StateInit`. The same logic from the [simple on-chain](#on-chain-simple) case works here, and only `getData` has to be changed.
+When working with the [contract sharding](/contract-dev/contract-sharding) pattern, child contracts usually have a `StateInit` that depends on the parent. In the example below, the dependence is implemented by adding the parent address to the child `StateInit`. The same logic from the [simple on-chain](#on-chain-—-simple) case works here, and only `getData` has to be changed.
 
 ```tolk title="Tolk" expandable
 // Compose an address builder using the AutoDeployAddress built-in.
@@ -125,9 +125,9 @@ fun main() {
 
 The `toShard` field in `AutoDeployAddress` allows smart contracts to have a specific prefix in the address for the purpose of deploying it to a certain shardchain. This can be useful for cross-contract latency optimization, as in [Jetton 2.0](/standard/tokens/jettons/comparison).
 
-This may seem similar to the [vanity](#on-chain-vanity) case, but it serves a different purpose. A vanity generator finds such a `StateInit` that an address composed from its hash will have certain letters in a prefix or suffix. The `toShard` does not alter the whole address and only tells the blockchain to replace the first few bits of the address to which the contract is being deployed. This optimization is used in [Jetton 2.0](/standard/tokens/jettons/comparison).
+This may seem similar to the [vanity](#on-chain-—-vanity) case, but it serves a different purpose. A vanity generator finds such a `StateInit` that an address composed from its hash will have certain letters in a prefix or suffix. The `toShard` does not alter the whole address and only tells the blockchain to replace the first few bits of the address to which the contract is being deployed. This optimization is used in [Jetton 2.0](/standard/tokens/jettons/comparison).
 
-The logic here is more similar to the [simple](#on-chain-simple) case. The only difference is the additional `toShard` field.
+The logic here is more similar to the [simple](#on-chain-—-simple) case. The only difference is the additional `toShard` field.
 
 ```tolk title="Tolk" expandable
 // Compose an address builder using the AutoDeployAddress built-in.
@@ -190,7 +190,7 @@ fun main() {
 
 ### Off-chain — simple
 
-The logic mirrors the [on-chain](#on-chain-simple) example. The `@ton/core` library has the `contractAddress` function that handles `StateInit` hash calculation and composes the address.
+The logic mirrors the [on-chain](#on-chain-—-prefixed) example. The `@ton/core` library has the `contractAddress` function that handles `StateInit` hash calculation and composes the address.
 
 ```ts expandable
 import { contractAddress, Cell, beginCell } from "@ton/core";
@@ -218,7 +218,7 @@ console.log(addr); // EQC235M1tplyIg2OUQZQgG8D3BNF6_TZJ1932iaIV26XBVCH
 
 ### Off-chain — contract sharding
 
-The logic mirrors the [on-chain](#on-chain-contract-sharding) example. The parent address is hardcoded in this example but could just as well be derived on its own.
+The logic mirrors the [on-chain](#on-chain-—-contract-sharding) example. The parent address is hardcoded in this example but could just as well be derived on its own.
 
 ```ts
 import { contractAddress, Cell, beginCell, Address } from "@ton/core";
@@ -250,7 +250,7 @@ console.log(addr);
 
 ### Off-chain — vanity
 
-Similarly to the [on-chain](#on-chain-vanity) case, there is no way to derive the address. Define a constant with the predetermined address obtained in advance.
+Similarly to the [on-chain](#on-chain-—-vanity) case, there is no way to derive the address. Define a constant with the predetermined address obtained in advance.
 
 ```ts
 import { contractAddress, Cell, beginCell, Address } from "@ton/core";
@@ -263,7 +263,7 @@ console.log(addr1);
 
 ### Off-chain — prefixed
 
-The logic mirrors the [on-chain](#on-chain-prefixed) example. Since `@ton/core` does not define helpers for prefixed addresses, the prefix must be replaced manually.
+The logic mirrors the [on-chain](#on-chain-—-simple) example. Since `@ton/core` does not define helpers for prefixed addresses, the prefix must be replaced manually.
 
 ```ts
 import { contractAddress, Cell, beginCell } from "@ton/core";

@@ -26,8 +26,6 @@ Unlike seqno-based wallets (v3, v4, v5) that require sequential transaction proc
 **Compared to Highload v2:**\
 v3 solves architectural issues that could lock funds in v2 and consumes less gas during operations.
 
----
-
 ## TL-B schema
 
 [TL-B (Type Language - Binary)](/languages/tl-b/overview) is a domain-specific language designed to describe data structures in TON. The schemas below define the binary layout of the contract's storage, external messages, and internal messages.
@@ -69,8 +67,6 @@ internal_transfer#ae42e5a4 {n:#} query_id:uint64 actions:^(OutList n) = Internal
 
 Below, each field is explained in detail.
 
----
-
 ## Storage structure
 
 The Highload Wallet v3 contract stores six persistent fields:
@@ -89,8 +85,6 @@ When the wallet receives an external message, it verifies that the 512-bit signa
   The public key is not the wallet address. The address is [derived](/foundations/addresses/derive) from the contract's [`StateInit`](/foundations/messages/deploy).
 </Aside>
 
----
-
 ### `subwallet_id` (32 bits)
 
 **Purpose:**\
@@ -105,8 +99,6 @@ One private key manages multiple "virtual" wallets for organizational or account
 **Recommendation:**\
 Use `subwallet_id: 0x10ad` (4269) to avoid conflicts with other wallet types (standard wallets or vesting wallets) derived from the same keypair. See [How to create Highload Wallet v3](/standard/wallets/highload/v3/create) for details.
 
----
-
 ### `old_queries` (HashmapE 13 ^Cell)
 
 **Purpose:**\
@@ -119,8 +111,6 @@ Hashmap with 13-bit keys, where each key holds a bitmap of processed query IDs.
 Provides a second layer of replay protection. During cleanup, `queries` → `old_queries`, creating a double timeout window.
 
 **Details:** See [Replay protection mechanism](#replay-protection-mechanism).
-
----
 
 ### `queries` (HashmapE 13 ^Cell)
 
@@ -135,8 +125,6 @@ When a message arrives, the contract checks if its `query_id` is already marked 
 
 **Details:** See [Replay protection mechanism](#replay-protection-mechanism).
 
----
-
 ### `last_clean_time` (64 bits)
 
 **Purpose:**\
@@ -146,8 +134,6 @@ Unix timestamp (in seconds) of the last cleanup operation.
 Tracks when the contract last rotated `queries` → `old_queries`. Cleanup triggers when `current_time >= last_clean_time + timeout`.
 
 **Details:** See [Replay protection mechanism](#replay-protection-mechanism).
-
----
 
 ### `timeout` (22 bits)
 
@@ -165,8 +151,6 @@ Messages are valid if `created_at > now() - timeout` and `created_at <= now()`. 
 
 - [Replay protection mechanism](#replay-protection-mechanism) — how timeout is used
 - [Timeout constraints](#timeout-constraints) — choosing the right value
-
----
 
 ## Replay protection mechanism
 
@@ -191,7 +175,7 @@ The contract stores processed `query_id` values in two hashmaps:
 - Each value is a cell containing a bitmap of processed `bit_number` values
 - Stores recently processed query IDs
 
-### How query\_id is checked
+### How `query_id` is checked
 
 When an external message arrives, the contract:
 
@@ -286,8 +270,6 @@ Even if Transaction 2 fails in the action phase, Transaction 1 has already succe
 
 This architecture solves a fundamental problem present in all standard external message wallets, including seqno-based wallets and earlier highload designs.
 
----
-
 ## External message structure
 
 External messages sent to Highload v3 have a specific layout.
@@ -311,8 +293,6 @@ The signature is in the **root cell** (512 bits); all other parameters are in a 
   **Gas optimization:** This structure saves \~500 gas units during signature verification. If the signature were in the same cell as the message body, the contract would need to use `slice_hash()` (which rebuilds the cell internally, costing extra gas) instead of simply taking `cell_hash()` of the reference.
 </Aside>
 
----
-
 ### `signature` (512 bits)
 
 **Type:**\
@@ -333,8 +313,6 @@ Exit code `33`.
 
 **Link:** [Ed25519 signature scheme](https://en.wikipedia.org/wiki/EdDSA#Ed25519)
 
----
-
 ### `subwallet_id` (32 bits)
 
 **Purpose:**\
@@ -345,8 +323,6 @@ Must match the `subwallet_id` stored in contract storage.
 
 **On mismatch:**\
 Exit code `34`.
-
----
 
 ### `query_id` (composite structure)
 
@@ -370,8 +346,6 @@ The contract checks if bit `bit_number` is set in the cell stored at `hashmap[sh
 **Recommendation:**\
 Increment `query_id` sequentially using a counter-based strategy.
 
----
-
 ### `created_at` (64 bits)
 
 **Purpose:**\
@@ -391,8 +365,6 @@ Exit code `35`.
 **Why it matters:**\
 Prevents replay of expired messages. Even if a `query_id` is eventually forgotten, stale messages are rejected based on `created_at`. See [Timestamp validation](#timestamp-validation) for important time lag considerations.
 
----
-
 ### `timeout` (22 bits)
 
 **Purpose:**\
@@ -408,16 +380,12 @@ Exit code `38`.
   22 bits allows timeout values up to \~4.8 million seconds (\~55 days).
 </Aside>
 
----
-
 ### `send_mode` (8 bits)
 
 **Purpose:**\
 Specifies the [send mode](/foundations/messages/modes) for the internal message.
 
-**Link:** [send\_raw\_message modes](/languages/func/stdlib#send-raw-message)
-
----
+**Link:** [send\_raw\_message modes](/languages/func/stdlib#send_raw_message)
 
 ### `message_to_send` (reference cell)
 
@@ -450,8 +418,6 @@ The contract validates `message_to_send` **after committing storage** to prevent
 **Critical limitation:**\
 Highload v3 can send **only ONE internal message** per external message. For batch transfers, use the [internal\_transfer pattern](#single-message-per-external) with an action list (up to 254 messages).
 
----
-
 ## Message sending flow
 
 Highload v3 uses a two-transaction pattern to safely send messages:
@@ -472,8 +438,6 @@ Highload v3 uses a two-transaction pattern to safely send messages:
 
 See [Single message per external](#single-message-per-external) for details on this limitation and the batch transfer workaround.
 
----
-
 ## Exit codes
 
 | Exit code | Name                   | Description                                                                | How to fix                                                                      |
@@ -485,8 +449,6 @@ See [Single message per external](#single-message-per-external) for details on t
 | `36`      | Query already executed | The `query_id` was already processed (found in `queries` or `old_queries`) | Use a new, unique `query_id`                                                    |
 | `37`      | Invalid message        | The `message_to_send` structure is invalid or cannot be processed          | Verify the message cell structure and contents                                  |
 | `38`      | Invalid timeout        | The `timeout` in the message does not match storage timeout                | Verify you are using the correct `timeout` value for this wallet                |
-
----
 
 ## Limitations and constraints
 
@@ -502,23 +464,19 @@ Manually validating message structure is expensive in gas costs. The contract va
 State-init validation is complex and gas-intensive, while deploying contracts from a highload wallet is rarely needed. The feature was intentionally excluded to reduce gas costs.
 
 **Workaround for batch transfers:**\
-Send an internal message to the wallet itself with opcode `0xae42e5a4` (`internal_transfer`) and an action list containing up to **254 outgoing messages** (not 255, because one action slot is reserved for [`set_code` protection](#protection-against-set-code)).
+Send an internal message to the wallet itself with opcode `0xae42e5a4` (`internal_transfer`) and an action list containing up to **254 outgoing messages** (not 255, because one action slot is reserved for [`set_code` protection](#protection-against-set_code)).
 
 **How to implement:** [Send batch transfers](/standard/wallets/highload/v3/send-batch-transfers)
 
----
-
 ### Query ID space limitations
 
-Highload v3 supports up to **8,380,416 unique query IDs** (see [`query_id` structure](#query-id-composite-structure) for details).
+Highload v3 supports up to **8,380,416 unique query IDs** (see [`query_id` structure](#query-id-structure) for details).
 
 **Impact on throughput:**\
 If you send messages faster than `timeout`, you may exhaust available query IDs. After `timeout`, old IDs can be reused.
 
 **Recommended strategy:**\
 Use a counter-based approach, incrementing `query_id` for each message.
-
----
 
 ### Timeout constraints
 
@@ -534,8 +492,6 @@ Processed `query_id` values remain in storage for up to `2 × timeout` (across `
 
 - Short timeout (seconds/minutes): Fast expiration certainty, but messages may expire during network congestion
 - Long timeout (hours): Messages survive congestion, but slow failure detection and higher storage costs
-
----
 
 ### Gas consumption
 
@@ -559,8 +515,6 @@ Forward fees scale with:
 
 - Number of outgoing messages
 - Size and complexity of message content
-
----
 
 ## Get methods
 
@@ -591,8 +545,6 @@ Before sending a message, check if a `query_id` was already used to avoid replay
 
 **Link:** [How to verify if a message is processed](/standard/wallets/highload/v3/verify-is-processed)
 
----
-
 ## Protection against `set_code`
 
 **Why this protection is needed:**
@@ -614,8 +566,6 @@ This pattern **prevents any `set_code` action in the action list from taking eff
 **Action list limitation:**\
 Because the contract calls `set_code(old_code)` as a protection mechanism, one action slot is consumed. This is why the maximum number of outgoing messages in a batch is **254** (not 255) — one slot is reserved for the `set_code` protection.
 
----
-
 ## Implementation
 
 **Source code:** [`ton-blockchain/highload-wallet-contract-v3`](https://github.com/ton-blockchain/highload-wallet-contract-v3)
@@ -629,8 +579,6 @@ Because the contract calls `set_code(old_code)` as a protection mechanism, one a
 **Tests and examples:** See the [tests/](https://github.com/ton-blockchain/highload-wallet-contract-v3/tree/main/tests) directory in the repository for reference implementation and usage patterns.
 
 **Link:** [How-to guides](/standard/wallets/highload/v3/create)
-
----
 
 ## See also
 

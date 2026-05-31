@@ -10,12 +10,12 @@ Each instruction consumes a fixed amount of `10` gas and `1` gas for each bit of
 
 Examples:
 
-| Instruction                                             | TL-B                                                                                             | Gas  | Notes                                                                                                                                              |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`NEWC`](/tvm/instructions#c8-newc)                     | `#C8`                                                                                            | `18` | 8-bit prefix without operands                                                                                                                      |
-| [`STU`](/tvm/instructions#cb-stu)                       | `#CB` <br />`cc:uint8`                                                                           | `26` | 8-bit prefix, 8-bit operand                                                                                                                        |
-| [`PUSHINT_LONG`](/tvm/instructions#82-pushint_long)     | `#82` <br />`l:(## 5)` <br />`xxx:(int (8 * l + 19))`                                            | `23` | 8-bit prefix, 5-bit operand, length of `xxx` depends on `l`, so it is not included                                                                 |
-| [`STSLICE_CONST`](/tvm/instructions#cfc0_-stsliceconst) | `#CFC0_` <br />`x:(## 2)` <br />`y:(## 3)` <br />`c:(x * ^Cell)` <br />`sss:((8 * y + 2) * Bit)` | `24` | 9-bit prefix (`CF` is 8 bits, `C0_` is `C_`, which is just bit `1`), 2-bit and 3-bit operands, refs `c` and variable-length `sss` are not included |
+| Instruction                                                 | TL-B                                                                                             | Gas  | Notes                                                                                                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`NEWC`](/tvm/instructions#c8-newc)                         | `#C8`                                                                                            | `18` | 8-bit prefix without operands                                                                                                                      |
+| [`STU`](/tvm/instructions#cbcc-stu)                         | `#CB` <br />`cc:uint8`                                                                           | `26` | 8-bit prefix, 8-bit operand                                                                                                                        |
+| [`PUSHINT_LONG`](/tvm/instructions#82lxxx-pushint_long)     | `#82` <br />`l:(## 5)` <br />`xxx:(int (8 * l + 19))`                                            | `23` | 8-bit prefix, 5-bit operand, length of `xxx` depends on `l`, so it is not included                                                                 |
+| [`STSLICE_CONST`](/tvm/instructions#cfc_xysss-stsliceconst) | `#CFC0_` <br />`x:(## 2)` <br />`y:(## 3)` <br />`c:(x * ^Cell)` <br />`sss:((8 * y + 2) * Bit)` | `24` | 9-bit prefix (`CF` is 8 bits, `C0_` is `C_`, which is just bit `1`), 2-bit and 3-bit operands, refs `c` and variable-length `sss` are not included |
 
 ## Cell operations
 
@@ -28,7 +28,7 @@ This applies to all instructions that internally operate with cells (including d
 
 ## Exceptions
 
-TVM consumes `50` gas when any exception is thrown, both explicitly by [`THROW`](/tvm/instructions#f2c4_-throw)-like instructions or implicitly during execution of other instructions. This happens before the jump to the exception handler `c2`.
+TVM consumes `50` gas when any exception is thrown, both explicitly by [`THROW`](/tvm/instructions#f2c4_n-throw)-like instructions or implicitly during execution of other instructions. This happens before the jump to the exception handler `c2`.
 
 ## Implicit jumps and returns
 
@@ -40,11 +40,11 @@ Calling more than `8` extraordinary continuations in a chain consumes `1` gas fo
 
 ## Tuple operations
 
-[`TUPLE`](/tvm/instructions#6f0-tuple), [`TUPLEVAR`](/tvm/instructions#6f80-tuplevar), [`UNTUPLE`](/tvm/instructions#6f2-untuple), [`UNTUPLEVAR`](/tvm/instructions#6f82-untuplevar), [`UNPACKFIRST`](/tvm/instructions#6f3-unpackfirst), [`UNPACKFIRSTVAR`](/tvm/instructions#6f83-unpackfirstvar), [`EXPLODE`](/tvm/instructions#6f4-explode), [`EXPLODEVAR`](/tvm/instructions#6f84-explodevar) consumes `1` gas for each entry been pushed or popped into a tuple. [`TPUSH`](/tvm/instructions#6f8c-tpush), [`TPOP`](/tvm/instructions#6f8d-tpop), [`SETINDEX`](/tvm/instructions#6f5-setindex), [`SETINDEXVAR`](/tvm/instructions#6f85-setindexvar), [`SETINDEXQ`](/tvm/instructions#6f7-setindexq)/[`SETINDEXVARQ`](/tvm/instructions#6f87-setindexvarq) consumes `len(tuple)` gas for the resulting tuple size after push/pop/set. Same applies to instructions operating with `c7`: [`SETGLOB`](/tvm/instructions#f87_-setglob)/[`SETGLOBVAR`](/tvm/instructions#f860-setglobvar), [`RANDU256`](/tvm/instructions#f810-randu256)/[`RAND`](/tvm/instructions#f811-rand), [`SETRAND`](/tvm/instructions#f814-setrand), [`ADDRAND`](/tvm/instructions#f815-addrand).
+[`TUPLE`](/tvm/instructions#6f0n-tuple), [`TUPLEVAR`](/tvm/instructions#6f80-tuplevar), [`UNTUPLE`](/tvm/instructions#6f2n-untuple), [`UNTUPLEVAR`](/tvm/instructions#6f82-untuplevar), [`UNPACKFIRST`](/tvm/instructions#6f3k-unpackfirst), [`UNPACKFIRSTVAR`](/tvm/instructions#6f83-unpackfirstvar), [`EXPLODE`](/tvm/instructions#6f4n-explode), [`EXPLODEVAR`](/tvm/instructions#6f84-explodevar) consumes `1` gas for each entry been pushed or popped into a tuple. [`TPUSH`](/tvm/instructions#6f8c-tpush), [`TPOP`](/tvm/instructions#6f8d-tpop), [`SETINDEX`](/tvm/instructions#6f5k-setindex), [`SETINDEXVAR`](/tvm/instructions#6f85-setindexvar), [`SETINDEXQ`](/tvm/instructions#6f7k-setindexq)/[`SETINDEXVARQ`](/tvm/instructions#6f87-setindexvarq) consumes `len(tuple)` gas for the resulting tuple size after push/pop/set. Same applies to instructions operating with `c7`: [`SETGLOB`](/tvm/instructions#f87_k-setglob)/[`SETGLOBVAR`](/tvm/instructions#f860-setglobvar), [`RANDU256`](/tvm/instructions#f810-randu256)/[`RAND`](/tvm/instructions#f811-rand), [`SETRAND`](/tvm/instructions#f814-setrand), [`ADDRAND`](/tvm/instructions#f815-addrand).
 
 ## Stack operations
 
-TVM consumes 1 gas for each stack element deeper than 32 elements inside the resulting new stack each time stack gets copied: when calling or jumping to a continuation with a non-empty argument number, an initial stack, or both, when extending a continuation stack using [`SETCONTARGS`](/tvm/instructions#ec-setcontargs_n) and similar instructions, when using [`RUNVM`](/tvm/instructions#db4-runvm) (both for initial and resulting stacks of the vm).
+TVM consumes 1 gas for each stack element deeper than 32 elements inside the resulting new stack each time stack gets copied: when calling or jumping to a continuation with a non-empty argument number, an initial stack, or both, when extending a continuation stack using [`SETCONTARGS`](/tvm/instructions#ecrn-setcontargs_n) and similar instructions, when using [`RUNVM`](/tvm/instructions#db4fff-runvm) (both for initial and resulting stacks of the vm).
 
 ## Extra currency
 
@@ -52,7 +52,7 @@ The first `5` executions of `GETEXTRABALANCE` consume at most `26 + 200` gas eac
 
 ## RUNVM
 
-[`RUNVM`](/tvm/instructions#db4-runvm) and [`RUNVMX`](/tvm/instructions#db50-runvmx) consume `40` extra gas before starting a VM.
+[`RUNVM`](/tvm/instructions#db4fff-runvm) and [`RUNVMX`](/tvm/instructions#db50-runvmx) consume `40` extra gas before starting a VM.
 
 ## Cryptography
 

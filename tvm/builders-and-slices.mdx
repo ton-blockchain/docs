@@ -28,7 +28,7 @@ Then, put a number on the stack:
 1 INT  // stack: x{} 1
 ```
 
-And call [`STU`](/tvm/instructions#cb-stu) ("STore Unsigned integer") to store integer into builder (swapping builder and value to meet `STU` input order):
+And call [`STU`](/tvm/instructions#cbcc-stu) ("STore Unsigned integer") to store integer into builder (swapping builder and value to meet `STU` input order):
 
 ```fift Fift
 SWAP  // stack: 1 x{}
@@ -60,7 +60,7 @@ Slice allows reading data back from a cell, field by field. For example, deseria
 CTOS  // x{0001001011111111}
 ```
 
-Then, call [`LDU`](/tvm/instructions#d3-ldu) ("LoaD Unsigned integer") to read first value (`uint4`).
+Then, call [`LDU`](/tvm/instructions#d3cc-ldu) ("LoaD Unsigned integer") to read first value (`uint4`).
 
 ```fift Fift
 4 LDU  // 1 x{001011111111}

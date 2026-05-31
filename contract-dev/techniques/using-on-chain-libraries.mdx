@@ -5,7 +5,7 @@ sidebarTitle: "Using on-chain libraries"
 
 import { Aside } from '/snippets/aside.jsx';
 
-Before using on-chain libraries, read [Library cells](/foundations/serialization/library). That page explains the cell format that on-chain libraries use.
+Before using on-chain libraries, read about [library cells](/foundations/serialization/library). That page explains the cell format that on-chain libraries use.
 
 <Aside
   type="danger"
@@ -118,6 +118,10 @@ The key line is `setLibCode(libToPublish, PUBLIC_LIBRARY_MODE);`. This call publ
   After publication, the contract becomes bricked, so no further operations are possible.
 </Aside>
 
+## Test libraries with Acton
+
+Refer to the [on-chain libraries guide](https://ton-blockchain.github.io/acton/docs/libraries) in Acton documentation.
+
 ## Test libraries with Blueprint
 
 When testing smart contracts locally, there are two ways to register libraries in the blockchain environment: automatically and manually.
@@ -162,6 +166,16 @@ When methods run through the [HTTP API](/ecosystem/api/overview) or [liteserver]
 
 For local execution, pull the account state and resolve every library reference cell first. In most cases, the entire code cell is itself a library reference.
 To resolve a library, call the [`/getLibraries` method](/ecosystem/api/toncenter/v2/configuration/get-libraries).
+
+### Retrieve a library cell with Acton
+
+To inspect an existing library or read its code, use `acton library fetch`:
+
+```bash
+acton library fetch <LIBRARY_HASH>
+```
+
+See the [on-chain libraries guide](https://ton-blockchain.github.io/acton/docs/libraries) in Acton documentation for more.
 
 ### Retrieve a library cell with liteserver
 

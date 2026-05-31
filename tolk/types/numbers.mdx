@@ -48,6 +48,16 @@ const MAX_UINT8 = 0xFF;
 const MAX_INT = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
 ```
 
+### Numeric separators
+
+Integer literals may contain `_` separators to improve readability. They are ignored by the compiler.
+
+```tolk
+const A = 1_000_000;
+const B = 0x_ABCD_EF01;
+const C = 0b_1010_1011_0000;
+```
+
 ## First-class types
 
 All integer types can be nullable, combined within a union, and otherwise used in structural or multi-valued types:

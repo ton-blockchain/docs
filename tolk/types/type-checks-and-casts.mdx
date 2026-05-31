@@ -79,7 +79,7 @@ fun analyzeStorage(nCells: int, lastCell: cell?) {
     // Say, according to the logic of this program,
     // having non-zero number of `nCells` must mean
     // that the `lastCell` is not `null`
-    if (nCells) {
+    if (nCells != 0) {
         // Therefore, one can explicitly instruct
         // the compiler to recognize that fact
         doSmth(lastCell!);
