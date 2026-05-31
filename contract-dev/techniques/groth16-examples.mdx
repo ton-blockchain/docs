@@ -1,17 +1,17 @@
 ---
 title: "How to verify Groth16 examples on TON"
 sidebarTitle: "Groth16 examples"
-description: "Run Groth16 verifier examples on TON with Circom, Noname, Gnark, and Arkworks."
 ---
 
 import { Aside } from '/snippets/aside.jsx';
 
-Run one of the Groth16 verifier examples from [`zk-examples/zk-ton-examples`](https://github.com/zk-examples/zk-ton-examples) and confirm the proof both locally and on-chain in TON.
+Run [Groth16](https://eprint.iacr.org/2016/260.pdf) verifier examples from [`zk-examples/zk-ton-examples`](https://github.com/zk-examples/zk-ton-examples) via [Circom](https://docs.circom.io/), [Noname](https://github.com/zksecurity/noname), [Gnark](https://github.com/Consensys/gnark), and [Arkworks](https://arkworks.rs/), then confirm the proof both locally and on-chain in TON.
+
 For the underlying export flow, see [Zero-knowledge proofs on TON](/contract-dev/techniques/zero-knowledge).
 
 ## Objective
 
-Run one of these upstream circuits on TON:
+The goal is run one of these upstream circuits on TON:
 
 - `Multiplier` from Circom
 - `Sudoku` from Noname
@@ -20,9 +20,8 @@ Run one of these upstream circuits on TON:
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/) 18 or later LTS
-- [Blueprint](/contract-dev/blueprint/overview)
-- One proving stack: [Circom](https://docs.circom.io/getting-started/installation/#installing-circom), [Noname](https://github.com/zksecurity/noname), [Go](https://go.dev/dl/), or [Rust](https://www.rust-lang.org/tools/install)
+- [Node.js](https://nodejs.org/en/download/) 18 or later LTS.
+- One proving stack: [Circom](https://docs.circom.io/getting-started/installation/#installing-circom), [Noname](https://github.com/zksecurity/noname), [Go](https://go.dev/dl/), or [Rust](https://www.rust-lang.org/tools/install).
 
 ## Clone the examples repository
 
