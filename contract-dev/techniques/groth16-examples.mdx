@@ -74,7 +74,7 @@ Expected output
 PASS tests/Verifier_multiplier_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size `5805 bits / 11 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 88665` gas and code size `5829 bits / 11 cells`.
 
 ## Run the `Sudoku` example
 
@@ -110,7 +110,7 @@ Expected output
 PASS tests/Verifier_sudoku_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 858163` gas and code size `46975 bits / 78 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 857057` gas and code size `48111 bits / 79 cells`.
 
 ## Run the `cubic-gnark` example
 
@@ -131,7 +131,7 @@ Expected output
 PASS tests/Verifier_cubic_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size `5805 bits / 11 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 88665` gas and code size `5829 bits / 11 cells`.
 
 ## Run the `MulCircuit` example
 
@@ -152,14 +152,14 @@ Expected output
 PASS tests/Verifier_ark_tolk.spec.ts
 ```
 
-The checked-in upstream Tolk snapshot records `Verify = 88655` gas and code size `5805 bits / 11 cells`.
+The checked-in upstream Tolk snapshot records `Verify = 88665` gas and code size `5829 bits / 11 cells`.
 
 ## Verify
 
-Run-time verification succeeds when all of the following are true:
+Run-time verification succeeds when all the following are true:
 
 - [`snarkjs.groth16.verify(...)`](https://github.com/iden3/snarkjs#7-verify-the-proof) returns `true`
-- The contract `getVerify` method returns `true`
+- The unnamed Sudoku verifier exposes a `getVerify()` getter, while named verifiers expose a suffixed getter, such as `getVerifyMultiplierVerifier()` — both should return `true`
 - `npx blueprint test ...` exits with code `0`
 
 Not runnable. Partial snippet from the upstream Tolk tests:
