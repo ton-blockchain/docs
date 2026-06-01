@@ -44,7 +44,7 @@ Since `null` is a valid value for any atomic type, keep the following in mind wh
 - Functions that expect an atomic type as input could also accept `null`.
 - For [library functions](/languages/func/stdlib) specifications explicitly indicate when `null` is acceptable as a valid input or output.
 
-Example: [`cell_depth(cell c)`](/languages/func/stdlib#cell-depth) receives a `cell` as input, and its specification states that if the input cell is `null`, the function returns `0`.
+Example: [`cell_depth(cell c)`](/languages/func/stdlib#cell_depth) receives a `cell` as input, and its specification states that if the input cell is `null`, the function returns `0`.
 
 ### No boolean type
 
@@ -76,7 +76,7 @@ _ someFunction(int a) {
 
 the type checker infers that `_` has type `int`, as the return expression `a + 1` is of type `int`.
 
-See [Function declarations](/languages/func/functions#function-declaration) for more details.
+See [Function declarations](/languages/func/functions) for more details.
 
 ## Composite types
 
@@ -186,7 +186,7 @@ For example,
   Type variables in polymorphic functions cannot be instantiated with tensor types. The only exception is a tensor of a single element `(a)`, where `a` is not a tensor type itself. The compiler treats `(a)` as equivalent to `a`.
 </Aside>
 
-For more details, see the [Polymorphism with forall](/languages/func/functions#polymorphism-with-forall) section.
+For more details, see the [`forall` declarator](/languages/func/functions#forall-declarator) section.
 
 ## User-defined types
 

@@ -75,7 +75,7 @@ Over its lifetime, an account changes its [status](/foundations/status) among fo
 - `nonexist`: There wasn't a single operation with the account, or it was removed. It has neither a balance, nor code.
 - `uninit`: If some Toncoin is transferred to an account, it now exists, but there is still no smart contract code on it. It now has a balance.
 - `active`: After a deploy message (see below) with code and initial data is sent to an account, it becomes active and can process other messages. It now has a balance, code, and internal state.
-- `frozen`: If an account is overdue on its [storage fees](/foundations/fees#storage-fee), it will be frozen until the fees are paid. If the overdue amount reaches a maximum limit specified by the blockchain, the account goes completely bankrupt, is removed, and ceases to exist.
+- `frozen`: If an account is overdue on its [storage fees](/foundations/fees#storage-fees), it will be frozen until the fees are paid. If the overdue amount reaches a maximum limit specified by the blockchain, the account goes completely bankrupt, is removed, and ceases to exist.
 
 ### Smart contracts
 
@@ -129,7 +129,7 @@ The execution follows a process whose steps are called [phases](/foundations/pha
 
 ### Gas
 
-Execution cost is first measured in _gas_ units, then converted to Toncoin. This unit is separate so that if code execution becomes computationally cheaper (or more expensive), validators can vote to change the [price of gas](/foundations/config#param-20-and-21:-gas-prices) in Toncoin.
+Execution cost is first measured in _gas_ units, then converted to Toncoin. This unit is separate so that if code execution becomes computationally cheaper (or more expensive), validators can vote to change the [price of gas](/foundations/config#param-20-and-21-gas-prices) in Toncoin.
 
 ### Exit codes
 

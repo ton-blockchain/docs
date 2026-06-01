@@ -138,21 +138,21 @@ apply(+);   ;; DOES NOT COMPILE
 
 [`true`](#true)   [`false`](#false)   [`nil`](#nil)   [`Nil`](#nil-2)
 
-[`null?`](#null%3F)   [`throw`](#throw)   [`throw_if`](#throw-if)   [`throw_unless`](#throw-unless)
+[`null?`](#null%3F)   [`throw`](#throw)   [`throw_if`](#throw_if)   [`throw_unless`](#throw_unless)
 
-[`throw_arg`](#throw-arg)   [`throw_arg_if`](#throw-arg-if)   [`throw_arg_unless`](#throw-arg-unless)   [`load_int`](#load-int)
+[`throw_arg`](#throw_arg)   [`throw_arg_if`](#throw_arg_if)   [`throw_arg_unless`](#throw_arg_unless)   [`load_int`](#load_int)
 
-[`load_uint`](#load-uint)   [`preload_int`](#preload-int)   [`preload_uint`](#preload-uint)   [`store_int`](#store-int)
+[`load_uint`](#load_uint)   [`preload_int`](#preload_int)   [`preload_uint`](#preload_uint)   [`store_int`](#store_int)
 
-[`store_uint`](#store-uint)   [`~store_int`](#store-int-2)   [`~store_uint`](#store-uint-2)   [`load_bits`](#load-bits)
+[`store_uint`](#store_uint)   [`~store_int`](#store_int-2)   [`~store_uint`](#store_uint-2)   [`load_bits`](#load_bits)
 
-[`preload_bits`](#preload-bits)   [`int_at`](#int-at)   [`cell_at`](#cell-at)   [`slice_at`](#slice-at)
+[`preload_bits`](#preload_bits)   [`int_at`](#int_at)   [`cell_at`](#cell_at)   [`slice_at`](#slice_at)
 
-[`tuple_at`](#tuple-at)   [`at`](#at)   [`touch`](#touch)   [`~touch`](#touch-2)
+[`tuple_at`](#tuple_at)   [`at`](#at)   [`touch`](#touch)   [`~touch`](#touch-2)
 
 [`touch2`](#touch2)   [`~touch2`](#touch2-2)   [`~dump`](#dump)   [`~strdump`](#strdump)
 
-[`run_method0`](#run-method0)   [`run_method1`](#run-method1)   [`run_method2`](#run-method2)   [`run_method3`](#run-method3)
+[`run_method0`](#run_method0)   [`run_method1`](#run_method1)   [`run_method2`](#run_method2)   [`run_method3`](#run_method3)
 
 #### `divmod`
 
@@ -268,7 +268,7 @@ forall X -> int null?(X val)
 
 `null?` checks if the given argument is `null`. Returns `0` if the argument is not `null`, and `-1` otherwise.
 
-For more info, see [null values](/languages/func/types#null-values).
+For more info, see [null values](/languages/func/types#special-null-value).
 
 #### `throw`
 
@@ -320,8 +320,8 @@ forall X -> () throw_arg_if(X arg, int error, int condition)
 
 Triggers an exception only if the provided condition is true, i.e., if the condition is `-1`.
 
-Similarly to [`throw_arg`](#throw-arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
+Similarly to [`throw_arg`](#throw_arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
+processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw_arg).
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
@@ -333,8 +333,8 @@ forall X -> () throw_arg_unless(X arg, int error, int condition)
 
 Triggers an exception only if the provided condition is false, i.e., if the condition is `0`.
 
-Similarly to [`throw_arg`](#throw-arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw-arg).
+Similarly to [`throw_arg`](#throw_arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
+processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw_arg).
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
@@ -392,7 +392,7 @@ Stores an unsigned `len`-bit integer `x` in builder `b`. Returns the modified bu
 (builder, ()) ~store_int(builder b, int x, int len)
 ```
 
-Same as [`store_int`](#store-int), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`store_int`](#store_int), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
 
 #### `~store_uint`
 
@@ -400,7 +400,7 @@ Same as [`store_int`](#store-int), but adapted to use [modifying notation](/lang
 (builder, ()) ~store_uint(builder b, int x, int len)
 ```
 
-Same as [`store_uint`](#store-uint), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
+Same as [`store_uint`](#store_uint), but adapted to use [modifying notation](/languages/func/expressions#modifying-notation).
 
 #### `load_bits`
 
@@ -543,7 +543,7 @@ If the argument `s` is not a slice containing ASCII characters, the debug log wi
 () run_method0 (int method_id)
 ```
 
-Executes the 0 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 0 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function()
@@ -555,7 +555,7 @@ The `run_method0` is useful for dynamically executing methods at run-time.
 For example, receiving the method ID to execute in the incoming internal message.
 
 <Aside>
-  Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/languages/func/functions#method-id-specifier):
+  Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/languages/func/functions#method_id-specifier):
 
   ```func
   () test() method_id(1234)
@@ -581,7 +581,7 @@ For example, receiving the method ID to execute in the incoming internal message
 forall X -> () run_method1 (int method_id, X arg1)
 ```
 
-Executes the 1 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`, and passes `arg1` as argument to the function.
+Executes the 1 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`, and passes `arg1` as argument to the function.
 The function with ID `method_id` must have a signature of the form:
 
 ```func
@@ -603,7 +603,7 @@ requires that `test` has the signature:
 () test(slice s)
 ```
 
-As with [`run_method0`](#run-method0), function `run_method1` is useful for dynamically executing 1 argument methods at run-time.
+As with [`run_method0`](#run_method0), function `run_method1` is useful for dynamically executing 1 argument methods at run-time.
 
 <Aside
   type="danger"
@@ -618,7 +618,7 @@ As with [`run_method0`](#run-method0), function `run_method1` is useful for dyna
 forall X, Y -> () run_method2 (int method_id, X arg1, Y arg2)
 ```
 
-Executes the 2 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 2 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function(T1 a1, T2 a2)
@@ -627,7 +627,7 @@ Executes the 2 argument function with [ID](/languages/func/functions#method-id-s
 which receives 2 arguments and returns nothing. Type `T1` must coincide with the type of the argument `arg1` provided in `run_method2`,
 and similarly for type `T2`.
 
-The same observations and warnings apply as with [`run_method1`](#run-method1).
+The same observations and warnings apply as with [`run_method1`](#run_method1).
 
 #### `run_method3`
 
@@ -635,7 +635,7 @@ The same observations and warnings apply as with [`run_method1`](#run-method1).
 forall X, Y, Z -> () run_method3 (int method_id, X arg1, Y arg2, Z arg3)
 ```
 
-Executes the 3 argument function with [ID](/languages/func/functions#method-id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
+Executes the 3 argument function with [ID](/languages/func/functions#method_id-specifier) `method_id`. The function with ID `method_id` must have a signature of the form:
 
 ```func
 () some_function(T1 a1, T2 a2, T3 a3)
@@ -644,4 +644,4 @@ Executes the 3 argument function with [ID](/languages/func/functions#method-id-s
 which receives 3 arguments and returns nothing. Type `T1` must coincide with the type of the argument `arg1` provided in `run_method3`,
 and similarly for types `T2` and `T3`.
 
-The same observations and warnings apply as with [`run_method1`](#run-method1).
+The same observations and warnings apply as with [`run_method1`](#run_method1).

@@ -317,6 +317,7 @@
                   "ecosystem/nodes/cpp/setup-mytonctrl",
                   "ecosystem/nodes/cpp/run-validator",
                   "ecosystem/nodes/cpp/run-liteserver",
+                  "ecosystem/nodes/cpp/run-archive-liteserver",
                   "ecosystem/nodes/cpp/integrating-with-prometheus",
                   "ecosystem/nodes/cpp/setup-mylocalton",
                   {
@@ -428,6 +429,7 @@
               },
               "standard/wallets/restricted",
               "standard/wallets/performance",
+              "standard/wallets/sources",
               "standard/wallets/history"
             ]
           },
@@ -466,8 +468,7 @@
                   "standard/tokens/nft/metadata",
                   "standard/tokens/nft/verify",
                   "standard/tokens/nft/api",
-                  "standard/tokens/nft/nft-reference",
-                  "standard/tokens/nft/nft-2.0"
+                  "standard/tokens/nft/nft-reference"
                 ]
               },
               "standard/tokens/airdrop"
@@ -500,7 +501,8 @@
               "contract-dev/techniques/random",
               "contract-dev/techniques/upgrades",
               "contract-dev/techniques/vanity",
-              "contract-dev/techniques/zero-knowledge"
+              "contract-dev/techniques/zero-knowledge",
+              "contract-dev/techniques/groth16-examples"
             ]
           },
           {
@@ -514,6 +516,7 @@
                 "group": "Testing",
                 "pages": [
                   "contract-dev/testing/overview",
+                  "contract-dev/testing/style-guide",
                   "contract-dev/testing/reference"
                 ]
               },
@@ -1302,7 +1305,12 @@
     },
     {
       "source": "/v3/documentation/dapps/assets/nft-2.0",
-      "destination": "/standard/tokens/nft/nft-2.0",
+      "destination": "/standard/tokens/nft/comparison",
+      "permanent": true
+    },
+    {
+      "source": "/standard/tokens/nft/nft-2.0",
+      "destination": "/standard/tokens/nft/comparison",
       "permanent": true
     },
     {
@@ -1842,12 +1850,12 @@
     },
     {
       "source": "/v3/guidelines/smart-contracts/howto/nominator-pool",
-      "destination": "/ecosystem/nodes/cpp/mytonctrl/pools",
+      "destination": "/ecosystem/staking/nominator-pools",
       "permanent": true
     },
     {
       "source": "/v3/guidelines/smart-contracts/howto/single-nominator-pool",
-      "destination": "/ecosystem/nodes/cpp/mytonctrl/pools",
+      "destination": "/ecosystem/staking/single-nominator",
       "permanent": true
     },
     {
@@ -2122,7 +2130,7 @@
     },
     {
       "source": "/v3/guidelines/nodes/running-nodes/archive-node",
-      "destination": "/ecosystem/nodes/overview",
+      "destination": "/ecosystem/nodes/cpp/run-archive-liteserver",
       "permanent": true
     },
     {
@@ -2137,7 +2145,7 @@
     },
     {
       "source": "/v3/guidelines/nodes/running-nodes/validator-node",
-      "destination": "/ecosystem/nodes/overview",
+      "destination": "/ecosystem/nodes/cpp/run-validator",
       "permanent": true
     },
     {

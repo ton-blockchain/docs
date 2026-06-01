@@ -9,7 +9,7 @@ Descriptions in the original [whitepapers](/foundations/whitepapers/overview) ar
 
 ### 1.3.2. List of control registers
 
-The zero element of the `c7` tuple is an environment information (which itself is also a tuple). The remaining 255 slots are used for global variables. [`[i] SETGLOB`](/tvm/instructions#f87_-setglob) modifies `c7`, inserting an element with index `i`, [`[i] GETGLOB`](/tvm/instructions#f85_-getglob) reads `i`-th element from `c7`.
+The zero element of the `c7` tuple is an environment information (which itself is also a tuple). The remaining 255 slots are used for global variables. [`[i] SETGLOB`](/tvm/instructions#f87_k-setglob) modifies `c7`, inserting an element with index `i`, [`[i] GETGLOB`](/tvm/instructions#f85_k-getglob) reads `i`-th element from `c7`.
 
 See the [TVM registers](/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables) page for details.
 

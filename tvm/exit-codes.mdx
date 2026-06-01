@@ -6,51 +6,51 @@ import { Aside } from '/snippets/aside.jsx';
 
 An exit code is a 32-bit signed integer that indicates whether the compute or action phase of the transaction was successful. If not, it holds the code of the exception that occurred.
 
-Each transaction on TON Blockchain consists of multiple phases. An _exit code_ is a 32-bit signed integer that indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not, holds the code of the exception that occurred. Each exit code represents its own exception or the resulting state of the transaction.
+Each transaction on TON Blockchain consists of multiple phases. An _exit code_ is a 32-bit signed integer that indicates whether the [compute](#compute-phase) or [action](#action-phase) phase of the transaction was successful, and if not, holds the code of the exception that occurred. Each exit code represents its own exception or the resulting state of the transaction.
 
-Exit codes 0 and 1 indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code 0 indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction was not successful in one way or another, i.e., the transaction was reverted or the inbound message has bounced back.
+Exit codes 0 and 1 indicate normal (successful) execution of the [compute phase](#compute-phase). Exit (or [result](#action-phase)) code 0 indicates normal (successful) execution of the [action phase](#action-phase). Any other exit code indicates that a certain exception has occurred and that the transaction was not successful in one way or another, i.e., the transaction was reverted or the inbound message has bounced back.
 
 TON Blockchain reserves exit code values from 0 to 127. The range from 256 to 65535 is free for developer-defined exit codes.
 
 <Aside>
-  While an exit (or [result](#action)) code is a 32-bit signed integer on TON Blockchain, an attempt to throw an exit code outside the bounds of a 16-bit unsigned integer ($0 - 65535$) will cause an error with [exit code 5](#5%3A-integer-out-of-expected-range). This is done intentionally to prevent some exit codes from being produced artificially, such as [exit code -14](#-14%3A-out-of-gas-error).
+  While an exit (or [result](#action-phase)) code is a 32-bit signed integer on TON Blockchain, an attempt to throw an exit code outside the bounds of a 16-bit unsigned integer ($0 - 65535$) will cause an error with [exit code 5](#5-integer-out-of-expected-range). This is done intentionally to prevent some exit codes from being produced artificially, such as [exit code -14](#14-out-of-gas-error).
 </Aside>
 
 ## Table of exit codes
 
 The following table lists exit codes with their origin (where they can occur) and a short description for each.
 
-| Exit code                                                    | Origin                              | Brief description                                                                                      |
-| :----------------------------------------------------------- | :---------------------------------- | :----------------------------------------------------------------------------------------------------- |
-| [0](#0%3A-normal-termination)                                | [Compute][c] and [action][a] phases | Standard successful execution exit code.                                                               |
-| [1](#1%3A-alternative-termination)                           | [Compute phase][c]                  | Alternative successful execution exit code. Reserved, but does not occur.                              |
-| [2](#2%3A-stack-underflow)                                   | [Compute phase][c]                  | Stack underflow.                                                                                       |
-| [3](#3%3A-stack-overflow)                                    | [Compute phase][c]                  | Stack overflow.                                                                                        |
-| [4](#4%3A-integer-overflow)                                  | [Compute phase][c]                  | Integer overflow.                                                                                      |
-| [5](#5%3A-integer-out-of-expected-range)                     | [Compute phase][c]                  | Range check error — an integer is out of its expected range.                                           |
-| [6](#6%3A-invalid-opcode)                                    | [Compute phase][c]                  | Invalid [TVM][tvm] opcode.                                                                             |
-| [7](#7%3A-type-check-error)                                  | [Compute phase][c]                  | Type check error.                                                                                      |
-| [8](#8%3A-cell-overflow)                                     | [Compute phase][c]                  | Cell overflow.                                                                                         |
-| [9](#9%3A-cell-underflow)                                    | [Compute phase][c]                  | Cell underflow.                                                                                        |
-| [10](#10%3A-dictionary-error)                                | [Compute phase][c]                  | Dictionary error.                                                                                      |
-| [11](#11%3A-%22unknown%22-error)                             | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs."                       |
-| [12](#12%3A-fatal-error)                                     | [Compute phase][c]                  | Fatal error. Thrown by [TVM][tvm] in situations deemed impossible.                                     |
-| [13](#13%3A-out-of-gas-error)                                | [Compute phase][c]                  | Out of gas error.                                                                                      |
-| [-14](#-14%3A-out-of-gas-error)                              | [Compute phase][c]                  | Same as 13. Negative, so that it [cannot be faked](#13%3A-out-of-gas-error).                           |
-| [14](#14%3A-virtualization-error)                            | [Compute phase][c]                  | VM virtualization error. Reserved, but never thrown.                                                   |
-| [32](#32%3A-action-list-is-invalid)                          | [Action phase][a]                   | Action list is invalid.                                                                                |
-| [33](#33%3A-action-list-is-too-long)                         | [Action phase][a]                   | Action list is too long.                                                                               |
-| [34](#34%3A-invalid-or-unsupported-action)                   | [Action phase][a]                   | Action is invalid or not supported.                                                                    |
-| [35](#35%3A-invalid-source-address-in-outbound-message)      | [Action phase][a]                   | Invalid source address in outbound message.                                                            |
-| [36](#36%3A-invalid-destination-address-in-outbound-message) | [Action phase][a]                   | Invalid destination address in outbound message.                                                       |
-| [37](#37%3A-not-enough-toncoin)                              | [Action phase][a]                   | Not enough Toncoin.                                                                                    |
-| [38](#38%3A-not-enough-extra-currencies)                     | [Action phase][a]                   | Not enough extra currencies.                                                                           |
-| [39](#39%3A-outbound-message-does-not-fit-into-cell)         | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.                                             |
-| [40](#40%3A-cannot-process-message)                          | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large, or its Merkle depth is too big. |
-| [41](#41%3A-library-reference-is-null)                       | [Action phase][a]                   | Library reference is null during library change action.                                                |
-| [42](#42%3A-library-change-action-error)                     | [Action phase][a]                   | Library change action error.                                                                           |
-| [43](#43%3A-library-limits-exceeded)                         | [Action phase][a]                   | Exceeded the maximum number of cells in the library or the maximum depth of the Merkle tree.           |
-| [50](#50%3A-account-state-size-exceeded-limits)              | [Action phase][a]                   | Account state size exceeded limits.                                                                    |
+| Exit code                                                 | Origin                              | Brief description                                                                                      |
+| :-------------------------------------------------------- | :---------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| [0](#0-normal-termination)                                | [Compute][c] and [action][a] phases | Standard successful execution exit code.                                                               |
+| [1](#1-alternative-termination)                           | [Compute phase][c]                  | Alternative successful execution exit code. Reserved, but does not occur.                              |
+| [2](#2-stack-underflow)                                   | [Compute phase][c]                  | Stack underflow.                                                                                       |
+| [3](#3-stack-overflow)                                    | [Compute phase][c]                  | Stack overflow.                                                                                        |
+| [4](#4-integer-overflow)                                  | [Compute phase][c]                  | Integer overflow.                                                                                      |
+| [5](#5-integer-out-of-expected-range)                     | [Compute phase][c]                  | Range check error — an integer is out of its expected range.                                           |
+| [6](#6-invalid-opcode)                                    | [Compute phase][c]                  | Invalid [TVM][tvm] opcode.                                                                             |
+| [7](#7-type-check-error)                                  | [Compute phase][c]                  | Type check error.                                                                                      |
+| [8](#8-cell-overflow)                                     | [Compute phase][c]                  | Cell overflow.                                                                                         |
+| [9](#9-cell-underflow)                                    | [Compute phase][c]                  | Cell underflow.                                                                                        |
+| [10](#10-dictionary-error)                                | [Compute phase][c]                  | Dictionary error.                                                                                      |
+| [11](#11-%22unknown%22-error)                             | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs."                       |
+| [12](#12-fatal-error)                                     | [Compute phase][c]                  | Fatal error. Thrown by [TVM][tvm] in situations deemed impossible.                                     |
+| [13](#13-out-of-gas-error)                                | [Compute phase][c]                  | Out of gas error.                                                                                      |
+| [-14](#14-out-of-gas-error)                               | [Compute phase][c]                  | Same as 13. Negative, so that it [cannot be faked](#13-out-of-gas-error).                              |
+| [14](#14-virtualization-error)                            | [Compute phase][c]                  | VM virtualization error. Reserved, but never thrown.                                                   |
+| [32](#32-action-list-is-invalid)                          | [Action phase][a]                   | Action list is invalid.                                                                                |
+| [33](#33-action-list-is-too-long)                         | [Action phase][a]                   | Action list is too long.                                                                               |
+| [34](#34-invalid-or-unsupported-action)                   | [Action phase][a]                   | Action is invalid or not supported.                                                                    |
+| [35](#35-invalid-source-address-in-outbound-message)      | [Action phase][a]                   | Invalid source address in outbound message.                                                            |
+| [36](#36-invalid-destination-address-in-outbound-message) | [Action phase][a]                   | Invalid destination address in outbound message.                                                       |
+| [37](#37-not-enough-toncoin)                              | [Action phase][a]                   | Not enough Toncoin.                                                                                    |
+| [38](#38-not-enough-extra-currencies)                     | [Action phase][a]                   | Not enough extra currencies.                                                                           |
+| [39](#39-outbound-message-does-not-fit-into-cell)         | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.                                             |
+| [40](#40-cannot-process-message)                          | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large, or its Merkle depth is too big. |
+| [41](#41-library-reference-is-null)                       | [Action phase][a]                   | Library reference is null during library change action.                                                |
+| [42](#42-library-change-action-error)                     | [Action phase][a]                   | Library change action error.                                                                           |
+| [43](#43-library-limits-exceeded)                         | [Action phase][a]                   | Exceeded the maximum number of cells in the library or the maximum depth of the Merkle tree.           |
+| [50](#50-account-state-size-exceeded-limits)              | [Action phase][a]                   | Account state size exceeded limits.                                                                    |
 
 {/* NOTE: Some might depend on a phase; in such cases, the table entry might be:
 
@@ -59,7 +59,7 @@ The following table lists exit codes with their origin (where they can occur) an
   */}
 
 <Aside>
-  Often enough, you might encounter the exit code 65535 (or `0xffff`), which usually means the same as the [exit code 130](#130%3A-) — the received opcode is unknown to the contract, as no receivers were expecting it. When writing contracts, the exit code 65535 is set by the developers and not by [TVM][tvm] or the Tolk compiler.
+  Often enough, you might encounter the exit code 65535 (or `0xffff`), which usually means that the received opcode is unknown to the contract, as no handlers were expecting it. The exit code 65535 is set in the smart contract code and not by [TVM][tvm] or the Tolk compiler.
 </Aside>
 
 [c]: /tvm/overview#compute-phase
@@ -67,17 +67,13 @@ The following table lists exit codes with their origin (where they can occur) an
 
 ## Exit codes in Blueprint projects
 
-In [Blueprint][bp] tests, exit codes from the [compute phase](#compute) are specified in the `exitCode` field of the object argument for the `toHaveTransaction()` method of the `expect()` matcher. The field for the [result](#action) codes (exit codes from the [action phase](#action)) in the same `toHaveTransaction()` method is called `actionResultCode`.
+In [Blueprint][bp] tests, exit codes from the [compute phase](#compute-phase) are specified in the `exitCode` field of the object argument for the `toHaveTransaction()` method of the `expect()` matcher. The field for the [result](#action-phase) codes (exit codes from the [action phase](#action-phase)) in the same `toHaveTransaction()` method is called `actionResultCode`.
 
-{/*
-  <Aside>
+<Aside type="note">
+  Read more about expecting specific exit codes: [Explore TVM logs](/contract-dev/blueprint/debug#explore-tvm-logs).
+</Aside>
 
-  Read more about expecting specific exit codes: [Transactions with intentional errors](/book/debug#tests-errors).
-
-  </Aside>
-  */}
-
-Additionally, one can examine the result of sending a message to a contract and discover the phases of each transaction and their values, including exit (or result) codes for the [compute phase](#compute) (or [action phase](#action)).
+Additionally, one can examine the result of sending a message to a contract and discover the phases of each transaction and their values, including exit (or result) codes for the [compute phase](#compute-phase) (or [action phase](#action-phase)).
 
 Note that to do so, you'll have to perform a couple of type checks first:
 
@@ -105,17 +101,17 @@ it('tests something, you name it', async () => {
 
 ### 0: Normal termination
 
-This exit (or [result](#action)) code indicates the successful completion of the [compute phase](#compute) (or [action phase](#action)) of the transaction.
+This exit (or [result](#action-phase)) code indicates the successful completion of the [compute phase](#compute-phase) (or [action phase](#action-phase)) of the transaction.
 
 ## Compute phase
 
 [TVM][tvm] initialization and all computations occur in the [compute phase][c].
 
-If the compute phase fails (the resulting exit code is neither [0](#0%3A-normal-termination) nor [1](#1%3A-alternative-termination)), the transaction skips the [action phase](#action) and proceeds to the bounce phase. In this phase, a bounce message is formed for transactions initiated by the inbound message.
+If the compute phase fails (the resulting exit code is neither [0](#0-normal-termination) nor [1](#1-alternative-termination)), the transaction skips the [action phase](#action-phase) and proceeds to the bounce phase. In this phase, a bounce message is formed for transactions initiated by the inbound message.
 
 ### 1: Alternative termination
 
-This is an alternative exit code for the successful execution of the [compute phase](#compute). It is reserved but never occurs.
+This is an alternative exit code for the successful execution of the [compute phase](#compute-phase). It is reserved but never occurs.
 
 ### 2: Stack underflow
 
@@ -301,7 +297,7 @@ fun onInternalMessage() {
 
 ### 7: Type check error
 
-If an argument to a primitive is of an incorrect value type or there is any other mismatch in types during the [compute phase](#compute), an error with exit code 7 is thrown: `Type check error`.
+If an argument to a primitive is of an incorrect value type or there is any other mismatch in types during the [compute phase](#compute-phase), an error with exit code 7 is thrown: `Type check error`.
 
 ```tolk title="Tolk"
 fun touch<T>(y: T): void asm "NOP" // so that the compiler doesn't remove instructions
@@ -448,7 +444,7 @@ Fatal error. Thrown by TVM in situations deemed impossible.
 
 ### 13: Out of gas error
 
-If there isn't enough gas to complete computations in the [compute phase](#compute), an error with exit code 13 is thrown: `Out of gas error`.
+If there isn't enough gas to complete computations in the [compute phase](#compute-phase), an error with exit code 13 is thrown: `Out of gas error`.
 
 However, this code isn't immediately shown as is — instead, the bitwise NOT operation is applied, changing the value from 13 to -14. Only then is the code displayed.
 
@@ -464,7 +460,7 @@ fun onInternalMessage() {
 
 ### -14: Out of gas error
 
-See [exit code 13](#13%3A-out-of-gas-error).
+See [exit code 13](#13-out-of-gas-error).
 
 ### 14: Virtualization error
 
@@ -472,21 +468,21 @@ Virtualization error related to pruned branch cells. Reserved but never thrown.
 
 ## Action phase
 
-The [action phase][a] is processed after the successful execution of the [compute phase](#compute). It attempts to perform the actions stored in the action list by [TVM][tvm] during the compute phase.
+The [action phase][a] is processed after the successful execution of the [compute phase](#compute-phase). It attempts to perform the actions stored in the action list by [TVM][tvm] during the compute phase.
 
-Some actions may fail during processing, in which case those actions may be skipped or the whole transaction may revert, depending on the mode of actions. The code indicating the resulting state of the [action phase][a] is called a _result code_. Since it is also a 32-bit signed integer that essentially serves the same purpose as the _exit code_ of the [compute phase](#compute), it is common to call the result code an exit code as well.
+Some actions may fail during processing, in which case those actions may be skipped or the whole transaction may revert, depending on the mode of actions. The code indicating the resulting state of the [action phase][a] is called a _result code_. Since it is also a 32-bit signed integer that essentially serves the same purpose as the _exit code_ of the [compute phase](#compute-phase), it is common to call the result code an exit code as well.
 
 ### 32: Action list is invalid
 
 If the list of actions contains exotic cells, an action entry cell does not have references, or some action entry cell cannot be parsed, an error with exit code 32 is thrown: `Action list is invalid`.
 
 <Aside>
-  Aside from this exit code, there is a boolean flag `valid`, which you can find under `description.actionPhase.valid` in the transaction results when working with [Sandbox and Blueprint](#blueprint). A transaction can set this flag to `false` even when there is some other exit code thrown from the action phase.
+  Aside from this exit code, there is a boolean flag `valid`, which you can find under `description.actionPhase.valid` in the transaction results when working with [Sandbox and Blueprint](#exit-codes-in-blueprint-projects). A transaction can set this flag to `false` even when there is some other exit code thrown from the action phase.
 </Aside>
 
 ### 33: Action list is too long
 
-If there are more than 255 actions queued for execution, the [action phase](#action) will throw an error with an exit code 33: `Action list is too long`.
+If there are more than 255 actions queued for execution, the [action phase](#action-phase) will throw an error with an exit code 33: `Action list is too long`.
 
 ```tolk title="Tolk"
 import "@stdlib/gas-payments";
@@ -568,7 +564,7 @@ If the maximum number of cells in the library is exceeded or the maximum depth o
 
 ### 50: Account state size exceeded limits
 
-If the account state (contract storage, essentially) exceeds any of the limits specified in [config param 43 of TON Blockchain](/foundations/config#param-43) by the end of the [action phase](#action), an error with exit code 50 is thrown: `Account state size exceeded limits`.
+If the account state (contract storage, essentially) exceeds any of the limits specified in [config param 43 of TON Blockchain](/foundations/config#param-43-account-and-message-limits) by the end of the [action phase](#action-phase), an error with exit code 50 is thrown: `Account state size exceeded limits`.
 
 If the configuration is absent, the default values are:
 
@@ -583,12 +579,14 @@ If the configuration is absent, the default values are:
 - `max_acc_public_libraries` is equal to $2^{8}$ — maximum number of library reference cells that an account state can use on the masterchain.
 - `defer_out_queue_size_limit` is equal to $2^{8}$ — maximum number of outbound messages to be queued (regarding validators and collators).
 
-{/* NOTE: Reserved a section until Tolk introduces any custom exit codes.
+## Tolk compiler
 
-  ## Tolk compiler
+Tolk utilizes exit codes below 128. Note that exit codes used by Tolk indicate contract errors which can occur when using Tolk-generated code and are therefore thrown in the transaction's [compute phase](#compute-phase), not during compilation.
 
-  Tolk utilizes exit codes from 128 to 255. Note that exit codes used by Tolk indicate contract errors which can occur when using Tolk-generated code and are therefore thrown in the transaction's [compute phase](#compute), not during compilation.
-  */}
+- **0:** When the `onBouncedMessage()` handler is not defined, all bounced messages are rejected with an [exit code 0](#0-normal-termination), which is considered a normal termination.
+- **5:** If there is an exhaustive enum `match` fallthrough or an enum deserialization range or membership check, an [exit code 5: integer out of expected range](#5-integer-out-of-expected-range) is thrown.
+- **9:** If there is a slice or array deserialization invalidation, an [exit code 9: cell underflow](#9-cell-underflow) is thrown.
+- **63:** If there is an opcode (or prefix) mismatch when unpacking a struct, a Tolk-specific exit code 63 is thrown. Additionally, it is the default exit code for `throwIfOpcodeDoesNotMatch()` function, which can be overridden.
 
 [tlb]: /languages/tl-b/overview
 [tvm]: /tvm/overview

@@ -328,4 +328,4 @@ fun demo(p: Point3d) {
 
 Arrays can be [serialized to cells](/languages/tolk/types/overall-serialization) when `T` is serializable. The binary format uses snake references: a `uint8` length followed by chained cell references containing the elements.
 
-Raw tuples are not serializable to cells, because `unknown` is unserializable. But they can be returned from [get methods](/tvm/get-method#get-methods), since contract getters operate directly on the stack.
+Raw tuples are not serializable to cells, because `unknown` is unserializable. But they can be returned from [get methods](/tolk/features/contract-getters), since contract getters operate directly on the stack.

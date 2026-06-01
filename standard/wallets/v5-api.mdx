@@ -6,6 +6,10 @@ sidebarTitle: "Messages and get methods"
 import { Aside } from "/snippets/aside.jsx";
 import { Image } from '/snippets/image.jsx';
 
+| Contract version | Hash                                                               | Link                                                                                                                                |
+| ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| V5 R1            | `20834b7b72b112147e1b2fb457b84e74d1a30f04f737d4f62a668e9552d2b72f` | [Source](https://github.com/ton-blockchain/wallet-contract-v5/blob/88557ebc33047a95207f6e47ac8aadb102dff744/contracts/wallet_v5.fc) |
+
 This article provides overview of wallet V5 public interfaces, how to interact with them and serialize used data structures.
 
 <Aside>
@@ -185,7 +189,7 @@ graph LR
 
 Signed message is a message that was signed using owners private key from his dedicated keypair, method from asymmetric cryptography. Later this message will be verified on-chain using public key stored in wallet smart contract - [read more](/standard/wallets/how-it-works#how-ownership-verification-works) about how ownership verification works.
 
-Before V5 standard, there was only one way to deliver signed message to wallet contract - via external-in message. However, external messages has certain limitations, e.g. you can only send external-out messages from the smart contracts themselves. This means that it wasn't possible to deliver signed message from inside the blockchain, from another smart contract. V5 standard adds this functionality, partially enabling [gasless transaction](/standard/wallets/v5#preparing-for-gasless-transactions).
+Before V5 standard, there was only one way to deliver signed message to wallet contract - via external-in message. However, external messages has certain limitations, e.g. you can only send external-out messages from the smart contracts themselves. This means that it wasn't possible to deliver signed message from inside the blockchain, from another smart contract. V5 standard adds this functionality, partially enabling [gasless transaction](/standard/wallets/gasless).
 
 Besides `W5InnerRequest` field that contains actual actions that will be performed, `W5SignedRequest` structure contains usual wallet message fields that were in-place in previous versions, read more about them [here](/standard/wallets/how-it-works).
 

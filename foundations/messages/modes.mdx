@@ -50,7 +50,7 @@ The algorithm for the resulting value of outgoing internal message and amount of
    - if so, then in case of any failure the action phase will be interrupted, the bounce phase will be initiated;
    - if not, then in case of any failure the action phase will be interrupted but no bounce message will be sent.
 1. Check that `mode` has flag `SendIgnoreErrors`:
-   - if so, then in case of almost all failure (errors on which this mode is not work are described in [Errors subsection](/foundations/messages/modes##erros).) during sending the message an error will be ignored and the action phase will continue;
+   - if so, then in case of almost all failure (errors on which this mode is not work are described in [Errors subsection](/foundations/messages/modes#errors).) during sending the message an error will be ignored and the action phase will continue;
 1. Set `final_value` to the `value`.
 1. Check that `mode` has base mode `SendRemainingBalance`:
    - if so, then set `final_value` to `remaining_balance` and remove `+1` flag from `mode` if it is presented.

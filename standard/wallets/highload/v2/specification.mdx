@@ -62,8 +62,6 @@ Allows a single keypair to control multiple wallets with different addresses.
 **How it works:**\
 The `subwallet_id` is part of the contract's initial state. Changing it produces a different contract address. Each external message must include the correct `subwallet_id`; mismatches result in transaction failure.
 
----
-
 ### `last_cleaned` (64 bits)
 
 **Purpose:**\
@@ -86,8 +84,6 @@ Queries with `query_id < (now() - 64) << 32` are removed from storage.
   **Gas costs:** Cleanup operations consume gas proportional to the number of expired queries. With many expired queries, cleanup can exceed the 1,000,000 gas limit, causing the transaction to fail.
 </Aside>
 
----
-
 ### `public_key` (256 bits)
 
 **Purpose:**\
@@ -95,8 +91,6 @@ The Ed25519 public key is used to verify signatures on incoming external message
 
 **How it works:**\
 When the wallet receives an external message, it verifies that the 512-bit signature was created by the holder of the private key corresponding to this public key.
-
----
 
 ### `queries` (HashmapE 64 Cell)
 
@@ -147,8 +141,6 @@ throw_unless(35, check_signature(slice_hash(in_msg), signature, public_key));
 
 The contract uses `slice_hash()` on the message body after loading the signature.
 
----
-
 ### `subwallet_id` (32 bits)
 
 **Purpose:**\
@@ -156,8 +148,6 @@ Identifies which subwallet this message targets.
 
 **Validation:**\
 Must match the `subwallet_id` stored in contract storage.
-
----
 
 ### `query_id` (64 bits)
 
@@ -175,8 +165,6 @@ The contract checks `query_id >= now() << 32`, ensuring the query ID is not from
 
 **Total unique IDs:**\
 Approximately **32,000** unique query IDs (limited by the cleanup mechanism and the bitmap structure).
-
----
 
 ### `messages` (HashmapE 16)
 
@@ -205,8 +193,6 @@ do {
 **Max batch size:**\
 Up to **255 messages** (limited by action list size, not dictionary structure).
 
----
-
 ## Replay protection mechanism
 
 ### Validation sequence
@@ -227,8 +213,6 @@ Up to **255 messages** (limited by action list size, not dictionary structure).
   Highload Wallet v3 solves this with `commit()` and a two-transaction pattern. See [Why internal messages to self?](/standard/wallets/highload/v3/specification#why-internal-messages-to-self) for details.
 </Aside>
 
----
-
 ## Exit codes
 
 | Exit code | Name                           | Description                                                     | How to fix                                                      |
@@ -237,8 +221,6 @@ Up to **255 messages** (limited by action list size, not dictionary structure).
 | `32`      | Query already executed         | The `query_id` was already processed (found in `queries`)       | Use a new, unique `query_id`                                    |
 | `34`      | Subwallet ID mismatch          | The `subwallet_id` in the message does not match storage        | Verify you are using the correct `subwallet_id` for this wallet |
 | `35`      | Invalid signature or query\_id | Ed25519 signature verification failed, or `query_id` is too old | Check the private key and ensure `query_id >= now() << 32`      |
-
----
 
 ## Limitations and constraints
 
@@ -271,8 +253,6 @@ Queries older than **64 seconds** are removed from storage during cleanup.
 **Effective limit:**\
 With the 64-second expiration window and recommended limit of ≤1,000 queries per window, the effective query ID space is approximately **32,000** unique IDs before cleanup is required.
 
----
-
 ## Get methods
 
 | Method                 | Returns          | Description                                                                               |
@@ -288,8 +268,6 @@ With the 64-second expiration window and recommended limit of ≤1,000 queries p
 - `0` (false) — the `query_id` has not been processed yet
 - `1` (unknown) — the `query_id` is older than `last_cleaned` and was forgotten during cleanup
 
----
-
 ## Implementation
 
 **Source code:**\
@@ -302,9 +280,7 @@ With the 64-second expiration window and recommended limit of ≤1,000 queries p
 
 For new projects, consider using [Highload Wallet v3](/standard/wallets/highload/v3/specification) instead.
 
----
-
 ## See also
 
 - [Highload Wallet v3 specification](/standard/wallets/highload/v3/specification) — recommended version
-- [Version comparison](/standard/wallets/highload/overview#version-comparison) — v1 vs v2 vs v3
+- [Version comparison](/standard/wallets/highload/overview#highload-wallet-version-comparison) — v1 vs v2 vs v3

@@ -78,7 +78,7 @@ val walletInitialState: ContractState = {
 };
 ```
 
-When sending a message to the wallet, it may not yet exist on-chain. In this case, the message must include the wallet's code and initial data. The message destination is therefore defined by the wallet's [`StateInit`](/foundations/messages/deploy#deploy-message).
+When sending a message to the wallet, it may not yet exist on-chain. In this case, the message must include the wallet's code and initial data. The message destination is therefore defined by the wallet's [`StateInit`](/foundations/messages/deploy).
 
 ```tolk
 // address auto-calculated, code+data auto-attached
@@ -232,7 +232,7 @@ A struct is declared as `CreateMessageOptions<TBody = void>`. By convention, fie
 
 ## Sending modes
 
-A message created with `createMessage()` is typically sent using [`msg.send(mode)`](/foundations/messages/modes#sending-modes).
+A message created with `createMessage()` is typically sent using [`msg.send(mode)`](/foundations/messages/modes).
 
 ## `ContractState` and `StateInit`
 
