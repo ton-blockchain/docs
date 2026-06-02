@@ -1315,7 +1315,7 @@ We conclude our brief discussion of the TON Blockchain and its most important an
 
 **Table 1:** A summary of some notable blockchain projects. The columns are: *Project* — project name; *Year* — year announced and year deployed; *G.* — generation (cf. [2.8.15](#2-8-15-simplified-classification-generations-of-blockchain-projects)); *Cons.* — consensus algorithm (cf. [2.8.3](#2-8-3-creating-and-validating-blocks-proof-of-work-vs-proof-of-stake) and [2.8.4](#2-8-4-variants-of-proof-of-stake-dpos-vs-bft)); *Sm.* — support for arbitrary code (smart contracts; cf. [2.8.6](#2-8-6-support-for-turing-complete-code-in-transactions%2C-i-e-%2C-essentially-arbitrary-smart-contracts)); *Ch.* — single/multiple blockchain system (cf. [2.8.2](#2-8-2-single-blockchain-vs-multi-blockchain-projects)); *R.* — heterogeneous/homogeneous multichain systems (cf. [2.8.8](#2-8-8-blockchain-types-homogeneous-and-heterogeneous-systems)); *Sh.* — sharding support (cf. [2.8.12](#2-8-12-sharding-support)); *Int.* — interaction between blockchains, (L)oose or (T)ight (cf. [2.8.14](#2-8-14-interaction-between-blockchains-loosely-coupled-and-tightly-coupled-systems)).
 
-#### 2.9.1. Bitcoin [[12]](#ref-12); https://bitcoin.org/ 
+#### 2.9.1. Bitcoin [[12]](#ref-12); https://bitcoin.org/
 
 *Bitcoin* (2009) is the first and the most famous blockchain project. It is a typical *first-generation* blockchain project: it is single-chain, it uses Proof-of-Work with a "longest-fork-wins" fork selection algorithm, and it does not have a Turing-complete scripting language (however, simple scripts without loops are supported). The Bitcoin blockchain has no notion of an account; it uses the UTXO (Unspent Transaction Output) model instead.
 
@@ -1372,7 +1372,7 @@ In this way, Plasma might become a platform for distributed computations bound t
 #### 2.9.11. Specialized blockchain projects
 
 There are also some specialized blockchain projects, such as FileCoin (a system that incentivizes users to offer their disk space for storing the files of other users who are willing to pay for it), Golem (a blockchain-based platform for renting and lending computing power for specialized applications such as 3D-rendering) or SONM (another similar computing power-lending project). Such projects do not introduce anything conceptually new on the level of blockchain organization; rather, they are particular blockchain applications, which could be implemented by smart contracts running in a general-purpose blockchain, provided it can deliver the required performance. As such, projects of this kind are likely to use one of the existing or planned blockchain projects as their base, such as EOS, PolkaDot or TON. If a project needs "true" scalability (based on sharding), it would better use TON; if it is content to work in a "confederated" context by defining a family of workchains of its own, explicitly optimized for its purpose, it might opt for EOS or PolkaDot.
- 
+
 #### 2.9.12. The TON Blockchain
 
 The TON (Telegram Open Network) Blockchain (planned 2018) is the project we are describing in this document. It is designed to be the first fifth-generation blockchain project—that is, a BFT PoS-multichain project, mixed homogeneous/heterogeneous, with support for (shardable) custom workchains, with native sharding support, and tightly-coupled (in particular, capable of forwarding messages between shards almost instantly while preserving a consistent state of all shardchains). As such, it will be a truly scalable general-purpose blockchain project, capable of accommodating essentially any applications that can be implemented in a blockchain at all. When augmented by the other components of the TON Project (cf. [1](#1-brief-description-of-ton-components)), its possibilities expand even further.
@@ -1844,7 +1844,7 @@ Subdomains are registered on a "first-come, first-served" basis.
 
 In principle, any full node for the masterchain or shardchain containing a DNS smart contract might be able to look up any subdomain in the database of that smart contract, if the structure and the location of the hashmap inside the persistent storage of the smart contract are known.
 
-However, this approach would work only for certain DNS smart contracts. It would fail miserably if a non-standard DNS smart contract were used. 
+However, this approach would work only for certain DNS smart contracts. It would fail miserably if a non-standard DNS smart contract were used.
 
 Instead, an approach based on *general smart contract interfaces and get methods* ([cf. 4.3.11](#4-3-11-get-methods-of-smart-contracts)) is used. Any DNS smart contract must define a get method with a known signature, which is invoked to look up a key. Since this approach makes sense for other smart contracts as well, especially those providing on-chain and mixed services, we explain it in some detail in [4.3.11](#4-3-11-get-methods-of-smart-contracts).
 
