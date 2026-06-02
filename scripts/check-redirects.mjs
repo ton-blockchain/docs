@@ -126,11 +126,11 @@ const checkExist = (config) => {
     if (path.startsWith('http')) {
       if (path.includes('github.com/ton-org/docs/issues')) {
         specialDestinationsExist.issues = true;
-      } else if (path.includes('github.com/')) {
+      } else if (path.startsWith('https://github.com/') || path.startsWith('https://gist.github.com/')) {
         specialDestinationsExist.otherGithubLinks = true;
-      } else if (path.includes('en.wikipedia.org/')) {
+      } else if (path.startsWith('https://en.wikipedia.org/')) {
         specialDestinationsExist.wikiLinks = true;
-      } else if (path.includes('old-docs.ton.org/')) {
+      } else if (path.startsWith('https://old-docs.ton.org/')) {
         specialDestinationsExist.olderDocs = true;
       } else {
         specialDestinationsExist.otherExternalLinks = true;
