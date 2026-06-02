@@ -3,8 +3,6 @@ title: "Token metadata"
 sidebarTitle: "Metadata"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The metadata standard covering NFTs, NFT collections, and jettons is outlined in [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md) (TON Enhancement Proposal 64).
 
 On TON, entities can have three types of metadata: on-chain, semi-chain, and off-chain.
@@ -28,9 +26,9 @@ When the payload exceeds the maximum size of a single cell, Snake stores the rem
 
 Below is an example of Snake encoding and decoding in TypeScript:
 
-<Aside type="note">
+<Callout type="note">
   `bufferToChunks`, `BitBuilder`, and `BitReader` are provided by the surrounding tooling and helper utilities.
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 export function makeSnakeCell(data: Buffer): Cell {
@@ -158,14 +156,14 @@ export function ParseChunkDict(cell: Slice): Buffer {
 
 ### `decimals`
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Each jetton stores a `decimals` parameter in its metadata that determines how amounts are displayed. Transferring without accounting for `decimals` can result in sending drastically more tokens than expected.
 
   Mitigation: Always retrieve and apply the correct `decimals` value before calculating transfer amounts. Test transfers with small amounts on testnet first.
-</Aside>
+</Callout>
 
 The `decimals` parameter defines the number of decimal places for displaying token amounts. The on-chain balance is stored as an integer in the smallest unit (nano-tokens), and must be divided by 10^decimals to get the user-facing value.
 

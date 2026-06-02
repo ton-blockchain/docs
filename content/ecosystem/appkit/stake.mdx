@@ -3,15 +3,13 @@ title: "How to stake Toncoin using AppKit"
 sidebarTitle: "Stake Toncoin"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside type="note">
+<Callout type="note">
   [Initialize the AppKit](/ecosystem/appkit/init) before using examples on this page. Staking functionality requires a configured [staking provider](#available-providers).
-</Aside>
+</Callout>
 
-<Aside type="note">
+<Callout type="note">
   This page covers retail staking flows, such as letting a wallet user stake TON through a staking provider. It does not cover validator operations, institutional custody, or custom pool management. Refer to the [staking overview](/ecosystem/staking/overview) page for other solutions.
-</Aside>
+</Callout>
 
 AppKit supports on-chain liquid Toncoin staking through [pluggable staking providers](#available-providers). For most user-facing apps, the flow is:
 
@@ -119,11 +117,9 @@ Before requesting quotes or building transactions, register at least one staking
 
 Retail staking UIs should display the provider and an up-to-date quote before asking the user to confirm the transaction.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Refresh staking quotes shortly before building the transaction. Quotes, APY, and available liquidity can change.
-</Aside>
+</Callout>
 
 <CodeGroup>
   ```tsx title="React" icon="react"

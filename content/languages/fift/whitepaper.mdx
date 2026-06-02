@@ -2,19 +2,16 @@
 title: "Fift: A Brief Introduction"
 sidebarTitle: "Whitepaper"
 description: "Whitepaper by Dr. Nikolai Durov"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
-</Aside>
+</Callout>
 
 **Author**: Nikolai Durov <br />
 **Date**: July 4, 2019 <br />
-<Icon icon="file-pdf" size={16} />: [Original whitepaper, PDF](/resources/pdfs/fiftbase.pdf)
+<Icon icon="file-pdf" size={16} />: [Original whitepaper, PDF](/pdfs/fiftbase.pdf)
 
 ## Introduction
 
@@ -111,21 +108,21 @@ On startup, the standard Fift library is read from the file `Fift.fif` before in
 
 A fundamental Fift data structure is its global _dictionary_, containing _words_ — or, more precisely, _word definitions_ — that correspond both to builtin primitives and functions and to user-defined functions **`*`**. A word can be executed in Fift simply by typing its name (a UTF-8 string without space characters) in interactive mode. When Fift starts up, some words (_primitives_) are already defined (by some C++ code in the current implementation); other words are defined in the standard library `Fift.fif`. After that, the user may extend the dictionary by defining new words or redefining old ones.
 
-<Aside>
+<Callout>
 
   Fift words are typically shorter than functions or subroutines of other programming languages, such as Forth or Factor.
 
-</Aside>
+</Callout>
 
 The dictionary is supposed to be split into several _vocabularies_, or _namespaces_; however, _namespaces_ are not implemented yet, so all words are currently defined in the same global namespace.
 
 The Fift parser for input source files and for the standard input (in the interactive mode) is rather simple: the input is read line-by-line, then blank characters are skipped, and the longest prefix of the remaining line that is (the name of) a dictionary word is detected and removed from the input line **`*`**. After that, the word thus found is executed, and the process repeats until the end of the line. When the input line is exhausted, a subsequent line is read from the current input file or the standard input.
 
-<Aside>
+<Callout>
 
   Notice that in contrast to Forth, Fift word names are case-sensitive: `dup` and `DUP` are distinct words.
 
-</Aside>
+</Callout>
 
 In order to be detected, most words require a blank character or an end-of-line immediately after them; this is reflected by appending a space to their names in the dictionary. Other words, called _prefix words_, do not require a blank character immediately after them.
 
@@ -217,11 +214,11 @@ computes `2 + 3 · 4 = 14` and `(2 + 3) · 4 = 20`, and prints `"14 20 ok"`.
 
 Stack manipulation words rearrange one or several values near the top of the stack, regardless of their types, and leave all deeper stack values intact. Some of the most often used stack manipulation words are listed below:
 
-<Aside>
+<Callout>
 
   Notice that Fift word names are case-sensitive, so one cannot type DUP instead of dup.
 
-</Aside>
+</Callout>
 
 | Word | Stack | Description
 | :--- | :---- | :----------
@@ -936,11 +933,11 @@ Notice that blocks can be arbitrarily nested, as already shown in the previous e
 
 to obtain `"negative ok"`, because `−17` is negative.
 
-<Aside>
+<Callout>
 
   A _WordDef_ is more general than a _WordList_. For instance, the definition of the primitive `+` is a _WordDef_, but not a _WordList_, because `+` is not defined in terms of other Fift words.
 
-</Aside>
+</Callout>
 
 ### 3.3 Simple loops
 
@@ -1043,11 +1040,11 @@ variable 'fact
 
 This somewhat longer definition of the factorial avoids dictionary lookups at execution time by introducing a special variable `'fact` to hold the final definition of the factorial. Then, `fact` is defined to execute whatever _WordDef_ is currently stored in `'fact`, and once the body of the recursive definition of the factorial is constructed, it is stored into this variable by means of the phrase `'fact !`, which replaces the more customary phrase `: fact`.
 
-<Aside>
+<Callout>
 
   Variables that hold a _WordDef_ to be executed later are called _vector variables_. The process of replacing `fact` with `'fact @ execute`, where `'fact` is a vector variable, is _called vectorization_.
 
-</Aside>
+</Callout>
 
 We could rewrite the above definition by using special "getter" and "setter" words for vector variable 'fact as we did for variables in 2.14:
 
@@ -1171,11 +1168,11 @@ Typically, `state` equals the number of the currently open blocks. For instance,
 
 The primitive `{` simply pushes a new empty _WordList_ into the stack, and increases `state` by one. The primitive `}` throws an exception if `state` is already zero; otherwise it decreases `state` by one, and leaves the resulting _WordList_ in the stack, representing the block just constructed. After that, if the resulting value of `state` is non-zero, the new block is compiled as a literal (unnamed constant) into the encompassing block.
 
-<Aside>
+<Callout>
 
   The word `}` also transforms this _WordList_ into a _WordDef_, which has a different type tag and therefore is a different Fift value, even if the same underlying C++ object is used by the C++ implementation.
 
-</Aside>
+</Callout>
 
 ### 4.2 Active and ordinary words
 
@@ -2157,11 +2154,11 @@ Secondly, their stack effect is usually described from the user's perspective, a
 
 For example, the active prefix word `B{`, used for defining _Bytes_ literals, is listed as `B{<hex-digits>}`, and its stack effect is shown as `( – B)` instead of `( – B 1 e)`, even though the real effect of the execution of the active word `B{` during the compilation phase of an encompassing block or word definition is the latter one.
 
-<Aside>
+<Callout>
 
   If the column contents of the table do not fit the screen, **scroll horizontally**.
 
-</Aside>
+</Callout>
 
 | Word | Stack | Description
 | :--- | :---- | :----------

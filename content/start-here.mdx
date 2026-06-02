@@ -3,9 +3,6 @@ title: "Start here"
 icon: rocket
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-import { Image } from "/snippets/image.jsx";
-
 The documentation is organized by layers of detail, with lower-level details appearing later.
 
 |                        |                                                                                                                                                                  |
@@ -19,11 +16,9 @@ The documentation is organized by layers of detail, with lower-level details app
 | Blockchain foundations | Comprehensive description of the blockchain. Includes web version of whitepapers.                                                                                |
 | Contribute             | Documentation on writing this documentation.                                                                                                                     |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   This is a condensed description of TON. The rest of the documentation may assume that all of this is already known to the reader.
-</Aside>
+</Callout>
 
 ## TON overview
 
@@ -51,12 +46,12 @@ Usually, when the TON blockchain gets an update, it is first deployed to testnet
 
 ## Workchains and shards
 
-<Aside
+<Callout
   type="note"
   title="Key term: workchain"
 >
   A _workchain_ is a TON blockchain with its own rules and account space. The _masterchain_ holds global configuration and system smart contracts, while the _basechain_ host most accounts and user space smart contracts and can be split into shardchains for scalability. In future there might be new workchains with there own set of rules and logic. Practical note: [addresses](/foundations/addresses/overview#internal-addresses) include the workchain ID, and most apps use workchain 0 (basechain).
-</Aside>
+</Callout>
 
 Each network is split into [workchains](/foundations/shards) that can freely interact with each other, but their implementations may differ significantly.
 
@@ -85,8 +80,8 @@ The _code_ on an active account is a smart contract. The term _contract_ is ofte
   style={{ display: "flex", justifyContent: "center" }}
 >
   <Image
-    src="/resources/images/states.png"
-    darkSrc="/resources/images/states-dark.png"
+    src="/images/states.png"
+    darkSrc="/images/states-dark.png"
     alt="Statuses overview"
   />
 </div>

@@ -3,11 +3,9 @@ title: "How to work with Jettons using WalletKit on the Web platform"
 sidebarTitle: "Work with Jettons"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
-</Aside>
+</Callout>
 
 [Jettons](/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each Jetton has a separate master (minter) contract and an individual wallet contract for each holder.
 
@@ -15,14 +13,14 @@ For example, USDT on TON is implemented as a Jetton, and its minter contract add
 
 To work with Jettons, the wallet service needs to handle [Jetton balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-in-the-wallet-service).
 
-<Aside
+<Callout
   type="caution"
   title="Decimals matter"
 >
   Each Jetton stores a [`decimals`](/standard/tokens/metadata#decimals) parameter in its metadata. Transferring without accounting for `decimals` can result in sending drastically more tokens than expected — irreversible on mainnet.
 
   Mitigation: Always retrieve and apply the correct `decimals` value. Test on testnet first.
-</Aside>
+</Callout>
 
 ## Balances
 
@@ -36,11 +34,9 @@ Similar to Toncoin balance checks, [discrete one-off checks](#on-demand-balance-
 
 Use the `getJettonBalance()` method to check a specific Jetton balance for a wallet managed by WalletKit. The balance is returned in the smallest Jetton unit, where `1` token equals 10<sup>decimals</sup> smallest units.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not store the balance check results anywhere in the wallet service's state, as they become outdated very quickly. For UI purposes, do [continuous balance monitoring](#continuous-balance-monitoring).
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 // Jetton master (minter) contract address
@@ -60,9 +56,9 @@ async function getJettonBalance(walletId: string): Promise<string | undefined> {
 
 The most practical use of one-off balance checks is right before approving a transaction request. At this point, the actual balance usually is not less than the checked amount, though it might be higher if new funds arrived right after the check.
 
-<Aside>
+<Callout>
   Despite this check, the transaction may still fail due to insufficient balance at the time of transfer.
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 // An enumeration of various common error codes
@@ -205,14 +201,14 @@ As with Toncoin transfers, the wallet service should not block the UI while wait
 
 Jetton transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/ecosystem/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Verify the `decimals` value from the Jetton metadata before calculating transfer amounts. Incorrect decimals can result in sending drastically more or fewer tokens than intended.
 
   For USDTs, the correct decimals value is 6.
-</Aside>
+</Callout>
 
 This example should be modified according to the wallet service's logic:
 
@@ -254,9 +250,7 @@ async function sendJetton(
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of the WalletKit, modifying the last part of the previous code snippet:
 
   ```ts title="TypeScript"
@@ -268,7 +262,7 @@ async function sendJetton(
   ```
 
   Do not use this approach unless it is imperative to complete a transaction without the user's direct consent. Funds at risk: test this approach using testnet and proceed with utmost caution.
-</Aside>
+</Callout>
 
 ## See also
 

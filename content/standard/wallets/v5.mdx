@@ -3,8 +3,6 @@ title: "Wallet V5"
 sidebarTitle: "Overview"
 ---
 
-import { Image } from '/snippets/image.jsx';
-
 | Contract version | Hash                                                               | Link                                                                                                                                |
 | ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | V5 R1            | `20834b7b72b112147e1b2fb457b84e74d1a30f04f737d4f62a668e9552d2b72f` | [Source](https://github.com/ton-blockchain/wallet-contract-v5/blob/88557ebc33047a95207f6e47ac8aadb102dff744/contracts/wallet_v5.fc) |
@@ -123,11 +121,9 @@ Wallet V5 allows precomputed outgoing actions to be placed in the TVM `C5` regis
 | 147       | Invalid `c5`, `action_send_msg` verification failed                                |
 | 0         | Standard successful execution exit code.                                           |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Note that the `142`, `144`, and `146` wallet exit codes are designed to prevent you from losing access to wallet functionality. Nevertheless, you should still remember that the wallet doesn't check whether the stored extension addresses actually exist in TON. You can also deploy a wallet with initial data consisting of an empty extensions dictionary and restricted signature mode. In that case, you will still be able to access the wallet through the public key until you add your first extension. So, be careful with these scenarios.
-</Aside>
+</Callout>
 
 ## Get methods
 
@@ -144,8 +140,8 @@ Starting with v5, the wallet smart contract supports owner-signed internal messa
 Flow scheme for Tonkeeper gasless transactions looks like this:
 
 <Image
-  src="/resources/images/wallets/gasless_light.png"
-  darkSrc="/resources/images/wallets/gasless_dark.png"
+  src="/images/wallets/gasless_light.png"
+  darkSrc="/images/wallets/gasless_dark.png"
   alt="gasless"
 />
 

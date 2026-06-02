@@ -2,8 +2,6 @@
 title: "Integrate MyTonCtrl with Prometheus"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 [MyTonCtrl](/ecosystem/nodes/cpp/setup-mytonctrl) pushes metrics to a [Prometheus](https://prometheus.io/) [Pushgateway](https://prometheus.io/docs/instrumenting/pushing/) so Prometheus (and [Grafana](https://grafana.com/), if used) can scrape them without exposing the node directly.
 
 ## Prerequisites
@@ -76,12 +74,12 @@ MyTonCtrl> set prometheus_url http://<PUSHGATEWAY_HOST>:9091/metrics/job/<JOB_NA
 `<PUSHGATEWAY_HOST>` — host running the Pushgateway (use `127.0.0.1` when MyTonCtrl and Docker run on the same machine).
 `<JOB_NAME>` — unique label for this node, for example `validator1`.
 
-<Aside
+<Callout
   type="caution"
   title="Use unique job names"
 >
   Do not reuse the same `JOB_NAME` across nodes when scraped by one Prometheus instance, or metrics collide.
-</Aside>
+</Callout>
 
 ## Verify metrics
 

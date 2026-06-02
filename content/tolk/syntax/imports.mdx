@@ -3,8 +3,6 @@ title: "Imports and name resolution"
 sidebarTitle: "Imports"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 In practice, contract code is split across multiple files. Projects with multiple contracts share a single codebase, including messages, storage layouts, and related logic. Symbols defined in one file can be used in another by importing that file. After an import, all its public symbols are available to the importing file.
 
 ## Importing files
@@ -26,9 +24,9 @@ fun validate(balance: coins) {
 }
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   When selecting items from auto-completion, [IDE](/contract-dev/ide/overview) inserts imports automatically. This works in both JetBrains-based and VSCode-based IDEs.
-</Aside>
+</Callout>
 
 ## Name uniqueness
 

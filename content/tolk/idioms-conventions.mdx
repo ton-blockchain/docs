@@ -2,8 +2,6 @@
 title: "Idioms and conventions"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 After learning of [basic syntax](/languages/tolk/basic-syntax), study the common patterns, conventions, and best practices to write idiomatic Tolk code.
 
 ## Declare each contract with a `contract` directive
@@ -247,9 +245,9 @@ fun respond(/* ... */) {
 }
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   When both contracts share the same codebase, a struct serves as an outgoing message for A and an incoming message for B.
-</Aside>
+</Callout>
 
 ## Attach initial code and data to a message to deploy another contract
 
@@ -298,9 +296,9 @@ fun demoDeploy() {
 }
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   See the [Tolk contract examples](/languages/tolk/examples#jetton) page for selected contracts from the [`tolk-bench`](https://github.com/ton-blockchain/tolk-bench).
-</Aside>
+</Callout>
 
 ## Target certain shards when deploying sibling contracts
 

@@ -1,9 +1,8 @@
+import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
-import { createMDX } from 'fumadocs-mdx/next';
+import {createMDX} from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
-
-// .variables
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -13,6 +12,8 @@ const config = {
     root: fileURLToPath(new URL(".", import.meta.url)),
   },
   serverExternalPackages: ["typescript", "twoslash"],
+  // NOTE: placed intentionally to not forget about doing redirects properly, via a server.
+  // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
 };
 
 export default withMDX(config);

@@ -1,14 +1,12 @@
 ---
 title: "Fift assembler"
 sidebarTitle: "Assembler"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
-</Aside>
+</Callout>
 
 ## Calling TVM from Fift
 
@@ -67,9 +65,9 @@ The _Fift assembler_ transforms human-readable mnemonics of TVM instructions int
 
 The Fift assembler is located in file `Asm.fif` in the Fift library directory. It is loaded by putting the phrase `"Asm.fif" include` at the very beginning of a program that needs to use the Fift assembler. File `Asm.fif` is resolved using the path provided in the `-I` command-line argument of the Fift interpreter.
 
-<Aside>
+<Callout>
   The rest of the page assumes that all code snippets have included the `Asm.fif` file using the the phrase `"Asm.fif" include` at the top.
-</Aside>
+</Callout>
 
 The Fift assembler inherits from Fift its postfix operation notation, i.e., the arguments or parameters are written before the corresponding instructions. For instance, the TVM assembler instruction represented as `XCHG s1,s2` is represented in the Fift assembler as `s1 s2 XCHG`.
 

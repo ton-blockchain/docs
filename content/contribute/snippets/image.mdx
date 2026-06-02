@@ -3,39 +3,33 @@ title: "Image component"
 sidebarTitle: "Image"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 To display an image, use the `<Image>` component. It allows displaying either a single image for all themes ([`src`](#src-required)) or one image per light theme (`src`) and one image for the dark theme ([`darkSrc`](#darksrc)).
 
-<Aside>
+<Callout>
   When an `src` path points to the SVG image and there is no [`darkSrc`](#darksrc) alternative, image colors will be inverted in the dark theme.
-</Aside>
+</Callout>
 
 Additionally, you can specify the [`href`](#href) property, making an image double as a clickable link. When doing so, the [`target`](#href) property allows changing the browsing context of the link.
 
-<Aside>
+<Callout>
   Making an image into a clickable link disables image zoom capabilities.
-</Aside>
+</Callout>
 
 Finally, to adjust image dimensions in pixels, use [`height`](#height) or [`width`](#width) properties. By default, all images use 16:9 aspect ratio and set `height` to 342px and `width` to 608px.
 
 ## Import
 
-```tsx
-import { Image } from '/snippets/image.jsx';
-```
+Does not require an explicit import — implicitly imported in all `.mdx` files automatically.
 
 ## Usage
 
 Show images using the `<Image>` component.
 
 ```mdx
-import { Image } from '/snippets/image.jsx';
 
 {/* A single image */}
 <Image
-  src="/resources/images/<IMAGE>"
+  src="/images/<IMAGE>"
 />
 
 {/*
@@ -43,21 +37,21 @@ import { Image } from '/snippets/image.jsx';
   Its width will be scaled proportionally to set height and vice versa.
 */}
 <Image
-  src="/resources/images/<IMAGE>"
+  src="/images/<IMAGE>"
   height="608"
 />
 
 {/* Image variations for light or dark themes */}
 <Image
-  src="/resources/images/<IMAGE>"
-  darkSrc="/resources/images/<IMAGE_DARK_THEME>"
+  src="/images/<IMAGE>"
+  darkSrc="/images/<IMAGE_DARK_THEME>"
   />
 
 {/* Image with all properties set */}
 <Image
-  src="/resources/images/<IMAGE>"
+  src="/images/<IMAGE>"
   alt="<ALT_TEXT>"
-  darkSrc="/resources/images/<IMAGE_DARK_THEME>"
+  darkSrc="/images/<IMAGE_DARK_THEME>"
   darkAlt="<ALT_TEXT_DARK_THEME>"
   href="<CLICKABLE_LINK>"
   target="_blank"
@@ -78,20 +72,18 @@ The `<Image>` component accepts the following props:
 
 The image file URL. The file path should be given either relative to the current `.mdx` file's location or absolute, assuming the root of the documentation repository is the `/` directory.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Relative links should **NOT** use `..` in their paths to avoid discovery or security issues.
-</Aside>
+</Callout>
 
-<Aside>
+<Callout>
   Image files must be less than 20 MB uncompressed. For larger files, host them on a CDN service like Amazon S3.
-</Aside>
+</Callout>
 
 Examples:
 
 - `<Image src="<IMAGE>" />` — relative path to an image placed in the same folder as the current `.mdx` file.
-- `<Image src="/resources/images/<IMAGE>" />` — absolute path to an image in the `resources/images/` sub-folder.
+- `<Image src="/images/<IMAGE>" />` — absolute path to an image in the `resources/images/` sub-folder.
 
 ### `alt`
 
@@ -108,9 +100,9 @@ See more: [`alt` attribute on the `<img>` image embed element, MDN](https://deve
 
 ### `darkSrc`
 
-<Aside>
+<Callout>
   The value of this property is ignored unless the [`src` property](#src-required) is set.
-</Aside>
+</Callout>
 
 **type:** `string` <br />
 **default:** [`src`](#src-required) value
@@ -119,9 +111,9 @@ Similar to the [`src` property](#src-required), but specifies the image file URL
 
 ### `darkAlt`
 
-<Aside>
+<Callout>
   The value of this property is ignored unless the [`darkSrc` property](#darksrc) is set.
-</Aside>
+</Callout>
 
 **type:** `string` <br />
 **default:** [`alt`](#alt) value
@@ -138,9 +130,9 @@ See more: [`href` attribute on the `<a>` anchor element, MDN](https://developer.
 
 ### `target`
 
-<Aside>
+<Callout>
   The value of this property is ignored unless the [`href` property](#href) is set.
-</Aside>
+</Callout>
 
 **type:** `"_self" | "_blank" | "_parent" | "_top" | "_unfencedTop"` <br />
 **default:** `"_self"`

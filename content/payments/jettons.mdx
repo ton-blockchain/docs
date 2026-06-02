@@ -3,19 +3,15 @@ title: "Jettons payments processing"
 sidebarTitle: "Jettons"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 Processing jetton payments requires understanding TON's sharded token architecture. Unlike single-contract token systems, each jetton type consists of a master contract and individual wallet contracts for each holder.
 
-<Aside type="note">
+<Callout type="note">
   Jettons are fungible tokens on TON. Each jetton has a master contract (minter) and separate wallet contracts for every holder. Read more in [How Jettons Work](/standard/tokens/jettons/how-it-works).
-</Aside>
+</Callout>
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Jetton processing is security-critical. Incorrect validation of jetton wallet addresses or transfer notifications can lead to accepting fake tokens or crediting wrong amounts.
-</Aside>
+</Callout>
 
 ## Key concepts
 
@@ -25,11 +21,9 @@ Before implementing jetton payment processing, understand these core concepts:
 
 **Transfer flow**: Jetton transfers involve multiple messages. A user sends a `transfer` message to their jetton wallet, which sends an `internal_transfer` to the recipient's jetton wallet, which then sends a `transfer_notification` to the recipient's address if `forward_ton_amount > 0`.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Jetton transfers are considered successful only when the recipient receives `transfer_notification`. Services must set `forward_ton_amount` to at least 0.000000001 TON (1 nanoton) when sending tokens to trigger notifications. Without this, transfers won't be compliant and may not be processed by exchanges and other services.
-</Aside>
+</Callout>
 
 **Security model**: Always validate that jetton wallets belong to the expected master contract. Anyone can deploy fake jetton wallet contracts with arbitrary balances.
 
@@ -39,12 +33,12 @@ For architectural patterns and deposit methods comparison, see [Toncoin processi
 
 ## Processing deposits
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Skipping any validation step or changing their order can lead to incorrect deposit processing and potential loss of funds.
-</Aside>
+</Callout>
 
 ### Setup
 
@@ -80,12 +74,12 @@ After validation, extract deposit information:
 - For [invoice-based deposits][inv-dep]: Parse the invoice ID from `forward_payload`, match it against the database, and credit the corresponding user account.
 - For [address-based deposits][add-dep]: Match the `deposit-wallet` address against the database and credit the user account.
 
-<Aside type="note">
+<Callout type="note">
   Not production-ready code, use only for educational purposes:
 
   - [Invoice-based jetton deposits][inv-dep]
   - [Unique address jetton deposits][add-dep]
-</Aside>
+</Callout>
 
 [inv-dep]: https://github.com/ton-org/docs-examples/blob/jetton-processing-only/guidebook/jetton-processing/src/deposits/jetton-invoices.ts
 [add-dep]: https://github.com/ton-org/docs-examples/blob/jetton-processing-only/guidebook/jetton-processing/src/deposits/jetton-unique-addresses.ts

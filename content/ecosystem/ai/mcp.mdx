@@ -3,8 +3,6 @@ title: "AgentKit: @ton/mcp"
 sidebarTitle: "@ton/mcp"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The [`@ton/mcp` server][mcp-repo] enables AI agents to operate TON wallets and perform common blockchain operations through the [Model Context Protocol (MCP)][mcp-spec] or CLI using [agent skills][skills-spec]. It handles private keys and signing internally, so agents interact only with high-level intents and confirmation flows. The server is built on top of [WalletKit](/ecosystem/walletkit/overview).
 
 The latest alpha release is available on [npm][mcp-npm]. Run it locally with:
@@ -15,15 +13,13 @@ npx -y @ton/mcp@alpha
 
 To set it up, follow the [quick start guide](#quick-start).
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   `@ton/mcp` is currently in <Badge size="xs">alpha</Badge>. It is safe for use in mainnet, but APIs, behaviors, and [underlying wallet contracts][wallets] may change between releases. Pin a specific version for production use and check the [changelog][changelog] before upgrading.
-</Aside>
+</Callout>
 
-<Aside type="note">
+<Callout type="note">
   For all official TON MCP servers, their setup, and related skills, refer to the [TON MCP portal](https://mcp.ton.org/).
-</Aside>
+</Callout>
 
 ## Features
 
@@ -171,12 +167,12 @@ Set `MNEMONIC` or `PRIVATE_KEY` as an environment variable to activate this mode
 npx @ton/mcp@alpha
 ```
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   `MNEMONIC` and `PRIVATE_KEY` grant full control of the wallet. Store these values in environment variables or a secrets manager. Do not commit them to Git or other source control systems. Do not pass them inline in shell commands.
-</Aside>
+</Callout>
 
 The default TON wallet version in the single-wallet mode is [`v5r1`][wallets-comparison]. Override it with `WALLET_VERSION`:
 
@@ -222,12 +218,12 @@ The MCP endpoint is available at `http://<HOST>:<PORT>/mcp`. Point the MCP clien
 
 The package exports a `@ton/mcp/serverless` entry point for deployment as a serverless function on AWS Lambda, Vercel, Cloudflare Workers, and similar platforms. In serverless mode, credentials are passed via request headers rather than environment variables.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Serverless headers carry wallet credentials in every request. Use HTTPS in production to prevent credential interception. Restrict access to the serverless endpoint with authentication or network-level controls.
-</Aside>
+</Callout>
 
 Serverless mode operates in [single-wallet mode](#single-wallet-mode) only and always uses the [`v5r1` TON wallet version][wallets-comparison]. It does not use the wallet registry, nor does it expose wallet management or onboarding tools.
 
@@ -268,12 +264,12 @@ Serverless mode operates in [single-wallet mode](#single-wallet-mode) only and a
 
 ### Common tools
 
-<Aside
+<Callout
   type="caution"
   title="Confirm before sending"
 >
   All transfer tools move real funds. The agent confirms every transfer with the user before executing. After sending, the default flow polls `get_transaction_status` until the transaction completes or fails.
-</Aside>
+</Callout>
 
 - Wallet management:
   - `get_wallet` - returns the current wallet address and network: `mainnet` or `testnet`.

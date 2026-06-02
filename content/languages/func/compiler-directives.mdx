@@ -1,17 +1,14 @@
 ---
 title: "FunC compiler directives"
 sidebarTitle: "Compiler directives"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 Compiler directives are keywords that begin with `#`, instructing the compiler to perform specific actions, enforce checks, or modify parameters.
 
@@ -134,9 +131,9 @@ Here are some examples of constraints:
 - _>5.1.2_ matches compiler version _6.0.0_ because major `6` is bigger than major `5`.
 - _=5.1.2_ does not match compiler version _5.2.2_ because minor `2` is not equal to minor `1`.
 
-<Aside>
+<Callout>
   The `#pragma` version directive can be used multiple times, and the compiler must satisfy all specified constraints.
-</Aside>
+</Callout>
 
 ### `#pragma not-version`
 
@@ -196,9 +193,9 @@ In the following example, `x` will contain the initial value of `ds`, while `y` 
 (x, y) = (ds, ds~load_bits(8));
 ```
 
-<Aside>
+<Callout>
   `#pragma allow-post-modification` works only for code after the pragma.
-</Aside>
+</Callout>
 
 ### `#pragma compute-asm-ltr`
 
@@ -243,6 +240,6 @@ will evaluate its arguments in the following order:
 
 and only _after_ the evaluation of all these arguments, the `asm` rearrangement will occur.
 
-<Aside>
+<Callout>
   `#pragma compute-asm-ltr` works only for code after the pragma.
-</Aside>
+</Callout>

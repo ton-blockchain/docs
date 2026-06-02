@@ -3,13 +3,9 @@ title: "How to send a single transfer"
 sidebarTitle: "Send single transfer"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Funds at risk:** This guide sends real TON. Test on testnet first. Double-check recipient addresses — blockchain transactions cannot be reversed.
-</Aside>
+</Callout>
 
 This guide shows how to send a single transfer from your Highload Wallet v3.
 
@@ -74,13 +70,11 @@ const internalMessage = internal({
 
 This example uses the zero address for testing. Replace it with your actual destination address.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **No state-init support:** Highload Wallet v3 cannot send messages containing [`StateInit`](/foundations/messages/deploy) using this method.
 
   If you need to deploy a contract (send a message with `StateInit`), use [batch transfers](/standard/wallets/highload/v3/send-batch-transfers) with an action list instead. See [Limitations and constraints](/standard/wallets/highload/v3/specification#limitations-and-constraints) in the specification for details.
-</Aside>
+</Callout>
 
 ## Step 3: Send the transfer
 
@@ -102,9 +96,9 @@ await wallet.sendExternalMessage(keyPair.secretKey, {
 console.log('Transfer sent');
 ```
 
-<Aside type="note">
+<Callout type="note">
   **Automatic deployment:** If your wallet is in `uninit` status (has a balance but no code), it will automatically deploy when processing this external message. The wallet transitions to `active` status, and the transfer is executed in the same transaction.
-</Aside>
+</Callout>
 
 ### Parameter explanation
 

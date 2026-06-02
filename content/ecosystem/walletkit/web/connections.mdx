@@ -3,11 +3,9 @@ title: "How to handle connections with WalletKit on the Web platform"
 sidebarTitle: "Handle connections"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init) and [set up at least one TON wallet](/ecosystem/walletkit/web/wallets) before using examples on this page.
-</Aside>
+</Callout>
 
 To use a wallet service for initiating blockchain transactions and signing data, dApps need to set up a connection over the bridge first. Connection is established via `connect` requests and terminated via `disconnect` requests.
 
@@ -20,9 +18,9 @@ Standard flow looks as follows:
 1. WalletKit instructs the wallet service to show a connection request preview, waiting for the user's approval
 1. User approves or rejects a connection
 
-<Aside>
+<Callout>
   The flow can be started by scanning a QR code from a dApp in the wallet service, or by following a deep link from a dApp to the wallet service. In both cases, WalletKit will process the URL via the `handleTonConnectUrl()` method, then fire a `connect` event for the `onConnectRequest()` method to handle.
-</Aside>
+</Callout>
 
 If the connection was approved, the dApp could proceed to send various transaction or data sign requests. If it was rejected, the dApp can repeat the flow.
 

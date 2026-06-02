@@ -3,8 +3,6 @@ title: "Rust node quick start"
 sidebarTitle: "Quick start"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Deploy a TON Rust node using the Helm chart.
 
 For chart-specific values, configuration examples, and operator documentation such as networking, Vault, and monitoring, refer to the [chart README](https://github.com/RSquad/ton-rust-node/tree/master/helm/ton-rust-node).
@@ -216,13 +214,11 @@ vault:
 
 The Secret should contain `VAULT_URL`. Example format: `file:///keys/vault.json&master_key=<64-hex-chars>`.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   In the RSquad chart workflow, Vault is configured through `VAULT_URL`. Do not rely on `secrets_vault_config` in `config.json` when using this approach.
 
   Keep the vault master key secure: it decrypts the vault file.
-</Aside>
+</Callout>
 
 - [Chart Vault reference](https://raw.githubusercontent.com/RSquad/ton-rust-node/master/helm/ton-rust-node/docs/vault.md)
 - Chart implementation references:

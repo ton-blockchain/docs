@@ -2,8 +2,6 @@
 title: "Health probes"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Kubernetes liveness, readiness, and startup probes for the TON node.
 
 ## Available endpoints
@@ -28,9 +26,9 @@ Both endpoints return `HTTP 200` with a JSON body:
 
 These endpoints are served by the same HTTP server as `/metrics` and require the `metrics` section in the [node config](/ecosystem/nodes/rust/node-config).
 
-<Aside type="note">
+<Callout type="note">
   Both `/healthz` and `/readyz` return 200 if the metrics HTTP server is running. They do not check sync status or other internal health criteria.
-</Aside>
+</Callout>
 
 ## Enabling probes
 

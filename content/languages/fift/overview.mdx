@@ -1,15 +1,12 @@
 ---
 title: "Fift language overview"
 sidebarTitle: "Overview"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
-</Aside>
+</Callout>
 
 Fift is a [stack-based](https://en.wikipedia.org/wiki/Stack-oriented_programming) general-purpose [tacit](https://en.wikipedia.org/wiki/Tacit_programming) programming language optimized for creating, debugging, and managing smart contracts on TON Blockchain.
 
@@ -85,14 +82,14 @@ Consider the following example installation steps:
   </Step>
 </Steps>
 
-<Aside type="tip">
+<Callout type="tip">
   For Linux and macOS, it might be convenient to make an alias as such:
 
   ```shell
   # Within .bash_aliases or .zsh_aliases
   alias fift="/path/to/fift -I /path/to/extracted/lib -i Asm.fif"
   ```
-</Aside>
+</Callout>
 
 ### Additional tooling
 
@@ -127,9 +124,7 @@ Hello, World! ok
 
 There, `ok` means successful end of execution of the given code snippet.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   When things go awry, there may still be an `ok` by the end, albeit prefixed with several red lines of cryptic-looking stack traces. Those are how Fift reports errors, and this is one of the major reasons why Fift is considered a legacy language.
 
   **Any errors encountered during execution clear the stack!**
@@ -150,7 +145,7 @@ There, `ok` means successful end of execution of the given code snippet.
   // Hello, World! ok
   // Now, the stack is clear.
   ```
-</Aside>
+</Callout>
 
 To continue learning Fift, see the [educational materials](#educational-materials) section, or move to the follow-up references.
 
@@ -210,11 +205,11 @@ To continue learning Fift, see the [educational materials](#educational-material
 
 ### Whitepapers
 
-<Aside>
+<Callout>
   While most of the information described there holds some truth, the `fiftbase.pdf` whitepaper is still considered legacy due to a lack of updates and gradual integration of its contents into actual documentation pages.
 
   However, it is the most exhaustive reference manual on Fift to date, so you can still use it to learn a lot about Fift.
-</Aside>
+</Callout>
 
 <Columns cols={2}>
   <Card
@@ -227,7 +222,7 @@ To continue learning Fift, see the [educational materials](#educational-material
   <Card
     title="Fift language specification, PDF"
     arrow
-    href="/resources/pdfs/fiftbase.pdf"
+    href="/pdfs/fiftbase.pdf"
   >
     Original documentation written by Dr. Nikolai Durov, a comprehensive whitepaper.
   </Card>

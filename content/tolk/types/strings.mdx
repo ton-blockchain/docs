@@ -3,8 +3,6 @@ title: "Strings"
 sidebarTitle: "Strings"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Tolk provides a dedicated `string` type. At the TVM level, a string is a [cell](/languages/tolk/types/cells) that stores data in snake format: a chain of cells where each cell holds a portion of the string and a reference to the next.
 
 ## String literals
@@ -43,11 +41,9 @@ val str = "very1 very2 ... very99 long";
 
 Short strings may also be stored in snake format — for example, after concatenation. The logical value `"abcd"` and the snaked `"ab" -> ref "cd"` are treated identically.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Because the same logical string can have different low-level representations, comparing strings via cell hashes is incorrect. Use the [`string.hash` method](#string-hash) instead.
-</Aside>
+</Callout>
 
 ## Traversing
 
@@ -58,11 +54,9 @@ val bin = str.beginParse();  // slice
 bin.remainingBitsCount();    // 40
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Be careful traversing the string manually. Strings are stored in snake format, so longer strings span multiple cells linked by references.
-</Aside>
+</Callout>
 
 ## String methods
 

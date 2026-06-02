@@ -3,9 +3,6 @@ title: "Wallet V4"
 sidebarTitle: "Wallet V4"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 | Contract version | Hash                                                               | Link                                                                                                                             |
 | ---------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | V4 R1            | `64dd54805522c5be8a9db59cea0105ccf0d08786ca79beb8cb79e880a8d7322d` | [Source](https://github.com/ton-blockchain/wallet-contract/blob/0f9e25acd61a8384887f4d6c017b8cdbd7cf2213/func/wallet-v4-code.fc) |
@@ -19,17 +16,13 @@ View the original [wallet V4 source code](https://github.com/ton-blockchain/wall
 
 ## Plugins
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   Installing third-party plugins can be dangerous and may lead to wallet drainage. Only install plugins from trusted sources and ensure you understand their functionality before installation.
-</Aside>
+</Callout>
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Due to security reasons mentioned above, it is not possible to install plugins using [TON Connect](/ecosystem/ton-connect/overview).
-</Aside>
+</Callout>
 
 Plugins are essentially other smart contracts on TON that developers are free to implement as they wish. In relation to the wallet, they are simply addresses of smart contracts stored in a dictionary in the wallet's persistent memory. These plugins are allowed to request funds and remove themselves from the "allowed list" by sending internal messages to the wallet.
 
@@ -70,9 +63,9 @@ contract_state$_
 - `public_key`: 256-bit long public key.
 - `plugins`: dictionary containing plugins (may be empty).
 
-<Aside type="tip">
+<Callout type="tip">
   Default value for wallet\_id is `698983191` in V4, it is a partial hash of TON Mainnet zero state.
-</Aside>
+</Callout>
 
 ## Receiving internal messages
 
@@ -112,8 +105,8 @@ Next, let's explore the types of messages:
 The simple send operation processes a chain of messages, where each message contains a mode and a reference to the actual message cell:
 
 <Image
-  src="/resources/images/wallets/simple_opcode_light.svg"
-  darkSrc="/resources/images/wallets/simple_opcode_dark.svg"
+  src="/images/wallets/simple_opcode_light.svg"
+  darkSrc="/images/wallets/simple_opcode_dark.svg"
   alt="Simple send operation message chain"
 />
 

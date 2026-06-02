@@ -2,17 +2,15 @@
 title: "Get methods"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Get methods are smart contract methods that are supposed to be executed off-chain. They are useful for structured retrieval of data from a smart contract ([`get_collection_data` get-method on an NFT collection](/standard/tokens/nft/reference#return-collection-data)), and for any logic that is a part of a smart contract but is needed off-chain ([`get_nft_address_by_index` get-method on an NFT collection](/standard/tokens/nft/reference#return-item-address-by-index)). Under the hood of APIs, this happens by fetching the actual state of the smart contract from the blockchain and executing TVM to get the result. This process is purely read-only and does not modify the blockchain state in any way.
 
 ## Defining
 
 Get methods are processed by the [function selector](/tvm/registers#c3-%E2%80%94-function-selector). By convention, the ID of a get method is calculated as `crc16("name") | 0x10000` where `name` is set by the developer. This simplifies practical usage because a human-readable name has to be used instead of some arbitrary number.
 
-<Aside type="note">
+<Callout type="note">
   The algorithm used for hashing is CRC-16/XMODEM (`poly=0x1021`, `init=0x0000`, `refin=false`, `refout=false`, `xorout=0x0000`).
-</Aside>
+</Callout>
 
 A minimal example of a smart contract that has a get method that follows the ID convention:
 

@@ -1,23 +1,18 @@
 ---
 title: "FunC dictionaries"
 sidebarTitle: "Dictionaries"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 Smart contracts in TON can utilize dictionaries structured as ordered key-value mappings. Internally, these dictionaries are represented as tree-like structures composed of cells.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Handling potentially large trees of cells in TON introduces several important considerations:
 
   - **Gas consumption for updates**
@@ -28,7 +23,7 @@ Smart contracts in TON can utilize dictionaries structured as ordered key-value 
   - **Storage limitation**
     - A binary tree containing $N$ key-value pairs requires $N-1$ forks, resulting in **at least** $2N-1$ cells.
     - Since smart contract storage in TON is capped at 65,536 unique cells, the maximum number of dictionary entries is approximately 32,768. This limit may be slightly higher if some cells are reused within the structure.
-</Aside>
+</Callout>
 
 ## Dictionary kinds
 
@@ -51,9 +46,9 @@ An empty hashmap is represented as `null` in TVM, meaning it is not stored as a 
 
 To prevent gas exhaustion, smart contracts should limit the number of dictionary updates per transaction. If a contract's balance is used to maintain the hashmap under specific conditions, it can send itself a message to continue processing in another transaction.
 
-<Aside>
+<Callout>
   TVM provides instructions for retrieving a sub-dictionary — a subset of entries within a given key range. These operations (`SUBDICTGET` and similar) are currently untested and can only be explored at the TVM assembly level.
-</Aside>
+</Callout>
 
 #### Hashmap examples
 
@@ -97,6 +92,6 @@ Augmented maps with additional data in each node are used internally by TON vali
 
 ### Prefix dictionary
 
-<Aside>
+<Callout>
   Testing shows that documentation on prefix dictionaries is insufficient. Avoid using them in production contracts unless you fully understand how the relevant opcodes, such as `PFXDICTSET`, work.
-</Aside>
+</Callout>

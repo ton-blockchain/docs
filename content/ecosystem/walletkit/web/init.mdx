@@ -3,8 +3,6 @@ title: "How to initialize the TON Connect's WalletKit on the Web platform"
 sidebarTitle: "Initialize the kit"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Before initializing the TON Connect's WalletKit, install it in the web project:
 
 ```shell
@@ -106,7 +104,7 @@ await kit.waitForReady();
 
 See also: [TON Connect's wallet manifest](/ecosystem/ton-connect/manifest#wallet-manifest).
 
-<Aside
+<Callout
   type="caution"
   title="Web only!"
 >
@@ -121,7 +119,7 @@ See also: [TON Connect's wallet manifest](/ecosystem/ton-connect/manifest#wallet
   ```
 
   Remember to disable this adapter in web environments or provide a dedicated [`storage` adapter](#param-storage) wrapper to switch between environments.
-</Aside>
+</Callout>
 
 ## Configuration parameters
 
@@ -333,9 +331,9 @@ See also: [TON Connect's wallet manifest](/ecosystem/ton-connect/manifest#wallet
 
   Bridges are used for dApp communication — if the dApp exists in the same web environment as the wallet, then the JavaScript bridge is enough. Otherwise, use an HTTP bridge setup.
 
-  <Aside>
+  <Callout>
     For HTTP bridge setups, use a publicly available and production-ready bridge deployed at `https://connect.ton.org/bridge`.
-  </Aside>
+  </Callout>
 
   ```ts
   interface BridgeConfig {

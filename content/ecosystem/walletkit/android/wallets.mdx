@@ -3,11 +3,9 @@ title: "How to manage TON wallets with WalletKit on the Android platform"
 sidebarTitle: "Manage TON wallets"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside type="tip">
+<Callout type="tip">
   Initialize the WalletKit before managing wallets. See the [initialization guide](/ecosystem/walletkit/android/init) for details.
-</Aside>
+</Callout>
 
 The SDK provides a comprehensive API for creating, retrieving, and managing wallets. All wallet operations follow a three-step pattern.
 
@@ -33,11 +31,9 @@ val adapter = walletKit.createV5R1Adapter(
 val wallet = walletKit.addWallet(adapter.adapterId)
 ```
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   Always store mnemonic phrases securely using platform-specific encrypted storage. Never store them in plain text or as part of the code.
-</Aside>
+</Callout>
 
 ## Creating wallets from secret key
 

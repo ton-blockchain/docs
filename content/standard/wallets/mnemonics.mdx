@@ -3,17 +3,15 @@ title: "TON wallet mnemonics"
 sidebarTitle: "Mnemonics"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 ## Key pair
 
 TON Blockchain uses asymmetric cryptography, such as the [Ed25519](https://en.wikipedia.org/wiki/EdDSA#Ed25519) signature scheme.
 
 There are multiple ways to derive a key pair from a mnemonic. Below is the most common approach in TON.
 
-<Aside>
+<Callout>
   Some apps in the TON ecosystem may use a different derivation method, eventually producing an Ed25519-conformant key pair.
-</Aside>
+</Callout>
 
 ## Key pair from a mnemonic
 
@@ -48,12 +46,12 @@ console.log("Private Key: " + keyPair.secretKey.toString('hex'));
 
 The private key is needed to sign messages, and the public key is stored in the wallet's smart contract. When new external messages arrive on that smart contract, the public key would be used to check the authenticity of the messages signed using the corresponding private key.
 
-<Aside
+<Callout
   type="caution"
   title="Important"
 >
   Save the generated mnemonic seed phrase. If you need deterministic behavior during development, print and reuse the exact phrase so the wallet derives the same key pair on every run.
-</Aside>
+</Callout>
 
 ## Mnemonic validation
 

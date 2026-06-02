@@ -3,19 +3,15 @@ title: "Tensors"
 sidebarTitle: "Tensors"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Tensors represent ordered collections of values and are written in the form `(T1, T2, ...)`. They occupy multiple [TVM stack entries](/languages/tolk/types/overall-tvm-stack) sequentially and are [serialized](/languages/tolk/types/overall-serialization) in the same order. For example, `(int, slice)` represents two values following one another.
 
 Tensors are anonymous [structures](/languages/tolk/types/structures) and behave identically. Large tensors are impractical — use structures whenever possible.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   In many general-purpose languages, syntax `(A, B, C, ...)` is used for _tuples_, not tensors, which are a different type. However, in TON, a [tuple](/languages/tolk/types/tuples) is a distinct TVM primitive that has its own syntax `[a, b, ...]` and semantics.
 
   For example, a tensor `(int, int, int)` represents three integers on the stack, whereas a tuple `[int, int, int]` is a single stack entry that contains three integers within itself.
-</Aside>
+</Callout>
 
 ## Component access
 
@@ -116,8 +112,8 @@ val empty = ()
 
 This is analogous to creating an instance of an empty struct.
 
-<Aside type="note">
+<Callout type="note">
   In some programming languages, an empty value is known as _unit_, and functions that don’t return a value can be said to "return a unit". Tolk uses a special type called `void` for this purpose.
 
   The `void` type is not compatible with empty tensors, despite both indicating the absence of a value.
-</Aside>
+</Callout>

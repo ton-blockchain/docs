@@ -3,8 +3,6 @@ title: "Setting up a local blockchain using MyLocalTon"
 description: "Install MyLocalTon to spin up a self-contained TON network for development and testing."
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 MyLocalTon packages validator nodes, a lite-server, explorer, and optional HTTP API into a single JAR so you can prototype locally without touching mainnet. Use it for integration tests, smart-contract dry runs, and demos before deploying to public networks.
 
 ## Prerequisites
@@ -77,7 +75,7 @@ validator-engine-console \
 
 ## Enable the HTTP API bridge
 
-<Aside type="caution">On Windows, install [OpenSSL v1.1.1](https://slproweb.com/products/Win32OpenSSL.html) first</Aside>
+<Callout type="caution">On Windows, install [OpenSSL v1.1.1](https://slproweb.com/products/Win32OpenSSL.html) first</Callout>
 
 Install Python dependencies on the host system, then restart MyLocalTon with the `ton-http-api` flag or enable the "Start TON Center" toggle in UI.
 

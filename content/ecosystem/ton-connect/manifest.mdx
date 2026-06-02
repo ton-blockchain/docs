@@ -3,8 +3,6 @@ title: "TON Connect manifests"
 sidebarTitle: "Manifests"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 TON Connect manifests are specially formatted JSON files that define meta information to either pass it from your dApp to the wallet ([app manifest](#app-manifest)) or to set up subsequent wallet interactions with the TON Connect protocol ([wallet manifest](#wallet-manifest)).
 
 ## App manifest
@@ -33,11 +31,11 @@ Here is a generic example of an app manifest:
 
 For a web dApp, place its manifest at `https://[myapp.com]/tonconnect-manifest.json` so that wallets can fetch it with a simple GET request.
 
-<Aside>
+<Callout>
   Application manifest must be publicly available with CORS disabled, without any authorization required, and without a Cloudflare or similar service proxying them. If hosting that way is troublesome on your own, consider using a trusted CDN.
-</Aside>
+</Callout>
 
-<Aside
+<Callout
   type="caution"
   title="Manifest URL must be an absolute URL"
 >
@@ -46,7 +44,7 @@ For a web dApp, place its manifest at `https://[myapp.com]/tonconnect-manifest.j
   Replace `<APP_URL>` with the public HTTPS origin that serves `tonconnect-manifest.json`.
 
   Ensure that `iconUrl` in the manifest points to a valid, accessible image. If the icon returns 404, wallet connection may fail with a generic error.
-</Aside>
+</Callout>
 
 ## Wallet manifest
 
@@ -78,11 +76,11 @@ Here is an example of a custodian manifest:
 }
 ```
 
-<Aside>
+<Callout>
   There, the bridge refers to the way connectivity between the wallet and dApp is achieved. It can either be a JavaScript one, extending the `window` object, or an HTTP one, requiring a separate service to be running.
 
   For more details, see the respective reference section: [WalletKit reference](/ecosystem/walletkit/overview).
-</Aside>
+</Callout>
 
 ### Primary properties
 

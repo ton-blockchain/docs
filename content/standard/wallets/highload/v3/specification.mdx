@@ -3,18 +3,15 @@ title: "Highload Wallet v3 — specification"
 sidebarTitle: "Specification"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 This page provides a complete technical specification for Highload Wallet v3, covering storage structure, message formats, replay protection, limitations, and security mechanisms.
 
 ## Objective
 
 Understand the internal architecture, data structures, and operational mechanics of Highload Wallet v3. This reference page explains how the wallet processes high-throughput transaction flows securely.
 
-<Aside type="tip">
+<Callout type="tip">
   For practical usage, see [How-to guides](/standard/wallets/highload/v3/create).
-</Aside>
+</Callout>
 
 ## What is Highload Wallet v3?
 
@@ -59,11 +56,11 @@ msg_body$_ {n:#} signature:bits512 ^(MsgInner) = ExternalInMsgBody;
 internal_transfer#ae42e5a4 {n:#} query_id:uint64 actions:^(OutList n) = InternalMsgBody n;
 ```
 
-<Aside type="note">
+<Callout type="note">
   `internal_transfer` is used when the wallet sends a message to itself with an action list for batch transfers. The opcode `0xae42e5a4` is derived from `crc32('internal_transfer n:# query_id:uint64 actions:^OutList n = InternalMsgBody n')`.
 
   The canonical TL-B schemas are maintained in the [highload-wallet-contract-v3 repository](https://github.com/ton-blockchain/highload-wallet-contract-v3).
-</Aside>
+</Callout>
 
 Below, each field is explained in detail.
 
@@ -79,11 +76,9 @@ An Ed25519 public key is used to verify signatures on incoming external messages
 **How it works:**\
 When the wallet receives an external message, it verifies that the 512-bit signature was created by the holder of the private key corresponding to this public key.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The public key is not the wallet address. The address is [derived](/foundations/addresses/derive) from the contract's [`StateInit`](/foundations/messages/deploy).
-</Aside>
+</Callout>
 
 ### `subwallet_id` (32 bits)
 
@@ -143,9 +138,9 @@ Defines the validity window (in seconds) for external messages.
 **Usage:**\
 Messages are valid if `created_at > now() - timeout` and `created_at <= now()`. If expired or from the future, the contract rejects them with exit code `35`.
 
-<Aside type="note">
+<Callout type="note">
   22 bits allows timeout values up to \~4,194,303 seconds (\~48.6 days).
-</Aside>
+</Callout>
 
 **Details:**
 
@@ -224,9 +219,7 @@ The message is valid if:
 Otherwise: reject with exit code 35
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Time lag consideration:** When a lite-server receives an external message, the contract executes `now()` which returns the timestamp of the **last processed block**, not the current system time. Due to network latency and block processing time, this timestamp is typically 5-30 seconds behind your system clock.
 
   **Best practice:** Set `created_at` to 30-60 seconds **before** the current time to ensure the message passes validation:
@@ -236,13 +229,13 @@ Otherwise: reject with exit code 35
   ```
 
   If `created_at` equals your current system time, it may appear to be "from the future" when validated on-chain, causing the transaction to fail with exit code `35`.
-</Aside>
+</Callout>
 
 ### Uniqueness guarantee
 
-<Aside type="note">
+<Callout type="note">
   Highload v3 will never execute multiple external messages containing the same `query_id` and `created_at` — by the time it forgets any given `query_id`, the `created_at` condition will prevent execution of such a message. This effectively makes `query_id` and `created_at` together the "primary key" of a transfer request for Highload v3.
-</Aside>
+</Callout>
 
 ### Why internal messages to self?
 
@@ -289,9 +282,9 @@ signature:bits512
 **Key point:**\
 The signature is in the **root cell** (512 bits); all other parameters are in a **reference cell** (`MsgInner`).
 
-<Aside type="tip">
+<Callout type="tip">
   **Gas optimization:** This structure saves \~500 gas units during signature verification. If the signature were in the same cell as the message body, the contract would need to use `slice_hash()` (which rebuilds the cell internally, costing extra gas) instead of simply taking `cell_hash()` of the reference.
-</Aside>
+</Callout>
 
 ### `signature` (512 bits)
 
@@ -376,9 +369,9 @@ Must match the `timeout` value stored in contract storage.
 **On mismatch:**\
 Exit code `38`.
 
-<Aside type="note">
+<Callout type="note">
   22 bits allows timeout values up to \~4.8 million seconds (\~55 days).
-</Aside>
+</Callout>
 
 ### `send_mode` (8 bits)
 
@@ -408,12 +401,10 @@ The contract validates `message_to_send` **after committing storage** to prevent
 1. **Bounced messages are ignored:**\
    If the `bounced` flag is set, the message is silently ignored (no error)
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Why validate after commit:**\
   Validation occurs after `commit()` to ensure replay protection is saved even if the message structure is invalid. This prevents the same external message from being retried infinitely by lite-servers.
-</Aside>
+</Callout>
 
 **Critical limitation:**\
 Highload v3 can send **only ONE internal message** per external message. For batch transfers, use the [internal\_transfer pattern](#single-message-per-external) with an action list (up to 254 messages).
@@ -423,18 +414,18 @@ Highload v3 can send **only ONE internal message** per external message. For bat
 Highload v3 uses a two-transaction pattern to safely send messages:
 
 <Image
-  src="/resources/images/wallets/msg_flow_light.png"
-  darkSrc="/resources/images/wallets/msg_flow_dark.png"
+  src="/images/wallets/msg_flow_light.png"
+  darkSrc="/images/wallets/msg_flow_dark.png"
   alt="Message sending flow"
 />
 
-<Aside type="note">
+<Callout type="note">
   **Why two transactions?**
 
   This pattern ensures that replay protection is never rolled back, even if the actual message sending fails due to insufficient funds or other action phase errors. Transaction 1 commits the `query_id` to storage before any outgoing messages are attempted in Transaction 2.
 
   **Critical detail:** Message validation (step 9) happens **after commit** (step 8) to prevent infinite retries of invalid messages by lite-servers.
-</Aside>
+</Callout>
 
 See [Single message per external](#single-message-per-external) for details on this limitation and the batch transfer workaround.
 

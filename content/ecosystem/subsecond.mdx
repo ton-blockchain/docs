@@ -4,15 +4,13 @@ sidebarTitle: "Sub-second finality"
 tag: "take action"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The TON Core team has [released Catchain 2.0](https://t.me/toncore/104) on mainnet. This consensus upgrade enables sub-second block finality, reducing the block interval from about 2.5s to about 400ms.
 
 However, faster block production does not automatically reduce end-to-end latency for users. Projects must adapt their applications so transaction status updates and UI changes use the new timing guarantees.
 
 ## Current status
 
-<Aside type="note">Sub-second finality is live on TON mainnet.</Aside>
+<Callout type="note">Sub-second finality is live on TON mainnet.</Callout>
 
 As of April 9th 2026, mainnet runs with a block interval of about 400 ms instead of \~2.5 s before the upgrade, producing roughly 6.25x more blocks per second. Target finalization lag is reduced from \~10 s to about 1 s.
 
@@ -31,7 +29,7 @@ As of April 9th 2026, mainnet runs with a block interval of about 400 ms instead
   autoPlay
   muted
   loop
-  src="/resources/videos/subsecond-example.mov"
+  src="/videos/subsecond-example.mov"
   alt="Example of sub-second user experience"
 />
 
@@ -105,11 +103,9 @@ User perception: "You said the blockchain is fast. Why does my transfer still ta
 1. \~0.4s – transaction included in a shard block and `"confirmed"` status is displayed;
 1. \~0.8s – shard block committed to masterchain and `"finalized"` status is displayed.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   If the interface does not update quickly, users will not notice any improvement despite the blockchain upgrade.
-</Aside>
+</Callout>
 
 ### Why this matters
 
@@ -138,11 +134,9 @@ Public liteservers are available for both mainnet and testnet. Use global config
 - Mainnet: [`ton.org/global.config.json`](https://ton.org/global.config.json)
 - Testnet: [`ton.org/testnet-global.config.json`](https://ton.org/testnet-global.config.json)
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Public liteservers are suitable for testing only. Use private liteservers in production.
-</Aside>
+</Callout>
 
 ### Self-hosted liteserver
 
@@ -177,7 +171,7 @@ SSE and WebSocket are available. Choose based on the stack:
 | SSE       | `https://testnet.toncenter.com/api/streaming/v2/sse` | `https://toncenter.com/api/streaming/v2/sse` |
 | WebSocket | `wss://testnet.toncenter.com/api/streaming/v2/ws`    | `wss://toncenter.com/api/streaming/v2/ws`    |
 
-<Aside type="note">
+<Callout type="note">
   TonAPI also exposes Streaming API endpoints with the same SSE and WebSocket interface. Use the TON Center's [Streaming API v2 documentation][streaming] as the protocol reference.
 
   | Protocol  | Testnet URL                                  | Mainnet URL                          |
@@ -186,9 +180,9 @@ SSE and WebSocket are available. Choose based on the stack:
   | WebSocket | `wss://testnet.tonapi.io/streaming/v2/ws`    | `wss://tonapi.io/streaming/v2/ws`    |
 
   Authentication uses a [Ton Console API key](https://tonconsole.com/tonapi/api-keys).
-</Aside>
+</Callout>
 
-<Aside
+<Callout
   type="caution"
   title={"SSE known limitations"}
 >
@@ -203,7 +197,7 @@ SSE and WebSocket are available. Choose based on the stack:
   1. No invalidation signal for `account_state_change` / `jettons_change`.
 
      If a `confirmed` account state or jetton balance update is later rolled back, no `"trace_invalidated"` notification is sent for these event types. Teams using `account_state_change` or `jettons_change` at `"confirmed"` finality should be aware of this gap and consider waiting for `"finalized"` for balance-critical flows.
-</Aside>
+</Callout>
 
 #### Transaction status flow to implement
 

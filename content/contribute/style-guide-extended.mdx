@@ -1,4 +1,6 @@
-# TON documentation style guide
+---
+title: TON documentation style guide
+---
 
 ## 0. Purpose, scope, and normative terms
 
@@ -158,7 +160,7 @@ Rules (binding).
 - Use present tense, active voice, and the imperative mood. Write steps as commands (e.g., “Run the validator.”), not future tense or passive voice. Avoid addressing the reader with “you”. (Why: imperative, active phrasing makes the action clear without personal address and reduces ambiguity in steps.)
 - Be neutral and inclusive. Avoid slang, idioms, culture-specific jokes, or hype. (Why: neutral language is easier for non-native readers and translators, and avoids alienating parts of the audience.)
 - **MUST NOT** use filler or patronizing words: simply, just, obviously, clearly, please note. Replace with exact instructions (Why: filler wastes time and can sound condescending; precise verbs tell the reader exactly what to do.)
-- Emojis in prose and headings **MUST NOT** appear. Use clear text or an `<Aside>` when emphasis is needed. (Why: emojis are ambiguous, distract from procedures, and do not localize reliably.)
+- Emojis in prose and headings **MUST NOT** appear. Use clear text or an `<Callout>` when emphasis is needed. (Why: emojis are ambiguous, distract from procedures, and do not localize reliably.)
 - Emojis in code/command blocks **MAY** appear only when they are part of runnable code or a literal command/output string. Do not add emojis for decoration; the snippet **MUST** remain copy-pasteable and executable as shown. If quoting a UI/log message that contains an emoji, keep it verbatim inside quotes. (Why: runnable examples take precedence; avoiding decorative emojis preserves clarity and execution.)
 - Emojis in compact tables **MAY** be used sparingly as visual indicators only when they follow a widely understood convention (for example, `✅` / `❌` for supported/not supported, or `★` to mark a recommended option) and **MUST** be paired with a text label in the same cell or a descriptive header (e.g., “Supported — Yes/No”). Do not rely on an emoji alone to convey meaning, and **MUST NOT** use decorative or non-standard pictograms (for example, a play triangle to indicate videos). (Why: paired, conventional icons preserve clarity for screen readers, localization, and cases where emojis don’t render.)
 - Even where emojis are technically allowed (code/output or compact tables), they **SHOULD** be rare and **MUST** have a clear purpose. If the same meaning is clear without the emoji, remove it. (Why: conventional text remains clearer for global readers and translators.)
@@ -430,8 +432,8 @@ Objective. Remove ambiguity and increase scan speed with consistent mechanics. (
 ### 6.6 Blockquotes
 
 - Blockquotes **MUST** be reserved for literal quotations from a source (another page in these docs or an external source). Include attribution inline or in the sentence introducing the quote; internal quotes **SHOULD** link to the exact anchor; external quotes **SHOULD** link to the canonical HTTPS source. (Why: clear attribution preserves trust and lets readers verify context.)
-- Blockquotes **MUST NOT** be used for callouts/admonitions, warnings, tips, examples, emphasis, or general instructions. Use the `<Aside>` component for callouts (see [§11.2](#11-2-how-to-write-the-callout), [Appendix A](#a-admonition-levels-and-usage)) and headings/lists for structure. (Why: misusing blockquotes harms structure, accessibility, and localization.)
-- Visual callouts (Note/Tip/Caution/Warning) **MUST** use only the `<Aside>` component. The only supported `type` values are `"note"`, `"tip"`, `"caution"`, and `"danger"`; do **NOT** use other components or type values. \[HIGH] (Why: a single component and fixed types keep rendering, accessibility, and localization consistent.)
+- Blockquotes **MUST NOT** be used for callouts/admonitions, warnings, tips, examples, emphasis, or general instructions. Use the `<Callout>` component for callouts (see [§11.2](#11-2-how-to-write-the-callout), [Appendix A](#a-admonition-levels-and-usage)) and headings/lists for structure. (Why: misusing blockquotes harms structure, accessibility, and localization.)
+- Visual callouts (Note/Tip/Caution/Warning) **MUST** use only the `<Callout>` component. The only supported `type` values are `"note"`, `"tip"`, `"caution"`, and `"danger"`; do **NOT** use other components or type values. \[HIGH] (Why: a single component and fixed types keep rendering, accessibility, and localization consistent.)
 - Short phrases or UI/log strings **SHOULD** use inline quotation marks instead of a blockquote. Tokens and identifiers **MUST** use code font, not blockquotes. (Why: inline quotes and code font are more precise and copy-friendly.)
 - Keep quotations brief (prefer ≤ two sentences or one short paragraph). For longer material, summarize in your own words and link to the source. (Why: long quotes impede scanning and duplicate external content.)
 - Nested blockquotes **MUST NOT** be used. Quoted code or output **SHOULD** appear in fenced code blocks with attribution above the block, not inside a blockquote. (Why: fenced blocks remain copy-pasteable and render consistently.)
@@ -662,27 +664,29 @@ A page that contains safety-critical actions **MUST** clearly communicate all of
 
 Common patterns:
 
-- Page-level safety summary. Place a single `<Aside>` near the top of the guide that describes overall risk, scope, rollback/mitigation strategy, and testnet/mainnet expectations for the full set of commands. (Why: one visible summary prevents readers from missing critical context.)
-- Local step-level warnings. Add short `<Aside>` elements next to each hazardous step that call out the specific risk or environment for that step and, when needed, refer back to the page-level summary instead of repeating full details (for example, “See the safety note at the top of this page before running this on mainnet.”). (Why: local notes tie the warning to the exact action without duplicating the whole summary.)
+- Page-level safety summary. Place a single `<Callout>` near the top of the guide that describes overall risk, scope, rollback/mitigation strategy, and testnet/mainnet expectations for the full set of commands. (Why: one visible summary prevents readers from missing critical context.)
+- Local step-level warnings. Add short `<Callout>` elements next to each hazardous step that call out the specific risk or environment for that step and, when needed, refer back to the page-level summary instead of repeating full details (for example, “See the safety note at the top of this page before running this on mainnet.”). (Why: local notes tie the warning to the exact action without duplicating the whole summary.)
 
 Rendering (component) \[HIGH]
 
-- Safety callouts **MUST** use the `<Aside>` component; **MUST NOT** use Markdown blockquotes (`>`) or headings to simulate warnings. (Why: a single component keeps appearance, accessibility, and behavior consistent.)
+- Safety callouts **MUST** use the `<Callout>` component; **MUST NOT** use Markdown blockquotes (`>`) or headings to simulate warnings. (Why: a single component keeps appearance, accessibility, and behavior consistent.)
 - Mapping: use `type="caution"` for Caution; use `type="danger"` for Warning. Set an explicit `title` when needed (e.g., `title="Funds at risk"`). (Why: consistent severity mapping aligns wording with visual severity.)
-- Allowed types: The only supported `<Aside>` `type` values are `"note"`, `"tip"`, `"caution"`, and `"danger"`. Do not use other values (e.g., `"important"`, `"warning"`). To display those labels, set `title` (e.g., `title="Important"`) while keeping a supported `type`. (Why: keeping to the supported set ensures consistent rendering and avoids runtime fallbacks.)
+- Allowed types: The only supported `<Callout>` `type` values are `"note"`, `"tip"`, `"caution"`, and `"danger"`. Do not use other values (e.g., `"important"`, `"warning"`). To display those labels, set `title` (e.g., `title="Important"`) while keeping a supported `type`. (Why: keeping to the supported set ensures consistent rendering and avoids runtime fallbacks.)
 
 Example (MDX)
 
 ````mdx
-import { Aside } from '/snippets/aside.jsx';
 
-<Aside type="danger" title="Funds at risk">
+<Callout
+  type="danger"
+  title="Funds at risk"
+>
   Sending TON on mainnet is irreversible. Start with a small transfer on TON Testnet, then repeat on TON Mainnet only after checking the address and network carefully; there is no rollback on mainnet.
 
   ```bash
   jetton transfer --to <ADDR> --amount <AMOUNT> --network testnet
   ```
-</Aside>
+</Callout>
 ````
 
 ### 11.3 Safer defaults
@@ -983,7 +987,7 @@ Objective. Keep repository structure and UI labels consistent. (Why: predictable
 
 ### 16.5 Status labels
 
-- Pages and features **MAY** declare a status in content at the top of the page using an `<Aside>` with a clear title (e.g., `title="Deprecated"` or `title="Experimental"`). Do not introduce custom frontmatter keys for status. (Why: status is visible to readers and does not require unsupported metadata.)
+- Pages and features **MAY** declare a status in content at the top of the page using an `<Callout>` with a clear title (e.g., `title="Deprecated"` or `title="Experimental"`). Do not introduce custom frontmatter keys for status. (Why: status is visible to readers and does not require unsupported metadata.)
 - If deprecated, the page **MUST** include the replacement (link to successor) and the removal timeline (date or version) in the callout. You **MAY** set `noindex: true` in frontmatter to exclude the page from search when appropriate. (Why: clear migration guidance reduces breakage; de-indexing avoids surfacing outdated pages.)
 - If experimental, briefly state scope and limitations; link to the stable alternative when available. (Why: scope limits misuse and points to the dependable path.)
 - Status labels (experimental/deprecated) are independent of safety callouts (see [§11](#11-safety-critical-content-blockchain-specific)). Apply both when applicable. (Why: status communicates lifecycle; safety communicates risk—readers need both.)
@@ -996,7 +1000,7 @@ Objective. Keep repository structure and UI labels consistent. (Why: predictable
 
 - When an index-style page genuinely needs card-like tiles, you **MAY** use `<Card>`; keep the content inside each card minimal and avoid duplicating information from the linked pages. (Why: cards should support navigation, not introduce a second layer of prose.)
 
-- More generally, follow the “minimal styling” workflow from [§6.2](#6-2-quotation-marks-and-emphasis): components such as `<Card>`, `<Aside>`, `<Image>`, or tab containers **SHOULD** appear only when they improve comprehension or navigation, not as decoration. (Why: reduced decorative chrome makes structure and behavior stand out.)
+- More generally, follow the “minimal styling” workflow from [§6.2](#6-2-quotation-marks-and-emphasis): components such as `<Card>`, `<Callout>`, `<Image>`, or tab containers **SHOULD** appear only when they improve comprehension or navigation, not as decoration. (Why: reduced decorative chrome makes structure and behavior stand out.)
 
 ## 17. Content hygiene and timeless writing
 
@@ -1044,9 +1048,9 @@ Rationale: Exceptions exist to serve clarity, not convenience. They are document
 
 Use the least severe callout that communicates the point; overuse reduces impact. (Why: calibrated severity keeps important warnings noticeable; overuse leads to alert fatigue.)
 
-Implementation. Render callouts with the `<Aside>` component (see `/snippets/aside.mdx`). **MUST NOT** use Markdown blockquotes (`>`) to simulate callouts. The only supported `type` values are `note`, `tip`, `caution`, and `danger`. Map levels to types: Note → `type="note"`; Tip → `type="tip"`; Caution → `type="caution"`; Warning → `type="danger"`. Use `title` to set the visible label when needed (e.g., `title="Important"`). (Why: consistent components and a fixed type set keep callouts accessible and visually coherent.) \[HIGH]
+Implementation. Render callouts with the `<Callout>` component (see `/src/components/mdx/callout.tsx`). **MUST NOT** use Markdown blockquotes (`>`) to simulate callouts. The only supported `type` values are `note`, `tip`, `caution`, and `danger`. Map levels to types: Note → `type="note"`; Tip → `type="tip"`; Caution → `type="caution"`; Warning → `type="danger"`. Use `title` to set the visible label when needed (e.g., `title="Important"`). (Why: consistent components and a fixed type set keep callouts accessible and visually coherent.) \[HIGH]
 
-- On pages with multiple hazardous actions, combine a page-level safety `<Aside>` at the top (describing overall risk, scope, rollback/mitigation where feasible, and environment) with short local `<Aside>` elements near each dangerous step that can refer back to the summary instead of repeating it. (Why: the combination keeps risks visible without duplicating long warnings at every step.)
+- On pages with multiple hazardous actions, combine a page-level safety `<Callout>` at the top (describing overall risk, scope, rollback/mitigation where feasible, and environment) with short local `<Callout>` elements near each dangerous step that can refer back to the summary instead of repeating it. (Why: the combination keeps risks visible without duplicating long warnings at every step.)
 
 | Level     | When to use                                              | MUST include                                    |
 | --------- | -------------------------------------------------------- | ----------------------------------------------- |

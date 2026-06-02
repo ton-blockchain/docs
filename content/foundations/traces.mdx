@@ -2,8 +2,6 @@
 title: "Traces"
 ---
 
-import { Image } from '/snippets/image.jsx';
-
 A trace is a partially ordered set of messages. This set includes all dependent messages. In other words, if message B was sent while message A was being processed, then both of these messages belong to exactly one trace. Strictly speaking, this set is partially ordered according to the causal relation “A is sent as a result of processing B.”
 
 When drawing a trace, messages are usually drawn on the edges, and the addresses of the accounts to which the messages are sent are drawn at the vertices. Transactions that occurred on the account at that moment in time are also usually signed at the vertex.
@@ -16,8 +14,8 @@ Most often, a trace begins with an [external message](/foundations/messages/exte
   className="flex justify-center my-4"
 >
   <Image
-    src="/resources/images/rpc/trace_def_light.png"
-    darkSrc="/resources/images/rpc/trace_def_dark.png"
+    src="/images/rpc/trace_def_light.png"
+    darkSrc="/images/rpc/trace_def_dark.png"
     alt="Trace diagram"
   />
 </div>
@@ -29,8 +27,8 @@ As a result, messages in the trace are partially ordered by their [logical time 
   This scheme is not applicable to the first vertex if the trace is started by special transactions mentioned above, as in that case there is no `incoming message` for the first vertex.
 
 <Image
-  src="/resources/images/rpc/traces_lt_light.png"
-  darkSrc="/resources/images/rpc/traces_lt_dark.png"
+  src="/images/rpc/traces_lt_light.png"
+  darkSrc="/images/rpc/traces_lt_dark.png"
   alt="Traces with logical time"
 />
 
@@ -45,16 +43,16 @@ The NFT transfer illustrates a single operation that consists of multiple messag
 This trace is started with an external message and can be inspected in [Tonviewer](https://tonviewer.com/transaction/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb)
 
 <Image
-  src="/resources/images/rpc/nft_transfer_trace_light.png"
-  darkSrc="/resources/images/rpc/nft_transfer_trace_dark.png"
+  src="/images/rpc/nft_transfer_trace_light.png"
+  darkSrc="/images/rpc/nft_transfer_trace_dark.png"
   alt="NFT transfer trace"
 />
 
 Here is the [example](https://tonviewer.com/transaction/9effb91e18be732033fe6aa8c39941f26f5e9566848bc487aa7c6bfecdd9d89d) of the trace that started with tick-tock transaction
 
 <Image
-  src="/resources/images/rpc/tick_tock_initiated_trace_light.png"
-  darkSrc="/resources/images/rpc/tick_tock_initiated_trace_dark.png"
+  src="/images/rpc/tick_tock_initiated_trace_light.png"
+  darkSrc="/images/rpc/tick_tock_initiated_trace_dark.png"
   alt="Trace initiated by tick-tock transaction"
 />
 

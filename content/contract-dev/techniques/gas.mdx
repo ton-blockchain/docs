@@ -2,8 +2,6 @@
 title: "Estimate gas usage in TON contracts"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 Contracts which receive a user's message are referred to as **receiver** contracts. Other contracts in the same system are called **internal** contracts. This terminology is local to the current article. Consider a contract system with three contracts: receiver, and internal contracts **A** and **B**. In that system the typical trace looks like this (transactions move from left to right):
 
 ```mermaid
@@ -17,9 +15,9 @@ flowchart LR
     style User2 r:50
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   This article covers abstract contracts system, not connected to any existing project. However, it's primarily applicable to contract systems that use a carry-value pattern.
-</Aside>
+</Callout>
 
 It is important to understand that there is _no separate_ message balance and contract balance. After the message is received, coins from the message are stored to the contract balance, and then the contract is executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help to properly divide contract balance in the action phase. This diagram of a possible value flow illustrates this.
 
@@ -143,13 +141,11 @@ let fwdFee = getForwardFee(
 );
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The `computeDataSize()` function consumes large, unpredictable amount of gas. If at all it is possible to precompute the size, it is recommended to do so.
 
   If required, the function has the second argument: maximum number of cells to visit. Usually it is set to 8192 since it is the [limit for message size](/foundations/limits#message-and-transaction-limits). It might be used to limit amount of spent gas.
-</Aside>
+</Callout>
 
 In Tolk, both computations can be performed with a call to `msg.send()` with mode 1024. In TVM, it's implemented as [`SENDRAWMSG`](/tvm/instructions#fb00-sendrawmsg). It will consume approximately the same amount of gas.
 
@@ -192,11 +188,11 @@ fun onInternalMessage(in: InMessage) {
 
 ### Storage fees
 
-<Aside>
+<Callout>
   For calculating storage fees, maximum possible size of the contract in `cells` and `bits` should be known. Calculating it manually might be hard, if the contract stores a hashmap or some other complex data structure in its state.
 
   It might be easier to compute it by writing a test that will occupy maximum possible size, and use the measured value. There are [helper functions](#helper-functions) for doing these measurements.
-</Aside>
+</Callout>
 
 We cannot predict storage fees that we have to pay for sending messages because it depends on how long the target contract didn't pay storage fee. Storage fees differ in this way from forward and compute fees, as they should be handled both in receiver and internal contracts.
 
@@ -206,9 +202,9 @@ Always keep a minimum balance on all contracts in the system. Storage fees get d
 
 This approach affects code of internal contracts.
 
-<Aside type="tip">
+<Callout type="tip">
   It is the developer's decision for how long the storage fees should be reserved. Popular options are 5 and 10 years.
-</Aside>
+</Callout>
 
 ```tact
 const secondsInFiveYears: Int = 5 * 365 * 24 * 60 * 60;
@@ -257,11 +253,9 @@ receive(msg: UserIn) {
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Verify the hardcoded contract size in tests.
-</Aside>
+</Callout>
 
 #### Cover storage on demand
 

@@ -2,24 +2,19 @@
 title: "Contract sharding"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 Some protocols need to store a lot of information in contracts, for example, tokens that have many users. In TON, there is a limit on how much can be stored in a single contract. The solution in TON is to split the data across many different contracts, where you can quickly find the right contract by a key and retrieve the required information from it.
 
 In such protocols, there is a child contract that initially contains the information identified by a key. In some protocols, it is important to know the Parent contract, which acts as the information manager.
 
 To avoid having to know the key upfront, we do not populate that field in `StateInit`; we only populate the key field. This makes it easy to locate the required contract later.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Child contracts should store information about the Parent so that only it can authorize important state changes.
-</Aside>
+</Callout>
 
 <Image
-  src="/resources/images/child_light.png"
-  darkSrc="/resources/images/child_dark.png"
+  src="/images/child_light.png"
+  darkSrc="/images/child_dark.png"
   alt="Shard pattern"
 />
 

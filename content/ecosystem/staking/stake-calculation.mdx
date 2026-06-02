@@ -2,14 +2,12 @@
 title: "Stake calculation"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside
+<Callout
   type="caution"
   title="Stake affects locked funds"
 >
   Stake configuration directly controls how much TON is locked in the elector contract for a full validation round. Misconfiguration can lock the entire balance, leaving no funds for the next election. Review each setting carefully before applying changes on TON Mainnet.
-</Aside>
+</Callout>
 
 MyTonCtrl automatically calculates the stake amount before submitting an election entry. The calculation balances operator preferences, staking mode, network-imposed limits, and fee reserves to produce a single integer value (in TON) sent to the [elector contract](/foundations/system).
 
@@ -57,9 +55,9 @@ stake = balance - 20
 
 The 20 TON reserve covers the higher fee overhead of pool operations (deploy, process, and distribute messages).
 
-<Aside type="note">
+<Callout type="note">
   Single nominator pools are excluded from this rule. They fall through to the percentage-based calculation (Priority 4) because single nominator pools behave like direct staking economically.
-</Aside>
+</Callout>
 
 ### Priority 3: Liquid staking controller mode
 
@@ -163,9 +161,9 @@ Settings: `stakePercent = 100`, single nominator pool mode.
 1. `stakePercent == 100`: 20 TON fee deduction: `500,000 - 20 = 499,980`.
 1. Result: **499,980 TON** is submitted.
 
-<Aside type="note">
+<Callout type="note">
   When halving is abandoned due to minimum stake constraints, the node participates only in every second validation round until the balance grows enough to cover both rounds.
-</Aside>
+</Callout>
 
 ### Nominator pool with 2,000,000 TON balance
 

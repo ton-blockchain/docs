@@ -3,8 +3,6 @@ title: "Random number generation"
 sidebarTitle: "Random numbers"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Generating random numbers is a common smart contract task for applications such as gaming, trait generation for non-fungible tokens (NFTs), and decentralized lotteries. TON provides built-in functions like [`random.uint256()`](/tolk/features/standard-library#random-uint256), but their results can be predicted by validators unless additional techniques are used.
 
 ## Why on-chain randomness is challenging
@@ -26,9 +24,9 @@ This limitation means all approaches to on-chain randomness involve trade-offs b
 | Resistance to validator manipulation | Low                                      | Medium                                                       | High                                                               |
 | Cost (gas + storage)                 | Low                                      | Medium                                                       | High                                                               |
 
-<Aside type="tip">
+<Callout type="tip">
   When choosing an approach, consider the value at risk and required time-to-finality. For high-stakes applications such as lotteries with significant funds, use commit-reveal. Audit implementations through formal verification when possible.
-</Aside>
+</Callout>
 
 ## Single-block randomness
 
@@ -60,11 +58,9 @@ The single-block approach is fast, as it executes inside a single transaction.
 - NFT trait randomization.
 - Scenarios where validator trust is assumed.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Validators can predict single-block randomness. Do not use `random.initialize()` for high-value applications such as financial lotteries or significant asset distribution.
-</Aside>
+</Callout>
 
 ## Multi-block randomness via block skipping
 
@@ -165,8 +161,6 @@ The [`RANDU256`](/tvm/instructions#f810-randu256) TVM instruction implements the
 
 Subsequent calls continue this chain, producing a deterministic sequence from the initial seed.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The random sequence is deterministic once the initial seed is known, so anyone who knows both the block seed and contract address can predict random values generated during a transaction. Regular users cannot predict these values before block production, but validators generating the block can, since they control the block seed.
-</Aside>
+</Callout>

@@ -2,9 +2,6 @@
 title: "Coming from Ethereum"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-import { Image } from '/snippets/image.jsx';
-
 Learn how to develop and build on TON coming from the Ethereum (EVM) ecosystem.
 
 ## Execution model
@@ -25,16 +22,16 @@ Consider a practical example: liquidity withdrawal on a DEX.
 - On Ethereum, it appears as a single atomic transaction with multiple contract calls inside it. This transaction has a single hash and is included in one block.
 
   <Image
-    src="/resources/images/from-ethereum/burn-tx-eth-light.png"
-    darkSrc="/resources/images/from-ethereum/burn-tx-eth-dark.png"
+    src="/images/from-ethereum/burn-tx-eth-light.png"
+    darkSrc="/images/from-ethereum/burn-tx-eth-dark.png"
     alt="ETH burn"
   />
 
 - The same operation on TON consists of a sequence of more than 10 transactions. Each arrow on this image represents a distinct finalized transaction, with its own hash, inclusion block, and all the other properties:
 
   <Image
-    src="/resources/images/from-ethereum/burn-tx-ton-light.png"
-    darkSrc="/resources/images/from-ethereum/burn-tx-ton-dark.png"
+    src="/images/from-ethereum/burn-tx-ton-light.png"
+    darkSrc="/images/from-ethereum/burn-tx-ton-dark.png"
     alt="TON burn"
   />
 
@@ -58,11 +55,9 @@ In Ethereum, it's possible to store any amount of data in a single contract. Unb
 
 [The limit](/foundations/config) for contract storage is 65,536 unique cells contract storage, where a cell [stores up to](/foundations/serialization/cells) 1,023 bits. Messages are constrained by two size limits: 8,192 cells or 2<sup>21</sup> bits among them, whichever is smaller.
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   Every map that is expected to grow beyond 1,000 values is dangerous. In the TVM map, key access is asymptotically logarithmic, meaning that gas consumption continuously increases to find keys as the map grows.
-</Aside>
+</Callout>
 
 Instead, [sharding](/contract-dev/contract-sharding) should be used.
 

@@ -3,16 +3,14 @@ title: "Agentic wallet contracts"
 sidebarTitle: "Agentic wallets"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Agentic wallets are self-custody wallets designed for autonomous AI agents on TON.
 
-<Aside
+<Callout
   type="caution"
   title="Developer preview"
 >
   Agentic wallet contracts have not been audited. Use testnet for experiments.
-</Aside>
+</Callout>
 
 ## Split-key architecture
 
@@ -33,11 +31,9 @@ This split-key design gives agents access to transfers, swaps, and other on-chai
 
 Transactions initiated by the agent (operator) must be signed with the operator key. Because the operator key is separate from the user's key (owner's key), the agent never controls the owner's main wallet. However, an agent with an active operator key has complete control of the balance and assets held in its own agentic wallet.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Only fund agentic wallets with amounts and assets that they are allowed to risk.
-</Aside>
+</Callout>
 
 ## Dashboard
 

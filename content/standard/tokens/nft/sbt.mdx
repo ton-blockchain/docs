@@ -3,8 +3,6 @@ title: "SBT: How it works"
 sidebarTitle: "How SBT works"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Soul-Bound Tokens (SBTs) represent non-transferable digital credentials in the TON ecosystem. Unlike standard NFTs, SBTs are permanently bound to their owner and cannot be transferred to another address after minting. The canonical specification is defined in [TEP-85](https://github.com/ton-blockchain/TEPs/blob/c5bfe285ef91810fab02c5352593f5a1455458bf/text/0085-sbt-standard.md).
 
 The SBT standard provides a general interaction scheme while leaving the specific implementation of related contracts to developers.
@@ -22,9 +20,9 @@ The SBT standard defines what data must be stored in the contract. Each SBT cont
 | `authority`          | `MsgAddress` | Authority address that can revoke the SBT             |
 | `revoked_at`         | `uint64`     | Revocation time in Unix format, or `0` if not revoked |
 
-<Aside type="note">
+<Callout type="note">
   The standard defines **what** must be stored in the contract, but does not specify **how** exactly this data should be structured in storage. Developers are free to choose their own implementation.
-</Aside>
+</Callout>
 
 ## Message layouts
 
@@ -35,9 +33,9 @@ Interactions with SBT contracts, which are most often encountered by users and d
 - destroy SBT: destroying the SBT contract and returning remaining balance.
 - revoke SBT: marking the SBT as revoked by authority.
 
-<Aside type="note">
+<Callout type="note">
   All message schemes include the `query_id` field. This field is primarily used for off-chain parsing and linking request-response pairs. The protocol itself does not require it for on-chain logic.
-</Aside>
+</Callout>
 
 ## Bound to single owner
 

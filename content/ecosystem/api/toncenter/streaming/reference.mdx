@@ -3,8 +3,6 @@ title: "Streaming API notification reference"
 sidebarTitle: "Notification reference"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 ## Event types
 
 Once a subscription is established, the server sends event messages (notifications) matching the selected `types` and `min_finality`. Each message is a JSON object representing a single event.
@@ -54,9 +52,9 @@ Trace is determined by its `trace_external_hash_norm`.
 
 Subscriptions that include `"actions"` can receive multiple notifications for the same trace as finality increases.
 
-<Aside type="note">
+<Callout type="note">
   Unlike [traces](#trace) and [transactions](#transactions), actions do not exist on-chain and in blockchain history. Instead, actions are aggregated based on the internal logic of TON Center's [API v3](/ecosystem/api/toncenter/v3/overview).
-</Aside>
+</Callout>
 
 Trace is determined by its `trace_external_hash_norm`.
 
@@ -69,9 +67,9 @@ Trace is determined by its `trace_external_hash_norm`.
 | `address_book`             | `object`   | Optional mapping of addresses to a friendly format and a TON DNS domain. |
 | `metadata`                 | `object`   | Optional mapping of token addresses to metadata (jetton or NFT).         |
 
-<Aside type="note">
+<Callout type="note">
   Use `action_types` when subscribing via [SSE](/ecosystem/api/toncenter/streaming/sse) or a [WebSocket](/ecosystem/api/toncenter/streaming/wss) to filter received `actions`. Refer to a list of [available action types in API v3](/ecosystem/api/toncenter/v3/actions-and-traces/get-actions#parameter-action-type).
-</Aside>
+</Callout>
 
 ```jsonc title="Notification example"
 {
@@ -227,9 +225,9 @@ For non-trace events:
 
 Subscriptions that allow speculative states can later receive `"trace_invalidated"`. If the finality level reaches `"finalized"`, the server is guaranteed not to emit `"trace_invalidated"` for the trace.
 
-<Aside type="note">
+<Callout type="note">
   The current API does not expose a separate invalidation signal for `"account_state_change"` or `"jettons_change"` emitted at the `"confirmed"` finality level.
-</Aside>
+</Callout>
 
 ## See also
 

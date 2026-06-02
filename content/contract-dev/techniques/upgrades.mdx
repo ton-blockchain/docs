@@ -2,8 +2,6 @@
 title: "Upgrading contracts"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The address of a contract is determined by its [initial code and state](/foundations/status).
 However, with upgrades it is possible to change the code of a contract while keeping its initial address. This allows developers to fix bugs, add features, and adapt to protocol changes without migrating to a new address, which is required for contracts that are already referenced by other contracts or have users interacting with them.
 
@@ -18,21 +16,21 @@ Tolk provides two functions for upgrades, one for code and one for data:
 - `contract.setCodePostponed(code: cell)` schedules a code replacement during the [action phase](/foundations/phases#action-phase). The new code is available _after the current transaction completes_.
 - `contract.setData(data: cell)` immediately replaces the contract's persistent storage. This happens during the [compute phase](/foundations/phases#compute-phase), _before the transaction ends_.
 
-<Aside
+<Callout
   type="caution"
   title="Funds at risk"
 >
   Contract upgrades change code behavior and can affect funds or contract state. Unauthorized upgrades can cause loss of control or funds. Restrict upgrade messages to trusted admin addresses only.
-</Aside>
+</Callout>
 
-<Aside
+<Callout
   type="caution"
   title="Ethics"
 >
   Use delayed upgrades to allow users to react to compromised admin keys or unwanted updates.
 
   [The Trail of Bits blog](https://blog.trailofbits.com/2025/06/25/maturing-your-smart-contracts-beyond-private-key-risk/) and [Wikipedia](https://en.wikipedia.org/wiki/Exit_scam) provide additional information on this topic.
-</Aside>
+</Callout>
 
 ## Basic upgrade pattern
 
@@ -49,13 +47,11 @@ Contracts must define a message type that contains new code, new data, or both, 
 
 The upgrade runs in a single transaction. New code becomes active after the transaction completes, and new data is available when the transaction ends. If the message does not provide enough Toncoin to run both the compute phase and the action phase, the entire transaction is aborted and no state changes from the upgrade are applied. Test the upgrade script to estimate gas requirements, and send enough Toncoin to execute the full upgrade transaction.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Sending a transaction with the `SendIgnoreErrors` flag will ignore the insufficient funds error, and the transaction will succeed. This can leave a contract in an unusable state with a new storage structure but old code that cannot read it.
 
   Learn more about [execution phases](/foundations/phases) and [sending modes](/foundations/messages/modes) in the docs.
-</Aside>
+</Callout>
 
 ### Example contract
 
@@ -242,12 +238,12 @@ Hot upgrades solve this by scheduling a code change and immediately calling a mi
 
 The `setTvmRegisterC3()` is the key to hot upgrades. It replaces the current code immediately so the following command (e.g., `hotUpgradeData()`) runs the new code. The migration function reads the current storage, transforms it to the new schema, and saves it. After the transaction completes, the new code becomes permanent through `setCodePostponed()`.
 
-<Aside
+<Callout
   type="caution"
   title="Migration risks"
 >
   Hot upgrades require careful migration logic. Test migrations thoroughly on testnet. If the migration function throws, the upgrade transaction aborts and no state changes are applied. If the migration succeeds but writes invalid storage, the contract can become unusable. The `hotUpgradeData()` function runs only during upgrade messages, not on regular messages, preventing accidental repeated migrations.
-</Aside>
+</Callout>
 
 ### Example code
 
@@ -445,9 +441,9 @@ Use standard upgrades instead when:
 
 Combine delayed upgrades with hot upgrades for production protocols that require both safety and structure migration. The delayed upgrade pattern provides time for users to review changes, while the hot upgrade mechanism handles storage migration without data loss.
 
-<Aside
+<Callout
   type="tip"
   title="Complete example code"
 >
   The [TON Examples GitHub repository](https://github.com/ton-org/docs-examples/tree/main/contract-dev/Upgrading) contains full working examples demonstrating all upgrade patterns. This includes implementations for basic, delayed, and hot upgrade patterns.
-</Aside>
+</Callout>

@@ -3,8 +3,6 @@ title: "How to build a transfer"
 sidebarTitle: "Build a transfer"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Use this server-side helper to generate a canonical TON message payload and a tracking reference.
 
 ```ts
@@ -26,9 +24,9 @@ const { message, bodyBase64Hash, reference } = await createTonPayTransfer(
 );
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   The TON Pay API key is optional, but providing it enables transaction visibility in the TON Pay Merchant Dashboard, webhook notifications, and wallet management features.
-</Aside>
+</Callout>
 
 ## Function signature
 
@@ -99,14 +97,14 @@ type APIOptions = {
   Asset to transfer. Use "TON" for Toncoin or a jetton master address or constant, for example, USDT.
 </ParamField>
 
-<Aside
+<Callout
   type="danger"
   title="Mainnet address risk"
 >
   Token constants such as `USDT` always reference mainnet jetton master addresses and are not affected by the `chain` option. Using them on testnet may send transactions to mainnet contracts.
 
   For testnet, explicitly pass the correct testnet jetton master address instead of using token constants.
-</Aside>
+</Callout>
 
 <ParamField
   body="recipientAddr"
@@ -136,9 +134,9 @@ type APIOptions = {
 >
   Short note visible to the user in the wallet while signing.
 
-  <Aside>
+  <Callout>
     Comments are on-chain and publicly visible in blockchain explorers. Do not include confidential data. Keep comments under 120 characters to avoid increased gas fees.
-  </Aside>
+  </Callout>
 </ParamField>
 
 <ParamField
@@ -147,9 +145,9 @@ type APIOptions = {
 >
   Note visible to the recipient after the transfer is received.
 
-  <Aside>
+  <Callout>
     Comments are on-chain and publicly visible in blockchain explorers. Do not include confidential data. Keep comments under 120 characters to avoid increased gas fees.
-  </Aside>
+  </Callout>
 </ParamField>
 
 ## Predefined asset constants
@@ -188,14 +186,14 @@ await createTonPayTransfer(
 );
 ```
 
-<Aside
+<Callout
   type="danger"
   title="Mainnet address risk"
 >
   In `asset`, token constants such as `USDT` always reference mainnet jetton master addresses and are not affected by the `chain` option. Using them on testnet may send transactions to mainnet contracts.
 
   For testnet, explicitly pass the correct testnet jetton master address instead of using token constants.
-</Aside>
+</Callout>
 
 Response:
 
@@ -327,12 +325,12 @@ const result = await createTonPayTransfer(
 
 ## Testnet configuration
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Running tests on mainnet can result in irreversible loss of real TON. Always use `chain: "testnet"` and testnet wallet addresses during development. Verify the network before switching to mainnet.
-</Aside>
+</Callout>
 
 ### Set up testnet
 

@@ -3,9 +3,7 @@ title: "Preprocessed wallet v2: Specification"
 sidebarTitle: "Specification"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside
+<Callout
   type="caution"
   title="Community implementation"
 >
@@ -13,7 +11,7 @@ import { Aside } from '/snippets/aside.jsx';
 
   - Code hash: `45ebbce9b5d235886cb6bfe1c3ad93b708de058244892365c9ee0dfe439cb7b5`
   - Source: [`pw-code.fif` on GitHub](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2/blob/d95a25ef7e259c27a07e185296b57335c2b4974b/pw-code.fif)
-</Aside>
+</Callout>
 
 This page provides a complete technical specification for Preprocessed Wallet V2, covering storage structure, message formats, replay protection, limitations, and implementation details.
 
@@ -21,9 +19,9 @@ This page provides a complete technical specification for Preprocessed Wallet V2
 
 Understand the internal architecture, data structures, and operational mechanics of Preprocessed Wallet V2. This reference page explains how the wallet processes batch transactions efficiently with minimal gas consumption.
 
-<Aside type="tip">
+<Callout type="tip">
   For practical usage, see [How-to guides](/standard/wallets/preprocessed-v2/interact).
-</Aside>
+</Callout>
 
 ## What is Preprocessed Wallet V2?
 
@@ -56,9 +54,9 @@ _ {n:#} valid_until:uint64 seq_no:uint16 actions:^(OutList n) { n <= 255 } = Msg
 msg_body$_ {n:#} sign:bits512 ^(MsgInner n) = ExtInMsgBody n;
 ```
 
-<Aside type="note">
+<Callout type="note">
   The canonical TL-B schemas are maintained in the [ton-preprocessed-wallet-v2 repository](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2).
-</Aside>
+</Callout>
 
 Below, each field is explained in detail.
 
@@ -74,11 +72,9 @@ An Ed25519 public key is used to verify signatures on incoming external messages
 **How it works:**\
 When the wallet receives an external message, it verifies that the 512-bit signature was created by the holder of the private key corresponding to this public key.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The public key is not the wallet address. The address is [derived](/foundations/addresses/derive) from the contract's [`StateInit`](/foundations/messages/deploy).
-</Aside>
+</Callout>
 
 ### `seq_no` (16 bits)
 
@@ -115,12 +111,12 @@ sign:bits512
 **Key point:**\
 The signature is in the root cell (512 bits); all other parameters are in a reference cell (`MsgInner`).
 
-<Aside
+<Callout
   type="tip"
   title="Gas optimization"
 >
   This structure saves gas units during signature verification. If the signature were in the same cell as the message body, the contract would need to use `slice_hash()` (which rebuilds the cell internally, costing extra gas) instead of simply taking `cell_hash()` of the reference.
-</Aside>
+</Callout>
 
 ---
 
@@ -196,12 +192,12 @@ All standard TVM actions are supported without restrictions:
 - `action_reserve_currency` — Reserve currency
 - `action_change_library` — Change library
 
-<Aside
+<Callout
   type="danger"
   title="Critical security warning"
 >
   Preprocessed Wallet V2 does not protect against `action_set_code` actions. If you accidentally include a `set_code` action in your message, the wallet contract code will be changed, potentially making your funds inaccessible. Always verify your action lists before sending.
-</Aside>
+</Callout>
 
 **Maximum actions:** 255 (maximum number of out actions in TON)
 
@@ -272,12 +268,12 @@ Each external message can trigger up to 255 actions.
 **Impact:**\
 Suitable for batch operations with up to 255 actions per transaction.
 
-<Aside
+<Callout
   type="note"
   title="Sequential processing"
 >
   Preprocessed Wallet V2 uses sequential `seq_no` processing. This means you must wait for each transaction to complete before sending the next one.
-</Aside>
+</Callout>
 
 ## Implementation
 

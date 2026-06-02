@@ -1,17 +1,14 @@
 ---
 title: "FunC cookbook"
 sidebarTitle: "Cookbook"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 The FunC cookbook was created to consolidate all the knowledge and best practices from experienced FunC developers in one place.
 The goal is to make it easier for future developers to build smart contracts efficiently.
@@ -340,9 +337,7 @@ int are_slices_equal_3? (slice a, slice b) {
 }
 ```
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   Ways 2 and 3 only check the data bits of the two slices, but way 1 **also** takes into account the cell references in the slices.
   This means that if the two slices have the same data bits but different cell references, way 1 will answer `0` (`false`), but way 2 and 3 will answer `-1` (`true`).
   For example, the following two slices have the same data bits, but different cell references.
@@ -364,7 +359,7 @@ int are_slices_equal_3? (slice a, slice b) {
   ~dump(are_slices_equal_2?(s1, s2));  ;; -1 = true
   ~dump(are_slices_equal_3?(s1, s2));  ;; -1 = true
   ```
-</Aside>
+</Callout>
 
 **References:**
 
@@ -2288,12 +2283,10 @@ if (current_time > 1672080143) {
 
 ### How to generate a random number
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   This method is not cryptographically secure.
   For more details, see the Random number generation section.
-</Aside>
+</Callout>
 
 ```func
 ;; do this only once before the first invocation of

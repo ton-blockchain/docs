@@ -3,15 +3,13 @@ title: "Debugging smart contracts with Blueprint"
 sidebarTitle: "Debugging"
 ---
 
-import {Aside} from "/snippets/aside.jsx";
-
-<Aside type="note">
+<Callout type="note">
   [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
-</Aside>
+</Callout>
 
-<Aside>
+<Callout>
   All examples from this article are available on [GitHub](https://github.com/ton-org/docs-examples/tree/main/guidebook/debug).
-</Aside>
+</Callout>
 
 Errors in smart contracts can produce an [exit code](/tvm/exit-codes), often indicating a bug in the contract. Use debugging methods to locate and fix the issue.
 
@@ -76,11 +74,9 @@ These instructions are wrapped in functions with different names in each languag
 - FunC: Global functions from `stdlib.fc`.
 - Tact: `dumpStack` for `DUMPSTK` and the [dump function](https://docs.tact-lang.org/ref/core-debug/#dump) for the other two. Tact also prints the exact line where `dump` is called, so it can quickly be found in the code.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Debug instructions consume gas and affect gas measurement. Remove them before measuring gas or deploying to production.
-</Aside>
+</Callout>
 
 ## Explore TVM logs
 
@@ -125,12 +121,12 @@ handling exception code 9: cell underflow
 default exception handler, terminating vm with exit code 9
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   To investigate the error in more detail, examine the TVM source code for the `LDU` instruction.
   Sometimes several instructions are implemented within a single `exec_*` method. For example, [`LDU`](/tvm/instructions#d3cc-ldu) (`load_uint`), [`LDI`](/tvm/instructions#d2cc-ldi) (`load_int`) and it's preload versions (`preload_uint`and`preload_int`).
 
   Check how `LDU` [is implemented](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/crypto/vm/cellops.cpp#L981).
-</Aside>
+</Callout>
 
 Stack is printed as `[bottom, ..., top]`, where `top` is the top of the stack.
 
@@ -214,9 +210,9 @@ The `"value"` field contains a base64-encoded BoC string representing a serializ
 1. Provide the TL-B schema for the cell, if available.
 1. Inspect the decoded structure.
 
-<Aside type="note">
+<Callout type="note">
   Without an explicit TL-B schema, the tool attempts to recognize common cell patterns automatically. Since BoC represents raw binary data, some cells may not be fully recognizable or may be parsed incorrectly.
-</Aside>
+</Callout>
 
 Use this tool when API responses contain serialized cells that require structural inspection during debugging.
 

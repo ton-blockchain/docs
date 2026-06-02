@@ -3,9 +3,6 @@ title: "TON extension for Visual Studio Code (VS Code) and VSCode-based editors"
 sidebarTitle: "VSCode and forks"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 TON extension for Visual Studio Code (VS Code) and VSCode-based editors, such as VSCodium, Cursor, Windsurf, and others.
 
 <Columns cols={3}>
@@ -48,8 +45,8 @@ The editor fetches and installs the extension. Restart the editor to apply chang
 Here is how the extension page may look in VSCode, before pressing the <kbd>Install</kbd> button:
 
 <Image
-  src="/resources/images/vscode-ton/install.png"
-  darkSrc="/resources/images/vscode-ton/install-dark.png"
+  src="/images/vscode-ton/install.png"
+  darkSrc="/images/vscode-ton/install-dark.png"
   alt="Screenshot of extension installation"
 />
 
@@ -74,7 +71,7 @@ To manually install the extension:
 
 The editor installs the extension. Restart the editor to apply changes if prompted.
 
-<Aside>
+<Callout>
   To install the extension using CLI, specify the editor executable and the `--install-extension` command-line switch, followed by the path to a `.vsix` file:
 
   ```shell
@@ -86,7 +83,7 @@ The editor installs the extension. Restart the editor to apply changes if prompt
 
   # Other VSCodium-based editors have similar commands
   ```
-</Aside>
+</Callout>
 
 Visual Studio Code’s [“Installing an extension from a VSIX”](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_install-from-a-vsix) guide explains the process.
 
@@ -155,8 +152,8 @@ Extension provides support for TON Blockchain languages and tools in VSCode and 
 **File extension:** `.tolk`
 
 <Image
-  src="/resources/images/vscode-ton/tolk.png"
-  darkSrc="/resources/images/vscode-ton/tolk-dark.png"
+  src="/images/vscode-ton/tolk.png"
+  darkSrc="/images/vscode-ton/tolk-dark.png"
   alt="Screenshot of the Tolk language support"
 />
 
@@ -179,8 +176,8 @@ Tolk support includes:
 **File extensions:** `.fc`, `.func`
 
 <Image
-  src="/resources/images/vscode-ton/func.png"
-  darkSrc="/resources/images/vscode-ton/func-dark.png"
+  src="/images/vscode-ton/func.png"
+  darkSrc="/images/vscode-ton/func-dark.png"
   alt="Screenshot of the FunC language support"
 />
 
@@ -201,14 +198,14 @@ FunC support includes:
 **File extensions:** `.fif`, `.fift`
 
 <Image
-  src="/resources/images/vscode-ton/fift.png"
-  darkSrc="/resources/images/vscode-ton/fift-dark.png"
+  src="/images/vscode-ton/fift.png"
+  darkSrc="/images/vscode-ton/fift-dark.png"
   alt="Screenshot of the Fift language support"
 />
 
 <Image
-  src="/resources/images/vscode-ton/fift-asm.png"
-  darkSrc="/resources/images/vscode-ton/fift-asm-dark.png"
+  src="/images/vscode-ton/fift-asm.png"
+  darkSrc="/images/vscode-ton/fift-asm-dark.png"
   alt="Screenshot of the Fift assembly support"
 />
 
@@ -224,8 +221,8 @@ Fift support includes:
 **File extension:** `.tlb`
 
 <Image
-  src="/resources/images/vscode-ton/tlb.png"
-  darkSrc="/resources/images/vscode-ton/tlb-dark.png"
+  src="/images/vscode-ton/tlb.png"
+  darkSrc="/images/vscode-ton/tlb-dark.png"
   alt="Screenshot of the TL-B data scheme support"
 />
 
@@ -245,8 +242,8 @@ TL-B support includes:
 - `.boc` — serialized binary smart contract code
 
 <Image
-  src="/resources/images/vscode-ton/tasm.png"
-  darkSrc="/resources/images/vscode-ton/tasm-dark.png"
+  src="/images/vscode-ton/tasm.png"
+  darkSrc="/images/vscode-ton/tasm-dark.png"
   alt="Screenshot of the TON Assembly (TASM) language support"
 />
 
@@ -267,7 +264,7 @@ Additionally, BoC support includes:
 
 The extension integrates with [Acton](/contract-dev/acton) — a recommended modern all-in-one Tolk smart contract development environment.
 
-<Aside
+<Callout
   type="note"
   title="Older integrations"
 >
@@ -277,7 +274,7 @@ The extension integrates with [Acton](/contract-dev/acton) — a recommended mod
   - [Sandbox](#sandbox) — Local TON emulator used to [test](/contract-dev/testing/overview) smart contracts
 
   Since version `v1.0.0`, Acton is used as the primary TON development toolchain.
-</Aside>
+</Callout>
 
 #### Sandbox
 

@@ -1,25 +1,22 @@
 ---
 title: "FunC operators"
 sidebarTitle: "Operators"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 This page lists all the operators in FunC in decreasing order of their precedence, with examples of usage.
 
 ## Table of operators
 
-<Aside>
+<Callout>
   Currently, all the unary and binary operators are integer operators. Logical operators are bitwise integer operators (cf. [absence of boolean type](/languages/func/types#no-boolean-type)).
-</Aside>
+</Callout>
 
 The following table lists operators in order of decreasing precedence, from highest to lowest.
 
@@ -49,7 +46,7 @@ For example:
 - `0 ? a : 1 ? b : c` parses as `0 ? a : (1 ? b : c)`, producing `b` as a result.
 - `3 /% 5 /% 7` does _not_ compile, neither `(3 /% 5) /% 7` nor `3 /% (5 /% 7)`.
 
-<Aside>
+<Callout>
   In expressions, all operators should be separated from their arguments, otherwise the expression is interpreted as an [identifier](/languages/func/literals#identifiers).
 
   For example:
@@ -58,7 +55,7 @@ For example:
   - `-x` - Interpreted as a single identifier, not an operation.
   - `x + y` - Adds `x` and `y`.
   - `x+y` - Interpreted as a single identifier, not an operation.
-</Aside>
+</Callout>
 
 ## Precedence
 
@@ -85,11 +82,11 @@ FunC will prefer to evaluate the multiplication first:
 10 - (6 * 2)   ;; Evaluate first 6 * 2
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   Neglecting precedence rules can often lead to confusing situations with operators.
   The correct order of operations can be ensured by wrapping every operation in parentheses,
   since parentheses have the highest precedence of all expressions and operators.
-</Aside>
+</Callout>
 
 ## Parentheses
 

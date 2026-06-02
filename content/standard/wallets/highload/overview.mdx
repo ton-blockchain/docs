@@ -3,17 +3,15 @@ title: "Highload wallets"
 sidebarTitle: "Overview"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Highload Wallets are specialized wallet contracts designed for services that need to send hundreds of transactions per second, such as cryptocurrency exchanges, payment processors, and high-volume trading platforms.
 
 ## What makes them different
 
 Unlike standard wallets (v3, v4, v5) that use sequential processing with a `seqno` counter, Highload Wallets (v2 and v3) store processed request identifiers in a dictionary, enabling **parallel transaction submission** without blocking.
 
-<Aside>
+<Callout>
   **`seqno`** (sequence number) is a counter that increments with each transaction. Standard wallets use it for [replay protection](/standard/wallets/how-it-works#how-replay-protection-works) — each transaction must match the current `seqno` value.
-</Aside>
+</Callout>
 
 **Standard wallet limitation:**\
 Each transaction must wait for the previous one to complete. If you send 100 transactions, they must process sequentially: transaction 2 waits for transaction 1, transaction 3 waits for transaction 2, and so on.
@@ -31,11 +29,9 @@ The first highload wallet, using a simple `seqno` counter:
 - **Batch support:** Could send up to 255 messages per transaction
 - **Replay protection rollback:** If the action phase failed, replay protection would roll back ([learn about](#replay-protection-rollback))
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Legacy contracts:** Highload Wallet v1 and v2 are deprecated. Use Highload Wallet v3 for all new deployments.
-</Aside>
+</Callout>
 
 ### Highload Wallet v2
 
@@ -45,11 +41,9 @@ Improved version with dictionary-based replay protection:
 - **High gas costs:** Storage updates and cleanup operations consumed excessive gas
 - **Replay protection rollback:** If the action phase failed, replay protection would roll back ([learn about](#replay-protection-rollback))
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Legacy contracts:** Highload Wallet v1 and v2 are deprecated. Use Highload Wallet v3 for all new deployments.
-</Aside>
+</Callout>
 
 ### Highload Wallet v3
 

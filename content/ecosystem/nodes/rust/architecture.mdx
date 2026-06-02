@@ -3,8 +3,6 @@ title: "Architecture reference"
 sidebarTitle: "Architecture"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 TON Rust node Helm chart deploys the following Kubernetes resources:
 
 - A `StatefulSet` named after the release, with `podManagementPolicy: Parallel` and `fsGroup: 1000`.
@@ -29,12 +27,12 @@ The node uses persistent volumes:
 
 ## Storage recommendations
 
-<Aside
+<Callout
   type="caution"
   title="Important"
 >
   Disk performance is critical for correct node operation. The `db` volume requires storage that can sustain up to 64,000 input/output operations per second (IOPS). Insufficient disk performance causes sync delays, missed validations, and degraded node behavior. Use NVMe or high-performance SSD with a local volume provisioner.
-</Aside>
+</Callout>
 
 The `db` and `logs` volumes are performance-critical because they handle continuous heavy I/O from blockchain database operations and log writes. The chart recommends local storage with direct disk access (`local-path`, OpenEBS with Linux Logical Volume Manager (`LVM`) support, or similar local volume provisioners).
 Network-attached storage (Network File System (`NFS`), Ceph Reliable Autonomic Distributed Object Store (`RADOS`) block device (`RBD`), Amazon Elastic Block Store (`EBS`), and similar systems) adds latency and can significantly affect node performance and sync speed under high I/O workloads.

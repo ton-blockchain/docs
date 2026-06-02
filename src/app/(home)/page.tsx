@@ -1,69 +1,251 @@
+import type { Metadata } from 'next';
+import type { ComponentType } from 'react';
 import Link from 'next/link';
+import {
+  ArrowRight,
+  Blocks,
+  FileCode2,
+  LifeBuoy,
+  Rocket,
+  Send,
+  Server,
+  Users,
+} from 'lucide-react';
 
-export default function HomePage(props: PageProps<'/'>) {
+export const metadata: Metadata = {
+  title: 'TON documentation',
+  description:
+    'TON is a blockchain platform designed for scalable smart contracts, applications, and payments at consumer scale.',
+  openGraph: {
+    images: '/logo/og-image.png',
+  },
+  twitter: {
+    images: '/logo/og-image.png',
+  },
+};
+
+type QuickLink = { title: string; href: string };
+
+type Path = {
+  title: string;
+  description: string;
+  icon: ComponentType<{ className?: string }>;
+  links: QuickLink[];
+};
+
+// Quick links grouped by audience, mirroring the "journeys" on the legacy index page.
+const paths: Path[] = [
+  {
+    title: 'Beginner',
+    description: 'TON fundamentals for newcomers entering Web3 through TON.',
+    icon: Rocket,
+    links: [
+      { title: 'How to read this documentation?', href: '/start-here' },
+      { title: 'Use a TON wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
+      { title: 'Introduction to Tolk', href: '/tolk/overview' },
+    ],
+  },
+  {
+    title: 'Apps',
+    description: 'Everything one needs to build applications on TON.',
+    icon: Blocks,
+    links: [
+      { title: 'Connect wallets to the app', href: '/ecosystem/ton-connect/overview' },
+      { title: 'Manage and track assets with AppKit', href: '/ecosystem/appkit/overview' },
+      { title: 'Access the blockchain via APIs', href: '/ecosystem/api/overview' },
+      { title: 'Build apps using SDKs', href: '/ecosystem/sdks' },
+    ],
+  },
+  {
+    title: 'Smart contracts',
+    description: 'Build, debug, and deploy smart contracts on TON.',
+    icon: FileCode2,
+    links: [
+      { title: 'Acton toolchain', href: '/contract-dev/acton' },
+      { title: 'JetBrains IDE plugin', href: '/contract-dev/ide/jetbrains' },
+      { title: 'VS Code extension', href: '/contract-dev/ide/vscode' },
+      { title: 'TVM exit codes', href: '/tvm/exit-codes' },
+      { title: 'TVM instructions', href: '/tvm/instructions' },
+    ],
+  },
+  {
+    title: 'Nodes',
+    description: 'Run and manage TON blockchain nodes.',
+    icon: Server,
+    links: [
+      { title: 'Nodes overview', href: '/ecosystem/nodes/overview' },
+      { title: 'Validator node', href: '/ecosystem/nodes/overview#validator-node' },
+      { title: 'C++ node setup', href: '/ecosystem/nodes/cpp/setup-mytonctrl' },
+      { title: 'Rust node setup', href: '/ecosystem/nodes/rust/quick-start' },
+    ],
+  },
+];
+
+type Support = {
+  title: string;
+  description: string;
+  href: string;
+  icon: ComponentType<{ className?: string }>;
+};
+
+const support: Support[] = [
+  {
+    title: 'Get support',
+    description: 'Learn how to get help on the dedicated page.',
+    href: '/get-support',
+    icon: LifeBuoy,
+  },
+  {
+    title: 'Telegram',
+    description: 'Add the folder with many developer chats.',
+    href: 'https://t.me/addlist/1r5Vcb8eljk5Yzcy',
+    icon: Send,
+  },
+  {
+    title: 'TON Talents',
+    description: 'Seek skilled professionals and agencies.',
+    href: 'https://ton.org/en/talents',
+    icon: Users,
+  },
+];
+
+function isExternal(href: string): boolean {
+  return href.startsWith('http');
+}
+
+function QuickLinkRow({ title, href }: QuickLink) {
+  const className =
+    'group -mx-3 flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground';
+  const arrow = (
+    <ArrowRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
+  );
+
+  if (isExternal(href)) {
+    return (
+      <a className={className} href={href} target="_blank" rel="noreferrer">
+        <span>{title}</span>
+        {arrow}
+      </a>
+    );
+  }
+
   return (
-    <div className="flex flex-col justify-center text-center flex-1">
-      <h1 className="text-2xl font-bold mb-4">Hello World</h1>
-      <p>
-        Open{' '}
-        <Link href="/one" className="font-medium underline">
-          /one
-        </Link>
-      </p>
-      <p>
-        Open{' '}
-        <Link href="/two" className="font-medium underline">
-          /two
-        </Link>
-      </p>
-    </div>
+    <Link className={className} href={href}>
+      <span>{title}</span>
+      {arrow}
+    </Link>
   );
 }
 
-// import type { Metadata } from 'next';
-// import { notFound } from 'next/navigation';
-// import { createRelativeLink } from 'fumadocs-ui/mdx';
-// import { getPageImage, source } from '@/lib/source';
-// import { getMDXComponents } from '@/components/mdx';
-// import {
-//   HomeLayout,
-//   // MarkdownCopyButton,
-//   // ViewOptionsPopover,
-// } from 'fumadocs-ui/layouts/home';
+export default function HomePage() {
+  return (
+    <div className="flex flex-col justify-center text-center flex-1">
+      <div className="relative isolate mx-auto w-full max-w-5xl px-6 py-12 text-left sm:py-16">
+        {/* color splash */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-60"
+        >
+          <div
+            style={{
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            }}
+            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#2d83ec] to-[#1ac9ff] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+          />
+        </div>
 
-// export default async function Page() {
-//   const page = source.getPage([]);
-//   if (!page) notFound();
+        {/* hero */}
+        <section className="flex flex-col items-start gap-8 py-8 lg:flex-row lg:items-center lg:gap-12 lg:py-12">
+          <img
+            src="/logo/ton.svg"
+            alt="TON logo"
+            className="hidden h-28 w-auto shrink-0 lg:block"
+          />
+          <div className="max-w-2xl">
+            <h1 className="text-balance text-4xl font-semibold tracking-tight">
+              TON documentation
+            </h1>
+            <p className="mt-6 text-pretty text-xl text-fd-muted-foreground">
+              TON is a blockchain platform designed for scalable smart contracts,
+              applications, and payments at consumer scale.
+            </p>
+          </div>
+        </section>
 
-//   const MDX = page.data.body;
-//   return (
-//     // <main className="container py-12">
-//     <HomeLayout>
-//       <MDX
-//         components={getMDXComponents({
-//           // this allows linking to other pages with relative file paths
-//           a: createRelativeLink(source, page),
-//         })}
-//       />
-//     </HomeLayout>
-//     // </main>
-//   )
-// }
+        {/* choose your path */}
+        <section className="mt-4 flex flex-col gap-6">
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">
+            Choose your path
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {paths.map(({ title, description, icon: Icon, links }) => (
+              <div
+                key={title}
+                className="flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-fd-primary/10 text-fd-primary">
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="text-lg font-semibold">{title}</h3>
+                </div>
+                <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
+                <ul className="mt-4 flex flex-col gap-0.5">
+                  {links.map((link) => (
+                    <li key={link.href}>
+                      <QuickLinkRow {...link} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
 
-// export async function generateStaticParams() {
-//   return source.generateParams();
-// }
+        {/* troubleshooting */}
+        <section className="mt-12 flex flex-col gap-4">
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">
+            Troubleshooting
+          </h2>
+          <p className="text-pretty text-fd-muted-foreground">
+            Can&apos;t find what you need? Press{' '}
+            <kbd className="rounded border border-fd-border bg-fd-muted px-1.5 py-0.5 font-mono text-xs">
+              Ctrl K
+            </kbd>{' '}
+            to search the docs. Still stuck? Discuss issues and best practices with
+            other community members.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {support.map(({ title, description, href, icon: Icon }) => {
+              const external = isExternal(href);
+              const className =
+                'group flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6 transition-colors hover:border-fd-primary';
+              const inner = (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-fd-primary/10 text-fd-primary">
+                      <Icon className="size-4.5" />
+                    </div>
+                    <h3 className="font-semibold">{title}</h3>
+                  </div>
+                  <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
+                </>
+              );
 
-// export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<Metadata> {
-//   const params = await props.params;
-//   const page = source.getPage(params.slug);
-//   if (!page) notFound();
-
-//   return {
-//     title: page.data.title,
-//     description: page.data.description,
-//     openGraph: {
-//       images: getPageImage(page).url,
-//     },
-//   };
-// }
+              return external ? (
+                <a key={title} className={className} href={href} target="_blank" rel="noreferrer">
+                  {inner}
+                </a>
+              ) : (
+                <Link key={title} className={className} href={href}>
+                  {inner}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

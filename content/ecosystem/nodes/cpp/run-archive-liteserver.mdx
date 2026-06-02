@@ -3,8 +3,6 @@ title: "Run an archive liteserver"
 description: "Run an archive liteserver node with MyTonCtrl"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 This guide describes how to set up an archive liteserver using MyTonCtrl, with ZFS for storage compression and snapshots.
 
 An archive liteserver node stores the entire block history of the TON blockchain. For applications requiring access to historical data, such as blockchain explorers or indexers, running an archive liteserver node is the recommended approach.
@@ -28,15 +26,13 @@ Running an archive liteserver requires large storage and network capacity:
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level:
 
   ```bash
   echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy
   ```
-</Aside>
+</Callout>
 
 ### 1.2 OS and system requirements
 
@@ -96,11 +92,9 @@ There,
 - `<DISK>` is the target disk device identifier, e.g., `/dev/nvme1n1`;
 - `<DISK1>`, `<DISK2>`, and `<DISK3>` are additional disk device identifiers.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Combining disks in a stripe (JBOD) increases the total capacity but also the risk of data loss: if a single drive fails, the entire pool is lost. If sufficient disks are available, consider using `mirror` or `raidz` for redundancy.
-</Aside>
+</Callout>
 
 #### 1.4.4 Enable compression
 
@@ -179,11 +173,9 @@ Minimum acceptable results:
 | Read   | 10,000 IOPS |
 | Write  | 10,000 IOPS |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   If disk performance is below these thresholds, the liteserver may fail to keep up with the network. Upgrade storage before proceeding.
-</Aside>
+</Callout>
 
 #### 1.6.3 Network bandwidth
 
@@ -206,12 +198,12 @@ Apply security hardening steps before exposing the server to the network:
 
 #### SSH hardening
 
-<Aside
+<Callout
   type="caution"
   title="Avoid locking yourself out"
 >
   Disabling password login, changing the SSH port, and restricting access by `Match Address` can lock the operator out of a remote server. Keep the current SSH session open and confirm a new login succeeds in a second session before closing the first one.
-</Aside>
+</Callout>
 
 Apply the following SSH configuration changes in `/etc/ssh/sshd_config`:
 
@@ -416,9 +408,9 @@ For technical assistance, contact [`@mytonctrl_help_bot`](https://t.me/mytonctrl
 
 ### 3.3 Perform software updates
 
-<Aside type="note">
+<Callout type="note">
   Follow the [`@tonstatus`](https://t.me/tonstatus) channel, turn on notifications, and be prepared for urgent updates.
-</Aside>
+</Callout>
 
 Before performing updates, create a ZFS snapshot of the data. This allows a quick rollback if the update process fails or corrupts the database.
 
@@ -470,7 +462,7 @@ sudo zfs list -t snapshot data/ton-work
 
 #### Roll back to a snapshot
 
-<Aside
+<Callout
   type="caution"
   title="Data loss risk"
 >
@@ -486,7 +478,7 @@ sudo zfs list -t snapshot data/ton-work
   # Start the service
   sudo systemctl start validator.service
   ```
-</Aside>
+</Callout>
 
 #### Delete a snapshot
 
@@ -524,9 +516,9 @@ sudo zfs send -c data/ton-work@<SNAPSHOT_NAME> > <BACKUP_PATH>
 
 Example destination path on the external storage: `/mnt/backup/backup_ton_work.zfs`
 
-<Aside type="note">
+<Callout type="note">
   Exporting large datasets can take several hours. For example, a 4.07 TB snapshot may take approximately 2 hours to export, depending on disk throughput.
-</Aside>
+</Callout>
 
 #### Transfer a snapshot via SSH
 

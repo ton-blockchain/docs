@@ -32,7 +32,7 @@ const remarkConfig = {
     [
       remarkMdx,
       {
-        printWidth: 20,
+        printWidth: 24,
       },
     ],
     function formatJsxElements() {

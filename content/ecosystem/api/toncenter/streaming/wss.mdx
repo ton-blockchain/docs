@@ -3,8 +3,6 @@ title: "Streaming API: WebSocket"
 sidebarTitle: "WebSocket"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 [WebSocket](https://en.wikipedia.org/wiki/WebSocket) transport of the [Streaming API](/ecosystem/api/toncenter/streaming/overview) is the preferred interface for persistent and bidirectional communication with dynamic subscription patterns.
 
 ## Usage
@@ -18,7 +16,7 @@ Each request may include an optional `id` field for request and response correla
 - Mainnet: `wss://toncenter.com/api/streaming/v2/ws`
 - Testnet: `wss://testnet.toncenter.com/api/streaming/v2/ws`
 
-<Aside
+<Callout
   type="note"
   title="TonAPI endpoint compatibility"
 >
@@ -28,7 +26,7 @@ Each request may include an optional `id` field for request and response correla
   - Testnet: `wss://testnet.tonapi.io/streaming/v2/ws`
 
   Authentication uses a [Ton Console API key](https://tonconsole.com/tonapi/api-keys).
-</Aside>
+</Callout>
 
 ### Operations
 

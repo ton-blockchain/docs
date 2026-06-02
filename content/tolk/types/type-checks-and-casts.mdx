@@ -2,8 +2,6 @@
 title: "Type checks and casts"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Tolk supports type conversions: either automatic or explicit via the `as` operator.
 
 ## Automatic conversions
@@ -97,13 +95,11 @@ For instance, `bool` cannot be assigned directly to `int`. However, a direct cas
 var number: int = true as int; // -1
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The `as` operator skips type checking and performs no validation at runtime — it is purely a compile-time type cast.
 
   This can lead to sudden errors and hidden bugs. For example, if one cast a slice as `address` and that slice did not hold a valid address, subsequent program becomes undefined and may error whenever that new "address" is used.
-</Aside>
+</Callout>
 
 Not all transformations are possible. For example, `42 as cell` is invalid. When a cast is inappropriate, the compiler indicates this in diagnostic messages.
 

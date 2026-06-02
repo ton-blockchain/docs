@@ -2,8 +2,6 @@
 title: "Variables"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 - Use `val` for immutable variables and `var` for mutable variables.
 - Use `const` or `global` outside functions.
 
@@ -190,8 +188,6 @@ get fun devTrace() {
 
 In Tolk, avoid globals when possible. Use [auto-serialization](/languages/tolk/features/auto-serialization) and [`lazy` loading](/languages/tolk/features/lazy-loading).
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Use globals with care. Until initialized, a global holds TVM `NULL`, and any invalid access leads to a runtime failure.
-</Aside>
+</Callout>

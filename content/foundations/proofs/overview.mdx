@@ -2,14 +2,12 @@
 title: "Overview"
 ---
 
-import {Aside} from "/snippets/aside.jsx";
-
 A **proof** is a tree-based structure that contains the necessary data and can be verified by a proof requester.
 To prove something means to construct such a structure. The exact structure may differ depending on the use case. For example, suppose a proof is to be validated off-chain and requires multiple cell trees; the native TON approach is to construct a Bag of Cells (BoC) containing all the necessary cells. This is precisely what a liteserver does when data is requested from the blockchain.
 
-<Aside>
+<Callout>
   It is highly recommended to familiarize yourself with [Exotic cells](/foundations/serialization/merkle) first. This article primarily covers situations where you want to verify a proof in a smart contract. However, the same techniques can be used to validate proofs off-chain.
-</Aside>
+</Callout>
 
 There are several key points to consider when proving anything on-chain.
 
@@ -101,9 +99,9 @@ Sometimes, data is not in block diffs but within the `ShardState` itself. To pro
 1. Parse the shardchain block’s `state_update` field. This exotic cell contains two `ShardState` hashes (before and after the block).
 1. The user provides a `ShardState` that must be validated against the hash obtained in _step 1_.
 
-<Aside>
+<Callout>
   You can only prove the state at block boundaries (not intermediate states).
-</Aside>
+</Callout>
 
 ## Understanding pruned branch cells
 
@@ -127,9 +125,9 @@ _v1_ is a regular cell tree; in _v2_, the cell _c1_ becomes a pruned branch, rem
 - `hash0(cell)` ignores pruned branches, returning the original tree’s hash.
 - `reprHash(cell)` accounts for everything. Matching `reprHashes` ensures cell path equivalency.
 
-<Aside>
+<Callout>
   Use `HASHCU` for representation hash and `CHASHI`/`CHASHIX` for different-level hashes.
-</Aside>
+</Callout>
 
 ## Composing proofs
 
@@ -159,11 +157,11 @@ graph TD
     end
 ```
 
-<Aside>
+<Callout>
   - Trusted data hashes may be separated from cells (e.g., `PREVMCBLOCKS`).
   - Replacing pruned cells with actual cells changes the `MERKLE_UPDATE` cell hash.
     Always manually validate proofs against trusted hashes in these cases.
-</Aside>
+</Callout>
 
 ## Real-world example
 

@@ -2,8 +2,6 @@
 title: "Lockup wallet"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Lockup wallet is a specialized wallet contract that locks funds until a specified time. The [repository](https://github.com/ton-blockchain/lockup-wallet-contract) contains two implementations with different unlocking mechanisms.
 
 ## Universal Lockup Wallet
@@ -75,9 +73,9 @@ Message requirements:
 - `only_restrict`: Flag determining lock type: `1` for restricted funds, `0` for locked funds.
 - `timestamp`: Unix timestamp for unlock.
 
-<Aside type="note">
+<Callout type="note">
   Internal messages with other opcodes from allowlisted addresses are silently ignored.
-</Aside>
+</Callout>
 
 ### Get methods
 
@@ -88,9 +86,9 @@ Message requirements:
 1. `(int, int, int) get_balances()` returns current balance, restricted value, and locked value.
 1. `int check_destination(slice destination)` returns whether destination address is allowlisted.
 
-<Aside type="note">
+<Callout type="note">
   There is no get-method for `config_public_key`. This is by design — the configuration key is only used internally for adding locked funds.
-</Aside>
+</Callout>
 
 ### Exit codes
 

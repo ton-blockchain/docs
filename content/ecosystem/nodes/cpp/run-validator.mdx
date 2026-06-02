@@ -3,16 +3,13 @@ title: "Run a validator"
 description: "Run a validator node with MyTonCtrl"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 ## Overview
 
 This guide explains how to run a validator TON node with MyTonCtrl from scratch.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-30.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-30.png"
+  src="/images/nodes/run-validator/run-validator-30.png"
+  darkSrc="/images/nodes/run-validator/run-validator-30.png"
   alt="Architecture"
 />
 
@@ -32,11 +29,11 @@ This guide explains how to run a validator TON node with MyTonCtrl from scratch.
 - 1 Gbit/s network connectivity
 - Fixed (static) public IP address
 
-<Aside type="tip">
+<Callout type="tip">
   A 1 Gbit/s network connection is recommended to ensure reliable performance during peak load conditions. The average expected bandwidth usage is approximately 100 Mbit/s.
 
   Validators must carefully consider IOPS disk requirements, as insufficient storage performance can severely impact validator stability and overall network health. Prefer faster NVMe drives — validator performance depends heavily on disk speed.
-</Aside>
+</Callout>
 
 ### 1.3 Software requirements
 
@@ -51,8 +48,8 @@ clang --version
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-3.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-3.png"
+  src="/images/nodes/run-validator/run-validator-3.png"
+  darkSrc="/images/nodes/run-validator/run-validator-3.png"
   alt="Versions output"
 />
 
@@ -102,11 +99,9 @@ Subscribe and follow the instructions provided for validators in the following T
 | [`@tonstatus`](https://t.me/tonstatus)         | TON Mainnet |
 | [`@testnetstatus`](https://t.me/testnetstatus) | TON Testnet |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not ignore announcements in these channels. Validators that violate the maintenance rules are fined and excluded from the network.
-</Aside>
+</Callout>
 
 ### 1.6 Prepare validator user
 
@@ -160,11 +155,9 @@ Minimum acceptable results:
 | Read   | 250k IOPS, 981 MB/s |
 | Write  | 83k IOPS, 327 MB/s  |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   If disk performance is below these thresholds, the validator may fail to keep up with the network. Upgrade storage before proceeding.
-</Aside>
+</Callout>
 
 #### Network bandwidth
 
@@ -179,12 +172,12 @@ Ensure download and upload speeds meet the [1 Gbit/s requirement](#1-2-minimal-h
 
 ### 1.8 Harden server security
 
-<Aside
+<Callout
   type="caution"
   title="Security baseline"
 >
   A compromised validator server puts staked funds at risk. Apply these hardening steps before exposing the server to the network.
-</Aside>
+</Callout>
 
 #### SSH hardening
 
@@ -254,9 +247,9 @@ sudo ufw status
 
 For additional protection, store validator keys and configuration on an encrypted partition. Create an encrypted volume and symlink the [backup directories](#5-5-organize-validator-backup) from it.
 
-<Aside type="tip">
+<Callout type="tip">
   After moving directories to the encrypted partition, create symlinks in their original locations so that MyTonCtrl and the validator service continue to function without path changes.
-</Aside>
+</Callout>
 
 ## Step 2: Validator node installation
 
@@ -269,8 +262,8 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-4.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-4.png"
+  src="/images/nodes/run-validator/run-validator-4.png"
+  darkSrc="/images/nodes/run-validator/run-validator-4.png"
   alt="Downloading MyTonCtrl"
 />
 
@@ -289,8 +282,8 @@ Run the validator installation. Installation takes approximately 20 minutes:
 </CodeGroup>
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-5.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-5.png"
+  src="/images/nodes/run-validator/run-validator-5.png"
+  darkSrc="/images/nodes/run-validator/run-validator-5.png"
   alt="Expected final output for validator installation"
 />
 
@@ -356,15 +349,15 @@ MyTonCtrl> status_modes
 Expected output should show `validator` and `single-nominator` as enabled, with all other modes disabled.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-2.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-2.png"
+  src="/images/nodes/run-validator/run-validator-2.png"
+  darkSrc="/images/nodes/run-validator/run-validator-2.png"
   alt="MyTonCtrl status results"
 />
 
-<Aside type="tip">
+<Callout type="tip">
   Initially, the status shows "Local validator initial sync status: downloading blockchain state x", which indicates that the node has started synchronization.
   There are also other status messages in the very beginning of the synchronization, such as "starting", "init block seqno", "last key block is x", "downloading all shard states", "mc seqno" - all these statuses are fine.
-</Aside>
+</Callout>
 
 ### 2.4 Verify validator's port
 
@@ -375,8 +368,8 @@ grep -A5 '"addrs"' -n /var/ton-work/db/config.json | grep '"port"' | head -1
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-26.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-26.png"
+  src="/images/nodes/run-validator/run-validator-26.png"
+  darkSrc="/images/nodes/run-validator/run-validator-26.png"
   alt="Print validator port"
 />
 
@@ -389,8 +382,8 @@ sudo ufw status
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-25.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-25.png"
+  src="/images/nodes/run-validator/run-validator-25.png"
+  darkSrc="/images/nodes/run-validator/run-validator-25.png"
   alt="Check allowed ports"
 />
 
@@ -407,14 +400,14 @@ Then make sure with `sudo ufw status`.
 Wait until the node is fully synchronized, which takes approximately 3 hours (depending on the network connection). During this process, `Local validator initial sync status` shows the current synchronization phase. Once the displayed value drops below 20, the initial synchronization is complete and `Local validator out of sync` should show ≤ 3 seconds.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-8.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-8.png"
+  src="/images/nodes/run-validator/run-validator-8.png"
+  darkSrc="/images/nodes/run-validator/run-validator-8.png"
   alt="Verify node synchronization in status"
 />
 
-<Aside type="tip">
+<Callout type="tip">
   Set up [alert bot](/ecosystem/nodes/cpp/integrating-with-prometheus) to receive a notification when the node is synchronized.
-</Aside>
+</Callout>
 
 ## Step 3: Configure validator
 
@@ -429,18 +422,16 @@ MyTonCtrl> wl
 Find the wallet named `validator_wallet_001` and its address.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-7.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-7.png"
+  src="/images/nodes/run-validator/run-validator-7.png"
+  darkSrc="/images/nodes/run-validator/run-validator-7.png"
   alt="Print validator wallet list"
 />
 
 ### 3.2 Back-up validator wallet secret key
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   This private key is required to restore access to the funds stored in the validator wallet. It is not involved in managing rewards or staking.
-</Aside>
+</Callout>
 
 Make a backup of the validator wallet secret key:
 
@@ -449,39 +440,39 @@ MyTonCtrl> ew validator_wallet_001
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-11.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-11.png"
+  src="/images/nodes/run-validator/run-validator-11.png"
+  darkSrc="/images/nodes/run-validator/run-validator-11.png"
   alt="Back-up validator wallet"
 />
 
-<Aside type="tip">
+<Callout type="tip">
   Import this secret key with [`iw`](/ecosystem/nodes/cpp/mytonctrl/wallet#iw) command.
-</Aside>
+</Callout>
 
 ### 3.3 Explore validator wallet
 
 Explore validator wallet by address with [Tonviewer](https://tonviewer.com/):
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-6.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-6.png"
+  src="/images/nodes/run-validator/run-validator-6.png"
+  darkSrc="/images/nodes/run-validator/run-validator-6.png"
   alt="Explore validator wallet"
 />
 
 ### 3.4 Credit validator wallet
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`. Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
-</Aside>
+</Callout>
 
 Credit the validator wallet. Ensure that at least 200 TON per month is available in the validator’s wallet to cover operational fees.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-9.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-9.png"
+  src="/images/nodes/run-validator/run-validator-9.png"
+  darkSrc="/images/nodes/run-validator/run-validator-9.png"
   alt="Credit validator wallet"
 />
 
@@ -494,16 +485,16 @@ MyTonCtrl> aw validator_wallet_001
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-12.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-12.png"
+  src="/images/nodes/run-validator/run-validator-12.png"
+  darkSrc="/images/nodes/run-validator/run-validator-12.png"
   alt="Activate validator wallet command result"
 />
 
 That also reflects in Tonviewer; the status will be displayed as `Active`
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-14.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-14.png"
+  src="/images/nodes/run-validator/run-validator-14.png"
+  darkSrc="/images/nodes/run-validator/run-validator-14.png"
   alt="Validator wallet in explorer"
 />
 
@@ -511,20 +502,20 @@ That also reflects in Tonviewer; the status will be displayed as `Active`
 
 Create a [single nominator pool](https://docs.ton.org/v3/documentation/smart-contracts/contracts-specs/single-nominator-pool) for secure stake management. As the `owner-address`, specify the beneficiary wallet address that will stake the owner's funds and receive rewards.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Use a cold wallet (e.g., Ledger) for the `owner-address` and store its seed phrase securely to keep funds safe. If access to the owner's wallet is lost, access to stake and rewards funds cannot be recovered.
-</Aside>
+</Callout>
 
 ```bash
 MyTonCtrl> new_single_pool <pool-name> <owner-address>
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-15.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-15.png"
+  src="/images/nodes/run-validator/run-validator-15.png"
+  darkSrc="/images/nodes/run-validator/run-validator-15.png"
   alt="Create a single pool"
 />
 
@@ -547,16 +538,16 @@ MyTonCtrl> pools_list
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-16.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-16.png"
+  src="/images/nodes/run-validator/run-validator-16.png"
+  darkSrc="/images/nodes/run-validator/run-validator-16.png"
   alt="Pool list result"
 />
 
 At the moment, the pool hasn't been deployed yet, and Explorer will display this as `Nonexist` status
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-17.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-17.png"
+  src="/images/nodes/run-validator/run-validator-17.png"
+  darkSrc="/images/nodes/run-validator/run-validator-17.png"
   alt="Nonexist pool"
 />
 
@@ -569,8 +560,8 @@ MyTonCtrl> activate_single_pool <pool-name>
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-18.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-18.png"
+  src="/images/nodes/run-validator/run-validator-18.png"
+  darkSrc="/images/nodes/run-validator/run-validator-18.png"
   alt="Activate the pool result"
 />
 
@@ -583,50 +574,48 @@ MyTonCtrl> pools_list
 ```
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-19.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-19.png"
+  src="/images/nodes/run-validator/run-validator-19.png"
+  darkSrc="/images/nodes/run-validator/run-validator-19.png"
   alt="Pool list"
 />
 
 [Blockchain explorer](/ecosystem/explorers/overview) should also display the now-deployed contract with `Active` status.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-20.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-20.png"
+  src="/images/nodes/run-validator/run-validator-20.png"
+  darkSrc="/images/nodes/run-validator/run-validator-20.png"
   alt="Find pool in explorer"
 />
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   After activation, verify the following in a [blockchain explorer](/ecosystem/explorers/overview):
 
   1. The pool contract code hash matches the [official single nominator pool contract](https://github.com/orbs-network/single-nominator/blob/main/README.md).
   1. The owner address stored in the pool matches the address specified during creation.
 
   Skipping these checks may result in funds being sent to an incorrect or malicious contract.
-</Aside>
+</Callout>
 
 ### 3.10 Test deposit to pool
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`. Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
-</Aside>
+</Callout>
 
 Test deposit to stake workflow. Any user can deposit to the pool via a standard direct TON transfer. Credit decent sum around 10 TON:
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-21.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-21.png"
+  src="/images/nodes/run-validator/run-validator-21.png"
+  darkSrc="/images/nodes/run-validator/run-validator-21.png"
   alt="Test deposit 1"
 />
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-22.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-22.png"
+  src="/images/nodes/run-validator/run-validator-22.png"
+  darkSrc="/images/nodes/run-validator/run-validator-22.png"
   alt="Test deposit 2"
 />
 
@@ -636,9 +625,9 @@ Test withdrawal workflow. Only the [owner's cold wallet](#3-6-create-a-pool) can
 Send a withdrawal request, a message with `w` comment from `owner` wallet to the single nominator pool address:
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-24.jpg"
+  src="/images/nodes/run-validator/run-validator-24.jpg"
   width="280"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-24.jpg"
+  darkSrc="/images/nodes/run-validator/run-validator-24.jpg"
   alt="Send withdrawal request"
 />
 
@@ -681,8 +670,8 @@ Send a withdrawal request, a message with `w` comment from `owner` wallet to the
 Once the deposit is restored (except 1 TON reserve on the single nominator pool) to the owner's wallet, that means validator are set securely and ready for real stake:
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-23.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-23.png"
+  src="/images/nodes/run-validator/run-validator-23.png"
+  darkSrc="/images/nodes/run-validator/run-validator-23.png"
   alt="Pool list"
 />
 
@@ -690,9 +679,9 @@ Once the deposit is restored (except 1 TON reserve on the single nominator pool)
 
 Top up the single nominator pool with the effective validation stake. In the next elections, MyTonCtrl will automatically use this pool for staking. Aim for a stake that places the validator between positions 200 and 250 in the [validator index](https://tonscan.org/validators).
 
-<Aside type="tip">
+<Callout type="tip">
   If the pool's balance is sufficient to participate in both rounds `balance > min_stake_amount * 2`, MyTonCtrl will automatically participate in both rounds using `stake = balance / 2`, unless the stake is manually set using the `set stake` command. This behavior differs from using a nominator pool but resembles staking with a validator wallet.
-</Aside>
+</Callout>
 
 ### 4.1 Retrieve stakes for last two cycles
 
@@ -704,8 +693,8 @@ Retrieve `min_stake` and `max_stake` from [Validation API](https://elections.ton
   title="See expected result..."
 >
   <Image
-    src="/resources/images/nodes/run-validator/run-validator-28.png"
-    darkSrc="/resources/images/nodes/run-validator/run-validator-28.png"
+    src="/images/nodes/run-validator/run-validator-28.png"
+    darkSrc="/images/nodes/run-validator/run-validator-28.png"
     alt="Cycle info API response"
   />
 </Accordion>
@@ -724,9 +713,9 @@ For example:
 "max_stake": 2024432325343173, // ~ 2 024 432 TON
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   Values retrieved in nanotons, divide this by 10<sup>9</sup> to get TON units.
-</Aside>
+</Callout>
 
 ### 4.2 Retrieve stakes boundary values
 
@@ -744,9 +733,9 @@ avg_max_stake = 2024432
 
 ### 4.3 Calculate effective stakes
 
-<Aside type="tip">
+<Callout type="tip">
   _Effective_ stands for winning elections for both odd and even cycles.
-</Aside>
+</Callout>
 
 Effective stake for two cycles is a value between the doubled maximum and the minimum average stakes:
 
@@ -772,13 +761,13 @@ Then, the effective stake is approximately:
 
 ### 4.4 Deposit effective stake
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`.
   Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
-</Aside>
+</Callout>
 
 Deposit effective stake to the single nominator pool address.
 
@@ -795,8 +784,8 @@ In the next paired election cycle (even/odd), MyTonCtrl will send the second hal
 The reward for the odd validation cycle will be returned to the single nominator pool, combined with the stake. Verify this with a blockchain explorer. A few minutes after the reward is accepted, MyTonCtrl initiates a re-stake of this stake, including the reward.
 
 <Image
-  src="/resources/images/nodes/run-validator/run-validator-29.png"
-  darkSrc="/resources/images/nodes/run-validator/run-validator-29.png"
+  src="/images/nodes/run-validator/run-validator-29.png"
+  darkSrc="/images/nodes/run-validator/run-validator-29.png"
   alt="One cycle staking history"
 />
 
@@ -830,9 +819,9 @@ Before sending funds to the pool:
 - Confirm that the pool smart contract is still active and not frozen. A pool can become frozen if the entire balance is consumed by storage fees between creation and funding.
 - Follow the [test deposit and withdrawal procedure](#3-10-test-deposit-to-pool) before depositing the full stake.
 
-<Aside type="tip">
+<Callout type="tip">
   By default, MyTonCtrl splits the pool balance 50/50 between odd and even validation cycles. Ensure the total stake is sufficient to participate in both cycles: `balance > min_stake * 2`.
-</Aside>
+</Callout>
 
 If the pool does not pick up the deposit automatically, push it manually:
 
@@ -859,11 +848,9 @@ Back up the following paths to an encrypted, off-site location:
 - `/var/ton-work/keys`
 - `/usr/local/bin/mytoncore` (includes wallet files such as `validator_wallet_001.pk` and `validator_wallet_001.addr`)
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   Store backups in an encrypted format in a secure location. Loss of these files means loss of access to the validator and staked funds.
-</Aside>
+</Callout>
 
 Alternatively, use the built-in MyTonCtrl backup:
 
@@ -891,10 +878,10 @@ Set up dashboards to monitor validators using the APIs provided below.
 1. Use [Validation API](https://elections.toncenter.com/docs) to obtain information about current and past validation rounds (cycles) - including the timing of rounds, which validators participated, their stakes, and more. Information regarding current and past elections for each validation round is also available.
 1. Use this [API](https://toncenter.com/api/qos/index.html#/) to obtain information about the efficiency of validators over time.
 
-<Aside type="tip">
+<Callout type="tip">
   This API analyzes data from the catchain to provide an estimate of a validator's efficiency. It serves as an alternative to the `checkloadall` utility.
   Unlike `checkloadall`, limited to validation rounds, this API supports any time interval for efficiency analysis.
-</Aside>
+</Callout>
 
 **Workflow**
 
@@ -938,9 +925,9 @@ Check the following indicators:
 | Validator index                  | Visible in status output                |
 | Validator participation position | Between 200 and 250 for optimal staking |
 
-<Aside type="tip">
+<Callout type="tip">
   Validator efficiency may show 0% at the beginning of a cycle until the validator signs its first blocks. This is normal behavior.
-</Aside>
+</Callout>
 
 Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/ecosystem/explorers/overview). For greater observability, [set up the monitoring](#5-7-set-up-monitoring) of various validator metrics.
 

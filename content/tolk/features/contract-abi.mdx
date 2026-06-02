@@ -3,8 +3,6 @@ title: "Contract declaration and ABI"
 sidebarTitle: "Contract and ABI"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 A Tolk file that defines a contract may start with a `contract` declaration. This is a directive for tooling: it tells the compiler that the file is a contract and lists the public shapes that describe it.
 
 The compiler uses this information to emit a machine-readable **ABI** — `out.abi.json` next to the produced `out.fif` — and to generate **TypeScript wrappers**, **source maps**, and other artifacts that the Acton toolchain consumes.
@@ -23,9 +21,9 @@ contract Counter {
 // types, onInternalMessage, get methods, etc.
 ```
 
-<Aside type="note">
+<Callout type="note">
   The directive does not affect bytecode at all. Contracts work without it just as before; declaring `contract` is what enables ABI export and tooling integration.
-</Aside>
+</Callout>
 
 ## What the `contract` declaration affects
 

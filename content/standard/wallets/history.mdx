@@ -3,8 +3,6 @@ title: "Wallets history"
 sidebarTitle: "History"
 ---
 
-import { Aside } from '/snippets/aside.jsx'
-
 You may have heard about different versions of wallets on TON Blockchain. But what do these versions actually mean, and how do they differ?
 
 In this article, we will explore the various versions and modifications of TON wallets.
@@ -84,9 +82,9 @@ Nevertheless, because each subsequent version inherits the functionality of the 
 
 As you can see, the main functionality of the wallet is to provide a safe way to communicate with TON Blockchain from the outside world. The `seqno` mechanism protects against replay attacks, and the `Ed25519 signature` provides authorized access to wallet functionality. The payload data consists of up to 4 references to cells and the corresponding number of modes, which will be directly transferred to the `send_raw_message` method.
 
-<Aside>
+<Callout>
   Note that the wallet doesn't provide any validation for internal messages you send through it. It is the programmer's (i.e., the external client's) responsibility to serialize the data according to the internal message layout.
-</Aside>
+</Callout>
 
 #### Exit codes
 
@@ -107,10 +105,10 @@ Wallet source code:
 
 - [`ton/crypto/smartcont/wallet-code.fc`](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/wallet-code.fc)
 
-<Aside>
+<Callout>
   Originally in FunC; compiled to Fift assembly; later optimized `get methods`. \
   Final Fift source: [`ton/crypto/smartcont/new-wallet-v2.fif`](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/new-wallet-v2.fif).
-</Aside>
+</Callout>
 
 This version introduces the `valid_until` parameter, which is used to set a time limit for a transaction in case you don't want it to be confirmed too late. This version also does not have a get method for the public key, which was added in `V2R2`.
 
@@ -140,10 +138,10 @@ Wallet source code:
 
 - [`ton/crypto/smartcont/wallet3-code.fc`](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/wallet3-code.fc)
 
-<Aside>
+<Callout>
   Originally in FunC; compiled to Fift assembly; later optimized `get methods`. \
   Final Fift source: [`ton/crypto/smartcont/wallet-v3-code.fif`](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/wallet-v3-code.fif).
-</Aside>
+</Callout>
 
 Essentially, `subwallet_id` is just a number added to the contract state when it’s deployed. Since the contract address in TON is a hash of its state and code, the wallet address will change with a different `subwallet_id`. This version is the most widely used right now. It covers most use cases and remains clean, simple, and mostly the same as previous versions. All get methods remain the same.
 
@@ -180,9 +178,9 @@ Essentially, `subwallet_id` is just a number added to the contract state when it
 | 35        | `Ed25519 signature` check failed                                        |
 | 0         | Standard successful execution exit code.                                |
 
-<Aside>
+<Callout>
   In V3, exit code `35` is intentionally re-used for two checks. This is not a typo. In V4 they are split: `35` = signature check failed; `36` = `valid_until` check failed.
-</Aside>
+</Callout>
 
 ### Wallet V4
 

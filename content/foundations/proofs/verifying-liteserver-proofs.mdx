@@ -2,11 +2,9 @@
 title: Liteserver proof verification
 ---
 
-import {Aside} from "/snippets/aside.jsx";
-
-<Aside>
+<Callout>
   This article assumes you are familiar with [Merkle proof cells](/foundations/serialization/merkle).
-</Aside>
+</Callout>
 
 This article presents advanced examples of proof verification using liteservers.
 
@@ -21,7 +19,7 @@ Nonetheless, even using only the examples provided here can significantly reduce
 
 Suppose we have a known block ID:
 
-```d not runnable
+```d title="not runnable"
 <TL BlockIdExt [wc=-1, shard=-9223372036854775808, seqno=31220993, root_hash=51ed3b9e728e7c548b15a5e5ce988b4a74984c3f8374f3f1a52c7b1f46c26406, file_hash=d4fcdc692de1a252deb379cd25774842b733e6a96525adf82b8ffc41da667bf5] >
 ```
 

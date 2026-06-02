@@ -2,8 +2,6 @@
 title: "Transaction fees"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Fees in TON align with the [execution phases](/foundations/phases) of a transaction:
 
 - Storage fees are charged in the [storage phase](/foundations/phases#storage-phase).
@@ -40,12 +38,12 @@ account_storage$_ last_trans_lt:uint64
   = AccountStorage;
 ```
 
-<Aside
+<Callout
   type="note"
   title="Deduplication"
 >
   Storage and forward fees treat identical subtrees referenced in multiple branches as one cell. Reused subtrees share a single stored copy and do not accrue additional charges.
-</Aside>
+</Callout>
 
 ## Compute fees
 

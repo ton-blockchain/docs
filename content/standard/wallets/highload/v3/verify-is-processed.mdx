@@ -3,8 +3,6 @@ title: "How to verify that a message is processed"
 sidebarTitle: "Verify message is processed"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 This guide shows how to verify that a transfer (single or batch) was fully processed across both transactions.
 
 ## Objective
@@ -144,11 +142,11 @@ if (!isProcessed) {
 console.log('✓ Query marked as processed');
 ```
 
-<Aside type="note">
+<Callout type="note">
   **What `processed?` tells you:** This GET method only confirms that the `query_id` was marked as processed in the wallet's storage. It does **not** confirm that the internal transaction succeeded or that messages were sent.
 
   See [`processed?` method](/standard/wallets/highload/v3/specification#processed%3F-method-details) in the specification for details.
-</Aside>
+</Callout>
 
 ## Step 2: Find and verify external transaction
 
@@ -265,9 +263,9 @@ if (!action.success) {
 console.log('✓ Internal transaction succeeded');
 ```
 
-<Aside type="note">
+<Callout type="note">
   **Transaction linking:** The external transaction creates an outgoing message with `outMsg.createdLt`. The internal transaction that processes this message has `prevTransactionLt` equal to the external transaction's `lt`. This creates a verifiable chain between the two transactions.
-</Aside>
+</Callout>
 
 ## Step 4: Calculate sent messages
 
@@ -286,13 +284,11 @@ if (messagesFailed > 0) {
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Partial failures:** Even if the action phase succeeds overall, some individual messages may fail. Check `skippedActions` to detect partial failures. If `skippedActions > 0`, some messages in the batch were not sent.
 
   The `totalActions - 1` calculation accounts for the [`set_code` protection](/standard/wallets/highload/v3/specification#protection-against-set_code) action.
-</Aside>
+</Callout>
 
 ## Expected outputs
 

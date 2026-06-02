@@ -2,8 +2,6 @@
 title: "Callables"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Tolk supports first-class functions. Function values have callable types of the form `(...ArgsT) -> ReturnT`.
 
 ## First-class functions
@@ -38,11 +36,9 @@ fun demo() {
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Functions with `mutate` parameters cannot be assigned to variables or passed around. Mutation is not part of the type system.
-</Aside>
+</Callout>
 
 ## Lambda functions
 

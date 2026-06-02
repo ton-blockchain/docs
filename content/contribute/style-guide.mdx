@@ -3,8 +3,6 @@ title: "Documentation style guide"
 sidebarTitle: "Style guide"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 This guide covers the basics: how to structure pages, write examples, and keep docs consistent and safe.
 
 ## Write for the reader
@@ -77,7 +75,7 @@ On long guides with many risky commands, combine a clear page-level warning at t
 Pattern:
 
 ````
-<Aside
+<Callout
   type="caution"
   title="Funds at risk"
 >
@@ -88,7 +86,7 @@ Pattern:
   ```
 
   On-chain fund transfers on testnet and mainnet are irreversible.
-</Aside>
+</Callout>
 ````
 
 Default to testnet in task pages. Make destructive flags opt-in and document mitigations.

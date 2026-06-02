@@ -2,8 +2,6 @@
 title: "Cells, slices, builders"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 In TON, all data is stored in and represented as _cells_.
 
 Tolk provides low-level functions for constructing and parsing cells manually, as well as [automatic serialization](/languages/tolk/features/auto-serialization) of structures to and from cells.
@@ -115,9 +113,9 @@ fun demo() {
 
 ### Embed constant slices into a contract
 
-<Aside type="note">
+<Callout type="note">
   Tolk has a dedicated [`string`](/languages/tolk/types/strings) type backed by snake-encoded cells. The examples below show how to embed constant slices with low-level binary data.
-</Aside>
+</Callout>
 
 Use `"...".literalSlice()` to create a constant slice from a string literal:
 
@@ -212,9 +210,9 @@ val smth = s.loadAny<Something>();
 val smth: Something = s.loadAny(); // with T deduced as Something
 ```
 
-<Aside type="note">
+<Callout type="note">
   Notice that `T.fromSlice(s)` does not mutate a slice `s`, while `s.loadAny<T>()` does. This is due to how Tolk handles [mutability](/languages/tolk/syntax/mutability): all `s.loadXYZ()` methods mutate a slice, but functions in the form `doSomething(s)` do not.
-</Aside>
+</Callout>
 
 Similarly, `storeAny<T>()` for a builder accepts any serializable value:
 

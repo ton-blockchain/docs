@@ -3,11 +3,9 @@ title: "Smart contract development with Blueprint"
 sidebarTitle: "Smart contract development"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
-<Aside type="note">
+<Callout type="note">
   [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
-</Aside>
+</Callout>
 
 Ensure your current directory is the root of the project initialized with `npm create ton@latest`.
 
@@ -103,14 +101,14 @@ Wrappers are TypeScript classes that **you write** to interact with your smart c
 
 When you create a new contract with Blueprint, you need to write your own wrapper class in the `wrappers/` folder to define how your application will interact with the contract.
 
-<Aside
+<Callout
   type="tip"
   title="Naming Convention"
 >
   Methods that send messages should start with `send` (e.g., `sendDeploy`, `sendIncrement`), and methods that read data should start with `get` (e.g., `getCounter`).
 
   This convention works seamlessly with the `open()` method, which automatically provides the `ContractProvider` as the first argument to your wrapper methods.
-</Aside>
+</Callout>
 
 ### Static creating methods
 
@@ -165,9 +163,9 @@ export class Counter implements Contract {
 - `code` - Compiled contract code (usually loaded from build artifacts)
 - `workchain` - workchain ID (0 for basechain, -1 for masterchain)
 
-<Aside type="tip">
+<Callout type="tip">
   Contracts created with `createFromAddress()` cannot be deployed since they lack the `init` data required for deployment. Use `createFromConfig()` for new contracts that need to be deployed.
-</Aside>
+</Callout>
 
 ### Sending messages
 

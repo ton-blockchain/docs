@@ -3,8 +3,6 @@ title: "How to verify Groth16 examples on TON"
 sidebarTitle: "Groth16 examples"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Run [Groth16](https://eprint.iacr.org/2016/260.pdf) verifier examples from [`zk-examples/zk-ton-examples`](https://github.com/zk-examples/zk-ton-examples) via [Circom](https://docs.circom.io/), [Noname](https://github.com/zksecurity/noname), [Gnark](https://github.com/Consensys/gnark), and [Arkworks](https://arkworks.rs/), then confirm the proof both locally and on-chain in TON.
 
 For the underlying export flow, see [Zero-knowledge proofs on TON](/contract-dev/techniques/zero-knowledge).
@@ -40,12 +38,12 @@ npm install
 | `cubic-gnark` | Gnark    | [`circuits/cubic-gnark`](https://github.com/zk-examples/zk-ton-examples/tree/main/circuits/cubic-gnark)                 | `y = x^3 + x + 5`               | `npx blueprint test Verifier_cubic_tolk`      |
 | `MulCircuit`  | Arkworks | [`circuits/Arkworks/MulCircuit`](https://github.com/zk-examples/zk-ton-examples/tree/main/circuits/Arkworks/MulCircuit) | `z = x * y`                     | `npx blueprint test Verifier_ark_tolk`        |
 
-<Aside
+<Callout
   type="caution"
   title="Run locally first"
 >
   This page follows the upstream Tolk verifier tests and runs in the Blueprint sandbox by default, not on TON Mainnet. When adapting the examples to TON Testnet or TON Mainnet, start on TON Testnet with small amounts. The trusted-setup commands are for local tests; production circuits need a dedicated multi-party ceremony with fresh high-entropy contributions.
-</Aside>
+</Callout>
 
 ## Run the `Multiplier` example
 

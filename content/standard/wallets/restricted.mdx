@@ -2,15 +2,12 @@
 title: "Restricted wallet"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside
+<Callout
   type="danger"
   title="Security warning"
 >
   Restricted Wallet is unmaintained and has unresolved security issues.
-</Aside>
+</Callout>
 
 Restricted Wallet is a specialized wallet contract that restricts transfers to predefined owner address, and some operations with Elector and Config contracts. It is used in [Single Nominator](https://github.com/orbs-network/single-nominator) project to securely hold a validator stake and participate in elections without a risk of stealing funds from it.
 
@@ -27,8 +24,8 @@ You can only send funds to the predefined owner address or do operations with [E
 ## How it works
 
 <Image
-  src="/resources/images/wallets/restricted.png"
-  darkSrc="/resources/images/wallets/restricted.png"
+  src="/images/wallets/restricted.png"
+  darkSrc="/images/wallets/restricted.png"
   alt="Single Nominator Architecture"
 />
 

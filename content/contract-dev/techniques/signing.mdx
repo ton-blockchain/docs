@@ -2,8 +2,6 @@
 title: "Signing messages"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Cryptographic signatures are the foundation of access control. Contracts verify signatures on-chain and implement their own authorization policies for [wallet operations](/standard/wallets/how-it-works#how-ownership-verification-works), server-authorized actions, [gasless transactions](/standard/wallets/v5#gasless-transactions), multisig wallets, and delegation.
 
 ## Ed25519 in TON
@@ -16,11 +14,9 @@ Specification:
 - Signature size: 512 bits
 - Curve: Ed25519
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The public key is _not_ the wallet address. The address is derived from the contract's initial code and data that are included in [`StateInit`](/foundations/messages/deploy) structure. Multiple contracts can use the same public key but have [different addresses](/foundations/addresses/overview).
-</Aside>
+</Callout>
 
 ## Other primitives
 
@@ -187,12 +183,12 @@ After loading the signature, the remaining data is a **slice**. To verify the si
 Why expensive?\
 `slice_hash()` internally rebuilds a cell from the slice, copying all data and references.
 
-<Aside
+<Callout
   type="tip"
   title="Optimization available"
 >
   Recent TVM versions support `builder_hash()` for efficient hashing. Convert the slice to a builder and hash it — this costs less than 100 gas total. See [Optimization: Builder hashing](#optimization-builder-hashing) below for details.
-</Aside>
+</Callout>
 
 ### Approach 2: Signed data as cell
 
@@ -310,12 +306,12 @@ Load an existing mnemonic:
 const mnemonic = (process.env.MNEMONIC ?? 'MNEMONIC_WORDS').split(' ');
 ```
 
-<Aside
+<Callout
   type="danger"
   title="Protect the mnemonic"
 >
   Anyone with access to the mnemonic can control the wallet and all funds. Store it securely (password manager, hardware wallet, encrypted storage). Never commit it to version control.
-</Aside>
+</Callout>
 
 ### Step 2: Derive the keypair
 

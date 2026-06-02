@@ -1,17 +1,14 @@
 ---
 title: "FunC reserved words and built-ins"
 sidebarTitle: "Reserved words and built-ins"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 ## Reserved keywords
 
@@ -426,11 +423,9 @@ int int_at(tuple t, int index)
 
 Returns the element at index `index` in tuple `t`, casted as an integer.
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   It is responsibility of the programmer to check that the returned element is actually an integer.
-</Aside>
+</Callout>
 
 #### `cell_at`
 
@@ -440,11 +435,9 @@ cell cell_at(tuple t, int index)
 
 Returns the element at index `index` in tuple `t`, casted as a cell.
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   It is responsibility of the programmer to check that the returned element is actually a cell.
-</Aside>
+</Callout>
 
 #### `slice_at`
 
@@ -454,11 +447,9 @@ slice slice_at(tuple t, int index)
 
 Returns the element at index `index` in tuple `t`, casted as a slice.
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   It is responsibility of the programmer to check that the returned element is actually a slice.
-</Aside>
+</Callout>
 
 #### `tuple_at`
 
@@ -468,11 +459,9 @@ tuple tuple_at(tuple t, int index)
 
 Returns the element at index `index` in tuple `t`, casted as a tuple.
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   It is responsibility of the programmer to check that the returned element is actually a tuple.
-</Aside>
+</Callout>
 
 #### `at`
 
@@ -554,7 +543,7 @@ which receives 0 arguments and returns nothing.
 The `run_method0` is useful for dynamically executing methods at run-time.
 For example, receiving the method ID to execute in the incoming internal message.
 
-<Aside>
+<Callout>
   Recall that method ids can be explicitly set when declaring functions using the [`method_id` specifier](/languages/func/functions#method_id-specifier):
 
   ```func
@@ -566,14 +555,12 @@ For example, receiving the method ID to execute in the incoming internal message
   ```func
   run_method0(1234);   ;; executes function test
   ```
-</Aside>
+</Callout>
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   The FunC compiler does not check that the function to execute in `run_method0` has the correct number of arguments and
   that it returns `()`. This is responsibility of the programmer.
-</Aside>
+</Callout>
 
 #### `run_method1`
 
@@ -605,12 +592,10 @@ requires that `test` has the signature:
 
 As with [`run_method0`](#run_method0), function `run_method1` is useful for dynamically executing 1 argument methods at run-time.
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   The FunC compiler does not check that the function to execute in `run_method1` has the correct number of arguments,
   that it returns `()`, and that the types of arguments in `run_method1` and the function to execute coincide. This is responsibility of the programmer.
-</Aside>
+</Callout>
 
 #### `run_method2`
 

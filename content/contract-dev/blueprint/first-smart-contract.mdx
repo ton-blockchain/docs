@@ -3,12 +3,11 @@ title: "Write your first smart contract with Blueprint"
 sidebarTitle: "First smart contract"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-import { FenceTable } from "/snippets/fence-table.jsx";
+import { FenceTable } from "@/snippets/fence-table.jsx";
 
-<Aside type="note">
+<Callout type="note">
   [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
-</Aside>
+</Callout>
 
 This tutorial covers building, deploying, and interacting with a smart contract on TON from start to finish using [Blueprint](/contract-dev/blueprint/).
 
@@ -36,9 +35,7 @@ This tutorial covers building, deploying, and interacting with a smart contract 
 
     The generated project structure is:
 
-    <FenceTable
-
-    >
+    <FenceTable>
       Example/
       ├──contracts/                        # smart contract source code
       │   └── first\_contract.tolk          # main contract file
@@ -379,12 +376,12 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
 
     This tutorial uses testnet. Mainnet deployment is possible once the contract is verified and ready for production.
 
-    <Aside
+    <Callout
       type="danger"
       title="Funds at risk"
     >
       On-chain deployments spend Toncoin and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
-    </Aside>
+    </Callout>
 
     Run the script with:
 
@@ -398,12 +395,12 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
   <Step
     title="Confirm transaction"
   >
-    <Aside
+    <Callout
       title="Wallet required"
       type="note"
     >
       If a wallet is not installed, check the [wallet section](/ecosystem/wallet-apps/tonkeeper) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Toncoin on the testnet](/ecosystem/wallet-apps/get-coins).
-    </Aside>
+    </Callout>
 
     Scan the QR code displayed in the console, and confirm the transaction in the wallet app.
 
@@ -543,12 +540,12 @@ Deployment also counts as a message sent to the contract. The next step is to se
 
     Replace `<CONTRACT_ADDRESS>` with the address obtained in the deployment step.
 
-    <Aside
+    <Callout
       type="danger"
       title="Funds at risk"
     >
       On-chain deployments spend Toncoin and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
-    </Aside>
+    </Callout>
 
     To run this script:
 
@@ -577,12 +574,12 @@ Deployment also counts as a message sent to the contract. The next step is to se
     1. The contract receives the message, processes it in `onInternalMessage`, and updates the counter.
     1. The script returns the resulting transaction hash; inspect it in the explorer.
 
-    <Aside
+    <Callout
       title={"Composability"}
       type={"tip"}
     >
       Other contracts can also send messages to this contract. This enables composition: different contracts can combine their logic with this one, reuse it as a component, and build new behaviors that were not originally anticipated.
-    </Aside>
+    </Callout>
   </Step>
 
   <Step
@@ -648,16 +645,16 @@ Deployment also counts as a message sent to the contract. The next step is to se
       }
     ```
 
-    <Aside>
+    <Callout>
       Get methods are available **off-chain only** — JavaScript clients, web apps, etc. — through RPC providers. Contracts cannot call getters on other contracts — inter-contract interaction uses only messages.
-    </Aside>
+    </Callout>
 
-    <Aside
+    <Callout
       type="danger"
       title="Funds at risk"
     >
       On-chain deployments spend Toncoin and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
-    </Aside>
+    </Callout>
 
     To run this script:
 
