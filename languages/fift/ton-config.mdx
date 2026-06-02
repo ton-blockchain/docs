@@ -154,7 +154,10 @@ B5EE9C7241010301002C0001216E5650525E838CB0000000085E9455904001010BF300000008A002
 
 `config-msg-body.boc` now holds the internal message body for the configuration smart contract. Send it from a masterchain wallet attached to enough Toncoin to cover the fee.
 
-<Aside type="caution" title="Network or consensus changes">
+<Aside
+  type="caution"
+  title="Network or consensus changes"
+>
   Proposing or voting on configuration parameters affects validator and elector behavior. Reverting an applied change takes another accepted proposal and another set of validator votes, so rehearse the full procedure on TON Testnet before touching TON Mainnet.
 </Aside>
 
@@ -187,7 +190,10 @@ remote result (not to be trusted):  [ 2340800000 ]
 
 The arguments are: `critical?` flag = `0`, lifetime = `1100000` seconds (about 12.7 days), `bits` = `104`, `refs` = `0`. The bit and reference counts come from the earlier `create-config-proposal.fif` output.
 
-<Aside type="danger" title="Funds at risk">
+<Aside
+  type="danger"
+  title="Funds at risk"
+>
   The next command moves funds on TON Mainnet and changes validator and network behavior. On-chain transfers are final, and reversing a configuration change takes another accepted proposal. Confirm both the address and the amount on TON Testnet before repeating on TON Mainnet.
 </Aside>
 
@@ -384,7 +390,7 @@ The command writes `vote-msg-body.boc`, the internal message body to send to the
 
 Upgrading the configuration smart contract or the elector smart contract uses the same proposal mechanism. Wrap the new code as the only reference of a value cell and propose that cell as the new value of parameter `-1000` for the configuration contract, or parameter `-1001` for the elector contract. Both parameters are critical, so an upgrade demands the same heightened voting threshold as a constitutional change. Stage each upgrade on testnet and discuss it publicly before validator operators cast their votes.
 
-An alternative is to repoint parameter `0`, the configuration contract address, or parameter `1`, the elector contract address, to a different and already initialized contract. The replacement configuration contract must hold a valid configuration dictionary in the first reference of its persistent data. Migrating mutable state across contracts is hard, since that state includes the active proposals and the previous and current validator participant lists. Upgrading code in place is therefore preferable to swapping addresses.
+An alternative is to point the parameter `0`, the configuration contract address, or parameter `1` (elector contract address), to a different and already initialized contract. The replacement configuration contract must hold a valid configuration dictionary in the first reference of its persistent data. Migrating mutable state across contracts is hard, since that state includes the active proposals and the previous and current validator participant lists. Upgrading code in place is therefore preferable to swapping addresses.
 
 Two helper scripts build these upgrade proposals. [`create-config-upgrade-proposal.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/create-config-upgrade-proposal.fif) loads a Fift assembler source, `auto/config-code.fif` by default, which is the FunC compiler output for [`config-code.fc`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-code.fc), and emits a proposal for parameter `-1000`. [`create-elector-upgrade-proposal.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/create-elector-upgrade-proposal.fif) does the same for the elector code, loading `auto/elector-code.fif` and emitting a proposal for parameter `-1001`.
 
