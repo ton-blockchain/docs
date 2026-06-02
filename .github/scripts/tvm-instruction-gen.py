@@ -5,7 +5,7 @@ import textwrap
 import mistletoe
 
 WORKSPACE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-MDX_PATH = os.path.join(WORKSPACE_ROOT, "tvm", "instructions.mdx")
+MDX_PATH = os.path.join(WORKSPACE_ROOT, "content", "tvm", "instructions.mdx")
 
 START_MARK = "{/* STATIC_START tvm_instructions */}"
 END_MARK = "{/* STATIC_END tvm_instructions */}"

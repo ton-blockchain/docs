@@ -10,8 +10,8 @@ except ImportError:
     print("PyYAML not installed. Run: pip install pyyaml")
     exit(1)
 
-SPEC_PATH = 'ecosystem/api/toncenter/v3.yaml'
-MDX_PATH = 'ecosystem/api/toncenter/v3/overview.mdx'
+SPEC_PATH = 'content/ecosystem/api/toncenter/v3.yaml'
+MDX_PATH = 'content/ecosystem/api/toncenter/v3/overview.mdx'
 MARKER = 'API_V3_ENDPOINTS'
 LINK_BASE = '/ecosystem/api/toncenter/v3'
 
