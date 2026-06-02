@@ -71,7 +71,7 @@ const checkUnique = (config) => {
 const checkExist = (config) => {
   const uniqPages = [...getNavLinksSet(config)];
   const missingPages = uniqPages.filter((it) => {
-    const rel = it.replace(/^\/+/, '').replace(/#.*$/, '') + '.mdx';
+    const rel = it.replace(/^\/+content/, 'content').replace(/#.*$/, '') + '.mdx';
     return !(existsSync(rel) && statSync(rel).isFile());
   });
   if (missingPages.length !== 0) {

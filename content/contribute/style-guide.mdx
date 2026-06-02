@@ -30,7 +30,7 @@ This guide covers the basics: how to structure pages, write examples, and keep d
 
 ## Where pages go
 
-- Keep the flow linear; follow the `docs.json` sidebar.
+- Keep the flow linear; follow the `meta.json`-formed sidebar.
 - In each topic group, order pages: Explanation → How-to → Reference.
 - Canonical specs — `reference/`. Link to it; don’t duplicate tables or parameters.
 
@@ -124,7 +124,7 @@ Make sure the guide as a whole clearly covers the risk, scope, rollback or mitig
 ## Images
 
 - Use the `<Image>` component for all images. Markdown image syntax `![...](...)` and raw `<img ...>` are not allowed.
-- Store images under `resources/images/` and reference them with root-absolute paths, for example `<Image src="/resources/images/<GROUP>/<FILE>.png" />`. **MUST NOT** use relative `src` such as `./` or `../`.
+- Store images under `public/images/` and reference them with root-absolute paths, for example `<Image src="/public/images/<GROUP>/<FILE>.png" />`. **MUST NOT** use relative `src` such as `./` or `../`.
 - Provide meaningful, non-empty `alt` text (never `alt=""`); add `darkSrc` when the dark theme needs different contrast. Keep sizes/aspect ratios consistent across a page.
 - SVGs: if you omit `darkSrc`, colors are auto-inverted in dark mode; add `darkSrc` if inversion isn’t correct.
 

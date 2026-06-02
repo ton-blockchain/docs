@@ -157,10 +157,11 @@ const checkExist = (config) => {
    */
   const pathFindFiles = (path) => {
     const cleanedPath = path.replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
+    const relPath = cleanedPath === '' ? 'content' : `content/${cleanedPath}`;
     const existingFiles = [
-      cleanedPath === '' ? `index.mdx` : `${cleanedPath}/index.mdx`,
-      `${cleanedPath}.mdx`,
-      `${cleanedPath}`,
+      `${relPath}/index.mdx`,
+      `${relPath}.mdx`,
+      `${relPath}`,
     ].filter((it) => existsSync(it) && statSync(it).isFile());
 
     if (existingFiles.length === 0) {
@@ -335,7 +336,7 @@ const checkPrevious = async (config) => {
     return { ok: true };
   }
 
-  const redirectSources = getRedirects(config).map((it) => it.source);
+  const redirectSources = getRedirects(config).map((it) => prefixWithSlash(it.source));
   const missingSources = prevOnlyLinks.filter(
     (it) =>
       [it, it.replace(/\/index$/, ''), it.replace(/\/README$/, '')].some((variant) =>
@@ -379,7 +380,7 @@ const checkUpstream = async (localConfig) => {
     return { ok: true };
   }
 
-  const redirectSources = getRedirects(localConfig).map((it) => it.source);
+  const redirectSources = getRedirects(localConfig).map((it) => prefixWithSlash(it.source));
   const eolWildcards = redirectSources.filter((it) => it.endsWith('/:slug*')).map((it) => it.replace(/\/:slug\*$/, ''));
   const missingSources = upstreamOnlyLinks.filter(
     (it) =>

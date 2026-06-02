@@ -1,6 +1,6 @@
 // The .jsonc extension allows free use of comments and trailing commas.
 // The file is named with a dot in front to discourage frequent editing —
-// target dictionaries are located in the resources/dictionaries/ directory.
+// target dictionaries are located in the public/dictionaries/ directory.
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
@@ -9,22 +9,22 @@
     {
       // Allowed words
       "name": "main-list",
-      "path": "resources/dictionaries/custom.txt",
+      "path": "public/dictionaries/custom.txt",
       "addWords": true,
     },
     {
       // Banned words with no clear or correct replacements
       // For a few words with those, see the flagWords property later in this file
       "name": "deny-list",
-      "path": "resources/dictionaries/ban.txt"
+      "path": "public/dictionaries/ban.txt"
     },
     {
       "name": "2lw-deny-list",
-      "path": "resources/dictionaries/two-letter-words-ban.txt"
+      "path": "public/dictionaries/two-letter-words-ban.txt"
     },
     {
       "name": "tvm-instructions",
-      "path": "resources/dictionaries/tvm-instructions.txt"
+      "path": "public/dictionaries/tvm-instructions.txt"
     }
   ],
   "dictionaries": [
@@ -68,7 +68,7 @@
     },
     // Do not check for banned words (denylists or flagWords) in certain files
     {
-      "filename": "contribute/style-guide*.mdx",
+      "filename": "content/contribute/style-guide*.mdx",
       "ignoreWords": [
         "tos",
         "DOI",
@@ -85,7 +85,7 @@
       ]
     },
     {
-      "filename": "tolk/features/compiler-optimizations.mdx",
+      "filename": "content/tolk/features/compiler-optimizations.mdx",
       "ignoreWords": [
         "fifting",
       ]
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "filename": "resources/grammars/*.json",
+      "filename": "public/grammars/*.json",
       "ignoreWords": [
         "tlb",
       ],
@@ -123,7 +123,7 @@
       ]
     },
     {
-      "filename": "ecosystem/ai/mcp.mdx",
+      "filename": "content/ecosystem/ai/mcp.mdx",
       "ignoreWords": [
         "mcp", // lowercase in the title
       ],
@@ -137,13 +137,13 @@
   ],
   "ignorePaths": [
     // Some whitepapers
-    "foundations/whitepapers/tblkch.mdx",
-    "foundations/whitepapers/ton.mdx",
-    "foundations/whitepapers/tvm.mdx",
-    "languages/fift/whitepaper.mdx",
-    "tolk/features/standard-library.mdx",
+    "content/foundations/whitepapers/tblkch.mdx",
+    "content/foundations/whitepapers/ton.mdx",
+    "content/foundations/whitepapers/tvm.mdx",
+    "content/languages/fift/whitepaper.mdx",
+    "content/tolk/features/standard-library.mdx",
     // Generated files
-    "tvm/instructions.mdx",
+    "content/tvm/instructions.mdx",
     // Binaries
     "**/*.boc",
     // Code
