@@ -1,0 +1,397 @@
+---
+title: "How to change TON configuration parameters with Fift"
+sidebarTitle: "Change TON config params"
+---
+
+import { Aside } from '/snippets/aside.jsx';
+
+The TON blockchain stores its [configuration parameters](/foundations/config) on-chain. Changing one requires a majority of validators to vote in favor through the configuration smart contract.
+
+## Prerequisites
+
+- The [`fift`](/languages/fift/overview#installation) and [`lite-client`](https://github.com/ton-blockchain/ton/releases/latest) binaries from the latest TON release.
+- A masterchain wallet holding at least 4 Toncoin to cover the proposal fee.
+
+The guide assumes familiarity with [Fift](/languages/fift/overview), the [Lite Client](/ecosystem/nodes/overview#interacting-with-ton-nodes), and the structure of [TON configuration parameters](/foundations/config).
+
+## Create a configuration proposal
+
+A **configuration proposal** carries:
+
+- The index of the parameter to change.
+- The new value, or `Null` to delete the parameter.
+- The proposal's expiration Unix time.
+- A flag marking the proposal as **critical**.
+- An optional **old value hash**. When set, the proposal applies only if the cell hash of the current value matches.
+
+Any masterchain wallet can submit a proposal after paying the required fee. Only validators may vote on existing proposals.
+
+Proposals come in two kinds: **ordinary** and **critical**. A critical proposal can change any parameter, including the ones listed as critical in parameter `#10`. Submitting a critical proposal costs more and usually requires more votes across more rounds. The thresholds for both kinds are stored in parameter `#11`. Ordinary proposals are cheaper but cannot touch critical parameters.
+
+Creating a proposal starts with a [BoC](/foundations/serialization/boc) file holding the new value. The exact procedure depends on the target parameter. As a trivial example, parameter `-239` containing the UTF-8 string `"TEST"`, namely `0x54455354`, is produced in Fift by:
+
+```fift
+<b "TEST" $, b> 2 boc+>B "config-param-239.boc" B>file
+bye
+```
+
+The result is a 21-byte file, `config-param-239.boc`, holding the serialization.
+
+Non-negative parameter indices need more care, since validators reject values that do not parse against the expected TL-B type. For these, prefer `crypto/create-state` from the build directory over plain `fift`, and adapt the relevant fragments from [`gen-zerostate.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/gen-zerostate.fif) and [`CreateState.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/CreateState.fif). Both files build the zero state, TON's equivalent of a genesis block.
+
+Take parameter `#8`, which encodes the active global blockchain version and capabilities:
+
+```tlb
+capabilities#c4 version:uint32 capabilities:uint64 = GlobalVersion;
+_ GlobalVersion = ConfigParam 8;
+```
+
+Read the active value with the Lite Client:
+
+```bash title="lite-client"
+getconfig 8
+```
+
+Expected output:
+
+```text
+...
+ConfigParam(8) = (
+  (capabilities version:1 capabilities:6))
+
+x{C4000000010000000000000006}
+```
+
+Enabling bit `#3`, weight `+8`, turns on `capReportVersion`. That capability makes every collator record its supported versions and capabilities in the block header it produces. The new value is therefore `version=1`, `capabilities=14`. The serialization fits on one line of Fift:
+
+```fift
+x{C400000001000000000000000E} s>c 2 boc+>B "config-param8.boc" B>file
+```
+
+The resulting `config-param8.boc` is 30 bytes long.
+
+Hand-writing the hex is impractical for richer parameters. Reuse the relevant fragments of [`gen-zerostate.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/gen-zerostate.fif) and [`CreateState.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/CreateState.fif):
+
+```fift
+// version capabilities --
+{ <b x{c4} s, rot 32 u, swap 64 u, b> 8 config! } : config.version!
+1 constant capIhr
+2 constant capCreateStats
+4 constant capBounceMsgBody
+8 constant capReportVersion
+16 constant capSplitMergeTransactions
+```
+
+and
+
+```fift
+// version capabilities
+1 capCreateStats capBounceMsgBody or capReportVersion or config.version!
+```
+
+Dropping the trailing `8 config!` from `config.version!` leaves exactly the builder needed for the BoC. Save the following as `create-param8.fif`:
+
+```fift
+#!/usr/bin/fift -s
+// https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/fift/lib/TonUtil.fif
+"TonUtil.fif" include
+
+1 constant capIhr
+2 constant capCreateStats
+4 constant capBounceMsgBody
+8 constant capReportVersion
+16 constant capSplitMergeTransactions
+{ <b x{c4} s, rot 32 u, swap 64 u, b> } : prepare-param8
+
+// create new value for config param #8
+1 capCreateStats capBounceMsgBody or capReportVersion or prepare-param8
+// check the validity of this value
+dup 8 is-valid-config? not abort"not a valid value for chosen configuration parameter"
+// print
+dup ."Serialized value = " <s csr.
+// save into file provided as first command line argument
+2 boc+>B $1 tuck B>file
+."(Saved into file " type .")" cr
+```
+
+Run it with `create-state`, a Fift variant that performs extra blockchain validity checks:
+
+```bash
+crypto/create-state -s create-param8.fif config-param8.boc
+```
+
+Expected output:
+
+```text
+Serialized value = x{C400000001000000000000000E}
+(Saved into file config-param8.boc)
+```
+
+The file is again 30 bytes long and holds the same bits as the hand-written version.
+
+With the value file ready, build the proposal by running [`create-config-proposal.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/create-config-proposal.fif) from `crypto/smartcont`:
+
+```bash
+crypto/create-state -s create-config-proposal.fif 8 config-param8.boc -x 1100000
+```
+
+Expected output:
+
+```text
+Loading new value of configuration parameter 8 from file config-param8.boc
+x{C400000001000000000000000E}
+
+Non-critical configuration proposal will expire at 1586779536 (in 1100000 seconds)
+Query id is 6810441749056454664
+resulting internal message body: x{6E5650525E838CB0000000085E9455904_}
+ x{F300000008A_}
+  x{C400000001000000000000000E}
+
+B5EE9C7241010301002C0001216E5650525E838CB0000000085E9455904001010BF300000008A002001AC400000001000000000000000ECD441C3C
+(a total of 104 data bits, 0 cell references -> 59 BoC data bytes)
+(Saved to file config-msg-body.boc)
+```
+
+`config-msg-body.boc` now holds the internal message body for the configuration smart contract. Send it from a masterchain wallet attached to enough Toncoin to cover the fee.
+
+<Aside
+  type="caution"
+  title="Network or consensus changes"
+>
+  Proposing or voting on configuration parameters affects validator and elector behavior. Reverting an applied change takes another accepted proposal and another set of validator votes, so rehearse the full procedure on TON Testnet before touching TON Mainnet.
+</Aside>
+
+Find the address of the configuration smart contract with `getconfig 0`:
+
+```bash title="lite-client"
+getconfig 0
+```
+
+Expected output:
+
+```text
+ConfigParam(0) = ( config_addr:x5555555555555555555555555555555555555555555555555555555555555555)
+x{5555555555555555555555555555555555555555555555555555555555555555}
+```
+
+The configuration smart contract's address is `-1:5555…5555`. Its `proposal_storage_price` get-method returns the fee required to submit the proposal:
+
+```bash title="lite-client"
+runmethod -1:5555555555555555555555555555555555555555555555555555555555555555 proposal_storage_price 0 1100000 104 0
+```
+
+Expected output:
+
+```text
+arguments:  [ 0 1100000 104 0 75077 ]
+result:  [ 2340800000 ]
+remote result (not to be trusted):  [ 2340800000 ]
+```
+
+The arguments are: `critical?` flag = `0`, lifetime = `1100000` seconds (about 12.7 days), `bits` = `104`, `refs` = `0`. The bit and reference counts come from the earlier `create-config-proposal.fif` output.
+
+<Aside
+  type="danger"
+  title="Funds at risk"
+>
+  The next command moves funds on TON Mainnet and changes validator and network behavior. On-chain transfers are final, and reversing a configuration change takes another accepted proposal. Confirm both the address and the amount on TON Testnet before repeating on TON Mainnet.
+</Aside>
+
+The storage fee is 2.3408 Toncoin. Add at least 1.5 Toncoin for processing and send 4 Toncoin in total; any surplus is refunded. Sign the transfer with [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif), or the appropriate Fift script for the controlling wallet:
+
+```bash
+fift -s wallet.fif my-wallet -1:5555555555555555555555555555555555555555555555555555555555555555 31 4. -B config-msg-body.boc
+```
+
+Expected output:
+
+```text
+Transferring GR$4. to account kf9VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQft = -1:5555555555555555555555555555555555555555555555555555555555555555 seqno=0x1c bounce=-1
+Body of transfer message is x{6E5650525E835154000000085E9293944_}
+ x{F300000008A_}
+  x{C400000001000000000000000E}
+
+signing message: x{0000001C03}
+ x{627FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA773594000000000000000000000000000006E5650525E835154000000085E9293944_}
+  x{F300000008A_}
+   x{C400000001000000000000000E}
+
+resulting external message: x{89FE000000000000000000000000000000000000000000000000000000000000000007F0BAA08B4161640FF1F5AA5A748E480AFD16871E0A089F0F017826CDC368C118653B6B0CEBF7D3FA610A798D66522AD0F756DAEECE37394617E876EFB64E9800000000E01C_}
+ x{627FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA773594000000000000000000000000000006E5650525E835154000000085E9293944_}
+  x{F300000008A_}
+   x{C400000001000000000000000E}
+
+B5EE9C724101040100CB0001CF89FE000000000000000000000000000000000000000000000000000000000000000007F0BAA08B4161640FF1F5AA5A748E480AFD16871E0A089F0F017826CDC368C118653B6B0CEBF7D3FA610A798D66522AD0F756DAEECE37394617E876EFB64E9800000000E01C010189627FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA773594000000000000000000000000000006E5650525E835154000000085E9293944002010BF300000008A003001AC400000001000000000000000EE1F80CD3
+(Saved to file wallet-query.boc)
+```
+
+Broadcast the external message with the Lite Client:
+
+```bash title="lite-client"
+sendfile wallet-query.boc
+```
+
+Expected output:
+
+```text
+...
+external message status is 1
+```
+
+After a short wait, check the wallet for replies from the configuration smart contract, or query the contract's `list_proposals` get-method directly:
+
+```bash title="lite-client"
+runmethod -1:5555555555555555555555555555555555555555555555555555555555555555 list_proposals
+```
+
+Expected output:
+
+```text
+...
+arguments:  [ 107394 ]
+result:  [ ([64654898543692093106630260209820256598623953458404398631153796624848083036321 [1586779536 0 [8 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} -1] 112474791597373109254579258586921297140142226044620228506108869216416853782998 () 864691128455135209 3 0 0]]) ]
+remote result (not to be trusted):  [ ([64654898543692093106630260209820256598623953458404398631153796624848083036321 [1586779536 0 [8 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} -1] 112474791597373109254579258586921297140142226044620228506108869216416853782998 () 864691128455135209 3 0 0]]) ]
+... caching cell FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC
+```
+
+The list holds one pair:
+
+```
+[6465...6321 [1586779536 0 [8 C{FDCD...} -1] 1124...2998 () 8646...209 3 0 0]]
+```
+
+The first element, `6465…6321`, is the 256-bit proposal hash that uniquely identifies it. The second is a status tuple. It opens with the expiration Unix time `1586779536` and the criticality flag `0`.
+
+The proposal payload follows as the triple `[8 C{FDCD...} -1]`. The fields are the parameter index `8`, the new value cell `C{FDCD…}` shown by a prefix of its hash, and the required old-value hash. The value `-1` means the proposal places no constraint on the prior value.
+
+The next fields hold the voting state. `1124…2998` identifies the active validator set, `()` is the list of validator indices that have voted so far, and `weight_remaining` is `8646…209`. A positive `weight_remaining` means the proposal has not yet reached 3/4 of the validator weight this round; a negative value means it has.
+
+The trailing `3 0 0` is `rounds_remaining`, `wins`, and `losses`. `rounds_remaining` is the number of future validator sets that can still carry the proposal. `wins` counts rounds whose votes exceeded 3/4 of the validator weight, and `losses` counts rounds that fell short.
+
+Expand the value cell with `dumpcell`, passing the hash or any unique prefix:
+
+```bash title="lite-client"
+dumpcell FDC
+```
+
+Expected output:
+
+```text
+C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} =
+  x{C400000001000000000000000E}
+```
+
+The contents match the value placed in the proposal. The Lite Client can also render the cell as a `ConfigParam 8` TL-B value:
+
+```bash title="lite-client"
+dumpcellas ConfigParam8 FDC
+```
+
+Expected output:
+
+```text
+dumping cells as values of TLB type (ConfigParam 8)
+C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} =
+  x{C400000001000000000000000E}
+(
+    (capabilities version:1 capabilities:14))
+```
+
+This helps when reviewing proposals submitted by other validators.
+
+To inspect a single proposal by its 256-bit hash, call `get_proposal` with that hash as the only argument:
+
+```bash title="lite-client"
+runmethod -1:5555555555555555555555555555555555555555555555555555555555555555 get_proposal 64654898543692093106630260209820256598623953458404398631153796624848083036321
+```
+
+Expected output:
+
+```text
+...
+arguments:  [ 64654898543692093106630260209820256598623953458404398631153796624848083036321 94347 ]
+result:  [ [1586779536 0 [8 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} -1] 112474791597373109254579258586921297140142226044620228506108869216416853782998 () 864691128455135209 3 0 0] ]
+```
+
+The output matches the `list_proposals` entry for this proposal, with the leading identifier omitted.
+
+## Vote on a configuration proposal
+
+After submission, a proposal must collect votes from more than 75% of the current validator set by stake, possibly across several consecutive rounds with new sets elected in between. This raises the bar so that a configuration change reflects the agreement of multiple validator sets, not only the present one.
+
+Only validators listed in parameter `#34` may vote, identified there by their permanent public keys. The procedure is:
+
+- Look up `val-idx`, the zero-based index of the validator inside parameter `#34`.
+
+- Run [`config-proposal-vote-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-req.fif) from `crypto/smartcont`, passing `val-idx` and `config-proposal-id`:
+
+  ```bash
+  fift -s config-proposal-vote-req.fif -i 0 64654898543692093106630260209820256598623953458404398631153796624848083036321
+  ```
+
+  Expected output:
+
+  ```text
+  Creating a request to vote for configuration proposal 0x8ef1603180dad5b599fa854806991a7aa9f280dbdb81d67ce1bedff9d66128a1 on behalf of validator with index 0
+  566F744500008EF1603180DAD5B599FA854806991A7AA9F280DBDB81D67CE1BEDFF9D66128A1
+  Vm90RQAAjvFgMYDa1bWZ-oVIBpkaeqnygNvbgdZ84b7f-dZhKKE=
+  Saved to file validator-to-sign.req
+  ```
+
+- Sign the request with the validator's private key by running `sign <validator-key-id> 566F744…28A1` in the `validator-engine-console` connected to that validator.
+
+- Run [`config-proposal-vote-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-signed.fif) with the same arguments as `config-proposal-vote-req.fif`, followed by the base64 validator public key and the base64 signature.
+
+- The script writes `vote-msg-body.boc`, the body of an internal message that carries the signed vote.
+
+- Send `vote-msg-body.boc` from any masterchain smart contract, typically the validator's controlling smart contract, attaching a small amount of Toncoin for processing. Around 1.5 Toncoin is enough. This step mirrors the procedure used during validator elections:
+
+  ```bash
+  fift -s wallet.fif my_wallet_id -1:5555555555555555555555555555555555555555555555555555555555555555 1 1.5 -B vote-msg-body.boc
+  ```
+
+  The example above assumes a simple wallet controls the validator. Send the resulting `wallet-query.boc` from the Lite Client:
+
+  ```bash title="lite-client"
+  sendfile wallet-query.boc
+  ```
+
+- Track the queries by watching replies from the configuration smart contract to the controlling smart contract, or by reading the proposal with `get_proposal`:
+
+  ```bash title="lite-client"
+  runmethod -1:5555555555555555555555555555555555555555555555555555555555555555 get_proposal 64654898543692093106630260209820256598623953458404398631153796624848083036321
+  ```
+
+  Expected output:
+
+  ```text
+  ...
+  arguments:  [ 64654898543692093106630260209820256598623953458404398631153796624848083036321 94347 ]
+  result:  [ [1586779536 0 [8 C{FDCD887EAF7ACB51DA592348E322BBC0BD3F40F9A801CB6792EFF655A7F43BBC} -1] 112474791597373109254579258586921297140142226044620228506108869216416853782998 (0) 864691128455135209 3 0 0] ]
+  ```
+
+  The list of voter indices, `(0)` here, must include the validator's index from parameter `#34`. Each round whose votes exceed 3/4 of the validator weight increments `wins`, the first zero in `3 0 0`. Once `wins` reaches the threshold in parameter `#11`, the proposal is accepted and the change takes effect in the next masterchain block.
+
+  When the validator set rotates, the voter list resets to empty and `rounds_remaining`, initially `3`, drops by one. If it falls below zero, the proposal is discarded. A round that ends without crossing the threshold adds to `losses`, the second zero in `3 0 0`; once `losses` exceeds the limit in parameter `#11`, the proposal is rejected.
+
+### Automated vote generation
+
+Just as `create-election-bid` automates election bids, `validator-engine` and `validator-engine-console` automate most of the steps above and produce a `vote-msg-body.boc` ready to send from the controlling wallet.
+
+Place [`config-proposal-vote-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-req.fif) and [`config-proposal-vote-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-proposal-vote-signed.fif) next to [`validator-elect-req.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/validator-elect-req.fif) and [`validator-elect-signed.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/validator-elect-signed.fif), in the directory where the validator-engine looks for them. Then run, in the validator-engine-console:
+
+```bash title="validator-engine-console"
+create-proposal-vote 64654898543692093106630260209820256598623953458404398631153796624848083036321 vote-msg-body.boc
+```
+
+The command writes `vote-msg-body.boc`, the internal message body to send to the configuration smart contract.
+
+## Upgrade the configuration or elector contract
+
+Upgrading the configuration smart contract or the elector smart contract uses the same proposal mechanism. Wrap the new code as the only reference of a value cell and propose that cell as the new value of parameter `-1000` for the configuration contract, or parameter `-1001` for the elector contract. Both parameters are critical, so an upgrade demands the same heightened voting threshold as a constitutional change. Stage each upgrade on testnet and discuss it publicly before validator operators cast their votes.
+
+An alternative is to point the parameter `0`, the configuration contract address, or parameter `1` (elector contract address), to a different and already initialized contract. The replacement configuration contract must hold a valid configuration dictionary in the first reference of its persistent data. Migrating mutable state across contracts is hard, since that state includes the active proposals and the previous and current validator participant lists. Upgrading code in place is therefore preferable to swapping addresses.
+
+Two helper scripts build these upgrade proposals. [`create-config-upgrade-proposal.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/create-config-upgrade-proposal.fif) loads a Fift assembler source, `auto/config-code.fif` by default, which is the FunC compiler output for [`config-code.fc`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/config-code.fc), and emits a proposal for parameter `-1000`. [`create-elector-upgrade-proposal.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/create-elector-upgrade-proposal.fif) does the same for the elector code, loading `auto/elector-code.fif` and emitting a proposal for parameter `-1001`.
+
+Publish the modified FunC source alongside the exact FunC compiler version used to build it. Validators and their operators can then reproduce the compiled cell, compare hashes, and audit the changes before voting.
