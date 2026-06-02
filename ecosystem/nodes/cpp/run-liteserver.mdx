@@ -212,10 +212,10 @@ sudo ufw status
 
 The installation process consists of two stages (in total, this can take up to three hours):
 
-- Download DB damp and install the liteserver
+- Download DB dump and install the liteserver
 - Final synchronization of the liteserver
 
-### 2.1 Download DB damp and install the liteserver
+### 2.1 Download DB dump and install the liteserver
 
 ### 2.1.1 Install prerequisites and download installer (MyTonCtrl)
 
@@ -255,8 +255,10 @@ During the download process, the log contains entries like the following:
 [#cf6515 9.0GiB/218GiB(4%) CN:8 DL:252MiB ETA:14m7s]
 ```
 
-<Aside type="caution">
-  If there are no these lines in the log, check whether there is enough free space in accordance with [free space requirements](#1-4-free-space-requirements).
+<Aside
+  type="caution"
+>
+  If there are no these lines in the log, check whether there is enough free space in accordance with [free space requirements](#1-4-free-space-requirements) or use [manual DB dump download](#manual-db-dump-download).
 </Aside>
 
 Upon successful completion of the installation, the following line appears in the log:
@@ -368,17 +370,59 @@ To verify disk and system performance, run the built-in `mytonctrl` benchmark:
 
 1. Stop the validator service:
 
-```bash
-sudo systemctl stop validator.service
-```
+   ```bash
+   sudo systemctl stop validator.service
+   ```
 
-2. Run the benchmark:
+1. Run the benchmark:
 
-```bash
-mytonctrl --cmd benchmark
-```
+   ```bash
+   mytonctrl --cmd benchmark
+   ```
 
 For stable liteserver operation, the benchmark score should be **greater than 70%**.
+
+### Manual DB dump download
+
+A manual download of the database dump is required if it does not download automatically. Download a pre-built database dump instead of syncing from peers. Check the [dump index](https://dump.ton.org/) for available snapshots.
+
+1. Install `aria2` and `plzip` if not already present:
+
+   ```bash
+   sudo apt install -y aria2 plzip
+   ```
+
+1. Stop the validator and MyTonCore services:
+
+   ```bash
+   sudo systemctl stop mytoncore.service
+   sudo systemctl stop validator.service
+   ```
+
+1. Download and extract the dump:
+
+   ```bash
+   cd /var/ton-work/
+   aria2c -x 16 https://dump.ton.org/dumps/latest.tar.lz
+   mv /var/ton-work/db /var/ton-work/db_old
+   mkdir /var/ton-work/db
+   plzip -d -c /var/ton-work/latest.tar.lz | tar -xvf - -C /var/ton-work/db
+   ```
+
+1. Restore configuration and keys from the original database:
+
+   ```bash
+   cp /var/ton-work/db_old/config.json /var/ton-work/db/config.json
+   cp -r /var/ton-work/db_old/keyring /var/ton-work/db/keyring
+   sudo chown -R validator:validator /var/ton-work/db
+   ```
+
+1. Start the services again:
+
+   ```bash
+   sudo systemctl start validator.service
+   sudo systemctl start mytoncore.service
+   ```
 
 ## Support
 
