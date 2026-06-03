@@ -36,6 +36,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
+      - name: Restore NPM cache
+        id: npm-cache-restore
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: &build-docs-npm-cache-paths |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: |
+            ${{ runner.os }}-npm-cache-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-${{ hashFiles('package-lock.json') }}-
+
       - name: Install dependencies
         run: |
           corepack enable
@@ -45,6 +57,14 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: '1'
         run: npm run build
+
+      - name: Save NPM cache
+        id: npm-cache-save
+        if: steps.npm-cache-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: *build-docs-npm-cache-paths
+          key: ${{ steps.npm-cache-restore.cache-primary-key }}
 
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'pull_request'
