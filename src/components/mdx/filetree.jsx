@@ -1,3 +1,6 @@
+'use client';
+import { File, Files, Folder } from './files';
+
 /**
  * A thin wrapper over Fumadocs' Files, File, and Folder components.
  *

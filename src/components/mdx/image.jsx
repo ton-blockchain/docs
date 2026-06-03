@@ -1,3 +1,6 @@
+'use client';
+import { Callout } from './callout';
+
 /**
  * @param {{
  *   src: string,
