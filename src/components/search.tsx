@@ -25,7 +25,7 @@ function initOrama() {
 export default function DefaultSearchDialog(props: SharedProps) {
   const { locale } = useI18n(); // (optional) for i18n
   const { search, setSearch, query } = useDocsSearch(
-    process.env.NEXT_PUBLIC_SEARCH_MODE === 'fetch'
+    process.env.NEXT_CONFIG === 'vercel'
       ? {
           type: 'fetch',
           locale,
