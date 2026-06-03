@@ -1,7 +1,8 @@
 // import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
+import type {NextConfig} from 'next';
 import {createMDX} from 'fumadocs-mdx/next';
-import {ghPagesUrl, gitConfig} from './src/lib/shared';
+import {ghPagesUrl, gitConfig} from '@/lib/shared';
 
 const withMDX = createMDX();
 const isGitHubPagesBuild =
@@ -37,8 +38,7 @@ const resolveAssetPrefix = () => {
 };
 
 
-/** @type {import('next').NextConfig} */
-const config = {
+const config: NextConfig = {
   output: 'export',
   reactStrictMode: true,
   env: {
