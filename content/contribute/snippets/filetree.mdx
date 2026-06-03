@@ -140,79 +140,79 @@ The `FileTreeItem` can be one of the following kinds:
 
 Whether to open all folders on page load. Can be overridden by the `open` property of individual [`FileTreeItem` entries](#items-required).
 
-## Using `<Tree>` directly
+## Using underlying components directly
 
-For cases where a data-driven approach is unnecessary, use the built-in `<Tree>` component directly. It requires no import and accepts `<Tree.File>` and `<Tree.Folder>` sub-components as children.
+For cases where a data-driven approach is unnecessary, use the Fumadocs' `<Files>`, `<Folder>`, and `<File>` components directly. They requires no import and the `<Files>` component accepts `<File>` and `<Folder>` sub-components as children.
 
 ```mdx
-<Tree>
-  <Tree.Folder name="app" defaultOpen>
-    <Tree.File name="layout.tsx" />
-    <Tree.File name="page.tsx" />
-    <Tree.Folder name="api" defaultOpen>
-      <Tree.Folder name="auth">
-        <Tree.File name="route.ts" />
-      </Tree.Folder>
-      <Tree.File name="route.ts" />
-    </Tree.Folder>
-    <Tree.Folder name="components">
-      <Tree.File name="button.tsx" />
-      <Tree.File name="dialog.tsx" />
-      <Tree.File name="tabs.tsx" />
-    </Tree.Folder>
-  </Tree.Folder>
-  <Tree.File name="package.json" />
-</Tree>
+<Files>
+  <Folder name="app" defaultOpen>
+    <File name="layout.tsx" />
+    <File name="page.tsx" />
+    <Folder name="api" defaultOpen>
+      <Folder name="auth">
+        <File name="route.ts" />
+      </Folder>
+      <File name="route.ts" />
+    </Folder>
+    <Folder name="components">
+      <File name="button.tsx" />
+      <File name="dialog.tsx" />
+      <File name="tabs.tsx" />
+    </Folder>
+  </Folder>
+  <File name="package.json" />
+</Files>
 ```
 
-<Tree>
-  <Tree.Folder
+<Files>
+  <Folder
     name="app"
     defaultOpen
   >
-    <Tree.File
+    <File
       name="layout.tsx"
     />
 
-    <Tree.File
+    <File
       name="page.tsx"
     />
 
-    <Tree.Folder
+    <Folder
       name="api"
       defaultOpen
     >
-      <Tree.Folder
+      <Folder
         name="auth"
       >
-        <Tree.File
+        <File
           name="route.ts"
         />
-      </Tree.Folder>
+      </Folder>
 
-      <Tree.File
+      <File
         name="route.ts"
       />
-    </Tree.Folder>
+    </Folder>
 
-    <Tree.Folder
+    <Folder
       name="components"
     >
-      <Tree.File
+      <File
         name="button.tsx"
       />
 
-      <Tree.File
+      <File
         name="dialog.tsx"
       />
 
-      <Tree.File
+      <File
         name="tabs.tsx"
       />
-    </Tree.Folder>
-  </Tree.Folder>
+    </Folder>
+  </Folder>
 
-  <Tree.File
+  <File
     name="package.json"
   />
-</Tree>
+</Files>
