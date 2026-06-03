@@ -1,3 +1,4 @@
+'use client';
 import { CodeBlock, Pre } from 'fumadocs-ui/components/codeblock';
 import { renderMermaidSVG } from 'beautiful-mermaid';
 

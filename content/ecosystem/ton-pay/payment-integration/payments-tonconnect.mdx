@@ -531,94 +531,96 @@ async function handleTransaction() {
 
 ## Troubleshooting
 
-<Accordion
-  title="If a transaction fails with Wallet is not connected"
->
-  Ensure the wallet is connected before calling `sendTransaction`:
+<Accordions>
+  <Accordion
+    title="If a transaction fails with Wallet is not connected"
+  >
+    Ensure the wallet is connected before calling `sendTransaction`:
 
-  ```typescript
-  if (!tonConnectUI.wallet) {
-    await tonConnectUI.connectWallet();
-    // Wait for connection before proceeding
-  }
-  ```
-
-  Add a connection state check:
-
-  ```typescript
-  const isConnected = tonConnectUI.wallet !== null;
-  ```
-</Accordion>
-
-<Accordion
-  title="If sendTransaction throws Invalid address format"
->
-  1. Ensure the `from` address matches the connected wallet address.
-  1. Verify that the recipient address is [a valid TON address](/foundations/addresses/formats).
-  1. Use the wallet address provided by the SDK to avoid format mismatches:
-
-  ```typescript
-  const address = useTonAddress(true); // Ensure consistent format
-  ```
-</Accordion>
-
-<Accordion
-  title="If a transaction expires before the user signs it"
->
-  The `validUntil` timestamp may be too short. Increase the validity period to give the user more time to confirm the transaction:
-
-  ```typescript
-  // Increase from 5 to 10 minutes if needed
-  validUntil: Math.floor(Date.now() / 1000) + 600
-  ```
-</Accordion>
-
-<Accordion
-  title="If the manifest URL fails to load"
->
-  Check for the following common issues:
-
-  - The URL is not publicly accessible.
-  - [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) headers are not configured correctly.
-  - The manifest JSON is malformed.
-  - The URL is not HTTPS; required in production.
-
-  Open the manifest URL directly in a browser to verify that it is accessible.
-</Accordion>
-
-<Accordion
-  title="If onStatusChange is not triggered"
->
-  Ensure that the status change subscription is created once and remains active for the lifetime of the component.
-
-  ```typescript
-  useEffect(() = >{
-    const unsubscribe = tonConnectUI.onStatusChange(handleWalletChange);
-    return () = >unsubscribe(); // Clean up subscription
-  },
-  [tonConnectUI]);
-  ```
-</Accordion>
-
-<Accordion
-  title="If multiple wallet connection prompts appear"
->
-  `connectWallet()` may be called more than once. Track the connection state:
-
-  ```typescript
-  const[isConnecting, setIsConnecting] = useState(false);
-
-  const connect = async() = >{
-    if (isConnecting) return;
-    setIsConnecting(true);
-    try {
+    ```typescript
+    if (!tonConnectUI.wallet) {
       await tonConnectUI.connectWallet();
-    } finally {
-      setIsConnecting(false);
+      // Wait for connection before proceeding
     }
-  };
-  ```
-</Accordion>
+    ```
+
+    Add a connection state check:
+
+    ```typescript
+    const isConnected = tonConnectUI.wallet !== null;
+    ```
+  </Accordion>
+
+  <Accordion
+    title="If sendTransaction throws Invalid address format"
+  >
+    1. Ensure the `from` address matches the connected wallet address.
+    1. Verify that the recipient address is [a valid TON address](/foundations/addresses/formats).
+    1. Use the wallet address provided by the SDK to avoid format mismatches:
+
+    ```typescript
+    const address = useTonAddress(true); // Ensure consistent format
+    ```
+  </Accordion>
+
+  <Accordion
+    title="If a transaction expires before the user signs it"
+  >
+    The `validUntil` timestamp may be too short. Increase the validity period to give the user more time to confirm the transaction:
+
+    ```typescript
+    // Increase from 5 to 10 minutes if needed
+    validUntil: Math.floor(Date.now() / 1000) + 600
+    ```
+  </Accordion>
+
+  <Accordion
+    title="If the manifest URL fails to load"
+  >
+    Check for the following common issues:
+
+    - The URL is not publicly accessible.
+    - [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) headers are not configured correctly.
+    - The manifest JSON is malformed.
+    - The URL is not HTTPS; required in production.
+
+    Open the manifest URL directly in a browser to verify that it is accessible.
+  </Accordion>
+
+  <Accordion
+    title="If onStatusChange is not triggered"
+  >
+    Ensure that the status change subscription is created once and remains active for the lifetime of the component.
+
+    ```typescript
+    useEffect(() = >{
+      const unsubscribe = tonConnectUI.onStatusChange(handleWalletChange);
+      return () = >unsubscribe(); // Clean up subscription
+    },
+    [tonConnectUI]);
+    ```
+  </Accordion>
+
+  <Accordion
+    title="If multiple wallet connection prompts appear"
+  >
+    `connectWallet()` may be called more than once. Track the connection state:
+
+    ```typescript
+    const[isConnecting, setIsConnecting] = useState(false);
+
+    const connect = async() = >{
+      if (isConnecting) return;
+      setIsConnecting(true);
+      try {
+        await tonConnectUI.connectWallet();
+      } finally {
+        setIsConnecting(false);
+      }
+    };
+    ```
+  </Accordion>
+</Accordions>
 
 ## Optional API key configuration
 

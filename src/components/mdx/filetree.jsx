@@ -1,4 +1,9 @@
+'use client';
+import { File, Files, Folder } from './files';
+
 /**
+ * A thin wrapper over Fumadocs' Files, File, and Folder components.
+ *
  * @typedef {(
  *   {name: string, note?: string}
  * )} FileTreeItemCommon
@@ -22,7 +27,7 @@ export const FileTree = ({ items = [], defaultOpen = true }) => {
     // Handle ellipsis items
     if (item === "..." || item === "…") {
       // @ts-ignore
-      return <Tree.File key={index} name="…" />;
+      return <File key={index} name="…" />;
     }
 
     // Handle file items (both string and file objects)
@@ -32,7 +37,7 @@ export const FileTree = ({ items = [], defaultOpen = true }) => {
       const displayName = note ? `${fileName} — ${note}` : fileName;
 
       // @ts-ignore
-      return <Tree.File key={index} name={displayName} />;
+      return <File key={index} name={displayName} />;
     }
 
     // Handle folder objects
@@ -42,10 +47,10 @@ export const FileTree = ({ items = [], defaultOpen = true }) => {
 
       return (
         // @ts-ignore
-        <Tree.Folder key={index} name={displayName} defaultOpen={isOpen}>
+        <Folder key={index} name={displayName} defaultOpen={isOpen}>
           {item?.items?.map((nestedItem, nestedIndex) => renderItem(nestedItem, nestedIndex))}
           {/* @ts-ignore */}
-        </Tree.Folder>
+        </Folder>
       );
     }
 
@@ -58,5 +63,5 @@ export const FileTree = ({ items = [], defaultOpen = true }) => {
   };
 
   // @ts-ignore
-  return <Tree>{items.map((item, index) => renderItem(item, index))}</Tree>;
+  return <Files>{items.map((item, index) => renderItem(item, index))}</Files>;
 };

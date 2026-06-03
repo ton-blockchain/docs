@@ -198,58 +198,60 @@ The TON ecosystem provides editor plugins with syntax support for IDEs and code 
     - Messages — `IncreaseCounter` and `ResetCounter` handlers
     - Get methods — `currentCounter`
 
-    <Accordion
-      title="Full source code"
-    >
-      ```tolk title="./contracts/first_contract.tolk"
-      struct Storage {
-          counter: uint64;
-      }
+    <Accordions>
+      <Accordion
+        title="Full source code"
+      >
+        ```tolk title="./contracts/first_contract.tolk"
+        struct Storage {
+            counter: uint64;
+        }
 
-      fun Storage.load() {
-          return Storage.fromCell(contract.getData());
-      }
+        fun Storage.load() {
+            return Storage.fromCell(contract.getData());
+        }
 
-      fun Storage.save(self) {
-          contract.setData(self.toCell());
-      }
+        fun Storage.save(self) {
+            contract.setData(self.toCell());
+        }
 
-      struct(0x7e8764ef) IncreaseCounter {
-          increaseBy: uint32
-      }
+        struct(0x7e8764ef) IncreaseCounter {
+            increaseBy: uint32
+        }
 
-      struct(0x3a752f06) ResetCounter {}
+        struct(0x3a752f06) ResetCounter {}
 
-      type AllowedMessage = IncreaseCounter | ResetCounter;
+        type AllowedMessage = IncreaseCounter | ResetCounter;
 
-      fun onInternalMessage(in: InMessage) {
-          val msg = lazy AllowedMessage.fromSlice(in.body);
+        fun onInternalMessage(in: InMessage) {
+            val msg = lazy AllowedMessage.fromSlice(in.body);
 
-          match (msg) {
-              IncreaseCounter => {
-                  var storage = lazy Storage.load();
-                  storage.counter += msg.increaseBy;
-                  storage.save();
-              }
+            match (msg) {
+                IncreaseCounter => {
+                    var storage = lazy Storage.load();
+                    storage.counter += msg.increaseBy;
+                    storage.save();
+                }
 
-              ResetCounter => {
-                  var storage = lazy Storage.load();
-                  storage.counter = 0;
-                  storage.save();
-              }
+                ResetCounter => {
+                    var storage = lazy Storage.load();
+                    storage.counter = 0;
+                    storage.save();
+                }
 
-              else => {
-                  assert(in.body.isEmpty()) throw 0xFFFF;
-              }
-          }
-      }
+                else => {
+                    assert(in.body.isEmpty()) throw 0xFFFF;
+                }
+            }
+        }
 
-      get fun currentCounter(): int {
-          val storage = lazy Storage.load();
-          return storage.counter;
-      }
-      ```
-    </Accordion>
+        get fun currentCounter(): int {
+            val storage = lazy Storage.load();
+            return storage.counter;
+        }
+        ```
+      </Accordion>
+    </Accordions>
   </Step>
 </Steps>
 

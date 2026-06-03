@@ -1,11 +1,6 @@
-const React =
-  typeof globalThis !== "undefined" && globalThis.React
-    ? globalThis.React
-    : (() => {
-        throw new Error(
-          "React global missing. CatchainVisualizer must run inside a React-powered environment."
-        );
-      })();
+'use client';
+import * as React from 'react';
+
 export const CatchainVisualizer = () => {
   const MESSAGE_COLORS = {
     Submit: "#6366f1",

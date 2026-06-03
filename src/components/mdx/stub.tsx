@@ -1,3 +1,6 @@
+'use client';
+import { Callout } from './callout';
+
 export const Stub = ({ issue }: { issue: string; }) => {
   const issueEl = issue
     ? (

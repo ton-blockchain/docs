@@ -15,7 +15,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
   >
     <Tabs>
       <Tab
-        title="React"
+        value="React"
       >
         ```bash
         # API
@@ -27,7 +27,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
       </Tab>
 
       <Tab
-        title="Vanilla JS"
+        value="Vanilla JS"
       >
         ```bash
         # API
@@ -126,9 +126,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
       Users can close the tab before transaction results are persisted, which breaks tracking and confirmation logic. Build messages and track transactions in the [Send payments using React](/ecosystem/ton-pay/payment-integration/payments-react) guide.
     </Callout>
 
-    <AccordionGroup
-
-    >
+    <Accordions>
       <Accordion
         title="Minimal server-side flow example"
       >
@@ -187,7 +185,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
         }
         ```
       </Accordion>
-    </AccordionGroup>
+    </Accordions>
 
     <Callout>
       The TON Pay API key is optional. If available from the dashboard, pass it to `createTonPayTransfer` options.

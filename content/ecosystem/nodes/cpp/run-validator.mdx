@@ -53,34 +53,36 @@ clang --version
   alt="Versions output"
 />
 
-<Accordion
-  title="Update Clang..."
->
-  If running `clang --version` shows a version of 21 or higher, skip the steps below.
+<Accordions>
+  <Accordion
+    title="Update Clang..."
+  >
+    If running `clang --version` shows a version of 21 or higher, skip the steps below.
 
-  <CodeGroup>
-    ```bash title="Ubuntu 22.04"
-    sudo apt install lsb-release wget software-properties-common gnupg
-    wget https://apt.llvm.org/llvm.sh
-    chmod +x llvm.sh
-    sudo ./llvm.sh 21 clang
+    <CodeGroup>
+      ```bash title="Ubuntu 22.04"
+      sudo apt install lsb-release wget software-properties-common gnupg
+      wget https://apt.llvm.org/llvm.sh
+      chmod +x llvm.sh
+      sudo ./llvm.sh 21 clang
+      ```
+
+      ```bash title="Ubuntu 24.04"
+      wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm-snapshot.asc
+      echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm-snapshot.asc] http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm.list
+      sudo apt -y update
+      sudo apt install -y clang-21
+      ```
+    </CodeGroup>
+
+    Update the default `clang` in the system:
+
+    ```bash
+    sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 200
+    sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 200
     ```
-
-    ```bash title="Ubuntu 24.04"
-    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm-snapshot.asc
-    echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm-snapshot.asc] http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm.list
-    sudo apt -y update
-    sudo apt install -y clang-21
-    ```
-  </CodeGroup>
-
-  Update the default `clang` in the system:
-
-  ```bash
-  sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 200
-  sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 200
-  ```
-</Accordion>
+  </Accordion>
+</Accordions>
 
 ### 1.4 Port forwarding for validator
 
@@ -287,49 +289,51 @@ Run the validator installation. Installation takes approximately 20 minutes:
   alt="Expected final output for validator installation"
 />
 
-<Accordion
-  title="Speed up initial sync with a database dump..."
->
-  To reduce synchronization time from hours to minutes, download a pre-built database dump instead of syncing from peers. Check the [dump index](https://dump.ton.org/) for available snapshots.
+<Accordions>
+  <Accordion
+    title="Speed up initial sync with a database dump..."
+  >
+    To reduce synchronization time from hours to minutes, download a pre-built database dump instead of syncing from peers. Check the [dump index](https://dump.ton.org/) for available snapshots.
 
-  1. Install `aria2` and `plzip` if not already present:
+    1. Install `aria2` and `plzip` if not already present:
 
-     ```bash
-     sudo apt install -y aria2 plzip
-     ```
+       ```bash
+       sudo apt install -y aria2 plzip
+       ```
 
-  1. Stop the validator and MyTonCore services:
+    1. Stop the validator and MyTonCore services:
 
-     ```bash
-     sudo systemctl stop mytoncore.service
-     sudo systemctl stop validator.service
-     ```
+       ```bash
+       sudo systemctl stop mytoncore.service
+       sudo systemctl stop validator.service
+       ```
 
-  1. Download and extract the dump:
+    1. Download and extract the dump:
 
-     ```bash
-     cd /var/ton-work/
-     aria2c -x 16 https://dump.ton.org/dumps/latest.tar.lz
-     mv /var/ton-work/db /var/ton-work/db_old
-     mkdir /var/ton-work/db
-     plzip -d -c /var/ton-work/latest.tar.lz | tar -xvf - -C /var/ton-work/db
-     ```
+       ```bash
+       cd /var/ton-work/
+       aria2c -x 16 https://dump.ton.org/dumps/latest.tar.lz
+       mv /var/ton-work/db /var/ton-work/db_old
+       mkdir /var/ton-work/db
+       plzip -d -c /var/ton-work/latest.tar.lz | tar -xvf - -C /var/ton-work/db
+       ```
 
-  1. Restore configuration and keys from the original database:
+    1. Restore configuration and keys from the original database:
 
-     ```bash
-     cp /var/ton-work/db_old/config.json /var/ton-work/db/config.json
-     cp -r /var/ton-work/db_old/keyring /var/ton-work/db/keyring
-     sudo chown -R validator:validator /var/ton-work/db
-     ```
+       ```bash
+       cp /var/ton-work/db_old/config.json /var/ton-work/db/config.json
+       cp -r /var/ton-work/db_old/keyring /var/ton-work/db/keyring
+       sudo chown -R validator:validator /var/ton-work/db
+       ```
 
-  1. Start the services again:
+    1. Start the services again:
 
-     ```bash
-     sudo systemctl start validator.service
-     sudo systemctl start mytoncore.service
-     ```
-</Accordion>
+       ```bash
+       sudo systemctl start validator.service
+       sudo systemctl start mytoncore.service
+       ```
+  </Accordion>
+</Accordions>
 
 ### 2.3 Verify status results
 
@@ -519,15 +523,17 @@ MyTonCtrl> new_single_pool <pool-name> <owner-address>
   alt="Create a single pool"
 />
 
-<Accordion
-  title="If a single nominator pool already exists..."
->
-  If a single-nominator pool is already created, import it with:
+<Accordions>
+  <Accordion
+    title="If a single nominator pool already exists..."
+  >
+    If a single-nominator pool is already created, import it with:
 
-  ```bash
-  MyTonCtrl> import_pool <pool-name> <pool-addr>
-  ```
-</Accordion>
+    ```bash
+    MyTonCtrl> import_pool <pool-name> <pool-addr>
+    ```
+  </Accordion>
+</Accordions>
 
 ### 3.7 Print pool list
 
@@ -631,41 +637,43 @@ Send a withdrawal request, a message with `w` comment from `owner` wallet to the
   alt="Send withdrawal request"
 />
 
-<Accordion
-  title="Withdraw with script..."
->
-  Insert the single nominator pool address to `SINGLE_NOMINATOR_ADDRESS` and send this message from the owner's wallet.
+<Accordions>
+  <Accordion
+    title="Withdraw with script..."
+  >
+    Insert the single nominator pool address to `SINGLE_NOMINATOR_ADDRESS` and send this message from the owner's wallet.
 
-  ```js Not runnable
-  import {
-    Address,
-    beginCell,
-    internal,
-    storeMessageRelaxed,
-    toNano,
-  } from "@ton/core";
+    ```js Not runnable
+    import {
+      Address,
+      beginCell,
+      internal,
+      storeMessageRelaxed,
+      toNano,
+    } from "@ton/core";
 
-  async function main() {
-    const single_nominator_address = Address.parse("SINGLE_NOMINATOR_ADDRESS");
-    const WITHDRAW_OP = 0x1000;
-    const amount = 50000;
+    async function main() {
+      const single_nominator_address = Address.parse("SINGLE_NOMINATOR_ADDRESS");
+      const WITHDRAW_OP = 0x1000;
+      const amount = 50000;
 
-    const messageBody = beginCell()
-      .storeUint(WITHDRAW_OP, 32)
-      .storeUint(0, 64)
-      .storeCoins(amount)
-      .endCell();
+      const messageBody = beginCell()
+        .storeUint(WITHDRAW_OP, 32)
+        .storeUint(0, 64)
+        .storeCoins(amount)
+        .endCell();
 
-    const internalMessage = internal({
-      to: single_nominator_address,
-      value: toNano("1"),
-      bounce: true,
-      body: messageBody,
-    });
-  }
+      const internalMessage = internal({
+        to: single_nominator_address,
+        value: toNano("1"),
+        bounce: true,
+        body: messageBody,
+      });
+    }
 
-  ```
-</Accordion>
+    ```
+  </Accordion>
+</Accordions>
 
 Once the deposit is restored (except 1 TON reserve on the single nominator pool) to the owner's wallet, that means validator are set securely and ready for real stake:
 
@@ -689,15 +697,17 @@ Check the current validator stakes on [tonscan.org/validators](https://tonscan.o
 
 Retrieve `min_stake` and `max_stake` from [Validation API](https://elections.toncenter.com/getValidationCycles?return_participants=false\&offset=0\&limit=2) for two last cycles.
 
-<Accordion
-  title="See expected result..."
->
-  <Image
-    src="/images/nodes/run-validator/run-validator-28.png"
-    darkSrc="/images/nodes/run-validator/run-validator-28.png"
-    alt="Cycle info API response"
-  />
-</Accordion>
+<Accordions>
+  <Accordion
+    title="See expected result..."
+  >
+    <Image
+      src="/images/nodes/run-validator/run-validator-28.png"
+      darkSrc="/images/nodes/run-validator/run-validator-28.png"
+      alt="Cycle info API response"
+    />
+  </Accordion>
+</Accordions>
 
 For example:
 

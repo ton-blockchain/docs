@@ -616,58 +616,60 @@ TON Pay retries failed webhook deliveries.
 
 ## Troubleshooting
 
-<Accordion
-  title="If webhooks are not received"
->
-  1. Verify the webhook URL configured in the Merchant Dashboard.
-  1. Ensure the endpoint is publicly reachable and not blocked by a firewall.
-  1. Use the dashboard test feature to send a sample webhook.
-  1. Review webhook attempt logs in the Merchant Dashboard.
-  1. Ensure the endpoint returns a `2xx` status code for valid requests.
-  1. Ensure the endpoint responds within 10 seconds to avoid timeouts.
-</Accordion>
+<Accordions>
+  <Accordion
+    title="If webhooks are not received"
+  >
+    1. Verify the webhook URL configured in the Merchant Dashboard.
+    1. Ensure the endpoint is publicly reachable and not blocked by a firewall.
+    1. Use the dashboard test feature to send a sample webhook.
+    1. Review webhook attempt logs in the Merchant Dashboard.
+    1. Ensure the endpoint returns a `2xx` status code for valid requests.
+    1. Ensure the endpoint responds within 10 seconds to avoid timeouts.
+  </Accordion>
 
-<Accordion
-  title="If signature verification fails"
->
-  1. Use the optional API key from the Merchant Dashboard at <kbd>Developer</kbd> → <kbd>API</kbd> when webhook signing is configured.
-  1. Compute the HMAC over the raw JSON string.
-  1. Do not modify the request body before verification.
-  1. Verify the header name is `x-tonpay-signature` in lowercase.
-  1. Use the `HMAC-SHA256` algorithm.
-  1. Ensure the signature value starts with `sha256=`.
-</Accordion>
+  <Accordion
+    title="If signature verification fails"
+  >
+    1. Use the optional API key from the Merchant Dashboard at <kbd>Developer</kbd> → <kbd>API</kbd> when webhook signing is configured.
+    1. Compute the HMAC over the raw JSON string.
+    1. Do not modify the request body before verification.
+    1. Verify the header name is `x-tonpay-signature` in lowercase.
+    1. Use the `HMAC-SHA256` algorithm.
+    1. Ensure the signature value starts with `sha256=`.
+  </Accordion>
 
-<Accordion
-  title="If amount or asset mismatch, possible causes include"
->
-  1. Wrong order lookup or reference mapping.
-  1. Price changed after order creation.
-  1. Currency mismatch between order and transfer.
-  1. Potential attack or spoofed request.
-</Accordion>
+  <Accordion
+    title="If amount or asset mismatch, possible causes include"
+  >
+    1. Wrong order lookup or reference mapping.
+    1. Price changed after order creation.
+    1. Currency mismatch between order and transfer.
+    1. Potential attack or spoofed request.
+  </Accordion>
 
-<Accordion
-  title="If duplicate webhook processing"
->
-  1. Implement idempotency using the `reference` field.
-  1. Use database transactions to prevent race conditions.
-  1. Check order status before processing.
+  <Accordion
+    title="If duplicate webhook processing"
+  >
+    1. Implement idempotency using the `reference` field.
+    1. Use database transactions to prevent race conditions.
+    1. Check order status before processing.
 
-  ```ts
-  if (order.status === "completed") {
-    return; // Already processed
-  }
-  ```
-</Accordion>
+    ```ts
+    if (order.status === "completed") {
+      return; // Already processed
+    }
+    ```
+  </Accordion>
 
-<Accordion
-  title="If timeout errors occur"
->
-  1. Respond within 10 seconds.
-  1. Process webhooks asynchronously after quick validation.
-  1. Return `2xx` after validation passes.
-</Accordion>
+  <Accordion
+    title="If timeout errors occur"
+  >
+    1. Respond within 10 seconds.
+    1. Process webhooks asynchronously after quick validation.
+    1. Return `2xx` after validation passes.
+  </Accordion>
+</Accordions>
 
 ## Next steps
 
