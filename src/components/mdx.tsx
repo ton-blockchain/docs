@@ -44,6 +44,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     // Page-specific components
     CatchainVisualizer,
     TvmInstructionTable,
+    // NOTE: dummy components
+    ...StubComponents,
     ...components,
   } satisfies MDXComponents;
 }
