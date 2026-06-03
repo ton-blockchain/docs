@@ -1,9 +1,14 @@
-// import {readFileSync} from "node:fs";
+import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import type {NextConfig} from 'next';
+import type {Redirect} from 'next/dist/lib/load-custom-routes';
 import {createMDX} from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
+
+type DocsConfig = {
+  redirects?: Redirect[];
+};
 
 const resolveBaseUrl = () => {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL
@@ -18,6 +23,14 @@ const resolveBaseUrl = () => {
   return "http://localhost:3000"
 };
 
+const loadDocsRedirects = (): Redirect[] => {
+  const docsConfig = JSON.parse(
+    readFileSync(new URL("./docs.json", import.meta.url), "utf8")
+  ) as DocsConfig;
+
+  return docsConfig.redirects ?? [];
+};
+
 const config: NextConfig = {
   reactStrictMode: true,
   env: {
@@ -27,8 +40,7 @@ const config: NextConfig = {
     root: fileURLToPath(new URL(".", import.meta.url)),
   },
   serverExternalPackages: ["typescript"],
-  // NOTE: placed intentionally to not forget about doing redirects properly, via a server.
-  // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
+  redirects: async () => loadDocsRedirects(),
 };
 
 export default withMDX(config);
