@@ -12,12 +12,21 @@ export const source = loader({
         file(node, filePath) {
           if (!filePath) return node
           const file = this.storage.read(filePath)
-          if (file?.format !== "page") return node
+          if (!file) return node
+          // if (file.data.icon) node.icon = file.data.icon
+          if (file.format !== "page") return node
           const {sidebarTitle} = file.data as {sidebarTitle?: string}
           if (!sidebarTitle) return node
           node.name = sidebarTitle
           return node
         },
+        // folder(node, _folderPath, metaPath) {
+        //   if (!metaPath) return node
+        //   const file = this.storage.read(metaPath)
+        //   if (!file) return node
+        //   if (file.data.icon) node.icon = file.data.icon
+        //   return node
+        // },
       },
     ],
   },
