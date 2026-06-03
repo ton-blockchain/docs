@@ -7,6 +7,8 @@ import {ghPagesUrl, gitConfig} from '@/lib/shared';
 const withMDX = createMDX();
 const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === "true" || process.env.GITHUB_PAGES === "true"
+const isVercelBuild = process.env.VERCEL === "1"
+const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild
 
 const resolveBaseUrl = () => {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL
@@ -43,10 +45,12 @@ const config: NextConfig = {
   serverExternalPackages: ["typescript"],
   // NOTE: placed intentionally to not forget about doing redirects properly, via a server.
   // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
-  experimental: {
-    cpus: 4,
-    workerThreads: false,
-  },
+  ...(isLocalBuild ? {
+    experimental: {
+      cpus: 4,
+      workerThreads: false,
+    },
+  } : {}),
 };
 
 export default withMDX(config);
