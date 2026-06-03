@@ -29,15 +29,6 @@ const resolveBasePath = () => {
   return undefined
 };
 
-const resolveAssetPrefix = () => {
-  if (isGitHubPagesBuild) {
-    return ghPagesUrl;
-  }
-
-  return undefined
-};
-
-
 const config: NextConfig = {
   output: 'export',
   reactStrictMode: true,
@@ -45,13 +36,17 @@ const config: NextConfig = {
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
   },
   basePath: resolveBasePath(),
-  assetPrefix: resolveAssetPrefix(),
   turbopack: {
     root: fileURLToPath(new URL(".", import.meta.url)),
   },
+  images: { unoptimized: true },
   serverExternalPackages: ["typescript"],
   // NOTE: placed intentionally to not forget about doing redirects properly, via a server.
   // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
+  experimental: {
+    cpus: 4,
+    workerThreads: false,
+  },
 };
 
 export default withMDX(config);
