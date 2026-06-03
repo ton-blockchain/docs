@@ -116,7 +116,7 @@ export function Tabs({
   );
 }
 
-export interface TabProps extends Omit<Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value'>, 'icon'> {
+export interface TabProps extends Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value' | 'icon'> {
   /**
    * Value of tab, detect from index if unspecified.
    */

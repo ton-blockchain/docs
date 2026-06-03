@@ -1,4 +1,4 @@
-import {readFileSync} from "node:fs";
+// import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {createMDX} from 'fumadocs-mdx/next';
 
