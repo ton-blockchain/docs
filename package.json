@@ -25,6 +25,7 @@
     "gen:tc3:mdx-for-openapi": "npx @mintlify/scraping@latest openapi-file -w content/ecosystem/api/toncenter/v3.yaml -o content/ecosystem/api/toncenter/v3",
     "gen:tc2:overview": "python3 .github/scripts/generate-v2-api-table.py",
     "gen:tc3:overview": "python3 .github/scripts/generate-v3-api-table.py",
+    "gen:meta-schema": "node .github/scripts/generate-meta-schema.mjs",
     "gen:stats": "python3 .github/scripts/stats.py",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx"
