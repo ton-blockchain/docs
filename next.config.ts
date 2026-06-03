@@ -6,12 +6,6 @@ const configs = {
   vercel: vercelConfig,
 };
 
-const requestedConfig = process.env.NEXT_CONFIG ?? 'static';
+const requestedConfig = process.env.NEXT_CONFIG === 'vercel' ? 'vercel' : 'static';
 
-if (!Object.hasOwn(configs, requestedConfig)) {
-  throw new Error(
-    `Unknown NEXT_CONFIG="${requestedConfig}". Use "static" or "vercel".`
-  );
-}
-
-export default configs[requestedConfig as keyof typeof configs];
+export default configs[requestedConfig];
