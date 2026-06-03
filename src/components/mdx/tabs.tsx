@@ -116,14 +116,18 @@ export function Tabs({
   );
 }
 
-export interface TabProps extends Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value'> {
+export interface TabProps extends Omit<Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value'>, 'icon'> {
   /**
    * Value of tab, detect from index if unspecified.
    */
   value?: string;
+  /**
+   * Optional icon.
+   */
+  icon?: string;
 }
 
-export function Tab({ value, ...props }: TabProps) {
+export function Tab({ value, icon, ...props }: TabProps) {
   const { items } = useTabContext();
   const resolved =
     value ??
@@ -135,7 +139,7 @@ export function Tab({ value, ...props }: TabProps) {
     );
 
   return (
-    <TabsContent value={escapeValue(resolved)} {...props}>
+    <TabsContent value={escapeValue(resolved)} icon={icon} {...props}>
       {props.children}
     </TabsContent>
   );
@@ -143,9 +147,11 @@ export function Tab({ value, ...props }: TabProps) {
 
 export function TabsContent({
   value,
+  icon,
   className,
   ...props
-}: ComponentProps<typeof Unstyled.TabsContent>) {
+}: ComponentProps<typeof Unstyled.TabsContent> & { icon: string | undefined }) {
+  // TODO: add `icon` support through an `Icon` component
   return (
     <Unstyled.TabsContent
       value={value}
