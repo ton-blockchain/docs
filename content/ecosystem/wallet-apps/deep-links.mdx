@@ -162,39 +162,41 @@ ton://transfer/<ADDRESS>?jetton=<JETTON_ADDRESS>&amount=<AMOUNT>&text=<TEXT>
   - [`decimals`](/standard/tokens/metadata#decimals) the number of fractional digits
   - `unit` that represents the smallest indivisible amount of the token (similar to satoshi in Bitcoin).
 
-  <Accordion
-    title="Read more..."
-  >
-    $$
-    \text{One whole Jetton} = unit \times 10^{decimal}
-    $$
+  <Accordions>
+    <Accordion
+      title="Read more..."
+    >
+      $$
+      \text{One whole Jetton} = unit \times 10^{decimal}
+      $$
 
-    For example, a USDT Jetton on TON defines decimals = 6.
-    This means:
+      For example, a USDT Jetton on TON defines decimals = 6.
+      This means:
 
-    $$
-    1\ \text{USDT} = 1{,}000{,}000\ \text{smallest units}
-    $$
+      $$
+      1\ \text{USDT} = 1{,}000{,}000\ \text{smallest units}
+      $$
 
-    Or, in general form:
+      Or, in general form:
 
-    $$
-    \text{One whole USDT} = unit \times 10^{6}
-    $$
+      $$
+      \text{One whole USDT} = unit \times 10^{6}
+      $$
 
-    Typically Jetton on TON defines with decimals = 9, for example, DUST jetton.
-    This means:
+      Typically Jetton on TON defines with decimals = 9, for example, DUST jetton.
+      This means:
 
-    $$
-    1\ \text{DUST} = 1{,}000{,}000{,}000\ \text{smallest units}
-    $$
+      $$
+      1\ \text{DUST} = 1{,}000{,}000{,}000\ \text{smallest units}
+      $$
 
-    Or, in general form:
+      Or, in general form:
 
-    $$
-    \text{One whole DUST} = unit \times 10^{9}
-    $$
-  </Accordion>
+      $$
+      \text{One whole DUST} = unit \times 10^{9}
+      $$
+    </Accordion>
+  </Accordions>
 </Callout>
 
 #### Transfer default jetton

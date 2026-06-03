@@ -53,34 +53,36 @@ clang --version
   alt="Versions output"
 />
 
-<Accordion
-  title="Update Clang..."
->
-  If running `clang --version` shows a version of 21 or higher, skip the steps below.
+<Accordions>
+  <Accordion
+    title="Update Clang..."
+  >
+    If running `clang --version` shows a version of 21 or higher, skip the steps below.
 
-  <CodeGroup>
-    ```bash title="Ubuntu 22.04"
-    sudo apt install lsb-release wget software-properties-common gnupg
-    wget https://apt.llvm.org/llvm.sh
-    chmod +x llvm.sh
-    sudo ./llvm.sh 21 clang
+    <CodeGroup>
+      ```bash title="Ubuntu 22.04"
+      sudo apt install lsb-release wget software-properties-common gnupg
+      wget https://apt.llvm.org/llvm.sh
+      chmod +x llvm.sh
+      sudo ./llvm.sh 21 clang
+      ```
+
+      ```bash title="Ubuntu 24.04"
+      wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm-snapshot.asc
+      echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm-snapshot.asc] http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm.list
+      sudo apt -y update
+      sudo apt install -y clang-21
+      ```
+    </CodeGroup>
+
+    Update the default `clang` in the system:
+
+    ```bash
+    sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 200
+    sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 200
     ```
-
-    ```bash title="Ubuntu 24.04"
-    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm-snapshot.asc
-    echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm-snapshot.asc] http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm.list
-    sudo apt -y update
-    sudo apt install -y clang-21
-    ```
-  </CodeGroup>
-
-  Update the default `clang` in the system:
-
-  ```bash
-  sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 200
-  sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 200
-  ```
-</Accordion>
+  </Accordion>
+</Accordions>
 
 ### 1.4 Port forwarding for validator
 

@@ -133,69 +133,71 @@ This example uses the `transactions` endpoint, but the same `limit` and `offset`
   </Step>
 </Steps>
 
-<Accordion
-  title="Full pagination script"
->
-  ```javascript
-  const address = "EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2";
+<Accordions>
+  <Accordion
+    title="Full pagination script"
+  >
+    ```javascript
+    const address = "EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2";
 
-  async function main() {
-    let allTransactions = [];
-    let offset = 0;
-    const limit = 3;
-    let page = 0;
+    async function main() {
+      let allTransactions = [];
+      let offset = 0;
+      const limit = 3;
+      let page = 0;
 
-    while (true) {
-      page++;
-      const params = new URLSearchParams({
-        account: address,
-        limit: String(limit),
-        offset: String(offset),
-      });
+      while (true) {
+        page++;
+        const params = new URLSearchParams({
+          account: address,
+          limit: String(limit),
+          offset: String(offset),
+        });
 
-      const res = await fetch(
-        `https://toncenter.com/api/v3/transactions?${params}`
-      );
-      const data = await res.json();
-      const transactions = data.transactions || [];
+        const res = await fetch(
+          `https://toncenter.com/api/v3/transactions?${params}`
+        );
+        const data = await res.json();
+        const transactions = data.transactions || [];
 
-      console.log(`\n--- Page ${page} (offset=${offset}) ---`);
+        console.log(`\n--- Page ${page} (offset=${offset}) ---`);
 
-      for (const tx of transactions) {
-        console.log(`  lt: ${tx.lt}  hash: ${tx.hash}`);
+        for (const tx of transactions) {
+          console.log(`  lt: ${tx.lt}  hash: ${tx.hash}`);
+        }
+
+        allTransactions.push(...transactions);
+
+        if (transactions.length < limit) break;
+
+        offset += limit;
       }
 
-      allTransactions.push(...transactions);
-
-      if (transactions.length < limit) break;
-
-      offset += limit;
+      console.log(`\nTotal transactions: ${allTransactions.length}`);
     }
 
-    console.log(`\nTotal transactions: ${allTransactions.length}`);
-  }
+    main();
+    ```
 
-  main();
-  ```
+    Output:
 
-  Output:
+    ```bash
+    --- Page 1 (offset=0) ---
+      lt: 67064337000004  hash: KkpVTX9RwiZcug8KQuOFUF8+eNoxuHVuIFpGQqufCWU=
+      lt: 67011337000003  hash: b5fhFby+j8gg936W+XEsAEhboQW0zPcOHOHgyqXkTwI=
+      lt: 66986300000006  hash: lT/wWTiJIdEF8A2Rox9CRdQRzlUgnIDGeUfEHQ8jGZQ=
 
-  ```bash
-  --- Page 1 (offset=0) ---
-    lt: 67064337000004  hash: KkpVTX9RwiZcug8KQuOFUF8+eNoxuHVuIFpGQqufCWU=
-    lt: 67011337000003  hash: b5fhFby+j8gg936W+XEsAEhboQW0zPcOHOHgyqXkTwI=
-    lt: 66986300000006  hash: lT/wWTiJIdEF8A2Rox9CRdQRzlUgnIDGeUfEHQ8jGZQ=
+    --- Page 2 (offset=3) ---
+      lt: 66927779000007  hash: 07QaeBRRA62+RJPgetgSraYLH5i9G5QhC2dUvKAsAiI=
+      lt: 66927779000003  hash: 8d7sSor1NqbGNdX1JEGl1d4rX3lb7CeC3DZjhe7V7z4=
+      lt: 66926353000007  hash: szM1I5/MU1uJGgeScS7uxNF6V/FsLkokCpul88ZEau8=
 
-  --- Page 2 (offset=3) ---
-    lt: 66927779000007  hash: 07QaeBRRA62+RJPgetgSraYLH5i9G5QhC2dUvKAsAiI=
-    lt: 66927779000003  hash: 8d7sSor1NqbGNdX1JEGl1d4rX3lb7CeC3DZjhe7V7z4=
-    lt: 66926353000007  hash: szM1I5/MU1uJGgeScS7uxNF6V/FsLkokCpul88ZEau8=
+    --- Page 3 (offset=6) ---
 
-  --- Page 3 (offset=6) ---
-
-  Total transactions: 6
-  ```
-</Accordion>
+    Total transactions: 6
+    ```
+  </Accordion>
+</Accordions>
 
 ## Sorting options
 
