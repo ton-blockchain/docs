@@ -3,20 +3,17 @@ title: "Wallet V5 interface: messages and get methods"
 sidebarTitle: "Messages and get methods"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-import { Image } from '/snippets/image.jsx';
-
 | Contract version | Hash                                                               | Link                                                                                                                                |
 | ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | V5 R1            | `20834b7b72b112147e1b2fb457b84e74d1a30f04f737d4f62a668e9552d2b72f` | [Source](https://github.com/ton-blockchain/wallet-contract-v5/blob/88557ebc33047a95207f6e47ac8aadb102dff744/contracts/wallet_v5.fc) |
 
 This article provides overview of wallet V5 public interfaces, how to interact with them and serialize used data structures.
 
-<Aside>
+<Callout>
   Note, that many of the things we implement in this article are for education purposes and they might need to be refined before production use.
 
   Moreover, all these V5 wallet contract interfaces are implemented in [`@ton/ton`](https://github.com/ton-org/ton) client library as WalletV5 contract wrapper class.
-</Aside>
+</Callout>
 
 There are several ways how you can interact with deployed V5 wallet smart contract:
 
@@ -467,8 +464,8 @@ You can send this BoC to the network in any convenient way, e.g. with API provid
 These two types of messages are internal messages, meaning that they need to come from another contract. However strange that may sound, the easiest way to send internal message from another contract is to ask another wallet contract to send internal message to our wallet contract with body that will contain our constructed message.
 
 <Image
-  src="/resources/images/wallets/internal_message_light.svg"
-  darkSrc="/resources/images/wallets/internal_message_dark.svg"
+  src="/images/wallets/internal_message_light.svg"
+  darkSrc="/images/wallets/internal_message_dark.svg"
   alt="Internal message flow"
 />
 

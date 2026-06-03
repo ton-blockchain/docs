@@ -3,24 +3,22 @@ title: "How to swap tokens using AppKit"
 sidebarTitle: "Swap tokens"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the AppKit](/ecosystem/appkit/init) before using examples on this page. Swap functionality requires a configured [swap provider](#available-providers).
-</Aside>
+</Callout>
 
 AppKit supports on-chain token swaps through [pluggable swap providers](#create-a-custom-swap-provider). Supported swap kinds are Toncoin to jetton and jetton to jetton.
 
 The swap flow has two steps: [get a quote](#get-a-swap-quote) for the desired trade, then [build and send the swap transaction](#build-and-send-the-swap-transaction).
 
-<Aside
+<Callout
   type="caution"
   title="Funds at risk"
 >
   Token swaps are irreversible on-chain operations. Verify the quote details before confirming: review jetton master (minter) contract addresses, amounts, and slippage.
 
   Mitigation: Double-check the addresses against official sources or [public allowlists](https://github.com/tonkeeper/ton-assets). Test with smaller amounts. Confirm the obtained quote before building the transaction.
-</Aside>
+</Callout>
 
 ## Available providers
 
@@ -35,11 +33,9 @@ Register one or more providers during [AppKit initialization](/ecosystem/appkit/
 
 A swap quote estimates how many tokens are received for a given input amount. The quote requires the source token, destination token, and the amount to swap.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not store the obtained swap quote anywhere in the application state, as it becomes outdated quickly.
-</Aside>
+</Callout>
 
 <CodeGroup>
   ```tsx title="React" icon="react"

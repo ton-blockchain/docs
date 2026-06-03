@@ -2,8 +2,6 @@
 title: "Functions and methods"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 ## Function declaration
 
 A function is declared using the `fun` keyword, followed by the function name and parameters:
@@ -399,10 +397,10 @@ fun map<K, map<K2, V2>>.method(self) { ... }
 // (3) called for map<address, map<int32, ()>>
 ```
 
-<Aside type="note">
+<Callout type="note">
   If a user declares `struct T`, methods like `fun T.copy()` are interpreted as specializations rather than as generic methods.
   To avoid ambiguity, do not use single-letter type names for concrete types; prefer descriptive names.
-</Aside>
+</Callout>
 
 ## Auto-inline small functions
 

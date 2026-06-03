@@ -1,17 +1,14 @@
 ---
 title: "FunC global variables"
 sidebarTitle: "Global variables"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 ## Definition
 
@@ -88,7 +85,7 @@ int foo() {
 global cell A;    ;; DOES NOT COMPILE, cell should be int
 ```
 
-<Aside>
+<Callout>
   Global variables do _not_ allow initialization during declaration, contrary to local variables, which must be initialized during declaration.
   For example,
 
@@ -97,9 +94,9 @@ global cell A;    ;; DOES NOT COMPILE, cell should be int
   ```
 
   Reading a global variable that has not been assigned, will result in the [`null` value](/languages/func/types#special-null-value).
-</Aside>
+</Callout>
 
-<Aside>
+<Callout>
   Global variables do not survive after the TVM finishes execution. They are reset every time the
   [TVM initializes](/tvm/initialization).
   Use permanent storage to remember values between TVM executions by using the [`set_data`](/languages/func/stdlib#set_data) function.
@@ -120,7 +117,7 @@ global cell A;    ;; DOES NOT COMPILE, cell should be int
     prev_value = msg_value;    ;; Use permanent storage instead
   }
   ```
-</Aside>
+</Callout>
 
 ## Multiple declarations
 

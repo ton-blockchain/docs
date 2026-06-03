@@ -3,9 +3,7 @@ title: "How to interact with preprocessed wallet v2"
 sidebarTitle: "Interact"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside
+<Callout
   type="caution"
   title="Community implementation"
 >
@@ -13,20 +11,20 @@ import { Aside } from '/snippets/aside.jsx';
 
   - Code hash: `45ebbce9b5d235886cb6bfe1c3ad93b708de058244892365c9ee0dfe439cb7b5`
   - Source: [`pw-code.fif` on GitHub](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2/blob/d95a25ef7e259c27a07e185296b57335c2b4974b/pw-code.fif)
-</Aside>
+</Callout>
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   This guide sends real TON. Test on testnet first. Double-check recipient addresses — blockchain transactions cannot be reversed.
-</Aside>
+</Callout>
 
 This guide shows how to deploy Preprocessed Wallet V2 and send transfers.
 
-<Aside type="tip">
+<Callout type="tip">
   For technical details, see [Preprocessed Wallet V2 specification](/standard/wallets/preprocessed-v2/specification).
-</Aside>
+</Callout>
 
 ## Objective
 
@@ -59,12 +57,12 @@ Copy the wrapper and contract code from the [official repository](https://github
 # - typescript/wrappers/PreprocessedWalletV2.ts
 ```
 
-<Aside
+<Callout
   type="note"
   title="Why copy wrappers?"
 >
   The official `@ton/ton` SDK does not include Preprocessed Wallet V2 wrappers yet. Copy `PreprocessedWalletV2.ts` from the repository until SDK support is added.
-</Aside>
+</Callout>
 
 ## Step 2: Generate or load a mnemonic
 
@@ -84,12 +82,12 @@ const mnemonic = await mnemonicNew(24); // Array of 24 words
 const mnemonic = 'word1 word2 word3 ... word24'.split(' ');
 ```
 
-<Aside
+<Callout
   type="danger"
   title="Protect your mnemonic"
 >
   Anyone with access to your mnemonic can control your wallet and all funds. Store it securely (password manager, hardware wallet, encrypted storage). Never commit it to version control.
-</Aside>
+</Callout>
 
 ## Step 3: Derive the keypair
 
@@ -138,12 +136,12 @@ console.log('Wallet address:', address);
 
 This address is deterministic: it depends only on `CODE` and `publicKey`. The same parameters always produce the same address.
 
-<Aside
+<Callout
   type="tip"
   title="Why non-bounceable?"
 >
   When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. See [Address formats](/foundations/addresses/formats) for details.
-</Aside>
+</Callout>
 
 **Account status: [`nonexist`](/foundations/status#status-variety)**
 
@@ -153,12 +151,12 @@ The calculated address exists only as a deterministic value. No account exists o
 
 ## Step 6: Fund the wallet
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   You will send TON to this address. Test on testnet first. Verify the wallet address carefully — blockchain transactions cannot be reversed.
-</Aside>
+</Callout>
 
 **Required before deployment:** Send TON to your wallet address (from Step 5) to prepare it for deployment.
 
@@ -170,12 +168,12 @@ Send TON using a faucet (testnet) or from another wallet (mainnet). After fundin
 
 ## Step 7: Send messages
 
-<Aside
+<Callout
   type="note"
   title="Automatic deployment"
 >
   The wallet will auto-deploy on the first external message. No separate deployment step is needed.
-</Aside>
+</Callout>
 
 ### Send single transfers
 
@@ -220,9 +218,9 @@ await wallet.sendTransfers(keyPair, transfers, currentSeqno);
 console.log('Batch transfers sent');
 ```
 
-<Aside
+<Callout
   type="note"
   title="Maximum actions"
 >
   reprocessed Wallet V2 supports up to 255 actions per transaction. This is the maximum number of out actions supported by TON blockchain.
-</Aside>
+</Callout>

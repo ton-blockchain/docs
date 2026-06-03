@@ -3,11 +3,9 @@ title: "On-chain jetton processing"
 sidebarTitle: "Jetton processing"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside type="note">
+<Callout type="note">
   Understand [the jetton architecture](/standard/tokens/jettons/overview) before reading this article.
-</Aside>
+</Callout>
 
 Contracts routinely process jettons for DEX, escrow, and lending protocols by handling `JettonNotify` messages from jetton wallets. However, since anyone can send these messages, receiving contracts must verify the message sender has the correct jetton wallet address.
 
@@ -109,9 +107,9 @@ Include the jetton minter address in the contract `Storage` to ensure each insta
 
 Modify `trustedJettonWallet` to store several addresses, to handle several jetton types with a single contract.
 
-<Aside type="tip">
+<Callout type="tip">
   [The Bidask Finance DEX](https://bidask.finance/en/) uses manual wallet management.
-</Aside>
+</Callout>
 
 ## Automatic wallet discovery
 
@@ -216,17 +214,17 @@ fun onInternalMessage(in: InMessage) {
 }
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   [The DeDust DEX](https://dedust.io/) uses automatic wallet discovery.
-</Aside>
+</Callout>
 
 ## On-chain get-method emulation
 
 If a jetton contract doesn't implement TEP-89, it is possible to compute the jetton wallet address on-chain by executing the `get_wallet_address` method of the jetton minter. This approach doesn't require any trust in the jetton deployer and works for jettons that don't implement TEP-89.
 
-<Aside type="note">
+<Callout type="note">
   Jettons that do not implement the TEP-89 messages for computing a wallet address on-chain are rare. [TONCO DEX](https://tonco.io/) rejects them, while platforms such as [DeDust](https://dedust.io/) only allow them after a manual approval.
-</Aside>
+</Callout>
 
 With the state of a jetton minter, the [`RUNVM`](/tvm/instructions#db4fff-runvm) instruction can emulate the execution of the `get_wallet_address` [get-method](/tvm/get-method) to derive the wallet address for any owner.
 

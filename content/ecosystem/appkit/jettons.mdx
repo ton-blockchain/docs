@@ -3,19 +3,17 @@ title: "How to work with Jettons using AppKit"
 sidebarTitle: "Work with Jettons"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the AppKit](/ecosystem/appkit/init) before using examples on this page.
-</Aside>
+</Callout>
 
 [Jettons](/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each jetton has a separate master (minter) contract and an individual wallet contract for each holder.
 
 For example, USDT on TON is implemented as a jetton, and its minter contract address is `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`. By providing this address and the recipient's TON wallet contract address, AppKit knows which tokens to send and to whom.
 
-<Aside type="note">
+<Callout type="note">
   To deploy and mint a new jetton on the mainnet without writing code, use the dedicated official tool: [TON MINTER](https://minter.ton.org).
-</Aside>
+</Callout>
 
 ## Metadata
 
@@ -142,11 +140,9 @@ USDT has a decimal precision of 6, meaning that the fractional balance string `'
 
 ### On-demand balance check
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not store the balance check results anywhere in the application state, as they become outdated quickly. For UI purposes, do [continuous balance monitoring](#continuous-balance-monitoring).
-</Aside>
+</Callout>
 
 #### Single jetton
 
@@ -505,14 +501,14 @@ Modify the following example according to the application logic:
 
 ## Transfers
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Each jetton stores the `decimals` parameter in its [metadata](#metadata). Transferring without accounting for decimals can result in sending drastically more or fewer tokens than intended.
 
   Mitigation: Verify the correct `decimals` value before calculating transfer amounts. For USDTs, the decimals value is 6.
-</Aside>
+</Callout>
 
 Before making a transfer, make sure there is enough Toncoin in the balance to cover the [fees](/foundations/fees).
 

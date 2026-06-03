@@ -2,8 +2,6 @@
 title: "Compiler optimizations"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The Tolk compiler generates bitcode from clear, idiomatic code. Extracting variables or simple methods should not increase gas consumption.
 
 ## Constant folding
@@ -255,11 +253,9 @@ Another option is using bitwise `&` and `|` instead of logical `&&` and `||`. Lo
 
 The last option is using low-level Fift code for certain independent tasks that cannot be expressed imperatively. This includes using TVM instructions such as `NULLROTRIFNOT` or `IFBITJMP`, and overriding the top-level Fift dictionary for `method_id` routing. These techniques are applicable only in a limited set of scenarios, primarily for specialized exercises rather than for real-world use.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Avoid micro-optimizations. Small manual attempts to reduce gas typically yield minimal gains and can reduce code readability. Use Tolk as intended.
-</Aside>
+</Callout>
 
 ## Fift assembler
 

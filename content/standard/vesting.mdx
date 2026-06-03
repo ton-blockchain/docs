@@ -3,9 +3,6 @@ title: "Vesting contracts"
 sidebarTitle: "Vesting"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 A [vesting contract](https://en.wikipedia.org/wiki/Vesting) is a financial agreement that outlines how and when an individual earns rights to certain assets over a specified period. On TON, vesting contracts enable secure, scheduled distribution of Toncoin assets with built-in staking capabilities.
 
 ## What is vesting
@@ -63,8 +60,8 @@ Example: With a total duration of 10 months, unlock period of 1 month, and total
 Use the `get_locked_amount(int at_time)` method to calculate how much remains locked at any specific time.
 
 <Image
-  src="/resources/images/vesting/vesting_chart_light.png"
-  darkSrc="/resources/images/vesting/vesting_chart_dark.png"
+  src="/images/vesting/vesting_chart_light.png"
+  darkSrc="/images/vesting/vesting_chart_dark.png"
   alt="Vesting schedule"
 />
 
@@ -118,12 +115,12 @@ To verify:
 1. Check the contract code hash
 1. Verify it matches the official hash above
 
-<Aside
+<Callout
   type="danger"
   title="Security: Verify code hash"
 >
   Never send funds to a vesting contract until the code hash is verified to match the official version. A mismatched code hash indicates a modified or malicious contract that could steal funds.
-</Aside>
+</Callout>
 
 ### Step 6: Verify parameters via get-method
 
@@ -136,7 +133,7 @@ After deployment but before sending funds, verify all parameters using the `get_
 Example result on [Tonviewer](/ecosystem/explorers/tonviewer):
 
 <Image
-  src="/resources/images/vesting/getmethod.png"
+  src="/images/vesting/getmethod.png"
   alt="Get-method result example on Tonviewer"
 />
 
@@ -165,12 +162,12 @@ Supported whitelist destinations include:
 
 Technically, any address can be added to the whitelist, including regular wallet addresses like wallet-v4. However, adding a wallet address defeats the purpose of vesting, as the owner would be able to withdraw locked funds immediately. Whitelist addresses should only include contracts that support staking operations and cannot be used for direct withdrawals.
 
-<Aside
+<Callout
   type="caution"
   title="Whitelist security"
 >
   Once an address is added to the whitelist, it cannot be removed. Review all addresses carefully before adding them. Only add addresses from trusted, verified protocols.
-</Aside>
+</Callout>
 
 ## Sending messages via UI
 
@@ -242,12 +239,12 @@ The contract reserves locked funds when sending to non-whitelisted addresses (ex
 
 Funds can always be sent back to the vesting sender address without restrictions, even if locked. This provides a safety mechanism to return funds if needed.
 
-<Aside
+<Callout
   type="caution"
   title="Protect owner wallet"
 >
   Back up the recovery phrase for the owner wallet that controls the vesting contract. If access to the owner wallet is lost, control over vesting funds cannot be recovered.
-</Aside>
+</Callout>
 
 ## Staking options
 
@@ -300,12 +297,12 @@ Create a single nominator pool and stake through it. This is the recommended app
 
 For detailed setup instructions, see [MyTonCtrl single nominator pool mode](/ecosystem/nodes/cpp/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode).
 
-<Aside
+<Callout
   type="tip"
   title="Staking rewards"
 >
   Staking rewards are distributed according to the pool's reward scheme. See [staking reward calculation in nominator pools](/ecosystem/staking/nominator-pools) for details on how rewards are calculated and split between validators and nominators.
-</Aside>
+</Callout>
 
 ### Liquid staking: Tonstakers
 
@@ -336,12 +333,12 @@ Stake through the Tonstakers liquid staking protocol.
 
    HEX message body: `b5ee9c7201010101000e00001847d543910000000000000000`
 
-   <Aside
+   <Callout
      type="caution"
      title="Message format"
    >
      This is a serialized BoC message, not a text comment. Do not insert this into the "Comment" field in wallet applications. Use the HEX format option in the vesting interface.
-   </Aside>
+   </Callout>
 
    Send this message via the [vesting.ton.org](https://vesting.ton.org/) interface by selecting HEX format.
 
@@ -354,12 +351,12 @@ Stake through the Tonstakers liquid staking protocol.
      - The "Holder address" equals the vesting contract address
 
    <Image
-     src="/resources/images/vesting/tstakers_trace.png"
+     src="/images/vesting/tstakers_trace.png"
      alt="Tonstakers deposit trace"
    />
 
    <Image
-     src="/resources/images/vesting/tstakers_jwallet.png"
+     src="/images/vesting/tstakers_jwallet.png"
      alt="Tonstakers jetton wallet"
    />
 
@@ -371,12 +368,12 @@ Stake through the Tonstakers liquid staking protocol.
    - Amount: gas fee (\~0.5 TON)
    - Body: burn message with operation code `op::jetton_burn` (0x595f07bc)
 
-   <Aside
+   <Callout
      type="caution"
      title="Withdrawal amount"
    >
      Specify the exact amount of `tsTON` to burn. Check the `tsTON` balance in the jetton wallet before creating the burn message.
-   </Aside>
+   </Callout>
 
    To build the burn message cell in TypeScript, use the following code:
 
@@ -436,12 +433,12 @@ Stake through the Tonstakers liquid staking protocol.
      - The "Holder address" equals the vesting contract address
 
    <Image
-     src="/resources/images/vesting/bemo_trace.png"
+     src="/images/vesting/bemo_trace.png"
      alt="Bemo staking trace"
    />
 
    <Image
-     src="/resources/images/vesting/bemo_jwallet.png"
+     src="/images/vesting/bemo_jwallet.png"
      alt="Bemo jetton wallet"
    />
 
@@ -453,12 +450,12 @@ Stake through the Tonstakers liquid staking protocol.
    - Amount: \~0.5 TON (for gas fees)
    - Body: burn message with operation code `op::jetton_burn` (0x595f07bc)
 
-   <Aside
+   <Callout
      type="caution"
      title="Withdrawal amount"
    >
      Specify the exact amount of `bmTON` to unstake. Check the `bmTON` balance in the jetton wallet before creating the burn message.
-   </Aside>
+   </Callout>
 
    To build the burn message cell in TypeScript, use the following code:
 

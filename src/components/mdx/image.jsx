@@ -39,7 +39,7 @@ export const Image = ({
   const createInvalidPropCallout = (title, received, expected) => {
     return (
       // @ts-ignore
-      <Danger>
+      <Callout type="danger">
         <span className="font-bold">
           Invalid <code>{title.toString()}</code> passed!
         </span>
@@ -50,7 +50,7 @@ export const Image = ({
         <span className="font-bold">Expected: </span>
         {expected.toString()}
         {/* @ts-ignore */}
-      </Danger>
+      </Callout>
     );
   };
 

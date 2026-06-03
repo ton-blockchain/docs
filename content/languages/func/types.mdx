@@ -1,17 +1,14 @@
 ---
 title: "FunC types"
 sidebarTitle: "Types"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 FunC offers a range of built-in types covering all the types the TVM has. On the other hand, FunC has no custom user-defined types like records or classes.
 
@@ -107,9 +104,9 @@ For example, `[int, cell]` defines a tuple with exactly two elements:
 
 The type `[]` represents an empty tuple. There is only one value of this type, the empty tuple, which is also written as `[]`.
 
-<Aside>
+<Callout>
   The empty tuple `[]` occupies one stack entry.
-</Aside>
+</Callout>
 
 ### Tensor type
 
@@ -143,9 +140,9 @@ However, this code will compile correctly:
 
 FunC enforces strict type consistency, so only matching tensor structures are allowed.
 
-<Aside>
+<Callout>
   Exception: a type of the form `(A)` is considered by the type checker as the same type as `A`.
-</Aside>
+</Callout>
 
 **Special case: unit type`()`**
 
@@ -182,9 +179,9 @@ For example,
 - Calling `duplicate(6)` produces `(6, 6)`.
 - Calling `duplicate([])` produces two copies of an empty tuple: `([], [])`.
 
-<Aside>
+<Callout>
   Type variables in polymorphic functions cannot be instantiated with tensor types. The only exception is a tensor of a single element `(a)`, where `a` is not a tensor type itself. The compiler treats `(a)` as equivalent to `a`.
-</Aside>
+</Callout>
 
 For more details, see the [`forall` declarator](/languages/func/functions#forall-declarator) section.
 

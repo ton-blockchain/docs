@@ -3,6 +3,10 @@ title: "Using components and snippets"
 sidebarTitle: "Overview"
 ---
 
+<Callout type="caution">
+  Due to the move from Mintlify to Fumadocs, most descriptions on this and related snippet and components are obsolete. They will be patched up soon, sorry for the inconvenience.
+</Callout>
+
 _Snippets_ keep the same content in sync across pages, while _components_ provide reusable UI elements with consistent styling. Examples include a [link card](https://www.mintlify.com/docs/components/cards) or a [YouTube embed](https://www.mintlify.com/docs/create/image-embeds#youtube-embeds).
 
 Mintlify supports MDX snippets and JSX (React) components in MDX files, and provides several [built-in components](#built-in-components). In addition, this documentation includes a number of [custom components](#custom-components) in the `snippets/` folder.
@@ -11,7 +15,7 @@ Mintlify supports MDX snippets and JSX (React) components in MDX files, and prov
 
 The [DRY (Don't Repeat Yourself)](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) principle applies to documentation. When the same content appears in multiple places, create a custom snippet to keep it in sync.
 
-All snippets are placed in the root `snippets/` folder. For creation and usage details, see the [Mintlify reusable snippets documentation](https://www.mintlify.com/docs/create/reusable-snippets).
+All _ad hoc_ snippets are placed in the root `snippets/` folder. For creation and usage details, see the [Mintlify reusable snippets documentation](https://www.mintlify.com/docs/create/reusable-snippets).
 
 ## Using a component
 
@@ -23,14 +27,13 @@ title: "Frontmatter goes first, as usual"
 ---
 
 {/* Snippet imports go right after the frontmatter */}
-import MyMdxSnippet from '/snippets/my-mdx-snippet.mdx';
+import MyMdxSnippet from '@/snippets/my-mdx-snippet.mdx';
 
 {/* Component imports follow suit */}
-import { Aside } from '/snippets/aside.jsx';
 
 And now, some text and usage!
 
-<Aside>Here we go, some **nested content and formatting**!</Aside>
+<Callout>Here we go, some **nested content and formatting**!</Callout>
 ```
 
 Related Mintlify documentation:
@@ -162,7 +165,7 @@ When explaining a complex topic or writing a tutorial, use concise diagrams to c
 
 These components have better alternatives:
 
-1. `<Callout>` - use the custom [`<Aside>`](/contribute/snippets/aside) component.
+1. `<Callout>` - use the custom [`<Callout>`](/contribute/snippets/aside) component.
 1. `<Frame>` - use the custom [`<Image>`](/contribute/snippets/image) component.
 1. `<View>` - use `<CodeGroup>`, organize content in sub-headers, or create distinct pages per environment or language.
 1. `<Tile>` - use `<Card>`.

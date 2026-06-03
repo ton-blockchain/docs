@@ -3,18 +3,16 @@ title: "How to transfer jettons"
 sidebarTitle: "Transfer jettons"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#internal-message-handlers) standard specifies that Jetton wallets must support `transfer` operation.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Each jetton stores a `decimals` parameter in its metadata. Transferring without accounting for `decimals` can result in sending 1000 times the intended amount—irreversible on mainnet.
 
   Mitigation: Always retrieve and apply the correct `decimals` value. Test on testnet first. Read [decimals parameter](/standard/tokens/metadata#decimals) for details.
-</Aside>
+</Callout>
 
 To attach a comment, the message has to encode it in `forward_payload` field, and `forward_ton_amount` is some amount of Toncoin attached to let the receiving wallet process the message.
 
@@ -24,14 +22,14 @@ A single manual transfer can be done with a web service (for example, [Minter](h
 
 A programmatic transfer is usually done with an SDK (for example, [`assets-sdk`](https://github.com/ton-community/assets-sdk)) that handles low-level message serialization details. The provided example uses TON Center API that might [require a key](/ecosystem/api/toncenter/get-api-key). Also you'll need a mnemonic of a wallet that will pay for the transfer.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Beware that API keys and mnemonic must not be committed or shared publicly.
 
   A better approach is to use a `.env` file that is excluded from repository with `.gitignore`. For GitHub CI purposes, consult [their documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets).
-</Aside>
+</Callout>
 
 ```ts expandable
 import { Address, toNano, WalletContractV5R1, TonClient } from "@ton/ton";

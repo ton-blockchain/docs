@@ -3,13 +3,11 @@ title: "Gasless transactions"
 sidebarTitle: "Gasless transactions"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Gasless transactions execute wallet operations when the wallet owner does not hold Toncoin to pay [network fees](/foundations/fees). A relayer service and its on-chain contract submit transactions on behalf of users and attach Toncoin to cover gas costs.
 
-<Aside type="note">
+<Callout type="note">
   The wallet contract must support owner-signed internal messages — implementations that only accept external messages cannot participate in gasless flows.
-</Aside>
+</Callout>
 
 ## How it works
 
@@ -208,9 +206,9 @@ No standardization: relayer APIs, fee structures, and supported assets vary. Eac
 
 [TON Connect](/ecosystem/ton-connect/overview) incompatibility: currently, TON Connect does not support gasless. The `sendTransaction` method does not return signed payloads to dApps — it submits transactions directly. Gasless requires obtaining signed payloads and forwarding them to relayers off-chain.
 
-<Aside type="note">
+<Callout type="note">
   dApps that need gasless must implement custom signing flows outside TON Connect. Users sign payloads directly via a browser extension or a native app and send them to relayers via an API.
-</Aside>
+</Callout>
 
 Centralization: users depend on relayer uptime, policies, and willingness to serve requests. Relayers can censor addresses or refuse service.
 

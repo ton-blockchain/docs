@@ -3,16 +3,14 @@ title: "NFT implementations comparison"
 sidebarTitle: "Comparison"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 This page compares the available standards for each layer of the NFT protocol on TON. The protocol has two layers — `Collection` and `Item` — and you can mix standards between layers since they are independent of each other.
 
-<Aside
+<Callout
   type="note"
   title="Scope"
 >
   This page focuses on high-level capabilities and typical trade-offs. For low-level details, see [How it Works](/standard/tokens/nft/how-it-works).
-</Aside>
+</Callout>
 
 ## Collection
 
@@ -40,9 +38,9 @@ Royalty is defined at the collection level and exposed via `get_royalty_params` 
 
 Marketplaces can attempt to pay royalties to the collection creator regardless of how the collection was deployed.
 
-<Aside type="note">
+<Callout type="note">
   Some NFT implementations included obligatory royalties, which required careful off-chain restrictions and management, thus limiting the distribution.
-</Aside>
+</Callout>
 
 ## Item
 

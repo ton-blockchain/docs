@@ -4,14 +4,12 @@ sidebarTitle: "Webhooks"
 tag: "beta"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside
+<Callout
   type="caution"
   title="Beta version"
 >
   Webhook functionality is in closed beta. Interfaces or behavior may change in the future.
-</Aside>
+</Callout>
 
 TON Pay uses webhooks to notify applications in real-time about transfer events.
 
@@ -22,12 +20,12 @@ TON Pay uses webhooks to notify applications in real-time about transfer events.
 1. TON Pay sends a `POST` request to the webhook URL with the signed payload. The request includes the `X-TonPay-Signature` header for verification.
 1. Verify the signature and process the event payload. Return a `2xx` status code to acknowledge receipt.
 
-<Aside
+<Callout
   type="note"
   title="Important"
 >
   The webhook URL must be publicly accessible and accept `POST` requests from the TON Pay backend.
-</Aside>
+</Callout>
 
 ## Configure the webhook URL
 
@@ -38,12 +36,12 @@ Configure the endpoint in TON Pay Merchant Dashboard.
 1. Enter the webhook URL. In production, the endpoint must use HTTPS. For example, `https://thedomain.com/webhooks/tonpay`.
 1. Save the configuration and use the test feature to verify delivery.
 
-<Aside
+<Callout
   type="note"
   title="Built-in test feature"
 >
   Use a built-in test feature in the dashboard to send sample webhooks before going live.
-</Aside>
+</Callout>
 
 ## Webhook payload
 
@@ -78,12 +76,12 @@ interface TransferCompletedWebhookPayload {
 }
 ```
 
-<Aside
+<Callout
   type="tip"
   title="Type safety"
 >
   Webhook types are exported from [`@ton-pay/api`](/ecosystem/ton-pay/api-reference). Use `WebhookPayload` for type safety in webhook handlers.
-</Aside>
+</Callout>
 
 ### Example payloads
 
@@ -305,12 +303,12 @@ Placeholders:
 
 Every webhook request includes an `X-TonPay-Signature` header containing an HMAC-SHA256 signature. Verify this signature to ensure the request comes from TON Pay.
 
-<Aside
+<Callout
   type="danger"
   title="Security requirement"
 >
   In production, webhook requests must be verified using the signature. Without verification, requests can be forged.
-</Aside>
+</Callout>
 
 ```ts
 import { verifySignature, type WebhookPayload } from "@ton-pay/api";
@@ -329,20 +327,20 @@ app.post("/webhook", (req, res) => {
 });
 ```
 
-<Aside
+<Callout
   type="note"
   title="Important"
 >
   The webhook API secret is available in the Merchant Dashboard under <kbd>Developer</kbd> → <kbd>Webhooks</kbd>. Store it securely and use it only on the server.
-</Aside>
+</Callout>
 
 ## Validate webhook requests
 
 Validate fields against the expected transaction data before marking an order as paid.
 
-<Aside type="note">
+<Callout type="note">
   Return a `2xx` response for validation failures, such as an amount mismatch or an unknown order, to prevent retries. Log these issues for further investigation.
-</Aside>
+</Callout>
 
 1. Verify the `X-TonPay-Signature` header and reject invalid requests.
 
@@ -519,9 +517,9 @@ TON Pay retries failed webhook deliveries.
 - Success responses: `2xx`. No retry; webhook marked as delivered.
 - All other responses: `4xx`, `5xx`, or network errors. Automatic retry with exponential backoff.
 
-<Aside type="note">
+<Callout type="note">
   Return a `2xx` status code only after validation and any required order updates complete, including cases where validation fails but the event is logged and marked as handled. Returning success before validation finishes can result in missed or duplicated processing.
-</Aside>
+</Callout>
 
 ## Best practices
 

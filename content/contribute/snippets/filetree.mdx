@@ -3,21 +3,20 @@ title: "FileTree component"
 sidebarTitle: "FileTree"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { FileTree } from '/snippets/filetree.jsx';
+import { FileTree } from '@/snippets/filetree.jsx';
 
 To display the structure of a directory with files and collapsible subdirectories, use the `<FileTree>` component. Click on a subdirectory to open or close it.
 
-<Aside type="note">
+<Callout type="note">
   Additionally, notes can be added to files and directories, which are displayed after their names.
-</Aside>
+</Callout>
 
 The `<FileTree>` is a wrapper over the built-in [`<Tree>` component](https://www.mintlify.com/docs/components/tree) provided by Mintlify, but with a data-driven interface: pass a list of objects and strings instead of [composing JSX children manually](#using-\<tree>-directly).
 
 ## Import
 
 ```tsx
-import { FileTree } from '/snippets/filetree.jsx';
+import { FileTree } from '@/snippets/filetree.jsx';
 ```
 
 ## Usage
@@ -25,16 +24,12 @@ import { FileTree } from '/snippets/filetree.jsx';
 Specify the structure of files and directories inside the [`items` property](#items-required) as a JavaScript list of strings, objects, and nested lists.
 
 ```mdx
-import { FileTree } from '/snippets/filetree.jsx';
-
 <FileTree items={[ /* ...entries, see below... */ ]} />
 ```
 
 ### Specify files and placeholders
 
 ```mdx
-import { FileTree } from '/snippets/filetree.jsx';
-
 {/* Files and a placeholder by the end */}
 <FileTree
   items={[
@@ -53,8 +48,6 @@ import { FileTree } from '/snippets/filetree.jsx';
 ### Add notes and comments
 
 ```mdx
-import { FileTree } from '/snippets/filetree.jsx';
-
 {/* Using objects to add notes or nested folders */}
 <FileTree
   items={[
@@ -88,8 +81,6 @@ import { FileTree } from '/snippets/filetree.jsx';
 ### Specify folders and their state
 
 ```mdx
-import { FileTree } from '/snippets/filetree.jsx';
-
 {/* Make all sub-folders be closed by default */}
 <FileTree
   items={[
@@ -139,9 +130,9 @@ The `FileTreeItem` can be one of the following kinds:
   - `open?: boolean` — whether to open the directory, defaults to `true`;
   - `items: FileTreeItem[]` — nested files and folders;
 
-<Aside type="note">
+<Callout type="note">
   Folders are open by default. That is, their `open` property is `true` unless specified otherwise.
-</Aside>
+</Callout>
 
 ### `defaultOpen`
 

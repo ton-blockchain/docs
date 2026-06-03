@@ -3,8 +3,6 @@ title: "On-ramp in TON Pay SDK"
 sidebarTitle: "On-ramp"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The TON Pay SDK includes a built-in fiat-to-crypto on-ramp powered by [MoonPay](https://www.moonpay.com/). It allows users to top up their wallets with a bank card directly from the payment modal.
 
 ## How it works
@@ -81,11 +79,11 @@ The on-ramp widget communicates through `postMessage`. The SDK handles the follo
 
 Merchants using `TonPayButton` do not need to handle these events manually.
 
-<Aside
+<Callout
   type="note"
   title="Processing times and fees"
 >
   MoonPay purchases require on-chain confirmation and are not processed immediately. The SDK monitors the transaction status through automatic balance polling.
 
   The SDK adds a 5% buffer to top-up amounts to account for MoonPay fees and price fluctuations.
-</Aside>
+</Callout>

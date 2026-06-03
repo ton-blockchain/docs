@@ -3,8 +3,6 @@ title: "How to change TON configuration parameters with Fift"
 sidebarTitle: "Change TON config params"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The TON blockchain stores its [configuration parameters](/foundations/config) on-chain. Changing one requires a majority of validators to vote in favor through the configuration smart contract.
 
 ## Prerequisites
@@ -154,12 +152,12 @@ B5EE9C7241010301002C0001216E5650525E838CB0000000085E9455904001010BF300000008A002
 
 `config-msg-body.boc` now holds the internal message body for the configuration smart contract. Send it from a masterchain wallet attached to enough Toncoin to cover the fee.
 
-<Aside
+<Callout
   type="caution"
   title="Network or consensus changes"
 >
   Proposing or voting on configuration parameters affects validator and elector behavior. Reverting an applied change takes another accepted proposal and another set of validator votes, so rehearse the full procedure on TON Testnet before touching TON Mainnet.
-</Aside>
+</Callout>
 
 Find the address of the configuration smart contract with `getconfig 0`:
 
@@ -190,12 +188,12 @@ remote result (not to be trusted):  [ 2340800000 ]
 
 The arguments are: `critical?` flag = `0`, lifetime = `1100000` seconds (about 12.7 days), `bits` = `104`, `refs` = `0`. The bit and reference counts come from the earlier `create-config-proposal.fif` output.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   The next command moves funds on TON Mainnet and changes validator and network behavior. On-chain transfers are final, and reversing a configuration change takes another accepted proposal. Confirm both the address and the amount on TON Testnet before repeating on TON Mainnet.
-</Aside>
+</Callout>
 
 The storage fee is 2.3408 Toncoin. Add at least 1.5 Toncoin for processing and send 4 Toncoin in total; any surplus is refunded. Sign the transfer with [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif), or the appropriate Fift script for the controlling wallet:
 

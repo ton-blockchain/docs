@@ -3,9 +3,6 @@ title: "Catchain overview"
 sidebarTitle: "Overview"
 ---
 
-import {Aside} from "/snippets/aside.jsx";
-import {Image} from "/snippets/image.jsx";
-
 Catchain is a communication protocol between actors. It does not execute the consensus algorithm itself but prepares the data required for the decision-making of a higher-level component: [Block Consensus Protocol (BCP)](/foundations/whitepapers/catchain#3-block-consensus-protocol). The main purpose of the protocol is to allow validators to send messages that explicitly depend on other messages, possibly produced by different actors. Dependencies are encoded in such a way that a node receiving a message can download the referenced messages and verify their validity.
 
 ## Problem
@@ -31,17 +28,17 @@ At the logical level, the protocol provides causality preservation when sending 
 
 The protocol implements a [CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type) over the set of messages known to each node and achieves [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency). As a synchronization mechanism, it uses the idea similar to [vector clock](https://en.wikipedia.org/wiki/Vector_clock) with modifications that preserve eventual consistency even when some nodes are Byzantine.
 
-<Aside type="note">
+<Callout type="note">
   Catchain 1.0 works over ADNL protocol to maintain message integrity, at-least-once delivery guarantees, and message authenticity.
-</Aside>
+</Callout>
 
 ## Choosing neighbor nodes
 
 Catchain selects [five](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/catchain/catchain-receiver.cpp#L36) neighbors at random and periodically refreshes the list each random interval between [60 and 120 seconds](https://github.com/ton-blockchain/ton/blob/34823b1ea378edbe3bc59f3bcc48126480a0b768/catchain/catchain-receiver.cpp#L989) in the current configuration. Note that the neighbor relation is not symmetric: if `B` is a neighbor of `A`, it does not imply that `A` is also a neighbor of `B`.
 
-<Aside type="tip">
+<Callout type="tip">
   In the current implementation, [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister) is used to pick the random interval for refreshing the neighbor list. It is seeded with values from [`std::random_device`](https://en.cppreference.com/w/cpp/numeric/random/random_device.html), whose behavior is platform-dependent.
-</Aside>
+</Callout>
 
 ## Message identification
 
@@ -51,15 +48,15 @@ Every Catchain message is uniquely identified by the pair `(sender; sender's seq
 
 A Catchain message can declare any other messages by any node as a dependency. These dependencies are stored in the message `body`. Every Catchain message must declare the previous message from the same node as a dependency. Otherwise, the message is considered malformed and ignored by honest nodes. If a Catchain message has `seqno` equal to 0, the previous message for it is `genesis`: the name for the initial state of the system.
 
-<Aside type="note">
+<Callout type="note">
   The same set of participants can take part in multiple catchain rounds, so the message identifier is extended with the round identifier to distinguish messages across rounds. Multiple-round scenarios are omitted in this article.
-</Aside>
+</Callout>
 
 ### Example message flow
 
 <Image
-  src="/resources/images/foundations/catchain-light.gif"
-  darkSrc="/resources/images/foundations/catchain-dark.gif"
+  src="/images/foundations/catchain-light.gif"
+  darkSrc="/images/foundations/catchain-dark.gif"
   alt="Example message flow, animated GIF"
 />
 
@@ -81,9 +78,9 @@ This property means that $\forall A, B, C: depends(A, B) \&\& depends(B, C) -> d
 
 If an actor issues two messages with the same identifier `(A; i)` but different payloads, the situation is called a fork. Any honest validator who observes it constructs a proof consisting of the block identifier and two distinct signatures. Since all public keys are known, this proof can be broadcast to the neighbors, and then further across the network. Every honest participant who receives the proof starts ignoring all messages from node `A` starting from `(A, i)`, as well as all messages that depend on `(A, j)`, where `j >= i`.
 
-<Aside type="tip">
+<Callout type="tip">
   According to the original design, when Catchain is used for the TON blockchain consensus, a fork proof can be submitted to the [Elector](/foundations/system#elector) smart contract. However, this idea has not been implemented.
-</Aside>
+</Callout>
 
 ### Detecting skipped sequence numbers
 

@@ -2,8 +2,6 @@
 title: "Library references"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 While cells are deduplicated by hash within each data store on TON, there might be situations where cells with the same hash are required in several stores. For example, if there is a popular contract with a lot of instances, and there's no need to duplicate and store separately part of its code for every instance.
 
 This is where libraries are needed: they store a single cell that is available to all the contracts. Library reference cells store a hash of such a library, and tell TVM to look up the content of such a library cell. This might reduce the size of serialized data and enable efficient storage of incrementally updated data.
@@ -21,9 +19,9 @@ One of the native features of how TON stores data in cells is deduplication: dup
 
 The library allows extending the deduplication mechanism on-chain, enabling the incorporation of the same efficiency into custom smart contracts.
 
-<Aside>
+<Callout>
   You can think of a library cell as a const weak C++ pointer: a small cell that references a larger one, which may include many references. The referenced cell must exist and be registered publicly, i.e., “published”.
-</Aside>
+</Callout>
 
 ### Low-level details
 

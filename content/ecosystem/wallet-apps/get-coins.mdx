@@ -3,9 +3,6 @@ title: "How to get coins on testnet"
 sidebarTitle: "Get coins on testnet"
 ---
 
-import { Image } from '/snippets/image.jsx';
-import { Aside } from '/snippets/aside.jsx';
-
 Testnet coins are used for development and testing on the TON testnet. To obtain testnet Toncoin, a testnet wallet is required.
 
 Depending on the required amount of Toncoin, choose one of the following options:
@@ -20,8 +17,8 @@ Depending on the required amount of Toncoin, choose one of the following options
 1. Open [`@testgiver_ton_bot`](https://t.me/testgiver_ton_bot) in a browser and click <kbd>Open Telegram</kbd>.
 
    <Image
-     src="/resources/images/fund-wallet/open-telegram-light.png"
-     darkSrc="/resources/images/fund-wallet/open-telegram-dark.png"
+     src="/images/fund-wallet/open-telegram-light.png"
+     darkSrc="/images/fund-wallet/open-telegram-dark.png"
      width={608}
      height={342}
      alt="Open Telegram prompt"
@@ -30,8 +27,8 @@ Depending on the required amount of Toncoin, choose one of the following options
 1. Once the bot opens, click <kbd>Start</kbd> to initiate the session.
 
    <Image
-     src="/resources/images/fund-wallet/start-bot-light.png"
-     darkSrc="/resources/images/fund-wallet/start-bot-dark.png"
+     src="/images/fund-wallet/start-bot-light.png"
+     darkSrc="/images/fund-wallet/start-bot-dark.png"
      width={608}
      height={342}
      alt="Start bot screen"
@@ -40,38 +37,38 @@ Depending on the required amount of Toncoin, choose one of the following options
 1. After the `/start` command is sent, the bot displays a welcome message. Click <kbd>Get 2 TON in testnet</kbd> to request test coins.
 
    <Image
-     src="/resources/images/fund-wallet/bot-welcome-light.png"
-     darkSrc="/resources/images/fund-wallet/bot-welcome-dark.png"
+     src="/images/fund-wallet/bot-welcome-light.png"
+     darkSrc="/images/fund-wallet/bot-welcome-dark.png"
      alt="Bot welcome screen"
    />
 
 1. A captcha prompt appears. Open the image to view it in full size and enter the displayed characters.
 
    <Image
-     src="/resources/images/fund-wallet/captcha-light.png"
-     darkSrc="/resources/images/fund-wallet/captcha-dark.png"
+     src="/images/fund-wallet/captcha-light.png"
+     darkSrc="/images/fund-wallet/captcha-dark.png"
      alt="Captcha screen"
    />
 
 1. Once the captcha is complete, enter the testnet wallet address.
 
    <Image
-     src="/resources/images/fund-wallet/enter-address-light.png"
-     darkSrc="/resources/images/fund-wallet/enter-address-dark.png"
+     src="/images/fund-wallet/enter-address-light.png"
+     darkSrc="/images/fund-wallet/enter-address-dark.png"
      alt="Enter wallet address"
    />
 
-   <Aside
+   <Callout
      type="caution"
    >
      Verify that the pasted address belongs to the **testnet**. Mainnet and testnet addresses are distinct. See [Internal address formats](/foundations/addresses/formats#flag-definitions) for details.
-   </Aside>
+   </Callout>
 
 1. After submitting the address, a message confirms that the request is queued. Then, the bot processes it and sends 2 Toncoin in testnet.
 
    <Image
-     src="/resources/images/fund-wallet/request-confirmed-light.png"
-     darkSrc="/resources/images/fund-wallet/request-confirmed-dark.png"
+     src="/images/fund-wallet/request-confirmed-light.png"
+     darkSrc="/images/fund-wallet/request-confirmed-dark.png"
      alt="Request confirmed"
    />
 
@@ -81,8 +78,8 @@ Depending on the required amount of Toncoin, choose one of the following options
 1. To request again, open the menu in the lower-left corner, select `/get`, and repeat the steps.
 
    <Image
-     src="/resources/images/fund-wallet/menu-light.png"
-     darkSrc="/resources/images/fund-wallet/menu-dark.png"
+     src="/images/fund-wallet/menu-light.png"
+     darkSrc="/images/fund-wallet/menu-dark.png"
      alt="Bot menu"
    />
 
@@ -98,16 +95,16 @@ After requesting tokens, use the Tonviewer Testnet explorer to verify that the t
 1. Open [Tonviewer Testnet](https://testnet.tonviewer.com/), enter the wallet address in the search bar, and click <kbd>Find</kbd>.
 
    <Image
-     src="/resources/images/fund-wallet/tonviewer-light.png"
-     darkSrc="/resources/images/fund-wallet/tonviewer-dark.png"
+     src="/images/fund-wallet/tonviewer-light.png"
+     darkSrc="/images/fund-wallet/tonviewer-dark.png"
      alt="Tonviewer search"
    />
 
 1. The explorer shows the current balance and transaction history, including the testnet Toncoin received from the bot. The account state is `uninit`, indicating that the account is not deployed.
 
    <Image
-     src="/resources/images/fund-wallet/account-uninit-light.png"
-     darkSrc="/resources/images/fund-wallet/account-uninit-dark.png"
+     src="/images/fund-wallet/account-uninit-light.png"
+     darkSrc="/images/fund-wallet/account-uninit-dark.png"
      alt="Wallet balance showing uninit state"
    />
 

@@ -3,8 +3,6 @@ title: "Addresses overview"
 sidebarTitle: "Overview"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 TON implements an [actor model](https://en.wikipedia.org/wiki/Actor_model), where entities, including wallets, are _smart contracts_ that exchange messages. Each smart contract is hosted on a distinct _account_ that manages its balance and persistent storage. These accounts have identifiable _addresses_, used for sending and receiving messages on the blockchain.
 
 Each actor (account) processes incoming messages on its address one at a time, updating its internal state and generating outgoing messages. While multiple accounts can share the same code, each maintains its own storage and balance. To uphold this separation, each account address is unique.
@@ -57,9 +55,9 @@ Uninitialized account can only become active by providing a `StateInit` that mat
 
 As such, for each pair of `initial_code` and `initial_data`, there exists a specific set of account IDs to which a smart contract with such code and data can be deployed. Account IDs are crucial for sharding and for delivering messages between shards during [Hypercube Routing](/foundations/shards).
 
-<Aside type="note">
+<Callout type="note">
   Although the deployed smart contract code and data may change during its lifetime, the address where it is deployed does **not** change.
-</Aside>
+</Callout>
 
 Some contracts can transform into another contract with specified code and data as their first action. They are called [vanity](/contract-dev/techniques/vanity) contracts because they allow for a wider range of account IDs, helping to find a subjectively prettier address for the new contract. Their off-chain generation parts try different `StateInit` values, often by changing a salt, until the resulting account ID has a desired prefix or suffix. After deployment, the contract can set its runtime code and data to the intended contract state, retaining the address obtained with the initial `StateInit`.
 

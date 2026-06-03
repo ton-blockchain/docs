@@ -3,8 +3,6 @@ title: "Monitoring"
 sidebarTitle: "Monitoring"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 ## Objective
 
 Set up Prometheus and Grafana for TON node metrics. `kube-prometheus-stack` is recommended because the chart includes a `ServiceMonitor` template for automatic scrape discovery.
@@ -27,12 +25,12 @@ Set up Prometheus and Grafana for TON node metrics. `kube-prometheus-stack` is r
 
    The server exposes `/metrics` (Prometheus format), `/healthz` (liveness), and `/readyz` (readiness). If `metrics` is absent, the server is not started.
 
-   <Aside
+   <Callout
      type="note"
      title="Required labels"
    >
      `global_labels` with `network`, and `node_id` are required for the bundled Grafana dashboard. Without them, dashboard variables are empty and panels show no data.
-   </Aside>
+   </Callout>
 
 1. Set `ports.metrics` in Helm values:
 

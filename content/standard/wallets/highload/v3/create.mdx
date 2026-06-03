@@ -3,8 +3,6 @@ title: "How to create a highload wallet v3"
 sidebarTitle: "Create and deploy"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 This guide shows how to create a Highload Wallet v3 instance from scratch: choose configuration parameters, generate a mnemonic, and calculate the wallet address.
 
 ## Objective
@@ -21,9 +19,9 @@ By the end of this guide, you will have:
 - `@ton/ton`, `@ton/core`, `@ton/crypto` packages installed
 - Highload Wallet v3 wrapper and compiled contract code
 
-<Aside type="note">
+<Callout type="note">
   **No deployment yet:** Creating a wallet calculates its future address but does not deploy it. The wallet will auto-deploy on the first external message (when you send your first transfer).
-</Aside>
+</Callout>
 
 This guide uses TypeScript with the official wrapper. The same logic applies to other SDKs (Go/Python): generate or load a mnemonic, derive a keypair, choose parameters, and calculate the address.
 
@@ -44,9 +42,9 @@ Copy the wrapper and contract code from the [official repository](https://github
 # - Compiled contract BoC (from build/ or inline hex)
 ```
 
-<Aside type="note">
+<Callout type="note">
   **Why copy wrappers?** The official `@ton/ton` SDK does not include Highload Wallet v3 wrappers yet. Copy `HighloadWalletV3.ts` and `HighloadQueryId.ts` from the repository until SDK support is added.
-</Aside>
+</Callout>
 
 ## Step 2: Choose configuration parameters
 
@@ -71,11 +69,9 @@ The `timeout` determines:
 | Medium (1–6 hours) | Balanced; suitable for most production use                                                     |
 | Long (24+ hours)   | High tolerance for blockchain congestion; higher storage costs; slower certainty on expiration |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Cannot be changed later:** `timeout` is part of the contract's [initial configuration](/standard/wallets/highload/v3/specification#storage-structure). Changing it would change the wallet address entirely.
-</Aside>
+</Callout>
 
 See [Timeout constraints](/standard/wallets/highload/v3/specification#timeout-constraints) in the specification for details.
 
@@ -86,12 +82,10 @@ See [Timeout constraints](/standard/wallets/highload/v3/specification#timeout-co
 
 A single mnemonic can generate multiple independent wallet addresses by varying `subwalletId`. Each wallet has its own balance, state, and transaction history.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Recommended value: `0x10ad` (4269).**\
   Use a `subwalletId` different from other wallet types (standard wallets v3/v4/v5 or vesting wallets) derived from the same keypair. The value `0x10ad` is recommended in the [official repository](https://github.com/ton-blockchain/highload-wallet-contract-v3) to avoid conflicts with other contracts.
-</Aside>
+</Callout>
 
 **Why this matters:**
 
@@ -117,11 +111,9 @@ const mnemonic = await mnemonicNew(24); // Array of 24 words
 const mnemonic = 'word1 word2 word3 ... word24'.split(' ');
 ```
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Protect your mnemonic:** Anyone with access to your mnemonic can control your wallet and all funds. Store it securely (password manager, hardware wallet, encrypted storage). Never commit it to version control.
-</Aside>
+</Callout>
 
 ## Step 4: Derive the keypair
 
@@ -186,9 +178,9 @@ console.log('Wallet address:', address);
 
 This address is deterministic: it depends only on `CODE`, `publicKey`, `subwalletId`, and `timeout`. The same parameters always produce the same address.
 
-<Aside type="tip">
+<Callout type="tip">
   **Why non-bounceable?** When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. See [Address formats](/foundations/addresses/formats) for details.
-</Aside>
+</Callout>
 
 **Account status: [`nonexist`](/foundations/status#status-variety)**
 
@@ -196,11 +188,9 @@ The calculated address exists only as a deterministic value. No account exists o
 
 ## Step 7: Fund the wallet
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Funds at risk:** You will send TON to this address. Test on testnet first. Verify the wallet address carefully — blockchain transactions cannot be reversed.
-</Aside>
+</Callout>
 
 **Required before deployment:** Send TON to your wallet address (from Step 6) to prepare it for deployment.
 
@@ -226,11 +216,9 @@ fs.writeFileSync('.wallet.json', JSON.stringify(walletData, null, 2));
 console.log('Wallet saved to .wallet.json');
 ```
 
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Never commit `.wallet.json`:** Add it to `.gitignore`. This file contains your mnemonic.
-</Aside>
+</Callout>
 
 ## Next steps
 

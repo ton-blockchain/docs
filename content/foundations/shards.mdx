@@ -2,8 +2,6 @@
 title: "Blockchain sharding"
 ---
 
-import { Image } from '/snippets/image.jsx';
-
 TON Blockchain is a collection of blockchains that are called _workchains_. Each workchain might have different formats of [account addresses](/foundations/addresses/overview), formats of [transactions](/foundations/messages/ordinary-tx), and different virtual machines for smart contracts.
 
 TON Blockchain dynamically splits workchains into halves when the transaction rate is above the threshold, and merges them when it decreases below the threshold. This is called _Infinite Sharding Paradigm_. [Sharding](https://en.wikipedia.org/wiki/Shard_\(database_architecture\)) is the general concept used to split the load into several parts, to ease requirements on a single computing element of some system.
@@ -13,7 +11,7 @@ Each account is the sole citizen of its corresponding blockchain, _accountchain_
 Regularly creating empty blocks for rarely updated accountchains would be too expensive. To reduce the cost, accountchains are grouped into _shardchains_, where each block is a collection of blocks of accountchains that have been assigned to this shard.
 
 <Image
-  src="/resources/images/blockchain_sharding.png"
+  src="/images/blockchain_sharding.png"
   alt="Blockchain hierarchy"
 />
 
@@ -52,7 +50,7 @@ The set of all shardchains of a given workchain and their connection to neighbor
 As a simple example, consider a workchain that has eight shardchains with `shard_prefix` equal to `000`, `001`, `010`, `011`, `100`, `101`, `110`, and `111`. These shardchains can be represented as vertices of a three-dimensional cube, where two shardchains are connected by an edge if their `shard_prefix` differ by exactly one bit. Thus, a message from `001` shardchain to `110` shardchain will be routed along the edges of the cube following the path `001 -> 101 -> 111 -> 110`. Hence, there are three hops between `001` and `110` shardchains.
 
 <Image
-  src="/resources/images/hypercube_routing.png"
+  src="/images/hypercube_routing.png"
   alt="Hypercube routing"
 />
 

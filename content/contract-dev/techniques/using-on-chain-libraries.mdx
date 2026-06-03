@@ -3,16 +3,14 @@ title: "How to use on-chain libraries"
 sidebarTitle: "Using on-chain libraries"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Before using on-chain libraries, read about [library cells](/foundations/serialization/library). That page explains the cell format that on-chain libraries use.
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Keep enough TON on the account that hosts the library to cover at least 10 years of storage. If the balance becomes too low, the library freezes and becomes inaccessible.
-</Aside>
+</Callout>
 
 ## When to use
 
@@ -114,9 +112,9 @@ This contract requires enough TON for at least 10 years of storage. That prevent
 
 The key line is `setLibCode(libToPublish, PUBLIC_LIBRARY_MODE);`. This call publishes an ordinary cell with the flag set to `2`, which makes the library public.
 
-<Aside type="note">
+<Callout type="note">
   After publication, the contract becomes bricked, so no further operations are possible.
-</Aside>
+</Callout>
 
 ## Test libraries with Acton
 

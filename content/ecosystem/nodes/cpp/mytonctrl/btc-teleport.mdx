@@ -19,11 +19,13 @@ description: "The BTC Teleport module manages the optional Bitcoin bridge (Telep
 remove_btc_teleport [--force]
 ```
 
-<Caution>`--force` removes Teleport binaries and service configuration.
-Risk: loss of Teleport state; service downtime.
-Scope: this node’s Teleport installation (binaries, keystore, systemd unit).
-Rollback/Mitigation: reinstall Teleport or restore from a backup of `/usr/src/ton-teleport-btc-periphery` and related configs.
-Environment: applies to both TON Testnet and TON Mainnet nodes.</Caution>
+<Callout type="caution">
+  `--force` removes Teleport binaries and service configuration.
+  Risk: loss of Teleport state; service downtime.
+  Scope: this node’s Teleport installation (binaries, keystore, systemd unit).
+  Rollback/Mitigation: reinstall Teleport or restore from a backup of `/usr/src/ton-teleport-btc-periphery` and related configs.
+  Environment: applies to both TON Testnet and TON Mainnet nodes.
+</Callout>
 
 **Behavior**
 

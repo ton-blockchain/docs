@@ -3,8 +3,6 @@ title: "Exceptions in Tolk"
 sidebarTitle: "Exceptions"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Tolk supports exceptions and handling them with `try catch`. If an exception is not caught, the program terminates with `errCode`.
 
 In [TVM](/tvm/overview), exceptions are numbers. There is no `Error` class or exception hierarchy, only [exit codes](/tvm/exit-codes).
@@ -29,12 +27,12 @@ enum ErrCode {
 
 Use these constants in `throw` and related statements described on this page.
 
-<Aside
+<Callout
   type="tip"
   title={"Use error codes between 64 and 2048"}
 >
   Lower values are [reserved](/tvm/exit-codes) by TVM. Larger ones are more gas-expensive.
-</Aside>
+</Callout>
 
 ## `throw` statement
 
@@ -117,10 +115,8 @@ try {
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Any error inside a `try` block reverts all changes made within. TVM restores local variables and control registers to the state they had before entering `try`.
 
   However, gas counters and TVM codepage settings are **not** rolled back. Gas is always spent.
-</Aside>
+</Callout>

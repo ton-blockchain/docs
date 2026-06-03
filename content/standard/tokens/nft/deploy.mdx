@@ -3,13 +3,10 @@ title: "How to deploy an NFT item"
 sidebarTitle: "Deploy NFT item"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 The creator sends a message to the collection contract, which deploys a new NFT item with the specified data: the initial owner and the item-specific content. The [NFT standard](/standard/tokens/nft/overview) does not prescribe how this data must be supplied; implementations may vary. Typically, the creator provides the initial owner and item-specific content for each NFT, or this information is derived from the collection itself.
 
 <Image
-  src="/resources/images/nft/nft_deploy.svg"
+  src="/images/nft/nft_deploy.svg"
   alt="Diagram of an NFT item deployment from a collection contract"
 />
 
@@ -26,12 +23,12 @@ To deploy an item from a [wallet](/standard/wallets/how-it-works), send a messag
 - A funded Testnet wallet mnemonic in the `MNEMONIC` environment variable
 - The sending wallet must be the collection owner; otherwise the collection rejects deployments
 
-<Aside
+<Callout
   type="danger"
   title="Funds and secrets"
 >
   This procedure spends funds, uses a wallet mnemonic, and interacts with a collection contract. Run it on Testnet first to test the desired behavior.
-</Aside>
+</Callout>
 
 The following example uses the `@ton/ton` stack for TypeScript. These libraries provide interfaces to work with wallet contracts and compose messages.
 
@@ -160,12 +157,12 @@ To deploy an item from a smart contract, send a message from the contract to the
 - `<COLLECTION_ADDRESS>`, `<RECIPIENT_ADDRESS>`, `<INDEX>`, `<ITEM_CONTENT>`
 - The calling contract must be the collection owner; otherwise the collection rejects deployments
 
-<Aside
+<Callout
   type="danger"
   title="Funds and secrets"
 >
   This smart contract interacts with a collection contract. Run it on Testnet first to test the desired behavior.
-</Aside>
+</Callout>
 
 The following example is a minimal smart contract that only implements the item deployment logic. In real deployments, this is integrated into a larger flow.
 

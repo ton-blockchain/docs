@@ -3,9 +3,6 @@ title: "NFT: How it works"
 sidebarTitle: "How NFT works"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 Core concepts and processes behind Non-Fungible Tokens (NFTs) in the TON Blockchain, aligned with [TEP-62](https://github.com/ton-blockchain/TEPs/blob/1fbc23cac69723c53251f686ec90d81bf0e83443/text/0062-nft-standard.md).
 
 ## Related smart contracts
@@ -18,8 +15,8 @@ Standardized NFTs on TON are implemented using a set of smart contracts, includi
 The NFT standard provides only a general interaction scheme, leaving specific implementation details to developers.
 
 <Image
-  src="/resources/images/nft/collection_light.png"
-  darkSrc="/resources/images/nft/collection_dark.png"
+  src="/images/nft/collection_light.png"
+  darkSrc="/images/nft/collection_dark.png"
   alt="NFT collection"
 />
 
@@ -31,11 +28,9 @@ The collection is the source of truth for items. It should provide each NFT item
 
 Following TON's [contract sharding](/contract-dev/contract-sharding) approach, each NFT item is its own smart contract account. It provides the collection address, index, current owner, and individual metadata. On a valid transfer from the current owner, it updates the owner, optionally notifies the new owner, and returns excess Toncoin to the specified address.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Not every NFT that stores a collection address actually belongs to that collection. [Verify](/standard/tokens/nft/verify) that the collection returns the item's address for the item's index.
-</Aside>
+</Callout>
 
 ## Transfer NFT item
 

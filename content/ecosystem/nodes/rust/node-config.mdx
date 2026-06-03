@@ -3,8 +3,6 @@ title: "How to configure node JSON file"
 sidebarTitle: "Node configuration"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Each TON node replica requires its own `config.json` – the main configuration file that defines ADNL settings, database paths, garbage collection, collator behavior, and optional control, liteserver, or JSON-RPC endpoints.
 
 In the Helm chart, per-node configuration files are provided through the `nodeConfigs` map in `values.yaml` or through an existing [Secret](https://kubernetes.io/docs/concepts/configuration/secret/). Keys must follow the `node-N.json` naming pattern, where `N` matches the 0-based [`StatefulSet`](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) replica index.
@@ -246,12 +244,12 @@ done
 
 For a validator, add `control-server` and `control-client` to the loop.
 
-<Aside
+<Callout
   type="danger"
   title="Key reuse risk"
 >
   Each key must be unique. Do not reuse the same key for different purposes, such as DHT and overlay. Do not share keys between different nodes.
-</Aside>
+</Callout>
 
 ### Archival node
 

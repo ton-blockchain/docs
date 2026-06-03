@@ -1,17 +1,14 @@
 ---
 title: "FunC language overview"
 sidebarTitle: "Overview"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 FunC is a domain-specific, statically typed language with C-like syntax designed to write smart contracts on TON. It can be characterized as an intermediate-level language sitting on top of the [Fift](/languages/fift) assembly language.
 
@@ -104,15 +101,15 @@ where `contract.fc` is the FunC file to compile, and `output.fif` is the generat
 
 To compile the generated Fift file `output.fif` further down to TVM bitcode, use the Fift compiler. See the [Fift](/languages/fift) for download and usage instructions.
 
-<Aside>
+<Callout>
   The last FunC compiler version is v2025.07. The FunC compiler is no longer developed. New releases are focused on the [Tolk](https://github.com/ton-blockchain/ton/releases/latest) compiler.
-</Aside>
+</Callout>
 
 ## Tutorials
 
-<Aside>
+<Callout>
   The tutorials in this section are provided by external contributors and may not reflect FunC's current development status. They are offered as additional resources for exploring FunC's applications.
-</Aside>
+</Callout>
 
 - [Challenge 1: Simple NFT deploy](https://github.com/romanovichim/TONQuest1/)
 - [Challenge 2: Chatbot contract](https://github.com/romanovichim/TONQuest2/)

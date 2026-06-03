@@ -1,17 +1,14 @@
 ---
 title: "FunC functions"
 sidebarTitle: "Functions"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 Every function declaration or definition follows a common pattern. The general form is:
 
@@ -113,11 +110,11 @@ A function can receive zero or more argument declarations, each declaration sepa
 
   This defines a function `inc` with the inferred type `int -> int`, meaning `x` is automatically recognized as an `int`.
 
-<Aside>
+<Callout>
   Even though a function may appear to take multiple arguments, it takes a single [tensor type](/languages/func/types#tensor-type) argument. For more details on this distinction, refer to the [function call](/languages/func/expressions#function-call) section.
 
   However, for convenience, the individual components of this tensor are conventionally referred to as function arguments.
-</Aside>
+</Callout>
 
 ## Specifiers
 
@@ -269,7 +266,7 @@ int get_counter() method_id(65536) {
 }
 ```
 
-<Aside
+<Callout
   type="caution"
   title="Important limitations and recommendations"
 >
@@ -283,7 +280,7 @@ int get_counter() method_id(65536) {
   - 65536 and above: default range for user functions when using automatic generation: `(crc16(function_name) & 0xffff) | 0x10000`
 
   **Best practice**: It's recommended to **avoid setting method IDs manually** and rely on automatic generation instead. Manual assignment can lead to conflicts and unexpected behavior.
-</Aside>
+</Callout>
 
 ## Function body
 
@@ -406,8 +403,8 @@ Even though the function is polymorphic, the compiled assembly code remains the 
 
 However, other forms of polymorphism, such as [`ad-hoc` polymorphism](https://en.wikipedia.org/wiki/Ad_hoc_polymorphism) with type classes, are not supported.
 
-<Aside>
+<Callout>
   At the moment, type variables in polymorphic functions cannot be instantiated with tensor types. There is only one exception: the tensor type `(a)`, where `a` is not a tensor type itself, since the compiler treats `(a)` as if it was `a`.
 
   This means you can't use `pair_swap` on a tuple of type `[(int, int), int]` because type `(int, int)` is a tensor type.
-</Aside>
+</Callout>

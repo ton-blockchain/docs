@@ -2,8 +2,6 @@
 title: "Rate limits"
 ---
 
-import {Aside} from "/snippets/aside.jsx";
-
 To ensure stability and fair access, TON Center applies rate limits to all API requests.\
 If an application exceeds these limits, the API returns a `429` response.
 
@@ -20,9 +18,9 @@ Increase limits by [requesting an API key](/ecosystem/api/toncenter/get-api-key)
 
 Rate limits apply to all API keys in total separately for every TON network, including mainnet and testnet. For example, the Plus plan users can create three API keys for the mainnet. The total limit for these three keys will be 25 requests per second.
 
-<Aside>
+<Callout>
   Each token represents an individual API key used to authenticate requests. Plans differ by how many tokens can be generated per network (mainnet and testnet). For example, the Free plan allows 1 key per network, while higher plans provide multiple keys for separate apps or environments.
-</Aside>
+</Callout>
 
 ## Rate limit exceeded
 

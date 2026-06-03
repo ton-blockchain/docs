@@ -3,8 +3,6 @@ title: "API reference"
 sidebarTitle: "API reference"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 TypeScript exports for the TON Pay SDK packages `@ton-pay/api` and `@ton-pay/ui-react`. To install the packages, use:
 
 ```bash
@@ -128,9 +126,9 @@ type APIOptions = {
 };
 ```
 
-<Aside type="note">
+<Callout type="note">
   Default: `mainnet`.
-</Aside>
+</Callout>
 
 ## Constants: `@ton-pay/api`
 
@@ -140,14 +138,14 @@ import { TON, USDT } from "@ton-pay/api";
 // USDT: mainnet USDT jetton master address
 ```
 
-<Aside
+<Callout
   type="danger"
   title="Mainnet address risk"
 >
   Token constants such as `USDT` always reference mainnet jetton master addresses and are not affected by the `chain` option. Using them on testnet may send transactions to mainnet contracts.
 
   For testnet, explicitly pass the correct testnet jetton master address instead of using token constants.
-</Aside>
+</Callout>
 
 ## Errors
 

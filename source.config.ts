@@ -1,21 +1,31 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
+import { rehypeCodeDefaultOptions, remarkMdxMermaid, remarkMdxFiles, } from 'fumadocs-core/mdx-plugins';
 import { z } from "zod";
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
-import { rehypeCodeDefaultOptions, remarkMdxMermaid, remarkMdxFiles, } from 'fumadocs-core/mdx-plugins';
-import { transformerTwoslash } from 'fumadocs-twoslash';
-import { createFileSystemTypesCache } from 'fumadocs-twoslash/cache-fs';
 
-// You can customize Zod schemas for frontmatter and `meta.json` here
-// see https://fumadocs.dev/docs/mdx/collections
+/** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
   dir: 'content',
   docs: {
     schema: pageSchema.extend({
-      description: z.string(),
+      // TODO: temporary patch for OpenAPI pages
+      title: z.string().optional(),
       sidebarTitle: z.string().optional(),
-    }),
+      // TODO:
+      mode: z.enum(['none', 'wide']).default('none'),
+      // TODO:
+      noindex: z.coerce.boolean().default(false),
+      // TODO:
+      openapi: z.string().optional(),
+      // TODO: fmt with prettier for everything but md[x]
+    }).transform((frontmatter) => ({
+      ...frontmatter,
+      // NOTE: alternatively, give titles to all OpenAPI routes
+      title: frontmatter.title ?? frontmatter.openapi ?? 'Untitled',
+    })),
     postprocess: {
       includeProcessedMarkdown: true,
     },
@@ -29,18 +39,56 @@ export default defineConfig({
   mdxOptions: {
     rehypeCodeOptions: {
       themes: {
-        light: "one-light",
-        dark: "one-dark-pro",
+        // one-light and one-dark-pro as alternative options
+        light: "github-light-default",
+        dark: "dark-plus",
+      },
+      icon: {
+        extend: {
+          tolk: readFileSync('public/logo/ton-gray.svg', 'utf8'),
+        },
       },
       lazy: false,
-      langs: ['js', 'jsx', 'ts', 'tsx', 'shellscript', 'jsonc', 'json'],
+      langs: [
+        'console',
+        'cpp',
+        'd',
+        'diff',
+        'http',
+        'ini',
+        'json',
+        'jsonc',
+        'js',
+        'jsx',
+        'go',
+        'mdx',
+        'html',
+        'swift',
+        'kotlin',
+        'python',
+        'rust',
+        'shellscript',
+        'ts',
+        'tsx',
+        'yaml',
+        ...['fift', 'func', 'tlb', 'tolk', 'tasm'].map((name) =>
+          JSON.parse(readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8'))
+        ),
+      ],
+      langAlias: {
+        'mytonctrl': 'shellscript',
+        'tact': 'text',
+        'asm': 'tasm',
+        'md': 'mdx',
+        'tl': 'tlb',
+        'env': 'ini',
+        'circom': 'cpp',
+        'boc': 'text',
+      },
+      // fallbackLanguage: 'text',
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
-        transformerTwoslash({
-          typesCache: createFileSystemTypesCache(),
-          // langs: ['ts', 'tsx', 'tolk'],
-          // twoslasher: tolkTwoslasher,
-        })
+        // NOTE: twoslash is very heavy on memory during builds, hence it was removed.
       ],
     },
     remarkPlugins: [remarkMath, remarkMdxMermaid, remarkMdxFiles],

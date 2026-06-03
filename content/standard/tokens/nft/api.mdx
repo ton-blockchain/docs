@@ -3,8 +3,6 @@ title: "NFT interface: messages and get methods"
 sidebarTitle: "Messages and get methods"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 NFT messages and methods specified in TEPs.
 
 ## [TEP-62](https://github.com/ton-blockchain/TEPs/blob/1fbc23cac69723c53251f686ec90d81bf0e83443/text/0062-nft-standard.md)
@@ -65,7 +63,7 @@ If the `forward_payload` contains a binary message for interacting with the dest
 | `index`              | `uint256`    | numerical index of this NFT in the collection                             |
 | `collection`         | `MsgAddress` | address of the smart contract of the collection to which this NFT belongs |
 
-<Aside type="caution">Verify that item belongs to collection via [get method in collection](/standard/tokens/nft/api#get_nft_address_by_index), see more [here](/standard/tokens/nft/verify)</Aside>
+<Callout type="caution">Verify that item belongs to collection via [get method in collection](/standard/tokens/nft/api#get_nft_address_by_index), see more [here](/standard/tokens/nft/verify)</Callout>
 
 #### `get_nft_data()`
 
@@ -79,7 +77,7 @@ No arguments. Outputs:
 | `owner_address`      | `MsgAddress` | address of the current owner of this NFT                                  |
 | `individual_content` | `Cell`       | individual NFT content in any format                                      |
 
-<Aside type="caution">Verify that item belongs to collection via [get method in collection](/standard/tokens/nft/api#get_nft_address_by_index), see more [here](/standard/tokens/nft/verify)</Aside>
+<Callout type="caution">Verify that item belongs to collection via [get method in collection](/standard/tokens/nft/api#get_nft_address_by_index), see more [here](/standard/tokens/nft/verify)</Callout>
 
 ### NFT Collection
 
@@ -153,7 +151,7 @@ Royalty share is `numerator / denominator`. For example, if `numerator = 11` and
 | `forward_payload` | `^Cell`      | any data for sending to the destination address from SBT               |
 | `with_content`    | `Bool`       | if true, SBT's individual content cell will be included in the message |
 
-<Aside type="caution">Should be rejected if sender address is not the owner's address.</Aside>
+<Callout type="caution">Should be rejected if sender address is not the owner's address.</Callout>
 
 #### Request owner message layout
 
@@ -172,7 +170,7 @@ Royalty share is `numerator / denominator`. For example, if `numerator = 11` and
 | `destroy`  | `uint32` | tag equal to `0x1f04537a` |
 | `query_id` | `uint64` | arbitrary request number  |
 
-<Aside type="caution">Should be rejected if sender address is not the owner's address. Sets the owner's address and authority to null, and sends an excesses message with the contract's balance.</Aside>
+<Callout type="caution">Should be rejected if sender address is not the owner's address. Sets the owner's address and authority to null, and sends an excesses message with the contract's balance.</Callout>
 
 #### Revoke message layout
 
@@ -181,7 +179,7 @@ Royalty share is `numerator / denominator`. For example, if `numerator = 11` and
 | `revoke`   | `uint32` | tag equal to `0x6f89f5e3` |
 | `query_id` | `uint64` | arbitrary request number  |
 
-<Aside type="caution">Should be rejected if sender address is not the authority's address or if already revoked. Sets `revoked_at` to current unix time.</Aside>
+<Callout type="caution">Should be rejected if sender address is not the authority's address or if already revoked. Sets `revoked_at` to current unix time.</Callout>
 
 #### Ownership proof message layout
 
@@ -228,7 +226,7 @@ No arguments. Outputs:
 | ----------- | ------- | ------------------------------------------------------------------------------------------ |
 | `authority` | `slice` | authority's address that can revoke SBT, returns `addr_none` (2 zero bits) if no authority |
 
-<Aside type="note">This method is mandatory for SBT. If there is no authority it should return `addr_none` (2 zero bits).</Aside>
+<Callout type="note">This method is mandatory for SBT. If there is no authority it should return `addr_none` (2 zero bits).</Callout>
 
 #### `get_revoked_time()`
 

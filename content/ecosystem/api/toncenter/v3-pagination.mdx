@@ -2,8 +2,6 @@
 title: "Pagination"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The v3 API uses offset-based pagination. Each paginated endpoint accepts `limit` and `offset` parameters. `limit` controls how many results to return per request, and `offset` skips a number of rows from the beginning of the result set. To retrieve the next page, increment `offset` by the value of `limit`.
 
 The following endpoints support pagination:
@@ -237,9 +235,9 @@ Response (abbreviated):
 
 With `sort=asc`, the earliest transactions are returned first, starting from 2023-07 for this account.
 
-<Aside
+<Callout
   type="caution"
   title="Sorting with jetton/wallets"
 >
   The `jetton/wallets` endpoint sorts results by balance instead of logical time. When balances change between requests, using `limit` and `offset` can skip or repeat wallets because the sort order changes between pages.
-</Aside>
+</Callout>

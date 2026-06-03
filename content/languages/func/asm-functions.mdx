@@ -1,17 +1,14 @@
 ---
 title: "FunC assembler functions"
 sidebarTitle: "Assembler functions"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 ## Assembler function definition
 
@@ -31,9 +28,9 @@ int inc_then_negate'(int x) asm "INC NEGATE";
 
 Here, `INC NEGATE` is treated as a single assembler command by FunC, but the Fift assembler correctly interprets it as two separate commands.
 
-<Aside>
+<Callout>
   The list of assembler commands can be found here: [TVM instructions](/tvm/instructions).
-</Aside>
+</Callout>
 
 ### Multi-line asms
 
@@ -137,9 +134,9 @@ int showcase() {
 
 ## Rearranging stack entries
 
-<Aside>
+<Callout>
   When manually rearranging arguments, they are evaluated in the new order. To overwrite this behavior see [`#pragma compute-asm-ltr`](/languages/func/compiler-directives#%23pragma-compute-asm-ltr).
-</Aside>
+</Callout>
 
 Sometimes, the order in which function arguments are passed may not match the expected order of an assembler command. Similarly, the returned values may need to be arranged differently. While this can be done manually using stack manipulation primitives, FunC has special syntax to handle this.
 

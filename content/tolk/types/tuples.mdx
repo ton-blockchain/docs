@@ -3,21 +3,17 @@ title: "Arrays and tuples"
 sidebarTitle: "Arrays"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 In [TVM](/tvm/overview), a tuple is a dynamic container that stores from 0 to 255 elements in a [single stack slot](/languages/tolk/types/overall-tvm-stack). Tolk provides several types built on top of TVM tuples:
 
 - `array<T>` — a dynamically sized array of elements of type `T`.
 - `[T1, T2, ...]` — a shaped tuple with a fixed number of elements of known types.
 - `tuple` — an alias for `array<unknown>`, a legacy name for an untyped dynamic container.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   In many general-purpose languages, syntax `[A, B, C, ...]` is used for array or list literals, while syntax `(A, B, C, ...)` is used for tuples. However, in TON, there are no traditional arrays or lists. The `[A, B, C, ...]` syntax creates arrays or shaped tuples, while `(A, B, C, ...)` is used by [tensors](/languages/tolk/types/tensors): a distinct type that represents ordered collections of values that occupy multiple TVM stack entries.
 
   For example, `array<int>` is a single stack entry containing multiple integers. In contrast, a tensor `(int, int, int)` signifies three separate integers that occupy individual stack entries or are serialized sequentially.
-</Aside>
+</Callout>
 
 ## Arrays
 

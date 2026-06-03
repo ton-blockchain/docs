@@ -3,8 +3,6 @@ title: "How to send payments using TON Connect"
 sidebarTitle: "Send payments TON Connect"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Use TON Connect native `sendTransaction` method when:
 
 - The application manages wallet connection UI and transaction flow directly.
@@ -653,12 +651,12 @@ app.post("/api/create-transaction", async (req, res) => {
 
 ## Testnet configuration
 
-<Aside
+<Callout
   type="danger"
   title="Funds at risk"
 >
   Running tests on mainnet can result in irreversible loss of real TON. Always use `chain: "testnet"` and testnet wallet addresses during development. Verify the network before switching to mainnet.
-</Aside>
+</Callout>
 
 ### Set up testnet
 

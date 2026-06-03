@@ -2,8 +2,6 @@
 title: "Execution phases"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 When an event occurs on an account in The Open Network (TON) blockchain, it triggers a **transaction**.
 The most common event is receiving a message, but other events like `tick-tock`, `merge`, and `split` can also initiate transactions.
 
@@ -18,7 +16,7 @@ Each transaction consists of up to five phases:
 
 > Compute, Action and Bounce phases may be skipped
 
-<Aside
+<Callout
   type="note"
   title="Execution order notes"
 >
@@ -27,7 +25,7 @@ Each transaction consists of up to five phases:
 
   For bounceable messages:
   Storage → Credit → Compute → Action → Bounce
-</Aside>
+</Callout>
 
 ## Fee deduction sequence
 
@@ -114,13 +112,13 @@ To start, note that the compute phase can be **skipped** entirely. In that case,
 [fixed_prefix_length]: https://github.com/ton-blockchain/ton/blob/72056a2261cbb11f7cf0f20b389bcbffe018b1a8/crypto/block/transaction.cpp#L1721
 [account_address]: https://github.com/ton-blockchain/ton/blob/72056a2261cbb11f7cf0f20b389bcbffe018b1a8/crypto/block/transaction.cpp#L1726
 
-<Aside
+<Callout
   type="note"
   title="Bad state"
 >
   The `fixed_prefix_length` field can be used to specify a fixed prefix for the account address, ensuring that the account resides in a specific shard.
   This topic is outside the scope of this guide, but more information is available in [Shards page](/foundations/shards).
-</Aside>
+</Callout>
 
 ## Action phase
 
@@ -166,12 +164,12 @@ tr_phase_action$_ success:Bool valid:Bool no_funds:Bool
 
 If the **Compute phase** or **Action phase** ends with an error, and the incoming message has the `bounce` flag set, the system triggers the **Bounce phase**.
 
-<Aside
+<Callout
   type="note"
   title="Bounce on error"
 >
   For the bounce phase to trigger due to an error in the action phase, the failed action must have **flag 16** set, which enables bounce on error.
-</Aside>
+</Callout>
 
 ```tlb
 tr_phase_bounce_negfunds$00 = TrBouncePhase;

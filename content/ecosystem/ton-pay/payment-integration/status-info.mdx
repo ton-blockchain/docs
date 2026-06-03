@@ -3,8 +3,6 @@ title: "How to check status and retrieve info"
 sidebarTitle: "Check status and retrieve info"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 After sending, look up the final result and details. The SDK exposes two lookup functions.
 
 ## By body hash
@@ -56,12 +54,10 @@ type CompletedTonPayTransferInfo = {
 
 Use `status` to drive UI state and use `reference`, `bodyBase64Hash`, and `txHash` for reconciliation.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   For Toncoin payments, the recipient amount may be reduced by [network fees](/foundations/fees). Use jettons or slightly overpay in TON when an exact settlement amount is
   required.
-</Aside>
+</Callout>
 
 ## Response fields
 

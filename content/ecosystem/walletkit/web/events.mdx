@@ -3,11 +3,9 @@ title: "How to handle other events with WalletKit on the Web platform"
 sidebarTitle: "Handle other events"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets) and [handle connection requests](/ecosystem/walletkit/web/connections) before using examples on this page.
-</Aside>
+</Callout>
 
 In total, there are five distinct kinds of incoming requests from the TON Connect bridge. They form the corresponding events and their handlers:
 
@@ -26,9 +24,9 @@ If a dApp is connected to the wallet service, the former can request to initiate
 
 On TON, transactions are initiated by sending an external message to the TON wallet contract, which then processes it and sends internal messages as requested. To estimate money flows for planned transactions, WalletKit uses emulation via the configured API client, if supported.
 
-<Aside>
+<Callout>
   The API client in use is determined by the required [`networks` configuration parameter](/ecosystem/walletkit/web/init#param-networks) during [WalletKit initialization](/ecosystem/walletkit/web/init#initialization).
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 kit.onTransactionRequest(async (event) => {

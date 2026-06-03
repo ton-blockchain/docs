@@ -3,9 +3,6 @@ title: "Staking overview"
 sidebarTitle: "Overview"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 [Staking in TON](https://ton.org/en/stake) enables earning rewards by locking Toncoin to support network security and validation. TON supports several staking solutions, each designed for different use cases and operational models.
 
 Staking secures the network through [proof-of-stake](https://en.wikipedia.org/wiki/Proof_of_stake). Depending on technical ability, stake size, and participation goals, users may choose between single nominator, nominator pools, or liquid staking. Some solutions are suitable only for technically experienced operators, while others are intended for businesses providing staking as a service. However, all solutions require non-trivial setup, and there are limited number of support tools.
@@ -20,14 +17,14 @@ The following smart contracts are commonly used in the TON ecosystem:
 |    [Single nominator](https://github.com/ton-blockchain/single-nominator)   |       Large holders staking only their own funds.      | Secure, contract-based self-staking; simple ownership model. |
 |      [Nominator pool](https://github.com/ton-blockchain/nominator-pool)     | Small group of nominators delegating to one validator. |    Has significant limitations; generally not recommended.   |
 
-<Aside
+<Callout
   type="caution"
   title="Stake requirements"
 >
   The technical minimum stake required to participate in validation is 300,000 TON. However, the actual minimum stake is typically higher, approximately 1,000,000 TON.
 
   Validator stakes can be viewed on [tonscan.org/validators](https://tonscan.org/validators). Scroll to the bottom of the list to see the validator with the lowest stake included in the current round.
-</Aside>
+</Callout>
 
 ## Liquid staking
 
@@ -53,9 +50,9 @@ The [liquid staking contract](/ecosystem/staking/liquid-staking) enables staking
 
 [Single nominator pool contract](/ecosystem/staking/single-nominator) is the standard solution designed for large holders who want to stake their own funds while delegating validator operations to a trusted operator.
 
-<Aside type="note">
+<Callout type="note">
   The single nominator pool contract is the recommended staking solution.
-</Aside>
+</Callout>
 
 ### Key characteristics
 
@@ -75,11 +72,9 @@ This solution is suitable for:
 
 [Nominator pools](/ecosystem/staking/nominator-pools) are smart contracts that allow a small group of nominators to combine their funds and delegate to a validator for staking collectively. However, it has limitations and safety concerns.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The nominator pool is deprecated and is not recommended for use.
-</Aside>
+</Callout>
 
 ### Limitations
 
@@ -121,8 +116,8 @@ The following recommendations are mapped onto the Cartesian plane below. The hor
   style={{ display: "flex", justifyContent: "center" }}
 >
   <Image
-    src="/resources/images/staking-cartesian-light.png"
-    darkSrc="/resources/images/staking-cartesian-dark.png"
+    src="/images/staking-cartesian-light.png"
+    darkSrc="/images/staking-cartesian-dark.png"
     width={500}
     height={500}
     alt="Recommendations"

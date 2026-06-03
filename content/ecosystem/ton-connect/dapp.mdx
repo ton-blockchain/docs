@@ -3,8 +3,6 @@ title: "How to integrate a decentralized application (dApp)"
 sidebarTitle: "Integrate a dApp"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 This guide helps you integrate your dApp with TON or build one from scratch using [TON Connect](/ecosystem/ton-connect/overview) and auxiliary libraries.
 
 TON Connect is a standard wallet connection protocol in TON. It consists of supplementary SDKs and supervises two major use cases: dApps integrations with TON and custom wallet integrations.
@@ -57,9 +55,9 @@ To proceed with a dApp integration, select your framework or environment:
   >
     [TON Connect manifest](/ecosystem/ton-connect/manifest) is a small JSON file that lets wallets discover information about your dApp. It should be named `tonconnect-manifest.json`, placed at `https://<YOUR_APP_URL>/tonconnect-manifest.json`, and be accessible with a direct GET request.
 
-    <Aside>
+    <Callout>
       Notice that [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) should be disabled, and there should be no authorization or intermediate proxies like CloudFlare or similar services. The connection also won’t work when using a VPN.
-    </Aside>
+    </Callout>
 
     Here's an example of such a file:
 
@@ -122,11 +120,11 @@ To proceed with a dApp integration, select your framework or environment:
     <TonConnectButton className="my-button-class" style={{ float: "right" }}/>
     ```
 
-    <Aside
+    <Callout
       type="caution"
     >
       You cannot pass a child element to the `TonConnectButton`.
-    </Aside>
+    </Callout>
   </Step>
 
   <Step
@@ -190,16 +188,14 @@ tonConnectUI.uiOptions = {
 
 In the object assigned, you should only pass options that you want to change — they will be merged with the current UI options. UI element will be re-rendered after such assignment.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Note that you have to pass an object and never set individual sub-properties under `uiOptions`. That is, **DO NOT** do this:
 
   ```tsx
   /* WRONG, WILL NOT WORK */
   tonConnectUI.uiOptions.language = 'ru';
   ```
-</Aside>
+</Callout>
 
 See all available `uiOptions` in the external reference: [`TonConnectUiOptions` Interface](https://ton-connect.github.io/sdk/interfaces/_tonconnect_ui.TonConnectUiOptions.html).
 
@@ -282,11 +278,9 @@ Connect a wallet and try using the <kbd>Send 0.1 TON</kbd> button. Notice that t
 
 When building apps, make sure to **always take fees into consideration** and show them to the end-user.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   This example sends **real TON** from the connected wallet. Try it with a testnet wallet first or send less Toncoin, e.g., 0.001 TON instead of 1 TON, to avoid surprises.
-</Aside>
+</Callout>
 
 ### Next.js
 
@@ -339,11 +333,9 @@ function MyApp({ Component, pageProps }) {
 
 For quick testing, use the following single-file HTML example.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   This example sends **real Toncoin** from the connected wallet. Try it with a testnet wallet first or send less Toncoin, e.g., 0.001 TON instead of 1, to avoid surprises.
-</Aside>
+</Callout>
 
 ```html title="index.html" expandable
 <!DOCTYPE html>

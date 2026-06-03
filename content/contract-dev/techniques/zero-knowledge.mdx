@@ -3,15 +3,13 @@ title: "Zero-knowledge proofs on TON"
 sidebarTitle: "Zero-knowledge proofs"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and verify a [ZK-proof](https://en.wikipedia.org/wiki/Zero-knowledge_proof) using the [zk-SNARK](https://en.wikipedia.org/wiki/Non-interactive_zero-knowledge_proof) [Groth16](https://eprint.iacr.org/2016/260.pdf) protocol.
 
-<Aside type="tip">
+<Callout type="tip">
   This guide is also applicable to circuits written in the [Noname](https://github.com/zksecurity/noname) language, since the [`export-ton-verifier`](https://github.com/mysteryon88/export-ton-verifier) library integrates with snarkjs, which in turn integrates with the Noname language.
 
   For repo-backed examples from [`zk-ton-examples`](https://github.com/zk-examples/zk-ton-examples/) covering Circom, Noname, Gnark, and Arkworks, see [Groth16 verification examples](/contract-dev/techniques/groth16-examples).
-</Aside>
+</Callout>
 
 ## Prerequisites
 
@@ -105,11 +103,11 @@ Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and 
     [INFO]  snarkJS: # of Outputs: 1
     ```
 
-    <Aside
+    <Callout
       type="note"
     >
       snarkjs supports the [alt\_bn128](https://eips.ethereum.org/EIPS/eip-196) and [bls12-381](https://electriccoin.co/blog/new-snark-curve/) curves. This guide uses bls12-381 because it is supported by TON.
-    </Aside>
+    </Callout>
   </Step>
 </Steps>
 
@@ -185,9 +183,9 @@ Choose the "power of tau" parameter (`10`) as low as possible, because it affect
 
 ## Test and verify the proof
 
-<Aside type="tip">
+<Callout type="tip">
   Build the contracts and generate the TypeScript wrappers before running tests.
-</Aside>
+</Callout>
 
 <Steps>
   <Step
@@ -260,9 +258,9 @@ The same workflow applies to other stacks, the key requirement is to obtain a pr
 
 [The zk-ton-examples repository](https://github.com/zk-examples/zk-ton-examples/) contains templates for Noname, gnark, and Arkworks. It is possible to generate proofs in any of these stacks, then convert them to the snarkjs format and verify them both locally and on-chain.
 
-<Aside type="tip">
+<Callout type="tip">
   Two utilities are available that help convert proofs and verification keys in a format compatible with snarkjs: [ark-snarkjs](https://github.com/mysteryon88/ark-snarkjs) and [gnark-to-snarkjs](https://github.com/mysteryon88/gnark-to-snarkjs).
-</Aside>
+</Callout>
 
 ### Rust
 
@@ -277,11 +275,11 @@ Use the Arkworks library to generate the proof and verification key, then conver
     cargo add ark-bls12-381 ark-ff ark-groth16 ark-r1cs-std ark-relations ark-snark ark-snarkjs ark-std rand@0.8.5
     ```
 
-    <Aside
+    <Callout
       type="note"
     >
       The listed packages are core dependencies for most Arkworks circuits. Depending on the specific circuit implementation, additional packages may be required.
-    </Aside>
+    </Callout>
   </Step>
 
   <Step
@@ -289,13 +287,13 @@ Use the Arkworks library to generate the proof and verification key, then conver
   >
     Implement the circuit logic using Arkworks primitives, similar to a Circom circuit.
 
-    <Aside
+    <Callout
       type="tip"
     >
       Learn how to write constraints in Arkworks by following the [Arkworks R1CS tutorial](https://github.com/arkworks-rs/r1cs-tutorial).
 
       [The zk-ton-examples repository](https://github.com/zk-examples/zk-ton-examples/tree/main/circuits/Arkworks/MulCircuit) contains a working example of a simple multiplication circuit.
-    </Aside>
+    </Callout>
   </Step>
 
   <Step
@@ -345,13 +343,13 @@ Use the gnark library to generate the proof and verification key, then convert t
 
     ```
 
-    <Aside
+    <Callout
       type="tip"
     >
       [The gnark repository](https://github.com/Consensys/gnark) contains an example circuit.
 
       [The zk-ton-examples repository](https://github.com/zk-examples/zk-ton-examples/tree/main/circuits/Cubic%20%28gnark%29) contains a working example of a simple cubic circuit.
-    </Aside>
+    </Callout>
   </Step>
 
   <Step

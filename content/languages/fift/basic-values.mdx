@@ -1,14 +1,12 @@
 ---
 title: "Basic values and literals in Fift"
 sidebarTitle: "Basic values"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
-</Aside>
+</Callout>
 
 ## Integers
 
@@ -91,7 +89,7 @@ This is a multi-line string
 // "
 ```
 
-<Aside>
+<Callout>
   For multiline strings, words `$<<"""` and `"""` must be by themselves in new lines alone. For instance,
 
   ```fift
@@ -111,7 +109,7 @@ This is a multi-line string
   ```
 
   does not work because `"""` is not in a line alone.
-</Aside>
+</Callout>
 
 ## Booleans
 
@@ -292,7 +290,7 @@ For instance, the following produces the same list as the previous example:
 1 2 3 3 list
 ```
 
-<Aside>
+<Callout>
   The list constructed with the code:
 
   ```fift
@@ -306,7 +304,7 @@ For instance, the following produces the same list as the previous example:
   ```
 
   The list is really the nested tuple `[ 1 [ 2 [ 3 null ] ] ]`, while the tuple is `[ 1 2 3 ]`.
-</Aside>
+</Callout>
 
 To deconstruct a list, use the word `uncons`. The word `uncons` consumes the list at the top of the stack and pushes the list's head followed by the list's tail. For instance, the following code defines a constant `A` containing list `(5 6 7)` and deconstruct the list by calling `uncons` several times:
 

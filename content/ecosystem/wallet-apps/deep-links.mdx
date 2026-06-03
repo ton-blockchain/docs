@@ -2,8 +2,6 @@
 title: "Deep links"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Deep links allow to seamlessly direct users from a dApp back to a meaningful location within a TON wallet and invoke corresponding actions.
 
 Issue wallet invoices using deep links. See [transaction link formats](#explorers-links) for popular explorers.
@@ -32,11 +30,9 @@ Explore [TON Connect](/ecosystem/ton-connect/overview).
 
 ## Deep links invoices
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The TON link `ton://` is less preferred in the ecosystem, but may be useful for simple and tiny one-time payment flow.
-</Aside>
+</Callout>
 
 ```bash
 ton://<LINK-BODY>
@@ -160,7 +156,7 @@ ton://transfer/<ADDRESS>?jetton=<JETTON_ADDRESS>&amount=<AMOUNT>&text=<TEXT>
 | `<TEXT>`             | A URL-encoded UTF-8 text message to attach to the transfer. | optional |
 | `<EXPIRY_TIMESTAMP>` | Expiry timestamp in seconds since the Unix epoch.           | optional |
 
-<Aside type="tip">
+<Callout type="tip">
   One whole Jetton for `<AMOUNT>` is defined by
 
   - [`decimals`](/standard/tokens/metadata#decimals) the number of fractional digits
@@ -199,7 +195,7 @@ ton://transfer/<ADDRESS>?jetton=<JETTON_ADDRESS>&amount=<AMOUNT>&text=<TEXT>
     \text{One whole DUST} = unit \times 10^{9}
     $$
   </Accordion>
-</Aside>
+</Callout>
 
 #### Transfer default jetton
 

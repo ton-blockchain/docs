@@ -3,9 +3,6 @@ title: "Token airdrop"
 sidebarTitle: "Airdrop"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
 ## The problem: distributing at scale
 
 Rewarding thousands (or millions) of users by sending assets to each address proactively looks simple until the network fees add up. Network fees scale fast when the sender pays for every transfer.
@@ -17,8 +14,8 @@ An airdrop flips the model. Instead of the distributor paying all fees, each eli
 The straightforward approach is to keep a precomputed mapping of recipient → allocation in the contract. When a user sends a claim message, the contract releases the preassigned drop for that user.
 
 <Image
-  src="/resources/images/claim_light.png"
-  darkSrc="/resources/images/claim_dark.png"
+  src="/images/claim_light.png"
+  darkSrc="/images/claim_dark.png"
   alt="User claims allocation from airdrop contract"
 />
 
@@ -83,8 +80,8 @@ The claim process combines both modules.
 1. Airdrop contract transfers assets to recipient.
 
 <Image
-  src="/resources/images/airdrop-light.png"
-  darkSrc="/resources/images/airdrop-dark.png"
+  src="/images/airdrop-light.png"
+  darkSrc="/images/airdrop-dark.png"
   alt="Airdrop claim flow"
 />
 

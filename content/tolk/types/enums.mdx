@@ -2,8 +2,6 @@
 title: "Enums"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Tolk supports enums, similar to TypeScript and C++ enums.
 
 In the [TVM](/tvm/overview), all enums are represented as integers. At the compiler level, an enum is a distinct type.
@@ -104,11 +102,9 @@ At the TVM level, every enum is represented as `int`. Casting between the enum a
 - `Color.Blue as int` evaluates to `2`;
 - `2 as Color` evaluates to `Color.Blue`.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Operator `as` can produce invalid values, for example `100 as Color`. In this case, operator `==` returns `false`, and an exhaustive `match` throws exception [5](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
-</Aside>
+</Callout>
 
 During deserialization with `fromCell()`, the compiler validates that encoded integers correspond to valid enum values.
 

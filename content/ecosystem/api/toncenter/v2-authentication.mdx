@@ -3,8 +3,6 @@ title: "API authentication"
 sidebarTitle: "Authentication"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 ## Overview
 
 The API v2 accepts an API key for all methods, including the JSON-RPC endpoint. Requests without an API key are limited to one request per second. To make more than one request per second, please include an API key.
@@ -18,11 +16,9 @@ To obtain an API key, see the [TON Center API key guide](/ecosystem/api/toncente
 | API key | Header   | `X-API-Key` |
 | API key | Query    | `api_key`   |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Never expose the API key in client-side code or public repositories. Store keys in a secrets manager or environment variables, rotate them periodically, and generate a new key immediately if one is compromised.
-</Aside>
+</Callout>
 
 ## Public hosts
 

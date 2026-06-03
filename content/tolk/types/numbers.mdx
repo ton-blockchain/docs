@@ -2,8 +2,6 @@
 title: "Numbers"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 At runtime, there are only 257-bit signed integers. They are represented by the Tolk's general `int` type.
 
 However, at the start and end of each execution, the contract's state is deserialized and serialized, respectively. To optimize space and reduce storage costs, it is possible to encode integer values using fewer bits.
@@ -25,13 +23,11 @@ There are also types of variable bit-width:
 | Signed `varint16`    | -2<sup>119</sup> to 2<sup>119</sup>-1 | Same as `coins`        | Rarely used                                                                   |
 | Signed `varint32`    | -2<sup>247</sup> to 2<sup>247</sup>-1 | Between 5 and 253 bits | Rarely used                                                                   |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   All these types are **257-bit integers at runtime**. [Overflows can occur at runtime](/tvm/exit-codes#4%3A-integer-overflow), but they are more likely during serialization.
 
   For example, subtracting $300$ from a variable of type `uint8` does not cause a runtime overflow. Yet, attempting to store the result back to the same variable triggers [exit code 5: integer out of expected range](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
-</Aside>
+</Callout>
 
 ## Literals
 

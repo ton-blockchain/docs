@@ -3,9 +3,6 @@ title: "Jetton: How it works"
 sidebarTitle: "How jetton works"
 ---
 
-import { Image } from '/snippets/image.jsx';
-import { Aside } from '/snippets/aside.jsx';
-
 This article describes the basic ideas and processes behind the implementation of Jettons (aka tokens in Ethereum) in the TON Blockchain.
 
 ## Related smart contracts
@@ -57,18 +54,16 @@ Interactions with Jetton contracts, which users and developers most often encoun
 - tokens burning: burn a certain number of tokens on the Jetton wallet contract;
 - wallet address providing: find the address of the Jetton wallet corresponding to a regular wallet.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   In all schemes below, you will see the `query id` field. Nowadays, the field is almost deprecated, and the protocol itself doesn't need it.
   It is mostly used for easier off-chain parsing and other web2 processing.
-</Aside>
+</Callout>
 
 ### Token transfer
 
 <Image
-  src="/resources/images/jettons/transfer_light.png"
-  darkSrc="/resources/images/jettons/transfer_dark.png"
+  src="/images/jettons/transfer_light.png"
+  darkSrc="/images/jettons/transfer_dark.png"
   alt="Jetton transfer"
 />
 
@@ -146,18 +141,16 @@ excesses#d53276db query_id:uint64 = InternalMsgBody;
 ### Token minting
 
 <Image
-  src="/resources/images/jettons/mint_light.png"
-  darkSrc="/resources/images/jettons/mint_dark.png"
+  src="/images/jettons/mint_light.png"
+  darkSrc="/images/jettons/mint_dark.png"
   alt="Jettons minting"
 />
 
 `Admin regular wallet -> Jetton master contract`. _Mint_ message contains the following data:
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   The following data layout is just a possible example. The structure of the Mint message is not specified in any TEPs and is left to the choice of the developer.
-</Aside>
+</Callout>
 
 | Name          | Type       | Description                                                                           |
 | ------------- | ---------- | ------------------------------------------------------------------------------------- |
@@ -170,8 +163,8 @@ The rest of the messages have already been described above when analyzing the tr
 ### Token burning
 
 <Image
-  src="/resources/images/jettons/burn_light.png"
-  darkSrc="/resources/images/jettons/burn_dark.png"
+  src="/images/jettons/burn_light.png"
+  darkSrc="/images/jettons/burn_dark.png"
   alt="Jettons burning"
 />
 

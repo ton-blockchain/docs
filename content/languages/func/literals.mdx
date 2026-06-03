@@ -1,17 +1,14 @@
 ---
 title: "FunC literals"
 sidebarTitle: "Literals"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
   Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
-</Aside>
+</Callout>
 
 ## Number literals
 
@@ -33,9 +30,9 @@ FunC allows a broad range of identifiers for functions and variable names. Any s
 
 Additionally, **function** names in function definitions can start with `.` or `~`.
 
-<Aside>
+<Callout>
   FunC allows an exception regarding identifiers for local variables. Local variables can use the name of a [built-in with a non-symbolic name](/languages/func/built-ins#built-ins-with-non-symbolic-names).
-</Aside>
+</Callout>
 
 **Examples of valid identifiers:**
 
@@ -90,7 +87,7 @@ These identifiers can contain any characters except:
 - `` `I'm a variable identifier too` ``
 - `` `any symbols ; ~ () are allowed here...` ``
 
-<Aside type="tip">
+<Callout type="tip">
   Identifiers in FunC usually follow these naming conventions:
 
   - **Apostrophe `'` at the end:** used when a variable is a modified version of its original value.
@@ -106,7 +103,7 @@ These identifiers can contain any characters except:
       (slice v, int found?) = udict_get?(dict, 100, 0);
       ```
       Here, function `udict_get?` looks up index `0` in dictionary `dict`, and returns the associated value `v` (if found) and a flag `found?` which indicates whether the index was found in the dictionary.
-</Aside>
+</Callout>
 
 ## Constants
 
@@ -132,9 +129,9 @@ const int int240 = (int101 * 10) << 3;   ;; Constant computed from an expression
 const slice str2r = str2;                ;; Constant referencing another constant
 ```
 
-<Aside type="tip">
+<Callout type="tip">
   Numeric constants are replaced during compilation, which means that all optimizations and pre-computations apply efficiently.
-</Aside>
+</Callout>
 
 ## Compile-time built-ins
 

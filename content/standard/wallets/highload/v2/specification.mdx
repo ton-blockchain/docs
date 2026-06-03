@@ -3,15 +3,11 @@ title: "Highload wallet v2: Specification"
 sidebarTitle: "Specification"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside
-  type="danger"
->
+<Callout type="danger">
   **Deprecated:** Highload Wallet v2 is a legacy contract. Use [Highload Wallet v3](/standard/wallets/highload/v3/specification) for new deployments.
 
   This specification is maintained for reference to support existing legacy systems.
-</Aside>
+</Callout>
 
 This page provides a complete technical specification for Highload Wallet v2, covering storage structure, message formats, replay protection, and limitations.
 
@@ -78,11 +74,9 @@ bound -= (64 << 32);  // Clean up records expired more than 64 seconds ago
 
 Queries with `query_id < (now() - 64) << 32` are removed from storage.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Gas costs:** Cleanup operations consume gas proportional to the number of expired queries. With many expired queries, cleanup can exceed the 1,000,000 gas limit, causing the transaction to fail.
-</Aside>
+</Callout>
 
 ### `public_key` (256 bits)
 
@@ -105,11 +99,9 @@ Stores processed `query_id` values for replay protection.
 **How it works:**\
 Before processing a message, the contract checks if `query_id` exists in `queries`. If found, the message is rejected (replay attack). If not found, the `query_id` is added to `queries`, and the message is processed.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Storage limit:** The `queries` dictionary cannot exceed 65,535 cells. If this limit is reached, the contract will fail during the action phase.
-</Aside>
+</Callout>
 
 ## External message structure
 
@@ -205,13 +197,11 @@ Up to **255 messages** (limited by action list size, not dictionary structure).
 1. **Send messages:** Iterate through the message dictionary and send each message
 1. **Cleanup:** Remove queries older than 64 seconds
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   **Rollback issue:** Highload Wallet v2 does not use `commit()` to persist storage changes. If the compute phase fails after `accept_message()` (e.g., gas limit exceeded during cleanup) or if the action phase fails, **all changes roll back**, including replay protection. The `query_id` is not marked as processed, and lite-servers will retry the same message, burning gas repeatedly.
 
   Highload Wallet v3 solves this with `commit()` and a two-transaction pattern. See [Why internal messages to self?](/standard/wallets/highload/v3/specification#why-internal-messages-to-self) for details.
-</Aside>
+</Callout>
 
 ## Exit codes
 

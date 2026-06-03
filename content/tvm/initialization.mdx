@@ -3,8 +3,6 @@ title: "Initialization"
 description: "State of TVM before smart contract execution"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 ## Initialization of `cc`, `cp`, and gas limits
 
 - The original `cc`, current continuation, is initialized using the cell slice created from the `code` section of the smart contract. If the account is frozen or uninitialized, the code must be provided in the `init` field of the incoming message.
@@ -15,9 +13,9 @@ import { Aside } from '/snippets/aside.jsx';
 
 ## Registers initialization
 
-<Aside type="tip">
+<Callout type="tip">
   For more info about registers, take a look at [Registers](/tvm/registers)
-</Aside>
+</Callout>
 
 - `c0`: `Quit` — extraordinary continuation which terminates TVM with exit code `0`.
 

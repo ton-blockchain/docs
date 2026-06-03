@@ -1,14 +1,12 @@
 ---
 title: "Words, constants, and variables in Fift"
 sidebarTitle: "Words, constants, and variables"
-noindex: "true"
+noindex: true
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside type="note">
+<Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). Fift is now a **legacy** language, with its compiler no longer maintained.
-</Aside>
+</Callout>
 
 ## Words
 
@@ -81,9 +79,9 @@ The value of a constant does not necessarily have to be an `Integer`. For instan
 hello   // Pushes "Hello, world!" into the stack
 ```
 
-<Aside>
+<Callout>
   If a constant is redefined, all existing definitions of other words will continue to use the old value of the constant. In this respect, a constant does not behave as a global variable.
-</Aside>
+</Callout>
 
 It is possible to store two values into one "double" constant by using the word `2constant`. For instance:
 
@@ -136,9 +134,9 @@ The drawback of this approach is that `@'` has to look up the current definition
 
 _Variables_ are a much more efficient way to represent changeable values. To declare a variable, use the word `variable` followed by the identifier. Internally, the word `variable` creates an empty [box](/languages/fift/basic-values#boxes), which can then be updated with word `!`, and read with word `@`.
 
-<Aside>
+<Callout>
   Word `variable` is a shorthand for `hole constant`. In turn, `variable x` is a shorthand for `hole constant x`, which defines a [constant](#constants) `x` that stores an empty box.
-</Aside>
+</Callout>
 
 For instance:
 
@@ -265,11 +263,11 @@ x    // Top of stack has 10
 y    // Top of stack has 5
 ```
 
-<Aside type="note">
+<Callout type="note">
   For more details on block/execution tokens and words `' <WORD_NAME>` and `execute`, refer to the blocks section in the [control flow page](/languages/fift/control#blocks).
 
   For more details on words `create`, `' <WORD_NAME>`, `does`, refer to sections [4.5](/languages/fift/whitepaper#4-5-defining-words-and-dictionary-manipulation), [4.6](/languages/fift/whitepaper#4-6-dictionary-lookup), and [4.7](/languages/fift/whitepaper#4-7-creating-and-manipulating-word-lists) in the Fift whitepaper.
-</Aside>
+</Callout>
 
 As another example of `variable-get-set`, the following implements a simple counter. The example uses auxiliary words `reset-counter` and `incr-counter` to reset the counter variable to `0` and increment the counter by one, respectively.
 

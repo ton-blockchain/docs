@@ -3,8 +3,6 @@ title: "Node configuration reference"
 sidebarTitle: "Node configuration reference"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 ## Top-level fields
 
 ### `log_config_name`
@@ -131,9 +129,9 @@ The node's external IP address and UDP port. Must be reachable from the internet
 | ------ | -------- | ----------- |
 | string | yes      | `"IP:PORT"` |
 
-<Aside type="note">
+<Callout type="note">
   The `adnl_node.ip_address` value must match the external IP assigned to this replica's `LoadBalancer` service. The port must match `ports.adnl` defined in Helm values.
-</Aside>
+</Callout>
 
 ### `adnl_node.keys`
 
@@ -482,11 +480,11 @@ Key-value pairs added to every metric. Useful for distinguishing nodes when mult
 | -------------------- | -------- | ------- |
 | map\<string, string> | no       | `{}`    |
 
-<Aside type="note">
+<Callout type="note">
   The bundled [Grafana dashboard](https://github.com/RSquad/ton-rust-node/tree/master/grafana) relies on the `network` and `node_id` labels for filtering. If `global_labels` is not set or is empty, dashboard variables will be empty and panels will display no data.
 
   Both labels must be defined.
-</Aside>
+</Callout>
 
 Example:
 
@@ -520,12 +518,12 @@ Optional network extensions.
 | `adnl_compression`             | bool       | `false` | Enable ADNL packet compression. Not compatible with C++ TON nodes; only enable in networks where all peers run the Rust node. |
 | `broadcast_hops`               | u8 \| null | `null`  | Maximum number of broadcast hops.                                                                                             |
 
-<Aside
+<Callout
   type="danger"
   title="Mainnet compatibility"
 >
   Do not enable `adnl_compression` on mainnet while any dependent peers run C++ TON nodes. This option is only safe when all interacting peers run the Rust node implementation.
-</Aside>
+</Callout>
 
 ## `secrets_vault_config`
 
@@ -541,12 +539,12 @@ External secrets vault for storing private keys outside of `config.json`.
 | -------------- | ------- |
 | object \| null | `null`  |
 
-<Aside
+<Callout
   type="note"
   title="Helm integration"
 >
   For Helm deployments, prefer chart-level `vault.url` or `vault.secretName` values. When `VAULT_URL` is set by Helm, do not also set `secrets_vault_config` in `config.json`.
-</Aside>
+</Callout>
 
 ## Auto-managed fields
 

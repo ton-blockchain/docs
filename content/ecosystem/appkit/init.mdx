@@ -3,8 +3,6 @@ title: "How to initialize the TON Connect's AppKit"
 sidebarTitle: "Initialize the kit"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 If there is a dApp that uses [TON Connect UI libraries](#relation-to-ton-connect-libraries), migrate that dApp to AppKit in a few steps:
 
 - [Migrate from `@tonconnect/ui-react` (React)](#migrate-from-%40tonconnect%2Fui-react)
@@ -68,9 +66,9 @@ Core packages require a `Buffer` [polyfill](https://en.wikipedia.org/wiki/Polyfi
 
 ## Initialization
 
-<Aside type="tip">
+<Callout type="tip">
   Jump to a [complete and exhaustive setup](#complete-setup).
-</Aside>
+</Callout>
 
 The basic kit initialization does not require any configuration options.
 
@@ -194,9 +192,9 @@ Supported streaming providers:
 - [TON Center Streaming API v2](/ecosystem/api/toncenter/streaming/overview). Has no additional dependencies.
 - TonAPI Streaming API v2. Has no additional dependencies.
 
-<Aside type="note">
+<Callout type="note">
   AppKit uses the first registered swap provider by default. Pass `providerId` when requesting a quote to target a specific provider.
-</Aside>
+</Callout>
 
 <Steps>
   <Step

@@ -3,11 +3,9 @@ title: "How to work with Toncoin using WalletKit on the Web platform"
 sidebarTitle: "Work with Toncoin"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
-</Aside>
+</Callout>
 
 To work with Toncoin, the wallet service needs to handle [contract balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from the wallet service itself](#transfers-in-the-wallet-service).
 
@@ -24,11 +22,9 @@ Notice that both cases require querying the blockchain data via the API client s
 
 Use the `getBalance()` method to check the wallet contract balance in TON wallets managed by WalletKit. The balance is returned in nanoToncoin, with 1 Toncoin equal to 10<sup>9</sup> nanoToncoin.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not store the balance check results anywhere in the wallet service's state, as they become outdated very quickly. For UI purposes, do [continuous balance monitoring](#continuous-balance-monitoring).
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 async function getBalance(walletId: string): Promise<string | undefined> {
@@ -43,9 +39,9 @@ async function getBalance(walletId: string): Promise<string | undefined> {
 
 The most practical use of one-off balance checks is right before approving a transaction request. At this point, the actual wallet contract balance usually is not less than the checked amount, though it might be higher if new funds arrived right after the check.
 
-<Aside>
+<Callout>
   Despite this check, the transaction may still fail due to insufficient balance at the time of transfer.
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 // An enumeration of various common error codes
@@ -191,9 +187,9 @@ kit.onTransactionRequest(async (event) => {
 });
 ```
 
-<Aside>
+<Callout>
   Emulation uses the API client configured during [WalletKit initialization](/ecosystem/walletkit/web/init#param-networks).
-</Aside>
+</Callout>
 
 ### Approve or reject
 
@@ -321,9 +317,7 @@ async function sendToncoin(
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of the WalletKit, modifying the last part of the previous code snippet:
 
   ```ts title="TypeScript"
@@ -335,7 +329,7 @@ async function sendToncoin(
   ```
 
   Do not use this approach unless it is imperative to complete a transaction without the user's direct consent. Funds at risk: test this approach using testnet and proceed with utmost caution.
-</Aside>
+</Callout>
 
 ## See also
 

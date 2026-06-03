@@ -3,8 +3,6 @@ title: "FunC-to-Tolk converter"
 sidebarTitle: "Converter"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 [Acton](https://github.com/ton-blockchain/acton) provides a built-in command for converting FunC sources to Tolk:
 
 ```bash
@@ -20,13 +18,13 @@ The converted contract does not use modern Tolk features such as structures, aut
 
 If a contract does not compile after conversion, refer to the [GitHub repository](https://github.com/ton-blockchain/convert-func-to-tolk). It contains common issues and provides ways to fix them.
 
-<Aside type="note">
+<Callout type="note">
   For older projects not using Acton, the [standalone converter](https://github.com/ton-blockchain/convert-func-to-tolk) is also available:
 
   ```bash
   npx @ton/convert-func-to-tolk contracts
   ```
-</Aside>
+</Callout>
 
 ## Refactoring
 
@@ -36,12 +34,12 @@ If a contract does not compile after conversion, refer to the [GitHub repository
 - Define a union of possible messages and match it using [`lazy`](/languages/tolk/features/lazy-loading).
 - Extract outgoing messages into structs and [send](/languages/tolk/features/message-sending) them.
 
-<Aside
+<Callout
   type="tip"
   title={"Maintain tests at every stage"}
 >
   Keeping tests passing throughout the refactoring process ensures safe, incremental modernization without breaking functionality.
-</Aside>
+</Callout>
 
 ## Examples
 

@@ -3,22 +3,20 @@ title: "How to work with NFTs using AppKit"
 sidebarTitle: "Work with NFTs"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the AppKit](/ecosystem/appkit/init) before using examples on this page.
-</Aside>
+</Callout>
 
 [NFTs](/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
 
-<Aside
+<Callout
   type="caution"
   title="Verify NFT authenticity"
 >
   Scammers may create fake NFTs that mimic popular collections. An NFT item contract can claim any collection address, so reading the `collection` field from the item alone is not sufficient.
 
   Mitigation: To verify that an NFT item genuinely belongs to a collection, query the collection contract with the item's index and check that the returned address matches the item's address. See [how to verify an NFT item](/standard/tokens/nft/verify) for the full procedure.
-</Aside>
+</Callout>
 
 ## Ownership
 
@@ -28,11 +26,9 @@ Similar to other asset queries, [discrete one-off checks](#on-demand-ownership-c
 
 ### On-demand ownership check
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not store the ownership check results anywhere in the application state, as they become outdated quickly. For UI purposes, do [continuous ownership monitoring](#continuous-ownership-monitoring).
-</Aside>
+</Callout>
 
 #### Single NFT
 
@@ -281,14 +277,14 @@ Modify the following example according to the application logic:
 
 ## Transfers
 
-<Aside
+<Callout
   type="danger"
   title="Assets at risk"
 >
   Verify the NFT address before initiating a transfer. Transferring an NFT is irreversible — once sent, only the new owner can transfer it back.
 
   Double-check the recipient address to avoid permanent loss of valuable NFTs.
-</Aside>
+</Callout>
 
 Before making a transfer, make sure there is enough Toncoin in the balance to cover the [fees](/foundations/fees).
 

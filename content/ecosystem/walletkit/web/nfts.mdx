@@ -3,24 +3,22 @@ title: "How to work with NFTs using WalletKit on the Web platform"
 sidebarTitle: "Work with NFTs"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-<Aside>
+<Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
-</Aside>
+</Callout>
 
 [NFTs](/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
 
 To work with NFTs, the wallet service needs to handle [NFT ownership queries](#ownership) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-in-the-wallet-service).
 
-<Aside
+<Callout
   type="caution"
   title="Verify NFT authenticity"
 >
   Before displaying or transferring NFTs, verify they belong to legitimate collections. Scammers may create fake NFTs mimicking popular collections.
 
   Mitigation: Always verify the collection address matches the official one. Check NFT metadata for suspicious content.
-</Aside>
+</Callout>
 
 ## Ownership
 
@@ -34,11 +32,9 @@ Similar to other asset queries, [discrete one-off checks](#on-demand-ownership-c
 
 Use the `getNfts()` method to check which NFTs are owned by a wallet managed by WalletKit. The method returns an array of NFT items with their addresses, collection info, and metadata.
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   Do not store the ownership check results anywhere in the wallet service's state, as they become outdated very quickly. For UI purposes, do [continuous ownership monitoring](#continuous-ownership-monitoring).
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 async function getNfts(walletId: string): Promise<NftItem[] | undefined> {
@@ -60,9 +56,9 @@ async function getNfts(walletId: string): Promise<NftItem[] | undefined> {
 
 The most practical use of one-off ownership checks is right before approving an NFT transfer request. At this point, verify that the wallet actually owns the NFT being transferred.
 
-<Aside type="note">
+<Callout type="note">
   Despite this check, the transaction may still fail if the NFT is not owned or unaccessible at the time of transfer.
-</Aside>
+</Callout>
 
 ```ts title="TypeScript"
 // An enumeration of various common error codes
@@ -203,14 +199,14 @@ As with Toncoin transfers, the wallet service should not block the UI while wait
 
 NFT transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/ecosystem/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
 
-<Aside
+<Callout
   type="danger"
   title="Assets at risk"
 >
   Verify the NFT address before initiating a transfer. Transferring an NFT is irreversible — once sent, only the new owner can transfer it back.
 
   Double-check the recipient address to avoid permanent loss of valuable NFTs.
-</Aside>
+</Callout>
 
 This example should be modified according to the wallet service's logic:
 
@@ -256,9 +252,7 @@ async function sendNft(
 }
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of the WalletKit, modifying the last part of the previous code snippet:
 
   ```ts title="TypeScript"
@@ -270,7 +264,7 @@ async function sendNft(
   ```
 
   Do not use this approach unless it is imperative to complete a transaction without the user's direct consent. Assets at risk: proceed with utmost caution.
-</Aside>
+</Callout>
 
 ## See also
 

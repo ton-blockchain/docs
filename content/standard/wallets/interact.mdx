@@ -3,8 +3,6 @@ title: "How to interact with wallets"
 sidebarTitle: "Interact with wallets"
 ---
 
-import { Aside } from '/snippets/aside.jsx'
-
 Creating a wallet involves several steps
 
 - Generate a mnemonic; wallet will be still in [`nonexist`](/foundations/status#status-variety) status.
@@ -21,9 +19,9 @@ A wallet account's address is [derived](/foundations/addresses/derive) from [`St
 - `public_key`, dependent on the [mnemonic](/standard/wallets/mnemonics);
 - `wallet_id`, a special [salt-like](https://en.wikipedia.org/wiki/Salt_\(cryptography\)) field, dependent on the wallet contract type and the `network_id`.
 
-<Aside type="note">
+<Callout type="note">
   Sometimes `wallet_id` is also called `subwallet_id` in some of the libraries and documentation. They mean the same thing.
-</Aside>
+</Callout>
 
 This means that the mnemonic alone does not determine an address uniquely: `wallet_id` has to be known to compute the address.
 
@@ -78,9 +76,9 @@ export function storeWalletIdV5R1(ctx: WalletIdV5ClientContext) {
 }
 ```
 
-<Aside type="note">
+<Callout type="note">
   This code mirrors the official `WalletV5R1WalletId` implementation in the [`@ton/ton`](https://github.com/ton-org/ton) SDK and is shown for educational purposes. In production code, use the SDK implementation directly instead of reimplementing it.
-</Aside>
+</Callout>
 
 ### Examples
 

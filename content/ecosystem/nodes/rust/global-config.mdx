@@ -3,8 +3,6 @@ title: "How to configure global JSON file"
 sidebarTitle: "Global configuration"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 The global config is a JSON file that specifies the configuration required for a node to connect to a TON network. All nodes in the same network use the same file.
 
 - [global.config.json](https://ton-blockchain.github.io/global.config.json) contains the configuration for the TON mainnet. It is included with the chart and used by default unless an override is provided.
@@ -20,9 +18,9 @@ The global config contains three top-level sections:
 | `liteservers` | Public liteserver endpoints used by lite clients.                  |
 | `validator`   | Network identity: zero state, init block, and hardfork references. |
 
-<Aside type="note">
+<Callout type="note">
   The global config is not templated or modified by Helm values. The file is passed to the node without changes.
-</Aside>
+</Callout>
 
 ### `dht`
 

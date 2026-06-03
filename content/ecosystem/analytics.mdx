@@ -3,8 +3,6 @@ title: "Analytics and data providers"
 sidebarTitle: "Analytics"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
 Developers often need to run analytical queries on top of on-chain data — for example, to track historical changes and aggregate data from multiple accounts.
 
 Since blockchains are not designed for analytical workloads, you need to build an indexing pipeline and run off-chain analytical queries.
@@ -27,9 +25,9 @@ The [raw tables](https://dune.com/queries?category=canonical\&namespace=ton) inc
 - [Balances history](https://docs.dune.com/data-catalog/ton/balances_history) — allows you to get a precise point-in-time balance for any account.
 - [Jetton events](https://docs.dune.com/data-catalog/ton/jetton_events) — comes with transfers, burns, and mints.
 
-<Aside>
+<Callout>
   Since mints are not covered by the [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) standard, it is not possible to reconstruct balances based solely on jetton events, so the balance history should be used.
-</Aside>
+</Callout>
 
 Apart from raw tables, there are decoded tables that allow you to work with high-level structures in a unified manner:
 
@@ -67,7 +65,7 @@ In addition to decoding raw data, the Spellbook allows building custom materiali
 - [ton.accounts](https://dune.com/queries?category=abstraction\&namespace=ton\&id=ton.accounts) — materialized view with information about all accounts. It comes with the latest TON balance, interface (if any), funding information, and other fields.
 - [ton.latest\_balances](https://dune.com/queries?category=abstraction\&namespace=ton\&id=ton.latest_balances) — helper table to get the latest balances for TON and Jettons.
 
-<Aside>All tables mentioned above are updated daily.</Aside>
+<Callout>All tables mentioned above are updated daily.</Callout>
 
 ### Getting started with Dune
 
@@ -121,11 +119,11 @@ Dune integration runs on the public data lake from the [TON-ETL](https://github.
 
 [TON-ETL](https://github.com/re-doubt/ton-etl/blob/main/datalake/README.md) is built on top of [TON Center](https://github.com/toncenter) indexer and allows extraction of data from TON Node into data formats suitable for MPP (Massively Parallel Processing) engines: Presto, Apache Spark, etc.
 
-<Aside>
+<Callout>
   You can deploy it on your own infrastructure or use publicly available data from the S3 bucket: `s3://aws-public-blockchain/v1.1/ton/`. This dataset is part of the [AWS Public Blockchain Data](https://registry.opendata.aws/aws-public-blockchain/) project and is optimized for use within the AWS big data stack.
 
   Examples of AWS Athena and AWS Bedrock integration can be found in this [article](https://repost.aws/articles/AR3ABC81yvTPW2ktfHiHPWIA/new-dataset-added-to-the-aws-public-blockchain-data-ton-the-open-network).
-</Aside>
+</Callout>
 
 The TON-ETL extracts raw data and performs decoding to create a unified view of high-level on-chain activity. The most important part is decoding DEX activity.
 
