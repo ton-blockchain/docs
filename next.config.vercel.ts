@@ -34,7 +34,9 @@ const loadDocsRedirects = (): Redirect[] => {
 const config: NextConfig = {
   reactStrictMode: true,
   env: {
+    NEXT_CONFIG: 'vercel',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
+    NEXT_PUBLIC_SEARCH_MODE: 'fetch',
   },
   turbopack: {
     root: fileURLToPath(new URL(".", import.meta.url)),

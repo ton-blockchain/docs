@@ -41,7 +41,9 @@ const config: NextConfig = {
   output: 'export',
   reactStrictMode: true,
   env: {
+    NEXT_CONFIG: 'static',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
+    NEXT_PUBLIC_SEARCH_MODE: 'static',
   },
   basePath: resolveBasePath(),
   assetPrefix: resolveAssetPrefix(),
