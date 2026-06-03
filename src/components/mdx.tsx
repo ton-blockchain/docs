@@ -12,6 +12,8 @@ import { FileTree } from '@/components/mdx/filetree';
 // Page-specific components
 import { CatchainVisualizer } from '@/snippets/catchain-visualizer';
 import { TvmInstructionTable } from '@/snippets/tvm-instruction-table';
+// TODO: dummy components
+import * as StubComponents from '@/snippets/stub-components';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
