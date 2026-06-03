@@ -5,9 +5,13 @@ import { Mermaid } from '@/components/mdx/mermaid';
 import { File, Files, Folder } from '@/components/mdx/files';
 import { Accordion, Accordions } from '@/components/mdx/accordion';
 import { Tabs, Tab } from '@/components/mdx/tabs';
+import { Callout } from '@/components/mdx/callout';
 import { Image } from '@/components/mdx/image';
 import { Stub } from '@/components/mdx/stub';
-import { Callout } from '@/components/mdx/callout';
+import { FileTree } from '@/components/mdx/filetree';
+// Page-specific components
+import { CatchainVisualizer } from '@/snippets/catchain-visualizer';
+import { TvmInstructionTable } from '@/snippets/tvm-instruction-table';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -30,10 +34,14 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     // Custom components
     Image,
     Stub,
+    FileTree,
     // TODO: cards, card, AvailabilityBadge, APIPage,
     // See: https://www.fumadocs.dev/docs/ui/components/image-zoom
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     img: props => <ImageZoom {...(props as any)} />,
+    // Page-specific components
+    CatchainVisualizer,
+    TvmInstructionTable,
     ...components,
   } satisfies MDXComponents;
 }

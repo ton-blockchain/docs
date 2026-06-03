@@ -3,7 +3,10 @@ title: "FileTree component"
 sidebarTitle: "FileTree"
 ---
 
-import { FileTree } from '@/snippets/filetree.jsx';
+<Callout type="info">
+  Currently a wrapper around Fumadocs `<File>`,
+ `<Files>`, and `<Folder>` components.
+</Callout>
 
 To display the structure of a directory with files and collapsible subdirectories, use the `<FileTree>` component. Click on a subdirectory to open or close it.
 
@@ -14,10 +17,6 @@ To display the structure of a directory with files and collapsible subdirectorie
 The `<FileTree>` is a wrapper over the built-in [`<Tree>` component](https://www.mintlify.com/docs/components/tree) provided by Mintlify, but with a data-driven interface: pass a list of objects and strings instead of [composing JSX children manually](#using-\<tree>-directly).
 
 ## Import
-
-```tsx
-import { FileTree } from '@/snippets/filetree.jsx';
-```
 
 ## Usage
 
