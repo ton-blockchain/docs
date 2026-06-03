@@ -1,6 +1,5 @@
 import type { MDXComponents } from 'mdx/types';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
-import * as Twoslash from 'fumadocs-twoslash/ui';
 import { ImageZoom } from '@/components/mdx/image-zoom';
 import { Mermaid } from '@/components/mdx/mermaid';
 import { File, Files, Folder } from '@/components/mdx/files';
@@ -13,8 +12,6 @@ import { Callout } from '@/components/mdx/callout';
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
-    // See: https://www.fumadocs.dev/docs/markdown/twoslash
-    ...Twoslash,
     // See: https://www.fumadocs.dev/docs/markdown/mermaid
     Mermaid,
     // See: https://www.fumadocs.dev/docs/ui/components/files

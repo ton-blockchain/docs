@@ -11,7 +11,7 @@ const config = {
   turbopack: {
     root: fileURLToPath(new URL(".", import.meta.url)),
   },
-  serverExternalPackages: ["typescript", "twoslash"],
+  serverExternalPackages: ["typescript"],
   // NOTE: placed intentionally to not forget about doing redirects properly, via a server.
   // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
 };

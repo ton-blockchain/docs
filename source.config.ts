@@ -2,8 +2,6 @@ import { readFileSync } from 'node:fs';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import { rehypeCodeDefaultOptions, remarkMdxMermaid, remarkMdxFiles, } from 'fumadocs-core/mdx-plugins';
-import { transformerTwoslash } from 'fumadocs-twoslash';
-import { createFileSystemTypesCache } from 'fumadocs-twoslash/cache-fs';
 import { z } from "zod";
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
@@ -90,12 +88,7 @@ export default defineConfig({
       // fallbackLanguage: 'text',
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
-        // NOTE: twoslash is very heavy on memory during builds
-        // transformerTwoslash({
-        //   typesCache: createFileSystemTypesCache(),
-        //   // langs: ['ts', 'tsx', 'tolk'],
-        //   // twoslasher: tolkTwoslasher,
-        // })
+        // NOTE: twoslash is very heavy on memory during builds, hence it was removed.
       ],
     },
     remarkPlugins: [remarkMath, remarkMdxMermaid, remarkMdxFiles],
