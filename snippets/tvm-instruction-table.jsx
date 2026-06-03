@@ -1,11 +1,5 @@
-const React =
-    typeof globalThis !== "undefined" && globalThis.React
-      ? globalThis.React
-      : (() => {
-          throw new Error(
-            "React global missing. TvmInstructionTable must run inside a React-powered environment."
-          );
-        })();
+'use client';
+import * as React from 'react';
 
 export const TvmInstructionTable = () => {
   const { useCallback, useEffect, useMemo, useRef, useState } = React;
