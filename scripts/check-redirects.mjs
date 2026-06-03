@@ -202,6 +202,9 @@ const checkExist = (config) => {
     if (pathIsSpecial(path)) {
       return { ok: true, trace: trace.concat(`The destination is special, skipping: ${path}`) };
     }
+    if (path === '/') {
+      return { ok: true, trace: trace.concat(`The destination is a home page, skipping: ${path}`) };
+    }
     const foundFiles = pathFindFiles(path);
     if (foundFiles.files === 'one') {
       return { ok: true, trace: trace.concat(`Found a file under the destination: ${path} → ${foundFiles.path}`) };
