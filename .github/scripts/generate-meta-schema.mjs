@@ -51,7 +51,7 @@ const metaSchema = z.object({
    * - Link — an external path like `"[Link name](https://yourmom.zip)"`
    */
   pagesIndex: z.union([
-    z.string(),
+    z.stringFormat('Path', /^[\.a-zA-Z_\-0-9 \/]+$/),
     z.stringFormat('Link', /^\[.*?\]\(http.*?\)$/),
   ]).default('index').optional().describe([
     'When a folder has an `index.mdx` file, clicks on the folder',
@@ -158,6 +158,7 @@ const metaSchema = z.object({
 });
 
 const metaJsonSchema = z.toJSONSchema(metaSchema);
-writeFileSync('../../meta-schema.json', JSON.stringify(metaJsonSchema), { encoding: 'utf8' });
+const outputPath = new URL('../../meta-schema.json', import.meta.url);
+writeFileSync(outputPath, JSON.stringify(metaJsonSchema), { encoding: 'utf8' });
 console.log('Written JSON Schema for `meta.json` files as `meta-schema.json` in the repo root.');
 // console.log(metaJsonSchema);
