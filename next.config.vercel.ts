@@ -3,7 +3,6 @@ import {fileURLToPath} from "node:url";
 import type {NextConfig} from 'next';
 import type {Redirect} from 'next/dist/lib/load-custom-routes';
 import {createMDX} from 'fumadocs-mdx/next';
-import nextConfig from './next.config';
 
 const withMDX = createMDX();
 
@@ -34,7 +33,6 @@ const loadDocsRedirects = (): Redirect[] => {
 
 const config: NextConfig = {
   reactStrictMode: true,
-  pageExtensions: ['vercel.ts', 'vercel.tsx', 'mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   env: {
     NEXT_CONFIG: 'vercel',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
@@ -46,4 +44,11 @@ const config: NextConfig = {
   redirects: async () => loadDocsRedirects(),
 };
 
-export default withMDX(config);
+const mdxConfig = withMDX(config);
+
+const vercelConfig: NextConfig = {
+  ...mdxConfig,
+  pageExtensions: ['vercel.ts', 'vercel.tsx', ...(mdxConfig.pageExtensions ?? [])],
+};
+
+export default vercelConfig;
