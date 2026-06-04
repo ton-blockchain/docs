@@ -6,5 +6,8 @@ const searchAPI = createFromSource(source, {
   language: 'english',
 });
 
+export const dynamic =
+  process.env.NEXT_CONFIG === 'vercel' ? 'force-dynamic' : 'force-static';
+
 export const GET =
   process.env.NEXT_CONFIG === 'vercel' ? searchAPI.GET : searchAPI.staticGET;
