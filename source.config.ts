@@ -7,7 +7,7 @@ import {
   remarkMdxFiles,
   remarkGfm,
 } from 'fumadocs-core/mdx-plugins';
-import {parseCodeBlockAttributes} from "fumadocs-core/mdx-plugins/codeblock-utils"
+import { parseCodeBlockAttributes } from "fumadocs-core/mdx-plugins/codeblock-utils"
 import { z } from "zod";
 import {
   transformerMetaHighlight,
@@ -139,15 +139,30 @@ export default defineConfig({
           const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
           if (base.length === 0) return
           if (!base.startsWith('/')) return;
-          visitParents(tree, 'element', (node) => {
-            try {
-              for (const attr of ['src', 'darkSrc', 'href', 'poster']) {
-                const value = node.properties?.[attr];
-                if (typeof value === 'string' && value.startsWith('/')) {
-                  node.properties[attr] = base.replace(/\/*$/, '') + '/' + value.replace(/^\/*/, '');
+          const prefix = base.replace(/\/*$/, '') + '/';
+          const urlAttrs = ['src', 'darkSrc', 'href', 'poster'];
+          const rewrite = (value: unknown) =>
+            typeof value === 'string' && value.startsWith('/') && !value.startsWith(prefix)
+              ? prefix + value.replace(/^\/*/, '')
+              : value;
+          // Visit all nodes to rewrite all non-/docs prefixed root-relative media links properly.
+          visitParents(tree, (node: any) => {
+            if (node.type === 'element' && node.properties) {
+              for (const attr of urlAttrs) {
+                if (typeof node.properties?.[attr] === 'string') {
+                  node.properties[attr] = rewrite(node.properties[attr]);
                 }
               }
-            } catch (_) { }
+            } else if (
+              (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') &&
+              Array.isArray(node.attributes)
+            ) {
+              for (const attr of node.attributes) {
+                if (attr.type === 'mdxJsxAttribute' && urlAttrs.includes(attr.name)) {
+                  attr.value = rewrite(attr.value);
+                }
+              }
+            }
           });
         };
       },
