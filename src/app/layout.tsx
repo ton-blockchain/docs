@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
 import { Banner } from '@/components/mdx/banner';
+import logoDark from "@/public/logo/dark.svg"
+import logoLight from "@/public/logo/light.svg"
 
 import './global.css';
 import 'katex/dist/katex.css';
@@ -14,12 +16,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: 'logo/light.svg',
+        url: logoLight,
         media: "(prefers-color-scheme: light)",
         type: "image/svg+xml",
       },
       {
-        url: 'logo/dark.svg',
+        url: logoDark,
         media: "(prefers-color-scheme: dark)",
         type: "image/svg+xml",
       },

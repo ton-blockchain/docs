@@ -2,15 +2,15 @@ import type { ReactNode } from 'react';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 // import { DocsLayout } from 'fumadocs-ui/layouts/notebook';
 import { source } from '@/lib/source';
-import { appName, gitConfig } from '@/lib/shared';
+import { gitConfig } from '@/lib/shared';
+import { ThemeLogo } from '@/components/ui/logo';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <DocsLayout
       nav={{
         // JSX supported
-        title: appName,
-        // mode: 'top'
+        title: <ThemeLogo />,
       }}
       githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}`}
       tree={source.getPageTree()}
@@ -24,7 +24,6 @@ export default function Layout({ children }: { children: ReactNode }) {
 "sidebar . main toc toc" 1fr / var(--fd-sidebar-col) minmax(min-content, 1fr) minmax(0, calc(var(--fd-layout-width,97rem) - var(--fd-sidebar-width) - var(--fd-toc-width))) var(--fd-toc-width) minmax(min-content, 1fr)`,
         }
       }}
-      // tabMode="navbar"
     >
       {children}
     </DocsLayout>
