@@ -14,7 +14,7 @@ export const docs = defineDocs({
       // TODO: temporary patch for OpenAPI pages
       title: z.string().optional(),
       sidebarTitle: z.string().optional(),
-      url: z.string().optional(),
+      url: z.httpUrl().optional(),
       // TODO:
       noindex: z.coerce.boolean().default(false),
       // TODO:
