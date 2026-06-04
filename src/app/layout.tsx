@@ -23,6 +23,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
             'rgba(255,100,0, 0.5)',
             'transparent',
           ]}
+          changeLayout={false}
         >
           <b>WARNING:</b>&nbsp;This is an experimental setup that is currently in the works. Not ready for public use!
         </Banner>

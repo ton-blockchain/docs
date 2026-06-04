@@ -1,7 +1,9 @@
 // Constants
 const pathPrefix = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-export const appName = 'TON Docs'
-export const docsRoute = `${pathPrefix}/`;
+export const appName = 'TON Docs';
+// Next.js automatically prepends `basePath` to sidebar and page <Link> hrefs.
+// Do not include the prefix here lest you want to double it (e.g. /docs/docs/... on GitHub Pages).
+export const docsRoute = `/`;
 export const docsImageRoute = `${pathPrefix}/og`;
 export const docsContentRoute = `${pathPrefix}/llms.txt`;
 export const gitConfig = {
