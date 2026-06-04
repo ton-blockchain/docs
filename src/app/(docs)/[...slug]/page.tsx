@@ -24,6 +24,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
     return (
       <>
         <meta httpEquiv="refresh" content={`0; url=${page.data.url}`} />
+        <meta name="robots" content="noindex, follow" />
         <DocsPage toc={[]}>
           <DocsTitle>{page.data.title}</DocsTitle>
           <DocsBody>
@@ -84,11 +85,30 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
+  const image = getPageImage(page);
   return {
     title: page.data.title,
     description: page.data.description,
+    // alternates: {
+    //   canonical: page.url,
+    // },
     openGraph: {
-      images: getPageImage(page).url,
+      title: page.data.title,
+      ...(page.data.description ? { description: page.data.description } : {}),
+      url: page.url,
+      type: 'article',
+      images: {
+        url: image.url,
+        width: 1200,
+        height: 630,
+        alt: page.data.title,
+      },
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      ...(page.data.description ? { description: page.data.description } : {}),
+      images: image.url,
     },
   };
 }
