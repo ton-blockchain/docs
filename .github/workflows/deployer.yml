@@ -56,6 +56,7 @@ jobs:
       - name: Build docs
         env:
           NEXT_TELEMETRY_DISABLED: '1'
+          GITHUB_PAGES: ${{ github.event_name != 'pull_request' && 'true' || '' }}
         run: npm run build
 
       - name: Save NPM cache

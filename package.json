@@ -4,7 +4,6 @@
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
-    "start:no-open": "next dev --no-open",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=2048 next build",
     "build:vercel": "NEXT_CONFIG=vercel next build",
     "build:serve": "serve out",
@@ -28,6 +27,7 @@
     "gen:tc3:mdx-for-openapi": "npx @mintlify/scraping@latest openapi-file -w content/ecosystem/api/toncenter/v3.yaml -o content/ecosystem/api/toncenter/v3",
     "gen:tc2:overview": "python3 .github/scripts/generate-v2-api-table.py",
     "gen:tc3:overview": "python3 .github/scripts/generate-v3-api-table.py",
+    "gen:meta-schema": "node .github/scripts/generate-meta-schema.mjs",
     "gen:stats": "python3 .github/scripts/stats.py",
     "prepare": "husky",
     "postinstall": "fumadocs-mdx"
@@ -75,7 +75,8 @@
     "react-medium-image-zoom": "^5.4.5",
     "serve": "^14.2.6",
     "tailwindcss": "^4.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "zod": "^4.4.3"
   },
   "engines": {
     "node": ">=22.22",
