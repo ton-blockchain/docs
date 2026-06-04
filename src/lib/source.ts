@@ -43,6 +43,10 @@ export const source = loader({
   plugins: [],
 });
 
+export function getIndexablePages(locale?: string) {
+  return source.getPages(locale).filter((page) => !page.data.url);
+}
+
 export function getPageImage(page: (typeof source)['$inferPage']) {
   const segments = [...page.slugs, 'image.png'];
 
