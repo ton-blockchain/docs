@@ -20,16 +20,16 @@ export default function NotFound() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/one"
+            href="/"
             className="rounded-md bg-fd-primary px-4 py-2 text-sm font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
           >
-            Alternative page 1
+            Go to the home page
           </Link>
           <Link
-            href="/two"
+            href="/get-support"
             className="rounded-md border border-fd-border px-4 py-2 text-sm font-medium transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
           >
-            Alternative page 2
+            Ask in chats
           </Link>
         </div>
       </main>

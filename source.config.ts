@@ -1,10 +1,26 @@
 import { readFileSync } from 'node:fs';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
-import { rehypeCodeDefaultOptions, remarkMdxMermaid, remarkMdxFiles, } from 'fumadocs-core/mdx-plugins';
+import {
+  rehypeCodeDefaultOptions,
+  remarkMdxMermaid,
+  remarkMdxFiles,
+  remarkGfm,
+} from 'fumadocs-core/mdx-plugins';
+import {parseCodeBlockAttributes} from "fumadocs-core/mdx-plugins/codeblock-utils"
 import { z } from "zod";
+import {
+  transformerMetaHighlight,
+  transformerMetaWordHighlight,
+  transformerNotationDiff,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+} from '@shikijs/transformers';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import stringWidth from 'string-width';
+import { visitParents } from 'unist-util-visit-parents';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
@@ -15,7 +31,6 @@ export const docs = defineDocs({
       title: z.string().optional(),
       sidebarTitle: z.string().optional(),
       url: z.httpUrl().optional(),
-      // TODO:
       noindex: z.coerce.boolean().default(false),
       // TODO:
       openapi: z.string().optional(),
@@ -86,10 +101,56 @@ export default defineConfig({
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerMetaHighlight(),
+        transformerMetaWordHighlight(),
+        transformerNotationHighlight({ matchAlgorithm: "v3" }),
+        transformerNotationWordHighlight({ matchAlgorithm: "v3" }),
+        transformerNotationDiff({ matchAlgorithm: "v3" }),
+        transformerNotationFocus({ matchAlgorithm: "v3" }),
+        {
+          name: "no-copy",
+          pre(pre) {
+            const raw = this.options?.meta?.__raw
+            if (!raw) return pre
+            const { attributes } = parseCodeBlockAttributes(raw, ["noCopy"])
+            if ("noCopy" in attributes) {
+              pre.properties.allowCopy = ""
+            }
+            return pre
+          },
+        }
       ],
     },
-    remarkPlugins: [remarkMath, remarkMdxMermaid, remarkMdxFiles],
-    // NOTE: KaTeX support should be placed before everything else!
-    rehypePlugins: (v) => [rehypeKatex, ...v],
+    remarkPlugins: [
+      remarkMath,
+      [remarkGfm, {
+        singleTilde: false,
+        stringLength: stringWidth,
+      }],
+      remarkMdxMermaid,
+      remarkMdxFiles,
+    ],
+    rehypePlugins: (v) => [
+      // NOTE: KaTeX support should be placed before everything else!
+      rehypeKatex,
+      ...v,
+      function rehypeBasePath(): ReturnType<typeof rehypeKatex> {
+        return (tree, _file) => {
+          const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+          if (base.length === 0) return
+          if (!base.startsWith('/')) return;
+          visitParents(tree, 'element', (node) => {
+            try {
+              for (const attr of ['src', 'darkSrc', 'href', 'poster']) {
+                const value = node.properties?.[attr];
+                if (typeof value === 'string' && value.startsWith('/')) {
+                  node.properties[attr] = base.replace(/\/*$/, '') + '/' + value.replace(/^\/*/, '');
+                }
+              }
+            } catch (_) { }
+          });
+        };
+      },
+    ],
   },
 });
