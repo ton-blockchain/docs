@@ -13,7 +13,7 @@ export function ThemeLogo() {
         src={logoLight}
         width={100}
         height={100}
-        sizes="100px"
+        sizes="32px"
         className={`h-8 w-auto ${styles.lightLogo}`}
         aria-label="TON Docs"
       />
@@ -22,7 +22,7 @@ export function ThemeLogo() {
         src={logoDark}
         width={100}
         height={100}
-        sizes="100px"
+        sizes="32px"
         className={`h-8 w-auto ${styles.darkLogo}`}
         aria-label="TON Docs"
       />
