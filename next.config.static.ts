@@ -45,8 +45,6 @@ const config: NextConfig = {
   },
   images: { unoptimized: true },
   serverExternalPackages: ["typescript"],
-  // NOTE: placed intentionally to not forget about doing redirects properly, via a server.
-  // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
   ...(isLocalBuild ? {
     experimental: {
       cpus: 4,

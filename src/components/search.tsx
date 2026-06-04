@@ -29,13 +29,20 @@ function initOrama() {
 export default function DefaultSearchDialog(props: SharedProps) {
   const [tag, setTag] = useState<string | undefined>();
   const { locale } = useI18n(); // (optional) for i18n
-  const { search, setSearch, query } = useDocsSearch({
-    type: 'static',
-    initOrama,
-    locale,
-    from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
-    // tag,
-  });
+  const { search, setSearch, query } = useDocsSearch(
+    process.env.NEXT_CONFIG === 'vercel'
+      ? {
+          type: 'fetch',
+          locale,
+        }
+      : {
+          type: 'static',
+          initOrama,
+          locale,
+          from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
+          // tag,
+        }
+  );
 
   return (
     <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
