@@ -66,14 +66,14 @@ export function Banner({
         'sticky top-0 z-40 flex flex-row items-center justify-center px-4 text-center text-sm font-medium',
         variant === 'normal' && 'bg-fd-secondary',
         variant === 'rainbow' && 'bg-fd-background',
-        !open && 'hidden',
+        // !open && 'hidden',
         props.className,
       )}
       style={{
         height,
       }}
     >
-      {changeLayout && open ? (
+      {changeLayout ? (
         <style>
           {globalKey
             ? `:root:not(.${globalKey}) { --fd-banner-height: ${height}; }`
@@ -119,6 +119,7 @@ const maskImage =
   'linear-gradient(to bottom,white,transparent), radial-gradient(circle at top center, white, transparent)';
 
 function flow({ colors }: { colors: string[] }) {
+  if (colors.length === 0) return null;
   return (
     <>
       <div
