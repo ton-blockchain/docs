@@ -7,7 +7,7 @@ import {
   remarkMdxFiles,
   remarkGfm,
 } from 'fumadocs-core/mdx-plugins';
-import {parseCodeBlockAttributes} from "fumadocs-core/mdx-plugins/codeblock-utils"
+import { parseCodeBlockAttributes } from "fumadocs-core/mdx-plugins/codeblock-utils"
 import { z } from "zod";
 import {
   transformerMetaHighlight,
@@ -140,14 +140,12 @@ export default defineConfig({
           if (base.length === 0) return
           if (!base.startsWith('/')) return;
           visitParents(tree, 'element', (node) => {
-            try {
-              for (const attr of ['src', 'darkSrc', 'href', 'poster']) {
-                const value = node.properties?.[attr];
-                if (typeof value === 'string' && value.startsWith('/')) {
-                  node.properties[attr] = base.replace(/\/*$/, '') + '/' + value.replace(/^\/*/, '');
-                }
+            for (const attr of ['src', 'darkSrc', 'href', 'poster']) {
+              const value = node.properties?.[attr];
+              if (typeof value === 'string' && value.startsWith('/') && !value.startsWith(base)) {
+                node.properties[attr] = base.replace(/\/*$/, '') + '/' + value.replace(/^\/*/, '');
               }
-            } catch (_) { }
+            }
           });
         };
       },

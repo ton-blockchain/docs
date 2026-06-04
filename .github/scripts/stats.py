@@ -74,8 +74,8 @@ def resolve_file(slug: str) -> Optional[str]:
         str(Path(slug) / "index.mdx"),
         str(Path(slug) / "index.md"),
     ):
-        if (REPO_ROOT / rel).exists():
-            return rel
+        if (REPO_ROOT / 'content' / rel).exists():
+            return 'content' / rel
     return None
 
 
