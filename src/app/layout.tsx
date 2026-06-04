@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
 import { Banner } from '@/components/mdx/banner';
@@ -8,6 +9,23 @@ import 'katex/dist/katex.css';
 const inter = Inter({
   subsets: ['latin'],
 });
+
+export const metadata: Metadata = {
+  icons: {
+    icon: [
+      {
+        url: 'logo/light.svg',
+        media: "(prefers-color-scheme: light)",
+        type: "image/svg+xml",
+      },
+      {
+        url: 'logo/dark.svg',
+        media: "(prefers-color-scheme: dark)",
+        type: "image/svg+xml",
+      },
+    ]
+  }
+};
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (

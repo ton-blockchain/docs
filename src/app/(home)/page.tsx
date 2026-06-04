@@ -17,10 +17,10 @@ export const metadata: Metadata = {
   description:
     'TON is a blockchain platform designed for scalable smart contracts, applications, and payments at consumer scale.',
   openGraph: {
-    images: `${process.env.NEXT_PUBLIC_BASE_PATH}/logo/og-image.png`,
+    images: 'logo/og-image.png',
   },
   twitter: {
-    images: `${process.env.NEXT_PUBLIC_BASE_PATH}/logo/og-image.png`,
+    images: 'logo/og-image.png',
   },
 };
 
@@ -158,7 +158,7 @@ export default function HomePage() {
         {/* hero */}
         <section className="flex flex-col items-start gap-8 py-8 lg:flex-row lg:items-center lg:gap-12 lg:py-12">
           <img
-            src={`${process.env.NEXT_PUBLIC_BASE_PATH}/logo/ton.svg`}
+            src="logo/ton.svg"
             alt="TON logo"
             className="hidden h-28 w-auto shrink-0 lg:block"
           />

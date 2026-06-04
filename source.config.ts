@@ -7,7 +7,16 @@ import {
   remarkMdxFiles,
   remarkGfm,
 } from 'fumadocs-core/mdx-plugins';
+import {parseCodeBlockAttributes} from "fumadocs-core/mdx-plugins/codeblock-utils"
 import { z } from "zod";
+import {
+  transformerMetaHighlight,
+  transformerMetaWordHighlight,
+  transformerNotationDiff,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+} from '@shikijs/transformers';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import stringWidth from 'string-width';
@@ -92,6 +101,24 @@ export default defineConfig({
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerMetaHighlight(),
+        transformerMetaWordHighlight(),
+        transformerNotationHighlight({ matchAlgorithm: "v3" }),
+        transformerNotationWordHighlight({ matchAlgorithm: "v3" }),
+        transformerNotationDiff({ matchAlgorithm: "v3" }),
+        transformerNotationFocus({ matchAlgorithm: "v3" }),
+        {
+          name: "no-copy",
+          pre(pre) {
+            const raw = this.options?.meta?.__raw
+            if (!raw) return pre
+            const { attributes } = parseCodeBlockAttributes(raw, ["noCopy"])
+            if ("noCopy" in attributes) {
+              pre.properties.allowCopy = ""
+            }
+            return pre
+          },
+        }
       ],
     },
     remarkPlugins: [
@@ -110,7 +137,8 @@ export default defineConfig({
       function rehypeBasePath(): ReturnType<typeof rehypeKatex> {
         return (tree, _file) => {
           const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-          if (base.length === 0 && !base.startsWith('/')) return;
+          if (base.length === 0) return
+          if (!base.startsWith('/')) return;
           visitParents(tree, 'element', (node) => {
             try {
               for (const attr of ['src', 'darkSrc', 'href', 'poster']) {
@@ -119,7 +147,7 @@ export default defineConfig({
                   node.properties[attr] = base.replace(/\/*$/, '') + '/' + value.replace(/^\/*/, '');
                 }
               }
-            } catch (_) {}
+            } catch (_) { }
           });
         };
       },
