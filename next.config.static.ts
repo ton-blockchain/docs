@@ -37,6 +37,7 @@ const config: NextConfig = {
   env: {
     NEXT_CONFIG: 'static',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
+    NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
   },
   basePath: resolveBasePath(),
   turbopack: {

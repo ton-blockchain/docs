@@ -14,9 +14,6 @@ import { useDocsSearch } from 'fumadocs-core/search/client';
 import { create } from '@orama/orama';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
 
-const isGitHubPagesBuild =
-  process.env.GITHUB_ACTIONS === "true" || process.env.GITHUB_PAGES === "true"
-
 function initOrama() {
   return create({
     schema: { _: 'string' },
@@ -31,7 +28,7 @@ export default function DefaultSearchDialog(props: SharedProps) {
     type: 'static',
     initOrama,
     locale,
-    from: `${isGitHubPagesBuild ? '/docs' : ''}/api/search`,
+    from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
   });
 
   return (
