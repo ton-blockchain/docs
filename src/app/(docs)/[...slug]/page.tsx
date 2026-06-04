@@ -8,7 +8,7 @@ import {
   DocsTitle,
   // MarkdownCopyButton,
   // ViewOptionsPopover,
-// } from 'fumadocs-ui/layouts/notebook/page';
+  // } from 'fumadocs-ui/layouts/notebook/page';
 } from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
@@ -18,7 +18,23 @@ import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
 export default async function Page(props: PageProps<'/[...slug]'>) {
   const params = await props.params;
   const page = source.getPage(params.slug);
+
   if (!page) notFound();
+  if (page.data.url) {
+    return (
+      <>
+        <meta httpEquiv="refresh" content={`0; url=${page.data.url}`} />
+        <DocsPage toc={[]}>
+          <DocsTitle>{page.data.title}</DocsTitle>
+          <DocsBody>
+            <p>
+              Redirecting to <a href={page.data.url}>{page.data.url}</a>…
+            </p>
+          </DocsBody>
+        </DocsPage>
+      </>
+    );
+  }
 
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;

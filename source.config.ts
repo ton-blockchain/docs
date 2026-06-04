@@ -14,8 +14,7 @@ export const docs = defineDocs({
       // TODO: temporary patch for OpenAPI pages
       title: z.string().optional(),
       sidebarTitle: z.string().optional(),
-      // TODO: try using `full: true` instead, which is a builtin field
-      mode: z.enum(['none', 'wide']).default('none'),
+      url: z.string().optional(),
       // TODO:
       noindex: z.coerce.boolean().default(false),
       // TODO:
