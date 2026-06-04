@@ -34,18 +34,6 @@ export default function DefaultSearchDialog(props: SharedProps) {
           type: 'static',
           initOrama,
           locale,
-        }
-  );
-  const { search, setSearch, query } = useDocsSearch(
-    process.env.NEXT_CONFIG === 'vercel'
-      ? {
-          type: 'fetch',
-          locale,
-        }
-      : {
-          type: 'static',
-          initOrama,
-          locale,
           from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
         }
   );
