@@ -44,11 +44,4 @@ const config: NextConfig = {
   redirects: async () => loadDocsRedirects(),
 };
 
-const mdxConfig = withMDX(config);
-
-const vercelConfig: NextConfig = {
-  ...mdxConfig,
-  pageExtensions: ['vercel.ts', 'vercel.tsx', ...(mdxConfig.pageExtensions ?? [])],
-};
-
-export default vercelConfig;
+export default withMDX(config);

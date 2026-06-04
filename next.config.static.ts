@@ -54,11 +54,4 @@ const config: NextConfig = {
   // redirects: () => JSON.parse(readFileSync('./docs.json', 'utf8')),
 };
 
-const mdxConfig = withMDX(config);
-
-const staticConfig: NextConfig = {
-  ...mdxConfig,
-  pageExtensions: ['static.ts', 'static.tsx', ...(mdxConfig.pageExtensions ?? [])],
-};
-
-export default staticConfig;
+export default withMDX(config);
