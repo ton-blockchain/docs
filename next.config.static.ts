@@ -40,6 +40,7 @@ const resolveAssetPrefix = () => {
 const config: NextConfig = {
   output: 'export',
   reactStrictMode: true,
+  pageExtensions: ['static.ts', 'static.tsx', 'mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   env: {
     NEXT_CONFIG: 'static',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
