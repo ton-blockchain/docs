@@ -1,8 +1,9 @@
 // Constants
-export const appName = 'TON Docs';
-export const docsRoute = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/`;
-export const docsImageRoute = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/og`;
-export const docsContentRoute = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/llms.txt`;
+const pathPrefix = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+export const appName = 'TON Docs'
+export const docsRoute = `${pathPrefix}/`;
+export const docsImageRoute = `${pathPrefix}/og`;
+export const docsContentRoute = `${pathPrefix}/llms.txt`;
 export const gitConfig = {
   user: 'ton-org',
   repo: 'docs',
