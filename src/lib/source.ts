@@ -1,11 +1,21 @@
+import { createElement, type ComponentType, type SVGProps } from "react";
 import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
-import { docsContentRoute, docsImageRoute, docsRoute } from './shared';
+import { icons } from "lucide-react";
+import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase } from './shared';
+
+function resolveLucideIcon(name: string | undefined) {
+  if (!name) return undefined
+  const Comp = (icons as Record<string, ComponentType<SVGProps<SVGSVGElement>>>)[toPascalCase(name)]
+  if (!Comp) return undefined
+  return createElement(Comp)
+}
 
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
   baseUrl: docsRoute,
   source: docs.toFumadocsSource(),
+  icon: resolveLucideIcon,
   pageTree: {
     transformers: [
       {
@@ -15,7 +25,7 @@ export const source = loader({
           if (!file) return node
           // if (file.data.icon) node.icon = file.data.icon
           if (file.format !== "page") return node
-          const {sidebarTitle} = file.data as {sidebarTitle?: string}
+          const { sidebarTitle } = file.data as { sidebarTitle?: string }
           if (!sidebarTitle) return node
           node.name = sidebarTitle
           return node
