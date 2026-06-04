@@ -28,6 +28,7 @@ export default function DefaultSearchDialog(props: SharedProps) {
     type: 'static',
     initOrama,
     locale,
+    from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
   });
 
   return (

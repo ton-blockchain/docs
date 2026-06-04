@@ -14,8 +14,7 @@ export const docs = defineDocs({
       // TODO: temporary patch for OpenAPI pages
       title: z.string().optional(),
       sidebarTitle: z.string().optional(),
-      // TODO:
-      mode: z.enum(['none', 'wide']).default('none'),
+      url: z.httpUrl().optional(),
       // TODO:
       noindex: z.coerce.boolean().default(false),
       // TODO:
@@ -39,13 +38,13 @@ export default defineConfig({
   mdxOptions: {
     rehypeCodeOptions: {
       themes: {
-        // one-light and one-dark-pro as alternative options
+        // NOTE: one-light and one-dark-pro are alternative options
         light: "github-light-default",
         dark: "dark-plus",
       },
       icon: {
         extend: {
-          tolk: readFileSync('public/logo/ton-gray.svg', 'utf8'),
+          tolk: readFileSync('./public/logo/ton-gray.svg', 'utf8'),
         },
       },
       lazy: false,
@@ -85,10 +84,8 @@ export default defineConfig({
         'circom': 'cpp',
         'boc': 'text',
       },
-      // fallbackLanguage: 'text',
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
-        // NOTE: twoslash is very heavy on memory during builds, hence it was removed.
       ],
     },
     remarkPlugins: [remarkMath, remarkMdxMermaid, remarkMdxFiles],
