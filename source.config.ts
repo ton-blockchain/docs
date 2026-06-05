@@ -45,6 +45,7 @@ export const docs = defineDocs({
     },
   },
   meta: {
+    // TODO: consider extending with a `tag`.
     schema: metaSchema,
   },
 });
