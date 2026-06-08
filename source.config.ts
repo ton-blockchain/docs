@@ -20,7 +20,6 @@ import {
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import stringWidth from 'string-width';
-import { visitParents } from 'unist-util-visit-parents';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
@@ -135,38 +134,6 @@ export default defineConfig({
       // NOTE: KaTeX support should be placed before everything else!
       rehypeKatex,
       ...v,
-      function rehypeBasePath(): ReturnType<typeof rehypeKatex> {
-        return (tree, _file) => {
-          const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-          if (base.length === 0) return
-          if (!base.startsWith('/')) return;
-          const prefix = base.replace(/\/*$/, '') + '/';
-          const urlAttrs = ['src', 'darkSrc', 'href', 'poster'];
-          const rewrite = (value: unknown) =>
-            typeof value === 'string' && value.startsWith('/') && !value.startsWith(prefix)
-              ? prefix + value.replace(/^\/*/, '')
-              : value;
-          // Visit all nodes to rewrite all non-/docs prefixed root-relative media links properly.
-          visitParents(tree, (node: any) => {
-            if (node.type === 'element' && node.properties) {
-              for (const attr of urlAttrs) {
-                if (typeof node.properties?.[attr] === 'string') {
-                  node.properties[attr] = rewrite(node.properties[attr]);
-                }
-              }
-            } else if (
-              (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') &&
-              Array.isArray(node.attributes)
-            ) {
-              for (const attr of node.attributes) {
-                if (attr.type === 'mdxJsxAttribute' && urlAttrs.includes(attr.name)) {
-                  attr.value = rewrite(attr.value);
-                }
-              }
-            }
-          });
-        };
-      },
     ],
   },
 });

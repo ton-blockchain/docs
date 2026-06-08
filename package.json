@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
-    "build": "cross-env NODE_OPTIONS=--max_old_space_size=2048 next build",
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=2048 next build && node scripts/prefix-out-paths.mjs",
     "build:vercel": "NEXT_CONFIG=vercel next build",
     "build:serve": "serve out",
     "start:vercel": "NEXT_CONFIG=vercel next start",
