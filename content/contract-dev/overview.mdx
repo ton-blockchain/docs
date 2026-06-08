@@ -1,0 +1,51 @@
+---
+title: "Contract development overview"
+sidebarTitle: "Overview"
+---
+
+How to build, test, deploy, and debug TON smart contracts. This section covers the recommended toolchain, editor support, reusable techniques, and the legacy TypeScript environment.
+
+<Callout
+  type="caution"
+  title="The Web IDE is retired"
+>
+  The Web IDE at `ide.ton.org` has been retired and is no longer available. Develop locally with the [Acton toolchain](#toolchain) and one of the [editor plugins](#ides-and-editor-plugins) below.
+</Callout>
+
+## Toolchain
+
+The recommended language for TON smart contracts is [Tolk](/tolk/overview). [Acton ↗️](/contract-dev/acton) is the recommended all-in-one toolchain for the entire contract development lifecycle, including building, testing, and deploying Tolk contracts.
+
+<Callout
+  type="note"
+  title="External documentation"
+>
+  [Acton ↗️](/contract-dev/acton) documentation is hosted and updated externally.
+</Callout>
+
+## IDEs and editor plugins
+
+Add support for the Acton toolchain, Tolk language, and intermediate TON languages to a local editor:
+
+- [VS Code and forks](/contract-dev/ide/vscode) — extension for VS Code, VSCodium, Cursor, Windsurf, and other VS Code-based editors
+- [JetBrains IDEs](/contract-dev/ide/jetbrains) — plugin for IntelliJ IDEA, WebStorm, CLion, PyCharm, and other JetBrains IDEs
+
+## Techniques
+
+Focused how-to guides for common smart contract tasks:
+
+- [Signing and signature verification](/contract-dev/techniques/signing)
+- [Contract sharding](/contract-dev/techniques/contract-sharding)
+- [Security](/contract-dev/techniques/security)
+- [Gas optimization](/contract-dev/techniques/gas)
+- [On-chain jetton processing](/contract-dev/techniques/on-chain-jetton-processing)
+- [Using on-chain libraries](/contract-dev/techniques/using-on-chain-libraries)
+- [Random number generation](/contract-dev/techniques/random)
+- [Contract upgrades](/contract-dev/techniques/upgrades)
+- [Vanity addresses](/contract-dev/techniques/vanity)
+- [Zero-knowledge proofs](/contract-dev/techniques/zero-knowledge)
+- [Groth16 examples](/contract-dev/techniques/groth16-examples)
+
+## Blueprint (legacy)
+
+[Blueprint](/contract-dev/blueprint/overview) is a legacy TypeScript environment that is still supported for older projects.
