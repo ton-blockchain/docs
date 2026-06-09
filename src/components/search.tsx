@@ -27,7 +27,7 @@ function initOrama() {
 }
 
 export default function DefaultSearchDialog(props: SharedProps) {
-  const [tag, setTag] = useState<string | undefined>();
+  const [tag] = useState<string | undefined>();
   const { locale } = useI18n(); // (optional) for i18n
   const { search, setSearch, query } = useDocsSearch(
     process.env.NEXT_CONFIG === 'vercel'
