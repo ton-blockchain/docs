@@ -116,7 +116,7 @@ export function composeSuccess(msg) {
 
 /** @param src {string} */
 export function prefixWithSlash(src) {
-  return '/' + src.replace(/^\/+/, '');
+  return '/content/' + src.replace(/^\/*(?:content\/+)?/, '');
 }
 
 /**
@@ -159,7 +159,7 @@ export function hasStub(parser, filepath) {
  * @param [dir='.'] {string} directory to start with, defaults to `.` (present directory, assuming the root of the repo)
  * @returns {string[]} file paths relative to `dir` or an empty array if there is none, `dir` does not exist or `ext` is empty
  */
-export function findUnignoredFiles(ext = 'mdx', dir = '.') {
+export function findUnignoredFiles(ext = 'mdx', dir = './content') {
   if (ext === '' || !existsSync(dir) || !statSync(dir).isDirectory()) {
     return [];
   }
@@ -186,7 +186,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
         // Snippets and page parts
         'snippets',
         'scripts',
-        'resources',
+        'public',
         // Pages covered in OpenAPI specs rather than in docs.json
         'ecosystem/api/toncenter/v2',
         'ecosystem/api/toncenter/v3',
@@ -254,8 +254,8 @@ export function getConfig() {
 
 /**
  * Get navigation links from the docs.json configuration.
- * Notice that each link is prefixed by a single slash /
- * regardless if it was present originally.
+ * Notice that each link is prefixed by 'content' and a single slash /,
+ * regardless if the latter was present originally.
  *
  * @param config {DocsConfig}
  * @returns {string[]}
@@ -287,8 +287,8 @@ export function getNavLinks(config) {
 
 /**
  * Get navigation links from the docs.json configuration as a Set.
- * Notice that each link is prefixed by a single slash /
- * regardless if it was present originally.
+ * Notice that each link is prefixed by 'content' and a single slash /,
+ * regardless if the latter was present originally.
  *
  * @param config {DocsConfig}
  * @returns {ReadonlySet<string>}

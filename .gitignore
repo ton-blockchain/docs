@@ -5,6 +5,12 @@
 
 # Miscellaneous
 .DS_Store
+*.pem
+/.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Editors
 .idea/
@@ -22,5 +28,16 @@ node_modules/
 # Python
 __pycache__
 
+# Environment files
+.env*.local
+.vercel
+next-env.d.ts
+
 # Generated folders
 /stats/
+.source
+/coverage
+/.next/
+/out/
+/build
+*.tsbuildinfo

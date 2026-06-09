@@ -126,11 +126,11 @@ const checkExist = (config) => {
     if (path.startsWith('http')) {
       if (path.includes('github.com/ton-org/docs/issues')) {
         specialDestinationsExist.issues = true;
-      } else if (path.includes('github.com/')) {
+      } else if (path.startsWith('https://github.com/') || path.startsWith('https://gist.github.com/')) {
         specialDestinationsExist.otherGithubLinks = true;
-      } else if (path.includes('en.wikipedia.org/')) {
+      } else if (path.startsWith('https://en.wikipedia.org/')) {
         specialDestinationsExist.wikiLinks = true;
-      } else if (path.includes('old-docs.ton.org/')) {
+      } else if (path.startsWith('https://old-docs.ton.org/')) {
         specialDestinationsExist.olderDocs = true;
       } else {
         specialDestinationsExist.otherExternalLinks = true;
@@ -157,10 +157,11 @@ const checkExist = (config) => {
    */
   const pathFindFiles = (path) => {
     const cleanedPath = path.replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
+    const relPath = cleanedPath === '' ? 'content' : `content/${cleanedPath}`;
     const existingFiles = [
-      cleanedPath === '' ? `index.mdx` : `${cleanedPath}/index.mdx`,
-      `${cleanedPath}.mdx`,
-      `${cleanedPath}`,
+      `${relPath}/index.mdx`,
+      `${relPath}.mdx`,
+      `${relPath}`,
     ].filter((it) => existsSync(it) && statSync(it).isFile());
 
     if (existingFiles.length === 0) {
@@ -200,6 +201,9 @@ const checkExist = (config) => {
     }
     if (pathIsSpecial(path)) {
       return { ok: true, trace: trace.concat(`The destination is special, skipping: ${path}`) };
+    }
+    if (path === '/') {
+      return { ok: true, trace: trace.concat(`The destination is a home page, skipping: ${path}`) };
     }
     const foundFiles = pathFindFiles(path);
     if (foundFiles.files === 'one') {
@@ -335,7 +339,7 @@ const checkPrevious = async (config) => {
     return { ok: true };
   }
 
-  const redirectSources = getRedirects(config).map((it) => it.source);
+  const redirectSources = getRedirects(config).map((it) => prefixWithSlash(it.source));
   const missingSources = prevOnlyLinks.filter(
     (it) =>
       [it, it.replace(/\/index$/, ''), it.replace(/\/README$/, '')].some((variant) =>
@@ -379,7 +383,7 @@ const checkUpstream = async (localConfig) => {
     return { ok: true };
   }
 
-  const redirectSources = getRedirects(localConfig).map((it) => it.source);
+  const redirectSources = getRedirects(localConfig).map((it) => prefixWithSlash(it.source));
   const eolWildcards = redirectSources.filter((it) => it.endsWith('/:slug*')).map((it) => it.replace(/\/:slug\*$/, ''));
   const missingSources = upstreamOnlyLinks.filter(
     (it) =>

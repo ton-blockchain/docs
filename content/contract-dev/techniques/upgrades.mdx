@@ -1,0 +1,449 @@
+---
+title: "Upgrading contracts"
+---
+
+The address of a contract is determined by its [initial code and state](/foundations/status).
+However, with upgrades it is possible to change the code of a contract while keeping its initial address. This allows developers to fix bugs, add features, and adapt to protocol changes without migrating to a new address, which is required for contracts that are already referenced by other contracts or have users interacting with them.
+
+For example, [NFT item contracts](/standard/tokens/nft/how-it-works) reference their collection contract. If the collection contract address changes, all item contracts would need to point to the new address, but the collection admin cannot modify existing item contracts. With upgrades the collection contract address stays the same, so all item contracts continue to reference it without any changes. A collection admin can then upgrade the collection contract code to fix bugs or add features without affecting the item contracts.
+
+The upgrade pattern is also required for [vanity](/contract-dev/vanity) contracts and protocols such as distributed exchanges (DEXs) that are referenced by many other contracts.
+
+## How upgrades work
+
+Tolk provides two functions for upgrades, one for code and one for data:
+
+- `contract.setCodePostponed(code: cell)` schedules a code replacement during the [action phase](/foundations/phases#action-phase). The new code is available _after the current transaction completes_.
+- `contract.setData(data: cell)` immediately replaces the contract's persistent storage. This happens during the [compute phase](/foundations/phases#compute-phase), _before the transaction ends_.
+
+<Callout
+  type="caution"
+  title="Funds at risk"
+>
+  Contract upgrades change code behavior and can affect funds or contract state. Unauthorized upgrades can cause loss of control or funds. Restrict upgrade messages to trusted admin addresses only.
+</Callout>
+
+<Callout
+  type="caution"
+  title="Ethics"
+>
+  Use delayed upgrades to allow users to react to compromised admin keys or unwanted updates.
+
+  [The Trail of Bits blog](https://blog.trailofbits.com/2025/06/25/maturing-your-smart-contracts-beyond-private-key-risk/) and [Wikipedia](https://en.wikipedia.org/wiki/Exit_scam) provide additional information on this topic.
+</Callout>
+
+## Basic upgrade pattern
+
+Contracts must define a message type that contains new code, new data, or both, to be upgradable. The contract's message handler should verify that the message comes from an admin address and then call the appropriate upgrade functions to apply the changes.
+
+### How it works
+
+1. Send an upgrade message to the contract that contains new code, data, or both.
+1. Verify that the message comes from an admin address.
+1. If the message contains code, schedule the code replacement with `setCodePostponed()`.
+1. If the message contains data, replace the existing data with `setData()`.
+1. During the action phase, apply the scheduled code replacement.
+1. Process subsequent messages with the new code after the transaction completes.
+
+The upgrade runs in a single transaction. New code becomes active after the transaction completes, and new data is available when the transaction ends. If the message does not provide enough Toncoin to run both the compute phase and the action phase, the entire transaction is aborted and no state changes from the upgrade are applied. Test the upgrade script to estimate gas requirements, and send enough Toncoin to execute the full upgrade transaction.
+
+<Callout type="caution">
+  Sending a transaction with the `SendIgnoreErrors` flag will ignore the insufficient funds error, and the transaction will succeed. This can leave a contract in an unusable state with a new storage structure but old code that cannot read it.
+
+  Learn more about [execution phases](/foundations/phases) and [sending modes](/foundations/messages/modes) in the docs.
+</Callout>
+
+### Example contract
+
+The following contract accepts `UpgradeContract` messages that contain new code or data. Only admins can trigger upgrades.
+
+```tolk title="Tolk" expandable
+struct (0x1111) UpgradeContract {
+    data: cell?
+    code: cell?
+}
+
+type AllowedMessages = UpgradeContract
+
+fun onInternalMessage(in: InMessage) {
+
+    val msg = lazy AllowedMessages.fromSlice(in.body);
+
+    match (msg) {
+
+        UpgradeContract => {
+            var storage = lazy Storage.load();
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            if (msg.code != null) {
+                contract.setCodePostponed(msg.code!);
+            }
+            if (msg.data != null) {
+                contract.setData(msg.data!);
+            }
+        }
+
+        else => {
+            // just accept Toncoin
+        }
+    }
+}
+
+struct Storage {
+    adminAddress: address
+}
+
+fun Storage.load() {
+    return Storage.fromCell(contract.getData());
+}
+
+fun Storage.save(self) {
+    contract.setData(self.toCell());
+}
+```
+
+## Delayed upgrade pattern
+
+Consider using the delayed upgrade pattern for production contracts with active users. This pattern adds a time delay between requesting and approving an upgrade, providing an additional security layer. The delay allows users to withdraw funds or exit positions if they do not trust the upgrade or if an admin account is compromised. It also gives users time to review the proposed changes before they take effect.
+
+### How it works
+
+1. An admin sends a `RequestUpgrade` message with new code, new data, or both.
+1. The contract verifies the message came from an admin and stores the upgrade details with a timestamp.
+1. The contract waits for the specified timeout, before accepting approvals.
+1. An admin sends an `ApproveUpgrade` message after the timeout expires.
+1. The contract checks that enough time has passed since the request.
+1. If the request is approved, the contract schedules new code with `setCodePostponed()` and upgrades data with `setData()`.
+1. The contract removes the pending request from storage.
+
+Admins can also send `RejectUpgrade` at any time to cancel a pending upgrade. This three-message flow (request → wait → approve or reject) gives users time to review changes and react if an admin account is compromised.
+
+### Example contract
+
+The following code illustrates the delayed upgrade pattern. The contract accepts `RequestUpgrade`, `RejectUpgrade`, and `ApproveUpgrade` messages. Only admins can trigger these actions.
+
+```tolk title="Tolk" expandable
+struct UpgradeContract {
+    data: cell?
+    code: cell?
+}
+
+struct CurrentRequest {
+    newUpgrade: UpgradeContract
+    timestamp: uint32
+}
+
+struct (0x00000001) RequestUpgrade {
+    newUpgrade: UpgradeContract
+}
+
+struct (0x00000002) RejectUpgrade { }
+
+struct (0x00000003) ApproveUpgrade { }
+
+type AllowedMessages =
+    | RequestUpgrade
+    | RejectUpgrade
+    | ApproveUpgrade
+
+fun onInternalMessage(in: InMessage) {
+    val msg = lazy AllowedMessages.fromSlice(in.body);
+
+    match (msg) {
+
+        RequestUpgrade => {
+            var storage = lazy Storage.load();
+
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            assert (storage.currentRequest == null) throw 3333;
+
+            storage.currentRequest = {
+                newUpgrade: msg.newUpgrade,
+                timestamp: blockchain.now()
+            };
+
+            storage.save();
+        }
+
+        RejectUpgrade => {
+            var storage = lazy Storage.load();
+
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            assert (storage.currentRequest != null) throw 3333;
+
+            storage.currentRequest = null;
+            storage.save();
+        }
+
+        ApproveUpgrade => {
+            var storage = lazy Storage.load();
+
+            assert (in.senderAddress == storage.adminAddress) throw 2222;
+            assert (storage.currentRequest != null) throw 3333;
+            assert (storage.currentRequest!.timestamp + storage.timeout < blockchain.now()) throw 302;
+
+            if (storage.currentRequest!.newUpgrade.code != null) {
+                contract.setCodePostponed(storage.currentRequest!.newUpgrade.code!);
+            }
+
+            if (storage.currentRequest!.newUpgrade.data != null) {
+                contract.setData(storage.currentRequest!.newUpgrade.data!);
+            }
+            else {
+                storage.currentRequest = null;
+                storage.save();
+            }
+        }
+
+        else => {
+            // just accepted Toncoin
+        }
+    }
+}
+
+get fun currentRequest() {
+    var storage = lazy Storage.load();
+    return storage.currentRequest;
+}
+
+struct Storage {
+    adminAddress: address,
+    timeout: uint32,
+    currentRequest: CurrentRequest?
+}
+
+fun Storage.load() {
+    return Storage.fromCell(contract.getData());
+}
+
+fun Storage.save(self) {
+    contract.setData(self.toCell());
+}
+```
+
+## Hot upgrade pattern
+
+The standard upgrade methods fail when contracts receive frequent updates. For example, DEX pools that update prices every second or lending protocols that continuously adjust interest rates. The problem: it is not possible to predict what data will be in storage when the upgrade transaction executes.
+
+Other transactions might execute before an upgrade arrives. By the time the upgrade applies, the prepared data may be stale. For a DEX pool, this can lead to outdated values, breaking the protocol.
+
+Hot upgrades solve this by scheduling a code change and immediately calling a migration function with the new code. The migration function runs in the same transaction that applies the upgrade. It reads the old storage structure, transforms it to match the new schema, and writes the upgraded storage to preserve all state changes that happened between preparing the upgrade and executing it.
+
+### How it works
+
+1. Send an upgrade message with the new code cell and optional additional data.
+1. Verify the message comes from an admin address.
+1. Call `setCodePostponed()` to schedule the code replacement.
+1. Call `setTvmRegisterC3()` to activate the new code in register [C3](/tvm/registers#c3-—-function-selector) immediately.
+1. Call `hotUpgradeData()` to run the migration with the new code.
+
+The `setTvmRegisterC3()` is the key to hot upgrades. It replaces the current code immediately so the following command (e.g., `hotUpgradeData()`) runs the new code. The migration function reads the current storage, transforms it to the new schema, and saves it. After the transaction completes, the new code becomes permanent through `setCodePostponed()`.
+
+<Callout
+  type="caution"
+  title="Migration risks"
+>
+  Hot upgrades require careful migration logic. Test migrations thoroughly on testnet. If the migration function throws, the upgrade transaction aborts and no state changes are applied. If the migration succeeds but writes invalid storage, the contract can become unusable. The `hotUpgradeData()` function runs only during upgrade messages, not on regular messages, preventing accidental repeated migrations.
+</Callout>
+
+### Example code
+
+The example shows a counter contract that changes the storage structure through a hot upgrade. The original version stores only `adminAddress` and `counter`; the new version adds `metadata` and reorders fields.
+
+The original contract code before the upgrade:
+
+```tolk title="main.tolk" expandable
+import "@stdlib/tvm-lowlevel"
+
+struct (0x00001111) HotUpgrade {
+    additionalData: cell?
+    code: cell
+}
+
+struct (0x00002222) IncreaseCounter {}
+
+type AllowedMessages =
+    | HotUpgrade
+    | IncreaseCounter
+
+// migration function must have method_id
+@method_id(2121)
+fun hotUpgradeData(additionalData: cell?) { }
+
+fun onInternalMessage(in: InMessage) {
+
+    val msg = lazy AllowedMessages.fromSlice(in.body);
+
+    match (msg) {
+
+        HotUpgrade => {
+            var storage = lazy Storage.load();
+            assert (in.senderAddress == storage.adminAddress) throw 1111;
+
+            contract.setCodePostponed(msg.code);
+
+            setTvmRegisterC3(transformSliceToContinuation(msg.code.beginParse()));
+            hotUpgradeData(msg.additionalData);
+        }
+
+        IncreaseCounter => {
+            var storage = lazy Storage.load();
+            storage.counter += 1;
+            storage.save();
+        }
+
+        else => {
+            // just accept Toncoin
+        }
+    }
+}
+
+get fun counter() {
+    var storage = lazy Storage.load();
+    return storage.counter;
+}
+
+struct Storage {
+    adminAddress: address
+    counter: uint32
+}
+
+fun Storage.load() {
+    return Storage.fromCell(contract.getData());
+}
+
+fun Storage.save(self) {
+    contract.setData(self.toCell());
+}
+```
+
+The contract never executes the original `hotUpgradeData()` function because it is immediately replaced by the new code during the upgrade. The new code defines the actual migration logic. That is why the migration function must have a `method_id` that is stable across versions, so the runtime can call it after the upgrade.
+
+New contract code that applies the hot upgrade:
+
+```tolk title="new.tolk" expandable
+import "@stdlib/tvm-lowlevel"
+
+struct (0x00001111) HotUpgrade {
+    additionalData: cell?
+    code: cell
+}
+
+struct (0x00002222) IncreaseCounter {}
+
+type AllowedMessages =
+    | HotUpgrade
+    | IncreaseCounter
+
+// migration function must have method_id
+@method_id(2121)
+fun hotUpgradeData(additionalData: cell?) {
+    var oldStorage = lazy OldStorage.load();
+
+    assert (additionalData != null) throw 1112;
+
+    var storage = Storage {
+        adminAddress: oldStorage.adminAddress,
+        counter: oldStorage.counter,
+        metadata: additionalData!
+    };
+
+    contract.setData(storage.toCell());
+}
+
+struct OldStorage {
+    adminAddress: address
+    counter: uint32
+}
+
+fun OldStorage.load() {
+    return OldStorage.fromCell(contract.getData());
+}
+
+
+fun onInternalMessage(in: InMessage) {
+
+    val msg = lazy AllowedMessages.fromSlice(in.body);
+
+    match (msg) {
+
+        HotUpgrade => {
+            var storage = lazy Storage.load();
+            assert (in.senderAddress == storage.adminAddress) throw 1111;
+
+            contract.setCodePostponed(msg.code);
+
+            setTvmRegisterC3(transformSliceToContinuation(msg.code.beginParse()));
+            hotUpgradeData(msg.additionalData);
+        }
+
+        IncreaseCounter => {
+            var storage = lazy Storage.load();
+            storage.counter += 1;
+            storage.save();
+        }
+
+        else => {
+            // just accept Toncoin
+        }
+    }
+}
+
+get fun metadata() {
+    var storage = lazy Storage.load();
+    return storage.metadata;
+}
+
+get fun counter() {
+    var storage = lazy Storage.load();
+    return storage.counter;
+}
+struct Storage {
+    counter: uint32
+    adminAddress: address
+    metadata: cell
+}
+
+fun Storage.load() {
+    return Storage.fromCell(contract.getData());
+}
+
+fun Storage.save(self) {
+    contract.setData(self.toCell());
+}
+```
+
+The new version of `hotUpgradeData()` function is what is called after the code was switched with `setTvmRegisterC3()` and performs the migration.
+
+The migration logic follows these steps:
+
+1. Load the storage using the old structure, e.g., `OldStorage` with `adminAddress` and `counter`.
+1. Create new storage with the additional `metadata` field from `additionalData`.
+1. Reorder the fields to move the `counter` before the `adminAddress`.
+1. Write the migrated storage immediately with `contract.setData()`.
+
+The migration runs in the same transaction as the upgrade message. Any counter increments that happened between preparing the upgrade and executing it remain in storage because the migration reads the current state, not a pre-prepared snapshot. The migration function explicitly handles the structure change by reading fields from the old layout and writing them in the new layout.
+
+### When to use hot upgrades
+
+Use hot upgrades in the following scenarios:
+
+- The contract receives frequent state updates, e.g., DEX pools, oracles, and lending protocols.
+- Storage changes between preparing and applying the upgrade would cause data loss.
+- All intermediate state transitions must be preserved during the upgrade.
+
+Use standard upgrades instead when:
+
+- The contract upgrades infrequently.
+- Storage state at upgrade time is predictable.
+- Simpler upgrade logic would reduce risk.
+
+## Combining delayed and hot upgrades
+
+Combine delayed upgrades with hot upgrades for production protocols that require both safety and structure migration. The delayed upgrade pattern provides time for users to review changes, while the hot upgrade mechanism handles storage migration without data loss.
+
+<Callout
+  type="tip"
+  title="Complete example code"
+>
+  The [TON Examples GitHub repository](https://github.com/ton-org/docs-examples/tree/main/contract-dev/Upgrading) contains full working examples demonstrating all upgrade patterns. This includes implementations for basic, delayed, and hot upgrade patterns.
+</Callout>
