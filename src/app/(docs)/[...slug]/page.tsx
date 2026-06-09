@@ -50,20 +50,22 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      <div className="flex flex-row flex-wrap gap-2 items-center border-b pb-6">
-        {/* <MarkdownCopyButton markdownUrl={markdownUrl} />
+      {page.data._openapi ? (<></>) : (
+        <div className="flex flex-row flex-wrap gap-2 items-center border-b pb-6">
+          {/* <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover
           markdownUrl={markdownUrl}
           githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/${page.path}`}
         /> */}
-        <LLMCopyButton
-          markdownUrl={markdownUrl}
-        />
-        <ViewOptions
-          markdownUrl={markdownUrl}
-          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/${page.path}`}
-        />
-      </div>
+          <LLMCopyButton
+            markdownUrl={markdownUrl}
+          />
+          <ViewOptions
+            markdownUrl={markdownUrl}
+            githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/${page.path}`}
+          />
+        </div>
+      )}
       <DocsBody>
         <MDX
           components={getMDXComponents({
