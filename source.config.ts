@@ -29,6 +29,7 @@ export const docs = defineDocs({
       // TODO: temporary patch for OpenAPI pages
       title: z.string().optional(),
       sidebarTitle: z.string().optional(),
+      tag: z.string().optional(),
       url: z.httpUrl().optional(),
       noindex: z.coerce.boolean().default(false),
       // TODO:
@@ -38,14 +39,17 @@ export const docs = defineDocs({
       ...frontmatter,
       // NOTE: alternatively, give titles to all OpenAPI routes
       title: frontmatter.title ?? frontmatter.openapi ?? 'Untitled',
+      // A tag must not be used with an openapi specified in the frontmatter
+      ...(frontmatter.openapi ? { tag: undefined } : {}),
     })),
     postprocess: {
       includeProcessedMarkdown: true,
     },
   },
   meta: {
-    // TODO: consider extending with a `tag`.
-    schema: metaSchema,
+    schema: metaSchema.extend({
+      tag: z.string().optional(),
+    }),
   },
 });
 

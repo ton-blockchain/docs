@@ -155,6 +155,16 @@ const metaSchema = z.object({
     '\n}',
     '\n```',
   ].join(' ')),
+
+  /**
+   * Optional tag of the folder in the sidebar (page tree on the left).
+   *
+   * This is custom field that extends the default schema.
+   */
+  tag: z.string().optional().describe([
+    'Optional tag of the folder in the sidebar (page tree on the left).',
+    '\nThis is custom field that extends the default schema.',
+  ].join(' ')),
 });
 
 const metaJsonSchema = z.toJSONSchema(metaSchema);
