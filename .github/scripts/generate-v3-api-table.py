@@ -27,13 +27,13 @@ TAG_ORDER = [
     'vesting',
     'stats',
     'utils',
-    'api/v2',
+    'api v2',
 ]
 
 # Map tag slugs to Mintlify's actual URL slugs
-TAG_SLUG_MAP = {
-    'api-v2': 'apiv2',
-}
+# TAG_SLUG_MAP = {
+#     'api-v2': 'api-v2',
+# }
 
 
 def load_openapi_spec(filepath: Path) -> dict:
@@ -78,7 +78,7 @@ def generate_mintlify_link(endpoint: dict) -> str:
     tag = endpoint['tag'].lower().replace(' ', '-').replace('_', '-').replace('/', '-')
 
     # Apply tag slug mapping for Mintlify
-    tag = TAG_SLUG_MAP.get(tag, tag)
+    # tag = TAG_SLUG_MAP.get(tag, tag)
 
     summary = endpoint.get('summary', '')
 
@@ -129,7 +129,7 @@ def generate_table(endpoints: list) -> str:
 
             # Handle tag display
             display_tag = tag
-            if tag.lower() == 'api/v2':
+            if tag.lower() == 'api v2':
                 display_tag = 'Legacy (v2)'
             elif tag.lower() == 'blockchain data':
                 display_tag = 'Blockchain data'

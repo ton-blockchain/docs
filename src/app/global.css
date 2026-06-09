@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+@import 'fumadocs-openapi/css/preset.css';
 
 :root {
   --headless-color: #0098ea;
@@ -30,4 +31,12 @@ html {
 html>body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
+}
+
+/*
+ * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
+ * that do not support the text-wrap property yet.
+ */
+.style-subsequent-openapi-tag+span {
+  white-space: nowrap;
 }

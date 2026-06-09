@@ -1,6 +1,7 @@
 import { createElement, Fragment, type ComponentType, type SVGProps } from "react";
 import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
+import { openapiPlugin } from 'fumadocs-openapi/server';
 import { icons } from "lucide-react";
 import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase } from './shared';
 
@@ -42,8 +43,8 @@ export const source = loader({
               node.name,
             )
           }
-          // Apply the tag from the page frontmatter if openapi field is unset
-          if (file.data.tag && !file.data.openapi) {
+          // Apply the tag from the page frontmatter if the openapi field is unset
+          if (file.data.tag && !file.data._openapi) {
             node.name = createElement(
               Fragment,
               null,
@@ -52,10 +53,18 @@ export const source = loader({
               createElement(
                 'span',
                 {
-                  className: 'ms-auto border border-current px-1 rounded-lg text-xs text-nowrap'
+                  className: 'ms-auto border border-current px-1 rounded-lg text-xs text-nowrap whitespace-nowrap'
                 },
                 file.data.tag,
               )
+            )
+          }
+          // Apply the white-space: nowrap for the <span> with the OpenAPI tag that follows the text
+          if (file.data._openapi) {
+            node.name = createElement(
+              'span',
+              { className: 'style-subsequent-openapi-tag' },
+              node.name,
             )
           }
           return node
@@ -75,7 +84,7 @@ export const source = loader({
               createElement(
                 'span',
                 {
-                  className: 'ms-auto border border-current px-1 rounded-lg text-xs text-nowrap'
+                  className: 'ms-auto border border-current px-1 rounded-lg text-xs text-nowrap whitespace-nowrap'
                 },
                 file.data.tag,
               )
@@ -86,8 +95,11 @@ export const source = loader({
       },
     ],
   },
-  plugins: [],
+  plugins: [openapiPlugin()],
 });
+
+export type Page = (typeof source)['$inferPage'];
+export type Meta = (typeof source)['$inferMeta'];
 
 export function getIndexablePages(locale?: string) {
   return source.getPages(locale).filter((page) => !page.data.url);

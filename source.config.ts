@@ -26,21 +26,15 @@ export const docs = defineDocs({
   dir: 'content',
   docs: {
     schema: pageSchema.extend({
-      // TODO: temporary patch for OpenAPI pages
-      title: z.string().optional(),
       sidebarTitle: z.string().optional(),
       tag: z.string().optional(),
       url: z.httpUrl().optional(),
       noindex: z.coerce.boolean().default(false),
-      // TODO:
-      openapi: z.string().optional(),
       // TODO: fmt with prettier for everything but md[x]
     }).transform((frontmatter) => ({
       ...frontmatter,
-      // NOTE: alternatively, give titles to all OpenAPI routes
-      title: frontmatter.title ?? frontmatter.openapi ?? 'Untitled',
       // A tag must not be used with an openapi specified in the frontmatter
-      ...(frontmatter.openapi ? { tag: undefined } : {}),
+      ...(frontmatter._openapi ? { tag: undefined } : {}),
     })),
     postprocess: {
       includeProcessedMarkdown: true,
