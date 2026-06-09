@@ -128,7 +128,7 @@
           "Accounts"
         ],
         "summary": "Get wallet information",
-        "description": "Returns wallet-specific information for an address. If the address is a known wallet contract, returns the wallet type, current `seqno` (needed for sending transactions), and wallet_id. Always check `wallet: true` before using wallet-specific fields. Call this before sending any transaction to get the current `seqno`.",
+        "description": "Returns wallet-specific information for an address. If the address is a known wallet contract, returns the wallet type, current `seqno` (needed for sending transactions), and `wallet_id`. Always check `wallet: true` before using wallet-specific fields. Call this before sending any transaction to get the current `seqno`.",
         "operationId": "getWalletInformation_get",
         "parameters": [
           {
@@ -1523,7 +1523,7 @@
           "Utils"
         ],
         "summary": "Detect address",
-        "description": "Validates an address and returns it in all standard formats. Use this to convert between address formats or to validate user input. Returns raw format (0:abc), base64 bounceable (EQ), base64 non-bounceable (UQ), and URL-safe variants.",
+        "description": "Validates an address and returns it in all standard formats. Use this to convert between address formats or to validate user input. Returns raw format (`0:abc`), base64 bounceable (`EQ`), base64 non-bounceable (`UQ`), and URL-safe variants.",
         "operationId": "detectAddress_get",
         "parameters": [
           {
