@@ -226,12 +226,12 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 Run the installer from the operator account with `sudo` so it can create system users and services:
 
 <CodeGroup>
-  ```bash Mainnet
-  ARCHIVE_TTL=2592000 && STATE_TTL=86400 && sudo -v && nohup sudo bash install.sh -m liteserver -n mainnet -d > mytonctrl_installation.log 2>&1 &
+  ```bash title="Mainnet"
+  export ARCHIVE_TTL=2592000 STATE_TTL=86400 && sudo -v && nohup sudo bash install.sh -m liteserver -n mainnet -d > mytonctrl_installation.log 2>&1 &
   ```
 
-  ```bash Testnet
-  ARCHIVE_TTL=2592000 && STATE_TTL=86400 && sudo -v && nohup sudo bash install.sh -m liteserver -n testnet -d > mytonctrl_installation.log 2>&1 &
+  ```bash title="Testnet"
+  export ARCHIVE_TTL=2592000 STATE_TTL=86400 && sudo -v && nohup sudo bash install.sh -m liteserver -n testnet -d > mytonctrl_installation.log 2>&1 &
   ```
 </CodeGroup>
 
