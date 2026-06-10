@@ -196,29 +196,3 @@ Apart from the header statistics, the line-by-line coverage report is the most i
 <Callout>
   To understand the TVM assembly output, read [TVM](/foundations/whitepapers/tvm).
 </Callout>
-
-## Limitations
-
-Note that when code of other contracts is stored directly in the code of the contract ([Tact](/languages/tact) does that automatically if a contract system does not contain circular dependencies), that affects the overall code coverage percentage.
-
-To mitigate this effect in coverage estimation, add a circular dependency. For example, import a file with the following content.
-
-```tact title="Tact"
-contract A {
-    receive() {
-        let x = initOf B();
-        drop2(x);
-    }
-}
-
-contract B() {
-    receive() {
-        let x = initOf A();
-        drop2(x);
-    }
-}
-
-asm fun drop2(x: StateInit) {
-    DROP2
-}
-```

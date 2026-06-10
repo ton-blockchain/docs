@@ -30,7 +30,7 @@ npx blueprint create
 Launches an interactive wizard that guides you through:
 
 1. Contract name selection (validates CamelCase format)
-1. Programming language choice (Tolk, FunC, or Tact)
+1. Programming language choice (Tolk or FunC)
 1. Template type selection (empty or counter example)
 
 #### Non-interactive mode
@@ -48,10 +48,8 @@ npx blueprint create <CONTRACT> --type <TYPE>
 
 - `tolk-empty` — an empty contract (Tolk)
 - `func-empty` — an empty contract (FunC)
-- `tact-empty` — an empty contract (Tact)
 - `tolk-counter` — a simple counter contract (Tolk)
 - `func-counter` — a simple counter contract (FunC)
-- `tact-counter` — a simple counter contract (Tact)
 
 **Usage examples:**
 
@@ -68,7 +66,7 @@ npx blueprint create
 
 **Generated files:**
 
-- `contracts/MyContract.{tolk|fc|tact}` — contract source code
+- `contracts/MyContract.{tolk|fc}` — contract source code
 - `wrappers/MyContract.ts` — TypeScript wrapper for contract interaction
 - `tests/MyContract.spec.ts` — Jest test suite with basic test cases
 - `scripts/deployMyContract.ts` — deployment script with network configuration
