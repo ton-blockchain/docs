@@ -226,6 +226,11 @@ Run the installer from the operator account with `sudo` so it can create system 
   ```
 </CodeGroup>
 
+These environment variables control data retention:
+
+- `ARCHIVE_TTL=2592000`: Keep archive data for 30 days (2,592,000 seconds)
+- `STATE_TTL=86400`: Keep state data for 1 day (86,400 seconds)
+
 Installation runs in the background. Monitor the progress using the following command:
 
 ```bash
