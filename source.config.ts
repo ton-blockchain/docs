@@ -16,6 +16,7 @@ import {
   transformerNotationFocus,
   transformerNotationHighlight,
   transformerNotationWordHighlight,
+  transformerRenderIndentGuides,
 } from '@shikijs/transformers';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
@@ -99,6 +100,7 @@ export default defineConfig({
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerRenderIndentGuides(),
         transformerMetaHighlight(),
         transformerMetaWordHighlight(),
         transformerNotationHighlight({ matchAlgorithm: "v3" }),
@@ -106,7 +108,7 @@ export default defineConfig({
         transformerNotationDiff({ matchAlgorithm: "v3" }),
         transformerNotationFocus({ matchAlgorithm: "v3" }),
         {
-          name: "no-copy",
+          name: "Disable copying with a noCopy attribute",
           pre(pre) {
             const raw = this.options?.meta?.__raw
             if (!raw) return pre
@@ -116,7 +118,7 @@ export default defineConfig({
             }
             return pre
           },
-        }
+        },
       ],
     },
     remarkPlugins: [
