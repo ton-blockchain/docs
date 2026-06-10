@@ -35,7 +35,7 @@ The following rules are applied during the jump:
 
 Due to the limitation of the `Cell` type, one continuation can contain no more than 1023 bits of bitcode. To execute longer functions, we could pass `JMPREF` as a last instruction, which will continue execution of a function in a new continuation.
 
-```fift Fift
+```fift title="Fift"
 // some instructions
 <{
   // next instructions that exceed the 1023-bit limit are placed in a child cell
@@ -48,7 +48,7 @@ To simplify things, TVM has an _implicit jump_ mechanism, which automatically ju
 
 _Call_ is a special type of jump, which also saves `cc` to `c0`, so the callee can pass execution back to the caller. That is how [`CALLREF`](/tvm/instructions#db3c-callref) works.
 
-```fift Fift
+```fift title="Fift"
 2 PUSHINT
 3 PUSHINT
 <{

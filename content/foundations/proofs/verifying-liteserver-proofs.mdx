@@ -38,7 +38,7 @@ The liteserver's [response](https://github.com/ton-blockchain/ton/blob/v2025.03/
 
 After deserializing the BoC, we obtain the following cell:
 
-```d not runnable
+```d title="Not runnable"
 280[0351ED3B9E728E7C548B15A5E5CE988B4A74984C3F8374F3F1A52C7B1F46C264060016] -> {
 	64[11EF55AAFFFFFF11] -> {
 		640[9BC7A98700000000040101DC65010000000100FFFFFFFF000000000000000064B6C356000023D38BA64000000023D38BA64004886D00960007028101DC64FD01DC42BEC400000003000000000000002E] -> {
@@ -119,7 +119,7 @@ await client.raw_get_shard_info(master, wc=0)
 
 The liteserver response contains the `BlockIdExt` of the shard block:
 
-```d not runnable
+```d title="Not runnable"
 <TL BlockIdExt [wc=0, shard=-9223372036854775808, seqno=36908135, root_hash=39e5cbca5bf69750b5d9897872c3a0d7a3e614e521c53e4de728fafed38dce27, file_hash=f1f0e5cdc4b8a12cf2438dcab60f4712d1dc04f3792b1d72f2500cbf640948b7] >
 ```
 
@@ -149,13 +149,13 @@ The `shard_descr` BoC can be used if the liteserver is trusted.
 
 After deserializing the shard proof BoC, two root cells are obtained:
 
-```d not runnable
+```d title="Not runnable"
 [<Cell 280[0351ED3B9E728E7C548B15A5E5CE988B4A74984C3F8374F3F1A52C7B1F46C264060016] -> 1 refs>, <Cell 280[0332BF3592969931CA4FBC7715494B50597F1884C0D847456029D8CF0E526E6046016F] -> 1 refs>]
 ```
 
 The first root is a masterchain block Merkle proof, which must be verified using the `check_block_header` function:
 
-```d not runnable
+```d title="Not runnable"
 280[0351ED3B9E728E7C548B15A5E5CE988B4A74984C3F8374F3F1A52C7B1F46C264060016] -> {
 	64[11EF55AAFFFFFF11] -> {
 		640[9BC7A98700000000040101DC65010000000100FFFFFFFF000000000000000064B6C356000023D38BA64000000023D38BA64004886D00960007028101DC64FD01DC42BEC400000003000000000000002E] -> {
@@ -173,7 +173,7 @@ The first root is a masterchain block Merkle proof, which must be verified using
 
 The cell
 
-```d not runnable
+```d title="Not runnable"
 552[0478E0F0E601BA1161ECC1395E9A0475C4F80AADBD6C483F210E96E29CF36789E432BF3592969931CA4FBC7715494B50597F1884C0D847456029D8CF0E526E6046016F016F] -> {
     560[010378E0F0E601BA1161ECC1395E9A0475C4F80AADBD6C483F210E96E29CF36789E46492304DFB6EF9149781871464AF686056A9627F882F60E3B24F8C944A75EBAF016F0014],
     560[010332BF3592969931CA4FBC7715494B50597F1884C0D847456029D8CF0E526E6046DA58493CCB5DA3876129B0190F3C375E69E59C3AD9FF550BE708999DAD1F6F39016F0014]
@@ -184,7 +184,7 @@ It is a Merkle update of the [ShardState](https://github.com/ton-blockchain/ton/
 
 After verifying that the only Merkle proof cell reference `Hash_1` matches the known block hash and storing the new ShardState hash, proceed to validate the second `shard proof` cell:
 
-```d not runnable
+```d title="Not runnable"
 280[0332BF3592969931CA4FBC7715494B50597F1884C0D847456029D8CF0E526E6046016F] -> {
 	362[9023AFE2FFFFFF1100FFFFFFFF000000000000000001DC65010000000164B6C356000023D38BA6400401DC64FD40] -> {
 		288[0101AFFE84CDD73951BCE07EEAAD120D00400295220D6F66F1163B5FA8668202D72B0001],
@@ -304,7 +304,7 @@ The liteserver [response](https://github.com/ton-blockchain/ton/blob/v2025.03/tl
 
 After verifying the `shard_proof`, the `proof` and `state` cells must be deserialized. The `proof` cell must contain exactly two root cells:
 
-```d not runnable
+```d title="Not runnable"
 
 [<Cell 280[0339E5CBCA5BF69750B5D9897872C3A0D7A3E614E521C53E4DE728FAFED38DCE27001D] -> 1 refs>, <Cell 280[03F93FE5EDA41A6CE9ECB353FD589842BD3F5D5E73B846CB898525293FC742FD690219] -> 1 refs>]
 
@@ -312,7 +312,7 @@ After verifying the `shard_proof`, the `proof` and `state` cells must be deseria
 
 The first `root` is a Merkle proof for the shard block, whose hash we have already verified and trusted.
 
-```d not runnable
+```d title="Not runnable"
 280[0339E5CBCA5BF69750B5D9897872C3A0D7A3E614E521C53E4DE728FAFED38DCE27001D] -> {
 	64[11EF55AAFFFFFF11] -> {
 		640[9BC7A98700000000840102332C67000000010000000000000000000000000064B6C351000023D38B96FDC0000023D38B96FDC5D41C6E3C0007035701DC64FD01DC42BEC400000003000000000000002E] -> {
@@ -351,7 +351,7 @@ Once the hash matches, the `state_cell` can be trusted. Its structure is as foll
 <details>
   <summary><b>Show cell</b></summary>
 
-  ```d not runnable
+  ```d title="Not runnable"
   280[03F93FE5EDA41A6CE9ECB353FD589842BD3F5D5E73B846CB898525293FC742FD690219] -> {
   	362[9023AFE2FFFFFF110000000000000000000000000002332C670000000164B6C351000023D38B96FDC501DC64FD00] -> {
   		288[010138F8D1C6E9F798A477D13AA26CB4D6CFE1A17949AC276B2F1E0CE037A521B9BC0001],
@@ -500,7 +500,7 @@ _ = {
 
 We need to store the values of `last_trans_hash` and `last_trans_lt`, as they can be used later to retrieve the account's transactions. Let's examine the entire cell containing this data.
 
-```d not runnable
+```d title="Not runnable"
 320[649B46AC72E6E4D4C1293B66D58D9ED7A54902BEEFD97F5BFF7977DD85998B3D000023C564393441] -> {
 	288[01018282D13BF66B9ACE1FBF5D3ABD1C59CC46D61AF1D47AF1665D3013D8F9E474880008]
 }
@@ -512,7 +512,7 @@ This is a regular cell with level 1, containing a single reference — the prune
 
 The next step is to deserialize the `state` BoC:
 
-```d not runnable
+```d title="Not runnable"
 449[C006F5BC67986E06430961D9DF00433926A4CD92E597DDD8AA6043645AC20BD178222C859043259E0D9000008F1590E4D10D405786BD755300] -> {
 	80[FF00F4A413F4BCF2C80B] -> {
 		2[00] -> {
@@ -584,7 +584,7 @@ Next, we query the liteserver for the list of transactions belonging to the bloc
 The liteserver [response](https://github.com/ton-blockchain/ton/blob/v2025.03/tl/generate/scheme/lite_api.tl#L47) includes `ids` field with the transaction list and a `proof` BoC.
 The first step is to deserialize the `proof`:
 
-```d not runnable
+```d title="Not runnable"
 280[0351ED3B9E728E7C548B15A5E5CE988B4A74984C3F8374F3F1A52C7B1F46C264060016] -> {
 	64[11EF55AAFFFFFF11] -> {
 		288[0101F8039FE65901BE422094ED29FA05DD4A9406708D7C54EBF7F6010F2E8A9DCBB10001],
@@ -723,7 +723,7 @@ The [response](https://github.com/ton-blockchain/ton/blob/v2025.03/tl/generate/s
 
 First, deserialize the `state_proof` cell:
 
-```d not runnable
+```d title="Not runnable"
 280[0351ED3B9E728E7C548B15A5E5CE988B4A74984C3F8374F3F1A52C7B1F46C264060016] -> {
 	64[11EF55AAFFFFFF11] -> {
 		640[9BC7A98700000000040101DC65010000000100FFFFFFFF000000000000000064B6C356000023D38BA64000000023D38BA64004886D00960007028101DC64FD01DC42BEC400000003000000000000002E] -> {

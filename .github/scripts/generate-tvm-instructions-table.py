@@ -32,7 +32,7 @@ def render_instruction(insn, aliases):
 {insn['doc']['description'].replace('\n', '<br />')}<br />
 **Category:** {humanize_category(insn['doc']['category'])} ({insn['doc']['category']})<br />
 
-```fift Fift
+```fift title="Fift"
 {insn['doc']['fift']}
 ```
 

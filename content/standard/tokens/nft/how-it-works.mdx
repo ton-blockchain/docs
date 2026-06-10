@@ -58,7 +58,7 @@ Transfer message body contains the following data:
 | `forward_amount`       | `VarUInteger 16`    | the amount of Toncoin to be sent to the new owner                        |
 | `forward_payload`      | `Either Cell ^Cell` | optional data that should be forwarded to the new owner                  |
 
-```tlb TL-B
+```tlb title="TL-B"
 transfer#5fcc3d14 query_id:uint64
                   new_owner:MsgAddress
                   response_destination:MsgAddress
@@ -77,7 +77,7 @@ Ownership notification message body (`ownership_assigned`) contains the followin
 | `prev_owner`         | `MsgAddress`        | address of the previous owner of this NFT item |
 | `forward_payload`    | `Either Cell ^Cell` | should be equal to request's `forward_payload` |
 
-```tlb TL-B
+```tlb title="TL-B"
 ownership_assigned query_id:uint64
                    prev_owner:MsgAddress
                    forward_payload:(Either Cell ^Cell)
@@ -92,7 +92,7 @@ Excess message body (`excesses`) contains the following data:
 | `excesses` | `uint32` | tag equal to `0xd53276db`               |
 | `query_id` | `uint64` | should be equal to request's `query_id` |
 
-```tlb TL-B
+```tlb title="TL-B"
 excesses query_id:uint64 = InternalMsgBody;
 ```
 
@@ -112,7 +112,7 @@ Get static data message body contains the following data:
 | `get_static_data` | `uint32` | tag equal to `0x2fcb26a2` |
 | `query_id`        | `uint64` | arbitrary request number  |
 
-```tlb TL-B
+```tlb title="TL-B"
 get_static_data#2fcb26a2 query_id:uint64 = InternalMsgBody;
 ```
 
@@ -125,7 +125,7 @@ Report static data message body contains the following data:
 | `index`              | `uint256`    | numerical index of this NFT in the collection                             |
 | `collection`         | `MsgAddress` | address of the smart contract of the collection to which this NFT belongs |
 
-```tlb TL-B
+```tlb title="TL-B"
 report_static_data#8b771735 query_id:uint64 index:uint256 collection:MsgAddress = InternalMsgBody;
 ```
 

@@ -52,7 +52,7 @@ The Elector is a special smart contract triggered by **Tick and Tock transaction
 - Assume the `i`-th candidate (lowest in the subset) defines the baseline.
 - Calculate effective stake (`true_stake`) for each `j`-th candidate (`j < i`) as:
 
-```python not runnable
+```python title="Not runnable"
 min(stake[i] * max_factor[j], stake[j])
 ```
 

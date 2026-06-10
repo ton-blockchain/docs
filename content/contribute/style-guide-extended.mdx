@@ -580,27 +580,32 @@ Objective. Ensure examples are precise, copy-pasteable, and unambiguous. (Why: r
 - Error codes and identifiers **MUST** be rendered in code font (e.g., `ERR_FEE_TOO_LOW`). (Why: monospace distinguishes tokens and aids copy/paste.)
 - When summarizing behavior instead of quoting, **MUST NOT** change semantics and avoid using quotes; indicate that it is a summary. (Why: paraphrases should not be mistaken for literal messages and must stay accurate.)
 
-Good
+Good:
 
+````text
 ```bash
 ton-node start --ledger <LEDGER_DIR> --network testnet
 ```
 
-Expected output
+There,
+
+`<LEDGER_DIR>` — path to the local ledger directory.
+`<RPC_URL>` — HTTPS endpoint of the TON RPC provider.
+
+Expected output:
 
 ```text
 Node started. Workchain: 0  Shard: -1  Status: running
 ```
+````
 
-Define placeholders (first use):
-`<LEDGER_DIR>` — path to the local ledger directory.
-`<RPC_URL>` — HTTPS endpoint of the TON RPC provider.
+Bad:
 
-Bad
-
+````text
 ```bash
 $ ton-node start --ledger /home/bob/ledger --network mainnet  # includes prompt, hard-coded values
 ```
+````
 
 ### 10.2 Partial snippets
 

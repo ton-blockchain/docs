@@ -22,7 +22,7 @@ Most commonly used to print common values: transactions and get-method results.
 
 {/* NB! There are two imports from @ton/test-utils, so that it's easier for a user to copy the one they need. */}
 
-```ts TypeScript
+```ts title="TypeScript"
 import '@ton/test-utils';
 import { toNano } from '@ton/core';
 import { Blockchain } from '@ton/sandbox';
@@ -80,7 +80,7 @@ These instructions are wrapped in functions with different names in each languag
 
 ## Explore TVM logs
 
-```ts TypeScript
+```ts title="TypeScript"
 const blockchain = await Blockchain.create();
 blockchain.verbosity.vmLogs = "vm_logs";
 ```
@@ -155,7 +155,7 @@ When the output exceeds its limit, it is truncated **from the bottom** — older
 
 For traces that are not too large, print all transactions and inspect them.
 
-```ts TypeScript
+```ts title="TypeScript"
 const result = await contract.send(
     owner.getSender(),
     { value: toNano(0.5), bounce: true },

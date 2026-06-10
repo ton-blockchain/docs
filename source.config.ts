@@ -21,6 +21,7 @@ import {
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import stringWidth from 'string-width';
+import { visitParents } from 'unist-util-visit-parents';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
@@ -121,7 +122,24 @@ export default defineConfig({
         },
       ],
     },
-    remarkPlugins: [
+    remarkPlugins: (v) => [
+      // NOTE: `title=` → `tab=` meta pre-processing in CodeGroup components,
+      //       which should be placed before everything else!
+      function remarkCodeGroup() {
+        return (tree) => {
+          visitParents(tree, (node: any) => {
+            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'CodeGroup') return;
+            for (const child of node.children) {
+              if (child.type === 'code' && child.meta) {
+                child.meta = child.meta.replace(/\btitle=/, 'tab=');
+              }
+            }
+          });
+        };
+      },
+      // Default Fumadocs remark plugins
+      ...v,
+      // Additional plugins
       remarkMath,
       [remarkGfm, {
         singleTilde: false,

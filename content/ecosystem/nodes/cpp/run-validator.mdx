@@ -272,11 +272,11 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 Run the validator installation. Installation takes approximately 20 minutes:
 
 <CodeGroup>
-  ```shell Mainnet
+  ```shell title="Mainnet"
   sudo bash install.sh -m single-nominator -n mainnet
   ```
 
-  ```shell Testnet
+  ```shell title="Testnet"
   sudo bash install.sh -m single-nominator -n testnet
   ```
 </CodeGroup>
@@ -641,7 +641,7 @@ Send a withdrawal request, a message with `w` comment from `owner` wallet to the
   >
     Insert the single nominator pool address to `SINGLE_NOMINATOR_ADDRESS` and send this message from the owner's wallet.
 
-    ```js Not runnable
+    ```js title="Not runnable"
     import {
       Address,
       beginCell,
@@ -709,13 +709,13 @@ Retrieve `min_stake` and `max_stake` from [Validation API](https://elections.ton
 
 For example:
 
-```json Not runnable
+```json title="Not runnable"
 "cycle_id" : 1764052744,
 "min_stake": 701812111528562,  // ~ 701 812 TON
 "max_stake": 2008570202020000, // ~ 2 008 570 TON
 ```
 
-```json Not runnable
+```json title="Not runnable"
 "cycle_id" : 1764052745,
 "min_stake": 674810775114391,  // ~ 674 811 TON
 "max_stake": 2024432325343173, // ~ 2 024 432 TON
@@ -731,7 +731,7 @@ To cover the approximate expected stake for odd and even cycles, choose the maxi
 
 For example:
 
-```text Not runnable
+```text title="Not runnable"
 // largest within 701 812 TON and 674 811 TON
 avg_min_stake = 701812
 
@@ -747,13 +747,13 @@ avg_max_stake = 2024432
 
 Effective stake for two cycles is a value between the doubled maximum and the minimum average stakes:
 
-```text Not runnable
+```text title="Not runnable"
 avg_min_stake * 2 <= effective_stake <= avg_max_stake * 2
 ```
 
 For example:
 
-```text Not runnable
+```text title="Not runnable"
 // twice the average minimum stake
 min_expected_effective_stake = 1403624
 
@@ -763,7 +763,7 @@ max_expected_effective_stake = 4048864
 
 Then, the effective stake is approximately:
 
-```text Not runnable
+```text title="Not runnable"
 1403624 TON <= effective_stake <= 4048864 TON
 ```
 
