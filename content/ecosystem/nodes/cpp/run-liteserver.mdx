@@ -3,11 +3,9 @@ title: "Run a liteserver"
 description: "Run a liteserver node with MyTonCtrl"
 ---
 
-import { Aside } from '/snippets/aside.jsx';
-
-## Objective
-
 This guide describes how to set up a liteserver using MyTonCtrl.
+
+Unlike the archive liteserver, a regular liteserver node does not store the entire block history of the TON blockchain. Running a non-archive liteserver node is recommended for applications that do not require access to historical data, such as most dApps.
 
 ## Prerequisites
 
@@ -20,13 +18,17 @@ This guide describes how to set up a liteserver using MyTonCtrl.
 
 - 16-core CPU
 - 64 GB RAM
-- At least 1 TB of NVMe Gen4+ SSD storage (Enterprise grade preferred) or Provisioned 64k+ IOPS storage.
+- At least 1 TB of NVMe Gen4+ SSD storage (Enterprise grade preferred), sustaining at least 64,000 provisioned IOPS
 - 1 Gbit/s symmetric connectivity (both inbound and outbound), \~16 TB/month at peak load
 - Fixed (static) public IP address
 
-<Aside type="tip">
-  If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level (e.g., `echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy`).
-</Aside>
+<Callout type="caution">
+  If non-Enterprise SSDs are used, Autonomous Power State Transition (APST) must be disabled on the SSD and the `performance` PCIe ASPM policy enabled at the system level:
+
+  ```bash
+  echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy
+  ```
+</Callout>
 
 ### 1.2 OS and system requirements
 
@@ -37,10 +39,10 @@ This guide describes how to set up a liteserver using MyTonCtrl.
 
 Subscribe and follow the announcements provided for liteservers in the following Telegram channels:
 
-| Channel                                      | Network     |
-| -------------------------------------------- | ----------- |
-| [@tonstatus](https://t.me/tonstatus)         | TON Mainnet |
-| [@testnetstatus](https://t.me/testnetstatus) | TON Testnet |
+| Channel                                        | Network     |
+| ---------------------------------------------- | ----------- |
+| [`@tonstatus`](https://t.me/tonstatus)         | TON Mainnet |
+| [`@testnetstatus`](https://t.me/testnetstatus) | TON Testnet |
 
 ### 1.4 Free space requirements
 
@@ -53,39 +55,33 @@ Ensure sufficient free disk space for the initial download and extraction of the
 
 To create a dedicated operator user and switch to it before installing MyTonCtrl:
 
-- Create a non-root user:
+1. Create a non-root user:
 
-```bash
-# Create a non-root operator user
-sudo adduser <USERNAME>
-sudo usermod -aG sudo <USERNAME>
-```
+   ```bash
+   # Create a non-root operator user
+   sudo adduser <USERNAME>
+   sudo usermod -aG sudo <USERNAME>
+   ```
 
-Define placeholders:
+1. Switch to the new operator account by reconnecting via SSH:
 
-- `<USERNAME>` - name of the non-root operator user.
+   <CodeGroup>
+     ```bash title="Standard port"
+     # Option 1: Reconnect using the standard port
+     exit
+     ssh <USERNAME>@<SERVER_IP>
+     ```
 
-- `<SERVER_IP>` - public IP address of the server.
-
-- `<SSH_PORT>` - custom SSH port number configured in Step 1.7.
-
-- Switch to the new operator account by reconnecting via SSH:
-
-```bash
-# Option 1: Reconnect using the standard port
-exit
-ssh <USERNAME>@<SERVER_IP>
-```
-
-```bash
-# Option 2: Reconnect using the custom SSH port
-exit
-ssh <USERNAME>@<SERVER_IP> -p <SSH_PORT>
-```
+     ```bash title="Custom SSH port"
+     # Option 2: Reconnect using the custom SSH port
+     exit
+     ssh <USERNAME>@<SERVER_IP> -p <SSH_PORT>
+     ```
+   </CodeGroup>
 
 ### 1.6 Benchmark server performance
 
-Before installing, verify that the server meets performance requirements. Inadequate disk or network performance is the most common cause of validator instability.
+Before installing, verify that the server meets performance requirements. Inadequate disk or network performance is the most common cause of node instability.
 
 #### 1.6.1 Network latency
 
@@ -113,11 +109,9 @@ Minimum acceptable results:
 | Read   | 10k IOPS |
 | Write  | 10k IOPS |
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   If disk performance is below these thresholds, the liteserver may fail to keep up with the network. Upgrade storage before proceeding.
-</Aside>
+</Callout>
 
 #### 1.6.3 Network bandwidth
 
@@ -132,48 +126,50 @@ Ensure download and upload speeds meet the [1 Gbit/s requirement](#1-1-minimal-h
 
 ### 1.7 Harden server security
 
-<Aside
-  type="caution"
-  title="Security baseline"
->
-  Apply these hardening steps before exposing the server to the network.
-</Aside>
+Apply security hardening steps before exposing the server to the network:
+
+- [SSH hardening](#ssh-hardening)
+- [Firewall configuration](#firewall-configuration)
+- [Additional security measures](#additional-security-measures)
 
 #### SSH hardening
+
+<Callout
+  type="caution"
+  title="Avoid locking yourself out"
+>
+  Disabling password login, changing the SSH port, and restricting access by `Match Address` can lock the operator out of a remote server. Keep the current SSH session open and confirm a new login succeeds in a second session before closing the first one.
+</Callout>
 
 Apply the following SSH configuration changes in `/etc/ssh/sshd_config`:
 
 - Enable key-based authentication and disable password login:
 
-```text
-PasswordAuthentication no
-PubkeyAuthentication yes
-```
+  ```text
+  PasswordAuthentication no
+  PubkeyAuthentication yes
+  ```
 
 - Disable root login:
 
-```text
-PermitRootLogin no
-```
+  ```text
+  PermitRootLogin no
+  ```
 
-- Change the default SSH port:
+- Change the default SSH port, e.g., to `2222`:
 
-```text
-Port <SSH_PORT>
-```
+  ```text
+  Port <SSH_PORT>
+  ```
 
-- Restrict SSH access to specific IP addresses using the `Match Address` directive:
+- Restrict SSH access to specific permitted IP addresses using the `Match Address` directive:
 
-```text
-Match Address <ALLOWED_IP>
-  AllowUsers <USERNAME>
-```
+  ```text
+  Match Address <ALLOWED_IP>
+    AllowUsers <USERNAME>
+  ```
 
-Define placeholders:
-
-- `<SSH_PORT>` - a custom non-default port number (for example, `2222`).
-- `<ALLOWED_IP>` - IP address or subnet permitted to connect via SSH.
-- `<USERNAME>` - name of the operator user.
+  There, `<USERNAME>` is the name of the operator user.
 
 Restart the SSH service after changes:
 
@@ -217,15 +213,15 @@ The installation process consists of two stages (in total, this can take up to t
 
 ### 2.1 Download DB dump and install the liteserver
 
-### 2.1.1 Install prerequisites and download installer (MyTonCtrl)
+#### 2.1.1 Install prerequisites and download installer (MyTonCtrl)
 
 ```bash
-  sudo apt update
-  sudo apt install -y curl wget git ca-certificates python3-pip
-  wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
+sudo apt update
+sudo apt install -y curl wget git ca-certificates python3-pip
+wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
 ```
 
-### 2.1.2 Run liteserver installation
+#### 2.1.2 Run liteserver installation
 
 Run the installer from the operator account with `sudo` so it can create system users and services:
 
@@ -239,9 +235,7 @@ Run the installer from the operator account with `sudo` so it can create system 
   ```
 </CodeGroup>
 
-Installation runs in the background.
-
-Monitor the progress using the following command:
+Installation runs in the background. Monitor the progress using the following command:
 
 ```bash
 tail -f mytonctrl_installation.log
@@ -255,11 +249,9 @@ During the download process, the log contains entries like the following:
 [#cf6515 9.0GiB/218GiB(4%) CN:8 DL:252MiB ETA:14m7s]
 ```
 
-<Aside
-  type="caution"
->
+<Callout type="caution">
   If there are no these lines in the log, check whether there is enough free space in accordance with [free space requirements](#1-4-free-space-requirements) or use [manual DB dump download](#manual-db-dump-download).
-</Aside>
+</Callout>
 
 Upon successful completion of the installation, the following line appears in the log:
 
@@ -267,7 +259,7 @@ Upon successful completion of the installation, the following line appears in th
 [5/5] Mytonctrl installation completed
 ```
 
-### 2.2 Final synchronization of liteserver
+#### 2.2 Final synchronization of liteserver
 
 This process starts automatically after installation and can take from one to several hours depending on server performance.
 
@@ -277,11 +269,11 @@ Monitor the progress using MyTonCtrl:
 mytonctrl --cmd status
 ```
 
-Check the `Local validator initial sync status` field. The value indicates how old the last imported block was. On a fully synchronized node, this value should be less than 20 seconds.
+Check the `Local validator initial sync status` field. The value indicates how old the last imported block was and decreases over time. Once initial sync completes, that line disappears and freshness is reported by the `Local validator out of sync` field. On a fully synchronized node, the out-of-sync time stays below 20 seconds.
 
-### 2.2.1 Open the node UDP port and the liteserver port
+#### 2.2.1 Open the node UDP port and the liteserver port
 
-At this stage, the node UDP port and liteserver port should be opened to make the archive liteserver available for syncing blocks from other nodes.
+At this stage, the node UDP port and liteserver port should be opened to make the liteserver available for syncing blocks from other nodes.
 
 Identify the node UDP port and liteserver port from the `config.json` file:
 
@@ -298,10 +290,10 @@ sudo ufw allow <LITESERVER_PORT>
 sudo ufw status
 ```
 
-Define placeholders:
+There,
 
-- `<NODE_UDP_PORT>` - UDP port of the validator engine.
-- `<LITESERVER_PORT>` - TCP port of the liteserver.
+- `<NODE_UDP_PORT>` is the UDP port of the validator engine;
+- `<LITESERVER_PORT>` is the TCP port of the liteserver.
 
 ## Step 3: Maintenance
 
@@ -313,7 +305,7 @@ Set up alerting in MyTonCtrl to get a notification of critical issues with the l
 
 Set up monitoring dashboards for RAM, disk, network, CPU usage, and other metrics.
 
-For system-level metrics, [integrate Prometheus with node\_exporter with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
+For system-level metrics, [integrate Prometheus with `node_exporter` with MyTonCtrl](/ecosystem/nodes/cpp/integrating-with-prometheus).
 
 It is critical to use the monitoring system to:
 
@@ -321,11 +313,11 @@ It is critical to use the monitoring system to:
 - monitor synchronization parameters
 - check for memory leaks
 
-For technical assistance, contact [@mytonctrl\_help\_bot](https://t.me/mytonctrl_help_bot).
+For technical assistance, contact [`@mytonctrl_help_bot`](https://t.me/mytonctrl_help_bot).
 
 ### 3.3 Perform software updates
 
-Follow the @tonstatus channel, turn on notifications, and be prepared for urgent updates if needed.
+Follow the `@tonstatus` channel, turn on notifications, and be prepared for urgent updates if needed.
 
 Update the node software and MyTonCtrl:
 
@@ -336,9 +328,9 @@ mytonctrl --cmd "upgrade master"
 
 These commands will check for new versions of the TON node binaries and MyTonCtrl, download them, and apply the updates.
 
-<Aside type="note">
+<Callout type="note">
   The update process may cause temporary node downtime as the binaries are replaced and services are restarted.
-</Aside>
+</Callout>
 
 ## Troubleshooting
 
@@ -364,23 +356,35 @@ mytonctrl --cmd "installer set_node_argument --verbosity 1"
 
 ### Performance issues
 
-Logs containing "Importing archive for masterchain seqno #... from net" accompanied by timeout errors indicate insufficient storage performance. Ensure the disk meets the IOPS requirements listed in [Minimal hardware requirements](#1-1-minimal-hardware-requirements).
+Logs containing `"Importing archive for masterchain seqno #... from net"` accompanied by timeout errors indicate insufficient storage performance. Ensure the disk meets the IOPS requirements listed in [Minimal hardware requirements](#1-1-minimal-hardware-requirements).
 
 To verify disk and system performance, run the built-in `mytonctrl` benchmark:
 
-1. Stop the validator service:
+1. Stop the validator service, since the benchmark refuses to run while it is active:
 
    ```bash
    sudo systemctl stop validator.service
    ```
 
-1. Run the benchmark:
+1. Open the MyTonCtrl console:
 
    ```bash
-   mytonctrl --cmd benchmark
+   mytonctrl
    ```
 
-For stable liteserver operation, the benchmark score should be **greater than 70%**.
+   At the `MyTonCtrl>` prompt, run:
+
+   ```text
+   MyTonCtrl> benchmark
+   ```
+
+   The benchmark spins up a local test network and requires `uv`. If `uv` is not installed, the console prompts to install it. For stable liteserver operation, the reported `Avg TPS` and `Avg blocks/s` should each reach at least 70% of their expected values.
+
+1. Restart the validator service once the benchmark finishes:
+
+   ```bash
+   sudo systemctl start validator.service
+   ```
 
 ### Manual DB dump download
 
@@ -426,7 +430,7 @@ A manual download of the database dump is required if it does not download autom
 
 ## Support
 
-For technical assistance, join the official support channel: [@ton\_node\_help](https://t.me/ton_node_help).
+For technical assistance, join the official support channel: [`@ton_node_help`](https://t.me/ton_node_help).
 
 ## See also
 
