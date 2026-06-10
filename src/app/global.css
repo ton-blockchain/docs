@@ -33,16 +33,25 @@ html>body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-/*
- * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
- * that do not support the text-wrap property yet.
- */
-.style-subsequent-openapi-tag+span {
+/* Prevent word breaks in inline code items in tables */
+td>code,
+td>em>code,
+td>strong>code,
+td>a>code {
   white-space: nowrap;
 }
 
-/* transformerRenderIndentGuides */
+/* Tabular numbers for better alignment in tables */
+table {
+  font-variant-numeric: tabular-nums;
+}
 
+/* Fix Mermaid's Sankey diagrams for both themes */
+svg[aria-roledescription="sankey"]>g.links>g.link {
+  mix-blend-mode: normal !important;
+}
+
+/* transformerRenderIndentGuides */
 pre.shiki .indent {
   display: inline-block;
   position: relative;
@@ -61,4 +70,25 @@ pre.shiki .indent::before {
   width: 1px;
   height: 100%;
   background-color: currentColor;
+}
+
+/*
+ * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
+ * that do not support the text-wrap property yet.
+ */
+.style-subsequent-openapi-tag+span {
+  white-space: nowrap;
+}
+
+/* A class to hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+/* A style to hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
