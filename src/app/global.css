@@ -56,6 +56,11 @@ svg[aria-roledescription="sankey"]>g.links>g.link {
   mix-blend-mode: normal !important;
 }
 
+/* Vertically cap long code blocks so they scroll instead of stretching the page. */
+figure.shiki > div[role="region"] {
+  max-height: 42rem;
+}
+
 /* transformerRenderIndentGuides */
 pre.shiki .indent {
   display: inline-block;
