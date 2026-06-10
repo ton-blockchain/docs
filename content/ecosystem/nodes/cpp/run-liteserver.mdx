@@ -98,20 +98,11 @@ Install `fio` and run a random read/write benchmark:
 
 ```bash
 sudo apt install -y fio
-fio --randrepeat=1 --ioengine=psync --direct=1 --gtod_reduce=1 --name=tlstest --bs=4k --iodepth=1 --size=40G  --readwrite=randrw --numjobs=1 --group_reporting --filename=/var/ton-work/testfile --time_based=1 --runtime=60
-rm /var/ton-work/testfile
+fio --randrepeat=1 --ioengine=psync --direct=1 --gtod_reduce=1 --name=tlstest --bs=4k --iodepth=1 --size=40G  --readwrite=randrw --numjobs=1 --group_reporting --filename=/tmp/ton-testfile --time_based=1 --runtime=60
+rm /tmp/ton-testfile
 ```
 
-Minimum acceptable results:
-
-| Metric | Minimum  |
-| ------ | -------- |
-| Read   | 10k IOPS |
-| Write  | 10k IOPS |
-
-<Callout type="caution">
-  If disk performance is below these thresholds, the liteserver may fail to keep up with the network. Upgrade storage before proceeding.
-</Callout>
+The minimum acceptable result is 10,000 IOPS for both read and write operations. If disk performance falls below these thresholds, the liteserver may fail to keep up with network traffic. Upgrade storage before proceeding.
 
 #### 1.6.3 Network bandwidth
 
