@@ -6,16 +6,21 @@
 :root {
   --headless-color: #0098ea;
   --ui-color: #0098ea;
+
+  --color-fd-primary: var(--ui-color);
+  --color-fd-idea: oklch(65% 0.2 145);
   --color-fd-background: #ffffff;
   --color-fd-muted: #fbfbfb;
   --color-fd-popover: #ffffff;
   --color-fd-card: #f9f9f9;
   --color-fd-secondary: #f9f9f9;
   --color-fd-accent: #f1f1f1;
-  --color-fd-idea: oklch(65% 0.2 145);
 }
 
 .dark {
+  --headless-color: #5cc4f7;
+  --ui-color: #5cc4f7;
+
   --color-fd-background: #0e0b0b;
   --color-fd-muted: hsl(0, 0%, 12.9%);
   --color-fd-popover: hsl(0, 0%, 11.6%);
