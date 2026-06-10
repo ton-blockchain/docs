@@ -160,22 +160,13 @@ Install `fio` and run a random read/write benchmark:
 
 ```bash
 sudo apt install -y fio
-fio --randrepeat=1 --ioengine=psync --direct=1 --gtod_reduce=1 --name=tlstest --bs=4k --iodepth=1 --size=40G --readwrite=randrw --numjobs=1 --group_reporting --filename=/var/ton-work/testfile --time_based=1 --runtime=60 --refill_buffers --buffer_compress_percentage=0
-rm /var/ton-work/testfile
+fio --randrepeat=1 --ioengine=psync --direct=1 --gtod_reduce=1 --name=tlstest --bs=4k --iodepth=1 --size=40G --readwrite=randrw --numjobs=1 --group_reporting --filename=/tmp/ton-testfile --time_based=1 --runtime=60 --refill_buffers --buffer_compress_percentage=0
+rm /tmp/ton-testfile
 ```
 
 The `--refill_buffers` and `--buffer_compress_percentage=0` flags force incompressible data. Without them, LZ4 on the `data/ton-work` dataset collapses `fio`'s zero-filled writes and reports IOPS far above what the archive import sustains.
 
-Minimum acceptable results:
-
-| Metric | Minimum     |
-| ------ | ----------- |
-| Read   | 10,000 IOPS |
-| Write  | 10,000 IOPS |
-
-<Callout type="caution">
-  If disk performance is below these thresholds, the liteserver may fail to keep up with the network. Upgrade storage before proceeding.
-</Callout>
+The minimum acceptable result is 10,000 IOPS for both read and write operations. If disk performance falls below these thresholds, the liteserver may fail to keep up with network traffic. Upgrade storage before proceeding.
 
 #### 1.6.3 Network bandwidth
 
@@ -570,7 +561,7 @@ MyTonCtrl> installer set_node_argument --verbosity 1
 
 ### Performance issues
 
-Logs containing "Importing archive for masterchain seqno #... from net" accompanied by timeout errors indicate insufficient storage performance. Ensure the disk meets the IOPS requirements listed in [Minimal hardware requirements](#1-1-minimal-hardware-requirements).
+Logs containing `"Importing archive for masterchain seqno #... from net"` accompanied by timeout errors indicate insufficient storage performance. Ensure the disk meets the IOPS requirements listed in [Minimal hardware requirements](#1-1-minimal-hardware-requirements).
 
 To verify disk and system performance, run the built-in `mytonctrl` benchmark:
 
@@ -606,6 +597,7 @@ For technical assistance, join the official support channel: [`@ton_node_help`](
 
 ## See also
 
+- [Run a liteserver node with MyTonCtrl](/ecosystem/nodes/cpp/run-liteserver)
 - [Run a validator node with MyTonCtrl](/ecosystem/nodes/cpp/run-validator)
 - [Set up a node with MyTonCtrl](/ecosystem/nodes/cpp/setup-mytonctrl)
 - [TON node types](/ecosystem/nodes/overview)
