@@ -7,6 +7,9 @@ export type CalloutType = "info" | "warn" | "error" | "success" | "warning" | "i
 
 const iconClass = "size-5 -me-0.5 fill-(--callout-color) text-fd-card"
 
+/**
+ * Only use `note`, `tip`, `caution`, or `danger` as the `type=`.
+ */
 export function Callout({
   children,
   title,
@@ -35,6 +38,7 @@ export interface CalloutContainerProps extends ComponentProps<"div"> {
 function resolveAlias(type: CalloutType) {
   if (type === "warn") return "warning"
   if ((type as unknown) === "caution") return "warning"
+  if ((type as unknown) === "danger") return "warning"
   if ((type as unknown) === "note") return "info"
   if ((type as unknown) === "tip") return "idea"
   return type
@@ -49,6 +53,7 @@ export function CalloutContainer({
   ...props
 }: CalloutContainerProps) {
   const type = resolveAlias(inputType)
+  const colorSuffix = (inputType as unknown) === "danger" ? "error" : type
 
   return (
     <div
@@ -58,7 +63,7 @@ export function CalloutContainer({
       )}
       style={
         {
-          "--callout-color": `var(--color-fd-${type}, var(--color-fd-muted))`,
+          "--callout-color": `var(--color-fd-${colorSuffix}, var(--color-fd-muted))`,
           ...style,
         } as object
       }
