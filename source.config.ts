@@ -33,11 +33,10 @@ export const docs = defineDocs({
         tag: z.string().optional(),
         url: z.httpUrl().optional(),
         noindex: z.coerce.boolean().default(false),
-        // TODO: fmt with prettier for everything but md[x]
       })
       .transform((frontmatter) => ({
         ...frontmatter,
-        // A tag must not be used with an openapi specified in the frontmatter
+        // NOTE: A tag must not be used with an openapi specified in the frontmatter
         ...(frontmatter._openapi ? { tag: undefined } : {}),
       })),
     postprocess: {
