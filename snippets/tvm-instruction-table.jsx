@@ -3,10 +3,26 @@ import * as React from 'react';
 
 export const TvmInstructionTable = () => {
   const { useCallback, useEffect, useMemo, useRef, useState } = React;
+  const SelectChevron = (withClassName) => (
+    <svg
+      {...(withClassName && { className: "tvm-select-chevron", fill: "none" })}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 9l6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 
   const PERSIST_KEY = "tvm-instruction-table::filters";
 
-  const SPEC_URL = "/tvm/cp0.txt";
+  const SPEC_URL = "tvm/cp0.txt";
 
   const CATEGORY_MAP = {
     stack_basic: "Stack basics",
@@ -152,7 +168,7 @@ export const TvmInstructionTable = () => {
     return "N/A";
   }
 
-  function formatOperandSummary(operand) {
+  function formatOperandSummary(operand, brief) {
     if (!operand) return "";
     const name =
       typeof operand.name === "string" && operand.name ? operand.name : "?";
@@ -161,17 +177,20 @@ export const TvmInstructionTable = () => {
       typeof operand.size === "number"
         ? operand.size
         : typeof operand.bits === "number"
-        ? operand.bits
-        : undefined;
+          ? operand.bits
+          : undefined;
     const hasRange =
       operand.min_value !== undefined &&
       operand.min_value !== null &&
       operand.max_value !== undefined &&
       operand.max_value !== null;
     const range = hasRange
-      ? ` [${operand.min_value}; ${operand.max_value}]`
+      ? ` in [${operand.min_value}, ${operand.max_value}]` // ∈
       : "";
-    const sizePart = size !== undefined ? `(${size})` : "";
+    const sizePart = size !== undefined ? `${size}` : "";
+    if (brief) {
+      return `${name}${type ? `:${type}` : ""}${sizePart}`;
+    }
     return `${name}${type ? `:${type}` : ""}${sizePart}${range}`;
   }
 
@@ -259,8 +278,8 @@ export const TvmInstructionTable = () => {
   function getItemSearchFields(item) {
     const aliasMnemonics = Array.isArray(item.aliases)
       ? item.aliases
-          .map((alias) => (typeof alias.mnemonic === "string" ? alias.mnemonic : ""))
-          .filter(Boolean)
+        .map((alias) => (typeof alias.mnemonic === "string" ? alias.mnemonic : ""))
+        .filter(Boolean)
       : [];
     return {
       mnemonic: String(item.mnemonic || "").toLowerCase(),
@@ -624,7 +643,7 @@ export const TvmInstructionTable = () => {
           canvasMeasureCtx = canvas.getContext("2d");
         }
         if (canvasMeasureCtx) {
-          canvasMeasureCtx.font = "600 13px 'JetBrains Mono', 'Menlo', 'Monaco', monospace";
+          canvasMeasureCtx.font = "600 13px monospace";
           const typeText = (summary.typeLabel || "").toUpperCase();
           const parts = [typeText];
           if (summary.valueLabel) parts.push(summary.valueLabel);
@@ -685,9 +704,8 @@ export const TvmInstructionTable = () => {
             {branches.map((branch, index) => {
               const rootSummary = describeContinuation(branch);
               const branchType = (rootSummary.typeLabel || "").toUpperCase();
-              const branchTitleText = `Branch -> ${branchType}${
-                rootSummary.valueLabel ? ` ${rootSummary.valueLabel}` : ""
-              }`;
+              const branchTitleText = `Branch -> ${branchType}${rootSummary.valueLabel ? ` ${rootSummary.valueLabel}` : ""
+                }`;
               const tree = buildContinuationTree(branch, `branch-${index}`);
               computeSpan(tree);
               const nodes = [];
@@ -790,25 +808,24 @@ export const TvmInstructionTable = () => {
                       </svg>
                       {edgeLayouts.map((edge) => (
                         edge.segments.primary ? (
-                      <div
-                        key={`edge-label-${edge.id}`}
-                        className={`tvm-flow-edge-label${
-                          edge.hasSecondary ? ' has-secondary' : ''
-                        }`}
-                        style={{
-                          left: `${edge.labelX}px`,
-                          top: `${edge.labelY}px`,
-                        }}
-                      >
-                        <span className="tvm-flow-edge-label-primary">
-                          {highlightMatches(edge.segments.primary.toUpperCase(), searchTokens)}
-                        </span>
-                        {edge.segments.secondary && (
-                          <span className="tvm-flow-edge-label-secondary">
-                            {highlightMatches(edge.segments.secondary.toUpperCase(), searchTokens)}
-                          </span>
-                        )}
-                      </div>
+                          <div
+                            key={`edge-label-${edge.id}`}
+                            className={`tvm-flow-edge-label${edge.hasSecondary ? ' has-secondary' : ''
+                              }`}
+                            style={{
+                              left: `${edge.labelX}px`,
+                              top: `${edge.labelY}px`,
+                            }}
+                          >
+                            <span className="tvm-flow-edge-label-primary">
+                              {highlightMatches(edge.segments.primary.toUpperCase(), searchTokens)}
+                            </span>
+                            {edge.segments.secondary && (
+                              <span className="tvm-flow-edge-label-secondary">
+                                {highlightMatches(edge.segments.secondary.toUpperCase(), searchTokens)}
+                              </span>
+                            )}
+                          </div>
                         ) : null
                       ))}
                       {nodes.map((node) => (
@@ -891,7 +908,7 @@ export const TvmInstructionTable = () => {
                 </span>
                 <div className="tvm-stack-conditional-values">
                   {Array.isArray(matchArm.stack) &&
-                  matchArm.stack.length > 0 ? (
+                    matchArm.stack.length > 0 ? (
                     matchArm.stack
                       .slice()
                       .reverse()
@@ -956,8 +973,8 @@ export const TvmInstructionTable = () => {
         entry.value === null
           ? "null"
           : entry.value === undefined
-          ? "?"
-          : entry.value;
+            ? "?"
+            : entry.value;
       return (
         <span key={key} className="tvm-stack-pill tvm-stack-pill--const">
           {highlightMatches(String(value), searchTokens)}: {highlightMatches(
@@ -990,9 +1007,8 @@ export const TvmInstructionTable = () => {
 
     return (
       <div
-        className={`tvm-stack-column ${
-          mode === "compact" ? "tvm-stack-column--compact" : ""
-        }`}
+        className={`tvm-stack-column ${mode === "compact" ? "tvm-stack-column--compact" : ""
+          }`}
       >
         <div className="tvm-stack-column-title">{title}</div>
         <div className="tvm-stack-top">TOP</div>
@@ -1017,9 +1033,8 @@ export const TvmInstructionTable = () => {
 
     return (
       <div
-        className={`tvm-stack-columns ${
-          mode === "compact" ? "tvm-stack-columns--compact" : ""
-        }`}
+        className={`tvm-stack-columns ${mode === "compact" ? "tvm-stack-columns--compact" : ""
+          }`}
       >
         {renderStackColumn("Inputs", inputs, mode)}
         {renderStackColumn("Outputs", outputs, mode)}
@@ -1028,7 +1043,7 @@ export const TvmInstructionTable = () => {
   }
 
   function renderInstructionDetail(instruction, options = {}) {
-    const { isAnchorTarget = false, onOpenRawJson = () => {} } = options;
+    const { isAnchorTarget = false, onOpenRawJson = () => { } } = options;
     const hasAliases =
       Array.isArray(instruction.aliases) && instruction.aliases.length > 0;
     const readsRegisters = Array.isArray(instruction.registers?.inputs)
@@ -1055,42 +1070,42 @@ export const TvmInstructionTable = () => {
     const renderRegisterList = (list, keyPrefix) => {
       const tokens = Array.isArray(list)
         ? list
-            .map((register, idx) => {
-              if (!register) return null;
-              if (register.type === "special" && register.name) {
-                return (
-                  <span
-                    key={`${keyPrefix}-special-${idx}`}
-                    className="tvm-register-token tvm-register-token--special"
-                  >
-                    {register.name}
-                  </span>
-                );
-              }
-              const sub =
-                register.type === "variable"
-                  ? register.var_name || "i"
-                  : typeof register.index === "number"
-                  ? register.index
-                  : register.var_name || "?";
+          .map((register, idx) => {
+            if (!register) return null;
+            if (register.type === "special" && register.name) {
               return (
-                <span key={`${keyPrefix}-const-${idx}`} className="tvm-register-token">
-                  c<sub>{sub}</sub>
+                <span
+                  key={`${keyPrefix}-special-${idx}`}
+                  className="tvm-register-token tvm-register-token--special"
+                >
+                  {register.name}
                 </span>
               );
-            })
-            .filter(Boolean)
+            }
+            const sub =
+              register.type === "variable"
+                ? register.var_name || "i"
+                : typeof register.index === "number"
+                  ? register.index
+                  : register.var_name || "?";
+            return (
+              <span key={`${keyPrefix}-const-${idx}`} className="tvm-register-token">
+                c<sub>{sub}</sub>
+              </span>
+            );
+          })
+          .filter(Boolean)
         : [];
 
       return tokens.flatMap((token, idx) =>
         idx === 0
           ? [token]
           : [
-              <span key={`${keyPrefix}-sep-${idx}`} className="tvm-register-sep">
-                ,{" "}
-              </span>,
-              token,
-            ]
+            <span key={`${keyPrefix}-sep-${idx}`} className="tvm-register-sep">
+              ,{" "}
+            </span>,
+            token,
+          ]
       );
     };
 
@@ -1135,16 +1150,46 @@ export const TvmInstructionTable = () => {
       }
     }
 
-    const panelClassName = `tvm-detail-panel${
-      isAnchorTarget ? " is-anchor-target" : ""
-    }`;
-
     return (
-      <div className={panelClassName}>
+      <div className="tvm-detail-panel">
         <div className="tvm-detail-header">
           <div className="tvm-detail-heading">
             <div className="tvm-detail-header-main">
               <h4 className="tvm-detail-title">{instruction.mnemonic}</h4>
+              <button
+                type="button"
+                className={`tvm-copy-link ${copied[instruction.uid] ? "is-copied" : ""}`}
+                aria-label={copied[instruction.uid] ? "Copied" : "Copy link to instruction"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const anchorId = instruction.anchorId || buildAnchorId(instruction);
+                  copyAnchorUrl(anchorId)
+                    .then(() => {
+                      setCopied((prev) => ({ ...prev, [instruction.uid]: true }));
+                      setTimeout(() => {
+                        setCopied((prev) => {
+                          const { [instruction.uid]: _omit, ...rest } = prev;
+                          return rest;
+                        });
+                      }, 1500);
+                    })
+                    .catch(() => {
+                      // ignore
+                    });
+                }}
+                title={copied[instruction.uid] ? "Copied" : "Copy link"}
+              >
+                {copied[instruction.uid] ? (
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10.59 13.41a1.996 1.996 0 0 0 2.82 0l3.59-3.59a2 2 0 0 0-2.83-2.83l-1.17 1.17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M13.41 10.59a1.996 1.996 0 0 0-2.82 0L7 14.18a2 2 0 1 0 2.83 2.83l1.17-1.17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
           <div className="tvm-detail-actions">
@@ -1322,7 +1367,7 @@ export const TvmInstructionTable = () => {
                   {instruction.operands.map((operand, idx) => {
                     if (!operand || typeof operand !== "object") return null;
                     const summary = highlightMatches(
-                      formatOperandSummary(operand),
+                      formatOperandSummary(operand, true),
                       searchTokens
                     );
                     const hasRange =
@@ -1380,13 +1425,28 @@ export const TvmInstructionTable = () => {
   const tableStyles = useMemo(
     () => `
 .tvm-instruction-app {
-  --tvm-border: var(--mint-border-color, rgb(var(--gray-400) / 0.24));
-  --tvm-border-strong: rgb(var(--gray-400) / 0.32);
-  --tvm-surface: var(--mint-surface-elevated, rgb(var(--background-light)));
-  --tvm-surface-secondary: rgb(var(--gray-50) / 0.65);
-  --tvm-text-primary: var(--mint-text-primary, rgb(var(--gray-800)));
-  --tvm-text-secondary: var(--mint-text-secondary, rgb(var(--gray-600) / 0.85));
-  --tvm-text-muted: var(--mint-text-tertiary, rgb(var(--gray-400) / 0.68));
+  --gray-50: 249 250 251;
+  --gray-100: 243 244 246;
+  --gray-200: 229 231 235;
+  --gray-300: 209 213 219;
+  --gray-400: 156 163 175;
+  --gray-600: 75 85 99;
+  --gray-700: 55 65 81;
+  --gray-800: 31 41 55;
+  --gray-900: 17 24 39;
+  --gray-950: 9 14 26;
+  --primary: 0 152 234;
+  --primary-light: 92 196 247;
+  --primary-dark: 0 116 182;
+  --background-light: 255 255 255;
+
+  --tvm-border: var(--color-fd-border);
+  --tvm-border-strong: rgb(var(--color-fd-border) / 0.32);
+  --tvm-surface: var(--color-fd-background);
+  --tvm-surface-secondary: var(--color-fd-card);
+  --tvm-text-primary: var(--color-fd-foreground);
+  --tvm-text-secondary: var(--color-fd-muted-foreground);
+  --tvm-text-muted: var(--color-fd-muted-foreground);
   --tvm-accent: rgb(var(--primary));
   --tvm-accent-soft: rgb(var(--primary) / 0.16);
   --tvm-accent-strong: rgb(var(--primary-light));
@@ -1403,29 +1463,44 @@ export const TvmInstructionTable = () => {
   --tvm-stack-conditional-bg: rgb(var(--primary-dark) / 0.22);
   --tvm-stack-conditional-text: var(--tvm-accent-subtle);
   --tvm-stack-conditional-border: rgb(var(--primary-dark) / 0.32);
-  --tvm-stack-label: var(--mint-text-tertiary, rgb(var(--gray-600) / 0.65));
+  --tvm-stack-label: rgb(var(--gray-600) / 0.65);
   --tvm-pill-muted-bg: rgb(var(--gray-400) / 0.12);
-  --tvm-row-padding-y: 0.85rem;
-  --tvm-row-padding-x: 1rem;
+  --tvm-row-padding-y: 0.5rem;
+  --tvm-row-padding-x: 0.75rem;
   --tvm-chip-padding-y: 0.2rem;
   --tvm-chip-padding-x: 0.6rem;
   --tvm-control-height: 2.75rem;
   color: var(--tvm-text-primary);
-  background: var(--tvm-surface);
-  border: 1px solid var(--tvm-border);
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 24px 60px -40px rgb(var(--gray-900) / 0.9);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 :where(.dark) .tvm-instruction-app {
+  --gray-50: 24 24 27;
+  --gray-100: 244 244 245;
+  --gray-200: 63 63 70;
+  --gray-300: 82 82 91;
+  --gray-400: 161 161 170;
+  --gray-600: 212 212 216;
+  --gray-700: 228 228 231;
+  --gray-800: 39 39 42;
+  --gray-900: 24 24 27;
+  --gray-950: 14 14 16;
+  --primary: 92 196 247;
+  --primary-light: 140 210 252;
+  --primary-dark: 0 152 234;
+  --background-light: 14 14 16;
+
   --tvm-border: rgb(var(--gray-800) / 0.65);
   --tvm-border-strong: rgb(var(--gray-600) / 0.85);
   --tvm-surface: rgb(var(--gray-950));
   --tvm-surface-secondary: rgb(var(--gray-900) / 0.85);
   --tvm-text-primary: rgb(var(--gray-100));
-  --tvm-text-secondary: rgb(var(--gray-300));
-  --tvm-text-muted: rgb(var(--gray-400) / 0.9);
+  --tvm-text-secondary: rgb(var(--gray-400));
+  --tvm-text-muted: rgb(var(--gray-400) / 0.7);
   --tvm-accent: rgb(var(--primary-light));
   --tvm-accent-soft: rgb(var(--primary) / 0.22);
   --tvm-accent-strong: rgb(var(--primary));
@@ -1438,21 +1513,20 @@ export const TvmInstructionTable = () => {
   --tvm-stack-const-bg: rgb(var(--primary-dark) / 0.4);
   --tvm-stack-const-text: rgb(var(--primary-light));
   --tvm-stack-array-bg: rgb(var(--primary) / 0.25);
-  --tvm-stack-array-text: rgb(var(--gray-50));
+  --tvm-stack-array-text: var(--tvm-text-primary);
   --tvm-stack-conditional-bg: rgb(var(--primary-dark) / 0.38);
   --tvm-stack-conditional-text: rgb(var(--primary-light));
   --tvm-stack-conditional-border: rgb(var(--primary) / 0.5);
   --tvm-stack-label: rgb(var(--gray-400) / 0.85);
   --tvm-pill-muted-bg: rgb(var(--gray-800) / 0.85);
-  box-shadow: 0 24px 80px -60px rgb(0 0 0 / 0.65);
   color-scheme: dark;
 }
 
 .tvm-instruction-toolbar {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .tvm-toolbar-search {
@@ -1549,6 +1623,30 @@ export const TvmInstructionTable = () => {
   min-height: var(--tvm-control-height);
 }
 
+.tvm-field select {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 2rem;
+}
+
+.tvm-select {
+  position: relative;
+  display: block;
+}
+
+.tvm-select-chevron {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: var(--tvm-text-muted);
+  pointer-events: none;
+}
+
 .tvm-field--search {
   min-width: min(260px, 100%);
 }
@@ -1561,6 +1659,11 @@ export const TvmInstructionTable = () => {
 
 .tvm-field--search input {
   padding-left: 2.2rem;
+}
+
+.tvm-field--search input::placeholder {
+  color: var(--tvm-text-secondary);
+  opacity: 1;
 }
 
 .tvm-search-icon {
@@ -1654,7 +1757,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-instruction-meta {
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
   font-size: 0.85rem;
   color: var(--tvm-text-secondary);
   display: flex;
@@ -1739,10 +1842,10 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-spec-grid-container {
-  border: 1px solid var(--tvm-border);
+  border: 1px solid rgb(var(--gray-400) / 0.14);
   border-radius: 12px;
   background: var(--tvm-surface-secondary);
-  box-shadow: inset 0 1px 0 rgb(var(--gray-400) / 0.08);
+  overflow: hidden;
 }
 
 .tvm-spec-grid-scroll {
@@ -1760,51 +1863,57 @@ export const TvmInstructionTable = () => {
 
 .tvm-spec-header,
 .tvm-spec-row {
-  --tvm-grid-template: 60px 110px 260px minmax(320px, 2fr);
+  --tvm-grid-template: 110px 260px minmax(320px, 2fr);
   display: grid;
   grid-template-columns: var(--tvm-grid-template);
-  min-width: 860px;
+  min-width: 700px;
 }
 
 .tvm-spec-header {
-  background: rgb(var(--gray-400) / 0.12);
+  background: rgb(var(--gray-400) / 0.06);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.7rem;
-  color: var(--tvm-text-secondary);
+  font-size: 0.68rem;
+  color: var(--tvm-text-muted);
 }
 
 :where(.dark) .tvm-instruction-app .tvm-spec-header {
-  background: rgb(var(--gray-800) / 0.65);
+  background: rgb(var(--gray-800) / 0.35);
   color: var(--tvm-text-muted);
 }
 
 .tvm-spec-header > div {
-  padding: calc(var(--tvm-row-padding-y) - 0.1rem) var(--tvm-row-padding-x);
-  font-weight: 600;
+  padding: 0.4rem var(--tvm-row-padding-x);
+  font-weight: 500;
+}
+
+.tvm-spec-header > div:first-child {
+  text-align: center;
 }
 
 .tvm-spec-row {
-  border-top: 1px solid var(--tvm-border);
+  border-top: 1px solid rgb(var(--gray-400) / 0.12);
   transition: background 0.2s ease-in-out;
   cursor: pointer;
   align-items: center;
 }
 
-.tvm-spec-row:hover {
-  background: rgb(var(--primary) / 0.08);
+@media (hover: hover) {
+  .tvm-spec-row:not(.tvm-spec-row--detail):hover {
+    background: rgb(var(--primary) / 0.04);
+  }
+
+  :where(.dark) .tvm-instruction-app .tvm-spec-row:not(.tvm-spec-row--detail):hover {
+    background: rgb(var(--primary) / 0.1);
+  }
 }
 
 .tvm-spec-row.is-expanded {
-  background: rgb(var(--primary) / 0.12);
-}
-
-:where(.dark) .tvm-instruction-app .tvm-spec-row:hover {
-  background: rgb(var(--primary) / 0.18);
+  background: rgb(var(--primary) / 0.06);
 }
 
 :where(.dark) .tvm-instruction-app .tvm-spec-row.is-expanded {
-  background: rgb(var(--primary) / 0.26);
+  background: rgb(var(--primary) / 0.14);
 }
 
 .tvm-spec-row.is-anchor-target {
@@ -1826,7 +1935,7 @@ export const TvmInstructionTable = () => {
   padding: var(--tvm-row-padding-y) var(--tvm-row-padding-x);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.5rem;
   min-width: 0;
   color: var(--tvm-text-primary);
 }
@@ -1836,58 +1945,60 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-spec-cell--opcode {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
-.tvm-spec-cell--anchor {
-  justify-content: center;
-  align-items: center;
+.tvm-spec-cell--opcode code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .tvm-spec-cell--name {
   gap: 0.4rem;
-}
-
-.tvm-name-line {
-  position: relative;
+  overflow: hidden;
 }
 
 .tvm-copy-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: 1px solid var(--tvm-border);
-  background: var(--tvm-surface-secondary);
-  color: var(--tvm-text-secondary);
+  width: 1em;
+  height: 1em;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--tvm-text-muted);
   cursor: pointer;
+  transition: color 0.15s ease-in-out;
+  flex-shrink: 0;
+  font-size: 1.15rem;
 }
 
 .tvm-copy-link:hover {
-  border-color: var(--tvm-border-strong);
+  color: var(--tvm-accent-strong);
 }
 
 .tvm-copy-link svg {
-  width: 14px;
-  height: 14px;
+  width: 1em;
+  height: 1em;
 }
 
 .tvm-copy-link.is-copied {
-  border-color: var(--tvm-accent-strong);
-  background: var(--tvm-accent-soft);
+  opacity: 1;
   color: var(--tvm-accent-strong);
 }
 
 .tvm-name-line {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .tvm-row-indicator {
@@ -1923,15 +2034,19 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-mnemonic {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 1rem;
   font-weight: 600;
   color: var(--tvm-text-primary);
-  white-space: pre;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tvm-spec-cell--gas {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   justify-content: center;
   color: var(--tvm-text-secondary);
@@ -1948,11 +2063,17 @@ export const TvmInstructionTable = () => {
 .tvm-description {
   font-size: 0.92rem;
   line-height: 1.45;
-  color: var(--tvm-text-secondary);
+  color: var(--tvm-text-muted);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.tvm-description code {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tvm-description-meta {
@@ -1961,23 +2082,31 @@ export const TvmInstructionTable = () => {
   gap: 0.35rem;
 }
 
+.tvm-opcode-chip {
+  display: none;
+}
+
 .tvm-category-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  padding: 0.5rem;
+  border-radius: 16px;
   background: var(--tvm-accent-soft);
   color: var(--tvm-accent-subtle);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.03em;
 }
 
 .tvm-inline-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.18rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
+  padding: 0.5rem;
+  border-radius: 16px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   background: var(--tvm-accent-soft);
@@ -1992,7 +2121,7 @@ export const TvmInstructionTable = () => {
 .tvm-fift {
   font-size: 0.78rem;
   color: var(--tvm-text-secondary);
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
 }
 
 .tvm-operands {
@@ -2009,8 +2138,11 @@ export const TvmInstructionTable = () => {
   border: 1px solid var(--tvm-border);
   background: var(--tvm-pill-muted-bg);
   font-size: 0.72rem;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
-  color: var(--tvm-text-secondary);
+  font-family: monospace;
+  color: var(--tvm-text-muted);
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tvm-stack-columns {
@@ -2057,8 +2189,11 @@ export const TvmInstructionTable = () => {
   padding: 0.18rem 0.45rem;
   border-radius: 6px;
   font-size: 0.75rem;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tvm-instruction-app.is-density-compact .tvm-stack-pill {
@@ -2103,7 +2238,7 @@ export const TvmInstructionTable = () => {
 
 .tvm-stack-footnote {
   display: inline-block;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.75rem;
   background: rgb(var(--gray-200) / 0.12);
   border: 1px solid var(--tvm-border);
@@ -2172,16 +2307,10 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-detail-panel {
-  background: var(--tvm-surface);
-  border: 1px solid var(--tvm-border);
-  border-radius: 14px;
-  padding: 1rem 1.15rem 1.25rem;
-  box-shadow: 0 18px 40px -30px rgb(var(--gray-900) / 0.7);
-}
-
-.tvm-detail-panel.is-anchor-target {
-  border-color: var(--tvm-accent-strong);
-  box-shadow: 0 0 0 2px var(--tvm-accent-soft), 0 18px 40px -30px rgb(var(--gray-900) / 0.7);
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .tvm-detail-header {
@@ -2195,7 +2324,7 @@ export const TvmInstructionTable = () => {
 
 .tvm-detail-header-main {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.45rem;
   flex-wrap: wrap;
 }
@@ -2262,7 +2391,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-register-token {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.82rem;
   color: var(--tvm-text-primary);
 }
@@ -2329,10 +2458,11 @@ export const TvmInstructionTable = () => {
 
 .tvm-detail-code {
   display: block;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.78rem;
   line-height: 1.45;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: rgb(var(--gray-200) / 0.08);
   border: 1px solid var(--tvm-border);
   border-radius: 8px;
@@ -2340,6 +2470,10 @@ export const TvmInstructionTable = () => {
   color: var(--tvm-text-primary);
   overflow-x: auto;
   max-width: 100%;
+}
+
+:where(.dark) .tvm-instruction-app .tvm-detail-code {
+  background: rgb(var(--gray-900) / 0.6);
 }
 
 .tvm-detail-code--inline {
@@ -2366,7 +2500,7 @@ export const TvmInstructionTable = () => {
   flex-direction: column;
   gap: 0.5rem;
   background: var(--tvm-surface-secondary);
-  border: 1px solid rgb(var(--gray-400) / 0.3);
+  border: 1px solid var(--tvm-border);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
 }
@@ -2396,7 +2530,7 @@ export const TvmInstructionTable = () => {
   flex-direction: column;
   gap: 0.55rem;
   background: var(--tvm-surface-secondary);
-  border: 1px solid rgb(var(--gray-400) / 0.3);
+  border: 1px solid var(--tvm-border);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
   margin-bottom: 0.9rem;
@@ -2413,8 +2547,8 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-operands-item {
-  background: var(--tvm-surface);
-  border: 1px solid rgb(var(--gray-400) / 0.25);
+  background: var(--tvm-surface-secondary);
+  border: 1px solid var(--tvm-border);
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   display: flex;
@@ -2509,7 +2643,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-modal-subtitle code {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.82rem;
   padding: 0.1rem 0.3rem;
   border-radius: 0.4rem;
@@ -2531,7 +2665,7 @@ export const TvmInstructionTable = () => {
   border-radius: 10px;
   padding: 0.85rem 0.95rem;
   background: rgb(var(--gray-200) / 0.16);
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.82rem;
   line-height: 1.55;
   overflow: auto;
@@ -2542,6 +2676,40 @@ export const TvmInstructionTable = () => {
 
 :where(.dark) .tvm-instruction-app .tvm-modal-code {
   background: rgb(var(--gray-900) / 0.7);
+}
+
+@media (min-width: 901px) {
+  .tvm-spec-row:not(.tvm-spec-row--detail) {
+    position: relative;
+  }
+
+  .tvm-spec-row:not(.tvm-spec-row--detail) .tvm-row-indicator {
+    position: absolute;
+    right: var(--tvm-row-padding-x);
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+  }
+
+  .tvm-spec-row:not(.tvm-spec-row--detail) .tvm-row-indicator.is-expanded {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .tvm-spec-row:not(.tvm-spec-row--detail) .tvm-spec-cell--description {
+    padding-right: calc(var(--tvm-row-padding-x) + 28px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .tvm-instruction-app {
+    padding: 0;
+  }
+
+  .tvm-spec-header,
+  .tvm-spec-row {
+    --tvm-grid-template: 95px 220px minmax(280px, 2fr);
+    min-width: 620px;
+  }
 }
 
 @media (max-width: 1040px) {
@@ -2567,29 +2735,51 @@ export const TvmInstructionTable = () => {
 
   .tvm-spec-row,
   .tvm-spec-row--detail {
-    --tvm-grid-template: 48px minmax(0, 1fr);
+    --tvm-grid-template: minmax(0, 1fr);
     grid-template-columns: var(--tvm-grid-template);
     min-width: 0;
     align-items: start;
   }
 
-  .tvm-spec-row .tvm-spec-cell--anchor {
-    grid-row: span 2;
+  .tvm-spec-row:not(.tvm-spec-row--detail) {
+    padding: 0.5rem 0;
   }
 
   .tvm-spec-row .tvm-spec-cell--opcode {
-    grid-row: 1;
-    grid-column: 2 / -1;
-    justify-content: flex-start;
-    align-items: baseline;
+    display: none;
   }
 
   .tvm-spec-row .tvm-spec-cell--name {
-    grid-column: 2 / -1;
+    grid-column: 1 / -1;
+    gap: 1rem;
+  }
+
+  .tvm-name-line {
+    gap: 0.6rem;
+  }
+
+  .tvm-opcode-chip {
+    display: inline-flex;
+    align-items: center;
+    font-family: monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0 0.5rem;
+    border-radius: 6px;
+    background: var(--tvm-pill-muted-bg);
+    color: var(--tvm-text-secondary);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
   }
 
   .tvm-spec-row .tvm-spec-cell--description {
     grid-column: 1 / -1;
+    gap: 1rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .tvm-spec-cell--full {
+    padding: 0;
   }
 }
 
@@ -2600,6 +2790,12 @@ export const TvmInstructionTable = () => {
 
   .tvm-detail-columns {
     flex-direction: column;
+  }
+
+  .tvm-detail-main,
+  .tvm-detail-side {
+    flex: 1 1 auto;
+    width: 100%;
   }
 
   .tvm-detail-section {
@@ -2673,7 +2869,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-control-flow-value {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   color: var(--tvm-text-primary);
 }
@@ -2761,7 +2957,7 @@ export const TvmInstructionTable = () => {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -2809,7 +3005,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-control-flow-node-value {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.66rem;
   color: var(--tvm-text-primary);
 }
@@ -2867,8 +3063,6 @@ export const TvmInstructionTable = () => {
   white-space: pre-wrap;
 }
 
-
-
 .tvm-alias-list {
   list-style: none;
   margin: 0;
@@ -2896,14 +3090,14 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-alias-headline code {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   color: var(--tvm-text-primary);
 }
 
 .tvm-alias-meta {
   font-size: 0.75rem;
-  color: var(--tvm-text-secondary);
+  color: var(--tvm-text-muted);
 }
 
 .tvm-alias-description {
@@ -2925,12 +3119,12 @@ export const TvmInstructionTable = () => {
   padding: 0.18rem 0.45rem;
   border-radius: 6px;
   background: var(--tvm-pill-muted-bg);
-  color: var(--tvm-text-secondary);
+  color: var(--tvm-text-muted);
   font-size: 0.72rem;
 }
 
 .tvm-alias-pill code {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
 }
 
 .tvm-loading-row,
@@ -2947,20 +3141,12 @@ export const TvmInstructionTable = () => {
   color: var(--tvm-accent-strong);
 }
 
-@media (max-width: 1024px) {
-  .tvm-instruction-app {
-    padding: 1.1rem;
-  }
-
-  .tvm-spec-header,
-  .tvm-spec-row {
-    --tvm-grid-template: 48px 95px 220px minmax(280px, 2fr);
-    min-width: 720px;
-  }
-}
-
 @media (max-width: 768px) {
-  .tvm-field {
+  .tvm-field,
+  .tvm-toolbar-filters .tvm-field,
+  .tvm-field--sort,
+  .tvm-field--category,
+  .tvm-field--subcategory {
     width: 100%;
     min-width: 0;
   }
@@ -3187,21 +3373,21 @@ export const TvmInstructionTable = () => {
           fift: doc.fift || "",
           fiftExamples: Array.isArray(doc.fift_examples)
             ? doc.fift_examples
-                .map((example) =>
-                  example && typeof example === "object"
-                    ? {
-                        description:
-                          typeof example.description === "string"
-                            ? example.description
-                            : "",
-                        fift:
-                          typeof example.fift === "string" ? example.fift : "",
-                      }
-                    : null
-                )
-                .filter((example) =>
-                  example && (example.description || example.fift)
-                )
+              .map((example) =>
+                example && typeof example === "object"
+                  ? {
+                    description:
+                      typeof example.description === "string"
+                        ? example.description
+                        : "",
+                    fift:
+                      typeof example.fift === "string" ? example.fift : "",
+                  }
+                  : null
+              )
+              .filter((example) =>
+                example && (example.description || example.fift)
+              )
             : [],
           gas: doc.gas || "",
           gasDisplay: formatGasDisplay(doc.gas),
@@ -3399,7 +3585,7 @@ export const TvmInstructionTable = () => {
               a.opcode.localeCompare(b.opcode)
             );
           case "since":
-            return (b.since == 9999 ? -1 : b.since) -  (a.since == 9999 ? -1 : a.since);
+            return (b.since == 9999 ? -1 : b.since) - (a.since == 9999 ? -1 : a.since);
           default:
             return (
               compareOpcodes(a.opcode, b.opcode) ||
@@ -3587,7 +3773,7 @@ export const TvmInstructionTable = () => {
   }, []);
 
   return (
-    <div className="tvm-instruction-app">
+    <div className="tvm-instruction-app not-prose w-full max-w-none">
       <style>{tableStyles}</style>
 
       <div className="tvm-instruction-toolbar">
@@ -3670,46 +3856,55 @@ export const TvmInstructionTable = () => {
         <div className="tvm-toolbar-filters">
           <div className="tvm-field tvm-field--sort">
             <label htmlFor="tvm-sort">Sort</label>
-            <select
-              id="tvm-sort"
-              value={sortMode}
-              onChange={(event) => setSortMode(event.currentTarget.value)}
-            >
-              <option value="opcode">Opcode</option>
-              <option value="since">Newest</option>
-            </select>
+            <div className="tvm-select">
+              <select
+                id="tvm-sort"
+                value={sortMode}
+                onChange={(event) => setSortMode(event.currentTarget.value)}
+              >
+                <option value="opcode">Opcode</option>
+                <option value="since">Newest</option>
+              </select>
+              <SelectChevron withClassName />
+            </div>
           </div>
 
           <div className="tvm-field tvm-field--category">
             <label htmlFor="tvm-category">Category</label>
-            <select
-              id="tvm-category"
-              value={category}
-              onChange={(event) => setCategory(event.currentTarget.value)}
-            >
-              {categoryOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {showSubcategorySelect && (
-            <div className="tvm-field tvm-field--subcategory">
-              <label htmlFor="tvm-subcategory">Subcategory</label>
+            <div className="tvm-select">
               <select
-                id="tvm-subcategory"
-                value={subcategory}
-                onChange={(event) => setSubcategory(event.currentTarget.value)}
+                id="tvm-category"
+                value={category}
+                onChange={(event) => setCategory(event.currentTarget.value)}
               >
-                <option value="All">All subcategories</option>
-                {currentSubcategoryOptions.map((option) => (
+                {categoryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
+              <SelectChevron withClassName />
+            </div>
+          </div>
+
+          {showSubcategorySelect && (
+            <div className="tvm-field tvm-field--subcategory">
+              <label htmlFor="tvm-subcategory">Subcategory</label>
+              <div className="tvm-select">
+                <select
+                  id="tvm-subcategory"
+                  value={subcategory}
+                  onChange={(event) => setSubcategory(event.currentTarget.value)}
+                >
+                  <option value="All">All subcategories</option>
+                  {currentSubcategoryOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron withClassName />
+              </div>
             </div>
           )}
         </div>
@@ -3751,7 +3946,6 @@ export const TvmInstructionTable = () => {
       <div className="tvm-spec-grid-container">
         <div className="tvm-spec-grid-scroll">
           <div className="tvm-spec-header" role="row">
-            <div>Link</div>
             <div>Opcode</div>
             <div>Instruction</div>
             <div>Description</div>
@@ -3808,41 +4002,6 @@ export const TvmInstructionTable = () => {
                         }
                       }}
                     >
-                      <div className="tvm-spec-cell tvm-spec-cell--anchor">
-                        <button
-                          type="button"
-                          className={`tvm-copy-link ${copied[instruction.uid] ? "is-copied" : ""}`}
-                          aria-label={copied[instruction.uid] ? "Copied" : "Copy link to instruction"}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            copyAnchorUrl(anchorId)
-                              .then(() => {
-                                setCopied((prev) => ({ ...prev, [instruction.uid]: true }));
-                                setTimeout(() => {
-                                  setCopied((prev) => {
-                                    const { [instruction.uid]: _omit, ...rest } = prev;
-                                    return rest;
-                                  });
-                                }, 1500);
-                              })
-                              .catch(() => {
-                                // ignore
-                              });
-                          }}
-                          title={copied[instruction.uid] ? "Copied" : "Copy link"}
-                        >
-                          {copied[instruction.uid] ? (
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                              <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          ) : (
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                              <path d="M10.59 13.41a1.996 1.996 0 0 0 2.82 0l3.59-3.59a2 2 0 0 0-2.83-2.83l-1.17 1.17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              <path d="M13.41 10.59a1.996 1.996 0 0 0-2.82 0L7 14.18a2 2 0 1 0 2.83 2.83l1.17-1.17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          )}
-                        </button>
-                      </div>
                       <div className="tvm-spec-cell tvm-spec-cell--opcode">
                         <code>
                           {highlightMatches(
@@ -3861,7 +4020,7 @@ export const TvmInstructionTable = () => {
                           </span>
                           {instruction.since > 0 && (
                             <span className="tvm-inline-badge">
-                              {instruction.since != 9999 ? `since v${instruction.since}` : 'unimplemented yet' }
+                              {instruction.since != 9999 ? `since v${instruction.since}` : 'unimplemented yet'}
                             </span>
                           )}
                           {aliasCount > 0 && (
@@ -3870,24 +4029,11 @@ export const TvmInstructionTable = () => {
                             </span>
                           )}
                           <span
-                            className={`tvm-row-indicator ${
-                              isExpanded ? "is-expanded" : ""
-                            }`}
+                            className={`tvm-row-indicator ${isExpanded ? "is-expanded" : ""
+                              }`}
                             aria-hidden="true"
                           >
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M6 9l6 6 6-6"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                            <SelectChevron />
                           </span>
                         </div>
                         {instruction.operands.length > 0 && (
@@ -3923,9 +4069,8 @@ export const TvmInstructionTable = () => {
                     nodes.push(
                       <div
                         key={`${instruction.uid}-detail`}
-                        className={`tvm-spec-row tvm-spec-row--detail ${
-                          isAnchorTarget ? "is-anchor-target" : ""
-                        }`}
+                        className={`tvm-spec-row tvm-spec-row--detail ${isAnchorTarget ? "is-anchor-target" : ""
+                          }`}
                       >
                         <div
                           className="tvm-spec-cell tvm-spec-cell--full"
@@ -3944,8 +4089,8 @@ export const TvmInstructionTable = () => {
                 })}
             </>
           )}
+        </div>
       </div>
-    </div>
 
       {rawModalInstruction && (
         <div
