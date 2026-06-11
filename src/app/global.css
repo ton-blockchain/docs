@@ -36,16 +36,16 @@ html {
   scrollbar-gutter: stable;
 }
 
-html>body[data-scroll-locked] {
+html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
 
 /* Prevent word breaks in inline code items in tables */
-td>code,
-td>em>code,
-td>strong>code,
-td>a>code {
+td > code,
+td > em > code,
+td > strong > code,
+td > a > code {
   white-space: nowrap;
 }
 
@@ -55,12 +55,12 @@ table {
 }
 
 /* Fix Mermaid's Sankey diagrams for both themes */
-svg[aria-roledescription="sankey"]>g.links>g.link {
+svg[aria-roledescription='sankey'] > g.links > g.link {
   mix-blend-mode: normal !important;
 }
 
 /* Vertically cap long code blocks so they scroll instead of stretching the page. */
-figure.shiki>div[role="region"] {
+figure.shiki > div[role='region'] {
   max-height: 42rem;
 }
 
@@ -89,7 +89,7 @@ pre.shiki .indent::before {
  * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
  * that do not support the text-wrap property yet.
  */
-.style-subsequent-openapi-tag+span {
+.style-subsequent-openapi-tag + span {
   white-space: nowrap;
 }
 

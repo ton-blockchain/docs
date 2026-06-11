@@ -41,11 +41,16 @@ export default function DefaultSearchDialog(props: SharedProps) {
           locale,
           from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
           // tag,
-        }
+        },
   );
 
   return (
-    <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
+    <SearchDialog
+      search={search}
+      onSearchChange={setSearch}
+      isLoading={query.isLoading}
+      {...props}
+    >
       <SearchDialogOverlay />
       <SearchDialogContent>
         <SearchDialogHeader>

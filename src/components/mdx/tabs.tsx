@@ -49,7 +49,9 @@ function useTabContext() {
   return ctx;
 }
 
-export function TabsList(props: React.ComponentPropsWithRef<typeof Unstyled.TabsList>) {
+export function TabsList(
+  props: React.ComponentPropsWithRef<typeof Unstyled.TabsList>,
+) {
   return (
     <Unstyled.TabsList
       {...props}
@@ -61,7 +63,9 @@ export function TabsList(props: React.ComponentPropsWithRef<typeof Unstyled.Tabs
   );
 }
 
-export function TabsTrigger(props: React.ComponentPropsWithRef<typeof Unstyled.TabsTrigger>) {
+export function TabsTrigger(
+  props: React.ComponentPropsWithRef<typeof Unstyled.TabsTrigger>,
+) {
   return (
     <Unstyled.TabsTrigger
       {...props}
@@ -101,7 +105,9 @@ export function Tabs({
     >
       {items && (
         <TabsList>
-          {label && <span className="text-sm font-medium my-auto me-auto">{label}</span>}
+          {label && (
+            <span className="text-sm font-medium my-auto me-auto">{label}</span>
+          )}
           {items.map((item) => (
             <TabsTrigger key={item} value={escapeValue(item)}>
               {item}
@@ -109,14 +115,19 @@ export function Tabs({
           ))}
         </TabsList>
       )}
-      <TabsContext.Provider value={useMemo(() => ({ items, collection }), [collection, items])}>
+      <TabsContext.Provider
+        value={useMemo(() => ({ items, collection }), [collection, items])}
+      >
         {props.children}
       </TabsContext.Provider>
     </Unstyled.Tabs>
   );
 }
 
-export interface TabProps extends Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value' | 'icon'> {
+export interface TabProps extends Omit<
+  ComponentProps<typeof Unstyled.TabsContent>,
+  'value' | 'icon'
+> {
   /**
    * Value of tab, detect from index if unspecified.
    */

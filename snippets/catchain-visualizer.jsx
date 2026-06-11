@@ -3,35 +3,35 @@ import * as React from 'react';
 
 export const CatchainVisualizer = () => {
   const MESSAGE_COLORS = {
-    Submit: "#6366f1",
-    Approve: "#22c55e",
-    Vote: "#0ea5e9",
-    VoteFor: "#06b6d4",
-    Precommit: "#f59e0b",
-    Commit: "#3b82f6",
-    DepRequest: "#475569",
+    Submit: '#6366f1',
+    Approve: '#22c55e',
+    Vote: '#0ea5e9',
+    VoteFor: '#06b6d4',
+    Precommit: '#f59e0b',
+    Commit: '#3b82f6',
+    DepRequest: '#475569',
   };
 
   const MESSAGE_LABELS = {
-    Submit: "Submit",
-    Approve: "Approve",
-    Vote: "Vote",
-    VoteFor: "VoteFor",
-    Precommit: "PreCommit",
-    Commit: "Commit",
-    DepRequest: "Dep req",
+    Submit: 'Submit',
+    Approve: 'Approve',
+    Vote: 'Vote',
+    VoteFor: 'VoteFor',
+    Precommit: 'PreCommit',
+    Commit: 'Commit',
+    DepRequest: 'Dep req',
   };
   const MESSAGE_DESCRIPTIONS = {
-    Submit: "Proposer shares its round candidate with peers.",
-    Approve: "Validator approves a seen proposal so others can vote.",
-    Vote: "Validator votes for a proposal once approvals reach quorum.",
+    Submit: 'Proposer shares its round candidate with peers.',
+    Approve: 'Validator approves a seen proposal so others can vote.',
+    Vote: 'Validator votes for a proposal once approvals reach quorum.',
     VoteFor:
-      "Coordinator guidance for slow attempts; points voting to a candidate.",
+      'Coordinator guidance for slow attempts; points voting to a candidate.',
     Precommit:
-      "Validator precommits after quorum votes to lock on a candidate.",
-    Commit: "Validator finalizes a candidate after quorum precommits.",
+      'Validator precommits after quorum votes to lock on a candidate.',
+    Commit: 'Validator finalizes a candidate after quorum precommits.',
     DepRequest:
-      "Catchain-level dependency request for missing messages; peers will resend the requested blocks.",
+      'Catchain-level dependency request for missing messages; peers will resend the requested blocks.',
   };
 
   const LAYOUT = {
@@ -144,7 +144,7 @@ export const CatchainVisualizer = () => {
       lastPrecommitFor: null,
       lockedCandidate: null,
       lockedAtAttempt: 0,
-      status: "good",
+      status: 'good',
       catchainStore: new Map(),
       pendingCatchain: new Map(),
       missingRequests: new Set(),
@@ -180,7 +180,7 @@ export const CatchainVisualizer = () => {
     }
   }
 
-  function scheduleTask(model, delayMs, fn, label = "") {
+  function scheduleTask(model, delayMs, fn, label = '') {
     model.tasks.push({
       runAt: model.time + delayMs,
       fn,
@@ -228,7 +228,7 @@ export const CatchainVisualizer = () => {
 
     if (depList.length === 0 && senderNode) {
       const candidates = Array.from(senderNode.frontier.values()).filter(
-        (entry) => entry && entry.sender !== from
+        (entry) => entry && entry.sender !== from,
       );
       candidates.sort((a, b) => (b.height || 0) - (a.height || 0));
       for (const c of candidates) {
@@ -257,22 +257,22 @@ export const CatchainVisualizer = () => {
       if (!includeSelf && node.id === from) return;
       if (
         sender &&
-        sender.status === "lagging" &&
+        sender.status === 'lagging' &&
         Math.random() < LAGGING_DROP_PROBABILITY
       ) {
         return;
       }
       const latency = randomBetween(
         model.config.latency[0],
-        model.config.latency[1]
+        model.config.latency[1],
       );
       const sendAt = model.time + delay;
-      const primary = envelope.actions?.[0]?.type || "Catchain";
+      const primary = envelope.actions?.[0]?.type || 'Catchain';
       model.messages.push({
         id: `${envelope.id}-${from}-${node.id}-${Math.random()
           .toString(16)
           .slice(2, 6)}`,
-        transport: "Catchain",
+        transport: 'Catchain',
         envelope,
         actions: envelope.actions || [],
         primary,
@@ -289,21 +289,21 @@ export const CatchainVisualizer = () => {
     const sender = getNode(model, from);
     if (
       sender &&
-      sender.status === "lagging" &&
+      sender.status === 'lagging' &&
       Math.random() < LAGGING_DROP_PROBABILITY
     ) {
       return;
     }
     const latency = randomBetween(
       model.config.latency[0],
-      model.config.latency[1]
+      model.config.latency[1],
     );
     const sendAt = model.time;
     model.messages.push({
       id: `REQ-${from}-${to}-${Math.random().toString(16).slice(2, 6)}`,
-      transport: "DepRequest",
+      transport: 'DepRequest',
       missingIds,
-      primary: "DepRequest",
+      primary: 'DepRequest',
       from,
       to,
       sendTime: sendAt,
@@ -317,11 +317,11 @@ export const CatchainVisualizer = () => {
     node,
     missingIds,
     preferredPeer,
-    force = false
+    force = false,
   ) {
     const uniqueIds = Array.from(new Set(missingIds || []));
     const outstanding = uniqueIds.filter(
-      (id) => force || !node.missingRequests.has(id)
+      (id) => force || !node.missingRequests.has(id),
     );
     if (outstanding.length === 0) return;
     outstanding.forEach((id) => node.missingRequests.add(id));
@@ -330,13 +330,13 @@ export const CatchainVisualizer = () => {
         ? getNode(model, preferredPeer)
         : null;
     const target =
-      preferred && preferred.status !== "crashed"
+      preferred && preferred.status !== 'crashed'
         ? preferred
-        : model.nodes.find((n) => n.id !== node.id && n.status !== "crashed");
+        : model.nodes.find((n) => n.id !== node.id && n.status !== 'crashed');
     if (!target) return;
     logEvent(
       model,
-      `${node.label} requested ${outstanding.length} dep(s) from ${target.label}`
+      `${node.label} requested ${outstanding.length} dep(s) from ${target.label}`,
     );
     sendDepRequest(model, node.id, target.id, outstanding);
   }
@@ -347,7 +347,7 @@ export const CatchainVisualizer = () => {
       progressed = false;
       node.pendingCatchain.forEach((entry, mid) => {
         const remaining = [...entry.missing].filter(
-          (dep) => !node.catchainStore.has(dep)
+          (dep) => !node.catchainStore.has(dep),
         );
         if (remaining.length === 0) {
           node.pendingCatchain.delete(mid);
@@ -361,13 +361,13 @@ export const CatchainVisualizer = () => {
   }
 
   function deliverCatchainEnvelope(model, node, envelope, originalFrom) {
-    if (!node || node.status === "crashed") return;
+    if (!node || node.status === 'crashed') return;
     if (node.catchainStore.has(envelope.id)) return;
     const depsAndPrev = Array.from(
       new Set([
         ...(envelope.prev ? [envelope.prev] : []),
         ...(envelope.deps || []),
-      ])
+      ]),
     );
     const missing = depsAndPrev.filter((dep) => !node.catchainStore.has(dep));
     if (missing.length > 0) {
@@ -375,7 +375,7 @@ export const CatchainVisualizer = () => {
         model,
         `${node.label} missing ${missing.length} dep(s) for ${
           envelope.id
-        }: ${missing.join(", ")}`
+        }: ${missing.join(', ')}`,
       );
       node.pendingCatchain.set(envelope.id, {
         envelope,
@@ -394,10 +394,10 @@ export const CatchainVisualizer = () => {
             node,
             [...pending.missing],
             originalFrom,
-            true
+            true,
           );
         },
-        "dep-retry"
+        'dep-retry',
       );
       return;
     }
@@ -408,7 +408,7 @@ export const CatchainVisualizer = () => {
         if (depSenders.has(depEnv.sender)) {
           logEvent(
             model,
-            `${node.label} rejected ${envelope.id} (duplicate deps from ${depEnv.sender})`
+            `${node.label} rejected ${envelope.id} (duplicate deps from ${depEnv.sender})`,
           );
           return;
         }
@@ -419,7 +419,7 @@ export const CatchainVisualizer = () => {
     node.missingRequests.delete(envelope.id);
     node.lastCatchainHeight = Math.max(
       node.lastCatchainHeight || 0,
-      envelope.height || 0
+      envelope.height || 0,
     );
     node.lastCatchainId = envelope.id;
     node.frontier.set(envelope.sender, {
@@ -428,7 +428,7 @@ export const CatchainVisualizer = () => {
       height: envelope.height || 0,
     });
     (envelope.actions || []).forEach((action) =>
-      handleAction(model, node, action, envelope.sender)
+      handleAction(model, node, action, envelope.sender),
     );
     tryDeliverPendingCatchain(model, node);
   }
@@ -490,7 +490,7 @@ export const CatchainVisualizer = () => {
     const { from, actions, delay = 0, includeSelf = false } = options;
     if (!actions || actions.length === 0) return;
     const sender = getNode(model, from);
-    if (!sender || sender.status === "crashed") return;
+    if (!sender || sender.status === 'crashed') return;
     const envelope = createCatchainEnvelope(model, from, actions);
     deliverCatchainEnvelope(model, sender, envelope, from);
     sendCatchainEnvelope(model, envelope, { from, delay, includeSelf });
@@ -507,19 +507,19 @@ export const CatchainVisualizer = () => {
     }
 
     switch (eventType) {
-      case "approve": {
+      case 'approve': {
         node.receivedEvents[candidateId].approved += 1;
         break;
       }
-      case "vote": {
+      case 'vote': {
         node.receivedEvents[candidateId].voted += 1;
         break;
       }
-      case "precommit": {
+      case 'precommit': {
         node.receivedEvents[candidateId].precommitted += 1;
         break;
       }
-      case "commit": {
+      case 'commit': {
         node.receivedEvents[candidateId].commited += 1;
         break;
       }
@@ -531,8 +531,8 @@ export const CatchainVisualizer = () => {
       model,
       delay,
       () => {
-        if (node.status === "crashed") return;
-        if (action.type === "Submit") {
+        if (node.status === 'crashed') return;
+        if (action.type === 'Submit') {
           const cand = model.candidates[action.candidateId];
           if (cand && !cand.createdAt) {
             cand.createdAt = model.time;
@@ -547,7 +547,7 @@ export const CatchainVisualizer = () => {
           includeSelf,
         });
       },
-      "flush-block"
+      'flush-block',
     );
   }
 
@@ -555,51 +555,51 @@ export const CatchainVisualizer = () => {
     const candidate = model.candidates[candidateId];
     if (
       !candidate ||
-      node.status === "crashed" ||
+      node.status === 'crashed' ||
       node.approved.has(candidateId)
     )
       return;
     node.approved.add(candidateId);
     // event for this view
-    addEvent(node, candidateId, "approve");
+    addEvent(node, candidateId, 'approve');
     candidate.approvals.add(node.id);
     if (!candidate.createdAt && candidate.approvals.size === 1) {
       candidate.createdAt = model.time;
     }
     logEvent(
       model,
-      `${node.label} approved ${candidate.short} (approvals ${candidate.approvals.size}/${model.config.quorum})`
+      `${node.label} approved ${candidate.short} (approvals ${candidate.approvals.size}/${model.config.quorum})`,
     );
     enqueueAction(
       model,
       node,
-      { type: "Approve", candidateId },
-      opts.delay || 0
+      { type: 'Approve', candidateId },
+      opts.delay || 0,
     );
     tryVote(model, candidateId);
   }
 
   function issueVote(model, node, candidateId) {
     const candidate = model.candidates[candidateId];
-    if (!candidate || node.status === "crashed" || node.votedThisAttempt)
+    if (!candidate || node.status === 'crashed' || node.votedThisAttempt)
       return;
     if (candidate.approvals.size < model.config.quorum) return;
     node.votedThisAttempt = true;
     node.lastVotedFor = candidateId;
     node.voted.add(candidateId);
-    addEvent(node, candidateId, "vote");
+    addEvent(node, candidateId, 'vote');
     candidate.votes.add(node.id);
     logEvent(
       model,
-      `${node.label} voted ${candidate.short} (votes ${candidate.votes.size}/${model.config.quorum})`
+      `${node.label} voted ${candidate.short} (votes ${candidate.votes.size}/${model.config.quorum})`,
     );
-    enqueueAction(model, node, { type: "Vote", candidateId });
+    enqueueAction(model, node, { type: 'Vote', candidateId });
     tryPrecommit(model, node, candidateId);
   }
 
   function issuePrecommit(model, node, candidateId) {
     const candidate = model.candidates[candidateId];
-    if (!candidate || node.status === "crashed" || node.precommittedThisAttempt)
+    if (!candidate || node.status === 'crashed' || node.precommittedThisAttempt)
       return;
     if (candidate.votes.size < model.config.quorum) return;
     if (node.lastVotedFor !== candidateId) return;
@@ -608,13 +608,13 @@ export const CatchainVisualizer = () => {
     node.lockedCandidate = candidateId;
     node.lockedAtAttempt = model.attempt;
     node.precommitted.add(candidateId);
-    addEvent(node, candidateId, "precommit");
+    addEvent(node, candidateId, 'precommit');
     candidate.precommits.add(node.id);
     logEvent(
       model,
-      `${node.label} precommitted ${candidate.short} (precommits ${candidate.precommits.size}/${model.config.quorum})`
+      `${node.label} precommitted ${candidate.short} (precommits ${candidate.precommits.size}/${model.config.quorum})`,
     );
-    enqueueAction(model, node, { type: "Precommit", candidateId });
+    enqueueAction(model, node, { type: 'Precommit', candidateId });
     tryCommit(model, node, candidateId);
   }
 
@@ -622,7 +622,7 @@ export const CatchainVisualizer = () => {
     const candidate = model.candidates[candidateId];
     if (
       !candidate ||
-      node.status === "crashed" ||
+      node.status === 'crashed' ||
       node.committedTo === candidateId
     )
       return;
@@ -630,12 +630,12 @@ export const CatchainVisualizer = () => {
       return;
     node.committedTo = candidateId;
     candidate.commits.add(node.id);
-    addEvent(node, candidateId, "commit");
+    addEvent(node, candidateId, 'commit');
     logEvent(
       model,
-      `${node.label} committed ${candidate.short} (commits ${candidate.commits.size}/${model.config.quorum})`
+      `${node.label} committed ${candidate.short} (commits ${candidate.commits.size}/${model.config.quorum})`,
     );
-    enqueueAction(model, node, { type: "Commit", candidateId });
+    enqueueAction(model, node, { type: 'Commit', candidateId });
     if (
       !model.committedCandidate &&
       candidate.commits.size >= model.config.quorum
@@ -655,7 +655,7 @@ export const CatchainVisualizer = () => {
       model.nextRoundAt = model.time + model.config.roundGap;
       logEvent(
         model,
-        `✔️ Round ${model.round} locked on ${candidate.short}, starting next round soon`
+        `✔️ Round ${model.round} locked on ${candidate.short}, starting next round soon`,
       );
     }
   }
@@ -669,7 +669,7 @@ export const CatchainVisualizer = () => {
         model,
         model.config.simDelay,
         () => issueVote(model, node, target.id),
-        "vote"
+        'vote',
       );
     });
   }
@@ -690,7 +690,7 @@ export const CatchainVisualizer = () => {
       model,
       model.config.simDelay,
       () => issuePrecommit(model, node, candidateId),
-      "precommit"
+      'precommit',
     );
   }
 
@@ -710,7 +710,7 @@ export const CatchainVisualizer = () => {
       model,
       model.config.simDelay,
       () => issueCommit(model, node, candidateId),
-      "commit"
+      'commit',
     );
   }
 
@@ -750,7 +750,7 @@ export const CatchainVisualizer = () => {
       round: model.round,
       attempt: model.attempt,
       proposerIndex: -1,
-      proposerId: "NULL",
+      proposerId: 'NULL',
       approvals: new Set(),
       votes: new Set(),
       precommits: new Set(),
@@ -768,7 +768,7 @@ export const CatchainVisualizer = () => {
         model,
         model.config.DeltaInfinity,
         () => issueApproval(model, node, id),
-        "null-approve"
+        'null-approve',
       );
     });
   }
@@ -777,39 +777,39 @@ export const CatchainVisualizer = () => {
     if (!model.isSlow) return;
     const coord = pickCoordinator(model, model.attempt);
     const candidates = Object.values(model.candidates).filter(
-      (c) => !!c.createdAt
+      (c) => !!c.createdAt,
     );
     if (candidates.length === 0) {
       scheduleTask(
         model,
         VOTEFOR_RETRY_MS,
         () => sendVoteFor(model),
-        "voteFor-retry"
+        'voteFor-retry',
       );
       return;
     }
     const eligible = candidates.filter(
-      (c) => c.approvals.size >= model.config.quorum
+      (c) => c.approvals.size >= model.config.quorum,
     );
     if (eligible.length === 0) return;
     const choice = eligible[Math.floor(Math.random() * eligible.length)];
     model.voteForTarget = choice.id;
     logEvent(
       model,
-      `${coord.label} suggests ${choice.short} for slow attempt via VoteFor`
+      `${coord.label} suggests ${choice.short} for slow attempt via VoteFor`,
     );
-    enqueueAction(model, coord, { type: "VoteFor", candidateId: choice.id });
+    enqueueAction(model, coord, { type: 'VoteFor', candidateId: choice.id });
   }
 
   function handleAction(model, node, action, fromId) {
     let candidate = model.candidates[action.candidateId];
     switch (action.type) {
-      case "Submit": {
+      case 'Submit': {
         if (!candidate) {
           const existing = Object.values(model.candidates).find(
             (c) =>
               c.proposerId === (action.proposerId || fromId) &&
-              c.round === (action.round || model.round)
+              c.round === (action.round || model.round),
           );
           if (existing) {
             candidate = existing;
@@ -818,7 +818,7 @@ export const CatchainVisualizer = () => {
               action.round || model.round,
               action.attempt || model.attempt,
               action.proposerIndex ?? 0,
-              action.proposerId || fromId
+              action.proposerId || fromId,
             );
             model.candidates[action.candidateId] = candidate;
           }
@@ -831,19 +831,19 @@ export const CatchainVisualizer = () => {
             // TODO: fix this const
             500,
             () => issueApproval(model, node, candidate.id),
-            "proposer-self-approve"
+            'proposer-self-approve',
           );
         } else if (!model.isSlow) {
           scheduleTask(
             model,
             getSimDelay(),
             () => issueApproval(model, node, candidate.id),
-            "auto-approve"
+            'auto-approve',
           );
         }
         break;
       }
-      case "VoteFor": {
+      case 'VoteFor': {
         node.voteTarget = action.candidateId;
         if (candidate && !node.approved.has(candidate.id)) {
           const delay = calcApprovalDelay(model, node, candidate, true);
@@ -851,22 +851,22 @@ export const CatchainVisualizer = () => {
             model,
             delay,
             () => issueApproval(model, node, candidate.id),
-            "voteFor-approve"
+            'voteFor-approve',
           );
         }
         tryVote(model);
         break;
       }
-      case "Approve": {
+      case 'Approve': {
         if (candidate && !candidate.approvals.has(fromId)) {
           candidate.approvals.add(fromId);
         }
 
-        addEvent(node, candidate.id, "approve");
+        addEvent(node, candidate.id, 'approve');
         tryVote(model);
         break;
       }
-      case "Vote": {
+      case 'Vote': {
         if (candidate && !candidate.votes.has(fromId)) {
           candidate.votes.add(fromId);
           if (candidate.votes.size >= model.config.quorum) {
@@ -884,22 +884,22 @@ export const CatchainVisualizer = () => {
           }
         }
 
-        addEvent(node, candidate.id, "vote");
+        addEvent(node, candidate.id, 'vote');
         tryPrecommit(model, node, candidate.id);
         break;
       }
-      case "Precommit": {
+      case 'Precommit': {
         if (candidate && !candidate.precommits.has(fromId)) {
           candidate.precommits.add(fromId);
         }
 
-        addEvent(node, candidate.id, "precommit");
+        addEvent(node, candidate.id, 'precommit');
         tryCommit(model, node, candidate.id);
         break;
       }
-      case "Commit": {
+      case 'Commit': {
         // TODO: fix next round individual start
-        addEvent(node, candidate.id, "commit");
+        addEvent(node, candidate.id, 'commit');
 
         if (candidate && node.committedTo !== candidate.id) {
           node.committedTo = candidate.id;
@@ -919,7 +919,7 @@ export const CatchainVisualizer = () => {
             model.nextRoundAt = model.time + model.config.roundGap;
             logEvent(
               model,
-              `✔️ Round ${model.round} locked on ${candidate.short}, starting next round soon`
+              `✔️ Round ${model.round} locked on ${candidate.short}, starting next round soon`,
             );
           }
         }
@@ -932,12 +932,12 @@ export const CatchainVisualizer = () => {
 
   function handleMessage(model, message) {
     const node = getNode(model, message.to);
-    if (!node || node.status === "crashed") return;
-    if (node.status === "lagging" && Math.random() < LAGGING_DROP_PROBABILITY)
+    if (!node || node.status === 'crashed') return;
+    if (node.status === 'lagging' && Math.random() < LAGGING_DROP_PROBABILITY)
       return;
-    if (message.transport === "Catchain") {
+    if (message.transport === 'Catchain') {
       deliverCatchainEnvelope(model, node, message.envelope, message.from);
-    } else if (message.transport === "DepRequest") {
+    } else if (message.transport === 'DepRequest') {
       handleDepRequest(model, node, message);
     }
   }
@@ -1005,7 +1005,7 @@ export const CatchainVisualizer = () => {
         model.round,
         i,
         model.nodes.length,
-        model.config.C
+        model.config.C,
       );
       if (prio >= 0) {
         proposerSet.push({
@@ -1019,14 +1019,14 @@ export const CatchainVisualizer = () => {
 
     proposerSet.forEach(({ node: proposer, priority, proposerIndex }) => {
       let cand = Object.values(model.candidates).find(
-        (c) => c.proposerId === proposer.id && c.round === model.round
+        (c) => c.proposerId === proposer.id && c.round === model.round,
       );
       if (!cand) {
         cand = makeCandidate(
           model.round,
           model.attempt,
           proposerIndex,
-          proposer.id
+          proposer.id,
         );
         cand.priority = priority;
         model.candidates[cand.id] = cand;
@@ -1052,7 +1052,7 @@ export const CatchainVisualizer = () => {
         model,
         proposer,
         {
-          type: "Submit",
+          type: 'Submit',
           candidateId: cand.id,
           round: model.round,
           attempt: model.attempt,
@@ -1060,35 +1060,35 @@ export const CatchainVisualizer = () => {
           proposerIndex,
           priority,
         },
-        submitDelay
+        submitDelay,
       );
       scheduleTask(
         model,
         submitDelay + PROPOSER_SELF_APPROVE_EXTRA_MS,
         () => issueApproval(model, proposer, cand.id),
-        "proposer-instant-approve"
+        'proposer-instant-approve',
       );
     });
 
     const best = proposerSet.find(() => true);
     model.activeCandidateId = best
       ? Object.values(model.candidates).find(
-          (c) => c.proposerId === best.node.id && c.round === model.round
-        )?.id || ""
-      : "";
+          (c) => c.proposerId === best.node.id && c.round === model.round,
+        )?.id || ''
+      : '';
 
     logEvent(
       model,
       `▶️ Round ${model.round}, attempt ${model.attempt} (${
-        model.isSlow ? "slow" : "fast"
-      }), proposer window size ${model.config.C}`
+        model.isSlow ? 'slow' : 'fast'
+      }), proposer window size ${model.config.C}`,
     );
     if (model.isSlow) {
       scheduleTask(
         model,
         VOTEFOR_INITIAL_DELAY_MS,
         () => sendVoteFor(model),
-        "voteFor"
+        'voteFor',
       );
     }
     ensureNullCandidate(model);
@@ -1154,7 +1154,7 @@ export const CatchainVisualizer = () => {
       messages: [],
       tasks: [],
       candidates: {},
-      activeCandidateId: "",
+      activeCandidateId: '',
       attempt: 0,
       round: 1,
       attemptStartedAt: 0,
@@ -1199,34 +1199,34 @@ export const CatchainVisualizer = () => {
   };
   const CONFIG_FIELDS = [
     {
-      key: "K",
-      label: "K (ms)",
-      description: "Attempt duration; 8000ms means 8 seconds per attempt.",
+      key: 'K',
+      label: 'K (ms)',
+      description: 'Attempt duration; 8000ms means 8 seconds per attempt.',
     },
     {
-      key: "Delta",
-      label: "Delta (ms)",
-      description: "Base Δ_i delay; 2000ms equals 2s for first step.",
+      key: 'Delta',
+      label: 'Delta (ms)',
+      description: 'Base Δ_i delay; 2000ms equals 2s for first step.',
     },
     {
-      key: "DeltaInfinity",
-      label: "DeltaInfinity (ms)",
-      description: "Upper delay bound for slow attempts; 2*C seconds.",
+      key: 'DeltaInfinity',
+      label: 'DeltaInfinity (ms)',
+      description: 'Upper delay bound for slow attempts; 2*C seconds.',
     },
     {
-      key: "Y",
-      label: "Y",
-      description: "Fast attempts before switching to slow attempts.",
+      key: 'Y',
+      label: 'Y',
+      description: 'Fast attempts before switching to slow attempts.',
     },
     {
-      key: "C",
-      label: "C",
-      description: "Number of round candidates in rotation.",
+      key: 'C',
+      label: 'C',
+      description: 'Number of round candidates in rotation.',
     },
     {
-      key: "maxDeps",
-      label: "maxDeps",
-      description: "Catchain: max dependency links per block (one per sender).",
+      key: 'maxDeps',
+      label: 'maxDeps',
+      description: 'Catchain: max dependency links per block (one per sender).',
     },
   ];
   const [config, setConfig] = useState(() => ({ ...DEFAULT_CONFIG }));
@@ -1252,7 +1252,7 @@ export const CatchainVisualizer = () => {
   const [eventTooltipPos, setEventTooltipPos] = useState({
     x: 0,
     y: 0,
-    placement: "bottom",
+    placement: 'bottom',
   });
 
   if (!modelRef.current) {
@@ -1269,23 +1269,23 @@ export const CatchainVisualizer = () => {
   }, [config.frameMs, running, speed]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return undefined;
+    if (typeof window === 'undefined') return undefined;
     const handleKeyDown = (event) => {
-      const tagName = (event.target?.tagName || "").toUpperCase();
+      const tagName = (event.target?.tagName || '').toUpperCase();
       const isTyping =
-        tagName === "INPUT" ||
-        tagName === "TEXTAREA" ||
-        tagName === "SELECT" ||
-        tagName === "BUTTON" ||
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' ||
+        tagName === 'BUTTON' ||
         event.target?.isContentEditable;
 
-      if ((event.key === " " || event.key === "Spacebar") && !isTyping) {
+      if ((event.key === ' ' || event.key === 'Spacebar') && !isTyping) {
         event.preventDefault();
         setRunning((prev) => !prev);
         return;
       }
 
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         if (selectedMessage) {
           setSelectedMessage(null);
         } else if (selectedCandidateId) {
@@ -1299,8 +1299,8 @@ export const CatchainVisualizer = () => {
         }
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
     configModalOpen,
     eventLogOpen,
@@ -1315,12 +1315,12 @@ export const CatchainVisualizer = () => {
     : null;
   const candidates = Object.values(model.candidates)
     .filter((c) =>
-      c.proposerId === "NULL" ? c.approvals.size > 0 : !!c.createdAt
+      c.proposerId === 'NULL' ? c.approvals.size > 0 : !!c.createdAt,
     )
     .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   const elapsedAttempt = Math.max(
     0,
-    model.time - (model.attemptStartedAt || 0)
+    model.time - (model.attemptStartedAt || 0),
   );
   const attemptProgress = clamp(elapsedAttempt / (model.config.K || 1), 0, 1);
   const attemptRemaining = Math.max(0, (model.config.K || 0) - elapsedAttempt);
@@ -1363,7 +1363,7 @@ export const CatchainVisualizer = () => {
   const submitConfig = (e) => {
     e.preventDefault();
     const toNumber = (val, fallback) => {
-      if (val === "") return fallback;
+      if (val === '') return fallback;
       const parsed = Number(val);
       return Number.isFinite(parsed) ? parsed : fallback;
     };
@@ -1388,9 +1388,9 @@ export const CatchainVisualizer = () => {
     }
     const rect = evt.currentTarget.getBoundingClientRect();
     const viewportWidth =
-      typeof window !== "undefined" ? window.innerWidth : LAYOUT.svgWidth;
+      typeof window !== 'undefined' ? window.innerWidth : LAYOUT.svgWidth;
     const viewportHeight =
-      typeof window !== "undefined" ? window.innerHeight : LAYOUT.svgHeight;
+      typeof window !== 'undefined' ? window.innerHeight : LAYOUT.svgHeight;
     const tooltipWidth = 240;
     const tooltipHeight = 90;
     const gap = 12;
@@ -1398,7 +1398,7 @@ export const CatchainVisualizer = () => {
     const left = clamp(
       rect.left + rect.width / 2,
       tooltipWidth / 2 + gap,
-      viewportWidth - tooltipWidth / 2 - gap
+      viewportWidth - tooltipWidth / 2 - gap,
     );
     const rawTop = preferAbove
       ? rect.top - tooltipHeight - gap
@@ -1407,7 +1407,7 @@ export const CatchainVisualizer = () => {
     setEventTooltipPos({
       x: left,
       y: top,
-      placement: preferAbove ? "top" : "bottom",
+      placement: preferAbove ? 'top' : 'bottom',
     });
     setHoveredEventType(key);
   };
@@ -1442,7 +1442,7 @@ export const CatchainVisualizer = () => {
             className="inline-flex items-center gap-2 rounded-lg bg-sky-600 text-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-sky-700"
             onClick={() => setRunning((v) => !v)}
           >
-            <span>{running ? "Pause (Space)" : "Resume (Space)"}</span>
+            <span>{running ? 'Pause (Space)' : 'Resume (Space)'}</span>
           </button>
           <button
             className="inline-flex items-center gap-2 rounded-lg bg-sky-600 text-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-sky-700"
@@ -1503,29 +1503,29 @@ export const CatchainVisualizer = () => {
               if (proposerTimer) {
                 const remaining = Math.max(
                   0,
-                  (proposerTimer.submitAt || 0) - model.time
+                  (proposerTimer.submitAt || 0) - model.time,
                 );
                 const total = proposerTimer.submitDelay || 1;
                 proposerProgress = clamp(
                   1 - remaining / Math.max(total, 1),
                   0,
-                  1
+                  1,
                 );
                 if (model.candidates[proposerTimer.candidateId]?.submitted) {
                   proposerProgress = 1;
                 }
               }
               const ring = committed
-                ? "#3b82f6"
+                ? '#3b82f6'
                 : precommitted
-                ? "#f59e0b"
-                : approved
-                ? "#22c55e"
-                : node.status === "lagging"
-                ? "#eab308"
-                : node.status === "crashed"
-                ? "#ef4444"
-                : "#94a3b8";
+                  ? '#f59e0b'
+                  : approved
+                    ? '#22c55e'
+                    : node.status === 'lagging'
+                      ? '#eab308'
+                      : node.status === 'crashed'
+                        ? '#ef4444'
+                        : '#94a3b8';
               return (
                 <g
                   key={node.id}
@@ -1536,11 +1536,11 @@ export const CatchainVisualizer = () => {
                   <circle
                     r={LAYOUT.nodeRadius}
                     fill={
-                      node.status === "crashed"
-                        ? "#fee2e2"
-                        : node.status === "lagging"
-                        ? "#fef3c7"
-                        : "#e5e7eb"
+                      node.status === 'crashed'
+                        ? '#fee2e2'
+                        : node.status === 'lagging'
+                          ? '#fef3c7'
+                          : '#e5e7eb'
                     }
                     stroke="#94a3b8"
                     strokeWidth="3"
@@ -1595,24 +1595,24 @@ export const CatchainVisualizer = () => {
               const progress = clamp(
                 (model.time - msg.sendTime) / duration,
                 0,
-                1
+                1,
               );
-              const isRequest = msg.transport === "DepRequest";
+              const isRequest = msg.transport === 'DepRequest';
               const x =
                 fromNode.pos.x + (toNode.pos.x - fromNode.pos.x) * progress;
               const y =
                 fromNode.pos.y + (toNode.pos.y - fromNode.pos.y) * progress;
               const primary = msg.primary || msg.type;
               const color = isRequest
-                ? MESSAGE_COLORS.DepRequest || "#475569"
-                : MESSAGE_COLORS[primary] || "#0ea5e9";
+                ? MESSAGE_COLORS.DepRequest || '#475569'
+                : MESSAGE_COLORS[primary] || '#0ea5e9';
               const label = isRequest
-                ? "Req"
+                ? 'Req'
                 : msg.actions && msg.actions.length > 1
-                ? `${MESSAGE_LABELS[primary] || primary}+${
-                    msg.actions.length - 1
-                  }`
-                : MESSAGE_LABELS[primary] || primary;
+                  ? `${MESSAGE_LABELS[primary] || primary}+${
+                      msg.actions.length - 1
+                    }`
+                  : MESSAGE_LABELS[primary] || primary;
               return (
                 <g
                   key={msg.id}
@@ -1628,12 +1628,12 @@ export const CatchainVisualizer = () => {
                     x2={toNode.pos.x}
                     y2={toNode.pos.y}
                     stroke="#cbd5e1"
-                    strokeDasharray={isRequest ? "2 4" : "4 6"}
+                    strokeDasharray={isRequest ? '2 4' : '4 6'}
                   />
                   <circle
                     cx={x}
                     cy={y}
-                    r={isRequest ? "7" : "6"}
+                    r={isRequest ? '7' : '6'}
                     fill={color}
                     stroke="#6b7280"
                     strokeWidth="1.5"
@@ -1662,7 +1662,7 @@ export const CatchainVisualizer = () => {
             <div className="flex items-center justify-between">
               <span className="font-semibold text-slate-800">Attempt</span>
               <span className="text-slate-700">
-                {model.attempt} ({model.isSlow ? "slow" : "fast"})
+                {model.attempt} ({model.isSlow ? 'slow' : 'fast'})
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -1670,7 +1670,7 @@ export const CatchainVisualizer = () => {
               <span className="text-slate-700">
                 {activeCandidate
                   ? `S${activeCandidate.proposerIndex + 1}`
-                  : "—"}
+                  : '—'}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -1678,7 +1678,7 @@ export const CatchainVisualizer = () => {
               <span className="text-slate-700">
                 {model.isSlow
                   ? pickCoordinator(model, model.attempt).label
-                  : "N/A (fast)"}
+                  : 'N/A (fast)'}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -1686,13 +1686,13 @@ export const CatchainVisualizer = () => {
                 VoteFor target
               </span>
               <span className="text-slate-700">
-                {model.voteForTarget || "—"}
+                {model.voteForTarget || '—'}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="font-semibold text-slate-800">Committed</span>
               <span className="text-slate-700">
-                {model.committedCandidate || "—"}
+                {model.committedCandidate || '—'}
               </span>
             </div>
           </div>
@@ -1703,7 +1703,7 @@ export const CatchainVisualizer = () => {
             </p>
             <div
               className="flex-1 min-h-0 overflow-y-scroll pr-1 catchain-scroll"
-              style={{ scrollbarGutter: "stable" }}
+              style={{ scrollbarGutter: 'stable' }}
             >
               <div className="flex flex-col gap-2">
                 {candidates.slice(0, 4).map((cand) => (
@@ -1726,25 +1726,25 @@ export const CatchainVisualizer = () => {
                       <div>
                         <span className="font-semibold text-green-600">
                           {cand.approvals.size}
-                        </span>{" "}
+                        </span>{' '}
                         Approve
                       </div>
                       <div>
                         <span className="font-semibold text-cyan-600">
                           {cand.votes.size}
-                        </span>{" "}
+                        </span>{' '}
                         Vote
                       </div>
                       <div>
                         <span className="font-semibold text-amber-600">
                           {cand.precommits.size}
-                        </span>{" "}
+                        </span>{' '}
                         PreCommit
                       </div>
                       <div>
                         <span className="font-semibold text-blue-600">
                           {cand.commits.size}
-                        </span>{" "}
+                        </span>{' '}
                         Commit
                       </div>
                     </div>
@@ -1760,7 +1760,7 @@ export const CatchainVisualizer = () => {
             </p>
             <div
               className="overflow-x-auto committed-scroll border border-slate-200 rounded-xl bg-white shadow-inner"
-              style={{ scrollbarGutter: "stable both-edges" }}
+              style={{ scrollbarGutter: 'stable both-edges' }}
             >
               <div className="flex items-center gap-3 py-3 px-3 min-h-[120px]">
                 {model.committedHistory.length === 0 ? (
@@ -1787,7 +1787,7 @@ export const CatchainVisualizer = () => {
                             Round {entry.round}, attempt {entry.attempt}
                           </div>
                           <div className="text-[11px] text-slate-600">
-                            Proposer{" "}
+                            Proposer{' '}
                             {proposer ? proposer.label : entry.proposerId}
                           </div>
                           <div className="text-[11px] text-slate-500">
@@ -1816,7 +1816,7 @@ export const CatchainVisualizer = () => {
             <span className="text-slate-700">
               {attemptRemaining > 0
                 ? `${(attemptRemaining / 1000).toFixed(1)}s left`
-                : "next attempt soon"}
+                : 'next attempt soon'}
             </span>
           </div>
           <div className="mt-2 h-2 rounded-full bg-slate-200 overflow-hidden">
@@ -1829,7 +1829,7 @@ export const CatchainVisualizer = () => {
 
         <div
           className="flex items-center gap-3 relative z-50"
-          style={{ pointerEvents: "auto" }}
+          style={{ pointerEvents: 'auto' }}
         >
           <span className="text-sm font-semibold text-slate-800">Speed</span>
           <input
@@ -1840,7 +1840,7 @@ export const CatchainVisualizer = () => {
             value={speed}
             onChange={(e) => setSpeed(parseFloat(e.target.value))}
             className="flex-1"
-            style={{ position: "relative", zIndex: 60, pointerEvents: "auto" }}
+            style={{ position: 'relative', zIndex: 60, pointerEvents: 'auto' }}
           />
           <span className="text-sm text-slate-700">
             {(speed * 4).toFixed(2)}x
@@ -1881,7 +1881,7 @@ export const CatchainVisualizer = () => {
           style={{
             left: eventTooltipPos.x,
             top: eventTooltipPos.y,
-            transform: "translateX(-50%)",
+            transform: 'translateX(-50%)',
           }}
         >
           <div className="min-w-[190px] max-w-[260px] rounded-md bg-slate-900 px-3 py-2 text-white text-[12px] shadow-lg ring-1 ring-slate-800/70">
@@ -2024,7 +2024,7 @@ export const CatchainVisualizer = () => {
               if (!node) return null;
               const setStatus = (status) => {
                 node.status = status;
-                if (status === "crashed") {
+                if (status === 'crashed') {
                   node.pendingActions = [];
                   node.flushScheduled = false;
                 }
@@ -2037,14 +2037,14 @@ export const CatchainVisualizer = () => {
                       <p className="text-base font-semibold text-slate-800">
                         {node.label}
                         <span className="ml-2 text-sm font-normal">
-                          Status:{" "}
+                          Status:{' '}
                           <span
                             className={
-                              node.status === "crashed"
-                                ? "text-red-600"
-                                : node.status === "lagging"
-                                ? "text-amber-600"
-                                : "text-emerald-600"
+                              node.status === 'crashed'
+                                ? 'text-red-600'
+                                : node.status === 'lagging'
+                                  ? 'text-amber-600'
+                                  : 'text-emerald-600'
                             }
                           >
                             {node.status}
@@ -2061,13 +2061,13 @@ export const CatchainVisualizer = () => {
                   </div>
                   <dl className="text-sm text-slate-700 grid grid-cols-2 gap-x-6 gap-y-2 mb-4">
                     <dt className="font-semibold text-slate-800">Committed</dt>
-                    <dd>{node.committedTo || "—"}</dd>
+                    <dd>{node.committedTo || '—'}</dd>
                     <dt className="font-semibold text-slate-800">Locked</dt>
-                    <dd>{node.lockedCandidate || "—"}</dd>
+                    <dd>{node.lockedCandidate || '—'}</dd>
                     <dt className="font-semibold text-slate-800">
                       Vote target
                     </dt>
-                    <dd>{node.voteTarget || "—"}</dd>
+                    <dd>{node.voteTarget || '—'}</dd>
                     <dt className="font-semibold text-slate-800">Approvals</dt>
                     <dd>{node.approved.size}</dd>
                     <dt className="font-semibold text-slate-800">Votes</dt>
@@ -2082,19 +2082,19 @@ export const CatchainVisualizer = () => {
                   <div className="flex flex-col gap-2">
                     <button
                       className="rounded-lg border px-3 py-2 text-sm font-medium shadow-sm bg-emerald-50 border-emerald-200 text-emerald-800 hover:bg-emerald-100"
-                      onClick={() => setStatus("good")}
+                      onClick={() => setStatus('good')}
                     >
                       Make good
                     </button>
                     <button
                       className="rounded-lg border px-3 py-2 text-sm font-medium shadow-sm bg-red-50 border-red-200 text-red-800 hover:bg-red-100"
-                      onClick={() => setStatus("crashed")}
+                      onClick={() => setStatus('crashed')}
                     >
                       Crash
                     </button>
                     <button
                       className="rounded-lg border px-3 py-2 text-sm font-medium shadow-sm bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100"
-                      onClick={() => setStatus("lagging")}
+                      onClick={() => setStatus('lagging')}
                     >
                       Lagging (50% drop)
                     </button>
@@ -2125,7 +2125,7 @@ export const CatchainVisualizer = () => {
                       </p>
                       <br />
                       <p className="text-sm text-slate-700 font-semibold">
-                        Type:{" "}
+                        Type:{' '}
                         <span className="font-normal">
                           {selectedMessage.primary || selectedMessage.transport}
                         </span>
@@ -2156,41 +2156,41 @@ export const CatchainVisualizer = () => {
                         Send → Receive
                       </dt>
                       <dd className="text-right">
-                        {Math.round(selectedMessage.sendTime)} →{" "}
+                        {Math.round(selectedMessage.sendTime)} →{' '}
                         {Math.round(selectedMessage.recvTime)} ms
                       </dd>
                     </div>
                   </dl>
-                  {selectedMessage.transport === "Catchain" && envelope && (
+                  {selectedMessage.transport === 'Catchain' && envelope && (
                     <div className="text-sm text-slate-800">
                       <p className="font-semibold mb-1">Catchain info</p>
                       <div className="text-slate-700">
-                        <span className="font-semibold">Message</span>:{" "}
+                        <span className="font-semibold">Message</span>:{' '}
                         {envelope.id} (h{envelope.height || 0})
                       </div>
                       <div className="text-slate-700">
-                        <span className="font-semibold">Sender</span>:{" "}
+                        <span className="font-semibold">Sender</span>:{' '}
                         {envelope.sender}
                       </div>
                       <div className="text-slate-700">
-                        <span className="font-semibold">Prev</span>:{" "}
-                        {envelope.prev || "None"}
+                        <span className="font-semibold">Prev</span>:{' '}
+                        {envelope.prev || 'None'}
                       </div>
                       <div className="text-slate-700">
-                        <span className="font-semibold">Deps</span>:{" "}
+                        <span className="font-semibold">Deps</span>:{' '}
                         {(envelope.deps || []).length === 0
-                          ? "None"
-                          : (envelope.deps || []).join(", ")}
+                          ? 'None'
+                          : (envelope.deps || []).join(', ')}
                       </div>
                     </div>
                   )}
-                  {selectedMessage.transport === "DepRequest" && (
+                  {selectedMessage.transport === 'DepRequest' && (
                     <div className="text-sm text-slate-800">
                       <p className="font-semibold mb-1">Requested deps</p>
                       <div className="text-slate-700">
                         {(selectedMessage.missingIds || []).length === 0
-                          ? "None listed"
-                          : (selectedMessage.missingIds || []).join(", ")}
+                          ? 'None listed'
+                          : (selectedMessage.missingIds || []).join(', ')}
                       </div>
                     </div>
                   )}
@@ -2205,8 +2205,8 @@ export const CatchainVisualizer = () => {
                             key={`${act.type}-${idx}`}
                             className="text-slate-700"
                           >
-                            {act.type}{" "}
-                            {act.candidateId ? `→ ${act.candidateId}` : ""}
+                            {act.type}{' '}
+                            {act.candidateId ? `→ ${act.candidateId}` : ''}
                           </li>
                         ))}
                       </ul>
@@ -2217,7 +2217,7 @@ export const CatchainVisualizer = () => {
                       className="rounded-lg border px-3 py-2 text-sm font-medium shadow-sm bg-red-50 border-red-200 text-red-800 hover:bg-red-100"
                       onClick={() => {
                         model.messages = model.messages.filter(
-                          (m) => m !== selectedMessage
+                          (m) => m !== selectedMessage,
                         );
                         setSelectedMessage(null);
                         setTick((t) => t + 1);
@@ -2252,7 +2252,7 @@ export const CatchainVisualizer = () => {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-base font-semibold text-slate-800">
-                        Candidate{" "}
+                        Candidate{' '}
                         <span className="font-normal text-slate-600">
                           {cand.id}
                         </span>

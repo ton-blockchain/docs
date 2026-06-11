@@ -22,14 +22,20 @@ function getImageSrc(src: ImageProps['src']): string {
 
   if (typeof src === 'object') {
     // Next.js
-    if ('default' in src) return (src as { default: { src: string } }).default.src;
+    if ('default' in src)
+      return (src as { default: { src: string } }).default.src;
     return src.src;
   }
 
   return '';
 }
 
-export function ImageZoom({ zoomInProps, children, rmiz, ...props }: ImageZoomProps) {
+export function ImageZoom({
+  zoomInProps,
+  children,
+  rmiz,
+  ...props
+}: ImageZoomProps) {
   return (
     <Zoom
       zoomMargin={20}
@@ -42,7 +48,10 @@ export function ImageZoom({ zoomInProps, children, rmiz, ...props }: ImageZoomPr
       }}
     >
       {children ?? (
-        <Image sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px" {...props} />
+        <Image
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"
+          {...props}
+        />
       )}
     </Zoom>
   );

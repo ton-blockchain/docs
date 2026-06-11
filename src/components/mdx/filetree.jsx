@@ -25,15 +25,15 @@ export const FileTree = ({ items = [], defaultOpen = true }) => {
    */
   const renderItem = (item, index) => {
     // Handle ellipsis items
-    if (item === "..." || item === "…") {
+    if (item === '...' || item === '…') {
       // @ts-ignore
       return <File key={index} name="…" />;
     }
 
     // Handle file items (both string and file objects)
-    if (typeof item === "string" || item.kind === "file") {
-      const fileName = typeof item === "string" ? item : item.name;
-      const note = typeof item === "string" ? null : item.note;
+    if (typeof item === 'string' || item.kind === 'file') {
+      const fileName = typeof item === 'string' ? item : item.name;
+      const note = typeof item === 'string' ? null : item.note;
       const displayName = note ? `${fileName} — ${note}` : fileName;
 
       // @ts-ignore
@@ -41,14 +41,16 @@ export const FileTree = ({ items = [], defaultOpen = true }) => {
     }
 
     // Handle folder objects
-    if (item.kind === "folder") {
+    if (item.kind === 'folder') {
       const isOpen = item.open ?? defaultOpen;
       const displayName = item.note ? `${item.name} — ${item.note}` : item.name;
 
       return (
         // @ts-ignore
         <Folder key={index} name={displayName} defaultOpen={isOpen}>
-          {item?.items?.map((nestedItem, nestedIndex) => renderItem(nestedItem, nestedIndex))}
+          {item?.items?.map((nestedItem, nestedIndex) =>
+            renderItem(nestedItem, nestedIndex),
+          )}
           {/* @ts-ignore */}
         </Folder>
       );

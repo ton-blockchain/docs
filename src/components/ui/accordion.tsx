@@ -5,7 +5,10 @@ import { ChevronRight } from 'lucide-react';
 import { type ComponentProps } from 'react';
 import { cn } from '../../lib/cn';
 
-export function Accordion({ className, ...props }: ComponentProps<typeof Primitive.Root>) {
+export function Accordion({
+  className,
+  ...props
+}: ComponentProps<typeof Primitive.Root>) {
   return (
     <Primitive.Root
       className={cn(

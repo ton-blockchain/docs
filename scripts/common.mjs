@@ -78,7 +78,11 @@ export function ansiBold(src) {
  * @param msg {string} Complete description of the error message
  */
 export function composeErrorList(brief, list, msg) {
-  return [ansiRed(brief), '- ' + list.join('\n- '), `\n${ansiRed('Error:')} ${msg}`].join('\n');
+  return [
+    ansiRed(brief),
+    '- ' + list.join('\n- '),
+    `\n${ansiRed('Error:')} ${msg}`,
+  ].join('\n');
 }
 
 /** @param msg {string} */
@@ -101,7 +105,9 @@ export function composeError(msg) {
  * @param list {string[]} List of inline warning messages
  */
 export function composeWarningList(msg, list) {
-  return [`${ansiYellow('Warning:')} ${msg}`, '- ' + list.join('\n- ')].join('\n');
+  return [`${ansiYellow('Warning:')} ${msg}`, '- ' + list.join('\n- ')].join(
+    '\n',
+  );
 }
 
 /** @param msg {string} */
@@ -169,10 +175,19 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
    * @type {{ files: string[]; dirs: string[] }}
    */
   const commonIgnoreMap = Object.freeze({
-    files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) => join(dir, it)),
-    dirs: ['.git', '.github', '.idea', '.vscode', '__MACOSX', 'node_modules', '__pycache__', 'stats'].map((it) =>
+    files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) =>
       join(dir, it),
     ),
+    dirs: [
+      '.git',
+      '.github',
+      '.idea',
+      '.vscode',
+      '__MACOSX',
+      'node_modules',
+      '__pycache__',
+      'stats',
+    ].map((it) => join(dir, it)),
   });
 
   /**
@@ -181,7 +196,9 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
    */
   const extIgnoreMap = Object.freeze({
     mdx: {
-      files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) => join(dir, it)),
+      files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) =>
+        join(dir, it),
+      ),
       dirs: [
         // Snippets and page parts
         'snippets',
@@ -201,19 +218,21 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
   /** @param subDir {string} */
   const recurse = (subDir) => {
     // Collects files and dirs one level deep, excluding common ignore targets
-    const intermediates = readdirSync(subDir, { withFileTypes: true, encoding: 'utf8', recursive: false }).filter(
-      (it) => {
-        const relPath = join(it.parentPath, it.name);
-        if (it.isFile()) {
-          return commonIgnoreMap.files.includes(relPath) === false;
-        }
-        if (it.isDirectory()) {
-          return commonIgnoreMap.dirs.includes(relPath) === false;
-        }
-        // Otherwise
-        return false;
-      },
-    );
+    const intermediates = readdirSync(subDir, {
+      withFileTypes: true,
+      encoding: 'utf8',
+      recursive: false,
+    }).filter((it) => {
+      const relPath = join(it.parentPath, it.name);
+      if (it.isFile()) {
+        return commonIgnoreMap.files.includes(relPath) === false;
+      }
+      if (it.isDirectory()) {
+        return commonIgnoreMap.dirs.includes(relPath) === false;
+      }
+      // Otherwise
+      return false;
+    });
     // Processes collected items and filters out extension-specific ignore targets,
     // recursively descending in directories and pushing files into `results` array
     // if they match the target `ext` and are not ignored.
@@ -221,7 +240,10 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
       const relPath = join(it.parentPath, it.name);
       if (it.isFile() && relPath.toLowerCase().endsWith(ext)) {
         // Ignore extension-specific targets
-        if (extIgnoreMap.hasOwnProperty(ext) && extIgnoreMap[ext].files.includes(relPath)) {
+        if (
+          extIgnoreMap.hasOwnProperty(ext) &&
+          extIgnoreMap[ext].files.includes(relPath)
+        ) {
           return;
         }
         results.push(relPath);
@@ -229,7 +251,10 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
       }
       if (it.isDirectory()) {
         // Ignore extension-specific targets
-        if (extIgnoreMap.hasOwnProperty(ext) && extIgnoreMap[ext].dirs.includes(relPath)) {
+        if (
+          extIgnoreMap.hasOwnProperty(ext) &&
+          extIgnoreMap[ext].dirs.includes(relPath)
+        ) {
           return;
         }
         recurse(relPath);

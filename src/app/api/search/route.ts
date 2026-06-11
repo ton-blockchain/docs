@@ -3,7 +3,8 @@ import { createFromSource } from 'fumadocs-core/search/server';
 
 const searchSource: typeof source = {
   ...source,
-  getPages: (locale?: string) => source.getPages(locale).filter((p) => !p.data.url && !p.data.noindex),
+  getPages: (locale?: string) =>
+    source.getPages(locale).filter((p) => !p.data.url && !p.data.noindex),
 };
 const searchAPI = createFromSource(searchSource, {
   // https://docs.orama.com/docs/orama-js/supported-languages
@@ -21,7 +22,7 @@ const searchAPI = createFromSource(searchSource, {
   // },
   sort: {
     enabled: true,
-  }
+  },
 });
 
 export const revalidate = false;

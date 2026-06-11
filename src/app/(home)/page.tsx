@@ -50,9 +50,18 @@ const paths: Path[] = [
     description: 'Everything one needs to build applications on TON.',
     icon: Blocks,
     links: [
-      { title: 'Connect wallets to the app', href: '/ecosystem/ton-connect/overview' },
-      { title: 'Manage and track assets with AppKit', href: '/ecosystem/appkit/overview' },
-      { title: 'Access the blockchain via APIs', href: '/ecosystem/api/overview' },
+      {
+        title: 'Connect wallets to the app',
+        href: '/ecosystem/ton-connect/overview',
+      },
+      {
+        title: 'Manage and track assets with AppKit',
+        href: '/ecosystem/appkit/overview',
+      },
+      {
+        title: 'Access the blockchain via APIs',
+        href: '/ecosystem/api/overview',
+      },
       { title: 'Build apps using SDKs', href: '/ecosystem/sdks' },
     ],
   },
@@ -74,7 +83,10 @@ const paths: Path[] = [
     icon: Server,
     links: [
       { title: 'Nodes overview', href: '/ecosystem/nodes/overview' },
-      { title: 'Validator node', href: '/ecosystem/nodes/overview#validator-node' },
+      {
+        title: 'Validator node',
+        href: '/ecosystem/nodes/overview#validator-node',
+      },
       { title: 'C++ node setup', href: '/ecosystem/nodes/cpp/setup-mytonctrl' },
       { title: 'Rust node setup', href: '/ecosystem/nodes/rust/quick-start' },
     ],
@@ -153,8 +165,8 @@ export default function HomePage() {
               TON documentation
             </h1>
             <p className="mt-6 text-pretty text-xl text-fd-muted-foreground">
-              TON is a blockchain platform designed for scalable smart contracts,
-              applications, and payments at consumer scale.
+              TON is a blockchain platform designed for scalable smart
+              contracts, applications, and payments at consumer scale.
             </p>
           </div>
         </section>
@@ -176,7 +188,9 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-lg font-semibold">{title}</h3>
                 </div>
-                <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
+                <p className="mt-3 text-sm text-fd-muted-foreground">
+                  {description}
+                </p>
                 <ul className="mt-4 flex flex-col gap-0.5">
                   {links.map((link) => (
                     <li key={link.href}>
@@ -199,8 +213,8 @@ export default function HomePage() {
             <kbd className="rounded border border-fd-border bg-fd-muted px-1.5 py-0.5 font-mono text-xs">
               Ctrl K
             </kbd>{' '}
-            to search the docs. Still stuck?
-            Discuss issues and best practices with other community members.
+            to search the docs. Still stuck? Discuss issues and best practices
+            with other community members.
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {support.map(({ title, description, href, icon: Icon }) => {
@@ -215,12 +229,20 @@ export default function HomePage() {
                     </div>
                     <h3 className="font-semibold">{title}</h3>
                   </div>
-                  <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
+                  <p className="mt-3 text-sm text-fd-muted-foreground">
+                    {description}
+                  </p>
                 </>
               );
 
               return external ? (
-                <a key={title} className={className} href={href} target="_blank" rel="noreferrer">
+                <a
+                  key={title}
+                  className={className}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {inner}
                 </a>
               ) : (

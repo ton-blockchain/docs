@@ -11,14 +11,21 @@
  *    children: any,
  *  }} props
  */
-export const Card = ({ title, href = "", icon = "", horizontal = false, arrow = false, children }) => {
+export const Card = ({
+  title,
+  href = '',
+  icon = '',
+  horizontal = false,
+  arrow = false,
+  children,
+}) => {
   return <>{children}</>;
-}
+};
 
 /** @param {{ children: any }} props */
 export const Cards = ({ children }) => {
   return <>{children}</>;
-}
+};
 
 /** @param {{
  *    path: string,
@@ -29,7 +36,13 @@ export const Cards = ({ children }) => {
  *    children: any,
  *  }} props
  */
-export const ParamField = ({ path = "", body = "", type = "", required = false, children }) => (
+export const ParamField = ({
+  path = '',
+  body = '',
+  type = '',
+  required = false,
+  children,
+}) => (
   <div className="my-3">
     <p className="font-mono text-sm">
       <span className="font-bold">{path || body}</span>
@@ -48,7 +61,12 @@ export const ParamField = ({ path = "", body = "", type = "", required = false, 
  *    children: any,
  *  }} props
  */
-export const ResponseField = ({ name = "", type = "", required = false, children }) => (
+export const ResponseField = ({
+  name = '',
+  type = '',
+  required = false,
+  children,
+}) => (
   <div className="my-3">
     <p className="font-mono text-sm">
       <span className="font-bold">{name}</span>
@@ -60,7 +78,7 @@ export const ResponseField = ({ name = "", type = "", required = false, children
 );
 
 /** @param {{ title: string, noAnchor: boolean, children: any }} props */
-export const Step = ({ title = "", children }) => (
+export const Step = ({ title = '', children }) => (
   <div className="my-3">
     {title && <p className="font-bold">{title}</p>}
     {children}
@@ -81,13 +99,17 @@ export const CardGroup = ({ children }) => (
 );
 
 /** @param {{ children: any }} props */
-export const AccordionGroup = ({ children }) => <div className="my-4">{children}</div>;
+export const AccordionGroup = ({ children }) => (
+  <div className="my-4">{children}</div>
+);
 
 /** @param {{ children: any }} props */
-export const CodeGroup = ({ children }) => <div className="my-4">{children}</div>;
+export const CodeGroup = ({ children }) => (
+  <div className="my-4">{children}</div>
+);
 
 /** @param {{ title: string, children: any }} props */
-export const Expandable = ({ title = "", children }) => (
+export const Expandable = ({ title = '', children }) => (
   <details className="my-4">
     {title && <summary className="font-bold">{title}</summary>}
     {children}
@@ -102,12 +124,12 @@ export const Expandable = ({ title = "", children }) => (
  *   children: any
  * }} props
  */
-export const Tooltip = ({ tip = "", cta = "", href = "", children }) => (
+export const Tooltip = ({ tip = '', cta = '', href = '', children }) => (
   <span title={tip}>
     {children}
     {cta && href && (
       <>
-        {" "}
+        {' '}
         <a href={href}>{cta}</a>
       </>
     )}
@@ -122,7 +144,9 @@ export const Tooltip = ({ tip = "", cta = "", href = "", children }) => (
  * }} props
  */
 export const Badge = ({ children }) => (
-  <span className="inline-block rounded px-1.5 py-0.5 text-xs border">{children}</span>
+  <span className="inline-block rounded px-1.5 py-0.5 text-xs border">
+    {children}
+  </span>
 );
 
 /**
@@ -132,6 +156,10 @@ export const Badge = ({ children }) => (
  *   iconType: string
  * }} props
  */
-export const Icon = ({ icon = "", size = 16 }) => (
-  <span className="inline-block align-middle" style={{ width: size, height: size }} aria-label={icon} />
+export const Icon = ({ icon = '', size = 16 }) => (
+  <span
+    className="inline-block align-middle"
+    style={{ width: size, height: size }}
+    aria-label={icon}
+  />
 );

@@ -17,7 +17,7 @@ span.method-nav-pill {
   padding-bottom: 3px;
 }
 
-.link>code {
+.link > code {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   text-decoration: none;
@@ -29,17 +29,17 @@ table {
   overflow: unset !important;
 }
 
-thead>tr>th {
+thead > tr > th {
   position: sticky;
   top: 0;
   background: rgb(var(--background-light));
 }
 
-html.dark thead>tr>th {
+html.dark thead > tr > th {
   background: rgb(var(--background-dark));
 }
 
 /* Reduction of bottom margins for code blocks as last items of <Aside> components */
-div[data-component-part="callout-content"]>.code-block:last-child {
+div[data-component-part='callout-content'] > .code-block:last-child {
   margin-bottom: 0;
 }

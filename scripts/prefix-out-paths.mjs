@@ -12,7 +12,13 @@
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 // Node.js
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { join, extname } from 'node:path';
 
 // WARN: Must match next.config.static.ts isGitHubPagesBuild
@@ -26,7 +32,8 @@ const exts = new Set(['.html', '.js', '.css', '.md', '.txt']);
 
 // Regex patterns
 const attrPattern = /\b(src|href|poster|darkSrc)=(["'])(\/(?!\/)[^"']*)\2/g;
-const specAttrPattern = /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?!\/)[^"']*)\2/g;
+const specAttrPattern =
+  /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?!\/)[^"']*)\2/g;
 const cssUrlPattern = /url\((["']?)(\/(?!\/)[^)"']*)\1\)/g;
 
 /** @param {string} path */
@@ -86,7 +93,7 @@ const walk = (dir) => {
   }
 
   return stats;
-}
+};
 
 const main = () => {
   if (!isGitHubPagesBuild) {
@@ -101,6 +108,6 @@ const main = () => {
 
   const { files, replacements } = walk(outDir);
   console.log(`prefix-out-paths: ${files} files, ${replacements} replacements`);
-}
+};
 
 main();

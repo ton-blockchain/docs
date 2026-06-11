@@ -127,7 +127,10 @@ export function Tabs({
   );
 }
 
-export function TabsContent({ value, ...props }: ComponentProps<typeof Primitive.TabsContent>) {
+export function TabsContent({
+  value,
+  ...props
+}: ComponentProps<typeof Primitive.TabsContent>) {
   const { valueToIdMap } = useTabContext();
 
   if (props.id) {

@@ -60,8 +60,8 @@ export const Image = ({
   /** @param value {string | number} */
   const checkValidDimensionValue = (value) => {
     switch (typeof value) {
-      case "string":
-      case "number":
+      case 'string':
+      case 'number':
         const num = Number(value);
         return Number.isSafeInteger(num) && num >= minPx && num <= maxPx;
       default:
@@ -74,12 +74,12 @@ export const Image = ({
 
   // Invalid image height (in pixels)
   if (height && !checkValidDimensionValue(height)) {
-    callouts.push(createInvalidPropCallout("height", height, expectedPx));
+    callouts.push(createInvalidPropCallout('height', height, expectedPx));
   }
 
   // Invalid image width (in pixels)
   if (width && !checkValidDimensionValue(width)) {
-    callouts.push(createInvalidPropCallout("width", width, expectedPx));
+    callouts.push(createInvalidPropCallout('width', width, expectedPx));
   }
 
   // Display all errors
@@ -92,8 +92,8 @@ export const Image = ({
   const widthPx = Number(width);
 
   // Typecast string | boolean values to boolean-only
-  const shouldCenter = center === "true" || center === true ? true : false;
-  const shouldNotZoom = noZoom === "true" || noZoom === true ? true : false;
+  const shouldCenter = center === 'true' || center === true ? true : false;
+  const shouldNotZoom = noZoom === 'true' || noZoom === true ? true : false;
 
   // Resulting images
   const images = (
@@ -105,16 +105,20 @@ export const Image = ({
         {...(height && { height: heightPx })}
         {...(width && { width: widthPx })}
         // @ts-ignore
-        {...((shouldCreateLink || shouldInvert || shouldNotZoom) && { noZoom: "true" })}
+        {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
+          noZoom: 'true',
+        })}
       />
       <img
-        className={`hidden dark:block ${shouldInvert ? "invert" : ""}`}
+        className={`hidden dark:block ${shouldInvert ? 'invert' : ''}`}
         src={darkSrc ?? src}
         alt={darkAlt ?? alt}
         {...(height && { height: heightPx })}
         {...(width && { width: widthPx })}
         // @ts-ignore
-        {...((shouldCreateLink || shouldInvert || shouldNotZoom) && { noZoom: "true" })}
+        {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
+          noZoom: 'true',
+        })}
       />
     </>
   );
@@ -124,8 +128,8 @@ export const Image = ({
     // Centered horizontally
     if (shouldCenter) {
       return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <a href={href} target={target ?? "_self"}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <a href={href} target={target ?? '_self'}>
             {images}
           </a>
         </div>
@@ -133,7 +137,7 @@ export const Image = ({
     }
 
     return (
-      <a href={href} target={target ?? "_self"}>
+      <a href={href} target={target ?? '_self'}>
         {images}
       </a>
     );
@@ -141,7 +145,9 @@ export const Image = ({
 
   // Not a link, centered horizontally
   if (shouldCenter) {
-    return <div style={{ display: "flex", justifyContent: "center" }}>{images}</div>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>{images}</div>
+    );
   }
 
   // Not a link, placed as is

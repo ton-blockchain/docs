@@ -16,16 +16,16 @@
       // Banned words with no clear or correct replacements
       // For a few words with those, see the flagWords property later in this file
       "name": "deny-list",
-      "path": "public/dictionaries/ban.txt"
+      "path": "public/dictionaries/ban.txt",
     },
     {
       "name": "2lw-deny-list",
-      "path": "public/dictionaries/two-letter-words-ban.txt"
+      "path": "public/dictionaries/two-letter-words-ban.txt",
     },
     {
       "name": "tvm-instructions",
-      "path": "public/dictionaries/tvm-instructions.txt"
-    }
+      "path": "public/dictionaries/tvm-instructions.txt",
+    },
   ],
   "dictionaries": [
     "main-list",
@@ -34,10 +34,7 @@
     "tvm-instructions",
   ],
   "useGitignore": true,
-  "files": [
-    "**/*.{md,mdx}",
-    "**/*.{js,jsx,mjs}",
-  ],
+  "files": ["**/*.{md,mdx}", "**/*.{js,jsx,mjs}"],
   "minWordLength": 3,
   "overrides": [
     // Enable case sensitivity for Markdown and MDX files only
@@ -69,12 +66,7 @@
     // Do not check for banned words (denylists or flagWords) in certain files
     {
       "filename": "content/contribute/style-guide*.mdx",
-      "ignoreWords": [
-        "tos",
-        "DOI",
-        "boc",
-        "BOC",
-      ],
+      "ignoreWords": ["tos", "DOI", "boc", "BOC"],
       "ignoreRegExpList": [
         "\\b[tT]on[a-zA-Z]+\\b", // ton or Ton-prefixed words
         "\\b[a-zA-Z]+Chain\\b", // Chain-suffixed words
@@ -82,45 +74,35 @@
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
-      ]
+      ],
     },
     {
       "filename": "content/tolk/features/compiler-optimizations.mdx",
-      "ignoreWords": [
-        "fifting",
-      ]
+      "ignoreWords": ["fifting"],
     },
     {
       "filename": "**/api/**/*.{json,yml,yaml}",
-      "ignoreWords": [
-        "multisigs",
-        "smc",
-        "Uninited",
-      ],
+      "ignoreWords": ["multisigs", "smc", "Uninited"],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
-      ]
+      ],
     },
     {
       "filename": "**/*.{js,jsx,mjs}",
-      "ignoreWords": [
-        "Dests",
-      ],
+      "ignoreWords": ["Dests"],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
-      ]
+      ],
     },
     {
       "filename": "public/grammars/*.json",
-      "ignoreWords": [
-        "tlb",
-      ],
+      "ignoreWords": ["tlb"],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
-      ]
+      ],
     },
     {
       "filename": "content/ecosystem/ai/mcp.mdx",
@@ -133,7 +115,7 @@
       "ignoreWords": [
         "subsecond", // without a hyphen in the filename
       ],
-    }
+    },
   ],
   "ignorePaths": [
     // Some whitepapers
@@ -165,7 +147,7 @@
     "CODEOWNERS",
     "LICENSE-*",
     "snippets/tvm-instruction-table.jsx",
-    "snippets/catchain-visualizer.jsx"
+    "snippets/catchain-visualizer.jsx",
   ],
   "ignoreRegExpList": [
     //

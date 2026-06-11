@@ -7,8 +7,8 @@ import {
   remarkMdxFiles,
   remarkGfm,
 } from 'fumadocs-core/mdx-plugins';
-import { parseCodeBlockAttributes } from "fumadocs-core/mdx-plugins/codeblock-utils"
-import { z } from "zod";
+import { parseCodeBlockAttributes } from 'fumadocs-core/mdx-plugins/codeblock-utils';
+import { z } from 'zod';
 import {
   transformerMetaHighlight,
   transformerMetaWordHighlight,
@@ -27,17 +27,19 @@ import { visitParents } from 'unist-util-visit-parents';
 export const docs = defineDocs({
   dir: 'content',
   docs: {
-    schema: pageSchema.extend({
-      sidebarTitle: z.string().optional(),
-      tag: z.string().optional(),
-      url: z.httpUrl().optional(),
-      noindex: z.coerce.boolean().default(false),
-      // TODO: fmt with prettier for everything but md[x]
-    }).transform((frontmatter) => ({
-      ...frontmatter,
-      // A tag must not be used with an openapi specified in the frontmatter
-      ...(frontmatter._openapi ? { tag: undefined } : {}),
-    })),
+    schema: pageSchema
+      .extend({
+        sidebarTitle: z.string().optional(),
+        tag: z.string().optional(),
+        url: z.httpUrl().optional(),
+        noindex: z.coerce.boolean().default(false),
+        // TODO: fmt with prettier for everything but md[x]
+      })
+      .transform((frontmatter) => ({
+        ...frontmatter,
+        // A tag must not be used with an openapi specified in the frontmatter
+        ...(frontmatter._openapi ? { tag: undefined } : {}),
+      })),
     postprocess: {
       includeProcessedMarkdown: true,
     },
@@ -54,8 +56,8 @@ export default defineConfig({
     rehypeCodeOptions: {
       themes: {
         // NOTE: one-light and one-dark-pro are alternative options
-        light: "github-light-default",
-        dark: "dark-plus",
+        light: 'github-light-default',
+        dark: 'dark-plus',
       },
       icon: {
         extend: {
@@ -86,38 +88,40 @@ export default defineConfig({
         'tsx',
         'yaml',
         ...['fift', 'func', 'tlb', 'tolk', 'tasm'].map((name) =>
-          JSON.parse(readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8'))
+          JSON.parse(
+            readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8'),
+          ),
         ),
       ],
       langAlias: {
-        'mytonctrl': 'shellscript',
-        'tact': 'text',
-        'asm': 'tasm',
-        'md': 'mdx',
-        'tl': 'tlb',
-        'env': 'ini',
-        'circom': 'cpp',
-        'boc': 'text',
+        mytonctrl: 'shellscript',
+        tact: 'text',
+        asm: 'tasm',
+        md: 'mdx',
+        tl: 'tlb',
+        env: 'ini',
+        circom: 'cpp',
+        boc: 'text',
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
         transformerRenderIndentGuides(),
         transformerMetaHighlight(),
         transformerMetaWordHighlight(),
-        transformerNotationHighlight({ matchAlgorithm: "v3" }),
-        transformerNotationWordHighlight({ matchAlgorithm: "v3" }),
-        transformerNotationDiff({ matchAlgorithm: "v3" }),
-        transformerNotationFocus({ matchAlgorithm: "v3" }),
+        transformerNotationHighlight({ matchAlgorithm: 'v3' }),
+        transformerNotationWordHighlight({ matchAlgorithm: 'v3' }),
+        transformerNotationDiff({ matchAlgorithm: 'v3' }),
+        transformerNotationFocus({ matchAlgorithm: 'v3' }),
         {
-          name: "Disable copying with a noCopy attribute",
+          name: 'Disable copying with a noCopy attribute',
           pre(pre) {
-            const raw = this.options?.meta?.__raw
-            if (!raw) return pre
-            const { attributes } = parseCodeBlockAttributes(raw, ["noCopy"])
-            if ("noCopy" in attributes) {
-              pre.properties.allowCopy = ""
+            const raw = this.options?.meta?.__raw;
+            if (!raw) return pre;
+            const { attributes } = parseCodeBlockAttributes(raw, ['noCopy']);
+            if ('noCopy' in attributes) {
+              pre.properties.allowCopy = '';
             }
-            return pre
+            return pre;
           },
         },
       ],
@@ -128,7 +132,8 @@ export default defineConfig({
       function remarkCodeGroup() {
         return (tree) => {
           visitParents(tree, (node: any) => {
-            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'CodeGroup') return;
+            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'CodeGroup')
+              return;
             for (const child of node.children) {
               if (child.type === 'code' && child.meta) {
                 child.meta = child.meta.replace(/\btitle=/, 'tab=');
@@ -141,10 +146,13 @@ export default defineConfig({
       ...v,
       // Additional plugins
       remarkMath,
-      [remarkGfm, {
-        singleTilde: false,
-        stringLength: stringWidth,
-      }],
+      [
+        remarkGfm,
+        {
+          singleTilde: false,
+          stringLength: stringWidth,
+        },
+      ],
       remarkMdxMermaid,
       remarkMdxFiles,
     ],

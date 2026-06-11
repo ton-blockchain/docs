@@ -1,6 +1,12 @@
 'use client';
 import { type ComponentProps, useMemo, useState } from 'react';
-import { Check, ChevronDown, Copy, ExternalLinkIcon, MessageCircleIcon } from 'lucide-react';
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  ExternalLinkIcon,
+  MessageCircleIcon,
+} from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
@@ -83,7 +89,9 @@ export function ViewOptions({
   const pathname = usePathname();
   const items = useMemo(() => {
     const pageUrl =
-      typeof window === 'undefined' ? pathname : new URL(pathname, window.location.origin);
+      typeof window === 'undefined'
+        ? pathname
+        : new URL(pathname, window.location.origin);
     const q = `Read ${pageUrl}.`;
 
     return [
@@ -93,7 +101,7 @@ export function ViewOptions({
       //   icon: <TextIcon />,
       // },
       githubUrl && {
-        title: "Open in GitHub",
+        title: 'Open in GitHub',
         href: githubUrl,
         icon: (
           <svg fill="currentColor" role="img" viewBox="0 0 24 24">
@@ -103,7 +111,7 @@ export function ViewOptions({
         ),
       },
       {
-        title: "Open in ChatGPT",
+        title: 'Open in ChatGPT',
         href: `https://chatgpt.com/?${new URLSearchParams({
           hints: 'search',
           q,
@@ -121,7 +129,7 @@ export function ViewOptions({
         ),
       },
       {
-        title: "Open in Claude",
+        title: 'Open in Claude',
         href: `https://claude.ai/new?${new URLSearchParams({
           q,
         })}`,
@@ -138,7 +146,7 @@ export function ViewOptions({
         ),
       },
       {
-        title: "Open in Cursor",
+        title: 'Open in Cursor',
         icon: (
           <svg
             fill="currentColor"
@@ -155,7 +163,7 @@ export function ViewOptions({
         })}`,
       },
       {
-        title: "Open in Scira AI",
+        title: 'Open in Scira AI',
         href: `https://scira.ai/?${new URLSearchParams({
           q,
         })}`,
@@ -219,7 +227,7 @@ export function ViewOptions({
         ),
       },
       {
-        title: "Open in T3 Chat",
+        title: 'Open in T3 Chat',
         href: `https://t3.chat/new?${new URLSearchParams({
           q,
         })}`,
