@@ -41,6 +41,54 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
+/*
+ * Relocating the `tabMode='top'` tab bar, see the `src/(docs)/layout.tsx`.
+ * Fumadocs hardcodes it at `grid-area: main`, where it would sit atop the page.
+ * Now, the bar is moved into the dedicated `tabs` row with proper alignment.
+ */
+#nd-docs-layout > .items-end {
+  grid-area: tabs;
+  align-items: center;
+}
+
+#nd-docs-layout {
+  /* no bar by default */
+  --fd-tabs-height: 0rem;
+}
+
+/* 48rem ~ 768px with font-size 16 */
+@media (min-width: 48rem) {
+  #nd-docs-layout {
+    /* same as ToC popover (~2.5rem) */
+    --fd-tabs-height: var(--fd-toc-popover-height);
+  }
+}
+
+/* 75rem ~ 1200px with font-size 16 */
+@media (min-width: 75rem) {
+  /* large enough to be visible, yet small enough to
+     not fight for attention with the rest of the page */
+  #nd-docs-layout {
+    --fd-tabs-height: 3rem;
+  }
+
+  /* match the page contents width */
+  #nd-docs-layout > .items-end {
+    max-width: 900px;
+    margin-inline: calc(var(--spacing) * 8);
+    align-items: stretch;
+    padding-inline: inherit;
+  }
+}
+
+/* 90rem ~ 1440px with font-size 16 */
+@media (min-width: 90rem) {
+  /* match the page contents width */
+  #nd-docs-layout > .items-end {
+    margin-inline: calc(var(--spacing) * 11);
+  }
+}
+
 /* Prevent word breaks in inline code items in tables */
 td > code,
 td > em > code,
