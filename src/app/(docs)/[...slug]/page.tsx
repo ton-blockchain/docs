@@ -14,6 +14,7 @@ import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { getMDXComponents } from '@/components/mdx';
 import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
+import { ScrollTop } from '@/components/ui/scroll-top';
 
 export default async function Page(props: PageProps<'/[...slug]'>) {
   const params = await props.params;
@@ -46,6 +47,11 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
       full={page.data.full}
       tableOfContent={{
         style: 'clerk',
+        footer: (
+          <div className="my-3 space-y-3">
+            <ScrollTop />
+          </div>
+        ),
       }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
