@@ -52,6 +52,12 @@ export const docs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
+    // NOTE: rehypeCode automatically adds an icon based on the language meta string.
+    //       yet, we need to add an explicit `icon` override, that would replace itself with
+    //       the prefix of an Icon component to the tab/title text, which then will be rendered by mdx
+    // remarkCodeTabOptions: {
+    //   parseMdx: true,
+    // },
     rehypeCodeOptions: {
       themes: {
         // NOTE: one-light and one-dark-pro are alternative options
@@ -62,6 +68,10 @@ export default defineConfig({
         extend: {
           tolk: readFileSync('./public/logo/ton-gray.svg', 'utf8'),
         },
+        // NOTE: by default, `lang` is the icon name, and `shortcuts` option allows the `lang` meta name map onto its icon name override.
+        // TODO: come up with overrides based on the `icon` meta, might require "swizzling" the CodeBlock component.
+        //       the override might place the icon as an MDX inside the title yet disable the default icon attribution.
+        //       alternatively, make the override go into the table directly.
       },
       lazy: false,
       langs: [

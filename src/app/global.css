@@ -4,6 +4,7 @@
 @import 'fumadocs-openapi/css/preset.css';
 
 @source '../../snippets/*.{jsx,tsx}';
+@source '../**/*.{ts,jsx,tsx}';
 
 /* Common, baseline color changes */
 :root {
@@ -57,22 +58,22 @@ html > body[data-scroll-locked] {
 }
 
 /* 48rem ~ 768px with font-size 16 */
-@media (min-width: 48rem) {
+@media (min-width: 768px) {
+  /* tab bar of the same height as ToC popover (~2.5rem) */
   #nd-docs-layout {
-    /* same as ToC popover (~2.5rem) */
     --fd-tabs-height: var(--fd-toc-popover-height);
   }
 }
 
 /* 75rem ~ 1200px with font-size 16 */
-@media (min-width: 75rem) {
-  /* large enough to be visible, yet small enough to
-     not fight for attention with the rest of the page */
+@media (min-width: 1200px) {
+  /* tab bar that is large enough to be visible,
+     yet small enough to not fight for attention with the rest of the page */
   #nd-docs-layout {
     --fd-tabs-height: 3rem;
   }
 
-  /* match the page contents width */
+  /* tab bar matching the page contents width */
   #nd-docs-layout > .items-end {
     max-width: 900px;
     margin-inline: calc(var(--spacing) * 8);
@@ -82,12 +83,23 @@ html > body[data-scroll-locked] {
 }
 
 /* 90rem ~ 1440px with font-size 16 */
-@media (min-width: 90rem) {
-  /* match the page contents width */
+@media (min-width: 1440px) {
+  /* tab bar matching the page contents width */
   #nd-docs-layout > .items-end {
     margin-inline: calc(var(--spacing) * 11);
   }
 }
+
+/* 48rem ~ 768px with font-size 16 */
+@media (min-width: 768px) {
+  /* Remove border around theme toggle buttons in non-mobile layouts */
+  button[data-theme-toggle] {
+    border: none;
+  }
+}
+
+/* 40rem ~ 640px with font-size 16 */
+/* @media (min-width: 640px) {} */
 
 /* Prevent word breaks in inline code items in tables */
 td > code,

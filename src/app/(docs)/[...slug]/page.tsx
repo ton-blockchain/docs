@@ -92,12 +92,16 @@ export async function generateMetadata(
   if (!page) notFound();
 
   const image = getPageImage(page);
+  const md = getPageMarkdownUrl(page);
   return {
     title: page.data.title,
     description: page.data.description,
-    // alternates: {
-    //   canonical: page.url,
-    // },
+    alternates: {
+      ...(page.data.url ? {} : { canonical: page.url }),
+      types: {
+        'text/markdown': md.url,
+      },
+    },
     openGraph: {
       title: page.data.title,
       ...(page.data.description ? { description: page.data.description } : {}),
