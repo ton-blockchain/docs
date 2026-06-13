@@ -6,12 +6,13 @@
 @source '../../snippets/*.{jsx,tsx}';
 @source '../**/*.{ts,jsx,tsx}';
 
-/* Common, baseline color changes */
-:root {
-  --headless-color: #0098ea;
-  --ui-color: #0098ea;
-
-  --color-fd-primary: var(--ui-color);
+/**
+ * Common, baseline color changes
+ * @see https://tailwindcss.com/docs/theme
+ */
+@theme {
+  --color-brand: #0098ea;
+  --color-fd-primary: #0098ea;
   --color-fd-idea: oklch(65% 0.2 145);
 }
 
@@ -26,9 +27,10 @@
 }
 
 /* Color changes for the dark theme only */
-.dark {
-  --headless-color: #5cc4f7;
-  --ui-color: #5cc4f7;
+.dark,
+[data-theme='dark'] {
+  --color-brand: #5cc4f7;
+  --color-fd-primary: #5cc4f7;
   --color-fd-idea: oklch(75% 0.2 145);
 }
 
