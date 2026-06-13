@@ -2,6 +2,47 @@
 import { File, Files, Folder } from './files';
 
 /**
+ * @param {FileTreeItem} item
+ * @param {number} index
+ */
+const renderItem = (item, index) => {
+  // Handle ellipsis items
+  if (item === '...' || item === '…') {
+    return <File key={index} name="…" />;
+  }
+
+  // Handle file items (both string and file objects)
+  if (typeof item === 'string' || item.kind === 'file') {
+    const fileName = typeof item === 'string' ? item : item.name;
+    const note = typeof item === 'string' ? null : item.note;
+    const displayName = note ? `${fileName} — ${note}` : fileName;
+
+    return <File key={index} name={displayName} />;
+  }
+
+  // Handle folder objects
+  if (item.kind === 'folder') {
+    const isOpen = item.open ?? defaultOpen;
+    const displayName = item.note ? `${item.name} — ${item.note}` : item.name;
+
+    return (
+      <Folder key={index} name={displayName} defaultOpen={isOpen}>
+        {item?.items?.map((nestedItem, nestedIndex) =>
+          renderItem(nestedItem, nestedIndex),
+        )}
+      </Folder>
+    );
+  }
+
+  throw new Error(
+    [
+      `In the FileTree component, found: ${item}.`,
+      `Expected either of: ..., …, string, { kind: "file", ... }, or { kind: "folder", ... }`,
+    ].join(' '),
+  );
+};
+
+/**
  * A thin wrapper over Fumadocs' Files, File, and Folder components.
  *
  * @typedef {(
@@ -18,52 +59,10 @@ import { File, Files, Folder } from './files';
  *
  * @param {{ items: FileTreeItem[], defaultOpen?: boolean }} props
  */
-export const FileTree = ({ items = [], defaultOpen = true }) => {
-  /**
-   * @param {FileTreeItem} item
-   * @param {import("react").Key | null | undefined} index
-   */
-  const renderItem = (item, index) => {
-    // Handle ellipsis items
-    if (item === '...' || item === '…') {
-      // @ts-ignore
-      return <File key={index} name="…" />;
-    }
-
-    // Handle file items (both string and file objects)
-    if (typeof item === 'string' || item.kind === 'file') {
-      const fileName = typeof item === 'string' ? item : item.name;
-      const note = typeof item === 'string' ? null : item.note;
-      const displayName = note ? `${fileName} — ${note}` : fileName;
-
-      // @ts-ignore
-      return <File key={index} name={displayName} />;
-    }
-
-    // Handle folder objects
-    if (item.kind === 'folder') {
-      const isOpen = item.open ?? defaultOpen;
-      const displayName = item.note ? `${item.name} — ${item.note}` : item.name;
-
-      return (
-        // @ts-ignore
-        <Folder key={index} name={displayName} defaultOpen={isOpen}>
-          {item?.items?.map((nestedItem, nestedIndex) =>
-            renderItem(nestedItem, nestedIndex),
-          )}
-          {/* @ts-ignore */}
-        </Folder>
-      );
-    }
-
-    throw new Error(
-      [
-        `In the FileTree component, found: ${item}.`,
-        `Expected either of: ..., …, string, { kind: "file", ... }, or { kind: "folder", ... }`,
-      ].join(' '),
-    );
-  };
-
-  // @ts-ignore
-  return <Files>{items.map((item, index) => renderItem(item, index))}</Files>;
-};
+export function FileTree({ items = [], defaultOpen = true, ...props }) {
+  return (
+    <Files {...props}>
+      {items.map((item, index) => renderItem(item, index))}
+    </Files>
+  );
+}
