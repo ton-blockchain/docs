@@ -4,8 +4,9 @@ import { File, Files, Folder } from './files';
 /**
  * @param {FileTreeItem} item
  * @param {number} index
+ * @param {boolean} defaultOpen
  */
-const renderItem = (item, index) => {
+const renderItem = (item, index, defaultOpen = true) => {
   // Handle ellipsis items
   if (item === '...' || item === '…') {
     return <File key={index} name="…" />;
@@ -58,5 +59,7 @@ const renderItem = (item, index) => {
  * @param {{ items: FileTreeItem[], defaultOpen?: boolean }} props
  */
 export function FileTree({ items = [], defaultOpen = true, ...props }) {
-  return <Files {...props}>{items.map((item, index) => renderItem(item, index))}</Files>;
+  return (
+    <Files {...props}>{items.map((item, index) => renderItem(item, index, defaultOpen))}</Files>
+  );
 }
