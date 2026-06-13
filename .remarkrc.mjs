@@ -52,10 +52,7 @@ const remarkConfig = {
                 const expr = attr.value;
 
                 // Slighly trim single-line expressions
-                if (
-                  typeof expr.value === 'string' &&
-                  !expr.value.trim().includes('\n')
-                ) {
+                if (typeof expr.value === 'string' && !expr.value.trim().includes('\n')) {
                   expr.value = expr.value.trim();
                   delete expr.data.estree;
                   continue;
@@ -66,12 +63,9 @@ const remarkConfig = {
                   continue;
                 }
                 const indent = ancestors.length === 0 ? 0 : ancestors.length;
-                const formatted = generate(
-                  expr.data.estree.body[0].expression,
-                  {
-                    startingIndentLevel: indent,
-                  },
-                );
+                const formatted = generate(expr.data.estree.body[0].expression, {
+                  startingIndentLevel: indent,
+                });
                 expr.value = formatted;
                 delete expr.data.estree;
               }

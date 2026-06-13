@@ -15,7 +15,13 @@ import { $ } from './common.mjs';
 
 const main = () => {
   const pfx = 'pre-build:';
-  const scripts = ['check:types', 'check:openapi', 'check:links', 'check:navigation', 'check:redirects'];
+  const scripts = [
+    'check:types',
+    'check:openapi',
+    'check:links',
+    'check:navigation',
+    'check:redirects',
+  ];
   for (const script of scripts) {
     console.log(pfx, `running ${script}...`);
     if (!$(`npm run ${script}`).ok) return;

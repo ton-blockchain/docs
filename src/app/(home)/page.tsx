@@ -1,16 +1,7 @@
 import type { Metadata } from 'next';
 import type { ComponentType } from 'react';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  Blocks,
-  FileCode2,
-  LifeBuoy,
-  Rocket,
-  Send,
-  Server,
-  Users,
-} from 'lucide-react';
+import { ArrowRight, Blocks, FileCode2, LifeBuoy, Rocket, Send, Server, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'TON documentation',
@@ -155,27 +146,21 @@ export default function HomePage() {
       <div className="relative isolate mx-auto w-full max-w-5xl px-6 py-12 text-left sm:py-16">
         {/* hero */}
         <section className="flex flex-col items-start gap-8 py-8 lg:flex-row lg:items-center lg:gap-12 lg:py-12">
-          <img
-            src="logo/ton.svg"
-            alt="TON logo"
-            className="hidden h-28 w-auto shrink-0 lg:block"
-          />
+          <img src="logo/ton.svg" alt="TON logo" className="hidden h-28 w-auto shrink-0 lg:block" />
           <div className="max-w-2xl">
             <h1 className="text-balance text-4xl font-semibold tracking-tight">
               TON documentation
             </h1>
             <p className="mt-6 text-pretty text-xl text-fd-muted-foreground">
-              TON is a blockchain platform designed for scalable smart
-              contracts, applications, and payments at consumer scale.
+              TON is a blockchain platform designed for scalable smart contracts, applications, and
+              payments at consumer scale.
             </p>
           </div>
         </section>
 
         {/* choose your path */}
         <section className="mt-4 flex flex-col gap-6">
-          <h2 className="text-balance text-2xl font-semibold tracking-tight">
-            Choose your path
-          </h2>
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">Choose your path</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {paths.map(({ title, description, icon: Icon, links }) => (
               <div
@@ -188,9 +173,7 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-lg font-semibold">{title}</h3>
                 </div>
-                <p className="mt-3 text-sm text-fd-muted-foreground">
-                  {description}
-                </p>
+                <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
                 <ul className="mt-4 flex flex-col gap-0.5">
                   {links.map((link) => (
                     <li key={link.href}>
@@ -205,16 +188,14 @@ export default function HomePage() {
 
         {/* troubleshooting */}
         <section className="mt-12 flex flex-col gap-4">
-          <h2 className="text-balance text-2xl font-semibold tracking-tight">
-            Troubleshooting
-          </h2>
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">Troubleshooting</h2>
           <p className="text-pretty text-fd-muted-foreground">
             Press{' '}
             <kbd className="rounded border border-fd-border bg-fd-muted px-1.5 py-0.5 font-mono text-xs">
               Ctrl K
             </kbd>{' '}
-            to search the docs. Still stuck? Discuss issues and best practices
-            with other community members.
+            to search the docs. Still stuck? Discuss issues and best practices with other community
+            members.
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {support.map(({ title, description, href, icon: Icon }) => {
@@ -229,20 +210,12 @@ export default function HomePage() {
                     </div>
                     <h3 className="font-semibold">{title}</h3>
                   </div>
-                  <p className="mt-3 text-sm text-fd-muted-foreground">
-                    {description}
-                  </p>
+                  <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
                 </>
               );
 
               return external ? (
-                <a
-                  key={title}
-                  className={className}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a key={title} className={className} href={href} target="_blank" rel="noreferrer">
                   {inner}
                 </a>
               ) : (

@@ -145,9 +145,7 @@ export const Image = ({
 
   // Not a link, centered horizontally
   if (shouldCenter) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>{images}</div>
-    );
+    return <div style={{ display: 'flex', justifyContent: 'center' }}>{images}</div>;
   }
 
   // Not a link, placed as is

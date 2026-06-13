@@ -1,27 +1,17 @@
-import {
-  createElement,
-  Fragment,
-  type ComponentType,
-  type SVGProps,
-} from 'react';
+import { createElement, Fragment, type ComponentType, type SVGProps } from 'react';
 import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { openapiPlugin } from 'fumadocs-openapi/server';
 import { icons } from 'lucide-react';
-import {
-  docsContentRoute,
-  docsImageRoute,
-  docsRoute,
-  toPascalCase,
-} from './shared';
+import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase } from './shared';
 
 // NOTE: Consider using the following as a plugin instead:
 //       import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 function resolveLucideIcon(name: string | undefined) {
   if (!name) return undefined;
-  const Comp = (
-    icons as Record<string, ComponentType<SVGProps<SVGSVGElement>>>
-  )[toPascalCase(name)];
+  const Comp = (icons as Record<string, ComponentType<SVGProps<SVGSVGElement>>>)[
+    toPascalCase(name)
+  ];
   if (!Comp) return undefined;
   return createElement(Comp);
 }

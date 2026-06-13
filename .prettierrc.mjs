@@ -4,6 +4,7 @@
  */
 const config = {
   singleQuote: true,
+  printWidth: 100,
   overrides: [
     {
       files: ['*.yml', '*.yaml', '*.py'],

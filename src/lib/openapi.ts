@@ -8,9 +8,7 @@ export const openapi = createOpenAPI({
   input: () => ({
     v2: path.resolve('./content/ecosystem/api/toncenter/v2.json'),
     v3: path.resolve('./content/ecosystem/api/toncenter/v3.yaml'),
-    'smc-index': path.resolve(
-      './content/ecosystem/api/toncenter/smc-index.json',
-    ),
+    'smc-index': path.resolve('./content/ecosystem/api/toncenter/smc-index.json'),
   }),
 });
 

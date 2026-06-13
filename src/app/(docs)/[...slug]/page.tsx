@@ -55,9 +55,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
       }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0">
-        {page.data.description}
-      </DocsDescription>
+      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       {page.data._openapi ? (
         <></>
       ) : (
@@ -90,9 +88,7 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(
-  props: PageProps<'/[...slug]'>,
-): Promise<Metadata> {
+export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();

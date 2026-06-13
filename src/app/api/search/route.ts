@@ -26,5 +26,4 @@ const searchAPI = createFromSource(searchSource, {
 });
 
 export const revalidate = false;
-export const GET =
-  process.env.NEXT_CONFIG === 'vercel' ? searchAPI.GET : searchAPI.staticGET;
+export const GET = process.env.NEXT_CONFIG === 'vercel' ? searchAPI.GET : searchAPI.staticGET;

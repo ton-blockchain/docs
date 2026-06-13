@@ -60,9 +60,7 @@ const genSmcIndex = async () =>
     input: createOpenAPI({
       // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
       input: () => ({
-        'smc-index': path.resolve(
-          './content/ecosystem/api/toncenter/smc-index.json',
-        ),
+        'smc-index': path.resolve('./content/ecosystem/api/toncenter/smc-index.json'),
       }),
     }),
     output: path.resolve('./content/ecosystem/api/toncenter/smc-index'),

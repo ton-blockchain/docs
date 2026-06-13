@@ -97,9 +97,7 @@ export default defineConfig({
         'tsx',
         'yaml',
         ...['fift', 'func', 'tlb', 'tolk', 'tasm'].map((name) =>
-          JSON.parse(
-            readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8'),
-          ),
+          JSON.parse(readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8')),
         ),
       ],
       langAlias: {
@@ -141,8 +139,7 @@ export default defineConfig({
       function remarkCodeGroup() {
         return (tree) => {
           visitParents(tree, (node: any) => {
-            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'CodeGroup')
-              return;
+            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'CodeGroup') return;
             for (const child of node.children) {
               if (child.type === 'code' && child.meta) {
                 child.meta = child.meta.replace(/\btitle=/, 'tab=');

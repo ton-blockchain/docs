@@ -12,10 +12,7 @@ const metaSchema = z.object({
     .describe('Name of the folder in the sidebar (page tree on the left)'),
 
   /** Icon of the folder in the sidebar (page tree on the left) */
-  icon: z
-    .string()
-    .optional()
-    .describe('Icon of the folder in the sidebar (page tree on the left)'),
+  icon: z.string().optional().describe('Icon of the folder in the sidebar (page tree on the left)'),
 
   /**
    * When set to `true`, only the items in this folder will be shown when navigating to them.
@@ -42,10 +39,9 @@ const metaSchema = z.object({
     .default(false)
     .optional()
     .describe(
-      [
-        'When set to `true`, the folder will be opened by default.',
-        '\nDefaults to `false`.',
-      ].join(' '),
+      ['When set to `true`, the folder will be opened by default.', '\nDefaults to `false`.'].join(
+        ' ',
+      ),
     ),
 
   /**
@@ -148,10 +144,7 @@ const metaSchema = z.object({
       z.union([
         z.stringFormat('Path', /^[\.a-zA-Z_\-0-9 \/]+$/),
         z.stringFormat('Separator', /^---(\[[a-zA-Z_\-0-9]+\])?[^\-]+---$/),
-        z.stringFormat(
-          'Link',
-          /^(external:)?(\[[a-zA-Z_\-0-9]+\])?\[.*?\]\(.*?\)$/,
-        ),
+        z.stringFormat('Link', /^(external:)?(\[[a-zA-Z_\-0-9]+\])?\[.*?\]\(.*?\)$/),
         z.stringFormat('External link', /^external:\[.*?\]\(.*?\)$/),
         z.stringFormat('Rest', /^\.\.\.$/),
         z.stringFormat('Reversed rest', /^z\.\.\.a$/),
@@ -219,7 +212,5 @@ const metaSchema = z.object({
 const metaJsonSchema = z.toJSONSchema(metaSchema);
 const outputPath = new URL('../../meta-schema.json', import.meta.url);
 writeFileSync(outputPath, JSON.stringify(metaJsonSchema), { encoding: 'utf8' });
-console.log(
-  'Written JSON Schema for `meta.json` files as `meta-schema.json` in the repo root.',
-);
+console.log('Written JSON Schema for `meta.json` files as `meta-schema.json` in the repo root.');
 // console.log(metaJsonSchema);

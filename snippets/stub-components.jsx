@@ -36,13 +36,7 @@ export const Cards = ({ children }) => {
  *    children: any,
  *  }} props
  */
-export const ParamField = ({
-  path = '',
-  body = '',
-  type = '',
-  required = false,
-  children,
-}) => (
+export const ParamField = ({ path = '', body = '', type = '', required = false, children }) => (
   <div className="my-3">
     <p className="font-mono text-sm">
       <span className="font-bold">{path || body}</span>
@@ -61,12 +55,7 @@ export const ParamField = ({
  *    children: any,
  *  }} props
  */
-export const ResponseField = ({
-  name = '',
-  type = '',
-  required = false,
-  children,
-}) => (
+export const ResponseField = ({ name = '', type = '', required = false, children }) => (
   <div className="my-3">
     <p className="font-mono text-sm">
       <span className="font-bold">{name}</span>
@@ -99,14 +88,10 @@ export const CardGroup = ({ children }) => (
 );
 
 /** @param {{ children: any }} props */
-export const AccordionGroup = ({ children }) => (
-  <div className="my-4">{children}</div>
-);
+export const AccordionGroup = ({ children }) => <div className="my-4">{children}</div>;
 
 /** @param {{ children: any }} props */
-export const CodeGroup = ({ children }) => (
-  <div className="my-4">{children}</div>
-);
+export const CodeGroup = ({ children }) => <div className="my-4">{children}</div>;
 
 /** @param {{ title: string, children: any }} props */
 export const Expandable = ({ title = '', children }) => (
@@ -144,9 +129,7 @@ export const Tooltip = ({ tip = '', cta = '', href = '', children }) => (
  * }} props
  */
 export const Badge = ({ children }) => (
-  <span className="inline-block rounded px-1.5 py-0.5 text-xs border">
-    {children}
-  </span>
+  <span className="inline-block rounded px-1.5 py-0.5 text-xs border">{children}</span>
 );
 
 /**

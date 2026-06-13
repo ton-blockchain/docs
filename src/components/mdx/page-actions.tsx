@@ -1,12 +1,6 @@
 'use client';
 import { type ComponentProps, useMemo, useState } from 'react';
-import {
-  Check,
-  ChevronDown,
-  Copy,
-  ExternalLinkIcon,
-  MessageCircleIcon,
-} from 'lucide-react';
+import { Check, ChevronDown, Copy, ExternalLinkIcon, MessageCircleIcon } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button';
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
@@ -89,9 +83,7 @@ export function ViewOptions({
   const pathname = usePathname();
   const items = useMemo(() => {
     const pageUrl =
-      typeof window === 'undefined'
-        ? pathname
-        : new URL(pathname, window.location.origin);
+      typeof window === 'undefined' ? pathname : new URL(pathname, window.location.origin);
     const q = `Read ${pageUrl}.`;
 
     return [

@@ -80,9 +80,7 @@ export function Banner({
             : `:root { --fd-banner-height: ${height}; }`}
         </style>
       ) : null}
-      {globalKey ? (
-        <style>{`.${globalKey} #${id} { display: none; }`}</style>
-      ) : null}
+      {globalKey ? <style>{`.${globalKey} #${id} { display: none; }`}</style> : null}
       {globalKey ? (
         <script
           dangerouslySetInnerHTML={{
@@ -105,8 +103,7 @@ export function Banner({
           className={cn(
             buttonVariants({
               color: 'ghost',
-              className:
-                'absolute inset-e-2 top-1/2 -translate-y-1/2 text-fd-muted-foreground/50',
+              className: 'absolute inset-e-2 top-1/2 -translate-y-1/2 text-fd-muted-foreground/50',
               size: 'icon-sm',
             }),
           )}

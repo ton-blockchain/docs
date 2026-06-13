@@ -4,9 +4,7 @@ export const FeePlayground = () => {
   const LocalNote = ({ title, children }) => (
     <div className="my-3 px-4 py-3 rounded-2xl border border-sky-500/20 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/10">
       {title && (
-        <div className="text-xs font-semibold text-sky-900 dark:text-sky-200 mb-1">
-          {title}
-        </div>
+        <div className="text-xs font-semibold text-sky-900 dark:text-sky-200 mb-1">{title}</div>
       )}
       <div className="text-xs text-sky-900 dark:text-sky-200">{children}</div>
     </div>
@@ -36,8 +34,7 @@ export const FeePlayground = () => {
       masterchain: { bit_ps: 1000, cell_ps: 500000 },
     };
 
-    const net =
-      form.network.value === 'masterchain' ? 'masterchain' : 'basechain';
+    const net = form.network.value === 'masterchain' ? 'masterchain' : 'basechain';
     const {
       lump_price: lumpPrice,
       bit_price: bitPrice,
@@ -66,16 +63,12 @@ export const FeePlayground = () => {
     const storageFeesTon = storageFeeNano * nano;
     // storage fee is displayed in the results area only
 
-    const fwdFee =
-      lumpPrice +
-      Math.ceil((bitPrice * fwdBits + cellPrice * fwdCells) / bit16);
+    const fwdFee = lumpPrice + Math.ceil((bitPrice * fwdBits + cellPrice * fwdCells) / bit16);
     const totalFwdFees = fwdFee;
     const totalActionFees = +((fwdFee * firstFrac) / bit16).toFixed(9);
     const importFee =
-      lumpPrice +
-      Math.ceil((bitPrice * importBits + cellPrice * importCells) / bit16);
-    const totalFeeTon =
-      gasFeesTon + storageFeesTon + importFee * nano + totalFwdFees * nano;
+      lumpPrice + Math.ceil((bitPrice * importBits + cellPrice * importCells) / bit16);
+    const totalFeeTon = gasFeesTon + storageFeesTon + importFee * nano + totalFwdFees * nano;
 
     const setOut = (key, value) => {
       const el = form.querySelector(`[data-out="${key}"]`);
@@ -193,8 +186,8 @@ export const FeePlayground = () => {
           </label>
         </div>
         <LocalNote title="Where to get payload sizes?">
-          You can find import, forward and storage parameters in the Executor
-          logs (txtracer/retracer) for a specific transaction.
+          You can find import, forward and storage parameters in the Executor logs
+          (txtracer/retracer) for a specific transaction.
         </LocalNote>
       </div>
 
@@ -202,8 +195,8 @@ export const FeePlayground = () => {
         <h4 className="font-semibold text-sm">Compute fee</h4>
         <LocalNote title="Why enter gas manually?">
           The compute (gas) cost cannot be predicted by a static formula. <br />
-          Measure it in tests or read it from the executor logs / explorer, then
-          enter the gas fee here.
+          Measure it in tests or read it from the executor logs / explorer, then enter the gas fee
+          here.
         </LocalNote>
         <div className="grid grid-cols-1 gap-3">
           <label className="block text-xs">

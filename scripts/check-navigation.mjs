@@ -48,8 +48,7 @@ const checkUnique = (config) => {
   const navLinks = getNavLinks(config);
   if (navLinks.length != navLinksSet.size) {
     const duplicates = navLinks.filter(
-      (val, idx) =>
-        navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1,
+      (val, idx) => navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1,
     );
     return {
       ok: false,
@@ -72,8 +71,7 @@ const checkUnique = (config) => {
 const checkExist = (config) => {
   const uniqPages = [...getNavLinksSet(config)];
   const missingPages = uniqPages.filter((it) => {
-    const rel =
-      it.replace(/^\/+content/, 'content').replace(/#.*$/, '') + '.mdx';
+    const rel = it.replace(/^\/+content/, 'content').replace(/#.*$/, '') + '.mdx';
     return !(existsSync(rel) && statSync(rel).isFile());
   });
   if (missingPages.length !== 0) {
@@ -166,16 +164,12 @@ const main = async () => {
   };
 
   if (shouldRunAll || argUnique) {
-    console.log(
-      '🏁 Checking the uniqueness of navigation paths in docs.json...',
-    );
+    console.log('🏁 Checking the uniqueness of navigation paths in docs.json...');
     handleCheckResult(checkUnique(config), 'All paths are unique.');
   }
 
   if (shouldRunAll || argExist) {
-    console.log(
-      '🏁 Checking the existence of navigation .mdx pages in docs.json...',
-    );
+    console.log('🏁 Checking the existence of navigation .mdx pages in docs.json...');
     handleCheckResult(checkExist(config), 'All referenced pages exist.');
   }
 

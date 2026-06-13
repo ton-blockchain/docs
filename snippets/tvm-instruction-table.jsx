@@ -125,9 +125,7 @@ export const TvmInstructionTable = () => {
     },
   ];
 
-  const CATEGORY_GROUP_KEYS = new Set(
-    CATEGORY_GROUPS.map((group) => group.key),
-  );
+  const CATEGORY_GROUP_KEYS = new Set(CATEGORY_GROUPS.map((group) => group.key));
 
   function resolveCategoryGroup(categoryKey) {
     const normalized = (categoryKey || '').toLowerCase();
@@ -170,8 +168,7 @@ export const TvmInstructionTable = () => {
 
   function formatOperandSummary(operand, brief) {
     if (!operand) return '';
-    const name =
-      typeof operand.name === 'string' && operand.name ? operand.name : '?';
+    const name = typeof operand.name === 'string' && operand.name ? operand.name : '?';
     const type = typeof operand.type === 'string' ? operand.type : '';
     const size =
       typeof operand.size === 'number'
@@ -198,17 +195,13 @@ export const TvmInstructionTable = () => {
     if (typeof text !== 'string') return '';
     const trimmed = text.trim();
     if (!trimmed) return '';
-    const escaped = trimmed
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+    const escaped = trimmed.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const withCode = escaped.replace(/`([^`]+)`/g, (_match, code) => {
       return `<code>${code}</code>`;
     });
     const withLinks = withCode.replace(
       /\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
-      (_match, label, url) =>
-        `<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`,
+      (_match, label, url) => `<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`,
     );
     return withLinks.replace(/\n/g, '<br />');
   }
@@ -278,9 +271,7 @@ export const TvmInstructionTable = () => {
   function getItemSearchFields(item) {
     const aliasMnemonics = Array.isArray(item.aliases)
       ? item.aliases
-          .map((alias) =>
-            typeof alias.mnemonic === 'string' ? alias.mnemonic : '',
-          )
+          .map((alias) => (typeof alias.mnemonic === 'string' ? alias.mnemonic : ''))
           .filter(Boolean)
       : [];
     return {
@@ -412,8 +403,7 @@ export const TvmInstructionTable = () => {
       .map((item) => {
         if (!item || typeof item !== 'object') return null;
         const file = typeof item.file === 'string' ? item.file : '';
-        const functionName =
-          typeof item.function_name === 'string' ? item.function_name : '';
+        const functionName = typeof item.function_name === 'string' ? item.function_name : '';
         const line = typeof item.line === 'number' ? item.line : undefined;
         const path = typeof item.path === 'string' ? item.path : '';
         if (!file && !functionName && !path) return null;
@@ -446,11 +436,7 @@ export const TvmInstructionTable = () => {
 
   function renderControlFlowSummary(controlFlow) {
     if (!controlFlow || typeof controlFlow !== 'object') {
-      return (
-        <p className="tvm-missing-placeholder">
-          Control flow details are not available.
-        </p>
-      );
+      return <p className="tvm-missing-placeholder">Control flow details are not available.</p>;
     }
 
     const branches = Array.isArray(controlFlow.branches)
@@ -458,9 +444,7 @@ export const TvmInstructionTable = () => {
       : [];
     const nobranch = Boolean(controlFlow.nobranch);
     const isContinuationObject = (value) =>
-      Boolean(
-        value && typeof value === 'object' && typeof value.type === 'string',
-      );
+      Boolean(value && typeof value === 'object' && typeof value.type === 'string');
 
     const formatPrimitiveValue = (value) => {
       if (value === null || value === undefined) return '';
@@ -514,8 +498,7 @@ export const TvmInstructionTable = () => {
           break;
         case 'special':
           typeLabel = 'special';
-          valueLabel =
-            typeof node.name === 'string' && node.name ? node.name : '?';
+          valueLabel = typeof node.name === 'string' && node.name ? node.name : '?';
           break;
         default:
           typeLabel = node.type ? String(node.type) : 'unknown';
@@ -525,8 +508,7 @@ export const TvmInstructionTable = () => {
 
       const detailParts = [];
       if (type === 'special') {
-        const args =
-          node.args && typeof node.args === 'object' ? node.args : {};
+        const args = node.args && typeof node.args === 'object' ? node.args : {};
         Object.entries(args).forEach(([argKey, argValue]) => {
           if (!isContinuationObject(argValue)) {
             const formatted = formatPrimitiveValue(argValue);
@@ -537,14 +519,7 @@ export const TvmInstructionTable = () => {
         });
       }
 
-      const knownKeys = new Set([
-        'type',
-        'var_name',
-        'index',
-        'name',
-        'args',
-        'save',
-      ]);
+      const knownKeys = new Set(['type', 'var_name', 'index', 'name', 'args', 'save']);
       Object.entries(node).forEach(([key, value]) => {
         if (knownKeys.has(key)) return;
         const formatted = formatPrimitiveValue(value);
@@ -553,8 +528,7 @@ export const TvmInstructionTable = () => {
         }
       });
 
-      const detailLabel =
-        detailParts.length > 0 ? `(${detailParts.join(', ')})` : '';
+      const detailLabel = detailParts.length > 0 ? `(${detailParts.join(', ')})` : '';
       const text = [typeLabel, valueLabel, detailLabel]
         .filter(Boolean)
         .join(' ')
@@ -571,9 +545,7 @@ export const TvmInstructionTable = () => {
 
       const saveEntries =
         node.save && typeof node.save === 'object'
-          ? Object.entries(node.save).filter(([, value]) =>
-              isContinuationObject(value),
-            )
+          ? Object.entries(node.save).filter(([, value]) => isContinuationObject(value))
           : [];
       saveEntries
         .sort(([aKey], [bKey]) => aKey.localeCompare(bKey))
@@ -585,8 +557,7 @@ export const TvmInstructionTable = () => {
         });
 
       if (type === 'special') {
-        const args =
-          node.args && typeof node.args === 'object' ? node.args : {};
+        const args = node.args && typeof node.args === 'object' ? node.args : {};
         Object.entries(args).forEach(([argKey, argValue]) => {
           if (isContinuationObject(argValue)) {
             children.push({
@@ -679,14 +650,7 @@ export const TvmInstructionTable = () => {
       return Math.max(fallbackLength * 7 + 48, NODE_MIN_WIDTH);
     };
 
-    const assignPositions = (
-      tree,
-      nodes,
-      nodeMap,
-      edges,
-      depth = 0,
-      offsetSpan = 0,
-    ) => {
+    const assignPositions = (tree, nodes, nodeMap, edges, depth = 0, offsetSpan = 0) => {
       const span = Math.max(tree.span || 1, 1);
       const spanWidth = span * H_SPACING;
       const x = PADDING_X + offsetSpan + spanWidth / 2;
@@ -705,14 +669,7 @@ export const TvmInstructionTable = () => {
 
       let childOffset = offsetSpan;
       tree.children.forEach((child) => {
-        assignPositions(
-          child.tree,
-          nodes,
-          nodeMap,
-          edges,
-          depth + 1,
-          childOffset,
-        );
+        assignPositions(child.tree, nodes, nodeMap, edges, depth + 1, childOffset);
         edges.push({
           from: tree.id,
           to: child.tree.id,
@@ -798,10 +755,7 @@ export const TvmInstructionTable = () => {
                 .filter(Boolean);
 
               return (
-                <div
-                  key={`branch-${index}`}
-                  className="tvm-control-flow-branch"
-                >
+                <div key={`branch-${index}`} className="tvm-control-flow-branch">
                   <div className="tvm-control-flow-branch-header">
                     <span className="tvm-control-flow-branch-title">
                       {highlightMatches(branchTitleText, searchTokens)}
@@ -857,10 +811,7 @@ export const TvmInstructionTable = () => {
                             }}
                           >
                             <span className="tvm-flow-edge-label-primary">
-                              {highlightMatches(
-                                edge.segments.primary.toUpperCase(),
-                                searchTokens,
-                              )}
+                              {highlightMatches(edge.segments.primary.toUpperCase(), searchTokens)}
                             </span>
                             {edge.segments.secondary && (
                               <span className="tvm-flow-edge-label-secondary">
@@ -894,18 +845,12 @@ export const TvmInstructionTable = () => {
                             </span>
                             {node.summary.valueLabel && (
                               <span className="tvm-control-flow-node-value">
-                                {highlightMatches(
-                                  node.summary.valueLabel,
-                                  searchTokens,
-                                )}
+                                {highlightMatches(node.summary.valueLabel, searchTokens)}
                               </span>
                             )}
                             {node.summary.detailLabel && (
                               <span className="tvm-control-flow-node-extra">
-                                {highlightMatches(
-                                  node.summary.detailLabel,
-                                  searchTokens,
-                                )}
+                                {highlightMatches(node.summary.detailLabel, searchTokens)}
                               </span>
                             )}
                           </span>
@@ -934,12 +879,8 @@ export const TvmInstructionTable = () => {
     if (entry.type === 'conditional') {
       if (mode === 'compact' || mode === 'detail-inline') {
         return (
-          <span
-            key={key}
-            className="tvm-stack-pill tvm-stack-pill--conditional"
-          >
-            Conditional:{' '}
-            {highlightMatches(String(entry.name || '?'), searchTokens)}
+          <span key={key} className="tvm-stack-pill tvm-stack-pill--conditional">
+            Conditional: {highlightMatches(String(entry.name || '?'), searchTokens)}
           </span>
         );
       }
@@ -947,22 +888,16 @@ export const TvmInstructionTable = () => {
       return (
         <div key={key} className="tvm-stack-conditional">
           <span className="tvm-stack-conditional-name">
-            Conditional:{' '}
-            {highlightMatches(String(entry.name || '?'), searchTokens)}
+            Conditional: {highlightMatches(String(entry.name || '?'), searchTokens)}
           </span>
           {Array.isArray(entry.match) && entry.match.length > 0 ? (
             entry.match.map((matchArm, idx) => (
-              <div
-                key={`${key}-match-${idx}`}
-                className="tvm-stack-conditional-branch"
-              >
+              <div key={`${key}-match-${idx}`} className="tvm-stack-conditional-branch">
                 <span className="tvm-stack-conditional-label">
-                  ={' '}
-                  {highlightMatches(String(matchArm.value ?? ''), searchTokens)}
+                  = {highlightMatches(String(matchArm.value ?? ''), searchTokens)}
                 </span>
                 <div className="tvm-stack-conditional-values">
-                  {Array.isArray(matchArm.stack) &&
-                  matchArm.stack.length > 0 ? (
+                  {Array.isArray(matchArm.stack) && matchArm.stack.length > 0 ? (
                     matchArm.stack
                       .slice()
                       .reverse()
@@ -974,17 +909,13 @@ export const TvmInstructionTable = () => {
                         ),
                       )
                   ) : (
-                    <span className="tvm-stack-pill tvm-stack-pill--empty">
-                      Empty
-                    </span>
+                    <span className="tvm-stack-pill tvm-stack-pill--empty">Empty</span>
                   )}
                 </div>
               </div>
             ))
           ) : (
-            <span className="tvm-stack-pill tvm-stack-pill--empty">
-              Empty branches
-            </span>
+            <span className="tvm-stack-pill tvm-stack-pill--empty">Empty branches</span>
           )}
           {Array.isArray(entry.else) && (
             <div className="tvm-stack-conditional-branch">
@@ -995,16 +926,10 @@ export const TvmInstructionTable = () => {
                     .slice()
                     .reverse()
                     .map((nested, nestedIdx) =>
-                      renderStackEntry(
-                        nested,
-                        `${key}-else-${nestedIdx}`,
-                        'detail-inline',
-                      ),
+                      renderStackEntry(nested, `${key}-else-${nestedIdx}`, 'detail-inline'),
                     )
                 ) : (
-                  <span className="tvm-stack-pill tvm-stack-pill--empty">
-                    Empty
-                  </span>
+                  <span className="tvm-stack-pill tvm-stack-pill--empty">Empty</span>
                 )}
               </div>
             </div>
@@ -1023,12 +948,7 @@ export const TvmInstructionTable = () => {
     }
 
     if (entry.type === 'const') {
-      const value =
-        entry.value === null
-          ? 'null'
-          : entry.value === undefined
-            ? '?'
-            : entry.value;
+      const value = entry.value === null ? 'null' : entry.value === undefined ? '?' : entry.value;
       return (
         <span key={key} className="tvm-stack-pill tvm-stack-pill--const">
           {highlightMatches(String(value), searchTokens)}:{' '}
@@ -1058,18 +978,12 @@ export const TvmInstructionTable = () => {
     const truncated = mode === 'compact' && reversed.length > shown.length;
 
     return (
-      <div
-        className={`tvm-stack-column ${
-          mode === 'compact' ? 'tvm-stack-column--compact' : ''
-        }`}
-      >
+      <div className={`tvm-stack-column ${mode === 'compact' ? 'tvm-stack-column--compact' : ''}`}>
         <div className="tvm-stack-column-title">{title}</div>
         <div className="tvm-stack-top">TOP</div>
         <div className="tvm-stack-list">
           {shown.length === 0 && <span className="tvm-stack-empty">Empty</span>}
-          {shown.map((entry, idx) =>
-            renderStackEntry(entry, `${title}-${idx}`, mode),
-          )}
+          {shown.map((entry, idx) => renderStackEntry(entry, `${title}-${idx}`, mode))}
           {truncated && (
             <span className="tvm-stack-pill tvm-stack-pill--more">
               +{reversed.length - shown.length} more
@@ -1086,9 +1000,7 @@ export const TvmInstructionTable = () => {
 
     return (
       <div
-        className={`tvm-stack-columns ${
-          mode === 'compact' ? 'tvm-stack-columns--compact' : ''
-        }`}
+        className={`tvm-stack-columns ${mode === 'compact' ? 'tvm-stack-columns--compact' : ''}`}
       >
         {renderStackColumn('Inputs', inputs, mode)}
         {renderStackColumn('Outputs', outputs, mode)}
@@ -1098,21 +1010,17 @@ export const TvmInstructionTable = () => {
 
   function renderInstructionDetail(instruction, options = {}) {
     const { isAnchorTarget = false, onOpenRawJson = () => {} } = options;
-    const hasAliases =
-      Array.isArray(instruction.aliases) && instruction.aliases.length > 0;
+    const hasAliases = Array.isArray(instruction.aliases) && instruction.aliases.length > 0;
     const readsRegisters = Array.isArray(instruction.registers?.inputs)
       ? instruction.registers.inputs
       : [];
     const writesRegisters = Array.isArray(instruction.registers?.outputs)
       ? instruction.registers.outputs
       : [];
-    const hasRegisterInfo =
-      readsRegisters.length > 0 || writesRegisters.length > 0;
-    const hasStackData =
-      !instruction.missing.inputs || !instruction.missing.outputs;
+    const hasRegisterInfo = readsRegisters.length > 0 || writesRegisters.length > 0;
+    const hasStackData = !instruction.missing.inputs || !instruction.missing.outputs;
     const hasFiftExamples =
-      Array.isArray(instruction.fiftExamples) &&
-      instruction.fiftExamples.length > 0;
+      Array.isArray(instruction.fiftExamples) && instruction.fiftExamples.length > 0;
     const descriptionHtml = highlightHtmlContent(
       instruction.descriptionHtml || instruction.description || '',
       searchTokens,
@@ -1144,10 +1052,7 @@ export const TvmInstructionTable = () => {
                     ? register.index
                     : register.var_name || '?';
               return (
-                <span
-                  key={`${keyPrefix}-const-${idx}`}
-                  className="tvm-register-token"
-                >
+                <span key={`${keyPrefix}-const-${idx}`} className="tvm-register-token">
                   c<sub>{sub}</sub>
                 </span>
               );
@@ -1159,10 +1064,7 @@ export const TvmInstructionTable = () => {
         idx === 0
           ? [token]
           : [
-              <span
-                key={`${keyPrefix}-sep-${idx}`}
-                className="tvm-register-sep"
-              >
+              <span key={`${keyPrefix}-sep-${idx}`} className="tvm-register-sep">
                 ,{' '}
               </span>,
               token,
@@ -1174,19 +1076,13 @@ export const TvmInstructionTable = () => {
       <span key="gas" className="tvm-detail-badge">
         <span className="tvm-detail-badge-label">Gas</span>{' '}
         <span className="tvm-detail-badge-value">
-          {highlightMatches(
-            String(instruction.gasDisplay || 'N/A'),
-            searchTokens,
-          )}
+          {highlightMatches(String(instruction.gasDisplay || 'N/A'), searchTokens)}
         </span>
       </span>,
       <span key="version" className="tvm-detail-badge">
         <span className="tvm-detail-badge-label">TVM</span>{' '}
         <span className="tvm-detail-badge-value">
-          {highlightMatches(
-            instruction.since > 0 ? `v${instruction.since}` : 'v0',
-            searchTokens,
-          )}
+          {highlightMatches(instruction.since > 0 ? `v${instruction.since}` : 'v0', searchTokens)}
         </span>
       </span>,
     ];
@@ -1194,10 +1090,7 @@ export const TvmInstructionTable = () => {
     if (hasRegisterInfo) {
       if (readsRegisters.length > 0) {
         badgeNodes.push(
-          <span
-            key="registers-read"
-            className="tvm-detail-badge tvm-detail-badge--register"
-          >
+          <span key="registers-read" className="tvm-detail-badge tvm-detail-badge--register">
             <span className="tvm-detail-badge-label">Read registers</span>{' '}
             <span className="tvm-detail-badge-value">
               {renderRegisterList(readsRegisters, 'read')}
@@ -1207,10 +1100,7 @@ export const TvmInstructionTable = () => {
       }
       if (writesRegisters.length > 0) {
         badgeNodes.push(
-          <span
-            key="registers-write"
-            className="tvm-detail-badge tvm-detail-badge--register"
-          >
+          <span key="registers-write" className="tvm-detail-badge tvm-detail-badge--register">
             <span className="tvm-detail-badge-label">Write registers</span>{' '}
             <span className="tvm-detail-badge-value">
               {renderRegisterList(writesRegisters, 'write')}
@@ -1229,15 +1119,10 @@ export const TvmInstructionTable = () => {
               <button
                 type="button"
                 className={`tvm-copy-link ${copied[instruction.uid] ? 'is-copied' : ''}`}
-                aria-label={
-                  copied[instruction.uid]
-                    ? 'Copied'
-                    : 'Copy link to instruction'
-                }
+                aria-label={copied[instruction.uid] ? 'Copied' : 'Copy link to instruction'}
                 onClick={(e) => {
                   e.stopPropagation();
-                  const anchorId =
-                    instruction.anchorId || buildAnchorId(instruction);
+                  const anchorId = instruction.anchorId || buildAnchorId(instruction);
                   copyAnchorUrl(anchorId)
                     .then(() => {
                       setCopied((prev) => ({
@@ -1317,9 +1202,7 @@ export const TvmInstructionTable = () => {
                 dangerouslySetInnerHTML={{ __html: descriptionHtml }}
               />
             ) : (
-              <p className="tvm-missing-placeholder">
-                Description not available.
-              </p>
+              <p className="tvm-missing-placeholder">Description not available.</p>
             )}
 
             <div className="tvm-detail-badges">{badgeNodes}</div>
@@ -1347,9 +1230,7 @@ export const TvmInstructionTable = () => {
                   {implementationRefs.map((ref, idx) => {
                     const filename = ref.file || 'source';
                     const linePart =
-                      typeof ref.line === 'number' && ref.line > 0
-                        ? `:${ref.line}`
-                        : '';
+                      typeof ref.line === 'number' && ref.line > 0 ? `:${ref.line}` : '';
                     const href = buildGitHubLineUrl(ref.path, ref.line);
                     return (
                       <a
@@ -1374,11 +1255,8 @@ export const TvmInstructionTable = () => {
                 <div className="tvm-example-list">
                   {instruction.fiftExamples.map((example, idx) => {
                     const description =
-                      typeof example.description === 'string'
-                        ? example.description
-                        : '';
-                    const fiftCode =
-                      typeof example.fift === 'string' ? example.fift : '';
+                      typeof example.description === 'string' ? example.description : '';
+                    const fiftCode = typeof example.fift === 'string' ? example.fift : '';
                     return (
                       <div
                         key={`${instruction.mnemonic}-example-${idx}`}
@@ -1393,9 +1271,7 @@ export const TvmInstructionTable = () => {
                           />
                         )}
                         {fiftCode && (
-                          <code className="tvm-detail-code tvm-example-code">
-                            {fiftCode}
-                          </code>
+                          <code className="tvm-detail-code tvm-example-code">{fiftCode}</code>
                         )}
                       </div>
                     );
@@ -1409,13 +1285,10 @@ export const TvmInstructionTable = () => {
                 <h4 className="tvm-detail-title">Aliases</h4>
                 <div className="tvm-alias-list">
                   {instruction.aliases.map((alias) => {
-                    const aliasDescriptionHtml = cleanAliasDescription(
-                      alias.description || '',
-                    );
+                    const aliasDescriptionHtml = cleanAliasDescription(alias.description || '');
                     const hasAliasMeta =
                       Boolean(alias.doc_fift) ||
-                      (alias.operands &&
-                        Object.keys(alias.operands).length > 0);
+                      (alias.operands && Object.keys(alias.operands).length > 0);
 
                     return (
                       <div key={alias.mnemonic} className="tvm-alias-item">
@@ -1440,12 +1313,11 @@ export const TvmInstructionTable = () => {
                                 Fift <code>{alias.doc_fift}</code>
                               </span>
                             )}
-                            {alias.operands &&
-                              Object.keys(alias.operands).length > 0 && (
-                                <span className="tvm-alias-pill">
-                                  Operands {formatAliasOperands(alias.operands)}
-                                </span>
-                              )}
+                            {alias.operands && Object.keys(alias.operands).length > 0 && (
+                              <span className="tvm-alias-pill">
+                                Operands {formatAliasOperands(alias.operands)}
+                              </span>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1464,9 +1336,7 @@ export const TvmInstructionTable = () => {
                   {highlightMatches(String(instruction.tlb), searchTokens)}
                 </code>
               ) : (
-                <p className="tvm-missing-placeholder">
-                  TL-B layout not available.
-                </p>
+                <p className="tvm-missing-placeholder">TL-B layout not available.</p>
               )}
             </div>
 
@@ -1479,8 +1349,7 @@ export const TvmInstructionTable = () => {
 
             <div className="tvm-side-block">
               <span className="tvm-side-title">Operands</span>
-              {Array.isArray(instruction.operands) &&
-              instruction.operands.length > 0 ? (
+              {Array.isArray(instruction.operands) && instruction.operands.length > 0 ? (
                 <div className="tvm-operands-list">
                   {instruction.operands.map((operand, idx) => {
                     if (!operand || typeof operand !== 'object') return null;
@@ -1489,23 +1358,14 @@ export const TvmInstructionTable = () => {
                       searchTokens,
                     );
                     const hasRange =
-                      operand.min_value !== undefined ||
-                      operand.max_value !== undefined;
+                      operand.min_value !== undefined || operand.max_value !== undefined;
                     return (
                       <div key={`operand-${idx}`} className="tvm-operands-item">
                         <div className="tvm-operands-line">{summary}</div>
                         {hasRange && (
                           <div className="tvm-operands-detail">
-                            Range{' '}
-                            {highlightMatches(
-                              String(operand.min_value ?? '?'),
-                              searchTokens,
-                            )}{' '}
-                            –{' '}
-                            {highlightMatches(
-                              String(operand.max_value ?? '?'),
-                              searchTokens,
-                            )}
+                            Range {highlightMatches(String(operand.min_value ?? '?'), searchTokens)}{' '}
+                            – {highlightMatches(String(operand.max_value ?? '?'), searchTokens)}
                           </div>
                         )}
                       </div>
@@ -1522,9 +1382,7 @@ export const TvmInstructionTable = () => {
               {hasStackData ? (
                 renderStackColumns(instruction, 'detail')
               ) : (
-                <p className="tvm-missing-placeholder">
-                  Stack effects not available.
-                </p>
+                <p className="tvm-missing-placeholder">Stack effects not available.</p>
               )}
             </div>
           </aside>
@@ -3395,19 +3253,12 @@ export const TvmInstructionTable = () => {
       const active = document.activeElement;
       if (active) {
         const tagName = active.tagName ? active.tagName.toLowerCase() : '';
-        if (
-          tagName === 'input' ||
-          tagName === 'textarea' ||
-          active.isContentEditable
-        ) {
+        if (tagName === 'input' || tagName === 'textarea' || active.isContentEditable) {
           return;
         }
       }
       event.preventDefault();
-      if (
-        searchInputRef.current &&
-        typeof searchInputRef.current.focus === 'function'
-      ) {
+      if (searchInputRef.current && typeof searchInputRef.current.focus === 'function') {
         searchInputRef.current.focus();
       }
     };
@@ -3448,116 +3299,97 @@ export const TvmInstructionTable = () => {
       aliasByMnemonic.set(alias.alias_of, list);
     });
 
-    return (Array.isArray(spec.instructions) ? spec.instructions : []).map(
-      (raw, idx) => {
-        const doc = raw.doc || {};
-        const bytecode = raw.bytecode || {};
-        const valueFlow = raw.value_flow || {};
-        const inputs = Array.isArray(valueFlow.inputs?.stack)
-          ? valueFlow.inputs.stack
-          : [];
-        const outputs = Array.isArray(valueFlow.outputs?.stack)
-          ? valueFlow.outputs.stack
-          : [];
-        const registersIn = Array.isArray(valueFlow.inputs?.registers)
-          ? valueFlow.inputs.registers
-          : [];
-        const registersOut = Array.isArray(valueFlow.outputs?.registers)
-          ? valueFlow.outputs.registers
-          : [];
+    return (Array.isArray(spec.instructions) ? spec.instructions : []).map((raw, idx) => {
+      const doc = raw.doc || {};
+      const bytecode = raw.bytecode || {};
+      const valueFlow = raw.value_flow || {};
+      const inputs = Array.isArray(valueFlow.inputs?.stack) ? valueFlow.inputs.stack : [];
+      const outputs = Array.isArray(valueFlow.outputs?.stack) ? valueFlow.outputs.stack : [];
+      const registersIn = Array.isArray(valueFlow.inputs?.registers)
+        ? valueFlow.inputs.registers
+        : [];
+      const registersOut = Array.isArray(valueFlow.outputs?.registers)
+        ? valueFlow.outputs.registers
+        : [];
 
-        const categoryKeyRaw = doc.category || 'uncategorized';
-        const categoryGroup = resolveCategoryGroup(categoryKeyRaw);
-        const categoryGroupKey = categoryGroup.key;
-        const categoryGroupLabel = categoryGroup.label;
-        const rawCategoryLabel = humanizeCategoryKey(categoryKeyRaw);
-        const descriptionMissing = !doc.description;
-        const stackDocMissing = !doc.stack;
-        const gasMissing = !doc.gas;
-        const tlbMissing = !bytecode.tlb;
-        const inputsMissing = !Array.isArray(valueFlow.inputs?.stack);
-        const outputsMissing = !Array.isArray(valueFlow.outputs?.stack);
-        const implementationRefs = extractImplementationRefs(
-          raw.implementation,
-        );
-        const implementationMissing = implementationRefs.length === 0;
-        const controlFlowMissing =
-          !raw.control_flow || !Array.isArray(raw.control_flow.branches);
+      const categoryKeyRaw = doc.category || 'uncategorized';
+      const categoryGroup = resolveCategoryGroup(categoryKeyRaw);
+      const categoryGroupKey = categoryGroup.key;
+      const categoryGroupLabel = categoryGroup.label;
+      const rawCategoryLabel = humanizeCategoryKey(categoryKeyRaw);
+      const descriptionMissing = !doc.description;
+      const stackDocMissing = !doc.stack;
+      const gasMissing = !doc.gas;
+      const tlbMissing = !bytecode.tlb;
+      const inputsMissing = !Array.isArray(valueFlow.inputs?.stack);
+      const outputsMissing = !Array.isArray(valueFlow.outputs?.stack);
+      const implementationRefs = extractImplementationRefs(raw.implementation);
+      const implementationMissing = implementationRefs.length === 0;
+      const controlFlowMissing = !raw.control_flow || !Array.isArray(raw.control_flow.branches);
 
-        const opcode = bytecode.prefix || '';
-        const anchorId = buildAnchorId({ opcode, mnemonic: raw.mnemonic });
+      const opcode = bytecode.prefix || '';
+      const anchorId = buildAnchorId({ opcode, mnemonic: raw.mnemonic });
 
-        return {
-          uid: `${raw.mnemonic}__${opcode || 'nop'}__${idx}`,
-          mnemonic: raw.mnemonic,
-          since: typeof raw.since_version === 'number' ? raw.since_version : 0,
-          anchorId,
-          categoryKey: categoryGroupKey,
-          categoryLabel: categoryGroupLabel,
-          rawCategoryKey: categoryKeyRaw,
-          rawCategoryLabel,
-          description: doc.description || '',
-          descriptionHtml:
-            typeof doc.description_html === 'string'
-              ? doc.description_html
-              : '',
-          fift: doc.fift || '',
-          fiftExamples: Array.isArray(doc.fift_examples)
-            ? doc.fift_examples
-                .map((example) =>
-                  example && typeof example === 'object'
-                    ? {
-                        description:
-                          typeof example.description === 'string'
-                            ? example.description
-                            : '',
-                        fift:
-                          typeof example.fift === 'string' ? example.fift : '',
-                      }
-                    : null,
-                )
-                .filter(
-                  (example) => example && (example.description || example.fift),
-                )
-            : [],
-          gas: doc.gas || '',
-          gasDisplay: formatGasDisplay(doc.gas),
-          stackDoc: doc.stack || '',
-          opcode,
-          tlb: bytecode.tlb || '',
-          operands: Array.isArray(bytecode.operands) ? bytecode.operands : [],
-          valueFlow: {
-            inputs,
-            outputs,
-          },
-          registers: {
-            inputs: registersIn,
-            outputs: registersOut,
-          },
-          controlFlow: raw.control_flow || null,
-          implementationRefs,
-          rawSpec: raw,
-          aliases: aliasByMnemonic.get(raw.mnemonic) || [],
-          missing: {
-            description: descriptionMissing,
-            gas: gasMissing,
-            tlb: tlbMissing,
-            stackDoc: stackDocMissing,
-            inputs: inputsMissing,
-            outputs: outputsMissing,
-            implementation: implementationMissing,
-            controlFlow: controlFlowMissing,
-          },
-        };
-      },
-    );
+      return {
+        uid: `${raw.mnemonic}__${opcode || 'nop'}__${idx}`,
+        mnemonic: raw.mnemonic,
+        since: typeof raw.since_version === 'number' ? raw.since_version : 0,
+        anchorId,
+        categoryKey: categoryGroupKey,
+        categoryLabel: categoryGroupLabel,
+        rawCategoryKey: categoryKeyRaw,
+        rawCategoryLabel,
+        description: doc.description || '',
+        descriptionHtml: typeof doc.description_html === 'string' ? doc.description_html : '',
+        fift: doc.fift || '',
+        fiftExamples: Array.isArray(doc.fift_examples)
+          ? doc.fift_examples
+              .map((example) =>
+                example && typeof example === 'object'
+                  ? {
+                      description:
+                        typeof example.description === 'string' ? example.description : '',
+                      fift: typeof example.fift === 'string' ? example.fift : '',
+                    }
+                  : null,
+              )
+              .filter((example) => example && (example.description || example.fift))
+          : [],
+        gas: doc.gas || '',
+        gasDisplay: formatGasDisplay(doc.gas),
+        stackDoc: doc.stack || '',
+        opcode,
+        tlb: bytecode.tlb || '',
+        operands: Array.isArray(bytecode.operands) ? bytecode.operands : [],
+        valueFlow: {
+          inputs,
+          outputs,
+        },
+        registers: {
+          inputs: registersIn,
+          outputs: registersOut,
+        },
+        controlFlow: raw.control_flow || null,
+        implementationRefs,
+        rawSpec: raw,
+        aliases: aliasByMnemonic.get(raw.mnemonic) || [],
+        missing: {
+          description: descriptionMissing,
+          gas: gasMissing,
+          tlb: tlbMissing,
+          stackDoc: stackDocMissing,
+          inputs: inputsMissing,
+          outputs: outputsMissing,
+          implementation: implementationMissing,
+          controlFlow: controlFlowMissing,
+        },
+      };
+    });
   }, [spec]);
 
   const anchorInstruction = useMemo(() => {
     if (!activeAnchorId) return null;
-    return (
-      instructions.find((item) => item.anchorId === activeAnchorId) || null
-    );
+    return instructions.find((item) => item.anchorId === activeAnchorId) || null;
   }, [instructions, activeAnchorId]);
 
   useEffect(() => {
@@ -3573,8 +3405,7 @@ export const TvmInstructionTable = () => {
 
   useEffect(() => {
     if (!anchorInstruction) return;
-    if (typeof document === 'undefined' || typeof window === 'undefined')
-      return;
+    if (typeof document === 'undefined' || typeof window === 'undefined') return;
     if (!anchorInstruction.anchorId) return;
     const frame =
       typeof window.requestAnimationFrame === 'function'
@@ -3614,9 +3445,7 @@ export const TvmInstructionTable = () => {
     });
     const normalized = new Map();
     groups.forEach((entries, key) => {
-      const list = Array.from(entries.values()).sort((a, b) =>
-        a.label.localeCompare(b.label),
-      );
+      const list = Array.from(entries.values()).sort((a, b) => a.label.localeCompare(b.label));
       normalized.set(key, list);
     });
     return normalized;
@@ -3624,9 +3453,10 @@ export const TvmInstructionTable = () => {
 
   const categoryOptions = useMemo(() => {
     const present = new Set(subcategoryMap.keys());
-    const ordered = CATEGORY_GROUPS.filter((group) =>
-      present.has(group.key),
-    ).map((group) => ({ value: group.key, label: group.label }));
+    const ordered = CATEGORY_GROUPS.filter((group) => present.has(group.key)).map((group) => ({
+      value: group.key,
+      label: group.label,
+    }));
     return [{ value: 'All', label: 'All categories' }, ...ordered];
   }, [subcategoryMap]);
 
@@ -3635,14 +3465,11 @@ export const TvmInstructionTable = () => {
     return subcategoryMap.get(category) || [];
   }, [subcategoryMap, category]);
 
-  const showSubcategorySelect =
-    category !== 'All' && currentSubcategoryOptions.length > 1;
+  const showSubcategorySelect = category !== 'All' && currentSubcategoryOptions.length > 1;
 
   useEffect(() => {
     if (category === 'All') return;
-    const hasSelection = categoryOptions.some(
-      (option) => option.value === category,
-    );
+    const hasSelection = categoryOptions.some((option) => option.value === category);
     if (!hasSelection) {
       setCategory('All');
     }
@@ -3662,9 +3489,7 @@ export const TvmInstructionTable = () => {
       }
       return;
     }
-    const hasSubcategory = options.some(
-      (option) => option.value === subcategory,
-    );
+    const hasSubcategory = options.some((option) => option.value === subcategory);
     if (!hasSubcategory) {
       setSubcategory('All');
     }
@@ -3675,11 +3500,7 @@ export const TvmInstructionTable = () => {
     return instructions.filter((item) => {
       if (forcedUid && item.uid === forcedUid) return true;
       if (category !== 'All' && item.categoryKey !== category) return false;
-      if (
-        category !== 'All' &&
-        subcategory !== 'All' &&
-        item.rawCategoryKey !== subcategory
-      ) {
+      if (category !== 'All' && subcategory !== 'All' && item.rawCategoryKey !== subcategory) {
         return false;
       }
       return itemRelevanceScore(item, searchTokens) !== Infinity;
@@ -3696,10 +3517,7 @@ export const TvmInstructionTable = () => {
         const sb = itemRelevanceScore(b, tokens);
         if (sa !== sb) return sa - sb;
         // tie-breakers
-        return (
-          a.mnemonic.localeCompare(b.mnemonic) ||
-          compareOpcodes(a.opcode, b.opcode)
-        );
+        return a.mnemonic.localeCompare(b.mnemonic) || compareOpcodes(a.opcode, b.opcode);
       });
     } else if (sortMode !== 'opcode') {
       copy.sort((a, b) => {
@@ -3708,19 +3526,12 @@ export const TvmInstructionTable = () => {
             return a.mnemonic.localeCompare(b.mnemonic);
           case 'category':
             return (
-              a.categoryLabel.localeCompare(b.categoryLabel) ||
-              a.opcode.localeCompare(b.opcode)
+              a.categoryLabel.localeCompare(b.categoryLabel) || a.opcode.localeCompare(b.opcode)
             );
           case 'since':
-            return (
-              (b.since == 9999 ? -1 : b.since) -
-              (a.since == 9999 ? -1 : a.since)
-            );
+            return (b.since == 9999 ? -1 : b.since) - (a.since == 9999 ? -1 : a.since);
           default:
-            return (
-              compareOpcodes(a.opcode, b.opcode) ||
-              a.mnemonic.localeCompare(b.mnemonic)
-            );
+            return compareOpcodes(a.opcode, b.opcode) || a.mnemonic.localeCompare(b.mnemonic);
         }
       });
     }
@@ -3780,9 +3591,7 @@ export const TvmInstructionTable = () => {
       });
     }
     if (category !== 'All' && subcategory !== 'All') {
-      const match = currentSubcategoryOptions.find(
-        (option) => option.value === subcategory,
-      );
+      const match = currentSubcategoryOptions.find((option) => option.value === subcategory);
       const label = match ? match.label : humanizeCategoryKey(subcategory);
       chips.push({
         key: 'subcategory',
@@ -3910,18 +3719,8 @@ export const TvmInstructionTable = () => {
             <div className="tvm-search-row">
               <div className="tvm-search-input">
                 <span className="tvm-search-icon" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="11"
-                      cy="11"
-                      r="6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="2" />
                     <path
                       d="M20 20l-3.5-3.5"
                       stroke="currentColor"
@@ -3945,11 +3744,7 @@ export const TvmInstructionTable = () => {
                     onClick={() => setSearch('')}
                     aria-label="Clear search"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M15 9l-6 6"
                         stroke="currentColor"
@@ -4021,9 +3816,7 @@ export const TvmInstructionTable = () => {
                 <select
                   id="tvm-subcategory"
                   value={subcategory}
-                  onChange={(event) =>
-                    setSubcategory(event.currentTarget.value)
-                  }
+                  onChange={(event) => setSubcategory(event.currentTarget.value)}
                 >
                   <option value="All">All subcategories</option>
                   {currentSubcategoryOptions.map((option) => (
@@ -4041,9 +3834,7 @@ export const TvmInstructionTable = () => {
 
       <div className="tvm-instruction-meta">
         <div className="tvm-meta-items">
-          {loading && (
-            <span className="tvm-meta-item">Loading specification…</span>
-          )}
+          {loading && <span className="tvm-meta-item">Loading specification…</span>}
           {error && !loading && (
             <span className="tvm-meta-item">Failed to load specification.</span>
           )}
@@ -4086,13 +3877,9 @@ export const TvmInstructionTable = () => {
 
           {!error && (
             <>
-              {loading && (
-                <div className="tvm-loading-row">Loading specification…</div>
-              )}
+              {loading && <div className="tvm-loading-row">Loading specification…</div>}
               {!loading && sorted.length === 0 && (
-                <div className="tvm-empty-row">
-                  No instructions match the filters.
-                </div>
+                <div className="tvm-empty-row">No instructions match the filters.</div>
               )}
               {!loading &&
                 sorted.flatMap((instruction) => {
@@ -4101,11 +3888,9 @@ export const TvmInstructionTable = () => {
                     ? instruction.aliases.length
                     : 0;
                   const detailId = `tvm-detail-${instruction.uid}`;
-                  const anchorId =
-                    instruction.anchorId || buildAnchorId(instruction);
+                  const anchorId = instruction.anchorId || buildAnchorId(instruction);
                   const isAnchorTarget =
-                    anchorInstruction &&
-                    anchorInstruction.uid === instruction.uid;
+                    anchorInstruction && anchorInstruction.uid === instruction.uid;
                   const rowClassName = [
                     'tvm-spec-row',
                     isExpanded ? 'is-expanded' : '',
@@ -4114,9 +3899,7 @@ export const TvmInstructionTable = () => {
                     .filter(Boolean)
                     .join(' ');
                   const descriptionHtml = highlightHtmlContent(
-                    instruction.descriptionHtml ||
-                      instruction.description ||
-                      '',
+                    instruction.descriptionHtml || instruction.description || '',
                     searchTokens,
                   );
 
@@ -4138,20 +3921,12 @@ export const TvmInstructionTable = () => {
                       }}
                     >
                       <div className="tvm-spec-cell tvm-spec-cell--opcode">
-                        <code>
-                          {highlightMatches(
-                            instruction.opcode || '—',
-                            searchTokens,
-                          )}
-                        </code>
+                        <code>{highlightMatches(instruction.opcode || '—', searchTokens)}</code>
                       </div>
                       <div className="tvm-spec-cell tvm-spec-cell--name">
                         <div className="tvm-name-line">
                           <span className="tvm-mnemonic">
-                            {highlightMatches(
-                              instruction.mnemonic,
-                              searchTokens,
-                            )}
+                            {highlightMatches(instruction.mnemonic, searchTokens)}
                           </span>
                           {instruction.since > 0 && (
                             <span className="tvm-inline-badge">
@@ -4166,9 +3941,7 @@ export const TvmInstructionTable = () => {
                             </span>
                           )}
                           <span
-                            className={`tvm-row-indicator ${
-                              isExpanded ? 'is-expanded' : ''
-                            }`}
+                            className={`tvm-row-indicator ${isExpanded ? 'is-expanded' : ''}`}
                             aria-hidden="true"
                           >
                             <SelectChevron />
@@ -4178,18 +3951,14 @@ export const TvmInstructionTable = () => {
                           <div className="tvm-operands">
                             {instruction.operands.map((operand, idx) => (
                               <span key={idx} className="tvm-operand-chip">
-                                {highlightMatches(
-                                  formatOperandSummary(operand),
-                                  searchTokens,
-                                )}
+                                {highlightMatches(formatOperandSummary(operand), searchTokens)}
                               </span>
                             ))}
                           </div>
                         )}
                       </div>
                       <div className="tvm-spec-cell tvm-spec-cell--description">
-                        {instruction.description ||
-                        instruction.descriptionHtml ? (
+                        {instruction.description || instruction.descriptionHtml ? (
                           <div
                             className="tvm-description"
                             dangerouslySetInnerHTML={{
@@ -4198,9 +3967,7 @@ export const TvmInstructionTable = () => {
                           />
                         ) : null}
                         <div className="tvm-description-meta">
-                          <span className="tvm-category-pill">
-                            {instruction.categoryLabel}
-                          </span>
+                          <span className="tvm-category-pill">{instruction.categoryLabel}</span>
                         </div>
                       </div>
                     </div>,
@@ -4214,10 +3981,7 @@ export const TvmInstructionTable = () => {
                           isAnchorTarget ? 'is-anchor-target' : ''
                         }`}
                       >
-                        <div
-                          className="tvm-spec-cell tvm-spec-cell--full"
-                          id={detailId}
-                        >
+                        <div className="tvm-spec-cell tvm-spec-cell--full" id={detailId}>
                           {renderInstructionDetail(instruction, {
                             isAnchorTarget,
                             onOpenRawJson: openRawJsonModal,
@@ -4267,11 +4031,7 @@ export const TvmInstructionTable = () => {
                 >
                   {rawModalCopied ? 'Copied' : 'Copy JSON'}
                 </button>
-                <button
-                  type="button"
-                  className="tvm-button"
-                  onClick={closeRawJsonModal}
-                >
+                <button type="button" className="tvm-button" onClick={closeRawJsonModal}>
                   Close
                 </button>
               </div>

@@ -10,18 +10,11 @@
  *   children: any
  * }} props
  */
-export const Aside = ({
-  type = 'note',
-  title = '',
-  icon = '',
-  iconType = 'regular',
-  children,
-}) => {
+export const Aside = ({ type = 'note', title = '', icon = '', iconType = 'regular', children }) => {
   const asideVariants = ['note', 'tip', 'caution', 'danger'];
   const asideComponents = {
     note: {
-      outerStyle:
-        'border-sky-500/20 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/10',
+      outerStyle: 'border-sky-500/20 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/10',
       innerStyle: 'text-sky-900 dark:text-sky-200',
       calloutType: 'note',
       icon: (
@@ -84,8 +77,7 @@ export const Aside = ({
       ),
     },
     danger: {
-      outerStyle:
-        'border-red-500/20 bg-red-50/50 dark:border-red-500/30 dark:bg-red-500/10',
+      outerStyle: 'border-red-500/20 bg-red-50/50 dark:border-red-500/30 dark:bg-red-500/10',
       innerStyle: 'text-red-900 dark:text-red-200',
       calloutType: 'danger',
       icon: (
@@ -107,15 +99,7 @@ export const Aside = ({
     gotInvalidVariant = true;
     variant = 'danger';
   }
-  const iconVariants = [
-    'regular',
-    'solid',
-    'light',
-    'thin',
-    'sharp-solid',
-    'duotone',
-    'brands',
-  ];
+  const iconVariants = ['regular', 'solid', 'light', 'thin', 'sharp-solid', 'duotone', 'brands'];
   if (!iconVariants.includes(iconType)) {
     iconType = 'regular';
   }

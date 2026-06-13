@@ -65,8 +65,7 @@ const checkUnique = (config) => {
     );
   }
   /** @param src {string} */
-  const fmt = (src) =>
-    prefixWithSlash(src).replace(/#.*$/, '').replace(/\?.*$/, '');
+  const fmt = (src) => prefixWithSlash(src).replace(/#.*$/, '').replace(/\?.*$/, '');
   const loops = redirects
     .filter((it) => fmt(it.source) == fmt(it.destination))
     .map((it) => it.source);
@@ -164,16 +163,11 @@ const checkExist = (config) => {
    * @returns {{ files: 'one'; path: string } | { files: 'many'; paths: string[] } | { files: 'none' }}
    */
   const pathFindFiles = (path) => {
-    const cleanedPath = path
-      .replace(/^\/+/, '')
-      .replace(/#.*$/, '')
-      .replace(/\?.*$/, '');
+    const cleanedPath = path.replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
     const relPath = cleanedPath === '' ? 'content' : `content/${cleanedPath}`;
-    const existingFiles = [
-      `${relPath}/index.mdx`,
-      `${relPath}.mdx`,
-      `${relPath}`,
-    ].filter((it) => existsSync(it) && statSync(it).isFile());
+    const existingFiles = [`${relPath}/index.mdx`, `${relPath}.mdx`, `${relPath}`].filter(
+      (it) => existsSync(it) && statSync(it).isFile(),
+    );
 
     if (existingFiles.length === 0) {
       return { files: 'none' };
@@ -224,18 +218,14 @@ const checkExist = (config) => {
     if (path === '/') {
       return {
         ok: true,
-        trace: trace.concat(
-          `The destination is a home page, skipping: ${path}`,
-        ),
+        trace: trace.concat(`The destination is a home page, skipping: ${path}`),
       };
     }
     const foundFiles = pathFindFiles(path);
     if (foundFiles.files === 'one') {
       return {
         ok: true,
-        trace: trace.concat(
-          `Found a file under the destination: ${path} → ${foundFiles.path}`,
-        ),
+        trace: trace.concat(`Found a file under the destination: ${path} → ${foundFiles.path}`),
       };
     }
     if (foundFiles.files === 'many') {
@@ -247,23 +237,15 @@ const checkExist = (config) => {
       };
     }
     // None, need to look in redirect sources or bail.
-    const redirectSource = redirects.find(
-      (it) => it.source === path.replace(/#.*$/, ''),
-    );
+    const redirectSource = redirects.find((it) => it.source === path.replace(/#.*$/, ''));
     if (!redirectSource) {
       return {
         ok: false,
-        trace: trace.concat(
-          `No file nor a deeper redirect found for this destination: ${path}`,
-        ),
+        trace: trace.concat(`No file nor a deeper redirect found for this destination: ${path}`),
       };
     }
     // Otherwise, perform the next iteration with the new destination path.
-    return pathFindWithTrace(
-      redirectSource.destination,
-      attemptsLeft - 1,
-      trace.concat(path),
-    );
+    return pathFindWithTrace(redirectSource.destination, attemptsLeft - 1, trace.concat(path));
   };
 
   // Main part
@@ -287,9 +269,7 @@ const checkExist = (config) => {
     console.log(composeWarning('Found TODO-prefixed destinations!'));
   }
   if (specialDestinationsExist.olderDocs) {
-    console.log(
-      composeWarning('Found destinations that point to old-docs.ton.org!'),
-    );
+    console.log(composeWarning('Found destinations that point to old-docs.ton.org!'));
   }
   // NOTE: this and other special destinations are not currently needed, but their checks must be required in the future.
   // if (specialDestinationsExist.otherExternalLinks) {
@@ -304,9 +284,7 @@ const checkExist = (config) => {
           if (it.length === 1) {
             return it.join('');
           }
-          return (
-            it.slice(0, -1).join('\n  → ') + '\n  → ' + it.slice(-1).join('')
-          );
+          return it.slice(0, -1).join('\n  → ') + '\n  → ' + it.slice(-1).join('');
         }),
         'Some redirect destinations in docs.json do not exist or are unreachable!',
       ),
@@ -333,9 +311,7 @@ const checkPrevious = async (config) => {
     };
   }
   /** @type Readonly<Sidebars> */
-  const sidebarsModule = Object.freeze(
-    (await import('./sidebars/sidebars.js')).default,
-  );
+  const sidebarsModule = Object.freeze((await import('./sidebars/sidebars.js')).default);
   // 2. Process sidebars.js and extract all URLs
   const sidebarsKeys = Object.keys(sidebarsModule);
   /** @type string[] */
@@ -384,13 +360,11 @@ const checkPrevious = async (config) => {
     return { ok: true };
   }
 
-  const redirectSources = getRedirects(config).map((it) =>
-    prefixWithSlash(it.source),
-  );
+  const redirectSources = getRedirects(config).map((it) => prefixWithSlash(it.source));
   const missingSources = prevOnlyLinks.filter(
     (it) =>
-      [it, it.replace(/\/index$/, ''), it.replace(/\/README$/, '')].some(
-        (variant) => redirectSources.includes(variant),
+      [it, it.replace(/\/index$/, ''), it.replace(/\/README$/, '')].some((variant) =>
+        redirectSources.includes(variant),
       ) === false,
   );
   if (missingSources.length !== 0) {
@@ -427,16 +401,12 @@ const checkUpstream = async (localConfig) => {
   const upstreamNavLinks = getNavLinksSet(upstreamConfig);
   const localNavLinks = getNavLinksSet(localConfig);
 
-  const upstreamOnlyLinks = [...upstreamNavLinks].filter(
-    (it) => !localNavLinks.has(it),
-  );
+  const upstreamOnlyLinks = [...upstreamNavLinks].filter((it) => !localNavLinks.has(it));
   if (upstreamOnlyLinks.length === 0) {
     return { ok: true };
   }
 
-  const redirectSources = getRedirects(localConfig).map((it) =>
-    prefixWithSlash(it.source),
-  );
+  const redirectSources = getRedirects(localConfig).map((it) => prefixWithSlash(it.source));
   const eolWildcards = redirectSources
     .filter((it) => it.endsWith('/:slug*'))
     .map((it) => it.replace(/\/:slug\*$/, ''));
@@ -498,33 +468,22 @@ const main = async () => {
   };
 
   if (shouldRunAll || argUnique) {
-    console.log(
-      '🏁 Checking the uniqueness of redirect sources in docs.json...',
-    );
+    console.log('🏁 Checking the uniqueness of redirect sources in docs.json...');
     handleCheckResult(checkUnique(config), 'All sources are unique.');
   }
 
   if (shouldRunAll || argExist) {
-    console.log(
-      '🏁 Checking the existence of redirect destinations in docs.json...',
-    );
-    handleCheckResult(
-      checkExist(config),
-      'All non-TODO, local destinations exist.',
-    );
+    console.log('🏁 Checking the existence of redirect destinations in docs.json...');
+    handleCheckResult(checkExist(config), 'All non-TODO, local destinations exist.');
   }
 
   if (shouldRunAll || argPrevious) {
-    console.log(
-      '🏁 Checking redirects against the previous TON Documentation...',
-    );
+    console.log('🏁 Checking redirects against the previous TON Documentation...');
     handleCheckResult(await checkPrevious(config), 'Full coverage.');
   }
 
   if (shouldRunAll || argUpstream) {
-    console.log(
-      '🏁 Checking redirects against the upstream docs.json structure...',
-    );
+    console.log('🏁 Checking redirects against the upstream docs.json structure...');
     if (allowNet) {
       handleCheckResult(await checkUpstream(config), 'Full coverage.');
     } else {

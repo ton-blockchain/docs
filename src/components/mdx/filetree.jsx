@@ -27,9 +27,7 @@ const renderItem = (item, index) => {
 
     return (
       <Folder key={index} name={displayName} defaultOpen={isOpen}>
-        {item?.items?.map((nestedItem, nestedIndex) =>
-          renderItem(nestedItem, nestedIndex),
-        )}
+        {item?.items?.map((nestedItem, nestedIndex) => renderItem(nestedItem, nestedIndex))}
       </Folder>
     );
   }
@@ -60,9 +58,5 @@ const renderItem = (item, index) => {
  * @param {{ items: FileTreeItem[], defaultOpen?: boolean }} props
  */
 export function FileTree({ items = [], defaultOpen = true, ...props }) {
-  return (
-    <Files {...props}>
-      {items.map((item, index) => renderItem(item, index))}
-    </Files>
-  );
+  return <Files {...props}>{items.map((item, index) => renderItem(item, index))}</Files>;
 }
