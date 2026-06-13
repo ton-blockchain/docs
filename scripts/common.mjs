@@ -1,6 +1,7 @@
 // Node.js
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 // Remark
 import { remark } from 'remark';
@@ -24,6 +25,16 @@ import { visitParents } from 'unist-util-visit-parents';
  * Custom
  * @typedef {{ok: true} | {ok: false; error: string}} CheckResult
  */
+
+// WARN: Must match Next.js build output folder
+export const outDir = 'out';
+
+// WARN: Must match gitConfig.repo in src/lib/shared.ts
+export const prefix = '/docs';
+
+// WARN: Must match next.config.static.ts isGitHubPagesBuild
+export const isGitHubPagesBuild =
+  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 
 /** @param src {string} */
 export function ansiRed(src) {
@@ -78,11 +89,7 @@ export function ansiBold(src) {
  * @param msg {string} Complete description of the error message
  */
 export function composeErrorList(brief, list, msg) {
-  return [
-    ansiRed(brief),
-    '- ' + list.join('\n- '),
-    `\n${ansiRed('Error:')} ${msg}`,
-  ].join('\n');
+  return [ansiRed(brief), '- ' + list.join('\n- '), `\n${ansiRed('Error:')} ${msg}`].join('\n');
 }
 
 /** @param msg {string} */
@@ -105,9 +112,7 @@ export function composeError(msg) {
  * @param list {string[]} List of inline warning messages
  */
 export function composeWarningList(msg, list) {
-  return [`${ansiYellow('Warning:')} ${msg}`, '- ' + list.join('\n- ')].join(
-    '\n',
-  );
+  return [`${ansiYellow('Warning:')} ${msg}`, '- ' + list.join('\n- ')].join('\n');
 }
 
 /** @param msg {string} */
@@ -123,6 +128,32 @@ export function composeSuccess(msg) {
 /** @param src {string} */
 export function prefixWithSlash(src) {
   return '/content/' + src.replace(/^\/*(?:content\/+)?/, '');
+}
+
+/**
+ * Synchronously runs a single command (no pipes!) and returns its exit code.
+ * NOTE: Consider making it into a template literal handler.
+ *
+ * @param command {string}
+ * @param timeout {number} seconds
+ */
+export function $(command, timeout = 60 * 10) {
+  const spaced = command.split(' ');
+  const result = spawnSync(spaced[0], spaced.slice(1), {
+    encoding: 'utf8',
+    timeout: 1_000 * timeout,
+  });
+  if (result.status != 0) {
+    const errMsg = result.error ?? result.stdout + '\n' + result.stderr;
+    console.log(errMsg);
+    return {
+      ok: false,
+      code: result.status,
+      error: errMsg,
+    };
+  }
+  console.log(result.stdout);
+  return { ok: true, code: result.status, output: result.output };
 }
 
 /**
@@ -175,9 +206,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
    * @type {{ files: string[]; dirs: string[] }}
    */
   const commonIgnoreMap = Object.freeze({
-    files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) =>
-      join(dir, it),
-    ),
+    files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) => join(dir, it)),
     dirs: [
       '.git',
       '.github',
@@ -196,9 +225,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
    */
   const extIgnoreMap = Object.freeze({
     mdx: {
-      files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) =>
-        join(dir, it),
-      ),
+      files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) => join(dir, it)),
       dirs: [
         // Snippets and page parts
         'snippets',
@@ -240,10 +267,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
       const relPath = join(it.parentPath, it.name);
       if (it.isFile() && relPath.toLowerCase().endsWith(ext)) {
         // Ignore extension-specific targets
-        if (
-          extIgnoreMap.hasOwnProperty(ext) &&
-          extIgnoreMap[ext].files.includes(relPath)
-        ) {
+        if (extIgnoreMap.hasOwnProperty(ext) && extIgnoreMap[ext].files.includes(relPath)) {
           return;
         }
         results.push(relPath);
@@ -251,10 +275,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
       }
       if (it.isDirectory()) {
         // Ignore extension-specific targets
-        if (
-          extIgnoreMap.hasOwnProperty(ext) &&
-          extIgnoreMap[ext].dirs.includes(relPath)
-        ) {
+        if (extIgnoreMap.hasOwnProperty(ext) && extIgnoreMap[ext].dirs.includes(relPath)) {
           return;
         }
         recurse(relPath);
