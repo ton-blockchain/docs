@@ -155,6 +155,14 @@ pre.shiki .indent::before {
   white-space: nowrap;
 }
 
+/*
+ * Hide a table header when every header cell is empty.
+ * Reads as "tr in thead that does not have a th that is not empty".
+ */
+thead tr:not(:has(th:not(:empty))) {
+  display: none;
+}
+
 /* A class to hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
   /* IE and Edge */
