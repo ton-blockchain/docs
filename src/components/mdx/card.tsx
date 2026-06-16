@@ -31,7 +31,10 @@ export type ColumnsProps = HTMLAttributes<HTMLDivElement> & {
 /** Responsive grid of cards */
 export function Columns({ cols = 2, className, children, ...props }: ColumnsProps) {
   return (
-    <div {...props} className={cn('grid gap-x-3 gap-y-1 @container', COLS[cols] ?? COLS[2], className)}>
+    <div
+      {...props}
+      className={cn('grid gap-x-3 gap-y-1 @container', COLS[cols] ?? COLS[2], className)}
+    >
       {children}
     </div>
   );
