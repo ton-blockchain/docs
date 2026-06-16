@@ -22,6 +22,9 @@ import { ParamField, ResponseField, Tooltip } from '@/snippets/stub-components';
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
+    // See: https://www.fumadocs.dev/docs/ui/components/image-zoom
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    img: (props) => <ImageZoom {...(props as any)} />,
     // See: https://www.fumadocs.dev/docs/integrations/openapi/api-page
     APIPage,
     // See: https://www.fumadocs.dev/docs/markdown/mermaid
@@ -54,9 +57,6 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     FileTree,
     Icon,
     Badge,
-    // See: https://www.fumadocs.dev/docs/ui/components/image-zoom
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    img: (props) => <ImageZoom {...(props as any)} />,
     // Page-specific components
     CatchainVisualizer,
     TvmInstructionTable,
