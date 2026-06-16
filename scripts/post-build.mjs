@@ -34,11 +34,14 @@ const rewrite = (path) => {
 
 /** @param {string} text */
 const prefixUrls = (text) => {
-  const attrPattern = /\b(src|href|poster|darkSrc)=(["'])(\/(?!\/)[^"']*)\2/g;
-  const doubleQuoteAttrPattern = /\b(src|href|poster|darkSrc)":"(\/(?!\/)[^"]*)"/g;
-  const cssUrlPattern = /url\((["']?)(\/(?!\/)[^)"']*)\1\)/g;
+  const attrPattern =
+    /\b(src|href|poster|darkSrc)=(["'])(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^"']*)\2/g;
+  const doubleQuoteAttrPattern =
+    /\b(src|href|poster|darkSrc)":"(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^"]*)"/g;
+  const cssUrlPattern = /url\((["']?)(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^)"']*)\1\)/g;
   // NOTE: only for api/search?
-  const specAttrPattern = /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?!\/)[^\\"']*)\2/g;
+  const specAttrPattern =
+    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^\\"']*)\2/g;
   let replacements = 0;
   const next = text
     .replace(attrPattern, (match, attr, quote, path) => {
@@ -72,7 +75,8 @@ const prefixUrls = (text) => {
 const prefixAssetLinks = (dir) => {
   /** @type {{ files: number; replacements: number }} */
   const stats = { files: 0, replacements: 0 };
-  const exts = new Set(['.html', '.js', '.css', '.md', '.txt']);
+  // NOTE: only edit html, never .txt, .js, .css, .md?
+  const exts = new Set(['.html']);
 
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
