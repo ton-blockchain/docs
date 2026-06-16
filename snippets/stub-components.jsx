@@ -1,33 +1,11 @@
 /**
- * Temporary, stub components for the Mintlify -> Fumadocs migration.
+ * Shim components for the Mintlify -> Fumadocs migration.
  */
 
-/** @param {{
- *    title: string,
- *    href: string,
- *    icon: string,
- *    horizontal: boolean,
- *    arrow: boolean,
- *    children: any,
- *  }} props
- */
-export const Card = ({
-  title,
-  href = '',
-  icon = '',
-  horizontal = false,
-  arrow = false,
-  children,
-}) => {
-  return <>{children}</>;
-};
-
-/** @param {{ children: any }} props */
-export const Cards = ({ children }) => {
-  return <>{children}</>;
-};
-
-/** @param {{
+/**
+ * TODO: keep it as is or take from OpenAPI
+ *
+ * @param {{
  *    path: string,
  *    body: string,
  *    type: string,
@@ -47,7 +25,10 @@ export const ParamField = ({ path = '', body = '', type = '', required = false, 
   </div>
 );
 
-/** @param {{
+/**
+ * TODO: keep it as is or take from OpenAPI
+ *
+ * @param {{
  *    name: string,
  *    type: string,
  *    required: boolean,
@@ -66,42 +47,9 @@ export const ResponseField = ({ name = '', type = '', required = false, children
   </div>
 );
 
-/** @param {{ title: string, noAnchor: boolean, children: any }} props */
-export const Step = ({ title = '', children }) => (
-  <div className="my-3">
-    {title && <p className="font-bold">{title}</p>}
-    {children}
-  </div>
-);
-
-/** @param {{ children: any }} props */
-export const Steps = ({ children }) => <div className="my-4">{children}</div>;
-
-/** @param {{ cols: number, children: any }} props */
-export const Columns = ({ children }) => (
-  <div className="my-4 flex flex-wrap gap-4">{children}</div>
-);
-
-/** @param {{ cols: number, children: any }} props */
-export const CardGroup = ({ children }) => (
-  <div className="my-4 flex flex-wrap gap-4">{children}</div>
-);
-
-/** @param {{ children: any }} props */
-export const AccordionGroup = ({ children }) => <div className="my-4">{children}</div>;
-
-/** @param {{ children: any }} props */
-export const CodeGroup = ({ children }) => <div className="my-4">{children}</div>;
-
-/** @param {{ title: string, children: any }} props */
-export const Expandable = ({ title = '', children }) => (
-  <details className="my-4">
-    {title && <summary className="font-bold">{title}</summary>}
-    {children}
-  </details>
-);
-
 /**
+ * TODO: Lightweight shim, enhance further.
+ *
  * @param {{
  *   tip: string,
  *   cta: string,
@@ -110,7 +58,7 @@ export const Expandable = ({ title = '', children }) => (
  * }} props
  */
 export const Tooltip = ({ tip = '', cta = '', href = '', children }) => (
-  <span title={tip}>
+  <span title={tip} className="underline decoration-dotted decoration-fd-muted-foreground">
     {children}
     {cta && href && (
       <>
@@ -119,30 +67,4 @@ export const Tooltip = ({ tip = '', cta = '', href = '', children }) => (
       </>
     )}
   </span>
-);
-
-/**
- * @param {{
- *   color: string,
- *   size: string,
- *   children: any
- * }} props
- */
-export const Badge = ({ children }) => (
-  <span className="inline-block rounded px-1.5 py-0.5 text-xs border">{children}</span>
-);
-
-/**
- * @param {{
- *   icon: string,
- *   size: number,
- *   iconType: string
- * }} props
- */
-export const Icon = ({ icon = '', size = 16 }) => (
-  <span
-    className="inline-block align-middle"
-    style={{ width: size, height: size }}
-    aria-label={icon}
-  />
 );

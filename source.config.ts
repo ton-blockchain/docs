@@ -6,6 +6,7 @@ import {
   remarkMdxMermaid,
   remarkMdxFiles,
   remarkGfm,
+  remarkSteps,
 } from 'fumadocs-core/mdx-plugins';
 import { parseCodeBlockAttributes } from 'fumadocs-core/mdx-plugins/codeblock-utils';
 import { z } from 'zod';
@@ -112,7 +113,7 @@ export default defineConfig({
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
-        transformerRenderIndentGuides(),
+        transformerRenderIndentGuides({ indent: 2 }),
         transformerMetaHighlight(),
         transformerMetaWordHighlight(),
         transformerNotationHighlight({ matchAlgorithm: 'v3' }),
@@ -135,7 +136,7 @@ export default defineConfig({
     },
     remarkPlugins: (v) => [
       // NOTE: `title=` → `tab=` meta pre-processing in CodeGroup components,
-      //       which should be placed before everything else!
+      //       which should be placed before default plugins!
       function remarkCodeGroup() {
         return (tree) => {
           visitParents(tree, (node: any) => {
@@ -145,6 +146,59 @@ export default defineConfig({
                 child.meta = child.meta.replace(/\btitle=/, 'tab=');
               }
             }
+          });
+        };
+      },
+      // NOTE: sourcing `items[]` in Tabs components based on values in child Tab components,
+      //       which should be placed before default plugins!
+      function remarkTabs() {
+        return (tree) => {
+          visitParents(tree, (node: any) => {
+            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'Tabs') return;
+            let vals = [];
+            for (const child of node.children) {
+              if (child.type !== 'mdxJsxFlowElement' || child.name !== 'Tab') continue;
+              const valueAttr = (child.attributes || []).find(
+                // @ts-ignore
+                (attr) => attr.type === 'mdxJsxAttribute' && attr.name === 'value',
+              );
+              if (!valueAttr || !valueAttr.value) continue;
+              vals.push(valueAttr.value);
+            }
+            if (vals.length === 0) return;
+            if (!node.attributes) node.attributes = [];
+            const existing = node.attributes.findIndex(
+              // @ts-ignore
+              (attr) => attr.type === 'mdxJsxAttribute' && attr.name === 'items',
+            );
+            if (existing !== -1) return;
+            node.attributes.push({
+              type: 'mdxJsxAttribute',
+              name: 'items',
+              value: {
+                type: 'mdxJsxAttributeValueExpression',
+                value: `[${vals.map((v) => JSON.stringify(v)).join(', ')}]`,
+                data: {
+                  estree: {
+                    type: 'Program',
+                    body: [
+                      {
+                        type: 'ExpressionStatement',
+                        expression: {
+                          type: 'ArrayExpression',
+                          elements: vals.map((v) => ({
+                            type: 'Literal',
+                            value: v,
+                            raw: JSON.stringify(v),
+                          })),
+                        },
+                      },
+                    ],
+                    sourceType: 'module',
+                  },
+                },
+              },
+            });
           });
         };
       },
@@ -161,6 +215,7 @@ export default defineConfig({
       ],
       remarkMdxMermaid,
       remarkMdxFiles,
+      remarkSteps,
     ],
     rehypePlugins: (v) => [
       // NOTE: KaTeX support should be placed before everything else!
@@ -168,4 +223,16 @@ export default defineConfig({
       ...v,
     ],
   },
+  // See: https://github.com/fuma-nama/fumapress/blob/dev/apps/docs/press.config.tsx
+  // See: https://github.com/fuma-nama/fumapress/tree/dev/packages/core/src/plugins
+  // The following plugins are unavailable in Fumadocs directly
+  plugins: [
+    // flexsearchPlugin(), // NOTE: consider using it over Orama
+    // llmsPlugin(), // NOTE: using it
+    // takumiPlugin(), // NOTE: consider using it over Next.js's OG generation iff there's some reason to do so
+    // imagePlugin({ formats: ["image/webp", "image/png"] }), // NOTE: optimize images in each PR in its CI
+    // linkValidationPlugin(), // NOTE: it is very shallow and we require much more checks
+    // sitemapPlugin(), // NOTE: will be added manually
+    // mcpPlugin(), // NOTE: llms.txt + skill files are better, because MCP are not always picked up from the context
+  ],
 });

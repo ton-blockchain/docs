@@ -73,6 +73,13 @@ export function TabsTrigger(props: React.ComponentPropsWithRef<typeof Unstyled.T
   );
 }
 
+/**
+ * A no-op wrapper for code blocks used as an anchor during remark pre-processing:
+ * it allows rewriting `title=` attributes to `tab=` ones and, thus, creating code groups
+ * with native Fumadocs Tabs plugins.
+ */
+export const CodeGroup = ({ children }: { children: any }) => <>{children}</>;
+
 export function Tabs({
   ref,
   className,
@@ -125,7 +132,7 @@ export interface TabProps extends Omit<
    */
   value?: string;
   /**
-   * Optional icon.
+   * Optional icon. TODO: implementation via <Icon> in the value, with MDX processing there.
    */
   icon?: string;
 }

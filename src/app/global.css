@@ -147,6 +147,23 @@ pre.shiki .indent::before {
   background-color: currentColor;
 }
 
+/**
+ * Adjust text styles surrounding a Badge with `since` value set,
+ * which is an availability or a version change badge
+ */
+.prose h2:has(+ .availability-badge) {
+  margin-bottom: 0.5rem;
+}
+
+.prose .availability-badge {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose .availability-badge + figure {
+  margin-top: 1rem;
+}
+
 /*
  * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
  * that do not support the text-wrap property yet.
