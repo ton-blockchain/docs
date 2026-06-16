@@ -35,13 +35,13 @@ const rewrite = (path) => {
 /** @param {string} text */
 const prefixUrls = (text) => {
   const attrPattern =
-    /\b(src|href|poster|darkSrc)=(["'])(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^"']*)\2/g;
+    /\b(src|href|poster|darkSrc)=(["'])(\/(?:images|logo|pdfs|videos)\/(?!\/)[^"']*)\2/g;
   const doubleQuoteAttrPattern =
-    /\b(src|href|poster|darkSrc)":"(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^"]*)"/g;
-  const cssUrlPattern = /url\((["']?)(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^)"']*)\1\)/g;
+    /\b(src|href|poster|darkSrc)":"(\/(?:images|logo|pdfs|videos)\/(?!\/)[^"]*)"/g;
+  const cssUrlPattern = /url\((["']?)(\/(?:images|logo|pdfs|videos)\/(?!\/)[^)"']*)\1\)/g;
   // NOTE: only for api/search?
   const specAttrPattern =
-    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^\\"']*)\2/g;
+    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:images|logo|pdfs|videos)\/(?!\/)[^\\"']*)\2/g;
   let replacements = 0;
   const next = text
     .replace(attrPattern, (match, attr, quote, path) => {

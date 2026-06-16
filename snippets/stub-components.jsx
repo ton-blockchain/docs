@@ -1,8 +1,7 @@
-/**
- * Shim components for the Mintlify -> Fumadocs migration.
- */
+import Link from 'fumadocs-core/link';
 
 /**
+ * Shim component for the Mintlify -> Fumadocs migration.
  * TODO: keep it as is or take from OpenAPI
  *
  * @param {{
@@ -26,6 +25,7 @@ export const ParamField = ({ path = '', body = '', type = '', required = false, 
 );
 
 /**
+ * Shim component for the Mintlify -> Fumadocs migration.
  * TODO: keep it as is or take from OpenAPI
  *
  * @param {{
@@ -48,6 +48,7 @@ export const ResponseField = ({ name = '', type = '', required = false, children
 );
 
 /**
+ * Shim component for the Mintlify -> Fumadocs migration.
  * TODO: Lightweight shim, enhance further.
  *
  * @param {{
@@ -63,7 +64,7 @@ export const Tooltip = ({ tip = '', cta = '', href = '', children }) => (
     {cta && href && (
       <>
         {' '}
-        <a href={href}>{cta}</a>
+        <Link href={href}>{cta}</Link>
       </>
     )}
   </span>

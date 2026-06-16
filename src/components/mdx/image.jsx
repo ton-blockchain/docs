@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'fumadocs-core/link';
 import { ImageZoom } from './image-zoom';
 import { Callout } from './callout';
 
@@ -131,17 +132,17 @@ export const Image = ({
     if (shouldCenter) {
       return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <a href={href} target={target ?? '_self'}>
+          <Link href={href} target={target ?? '_self'}>
             {images}
-          </a>
+          </Link>
         </div>
       );
     }
 
     return (
-      <a href={href} target={target ?? '_self'}>
+      <Link href={href} target={target ?? '_self'}>
         {images}
-      </a>
+      </Link>
     );
   }
 
