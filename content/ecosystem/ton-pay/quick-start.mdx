@@ -10,9 +10,9 @@ Before installing and setting up the TON Pay SDK, the application must provide a
 ## First payment
 
 <Steps>
-  <Step
-    title="Install necessary libraries"
-  >
+  <Step>
+    ### Install necessary libraries
+
     <Tabs>
       <Tab
         value="React"
@@ -46,9 +46,9 @@ Before installing and setting up the TON Pay SDK, the application must provide a
     </Callout>
   </Step>
 
-  <Step
-    title="Add TON Connect provider"
-  >
+  <Step>
+    ### Add TON Connect provider
+
     TON Pay UI uses TON Connect UI for wallet communication.
 
     The application must be wrapped with `TonConnectUIProvider` and configured with an absolute URL to the TON Connect manifest. Add `TonConnectUIProvider` at the root of the application.
@@ -68,9 +68,9 @@ Before installing and setting up the TON Pay SDK, the application must provide a
     ```
   </Step>
 
-  <Step
-    title="Add a payment button"
-  >
+  <Step>
+    ### Add a payment button
+
     Add a `TonPayButton` and provide a handler. The handler uses `useTonPay` to connect a wallet if needed, send a transaction through TON Connect, and return tracking data for the next step.
 
     - `TonPayButton` wraps wallet connect and disconnect UX and invokes the provided handler.
@@ -192,9 +192,9 @@ Before installing and setting up the TON Pay SDK, the application must provide a
     </Callout>
   </Step>
 
-  <Step
-    title="Handle loading state and results"
-  >
+  <Step>
+    ### Handle loading state and results
+
     Wallet approval does not mean the payment is finalized yet. After `pay(createMessage)` resolves, use the `reference` returned by `createTonPayTransfer` to query TON Pay until the transfer leaves the `pending` state.
 
     The example below uses React. The same flow applies in other clients: keep the `reference`, poll status, and update the UI when the transfer leaves `pending`.

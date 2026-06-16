@@ -175,9 +175,9 @@ The `type_id` value `1209251014` corresponds to Ed25519, which is the only suppo
 To generate:
 
 <Steps>
-  <Step
-    title="Generate private key"
-  >
+  <Step>
+    #### Generate private key
+
     Generate a raw 32-byte Ed25519 private key using OpenSSL:
 
     ```bash
@@ -187,9 +187,9 @@ To generate:
     This command outputs a base64 string such as `GnEN3s5t2Z3W1e...==`. Use this value as `pvt_key`.
   </Step>
 
-  <Step
-    title="Derive public key"
-  >
+  <Step>
+    #### Derive public key
+
     Derive the corresponding public key from the private key:
 
     ```bash
@@ -203,9 +203,9 @@ To generate:
     Use the public key for `control_server.clients` and for publishing the liteserver key in the global config.
   </Step>
 
-  <Step
-    title="Repeat the process"
-  >
+  <Step>
+    #### Repeat the process
+
     Repeat the process for each required key pair.
 
     A typical full node with liteserver requires 3 key pairs:

@@ -5,7 +5,7 @@ export const appName = 'TON Docs';
 // Do not include the prefix here lest you want to double it (e.g. /docs/docs/... on GitHub Pages).
 export const docsRoute = `/`;
 export const docsImageRoute = `${pathPrefix}/og`;
-export const docsContentRoute = `${pathPrefix}/llms.txt`;
+export const docsContentRoute = `${pathPrefix}/llms.mdx`;
 export const gitConfig = {
   user: 'ton-org',
   repo: 'docs',
@@ -18,6 +18,6 @@ export function toPascalCase(name: string): string {
   return name
     .split(/[-_\s]+/)
     .filter(Boolean)
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join("")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
 }

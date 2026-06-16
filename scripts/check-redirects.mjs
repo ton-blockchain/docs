@@ -50,7 +50,9 @@ import {
 const checkUnique = (config) => {
   const redirects = getRedirects(config);
   const redirectSources = redirects.map((it) => it.source);
-  const duplicates = redirectSources.filter((source, index) => redirectSources.indexOf(source) !== index);
+  const duplicates = redirectSources.filter(
+    (source, index) => redirectSources.indexOf(source) !== index,
+  );
   /** @type string[] */
   const errors = [];
   if (duplicates.length !== 0) {
@@ -64,7 +66,9 @@ const checkUnique = (config) => {
   }
   /** @param src {string} */
   const fmt = (src) => prefixWithSlash(src).replace(/#.*$/, '').replace(/\?.*$/, '');
-  const loops = redirects.filter((it) => fmt(it.source) == fmt(it.destination)).map((it) => it.source);
+  const loops = redirects
+    .filter((it) => fmt(it.source) == fmt(it.destination))
+    .map((it) => it.source);
   if (loops.length !== 0) {
     errors.push(
       composeErrorList(
@@ -109,6 +113,7 @@ const checkExist = (config) => {
   // Tracking found special destinations
   const specialDestinationsExist = {
     todos: false,
+    notFound: false,
     issues: false,
     olderDocs: false,
     otherGithubLinks: false,
@@ -126,7 +131,10 @@ const checkExist = (config) => {
     if (path.startsWith('http')) {
       if (path.includes('github.com/ton-org/docs/issues')) {
         specialDestinationsExist.issues = true;
-      } else if (path.startsWith('https://github.com/') || path.startsWith('https://gist.github.com/')) {
+      } else if (
+        path.startsWith('https://github.com/') ||
+        path.startsWith('https://gist.github.com/')
+      ) {
         specialDestinationsExist.otherGithubLinks = true;
       } else if (path.startsWith('https://en.wikipedia.org/')) {
         specialDestinationsExist.wikiLinks = true;
@@ -140,6 +148,11 @@ const checkExist = (config) => {
     // TODOs
     if (path.startsWith('TODO')) {
       specialDestinationsExist.todos = true;
+      return true;
+    }
+    // Explicit 404s
+    if (path === '/404') {
+      specialDestinationsExist.notFound = true;
       return true;
     }
     // End-of-line wildcard redirects
@@ -158,11 +171,9 @@ const checkExist = (config) => {
   const pathFindFiles = (path) => {
     const cleanedPath = path.replace(/^\/+/, '').replace(/#.*$/, '').replace(/\?.*$/, '');
     const relPath = cleanedPath === '' ? 'content' : `content/${cleanedPath}`;
-    const existingFiles = [
-      `${relPath}/index.mdx`,
-      `${relPath}.mdx`,
-      `${relPath}`,
-    ].filter((it) => existsSync(it) && statSync(it).isFile());
+    const existingFiles = [`${relPath}/index.mdx`, `${relPath}.mdx`, `${relPath}`].filter(
+      (it) => existsSync(it) && statSync(it).isFile(),
+    );
 
     if (existingFiles.length === 0) {
       return { files: 'none' };
@@ -193,21 +204,35 @@ const checkExist = (config) => {
     if (attemptsLeft > 3) {
       return {
         ok: false,
-        trace: trace.concat(`Cannot have redirects more than 3 levels deep, received: ${attemptsLeft}`),
+        trace: trace.concat(
+          `Cannot have redirects more than 3 levels deep, received: ${attemptsLeft}`,
+        ),
       };
     }
     if (attemptsLeft <= 0) {
-      return { ok: false, trace: trace.concat(`Recursed too deep already, skipping: ${path}`) };
+      return {
+        ok: false,
+        trace: trace.concat(`Recursed too deep already, skipping: ${path}`),
+      };
     }
     if (pathIsSpecial(path)) {
-      return { ok: true, trace: trace.concat(`The destination is special, skipping: ${path}`) };
+      return {
+        ok: true,
+        trace: trace.concat(`The destination is special, skipping: ${path}`),
+      };
     }
     if (path === '/') {
-      return { ok: true, trace: trace.concat(`The destination is a home page, skipping: ${path}`) };
+      return {
+        ok: true,
+        trace: trace.concat(`The destination is a home page, skipping: ${path}`),
+      };
     }
     const foundFiles = pathFindFiles(path);
     if (foundFiles.files === 'one') {
-      return { ok: true, trace: trace.concat(`Found a file under the destination: ${path} → ${foundFiles.path}`) };
+      return {
+        ok: true,
+        trace: trace.concat(`Found a file under the destination: ${path} → ${foundFiles.path}`),
+      };
     }
     if (foundFiles.files === 'many') {
       return {
@@ -231,7 +256,9 @@ const checkExist = (config) => {
 
   // Main part
   const uniqDests = [...new Set(redirects.map((it) => it.destination))];
-  const processedDests = uniqDests.map((it) => pathFindWithTrace(it, maxRecursionLevelPerRedirect, []));
+  const processedDests = uniqDests.map((it) =>
+    pathFindWithTrace(it, maxRecursionLevelPerRedirect, []),
+  );
   const invalidatedTraces = processedDests
     .filter((it) => {
       if (process.env.DEBUG && process.env.DEBUG === 'true') {
@@ -246,6 +273,9 @@ const checkExist = (config) => {
   }
   if (specialDestinationsExist.todos) {
     console.log(composeWarning('Found TODO-prefixed destinations!'));
+  }
+  if (specialDestinationsExist.notFound) {
+    console.log(composeWarning('Found explicit 404 destinations!'));
   }
   if (specialDestinationsExist.olderDocs) {
     console.log(composeWarning('Found destinations that point to old-docs.ton.org!'));
@@ -371,7 +401,9 @@ const checkPrevious = async (config) => {
  * @return {Promise<CheckResult>}
  */
 const checkUpstream = async (localConfig) => {
-  const response = await fetch('https://raw.githubusercontent.com/ton-org/docs/refs/heads/main/docs.json');
+  const response = await fetch(
+    'https://raw.githubusercontent.com/ton-org/docs/refs/heads/main/docs.json',
+  );
 
   /** @type {DocsConfig} */
   const upstreamConfig = Object.freeze(await response.json());
@@ -384,7 +416,9 @@ const checkUpstream = async (localConfig) => {
   }
 
   const redirectSources = getRedirects(localConfig).map((it) => prefixWithSlash(it.source));
-  const eolWildcards = redirectSources.filter((it) => it.endsWith('/:slug*')).map((it) => it.replace(/\/:slug\*$/, ''));
+  const eolWildcards = redirectSources
+    .filter((it) => it.endsWith('/:slug*'))
+    .map((it) => it.replace(/\/:slug\*$/, ''));
   const missingSources = upstreamOnlyLinks.filter(
     (it) =>
       !redirectSources.includes(it) &&

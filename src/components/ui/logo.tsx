@@ -1,9 +1,9 @@
 'use client';
 
-import Image from "next/image";
-import logoDark from "@/public/logo/dark.svg";
-import logoLight from "@/public/logo/light.svg";
-import styles from "./logo.module.css";
+import Image from 'next/image';
+import logoDark from '@/public/logo/dark.svg';
+import logoLight from '@/public/logo/light.svg';
+import styles from './logo.module.css';
 
 export function ThemeLogo() {
   return (
@@ -27,5 +27,5 @@ export function ThemeLogo() {
         aria-label="TON Docs"
       />
     </>
-  )
+  );
 }

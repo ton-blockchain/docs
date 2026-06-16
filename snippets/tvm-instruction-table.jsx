@@ -3,118 +3,132 @@ import * as React from 'react';
 
 export const TvmInstructionTable = () => {
   const { useCallback, useEffect, useMemo, useRef, useState } = React;
+  const SelectChevron = (withClassName) => (
+    <svg
+      {...(withClassName && { className: 'tvm-select-chevron', fill: 'none' })}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 9l6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 
-  const PERSIST_KEY = "tvm-instruction-table::filters";
+  const PERSIST_KEY = 'tvm-instruction-table::filters';
 
-  const SPEC_URL = "/tvm/cp0.txt";
+  const SPEC_URL = 'tvm/cp0.txt';
 
   const CATEGORY_MAP = {
-    stack_basic: "Stack basics",
-    stack_complex: "Stack (complex)",
-    arithm_basic: "Arithmetic (basic)",
-    arithm_div: "Arithmetic (division)",
-    arithm_logical: "Arithmetic (logical)",
-    arithm_quiet: "Arithmetic (quiet)",
-    cell_build: "Cell builders",
-    cell_parse: "Cell parsers",
-    codepage: "Codepage management",
-    compare_int: "Comparisons (integers)",
-    compare_other: "Comparisons (other)",
-    const_data: "Constants (data)",
-    const_int: "Constants (integers)",
-    cont_basic: "Continuations (basic)",
-    cont_conditional: "Continuations (conditional)",
-    cont_create: "Continuations (creation)",
-    cont_dict: "Continuations (dictionary)",
-    cont_loops: "Continuations (loops)",
-    cont_registers: "Continuations (registers)",
-    cont_stack: "Continuations (stack)",
-    dict_delete: "Dictionaries (delete)",
-    dict_get: "Dictionaries (lookup)",
-    dict_mayberef: "Dictionaries (maybe ref)",
-    dict_min: "Dictionaries (min/max)",
-    dict_next: "Dictionaries (iteration)",
-    dict_prefix: "Dictionaries (prefix)",
-    dict_serial: "Dictionaries (serialization)",
-    dict_set: "Dictionaries (store)",
-    dict_set_builder: "Dictionaries (builder)",
-    dict_special: "Dictionaries (special)",
-    dict_sub: "Dictionaries (sub-dictionaries)",
-    app_actions: "Actions",
-    app_addr: "Addresses",
-    app_config: "Blockchain configuration",
-    app_crypto: "Cryptography",
-    app_currency: "Currency",
-    app_gas: "Gas & fees",
-    app_global: "Global variables",
-    app_misc: "Misc",
-    app_rnd: "Randomness",
-    app_gaslimits: "Gas limits",
-    app_storage: "Contract storage",
-    exceptions: "Exceptions & control",
-    debug: "Debugging",
-    tuple: "Tuples",
+    stack_basic: 'Stack basics',
+    stack_complex: 'Stack (complex)',
+    arithm_basic: 'Arithmetic (basic)',
+    arithm_div: 'Arithmetic (division)',
+    arithm_logical: 'Arithmetic (logical)',
+    arithm_quiet: 'Arithmetic (quiet)',
+    cell_build: 'Cell builders',
+    cell_parse: 'Cell parsers',
+    codepage: 'Codepage management',
+    compare_int: 'Comparisons (integers)',
+    compare_other: 'Comparisons (other)',
+    const_data: 'Constants (data)',
+    const_int: 'Constants (integers)',
+    cont_basic: 'Continuations (basic)',
+    cont_conditional: 'Continuations (conditional)',
+    cont_create: 'Continuations (creation)',
+    cont_dict: 'Continuations (dictionary)',
+    cont_loops: 'Continuations (loops)',
+    cont_registers: 'Continuations (registers)',
+    cont_stack: 'Continuations (stack)',
+    dict_delete: 'Dictionaries (delete)',
+    dict_get: 'Dictionaries (lookup)',
+    dict_mayberef: 'Dictionaries (maybe ref)',
+    dict_min: 'Dictionaries (min/max)',
+    dict_next: 'Dictionaries (iteration)',
+    dict_prefix: 'Dictionaries (prefix)',
+    dict_serial: 'Dictionaries (serialization)',
+    dict_set: 'Dictionaries (store)',
+    dict_set_builder: 'Dictionaries (builder)',
+    dict_special: 'Dictionaries (special)',
+    dict_sub: 'Dictionaries (sub-dictionaries)',
+    app_actions: 'Actions',
+    app_addr: 'Addresses',
+    app_config: 'Blockchain configuration',
+    app_crypto: 'Cryptography',
+    app_currency: 'Currency',
+    app_gas: 'Gas & fees',
+    app_global: 'Global variables',
+    app_misc: 'Misc',
+    app_rnd: 'Randomness',
+    app_gaslimits: 'Gas limits',
+    app_storage: 'Contract storage',
+    exceptions: 'Exceptions & control',
+    debug: 'Debugging',
+    tuple: 'Tuples',
   };
 
   const CATEGORY_GROUPS = [
     {
-      key: "stack",
-      label: "Stack",
+      key: 'stack',
+      label: 'Stack',
       patterns: [/^stack_/],
     },
     {
-      key: "continuations",
-      label: "Continuations & Control Flow",
+      key: 'continuations',
+      label: 'Continuations & Control Flow',
       patterns: [/^cont_/, /^codepage$/],
     },
     {
-      key: "arithmetic",
-      label: "Arithmetic & Logic",
+      key: 'arithmetic',
+      label: 'Arithmetic & Logic',
       patterns: [/^arithm_/, /^compare_/],
     },
     {
-      key: "cells",
-      label: "Cells & Tuples",
+      key: 'cells',
+      label: 'Cells & Tuples',
       patterns: [/^cell_/, /^tuple$/],
     },
     {
-      key: "dictionaries",
-      label: "Dictionaries",
+      key: 'dictionaries',
+      label: 'Dictionaries',
       patterns: [/^dict_/],
     },
     {
-      key: "constants",
-      label: "Constants",
+      key: 'constants',
+      label: 'Constants',
       patterns: [/^const_/],
     },
     {
-      key: "crypto",
-      label: "Crypto",
+      key: 'crypto',
+      label: 'Crypto',
       patterns: [/^app_crypto/],
     },
     {
-      key: "applications",
-      label: "Blockchain",
+      key: 'applications',
+      label: 'Blockchain',
       patterns: [/^app_(?!crypto)/],
     },
     {
-      key: "exceptions",
-      label: "Exceptions",
+      key: 'exceptions',
+      label: 'Exceptions',
       patterns: [/^exceptions$/],
     },
     {
-      key: "debug",
-      label: "Debugging",
+      key: 'debug',
+      label: 'Debugging',
       patterns: [/^debug$/],
-    }
+    },
   ];
 
-  const CATEGORY_GROUP_KEYS = new Set(
-    CATEGORY_GROUPS.map((group) => group.key)
-  );
+  const CATEGORY_GROUP_KEYS = new Set(CATEGORY_GROUPS.map((group) => group.key));
 
   function resolveCategoryGroup(categoryKey) {
-    const normalized = (categoryKey || "").toLowerCase();
+    const normalized = (categoryKey || '').toLowerCase();
     for (const group of CATEGORY_GROUPS) {
       if (
         Array.isArray(group.patterns) &&
@@ -128,85 +142,83 @@ export const TvmInstructionTable = () => {
   }
 
   function humanizeCategoryKey(key) {
-    if (!key) return "Uncategorized";
+    if (!key) return 'Uncategorized';
     if (CATEGORY_MAP[key]) return CATEGORY_MAP[key];
     return key
       .split(/[_\s]+/)
       .filter(Boolean)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(" ");
+      .join(' ');
   }
 
   function formatGasDisplay(gas) {
     if (Array.isArray(gas)) {
-      return gas.length > 0 ? gas.join(" / ") : "N/A";
+      return gas.length > 0 ? gas.join(' / ') : 'N/A';
     }
-    if (typeof gas === "number") {
+    if (typeof gas === 'number') {
       return gas.toLocaleString();
     }
-    if (typeof gas === "string") {
+    if (typeof gas === 'string') {
       const value = gas.trim();
-      if (!value) return "N/A";
-      return value.replace(/\//g, " / ").replace(/\s+/g, " ");
+      if (!value) return 'N/A';
+      return value.replace(/\//g, ' / ').replace(/\s+/g, ' ');
     }
-    return "N/A";
+    return 'N/A';
   }
 
-  function formatOperandSummary(operand) {
-    if (!operand) return "";
-    const name =
-      typeof operand.name === "string" && operand.name ? operand.name : "?";
-    const type = typeof operand.type === "string" ? operand.type : "";
+  function formatOperandSummary(operand, brief) {
+    if (!operand) return '';
+    const name = typeof operand.name === 'string' && operand.name ? operand.name : '?';
+    const type = typeof operand.type === 'string' ? operand.type : '';
     const size =
-      typeof operand.size === "number"
+      typeof operand.size === 'number'
         ? operand.size
-        : typeof operand.bits === "number"
-        ? operand.bits
-        : undefined;
+        : typeof operand.bits === 'number'
+          ? operand.bits
+          : undefined;
     const hasRange =
       operand.min_value !== undefined &&
       operand.min_value !== null &&
       operand.max_value !== undefined &&
       operand.max_value !== null;
     const range = hasRange
-      ? ` [${operand.min_value}; ${operand.max_value}]`
-      : "";
-    const sizePart = size !== undefined ? `(${size})` : "";
-    return `${name}${type ? `:${type}` : ""}${sizePart}${range}`;
+      ? ` in [${operand.min_value}, ${operand.max_value}]` // ∈
+      : '';
+    const sizePart = size !== undefined ? `${size}` : '';
+    if (brief) {
+      return `${name}${type ? `:${type}` : ''}${sizePart}`;
+    }
+    return `${name}${type ? `:${type}` : ''}${sizePart}${range}`;
   }
 
   function formatInlineMarkdown(text) {
-    if (typeof text !== "string") return "";
+    if (typeof text !== 'string') return '';
     const trimmed = text.trim();
-    if (!trimmed) return "";
-    const escaped = trimmed
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    if (!trimmed) return '';
+    const escaped = trimmed.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const withCode = escaped.replace(/`([^`]+)`/g, (_match, code) => {
       return `<code>${code}</code>`;
     });
     const withLinks = withCode.replace(
       /\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
-      (_match, label, url) =>
-        `<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`
+      (_match, label, url) => `<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`,
     );
-    return withLinks.replace(/\n/g, "<br />");
+    return withLinks.replace(/\n/g, '<br />');
   }
 
   function compareOpcodes(a, b) {
-    const sanitize = (value) => (value || "").replace(/[^0-9a-f]/gi, "");
+    const sanitize = (value) => (value || '').replace(/[^0-9a-f]/gi, '');
     const ax = Number.parseInt(sanitize(a), 16);
     const bx = Number.parseInt(sanitize(b), 16);
     if (!Number.isNaN(ax) && !Number.isNaN(bx) && ax !== bx) {
       return ax - bx;
     }
-    return (a || "").localeCompare(b || "");
+    return (a || '').localeCompare(b || '');
   }
 
   // Search helpers for relevance-based filtering and sorting
   function createSearchTokens(query) {
-    if (typeof query !== "string") return [];
+    if (typeof query !== 'string') return [];
     return query
       .toLowerCase()
       .split(/\s+/)
@@ -215,17 +227,17 @@ export const TvmInstructionTable = () => {
   }
 
   function escapeRegExp(value) {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function highlightMatches(text, tokens) {
-    if (typeof text !== "string") return text;
+    if (typeof text !== 'string') return text;
     const safeTokens = Array.isArray(tokens)
       ? tokens.filter((token) => token && token.length > 0)
       : [];
     if (safeTokens.length === 0) return text;
-    const pattern = safeTokens.map(escapeRegExp).join("|");
-    const regex = new RegExp(`(${pattern})`, "gi");
+    const pattern = safeTokens.map(escapeRegExp).join('|');
+    const regex = new RegExp(`(${pattern})`, 'gi');
     const parts = text.split(regex);
     return parts.map((part, idx) =>
       idx % 2 === 1 ? (
@@ -234,38 +246,38 @@ export const TvmInstructionTable = () => {
         </span>
       ) : (
         part
-      )
+      ),
     );
   }
 
   function highlightHtmlContent(html, tokens) {
-    if (typeof html !== "string") return html || "";
+    if (typeof html !== 'string') return html || '';
     const safeTokens = Array.isArray(tokens)
       ? tokens.filter((token) => token && token.length > 0)
       : [];
     if (safeTokens.length === 0) return html;
-    const pattern = safeTokens.map(escapeRegExp).join("|");
+    const pattern = safeTokens.map(escapeRegExp).join('|');
     if (!pattern) return html;
-    const regex = new RegExp(`(${pattern})`, "gi");
+    const regex = new RegExp(`(${pattern})`, 'gi');
     return html
       .split(/(<[^>]+>)/g)
       .map((segment) => {
-        if (segment.startsWith("<")) return segment;
+        if (segment.startsWith('<')) return segment;
         return segment.replace(regex, '<span class="tvm-highlight">$1</span>');
       })
-      .join("");
+      .join('');
   }
 
   function getItemSearchFields(item) {
     const aliasMnemonics = Array.isArray(item.aliases)
       ? item.aliases
-          .map((alias) => (typeof alias.mnemonic === "string" ? alias.mnemonic : ""))
+          .map((alias) => (typeof alias.mnemonic === 'string' ? alias.mnemonic : ''))
           .filter(Boolean)
       : [];
     return {
-      mnemonic: String(item.mnemonic || "").toLowerCase(),
-      opcode: String(item.opcode || "").toLowerCase(),
-      fift: String(item.fift || "").toLowerCase(),
+      mnemonic: String(item.mnemonic || '').toLowerCase(),
+      opcode: String(item.opcode || '').toLowerCase(),
+      fift: String(item.fift || '').toLowerCase(),
       aliases: aliasMnemonics.map((s) => s.toLowerCase()),
     };
   }
@@ -314,32 +326,34 @@ export const TvmInstructionTable = () => {
 
   // Build anchor ids compatible with static MDX (slug of "<opcode> <mnemonic>"")
   function buildAnchorId(instruction) {
-    const opcodeText = String(instruction.opcode || "").trim().toLowerCase();
+    const opcodeText = String(instruction.opcode || '')
+      .trim()
+      .toLowerCase();
     const titleText = `${instruction.mnemonic}`.trim().toLowerCase();
     const raw = `${opcodeText} ${titleText}`.trim();
     const slug = raw
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
     return encodeURIComponent(slug);
   }
 
   function copyAnchorUrl(anchorId) {
     try {
       const { location, navigator } = window;
-      const base = location ? `${location.origin}${location.pathname}` : "";
+      const base = location ? `${location.origin}${location.pathname}` : '';
       const url = `${base}#${anchorId}`;
       if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
         return navigator.clipboard.writeText(url);
       }
-      const ta = document.createElement("textarea");
+      const ta = document.createElement('textarea');
       ta.value = url;
-      ta.setAttribute("readonly", "");
-      ta.style.position = "absolute";
-      ta.style.left = "-9999px";
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand("copy");
+      document.execCommand('copy');
       document.body.removeChild(ta);
       return Promise.resolve();
     } catch (err) {
@@ -353,14 +367,14 @@ export const TvmInstructionTable = () => {
       if (navigator?.clipboard?.writeText) {
         return navigator.clipboard.writeText(value);
       }
-      const ta = document.createElement("textarea");
+      const ta = document.createElement('textarea');
       ta.value = value;
-      ta.setAttribute("readonly", "");
-      ta.style.position = "absolute";
-      ta.style.left = "-9999px";
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand("copy");
+      document.execCommand('copy');
       document.body.removeChild(ta);
       return Promise.resolve();
     } catch (err) {
@@ -371,15 +385,15 @@ export const TvmInstructionTable = () => {
   function formatAliasOperands(operands) {
     return Object.entries(operands)
       .map(([name, value]) => `${name}=${value}`)
-      .join(", ");
+      .join(', ');
   }
 
   function cleanAliasDescription(html) {
-    if (typeof html !== "string") return "";
+    if (typeof html !== 'string') return '';
     let output = html.trim();
-    if (!output) return "";
-    output = output.replace(/^<p>/i, "").replace(/<\/p>$/i, "");
-    output = output.replace(/\.+$/g, "");
+    if (!output) return '';
+    output = output.replace(/^<p>/i, '').replace(/<\/p>$/i, '');
+    output = output.replace(/\.+$/g, '');
     return output.trim();
   }
 
@@ -387,12 +401,11 @@ export const TvmInstructionTable = () => {
     if (!Array.isArray(implementation)) return [];
     return implementation
       .map((item) => {
-        if (!item || typeof item !== "object") return null;
-        const file = typeof item.file === "string" ? item.file : "";
-        const functionName =
-          typeof item.function_name === "string" ? item.function_name : "";
-        const line = typeof item.line === "number" ? item.line : undefined;
-        const path = typeof item.path === "string" ? item.path : "";
+        if (!item || typeof item !== 'object') return null;
+        const file = typeof item.file === 'string' ? item.file : '';
+        const functionName = typeof item.function_name === 'string' ? item.function_name : '';
+        const line = typeof item.line === 'number' ? item.line : undefined;
+        const path = typeof item.path === 'string' ? item.path : '';
         if (!file && !functionName && !path) return null;
         return { file, functionName, line, path };
       })
@@ -400,34 +413,30 @@ export const TvmInstructionTable = () => {
   }
 
   function buildGitHubLineUrl(rawUrl, line) {
-    if (typeof rawUrl !== "string" || !rawUrl) return "";
+    if (typeof rawUrl !== 'string' || !rawUrl) return '';
     let url = rawUrl;
-    const RAW_PREFIX = "https://raw.githubusercontent.com/";
+    const RAW_PREFIX = 'https://raw.githubusercontent.com/';
     if (rawUrl.startsWith(RAW_PREFIX)) {
-      const parts = rawUrl.slice(RAW_PREFIX.length).split("/");
+      const parts = rawUrl.slice(RAW_PREFIX.length).split('/');
       if (parts.length >= 4) {
         const owner = parts[0];
         const repo = parts[1];
         const commit = parts[2];
-        const filePath = parts.slice(3).join("/");
+        const filePath = parts.slice(3).join('/');
         url = `https://github.com/${owner}/${repo}/blob/${commit}/${filePath}`;
       } else {
-        url = rawUrl.replace(RAW_PREFIX, "https://github.com/");
+        url = rawUrl.replace(RAW_PREFIX, 'https://github.com/');
       }
     }
-    if (typeof line === "number" && Number.isFinite(line) && line > 0) {
-      url = url.split("#")[0] + `#L${line}`;
+    if (typeof line === 'number' && Number.isFinite(line) && line > 0) {
+      url = url.split('#')[0] + `#L${line}`;
     }
     return url;
   }
 
   function renderControlFlowSummary(controlFlow) {
-    if (!controlFlow || typeof controlFlow !== "object") {
-      return (
-        <p className="tvm-missing-placeholder">
-          Control flow details are not available.
-        </p>
-      );
+    if (!controlFlow || typeof controlFlow !== 'object') {
+      return <p className="tvm-missing-placeholder">Control flow details are not available.</p>;
     }
 
     const branches = Array.isArray(controlFlow.branches)
@@ -435,21 +444,21 @@ export const TvmInstructionTable = () => {
       : [];
     const nobranch = Boolean(controlFlow.nobranch);
     const isContinuationObject = (value) =>
-      Boolean(value && typeof value === "object" && typeof value.type === "string");
+      Boolean(value && typeof value === 'object' && typeof value.type === 'string');
 
     const formatPrimitiveValue = (value) => {
-      if (value === null || value === undefined) return "";
+      if (value === null || value === undefined) return '';
       if (Array.isArray(value)) {
         return value
           .map((item) => formatPrimitiveValue(item))
           .filter(Boolean)
-          .join(", ");
+          .join(', ');
       }
-      if (typeof value === "object") {
-        return "";
+      if (typeof value === 'object') {
+        return '';
       }
-      if (typeof value === "boolean") {
-        return value ? "true" : "false";
+      if (typeof value === 'boolean') {
+        return value ? 'true' : 'false';
       }
       return String(value);
     };
@@ -457,49 +466,49 @@ export const TvmInstructionTable = () => {
     const describeContinuation = (node) => {
       if (!isContinuationObject(node)) {
         return {
-          typeLabel: "unknown",
-          valueLabel: "?",
-          detailLabel: "",
-          text: "unknown ?",
+          typeLabel: 'unknown',
+          valueLabel: '?',
+          detailLabel: '',
+          text: 'unknown ?',
         };
       }
 
-      const type = String(node.type || "").toLowerCase();
-      let typeLabel = "unknown";
-      let valueLabel = "";
+      const type = String(node.type || '').toLowerCase();
+      let typeLabel = 'unknown';
+      let valueLabel = '';
 
       switch (type) {
-        case "variable":
-          typeLabel = "var";
-          valueLabel = typeof node.var_name === "string" ? node.var_name : "?";
+        case 'variable':
+          typeLabel = 'var';
+          valueLabel = typeof node.var_name === 'string' ? node.var_name : '?';
           break;
-        case "register":
-          typeLabel = "register";
-          if (typeof node.index === "number") {
+        case 'register':
+          typeLabel = 'register';
+          if (typeof node.index === 'number') {
             valueLabel = `c${node.index}`;
-          } else if (typeof node.var_name === "string") {
+          } else if (typeof node.var_name === 'string') {
             valueLabel = `c{${node.var_name}}`;
           } else {
-            valueLabel = "c?";
+            valueLabel = 'c?';
           }
           break;
-        case "cc":
-          typeLabel = "cc";
-          valueLabel = "";
+        case 'cc':
+          typeLabel = 'cc';
+          valueLabel = '';
           break;
-        case "special":
-          typeLabel = "special";
-          valueLabel = typeof node.name === "string" && node.name ? node.name : "?";
+        case 'special':
+          typeLabel = 'special';
+          valueLabel = typeof node.name === 'string' && node.name ? node.name : '?';
           break;
         default:
-          typeLabel = node.type ? String(node.type) : "unknown";
-          valueLabel = "";
+          typeLabel = node.type ? String(node.type) : 'unknown';
+          valueLabel = '';
           break;
       }
 
       const detailParts = [];
-      if (type === "special") {
-        const args = node.args && typeof node.args === "object" ? node.args : {};
+      if (type === 'special') {
+        const args = node.args && typeof node.args === 'object' ? node.args : {};
         Object.entries(args).forEach(([argKey, argValue]) => {
           if (!isContinuationObject(argValue)) {
             const formatted = formatPrimitiveValue(argValue);
@@ -510,7 +519,7 @@ export const TvmInstructionTable = () => {
         });
       }
 
-      const knownKeys = new Set(["type", "var_name", "index", "name", "args", "save"]);
+      const knownKeys = new Set(['type', 'var_name', 'index', 'name', 'args', 'save']);
       Object.entries(node).forEach(([key, value]) => {
         if (knownKeys.has(key)) return;
         const formatted = formatPrimitiveValue(value);
@@ -519,11 +528,11 @@ export const TvmInstructionTable = () => {
         }
       });
 
-      const detailLabel = detailParts.length > 0 ? `(${detailParts.join(", ")})` : "";
+      const detailLabel = detailParts.length > 0 ? `(${detailParts.join(', ')})` : '';
       const text = [typeLabel, valueLabel, detailLabel]
         .filter(Boolean)
-        .join(" ")
-        .replace(/\s+/g, " ")
+        .join(' ')
+        .replace(/\s+/g, ' ')
         .trim();
 
       return { typeLabel, valueLabel, detailLabel, text };
@@ -531,11 +540,11 @@ export const TvmInstructionTable = () => {
 
     const gatherChildContinuations = (node) => {
       if (!isContinuationObject(node)) return [];
-      const type = String(node.type || "").toLowerCase();
+      const type = String(node.type || '').toLowerCase();
       const children = [];
 
       const saveEntries =
-        node.save && typeof node.save === "object"
+        node.save && typeof node.save === 'object'
           ? Object.entries(node.save).filter(([, value]) => isContinuationObject(value))
           : [];
       saveEntries
@@ -547,8 +556,8 @@ export const TvmInstructionTable = () => {
           });
         });
 
-      if (type === "special") {
-        const args = node.args && typeof node.args === "object" ? node.args : {};
+      if (type === 'special') {
+        const args = node.args && typeof node.args === 'object' ? node.args : {};
         Object.entries(args).forEach(([argKey, argValue]) => {
           if (isContinuationObject(argValue)) {
             children.push({
@@ -560,8 +569,8 @@ export const TvmInstructionTable = () => {
       }
 
       return children.map((child) => {
-        const raw = child.label ? String(child.label) : "";
-        const cleaned = raw.replace(/^(arg|save)\s+/i, "").trim();
+        const raw = child.label ? String(child.label) : '';
+        const cleaned = raw.replace(/^(arg|save)\s+/i, '').trim();
         return {
           label: cleaned,
           node: child.node,
@@ -569,7 +578,7 @@ export const TvmInstructionTable = () => {
       });
     };
 
-    const buildContinuationTree = (node, path = "root") => {
+    const buildContinuationTree = (node, path = 'root') => {
       const summary = describeContinuation(node);
       const children = gatherChildContinuations(node).map((child, idx) => ({
         label: child.label,
@@ -580,19 +589,19 @@ export const TvmInstructionTable = () => {
 
     const splitEdgeLabel = (label) => {
       if (!label) {
-        return { primary: "", secondary: "" };
+        return { primary: '', secondary: '' };
       }
       const text = label.trim();
       if (!text) {
-        return { primary: "", secondary: "" };
+        return { primary: '', secondary: '' };
       }
       const tokens = text.split(/\s+/);
       if (tokens.length <= 1) {
-        return { primary: text, secondary: "" };
+        return { primary: text, secondary: '' };
       }
       return {
         primary: tokens[0],
-        secondary: tokens.slice(1).join(" "),
+        secondary: tokens.slice(1).join(' '),
       };
     };
 
@@ -618,37 +627,30 @@ export const TvmInstructionTable = () => {
 
     let canvasMeasureCtx = null;
     const measureNodeWidth = (summary) => {
-      if (typeof document !== "undefined") {
+      if (typeof document !== 'undefined') {
         if (!canvasMeasureCtx) {
-          const canvas = document.createElement("canvas");
-          canvasMeasureCtx = canvas.getContext("2d");
+          const canvas = document.createElement('canvas');
+          canvasMeasureCtx = canvas.getContext('2d');
         }
         if (canvasMeasureCtx) {
-          canvasMeasureCtx.font = "600 13px 'JetBrains Mono', 'Menlo', 'Monaco', monospace";
-          const typeText = (summary.typeLabel || "").toUpperCase();
+          canvasMeasureCtx.font = '600 13px monospace';
+          const typeText = (summary.typeLabel || '').toUpperCase();
           const parts = [typeText];
           if (summary.valueLabel) parts.push(summary.valueLabel);
           if (summary.detailLabel) parts.push(summary.detailLabel);
-          const text = parts.join(" ").trim();
-          const metrics = canvasMeasureCtx.measureText(text || "node");
+          const text = parts.join(' ').trim();
+          const metrics = canvasMeasureCtx.measureText(text || 'node');
           return Math.max(metrics.width + 48, NODE_MIN_WIDTH);
         }
       }
       const fallbackLength =
-        (summary.typeLabel || "").length +
-        (summary.valueLabel || "").length +
-        (summary.detailLabel || "").length;
+        (summary.typeLabel || '').length +
+        (summary.valueLabel || '').length +
+        (summary.detailLabel || '').length;
       return Math.max(fallbackLength * 7 + 48, NODE_MIN_WIDTH);
     };
 
-    const assignPositions = (
-      tree,
-      nodes,
-      nodeMap,
-      edges,
-      depth = 0,
-      offsetSpan = 0
-    ) => {
+    const assignPositions = (tree, nodes, nodeMap, edges, depth = 0, offsetSpan = 0) => {
       const span = Math.max(tree.span || 1, 1);
       const spanWidth = span * H_SPACING;
       const x = PADDING_X + offsetSpan + spanWidth / 2;
@@ -679,14 +681,19 @@ export const TvmInstructionTable = () => {
 
     return (
       <div>
-        {(branches.length > 0 || !nobranch) ? (<div><b>Falls through: </b>{nobranch ? "Yes" : "No"}</div>) : null}
+        {branches.length > 0 || !nobranch ? (
+          <div>
+            <b>Falls through: </b>
+            {nobranch ? 'Yes' : 'No'}
+          </div>
+        ) : null}
         {branches.length > 0 ? (
           <div className="tvm-control-flow-branches">
             {branches.map((branch, index) => {
               const rootSummary = describeContinuation(branch);
-              const branchType = (rootSummary.typeLabel || "").toUpperCase();
+              const branchType = (rootSummary.typeLabel || '').toUpperCase();
               const branchTitleText = `Branch -> ${branchType}${
-                rootSummary.valueLabel ? ` ${rootSummary.valueLabel}` : ""
+                rootSummary.valueLabel ? ` ${rootSummary.valueLabel}` : ''
               }`;
               const tree = buildContinuationTree(branch, `branch-${index}`);
               computeSpan(tree);
@@ -716,7 +723,10 @@ export const TvmInstructionTable = () => {
               }
 
               const canvasWidth = Math.max(maxX - minX + PADDING_X * 2, 260);
-              const canvasHeight = Math.max(maxY - minY + PADDING_Y * 2, NODE_HEIGHT + PADDING_Y * 2);
+              const canvasHeight = Math.max(
+                maxY - minY + PADDING_Y * 2,
+                NODE_HEIGHT + PADDING_Y * 2,
+              );
 
               const edgeLayouts = edges
                 .map((edge, edgeIdx) => {
@@ -788,29 +798,32 @@ export const TvmInstructionTable = () => {
                           />
                         ))}
                       </svg>
-                      {edgeLayouts.map((edge) => (
+                      {edgeLayouts.map((edge) =>
                         edge.segments.primary ? (
-                      <div
-                        key={`edge-label-${edge.id}`}
-                        className={`tvm-flow-edge-label${
-                          edge.hasSecondary ? ' has-secondary' : ''
-                        }`}
-                        style={{
-                          left: `${edge.labelX}px`,
-                          top: `${edge.labelY}px`,
-                        }}
-                      >
-                        <span className="tvm-flow-edge-label-primary">
-                          {highlightMatches(edge.segments.primary.toUpperCase(), searchTokens)}
-                        </span>
-                        {edge.segments.secondary && (
-                          <span className="tvm-flow-edge-label-secondary">
-                            {highlightMatches(edge.segments.secondary.toUpperCase(), searchTokens)}
-                          </span>
-                        )}
-                      </div>
-                        ) : null
-                      ))}
+                          <div
+                            key={`edge-label-${edge.id}`}
+                            className={`tvm-flow-edge-label${
+                              edge.hasSecondary ? ' has-secondary' : ''
+                            }`}
+                            style={{
+                              left: `${edge.labelX}px`,
+                              top: `${edge.labelY}px`,
+                            }}
+                          >
+                            <span className="tvm-flow-edge-label-primary">
+                              {highlightMatches(edge.segments.primary.toUpperCase(), searchTokens)}
+                            </span>
+                            {edge.segments.secondary && (
+                              <span className="tvm-flow-edge-label-secondary">
+                                {highlightMatches(
+                                  edge.segments.secondary.toUpperCase(),
+                                  searchTokens,
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        ) : null,
+                      )}
                       {nodes.map((node) => (
                         <div
                           key={node.id}
@@ -826,8 +839,8 @@ export const TvmInstructionTable = () => {
                           >
                             <span className="tvm-control-flow-node-type">
                               {highlightMatches(
-                                (node.summary.typeLabel || "").toUpperCase(),
-                                searchTokens
+                                (node.summary.typeLabel || '').toUpperCase(),
+                                searchTokens,
                               )}
                             </span>
                             {node.summary.valueLabel && (
@@ -852,8 +865,8 @@ export const TvmInstructionTable = () => {
         ) : (
           <p className="tvm-detail-muted">
             {nobranch
-              ? "Instruction does not modify the current continuation."
-              : "Control flow branches are not documented in the specification."}
+              ? 'Instruction does not modify the current continuation.'
+              : 'Control flow branches are not documented in the specification.'}
           </p>
         )}
       </div>
@@ -863,14 +876,11 @@ export const TvmInstructionTable = () => {
   function renderStackEntry(entry, key, mode) {
     if (!entry) return null;
 
-    if (entry.type === "conditional") {
-      if (mode === "compact" || mode === "detail-inline") {
+    if (entry.type === 'conditional') {
+      if (mode === 'compact' || mode === 'detail-inline') {
         return (
-          <span
-            key={key}
-            className="tvm-stack-pill tvm-stack-pill--conditional"
-          >
-            Conditional: {highlightMatches(String(entry.name || "?"), searchTokens)}
+          <span key={key} className="tvm-stack-pill tvm-stack-pill--conditional">
+            Conditional: {highlightMatches(String(entry.name || '?'), searchTokens)}
           </span>
         );
       }
@@ -878,20 +888,16 @@ export const TvmInstructionTable = () => {
       return (
         <div key={key} className="tvm-stack-conditional">
           <span className="tvm-stack-conditional-name">
-            Conditional: {highlightMatches(String(entry.name || "?"), searchTokens)}
+            Conditional: {highlightMatches(String(entry.name || '?'), searchTokens)}
           </span>
           {Array.isArray(entry.match) && entry.match.length > 0 ? (
             entry.match.map((matchArm, idx) => (
-              <div
-                key={`${key}-match-${idx}`}
-                className="tvm-stack-conditional-branch"
-              >
+              <div key={`${key}-match-${idx}`} className="tvm-stack-conditional-branch">
                 <span className="tvm-stack-conditional-label">
-                  = {highlightMatches(String(matchArm.value ?? ""), searchTokens)}
+                  = {highlightMatches(String(matchArm.value ?? ''), searchTokens)}
                 </span>
                 <div className="tvm-stack-conditional-values">
-                  {Array.isArray(matchArm.stack) &&
-                  matchArm.stack.length > 0 ? (
+                  {Array.isArray(matchArm.stack) && matchArm.stack.length > 0 ? (
                     matchArm.stack
                       .slice()
                       .reverse()
@@ -899,21 +905,17 @@ export const TvmInstructionTable = () => {
                         renderStackEntry(
                           nested,
                           `${key}-match-${idx}-item-${nestedIdx}`,
-                          "detail-inline"
-                        )
+                          'detail-inline',
+                        ),
                       )
                   ) : (
-                    <span className="tvm-stack-pill tvm-stack-pill--empty">
-                      Empty
-                    </span>
+                    <span className="tvm-stack-pill tvm-stack-pill--empty">Empty</span>
                   )}
                 </div>
               </div>
             ))
           ) : (
-            <span className="tvm-stack-pill tvm-stack-pill--empty">
-              Empty branches
-            </span>
+            <span className="tvm-stack-pill tvm-stack-pill--empty">Empty branches</span>
           )}
           {Array.isArray(entry.else) && (
             <div className="tvm-stack-conditional-branch">
@@ -924,16 +926,10 @@ export const TvmInstructionTable = () => {
                     .slice()
                     .reverse()
                     .map((nested, nestedIdx) =>
-                      renderStackEntry(
-                        nested,
-                        `${key}-else-${nestedIdx}`,
-                        "detail-inline"
-                      )
+                      renderStackEntry(nested, `${key}-else-${nestedIdx}`, 'detail-inline'),
                     )
                 ) : (
-                  <span className="tvm-stack-pill tvm-stack-pill--empty">
-                    Empty
-                  </span>
+                  <span className="tvm-stack-pill tvm-stack-pill--empty">Empty</span>
                 )}
               </div>
             </div>
@@ -942,8 +938,8 @@ export const TvmInstructionTable = () => {
       );
     }
 
-    if (entry.type === "array") {
-      const label = `${entry.name || "items"}[${entry.length_var ?? ""}]`;
+    if (entry.type === 'array') {
+      const label = `${entry.name || 'items'}[${entry.length_var ?? ''}]`;
       return (
         <span key={key} className="tvm-stack-pill tvm-stack-pill--array">
           {highlightMatches(label, searchTokens)}
@@ -951,27 +947,20 @@ export const TvmInstructionTable = () => {
       );
     }
 
-    if (entry.type === "const") {
-      const value =
-        entry.value === null
-          ? "null"
-          : entry.value === undefined
-          ? "?"
-          : entry.value;
+    if (entry.type === 'const') {
+      const value = entry.value === null ? 'null' : entry.value === undefined ? '?' : entry.value;
       return (
         <span key={key} className="tvm-stack-pill tvm-stack-pill--const">
-          {highlightMatches(String(value), searchTokens)}: {highlightMatches(
-            String(entry.value_type || "Const"),
-            searchTokens
-          )}
+          {highlightMatches(String(value), searchTokens)}:{' '}
+          {highlightMatches(String(entry.value_type || 'Const'), searchTokens)}
         </span>
       );
     }
 
     const valueTypes =
       Array.isArray(entry.value_types) && entry.value_types.length > 0
-        ? entry.value_types.join("/")
-        : entry.value_type || "Any";
+        ? entry.value_types.join('/')
+        : entry.value_type || 'Any';
     const label = entry.name ? `${entry.name}: ${valueTypes}` : valueTypes;
 
     return (
@@ -981,26 +970,20 @@ export const TvmInstructionTable = () => {
     );
   }
 
-  function renderStackColumn(title, items, mode = "detail") {
+  function renderStackColumn(title, items, mode = 'detail') {
     const safeItems = Array.isArray(items) ? items : [];
     const reversed = safeItems.slice().reverse();
-    const limit = mode === "compact" ? 4 : reversed.length;
+    const limit = mode === 'compact' ? 4 : reversed.length;
     const shown = reversed.slice(0, limit);
-    const truncated = mode === "compact" && reversed.length > shown.length;
+    const truncated = mode === 'compact' && reversed.length > shown.length;
 
     return (
-      <div
-        className={`tvm-stack-column ${
-          mode === "compact" ? "tvm-stack-column--compact" : ""
-        }`}
-      >
+      <div className={`tvm-stack-column ${mode === 'compact' ? 'tvm-stack-column--compact' : ''}`}>
         <div className="tvm-stack-column-title">{title}</div>
         <div className="tvm-stack-top">TOP</div>
         <div className="tvm-stack-list">
           {shown.length === 0 && <span className="tvm-stack-empty">Empty</span>}
-          {shown.map((entry, idx) =>
-            renderStackEntry(entry, `${title}-${idx}`, mode)
-          )}
+          {shown.map((entry, idx) => renderStackEntry(entry, `${title}-${idx}`, mode))}
           {truncated && (
             <span className="tvm-stack-pill tvm-stack-pill--more">
               +{reversed.length - shown.length} more
@@ -1011,26 +994,23 @@ export const TvmInstructionTable = () => {
     );
   }
 
-  function renderStackColumns(instruction, mode = "detail") {
+  function renderStackColumns(instruction, mode = 'detail') {
     const inputs = instruction?.valueFlow?.inputs ?? [];
     const outputs = instruction?.valueFlow?.outputs ?? [];
 
     return (
       <div
-        className={`tvm-stack-columns ${
-          mode === "compact" ? "tvm-stack-columns--compact" : ""
-        }`}
+        className={`tvm-stack-columns ${mode === 'compact' ? 'tvm-stack-columns--compact' : ''}`}
       >
-        {renderStackColumn("Inputs", inputs, mode)}
-        {renderStackColumn("Outputs", outputs, mode)}
+        {renderStackColumn('Inputs', inputs, mode)}
+        {renderStackColumn('Outputs', outputs, mode)}
       </div>
     );
   }
 
   function renderInstructionDetail(instruction, options = {}) {
     const { isAnchorTarget = false, onOpenRawJson = () => {} } = options;
-    const hasAliases =
-      Array.isArray(instruction.aliases) && instruction.aliases.length > 0;
+    const hasAliases = Array.isArray(instruction.aliases) && instruction.aliases.length > 0;
     const readsRegisters = Array.isArray(instruction.registers?.inputs)
       ? instruction.registers.inputs
       : [];
@@ -1038,14 +1018,12 @@ export const TvmInstructionTable = () => {
       ? instruction.registers.outputs
       : [];
     const hasRegisterInfo = readsRegisters.length > 0 || writesRegisters.length > 0;
-    const hasStackData =
-      !instruction.missing.inputs || !instruction.missing.outputs;
+    const hasStackData = !instruction.missing.inputs || !instruction.missing.outputs;
     const hasFiftExamples =
-      Array.isArray(instruction.fiftExamples) &&
-      instruction.fiftExamples.length > 0;
+      Array.isArray(instruction.fiftExamples) && instruction.fiftExamples.length > 0;
     const descriptionHtml = highlightHtmlContent(
-      instruction.descriptionHtml || instruction.description || "",
-      searchTokens
+      instruction.descriptionHtml || instruction.description || '',
+      searchTokens,
     );
     const implementationRefs = Array.isArray(instruction.implementationRefs)
       ? instruction.implementationRefs.filter(Boolean)
@@ -1057,7 +1035,7 @@ export const TvmInstructionTable = () => {
         ? list
             .map((register, idx) => {
               if (!register) return null;
-              if (register.type === "special" && register.name) {
+              if (register.type === 'special' && register.name) {
                 return (
                   <span
                     key={`${keyPrefix}-special-${idx}`}
@@ -1068,11 +1046,11 @@ export const TvmInstructionTable = () => {
                 );
               }
               const sub =
-                register.type === "variable"
-                  ? register.var_name || "i"
-                  : typeof register.index === "number"
-                  ? register.index
-                  : register.var_name || "?";
+                register.type === 'variable'
+                  ? register.var_name || 'i'
+                  : typeof register.index === 'number'
+                    ? register.index
+                    : register.var_name || '?';
               return (
                 <span key={`${keyPrefix}-const-${idx}`} className="tvm-register-token">
                   c<sub>{sub}</sub>
@@ -1087,27 +1065,24 @@ export const TvmInstructionTable = () => {
           ? [token]
           : [
               <span key={`${keyPrefix}-sep-${idx}`} className="tvm-register-sep">
-                ,{" "}
+                ,{' '}
               </span>,
               token,
-            ]
+            ],
       );
     };
 
     const badgeNodes = [
       <span key="gas" className="tvm-detail-badge">
-        <span className="tvm-detail-badge-label">Gas</span>{" "}
+        <span className="tvm-detail-badge-label">Gas</span>{' '}
         <span className="tvm-detail-badge-value">
-          {highlightMatches(String(instruction.gasDisplay || "N/A"), searchTokens)}
+          {highlightMatches(String(instruction.gasDisplay || 'N/A'), searchTokens)}
         </span>
       </span>,
       <span key="version" className="tvm-detail-badge">
-        <span className="tvm-detail-badge-label">TVM</span>{" "}
+        <span className="tvm-detail-badge-label">TVM</span>{' '}
         <span className="tvm-detail-badge-value">
-          {highlightMatches(
-            instruction.since > 0 ? `v${instruction.since}` : "v0",
-            searchTokens
-          )}
+          {highlightMatches(instruction.since > 0 ? `v${instruction.since}` : 'v0', searchTokens)}
         </span>
       </span>,
     ];
@@ -1116,35 +1091,96 @@ export const TvmInstructionTable = () => {
       if (readsRegisters.length > 0) {
         badgeNodes.push(
           <span key="registers-read" className="tvm-detail-badge tvm-detail-badge--register">
-            <span className="tvm-detail-badge-label">Read registers</span>{" "}
+            <span className="tvm-detail-badge-label">Read registers</span>{' '}
             <span className="tvm-detail-badge-value">
-              {renderRegisterList(readsRegisters, "read")}
+              {renderRegisterList(readsRegisters, 'read')}
             </span>
-          </span>
+          </span>,
         );
       }
       if (writesRegisters.length > 0) {
         badgeNodes.push(
           <span key="registers-write" className="tvm-detail-badge tvm-detail-badge--register">
-            <span className="tvm-detail-badge-label">Write registers</span>{" "}
+            <span className="tvm-detail-badge-label">Write registers</span>{' '}
             <span className="tvm-detail-badge-value">
-              {renderRegisterList(writesRegisters, "write")}
+              {renderRegisterList(writesRegisters, 'write')}
             </span>
-          </span>
+          </span>,
         );
       }
     }
 
-    const panelClassName = `tvm-detail-panel${
-      isAnchorTarget ? " is-anchor-target" : ""
-    }`;
-
     return (
-      <div className={panelClassName}>
+      <div className="tvm-detail-panel">
         <div className="tvm-detail-header">
           <div className="tvm-detail-heading">
             <div className="tvm-detail-header-main">
               <h4 className="tvm-detail-title">{instruction.mnemonic}</h4>
+              <button
+                type="button"
+                className={`tvm-copy-link ${copied[instruction.uid] ? 'is-copied' : ''}`}
+                aria-label={copied[instruction.uid] ? 'Copied' : 'Copy link to instruction'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const anchorId = instruction.anchorId || buildAnchorId(instruction);
+                  copyAnchorUrl(anchorId)
+                    .then(() => {
+                      setCopied((prev) => ({
+                        ...prev,
+                        [instruction.uid]: true,
+                      }));
+                      setTimeout(() => {
+                        setCopied((prev) => {
+                          const { [instruction.uid]: _omit, ...rest } = prev;
+                          return rest;
+                        });
+                      }, 1500);
+                    })
+                    .catch(() => {
+                      // ignore
+                    });
+                }}
+                title={copied[instruction.uid] ? 'Copied' : 'Copy link'}
+              >
+                {copied[instruction.uid] ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M10.59 13.41a1.996 1.996 0 0 0 2.82 0l3.59-3.59a2 2 0 0 0-2.83-2.83l-1.17 1.17"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M13.41 10.59a1.996 1.996 0 0 0-2.82 0L7 14.18a2 2 0 1 0 2.83 2.83l1.17-1.17"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
           <div className="tvm-detail-actions">
@@ -1192,11 +1228,9 @@ export const TvmInstructionTable = () => {
                 <span className="tvm-detail-subtitle">Implementation</span>
                 <div className="tvm-impl-badges">
                   {implementationRefs.map((ref, idx) => {
-                    const filename = ref.file || "source";
+                    const filename = ref.file || 'source';
                     const linePart =
-                      typeof ref.line === "number" && ref.line > 0
-                        ? `:${ref.line}`
-                        : "";
+                      typeof ref.line === 'number' && ref.line > 0 ? `:${ref.line}` : '';
                     const href = buildGitHubLineUrl(ref.path, ref.line);
                     return (
                       <a
@@ -1221,8 +1255,8 @@ export const TvmInstructionTable = () => {
                 <div className="tvm-example-list">
                   {instruction.fiftExamples.map((example, idx) => {
                     const description =
-                      typeof example.description === "string" ? example.description : "";
-                    const fiftCode = typeof example.fift === "string" ? example.fift : "";
+                      typeof example.description === 'string' ? example.description : '';
+                    const fiftCode = typeof example.fift === 'string' ? example.fift : '';
                     return (
                       <div
                         key={`${instruction.mnemonic}-example-${idx}`}
@@ -1251,9 +1285,7 @@ export const TvmInstructionTable = () => {
                 <h4 className="tvm-detail-title">Aliases</h4>
                 <div className="tvm-alias-list">
                   {instruction.aliases.map((alias) => {
-                    const aliasDescriptionHtml = cleanAliasDescription(
-                      alias.description || ""
-                    );
+                    const aliasDescriptionHtml = cleanAliasDescription(alias.description || '');
                     const hasAliasMeta =
                       Boolean(alias.doc_fift) ||
                       (alias.operands && Object.keys(alias.operands).length > 0);
@@ -1320,10 +1352,10 @@ export const TvmInstructionTable = () => {
               {Array.isArray(instruction.operands) && instruction.operands.length > 0 ? (
                 <div className="tvm-operands-list">
                   {instruction.operands.map((operand, idx) => {
-                    if (!operand || typeof operand !== "object") return null;
+                    if (!operand || typeof operand !== 'object') return null;
                     const summary = highlightMatches(
-                      formatOperandSummary(operand),
-                      searchTokens
+                      formatOperandSummary(operand, true),
+                      searchTokens,
                     );
                     const hasRange =
                       operand.min_value !== undefined || operand.max_value !== undefined;
@@ -1332,10 +1364,8 @@ export const TvmInstructionTable = () => {
                         <div className="tvm-operands-line">{summary}</div>
                         {hasRange && (
                           <div className="tvm-operands-detail">
-                            Range {highlightMatches(String(operand.min_value ?? "?"), searchTokens)} – {highlightMatches(
-                              String(operand.max_value ?? "?"),
-                              searchTokens
-                            )}
+                            Range {highlightMatches(String(operand.min_value ?? '?'), searchTokens)}{' '}
+                            – {highlightMatches(String(operand.max_value ?? '?'), searchTokens)}
                           </div>
                         )}
                       </div>
@@ -1350,15 +1380,13 @@ export const TvmInstructionTable = () => {
             <div className="tvm-side-block">
               <span className="tvm-side-title">Stack</span>
               {hasStackData ? (
-                renderStackColumns(instruction, "detail")
+                renderStackColumns(instruction, 'detail')
               ) : (
                 <p className="tvm-missing-placeholder">Stack effects not available.</p>
               )}
             </div>
           </aside>
         </div>
-
-
       </div>
     );
   }
@@ -1366,10 +1394,10 @@ export const TvmInstructionTable = () => {
   const [spec, setSpec] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
-  const [subcategory, setSubcategory] = useState("All");
-  const [sortMode, setSortMode] = useState("opcode");
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('All');
+  const [subcategory, setSubcategory] = useState('All');
+  const [sortMode, setSortMode] = useState('opcode');
   const [expanded, setExpanded] = useState({});
   const [copied, setCopied] = useState({});
   const [activeAnchorId, setActiveAnchorId] = useState(null);
@@ -1380,13 +1408,28 @@ export const TvmInstructionTable = () => {
   const tableStyles = useMemo(
     () => `
 .tvm-instruction-app {
-  --tvm-border: var(--mint-border-color, rgb(var(--gray-400) / 0.24));
-  --tvm-border-strong: rgb(var(--gray-400) / 0.32);
-  --tvm-surface: var(--mint-surface-elevated, rgb(var(--background-light)));
-  --tvm-surface-secondary: rgb(var(--gray-50) / 0.65);
-  --tvm-text-primary: var(--mint-text-primary, rgb(var(--gray-800)));
-  --tvm-text-secondary: var(--mint-text-secondary, rgb(var(--gray-600) / 0.85));
-  --tvm-text-muted: var(--mint-text-tertiary, rgb(var(--gray-400) / 0.68));
+  --gray-50: 249 250 251;
+  --gray-100: 243 244 246;
+  --gray-200: 229 231 235;
+  --gray-300: 209 213 219;
+  --gray-400: 156 163 175;
+  --gray-600: 75 85 99;
+  --gray-700: 55 65 81;
+  --gray-800: 31 41 55;
+  --gray-900: 17 24 39;
+  --gray-950: 9 14 26;
+  --primary: 0 152 234;
+  --primary-light: 92 196 247;
+  --primary-dark: 0 116 182;
+  --background-light: 255 255 255;
+
+  --tvm-border: var(--color-fd-border);
+  --tvm-border-strong: rgb(var(--color-fd-border) / 0.32);
+  --tvm-surface: var(--color-fd-background);
+  --tvm-surface-secondary: var(--color-fd-card);
+  --tvm-text-primary: var(--color-fd-foreground);
+  --tvm-text-secondary: var(--color-fd-muted-foreground);
+  --tvm-text-muted: var(--color-fd-muted-foreground);
   --tvm-accent: rgb(var(--primary));
   --tvm-accent-soft: rgb(var(--primary) / 0.16);
   --tvm-accent-strong: rgb(var(--primary-light));
@@ -1403,29 +1446,44 @@ export const TvmInstructionTable = () => {
   --tvm-stack-conditional-bg: rgb(var(--primary-dark) / 0.22);
   --tvm-stack-conditional-text: var(--tvm-accent-subtle);
   --tvm-stack-conditional-border: rgb(var(--primary-dark) / 0.32);
-  --tvm-stack-label: var(--mint-text-tertiary, rgb(var(--gray-600) / 0.65));
+  --tvm-stack-label: rgb(var(--gray-600) / 0.65);
   --tvm-pill-muted-bg: rgb(var(--gray-400) / 0.12);
-  --tvm-row-padding-y: 0.85rem;
-  --tvm-row-padding-x: 1rem;
+  --tvm-row-padding-y: 0.5rem;
+  --tvm-row-padding-x: 0.75rem;
   --tvm-chip-padding-y: 0.2rem;
   --tvm-chip-padding-x: 0.6rem;
   --tvm-control-height: 2.75rem;
   color: var(--tvm-text-primary);
-  background: var(--tvm-surface);
-  border: 1px solid var(--tvm-border);
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 24px 60px -40px rgb(var(--gray-900) / 0.9);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 :where(.dark) .tvm-instruction-app {
+  --gray-50: 24 24 27;
+  --gray-100: 244 244 245;
+  --gray-200: 63 63 70;
+  --gray-300: 82 82 91;
+  --gray-400: 161 161 170;
+  --gray-600: 212 212 216;
+  --gray-700: 228 228 231;
+  --gray-800: 39 39 42;
+  --gray-900: 24 24 27;
+  --gray-950: 14 14 16;
+  --primary: 92 196 247;
+  --primary-light: 140 210 252;
+  --primary-dark: 0 152 234;
+  --background-light: 14 14 16;
+
   --tvm-border: rgb(var(--gray-800) / 0.65);
   --tvm-border-strong: rgb(var(--gray-600) / 0.85);
   --tvm-surface: rgb(var(--gray-950));
   --tvm-surface-secondary: rgb(var(--gray-900) / 0.85);
   --tvm-text-primary: rgb(var(--gray-100));
-  --tvm-text-secondary: rgb(var(--gray-300));
-  --tvm-text-muted: rgb(var(--gray-400) / 0.9);
+  --tvm-text-secondary: rgb(var(--gray-400));
+  --tvm-text-muted: rgb(var(--gray-400) / 0.7);
   --tvm-accent: rgb(var(--primary-light));
   --tvm-accent-soft: rgb(var(--primary) / 0.22);
   --tvm-accent-strong: rgb(var(--primary));
@@ -1438,21 +1496,20 @@ export const TvmInstructionTable = () => {
   --tvm-stack-const-bg: rgb(var(--primary-dark) / 0.4);
   --tvm-stack-const-text: rgb(var(--primary-light));
   --tvm-stack-array-bg: rgb(var(--primary) / 0.25);
-  --tvm-stack-array-text: rgb(var(--gray-50));
+  --tvm-stack-array-text: var(--tvm-text-primary);
   --tvm-stack-conditional-bg: rgb(var(--primary-dark) / 0.38);
   --tvm-stack-conditional-text: rgb(var(--primary-light));
   --tvm-stack-conditional-border: rgb(var(--primary) / 0.5);
   --tvm-stack-label: rgb(var(--gray-400) / 0.85);
   --tvm-pill-muted-bg: rgb(var(--gray-800) / 0.85);
-  box-shadow: 0 24px 80px -60px rgb(0 0 0 / 0.65);
   color-scheme: dark;
 }
 
 .tvm-instruction-toolbar {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .tvm-toolbar-search {
@@ -1549,6 +1606,30 @@ export const TvmInstructionTable = () => {
   min-height: var(--tvm-control-height);
 }
 
+.tvm-field select {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 2rem;
+}
+
+.tvm-select {
+  position: relative;
+  display: block;
+}
+
+.tvm-select-chevron {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: var(--tvm-text-muted);
+  pointer-events: none;
+}
+
 .tvm-field--search {
   min-width: min(260px, 100%);
 }
@@ -1561,6 +1642,11 @@ export const TvmInstructionTable = () => {
 
 .tvm-field--search input {
   padding-left: 2.2rem;
+}
+
+.tvm-field--search input::placeholder {
+  color: var(--tvm-text-secondary);
+  opacity: 1;
 }
 
 .tvm-search-icon {
@@ -1654,7 +1740,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-instruction-meta {
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
   font-size: 0.85rem;
   color: var(--tvm-text-secondary);
   display: flex;
@@ -1739,10 +1825,10 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-spec-grid-container {
-  border: 1px solid var(--tvm-border);
+  border: 1px solid rgb(var(--gray-400) / 0.14);
   border-radius: 12px;
   background: var(--tvm-surface-secondary);
-  box-shadow: inset 0 1px 0 rgb(var(--gray-400) / 0.08);
+  overflow: hidden;
 }
 
 .tvm-spec-grid-scroll {
@@ -1760,51 +1846,57 @@ export const TvmInstructionTable = () => {
 
 .tvm-spec-header,
 .tvm-spec-row {
-  --tvm-grid-template: 60px 110px 260px minmax(320px, 2fr);
+  --tvm-grid-template: 110px 260px minmax(320px, 2fr);
   display: grid;
   grid-template-columns: var(--tvm-grid-template);
-  min-width: 860px;
+  min-width: 700px;
 }
 
 .tvm-spec-header {
-  background: rgb(var(--gray-400) / 0.12);
+  background: rgb(var(--gray-400) / 0.06);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.7rem;
-  color: var(--tvm-text-secondary);
+  font-size: 0.68rem;
+  color: var(--tvm-text-muted);
 }
 
 :where(.dark) .tvm-instruction-app .tvm-spec-header {
-  background: rgb(var(--gray-800) / 0.65);
+  background: rgb(var(--gray-800) / 0.35);
   color: var(--tvm-text-muted);
 }
 
 .tvm-spec-header > div {
-  padding: calc(var(--tvm-row-padding-y) - 0.1rem) var(--tvm-row-padding-x);
-  font-weight: 600;
+  padding: 0.4rem var(--tvm-row-padding-x);
+  font-weight: 500;
+}
+
+.tvm-spec-header > div:first-child {
+  text-align: center;
 }
 
 .tvm-spec-row {
-  border-top: 1px solid var(--tvm-border);
+  border-top: 1px solid rgb(var(--gray-400) / 0.12);
   transition: background 0.2s ease-in-out;
   cursor: pointer;
   align-items: center;
 }
 
-.tvm-spec-row:hover {
-  background: rgb(var(--primary) / 0.08);
+@media (hover: hover) {
+  .tvm-spec-row:not(.tvm-spec-row--detail):hover {
+    background: rgb(var(--primary) / 0.04);
+  }
+
+  :where(.dark) .tvm-instruction-app .tvm-spec-row:not(.tvm-spec-row--detail):hover {
+    background: rgb(var(--primary) / 0.1);
+  }
 }
 
 .tvm-spec-row.is-expanded {
-  background: rgb(var(--primary) / 0.12);
-}
-
-:where(.dark) .tvm-instruction-app .tvm-spec-row:hover {
-  background: rgb(var(--primary) / 0.18);
+  background: rgb(var(--primary) / 0.06);
 }
 
 :where(.dark) .tvm-instruction-app .tvm-spec-row.is-expanded {
-  background: rgb(var(--primary) / 0.26);
+  background: rgb(var(--primary) / 0.14);
 }
 
 .tvm-spec-row.is-anchor-target {
@@ -1826,7 +1918,7 @@ export const TvmInstructionTable = () => {
   padding: var(--tvm-row-padding-y) var(--tvm-row-padding-x);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.5rem;
   min-width: 0;
   color: var(--tvm-text-primary);
 }
@@ -1836,58 +1928,60 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-spec-cell--opcode {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
-.tvm-spec-cell--anchor {
-  justify-content: center;
-  align-items: center;
+.tvm-spec-cell--opcode code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .tvm-spec-cell--name {
   gap: 0.4rem;
-}
-
-.tvm-name-line {
-  position: relative;
+  overflow: hidden;
 }
 
 .tvm-copy-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: 1px solid var(--tvm-border);
-  background: var(--tvm-surface-secondary);
-  color: var(--tvm-text-secondary);
+  width: 1em;
+  height: 1em;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--tvm-text-muted);
   cursor: pointer;
+  transition: color 0.15s ease-in-out;
+  flex-shrink: 0;
+  font-size: 1.15rem;
 }
 
 .tvm-copy-link:hover {
-  border-color: var(--tvm-border-strong);
+  color: var(--tvm-accent-strong);
 }
 
 .tvm-copy-link svg {
-  width: 14px;
-  height: 14px;
+  width: 1em;
+  height: 1em;
 }
 
 .tvm-copy-link.is-copied {
-  border-color: var(--tvm-accent-strong);
-  background: var(--tvm-accent-soft);
+  opacity: 1;
   color: var(--tvm-accent-strong);
 }
 
 .tvm-name-line {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .tvm-row-indicator {
@@ -1923,15 +2017,19 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-mnemonic {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 1rem;
   font-weight: 600;
   color: var(--tvm-text-primary);
-  white-space: pre;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tvm-spec-cell--gas {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   justify-content: center;
   color: var(--tvm-text-secondary);
@@ -1948,11 +2046,17 @@ export const TvmInstructionTable = () => {
 .tvm-description {
   font-size: 0.92rem;
   line-height: 1.45;
-  color: var(--tvm-text-secondary);
+  color: var(--tvm-text-muted);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.tvm-description code {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tvm-description-meta {
@@ -1961,23 +2065,31 @@ export const TvmInstructionTable = () => {
   gap: 0.35rem;
 }
 
+.tvm-opcode-chip {
+  display: none;
+}
+
 .tvm-category-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  padding: 0.5rem;
+  border-radius: 16px;
   background: var(--tvm-accent-soft);
   color: var(--tvm-accent-subtle);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.03em;
 }
 
 .tvm-inline-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.18rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
+  padding: 0.5rem;
+  border-radius: 16px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   background: var(--tvm-accent-soft);
@@ -1992,7 +2104,7 @@ export const TvmInstructionTable = () => {
 .tvm-fift {
   font-size: 0.78rem;
   color: var(--tvm-text-secondary);
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
 }
 
 .tvm-operands {
@@ -2009,8 +2121,11 @@ export const TvmInstructionTable = () => {
   border: 1px solid var(--tvm-border);
   background: var(--tvm-pill-muted-bg);
   font-size: 0.72rem;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
-  color: var(--tvm-text-secondary);
+  font-family: monospace;
+  color: var(--tvm-text-muted);
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tvm-stack-columns {
@@ -2057,8 +2172,11 @@ export const TvmInstructionTable = () => {
   padding: 0.18rem 0.45rem;
   border-radius: 6px;
   font-size: 0.75rem;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tvm-instruction-app.is-density-compact .tvm-stack-pill {
@@ -2103,7 +2221,7 @@ export const TvmInstructionTable = () => {
 
 .tvm-stack-footnote {
   display: inline-block;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.75rem;
   background: rgb(var(--gray-200) / 0.12);
   border: 1px solid var(--tvm-border);
@@ -2172,16 +2290,10 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-detail-panel {
-  background: var(--tvm-surface);
-  border: 1px solid var(--tvm-border);
-  border-radius: 14px;
-  padding: 1rem 1.15rem 1.25rem;
-  box-shadow: 0 18px 40px -30px rgb(var(--gray-900) / 0.7);
-}
-
-.tvm-detail-panel.is-anchor-target {
-  border-color: var(--tvm-accent-strong);
-  box-shadow: 0 0 0 2px var(--tvm-accent-soft), 0 18px 40px -30px rgb(var(--gray-900) / 0.7);
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .tvm-detail-header {
@@ -2195,7 +2307,7 @@ export const TvmInstructionTable = () => {
 
 .tvm-detail-header-main {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.45rem;
   flex-wrap: wrap;
 }
@@ -2262,7 +2374,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-register-token {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.82rem;
   color: var(--tvm-text-primary);
 }
@@ -2329,10 +2441,11 @@ export const TvmInstructionTable = () => {
 
 .tvm-detail-code {
   display: block;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.78rem;
   line-height: 1.45;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: rgb(var(--gray-200) / 0.08);
   border: 1px solid var(--tvm-border);
   border-radius: 8px;
@@ -2340,6 +2453,10 @@ export const TvmInstructionTable = () => {
   color: var(--tvm-text-primary);
   overflow-x: auto;
   max-width: 100%;
+}
+
+:where(.dark) .tvm-instruction-app .tvm-detail-code {
+  background: rgb(var(--gray-900) / 0.6);
 }
 
 .tvm-detail-code--inline {
@@ -2366,7 +2483,7 @@ export const TvmInstructionTable = () => {
   flex-direction: column;
   gap: 0.5rem;
   background: var(--tvm-surface-secondary);
-  border: 1px solid rgb(var(--gray-400) / 0.3);
+  border: 1px solid var(--tvm-border);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
 }
@@ -2396,7 +2513,7 @@ export const TvmInstructionTable = () => {
   flex-direction: column;
   gap: 0.55rem;
   background: var(--tvm-surface-secondary);
-  border: 1px solid rgb(var(--gray-400) / 0.3);
+  border: 1px solid var(--tvm-border);
   border-radius: 12px;
   padding: 0.85rem 0.95rem;
   margin-bottom: 0.9rem;
@@ -2413,8 +2530,8 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-operands-item {
-  background: var(--tvm-surface);
-  border: 1px solid rgb(var(--gray-400) / 0.25);
+  background: var(--tvm-surface-secondary);
+  border: 1px solid var(--tvm-border);
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   display: flex;
@@ -2509,7 +2626,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-modal-subtitle code {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.82rem;
   padding: 0.1rem 0.3rem;
   border-radius: 0.4rem;
@@ -2531,7 +2648,7 @@ export const TvmInstructionTable = () => {
   border-radius: 10px;
   padding: 0.85rem 0.95rem;
   background: rgb(var(--gray-200) / 0.16);
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.82rem;
   line-height: 1.55;
   overflow: auto;
@@ -2542,6 +2659,40 @@ export const TvmInstructionTable = () => {
 
 :where(.dark) .tvm-instruction-app .tvm-modal-code {
   background: rgb(var(--gray-900) / 0.7);
+}
+
+@media (min-width: 901px) {
+  .tvm-spec-row:not(.tvm-spec-row--detail) {
+    position: relative;
+  }
+
+  .tvm-spec-row:not(.tvm-spec-row--detail) .tvm-row-indicator {
+    position: absolute;
+    right: var(--tvm-row-padding-x);
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+  }
+
+  .tvm-spec-row:not(.tvm-spec-row--detail) .tvm-row-indicator.is-expanded {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .tvm-spec-row:not(.tvm-spec-row--detail) .tvm-spec-cell--description {
+    padding-right: calc(var(--tvm-row-padding-x) + 28px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .tvm-instruction-app {
+    padding: 0;
+  }
+
+  .tvm-spec-header,
+  .tvm-spec-row {
+    --tvm-grid-template: 95px 220px minmax(280px, 2fr);
+    min-width: 620px;
+  }
 }
 
 @media (max-width: 1040px) {
@@ -2567,29 +2718,51 @@ export const TvmInstructionTable = () => {
 
   .tvm-spec-row,
   .tvm-spec-row--detail {
-    --tvm-grid-template: 48px minmax(0, 1fr);
+    --tvm-grid-template: minmax(0, 1fr);
     grid-template-columns: var(--tvm-grid-template);
     min-width: 0;
     align-items: start;
   }
 
-  .tvm-spec-row .tvm-spec-cell--anchor {
-    grid-row: span 2;
+  .tvm-spec-row:not(.tvm-spec-row--detail) {
+    padding: 0.5rem 0;
   }
 
   .tvm-spec-row .tvm-spec-cell--opcode {
-    grid-row: 1;
-    grid-column: 2 / -1;
-    justify-content: flex-start;
-    align-items: baseline;
+    display: none;
   }
 
   .tvm-spec-row .tvm-spec-cell--name {
-    grid-column: 2 / -1;
+    grid-column: 1 / -1;
+    gap: 1rem;
+  }
+
+  .tvm-name-line {
+    gap: 0.6rem;
+  }
+
+  .tvm-opcode-chip {
+    display: inline-flex;
+    align-items: center;
+    font-family: monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0 0.5rem;
+    border-radius: 6px;
+    background: var(--tvm-pill-muted-bg);
+    color: var(--tvm-text-secondary);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
   }
 
   .tvm-spec-row .tvm-spec-cell--description {
     grid-column: 1 / -1;
+    gap: 1rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .tvm-spec-cell--full {
+    padding: 0;
   }
 }
 
@@ -2600,6 +2773,12 @@ export const TvmInstructionTable = () => {
 
   .tvm-detail-columns {
     flex-direction: column;
+  }
+
+  .tvm-detail-main,
+  .tvm-detail-side {
+    flex: 1 1 auto;
+    width: 100%;
   }
 
   .tvm-detail-section {
@@ -2673,7 +2852,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-control-flow-value {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   color: var(--tvm-text-primary);
 }
@@ -2761,7 +2940,7 @@ export const TvmInstructionTable = () => {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -2809,7 +2988,7 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-control-flow-node-value {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.66rem;
   color: var(--tvm-text-primary);
 }
@@ -2867,8 +3046,6 @@ export const TvmInstructionTable = () => {
   white-space: pre-wrap;
 }
 
-
-
 .tvm-alias-list {
   list-style: none;
   margin: 0;
@@ -2896,14 +3073,14 @@ export const TvmInstructionTable = () => {
 }
 
 .tvm-alias-headline code {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
   font-size: 0.85rem;
   color: var(--tvm-text-primary);
 }
 
 .tvm-alias-meta {
   font-size: 0.75rem;
-  color: var(--tvm-text-secondary);
+  color: var(--tvm-text-muted);
 }
 
 .tvm-alias-description {
@@ -2925,12 +3102,12 @@ export const TvmInstructionTable = () => {
   padding: 0.18rem 0.45rem;
   border-radius: 6px;
   background: var(--tvm-pill-muted-bg);
-  color: var(--tvm-text-secondary);
+  color: var(--tvm-text-muted);
   font-size: 0.72rem;
 }
 
 .tvm-alias-pill code {
-  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  font-family: monospace;
 }
 
 .tvm-loading-row,
@@ -2947,20 +3124,12 @@ export const TvmInstructionTable = () => {
   color: var(--tvm-accent-strong);
 }
 
-@media (max-width: 1024px) {
-  .tvm-instruction-app {
-    padding: 1.1rem;
-  }
-
-  .tvm-spec-header,
-  .tvm-spec-row {
-    --tvm-grid-template: 48px 95px 220px minmax(280px, 2fr);
-    min-width: 720px;
-  }
-}
-
 @media (max-width: 768px) {
-  .tvm-field {
+  .tvm-field,
+  .tvm-toolbar-filters .tvm-field,
+  .tvm-field--sort,
+  .tvm-field--category,
+  .tvm-field--subcategory {
     width: 100%;
     min-width: 0;
   }
@@ -2989,7 +3158,7 @@ export const TvmInstructionTable = () => {
   }
 }
 `,
-    []
+    [],
   );
   const searchTokens = useMemo(() => createSearchTokens(search), [search]);
 
@@ -3012,7 +3181,7 @@ export const TvmInstructionTable = () => {
         }
       } catch (cause) {
         if (!cancelled) {
-          setError(cause instanceof Error ? cause.message : "Unknown error");
+          setError(cause instanceof Error ? cause.message : 'Unknown error');
         }
       } finally {
         if (!cancelled) {
@@ -3033,25 +3202,25 @@ export const TvmInstructionTable = () => {
   }, [spec]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     try {
       const raw = window.localStorage.getItem(PERSIST_KEY);
       if (!raw) return;
       const prefs = JSON.parse(raw);
-      if (prefs && typeof prefs === "object") {
-        if (typeof prefs.search === "string") setSearch(prefs.search);
+      if (prefs && typeof prefs === 'object') {
+        if (typeof prefs.search === 'string') setSearch(prefs.search);
         if (
-          typeof prefs.category === "string" &&
-          (prefs.category === "All" || CATEGORY_GROUP_KEYS.has(prefs.category))
+          typeof prefs.category === 'string' &&
+          (prefs.category === 'All' || CATEGORY_GROUP_KEYS.has(prefs.category))
         ) {
           setCategory(prefs.category);
         }
-        if (typeof prefs.subcategory === "string") {
+        if (typeof prefs.subcategory === 'string') {
           setSubcategory(prefs.subcategory);
         }
         if (
-          typeof prefs.sortMode === "string" &&
-          ["opcode", "name", "category", "since"].includes(prefs.sortMode)
+          typeof prefs.sortMode === 'string' &&
+          ['opcode', 'name', 'category', 'since'].includes(prefs.sortMode)
         ) {
           setSortMode(prefs.sortMode);
         }
@@ -3062,7 +3231,7 @@ export const TvmInstructionTable = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     try {
       const payload = JSON.stringify({
         search,
@@ -3077,34 +3246,30 @@ export const TvmInstructionTable = () => {
   }, [search, category, subcategory, sortMode]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     const handler = (event) => {
-      if (event.defaultPrevented || event.key !== "/") return;
+      if (event.defaultPrevented || event.key !== '/') return;
       if (event.altKey || event.ctrlKey || event.metaKey) return;
       const active = document.activeElement;
       if (active) {
-        const tagName = active.tagName ? active.tagName.toLowerCase() : "";
-        if (
-          tagName === "input" ||
-          tagName === "textarea" ||
-          active.isContentEditable
-        ) {
+        const tagName = active.tagName ? active.tagName.toLowerCase() : '';
+        if (tagName === 'input' || tagName === 'textarea' || active.isContentEditable) {
           return;
         }
       }
       event.preventDefault();
-      if (searchInputRef.current && typeof searchInputRef.current.focus === "function") {
+      if (searchInputRef.current && typeof searchInputRef.current.focus === 'function') {
         searchInputRef.current.focus();
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     const syncHash = () => {
-      const hash = window.location.hash ? window.location.hash.slice(1) : "";
+      const hash = window.location.hash ? window.location.hash.slice(1) : '';
       if (!hash) {
         setActiveAnchorId(null);
         return;
@@ -3116,8 +3281,8 @@ export const TvmInstructionTable = () => {
       }
     };
     syncHash();
-    window.addEventListener("hashchange", syncHash);
-    return () => window.removeEventListener("hashchange", syncHash);
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
   }, []);
 
   const instructions = useMemo(() => {
@@ -3134,106 +3299,92 @@ export const TvmInstructionTable = () => {
       aliasByMnemonic.set(alias.alias_of, list);
     });
 
-    return (Array.isArray(spec.instructions) ? spec.instructions : []).map(
-      (raw, idx) => {
-        const doc = raw.doc || {};
-        const bytecode = raw.bytecode || {};
-        const valueFlow = raw.value_flow || {};
-        const inputs = Array.isArray(valueFlow.inputs?.stack)
-          ? valueFlow.inputs.stack
-          : [];
-        const outputs = Array.isArray(valueFlow.outputs?.stack)
-          ? valueFlow.outputs.stack
-          : [];
-        const registersIn = Array.isArray(valueFlow.inputs?.registers)
-          ? valueFlow.inputs.registers
-          : [];
-        const registersOut = Array.isArray(valueFlow.outputs?.registers)
-          ? valueFlow.outputs.registers
-          : [];
+    return (Array.isArray(spec.instructions) ? spec.instructions : []).map((raw, idx) => {
+      const doc = raw.doc || {};
+      const bytecode = raw.bytecode || {};
+      const valueFlow = raw.value_flow || {};
+      const inputs = Array.isArray(valueFlow.inputs?.stack) ? valueFlow.inputs.stack : [];
+      const outputs = Array.isArray(valueFlow.outputs?.stack) ? valueFlow.outputs.stack : [];
+      const registersIn = Array.isArray(valueFlow.inputs?.registers)
+        ? valueFlow.inputs.registers
+        : [];
+      const registersOut = Array.isArray(valueFlow.outputs?.registers)
+        ? valueFlow.outputs.registers
+        : [];
 
-        const categoryKeyRaw = doc.category || "uncategorized";
-        const categoryGroup = resolveCategoryGroup(categoryKeyRaw);
-        const categoryGroupKey = categoryGroup.key;
-        const categoryGroupLabel = categoryGroup.label;
-        const rawCategoryLabel = humanizeCategoryKey(categoryKeyRaw);
-        const descriptionMissing = !doc.description;
-        const stackDocMissing = !doc.stack;
-        const gasMissing = !doc.gas;
-        const tlbMissing = !bytecode.tlb;
-        const inputsMissing = !Array.isArray(valueFlow.inputs?.stack);
-        const outputsMissing = !Array.isArray(valueFlow.outputs?.stack);
-        const implementationRefs = extractImplementationRefs(raw.implementation);
-        const implementationMissing = implementationRefs.length === 0;
-        const controlFlowMissing =
-          !raw.control_flow || !Array.isArray(raw.control_flow.branches);
+      const categoryKeyRaw = doc.category || 'uncategorized';
+      const categoryGroup = resolveCategoryGroup(categoryKeyRaw);
+      const categoryGroupKey = categoryGroup.key;
+      const categoryGroupLabel = categoryGroup.label;
+      const rawCategoryLabel = humanizeCategoryKey(categoryKeyRaw);
+      const descriptionMissing = !doc.description;
+      const stackDocMissing = !doc.stack;
+      const gasMissing = !doc.gas;
+      const tlbMissing = !bytecode.tlb;
+      const inputsMissing = !Array.isArray(valueFlow.inputs?.stack);
+      const outputsMissing = !Array.isArray(valueFlow.outputs?.stack);
+      const implementationRefs = extractImplementationRefs(raw.implementation);
+      const implementationMissing = implementationRefs.length === 0;
+      const controlFlowMissing = !raw.control_flow || !Array.isArray(raw.control_flow.branches);
 
-        const opcode = bytecode.prefix || "";
-        const anchorId = buildAnchorId({ opcode, mnemonic: raw.mnemonic });
+      const opcode = bytecode.prefix || '';
+      const anchorId = buildAnchorId({ opcode, mnemonic: raw.mnemonic });
 
-        return {
-          uid: `${raw.mnemonic}__${opcode || 'nop'}__${idx}`,
-          mnemonic: raw.mnemonic,
-          since: typeof raw.since_version === "number" ? raw.since_version : 0,
-          anchorId,
-          categoryKey: categoryGroupKey,
-          categoryLabel: categoryGroupLabel,
-          rawCategoryKey: categoryKeyRaw,
-          rawCategoryLabel,
-          description: doc.description || "",
-          descriptionHtml: typeof doc.description_html === "string"
-            ? doc.description_html
-            : "",
-          fift: doc.fift || "",
-          fiftExamples: Array.isArray(doc.fift_examples)
-            ? doc.fift_examples
-                .map((example) =>
-                  example && typeof example === "object"
-                    ? {
-                        description:
-                          typeof example.description === "string"
-                            ? example.description
-                            : "",
-                        fift:
-                          typeof example.fift === "string" ? example.fift : "",
-                      }
-                    : null
-                )
-                .filter((example) =>
-                  example && (example.description || example.fift)
-                )
-            : [],
-          gas: doc.gas || "",
-          gasDisplay: formatGasDisplay(doc.gas),
-          stackDoc: doc.stack || "",
-          opcode,
-          tlb: bytecode.tlb || "",
-          operands: Array.isArray(bytecode.operands) ? bytecode.operands : [],
-          valueFlow: {
-            inputs,
-            outputs,
-          },
-          registers: {
-            inputs: registersIn,
-            outputs: registersOut,
-          },
-          controlFlow: raw.control_flow || null,
-          implementationRefs,
-          rawSpec: raw,
-          aliases: aliasByMnemonic.get(raw.mnemonic) || [],
-          missing: {
-            description: descriptionMissing,
-            gas: gasMissing,
-            tlb: tlbMissing,
-            stackDoc: stackDocMissing,
-            inputs: inputsMissing,
-            outputs: outputsMissing,
-            implementation: implementationMissing,
-            controlFlow: controlFlowMissing,
-          },
-        };
-      }
-    );
+      return {
+        uid: `${raw.mnemonic}__${opcode || 'nop'}__${idx}`,
+        mnemonic: raw.mnemonic,
+        since: typeof raw.since_version === 'number' ? raw.since_version : 0,
+        anchorId,
+        categoryKey: categoryGroupKey,
+        categoryLabel: categoryGroupLabel,
+        rawCategoryKey: categoryKeyRaw,
+        rawCategoryLabel,
+        description: doc.description || '',
+        descriptionHtml: typeof doc.description_html === 'string' ? doc.description_html : '',
+        fift: doc.fift || '',
+        fiftExamples: Array.isArray(doc.fift_examples)
+          ? doc.fift_examples
+              .map((example) =>
+                example && typeof example === 'object'
+                  ? {
+                      description:
+                        typeof example.description === 'string' ? example.description : '',
+                      fift: typeof example.fift === 'string' ? example.fift : '',
+                    }
+                  : null,
+              )
+              .filter((example) => example && (example.description || example.fift))
+          : [],
+        gas: doc.gas || '',
+        gasDisplay: formatGasDisplay(doc.gas),
+        stackDoc: doc.stack || '',
+        opcode,
+        tlb: bytecode.tlb || '',
+        operands: Array.isArray(bytecode.operands) ? bytecode.operands : [],
+        valueFlow: {
+          inputs,
+          outputs,
+        },
+        registers: {
+          inputs: registersIn,
+          outputs: registersOut,
+        },
+        controlFlow: raw.control_flow || null,
+        implementationRefs,
+        rawSpec: raw,
+        aliases: aliasByMnemonic.get(raw.mnemonic) || [],
+        missing: {
+          description: descriptionMissing,
+          gas: gasMissing,
+          tlb: tlbMissing,
+          stackDoc: stackDocMissing,
+          inputs: inputsMissing,
+          outputs: outputsMissing,
+          implementation: implementationMissing,
+          controlFlow: controlFlowMissing,
+        },
+      };
+    });
   }, [spec]);
 
   const anchorInstruction = useMemo(() => {
@@ -3254,16 +3405,16 @@ export const TvmInstructionTable = () => {
 
   useEffect(() => {
     if (!anchorInstruction) return;
-    if (typeof document === "undefined" || typeof window === "undefined") return;
+    if (typeof document === 'undefined' || typeof window === 'undefined') return;
     if (!anchorInstruction.anchorId) return;
     const frame =
-      typeof window.requestAnimationFrame === "function"
+      typeof window.requestAnimationFrame === 'function'
         ? window.requestAnimationFrame.bind(window)
         : (cb) => setTimeout(cb, 0);
     frame(() => {
       const element = document.getElementById(anchorInstruction.anchorId);
-      if (element && typeof element.scrollIntoView === "function") {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (element && typeof element.scrollIntoView === 'function') {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   }, [anchorInstruction]);
@@ -3273,7 +3424,7 @@ export const TvmInstructionTable = () => {
     instructions.forEach((item) => {
       if (!item || !item.categoryKey) return;
       const groupKey = item.categoryKey;
-      const rawKey = item.rawCategoryKey || "uncategorized";
+      const rawKey = item.rawCategoryKey || 'uncategorized';
       const label = item.rawCategoryLabel || humanizeCategoryKey(rawKey);
       if (!groups.has(groupKey)) {
         groups.set(groupKey, new Map());
@@ -3294,9 +3445,7 @@ export const TvmInstructionTable = () => {
     });
     const normalized = new Map();
     groups.forEach((entries, key) => {
-      const list = Array.from(entries.values()).sort((a, b) =>
-        a.label.localeCompare(b.label)
-      );
+      const list = Array.from(entries.values()).sort((a, b) => a.label.localeCompare(b.label));
       normalized.set(key, list);
     });
     return normalized;
@@ -3304,50 +3453,45 @@ export const TvmInstructionTable = () => {
 
   const categoryOptions = useMemo(() => {
     const present = new Set(subcategoryMap.keys());
-    const ordered = CATEGORY_GROUPS.filter((group) => present.has(group.key)).map(
-      (group) => ({ value: group.key, label: group.label })
-    );
-    return [
-      { value: "All", label: "All categories" },
-      ...ordered,
-    ];
+    const ordered = CATEGORY_GROUPS.filter((group) => present.has(group.key)).map((group) => ({
+      value: group.key,
+      label: group.label,
+    }));
+    return [{ value: 'All', label: 'All categories' }, ...ordered];
   }, [subcategoryMap]);
 
   const currentSubcategoryOptions = useMemo(() => {
-    if (category === "All") return [];
+    if (category === 'All') return [];
     return subcategoryMap.get(category) || [];
   }, [subcategoryMap, category]);
 
-  const showSubcategorySelect =
-    category !== "All" && currentSubcategoryOptions.length > 1;
+  const showSubcategorySelect = category !== 'All' && currentSubcategoryOptions.length > 1;
 
   useEffect(() => {
-    if (category === "All") return;
-    const hasSelection = categoryOptions.some(
-      (option) => option.value === category
-    );
+    if (category === 'All') return;
+    const hasSelection = categoryOptions.some((option) => option.value === category);
     if (!hasSelection) {
-      setCategory("All");
+      setCategory('All');
     }
   }, [categoryOptions, category]);
 
   useEffect(() => {
-    if (category === "All") {
-      if (subcategory !== "All") {
-        setSubcategory("All");
+    if (category === 'All') {
+      if (subcategory !== 'All') {
+        setSubcategory('All');
       }
       return;
     }
     const options = currentSubcategoryOptions;
     if (!options || options.length <= 1) {
-      if (subcategory !== "All") {
-        setSubcategory("All");
+      if (subcategory !== 'All') {
+        setSubcategory('All');
       }
       return;
     }
     const hasSubcategory = options.some((option) => option.value === subcategory);
     if (!hasSubcategory) {
-      setSubcategory("All");
+      setSubcategory('All');
     }
   }, [category, subcategory, currentSubcategoryOptions]);
 
@@ -3355,23 +3499,13 @@ export const TvmInstructionTable = () => {
     const forcedUid = anchorInstruction?.uid ?? null;
     return instructions.filter((item) => {
       if (forcedUid && item.uid === forcedUid) return true;
-      if (category !== "All" && item.categoryKey !== category) return false;
-      if (
-        category !== "All" &&
-        subcategory !== "All" &&
-        item.rawCategoryKey !== subcategory
-      ) {
+      if (category !== 'All' && item.categoryKey !== category) return false;
+      if (category !== 'All' && subcategory !== 'All' && item.rawCategoryKey !== subcategory) {
         return false;
       }
       return itemRelevanceScore(item, searchTokens) !== Infinity;
     });
-  }, [
-    instructions,
-    category,
-    subcategory,
-    searchTokens,
-    anchorInstruction,
-  ]);
+  }, [instructions, category, subcategory, searchTokens, anchorInstruction]);
 
   const sorted = useMemo(() => {
     const copy = filtered.slice();
@@ -3383,28 +3517,21 @@ export const TvmInstructionTable = () => {
         const sb = itemRelevanceScore(b, tokens);
         if (sa !== sb) return sa - sb;
         // tie-breakers
-        return (
-          a.mnemonic.localeCompare(b.mnemonic) ||
-          compareOpcodes(a.opcode, b.opcode)
-        );
+        return a.mnemonic.localeCompare(b.mnemonic) || compareOpcodes(a.opcode, b.opcode);
       });
-    } else if (sortMode !== "opcode") {
+    } else if (sortMode !== 'opcode') {
       copy.sort((a, b) => {
         switch (sortMode) {
-          case "name":
+          case 'name':
             return a.mnemonic.localeCompare(b.mnemonic);
-          case "category":
+          case 'category':
             return (
-              a.categoryLabel.localeCompare(b.categoryLabel) ||
-              a.opcode.localeCompare(b.opcode)
+              a.categoryLabel.localeCompare(b.categoryLabel) || a.opcode.localeCompare(b.opcode)
             );
-          case "since":
-            return (b.since == 9999 ? -1 : b.since) -  (a.since == 9999 ? -1 : a.since);
+          case 'since':
+            return (b.since == 9999 ? -1 : b.since) - (a.since == 9999 ? -1 : a.since);
           default:
-            return (
-              compareOpcodes(a.opcode, b.opcode) ||
-              a.mnemonic.localeCompare(b.mnemonic)
-            );
+            return compareOpcodes(a.opcode, b.opcode) || a.mnemonic.localeCompare(b.mnemonic);
         }
       });
     }
@@ -3429,17 +3556,17 @@ export const TvmInstructionTable = () => {
   const hasActiveFilters = useMemo(
     () =>
       searchTokens.length > 0 ||
-      category !== "All" ||
-      subcategory !== "All" ||
-      sortMode !== "opcode",
-    [searchTokens, category, subcategory, sortMode]
+      category !== 'All' ||
+      subcategory !== 'All' ||
+      sortMode !== 'opcode',
+    [searchTokens, category, subcategory, sortMode],
   );
 
   const handleResetFilters = useCallback(() => {
-    setSearch("");
-    setCategory("All");
-    setSubcategory("All");
-    setSortMode("opcode");
+    setSearch('');
+    setCategory('All');
+    setSubcategory('All');
+    setSortMode('opcode');
   }, []);
 
   const activeFilters = useMemo(() => {
@@ -3447,44 +3574,42 @@ export const TvmInstructionTable = () => {
     const searchDisplay = search.trim();
     if (searchTokens.length > 0 && searchDisplay) {
       chips.push({
-        key: "search",
+        key: 'search',
         label: `Query: "${searchDisplay}"`,
         ariaLabel: `Remove search filter ${searchDisplay}`,
-        onRemove: () => setSearch(""),
+        onRemove: () => setSearch(''),
       });
     }
-    if (category !== "All") {
+    if (category !== 'All') {
       const match = categoryOptions.find((option) => option.value === category);
       const label = match ? match.label : humanizeCategoryKey(category);
       chips.push({
-        key: "category",
+        key: 'category',
         label: `Category: ${label}`,
         ariaLabel: `Remove category filter ${label}`,
-        onRemove: () => setCategory("All"),
+        onRemove: () => setCategory('All'),
       });
     }
-    if (category !== "All" && subcategory !== "All") {
-      const match = currentSubcategoryOptions.find(
-        (option) => option.value === subcategory
-      );
+    if (category !== 'All' && subcategory !== 'All') {
+      const match = currentSubcategoryOptions.find((option) => option.value === subcategory);
       const label = match ? match.label : humanizeCategoryKey(subcategory);
       chips.push({
-        key: "subcategory",
+        key: 'subcategory',
         label: `Subcategory: ${label}`,
         ariaLabel: `Remove subcategory filter ${label}`,
-        onRemove: () => setSubcategory("All"),
+        onRemove: () => setSubcategory('All'),
       });
     }
-    if (sortMode !== "opcode") {
+    if (sortMode !== 'opcode') {
       const sortLabels = {
-        since: "Newest",
+        since: 'Newest',
       };
-      const label = sortLabels[sortMode] || "Opcode";
+      const label = sortLabels[sortMode] || 'Opcode';
       chips.push({
-        key: "sort",
+        key: 'sort',
         label: `Sort: ${label}`,
         ariaLabel: `Remove sort override ${label}`,
-        onRemove: () => setSortMode("opcode"),
+        onRemove: () => setSortMode('opcode'),
       });
     }
     return chips;
@@ -3509,24 +3634,21 @@ export const TvmInstructionTable = () => {
     }));
   }, []);
 
-  const openRawJsonModal = useCallback(
-    (instruction) => {
-      if (!instruction) return;
-      const payload = {
-        mnemonic: instruction.mnemonic,
-        opcode: instruction.opcode,
-        anchorId: instruction.anchorId,
-        raw: instruction.rawSpec || instruction,
-      };
-      setRawModalInstruction(payload);
-      setRawModalCopied(false);
-      if (rawModalCopyTimeoutRef.current) {
-        clearTimeout(rawModalCopyTimeoutRef.current);
-        rawModalCopyTimeoutRef.current = null;
-      }
-    },
-    []
-  );
+  const openRawJsonModal = useCallback((instruction) => {
+    if (!instruction) return;
+    const payload = {
+      mnemonic: instruction.mnemonic,
+      opcode: instruction.opcode,
+      anchorId: instruction.anchorId,
+      raw: instruction.rawSpec || instruction,
+    };
+    setRawModalInstruction(payload);
+    setRawModalCopied(false);
+    if (rawModalCopyTimeoutRef.current) {
+      clearTimeout(rawModalCopyTimeoutRef.current);
+      rawModalCopyTimeoutRef.current = null;
+    }
+  }, []);
 
   const closeRawJsonModal = useCallback(() => {
     setRawModalInstruction(null);
@@ -3556,24 +3678,24 @@ export const TvmInstructionTable = () => {
 
   useEffect(() => {
     if (!rawModalInstruction) return;
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     const handleKeyDown = (event) => {
       if (event.defaultPrevented) return;
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         event.preventDefault();
         closeRawJsonModal();
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [rawModalInstruction, closeRawJsonModal]);
 
   const rawModalJson = useMemo(() => {
-    if (!rawModalInstruction) return "";
+    if (!rawModalInstruction) return '';
     try {
       return JSON.stringify(rawModalInstruction.raw ?? null, null, 2);
     } catch (err) {
-      return "// Failed to serialize instruction";
+      return '// Failed to serialize instruction';
     }
   }, [rawModalInstruction]);
 
@@ -3587,7 +3709,7 @@ export const TvmInstructionTable = () => {
   }, []);
 
   return (
-    <div className="tvm-instruction-app">
+    <div className="tvm-instruction-app not-prose w-full max-w-none">
       <style>{tableStyles}</style>
 
       <div className="tvm-instruction-toolbar">
@@ -3597,18 +3719,8 @@ export const TvmInstructionTable = () => {
             <div className="tvm-search-row">
               <div className="tvm-search-input">
                 <span className="tvm-search-icon" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="11"
-                      cy="11"
-                      r="6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="2" />
                     <path
                       d="M20 20l-3.5-3.5"
                       stroke="currentColor"
@@ -3629,14 +3741,10 @@ export const TvmInstructionTable = () => {
                   <button
                     type="button"
                     className="tvm-clear-search"
-                    onClick={() => setSearch("")}
+                    onClick={() => setSearch('')}
                     aria-label="Clear search"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M15 9l-6 6"
                         stroke="currentColor"
@@ -3670,46 +3778,55 @@ export const TvmInstructionTable = () => {
         <div className="tvm-toolbar-filters">
           <div className="tvm-field tvm-field--sort">
             <label htmlFor="tvm-sort">Sort</label>
-            <select
-              id="tvm-sort"
-              value={sortMode}
-              onChange={(event) => setSortMode(event.currentTarget.value)}
-            >
-              <option value="opcode">Opcode</option>
-              <option value="since">Newest</option>
-            </select>
+            <div className="tvm-select">
+              <select
+                id="tvm-sort"
+                value={sortMode}
+                onChange={(event) => setSortMode(event.currentTarget.value)}
+              >
+                <option value="opcode">Opcode</option>
+                <option value="since">Newest</option>
+              </select>
+              <SelectChevron withClassName />
+            </div>
           </div>
 
           <div className="tvm-field tvm-field--category">
             <label htmlFor="tvm-category">Category</label>
-            <select
-              id="tvm-category"
-              value={category}
-              onChange={(event) => setCategory(event.currentTarget.value)}
-            >
-              {categoryOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {showSubcategorySelect && (
-            <div className="tvm-field tvm-field--subcategory">
-              <label htmlFor="tvm-subcategory">Subcategory</label>
+            <div className="tvm-select">
               <select
-                id="tvm-subcategory"
-                value={subcategory}
-                onChange={(event) => setSubcategory(event.currentTarget.value)}
+                id="tvm-category"
+                value={category}
+                onChange={(event) => setCategory(event.currentTarget.value)}
               >
-                <option value="All">All subcategories</option>
-                {currentSubcategoryOptions.map((option) => (
+                {categoryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
+              <SelectChevron withClassName />
+            </div>
+          </div>
+
+          {showSubcategorySelect && (
+            <div className="tvm-field tvm-field--subcategory">
+              <label htmlFor="tvm-subcategory">Subcategory</label>
+              <div className="tvm-select">
+                <select
+                  id="tvm-subcategory"
+                  value={subcategory}
+                  onChange={(event) => setSubcategory(event.currentTarget.value)}
+                >
+                  <option value="All">All subcategories</option>
+                  {currentSubcategoryOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron withClassName />
+              </div>
             </div>
           )}
         </div>
@@ -3751,7 +3868,6 @@ export const TvmInstructionTable = () => {
       <div className="tvm-spec-grid-container">
         <div className="tvm-spec-grid-scroll">
           <div className="tvm-spec-header" role="row">
-            <div>Link</div>
             <div>Opcode</div>
             <div>Instruction</div>
             <div>Description</div>
@@ -3761,13 +3877,9 @@ export const TvmInstructionTable = () => {
 
           {!error && (
             <>
-              {loading && (
-                <div className="tvm-loading-row">Loading specification…</div>
-              )}
+              {loading && <div className="tvm-loading-row">Loading specification…</div>}
               {!loading && sorted.length === 0 && (
-                <div className="tvm-empty-row">
-                  No instructions match the filters.
-                </div>
+                <div className="tvm-empty-row">No instructions match the filters.</div>
               )}
               {!loading &&
                 sorted.flatMap((instruction) => {
@@ -3780,15 +3892,15 @@ export const TvmInstructionTable = () => {
                   const isAnchorTarget =
                     anchorInstruction && anchorInstruction.uid === instruction.uid;
                   const rowClassName = [
-                    "tvm-spec-row",
-                    isExpanded ? "is-expanded" : "",
-                    isAnchorTarget ? "is-anchor-target" : "",
+                    'tvm-spec-row',
+                    isExpanded ? 'is-expanded' : '',
+                    isAnchorTarget ? 'is-anchor-target' : '',
                   ]
                     .filter(Boolean)
-                    .join(" ");
+                    .join(' ');
                   const descriptionHtml = highlightHtmlContent(
-                    instruction.descriptionHtml || instruction.description || "",
-                    searchTokens
+                    instruction.descriptionHtml || instruction.description || '',
+                    searchTokens,
                   );
 
                   const nodes = [
@@ -3802,102 +3914,44 @@ export const TvmInstructionTable = () => {
                       aria-controls={detailId}
                       onClick={() => toggleRow(instruction.uid)}
                       onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
+                        if (event.key === 'Enter' || event.key === ' ') {
                           event.preventDefault();
                           toggleRow(instruction.uid);
                         }
                       }}
                     >
-                      <div className="tvm-spec-cell tvm-spec-cell--anchor">
-                        <button
-                          type="button"
-                          className={`tvm-copy-link ${copied[instruction.uid] ? "is-copied" : ""}`}
-                          aria-label={copied[instruction.uid] ? "Copied" : "Copy link to instruction"}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            copyAnchorUrl(anchorId)
-                              .then(() => {
-                                setCopied((prev) => ({ ...prev, [instruction.uid]: true }));
-                                setTimeout(() => {
-                                  setCopied((prev) => {
-                                    const { [instruction.uid]: _omit, ...rest } = prev;
-                                    return rest;
-                                  });
-                                }, 1500);
-                              })
-                              .catch(() => {
-                                // ignore
-                              });
-                          }}
-                          title={copied[instruction.uid] ? "Copied" : "Copy link"}
-                        >
-                          {copied[instruction.uid] ? (
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                              <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          ) : (
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                              <path d="M10.59 13.41a1.996 1.996 0 0 0 2.82 0l3.59-3.59a2 2 0 0 0-2.83-2.83l-1.17 1.17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              <path d="M13.41 10.59a1.996 1.996 0 0 0-2.82 0L7 14.18a2 2 0 1 0 2.83 2.83l1.17-1.17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          )}
-                        </button>
-                      </div>
                       <div className="tvm-spec-cell tvm-spec-cell--opcode">
-                        <code>
-                          {highlightMatches(
-                            instruction.opcode || "—",
-                            searchTokens
-                          )}
-                        </code>
+                        <code>{highlightMatches(instruction.opcode || '—', searchTokens)}</code>
                       </div>
                       <div className="tvm-spec-cell tvm-spec-cell--name">
                         <div className="tvm-name-line">
                           <span className="tvm-mnemonic">
-                            {highlightMatches(
-                              instruction.mnemonic,
-                              searchTokens
-                            )}
+                            {highlightMatches(instruction.mnemonic, searchTokens)}
                           </span>
                           {instruction.since > 0 && (
                             <span className="tvm-inline-badge">
-                              {instruction.since != 9999 ? `since v${instruction.since}` : 'unimplemented yet' }
+                              {instruction.since != 9999
+                                ? `since v${instruction.since}`
+                                : 'unimplemented yet'}
                             </span>
                           )}
                           {aliasCount > 0 && (
                             <span className="tvm-inline-badge tvm-inline-badge--muted">
-                              {aliasCount} alias{aliasCount > 1 ? "es" : ""}
+                              {aliasCount} alias{aliasCount > 1 ? 'es' : ''}
                             </span>
                           )}
                           <span
-                            className={`tvm-row-indicator ${
-                              isExpanded ? "is-expanded" : ""
-                            }`}
+                            className={`tvm-row-indicator ${isExpanded ? 'is-expanded' : ''}`}
                             aria-hidden="true"
                           >
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M6 9l6 6 6-6"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                            <SelectChevron />
                           </span>
                         </div>
                         {instruction.operands.length > 0 && (
                           <div className="tvm-operands">
                             {instruction.operands.map((operand, idx) => (
                               <span key={idx} className="tvm-operand-chip">
-                                {highlightMatches(
-                                  formatOperandSummary(operand),
-                                  searchTokens
-                                )}
+                                {highlightMatches(formatOperandSummary(operand), searchTokens)}
                               </span>
                             ))}
                           </div>
@@ -3907,13 +3961,13 @@ export const TvmInstructionTable = () => {
                         {instruction.description || instruction.descriptionHtml ? (
                           <div
                             className="tvm-description"
-                            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+                            dangerouslySetInnerHTML={{
+                              __html: descriptionHtml,
+                            }}
                           />
                         ) : null}
                         <div className="tvm-description-meta">
-                          <span className="tvm-category-pill">
-                            {instruction.categoryLabel}
-                          </span>
+                          <span className="tvm-category-pill">{instruction.categoryLabel}</span>
                         </div>
                       </div>
                     </div>,
@@ -3924,19 +3978,16 @@ export const TvmInstructionTable = () => {
                       <div
                         key={`${instruction.uid}-detail`}
                         className={`tvm-spec-row tvm-spec-row--detail ${
-                          isAnchorTarget ? "is-anchor-target" : ""
+                          isAnchorTarget ? 'is-anchor-target' : ''
                         }`}
                       >
-                        <div
-                          className="tvm-spec-cell tvm-spec-cell--full"
-                          id={detailId}
-                        >
+                        <div className="tvm-spec-cell tvm-spec-cell--full" id={detailId}>
                           {renderInstructionDetail(instruction, {
                             isAnchorTarget,
                             onOpenRawJson: openRawJsonModal,
                           })}
                         </div>
-                      </div>
+                      </div>,
                     );
                   }
 
@@ -3944,8 +3995,8 @@ export const TvmInstructionTable = () => {
                 })}
             </>
           )}
+        </div>
       </div>
-    </div>
 
       {rawModalInstruction && (
         <div
@@ -3966,8 +4017,7 @@ export const TvmInstructionTable = () => {
                 <p className="tvm-modal-subtitle">
                   {rawModalInstruction.opcode ? (
                     <>
-                      <code>{rawModalInstruction.opcode}</code>
-                      {" "}
+                      <code>{rawModalInstruction.opcode}</code>{' '}
                     </>
                   ) : null}
                   {rawModalInstruction.mnemonic}
@@ -3979,13 +4029,9 @@ export const TvmInstructionTable = () => {
                   className="tvm-button tvm-button--ghost"
                   onClick={() => handleCopyRawJson(rawModalJson)}
                 >
-                  {rawModalCopied ? "Copied" : "Copy JSON"}
+                  {rawModalCopied ? 'Copied' : 'Copy JSON'}
                 </button>
-                <button
-                  type="button"
-                  className="tvm-button"
-                  onClick={closeRawJsonModal}
-                >
+                <button type="button" className="tvm-button" onClick={closeRawJsonModal}>
                   Close
                 </button>
               </div>

@@ -6,9 +6,10 @@ import {
   remarkMdxMermaid,
   remarkMdxFiles,
   remarkGfm,
+  remarkSteps,
 } from 'fumadocs-core/mdx-plugins';
-import { parseCodeBlockAttributes } from "fumadocs-core/mdx-plugins/codeblock-utils"
-import { z } from "zod";
+import { parseCodeBlockAttributes } from 'fumadocs-core/mdx-plugins/codeblock-utils';
+import { z } from 'zod';
 import {
   transformerMetaHighlight,
   transformerMetaWordHighlight,
@@ -16,6 +17,7 @@ import {
   transformerNotationFocus,
   transformerNotationHighlight,
   transformerNotationWordHighlight,
+  transformerRenderIndentGuides,
 } from '@shikijs/transformers';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
@@ -26,41 +28,51 @@ import { visitParents } from 'unist-util-visit-parents';
 export const docs = defineDocs({
   dir: 'content',
   docs: {
-    schema: pageSchema.extend({
-      // TODO: temporary patch for OpenAPI pages
-      title: z.string().optional(),
-      sidebarTitle: z.string().optional(),
-      url: z.httpUrl().optional(),
-      noindex: z.coerce.boolean().default(false),
-      // TODO:
-      openapi: z.string().optional(),
-      // TODO: fmt with prettier for everything but md[x]
-    }).transform((frontmatter) => ({
-      ...frontmatter,
-      // NOTE: alternatively, give titles to all OpenAPI routes
-      title: frontmatter.title ?? frontmatter.openapi ?? 'Untitled',
-    })),
+    schema: pageSchema
+      .extend({
+        sidebarTitle: z.string().optional(),
+        tag: z.string().optional(),
+        url: z.httpUrl().optional(),
+        noindex: z.coerce.boolean().default(false),
+      })
+      .transform((frontmatter) => ({
+        ...frontmatter,
+        // NOTE: A tag must not be used with an openapi specified in the frontmatter
+        ...(frontmatter._openapi ? { tag: undefined } : {}),
+      })),
     postprocess: {
       includeProcessedMarkdown: true,
     },
   },
   meta: {
-    schema: metaSchema,
+    schema: metaSchema.extend({
+      tag: z.string().optional(),
+    }),
   },
 });
 
 export default defineConfig({
   mdxOptions: {
+    // NOTE: rehypeCode automatically adds an icon based on the language meta string.
+    //       yet, we need to add an explicit `icon` override, that would replace itself with
+    //       the prefix of an Icon component to the tab/title text, which then will be rendered by mdx
+    // remarkCodeTabOptions: {
+    //   parseMdx: true,
+    // },
     rehypeCodeOptions: {
       themes: {
         // NOTE: one-light and one-dark-pro are alternative options
-        light: "github-light-default",
-        dark: "dark-plus",
+        light: 'github-light-default',
+        dark: 'dark-plus',
       },
       icon: {
         extend: {
           tolk: readFileSync('./public/logo/ton-gray.svg', 'utf8'),
         },
+        // NOTE: by default, `lang` is the icon name, and `shortcuts` option allows the `lang` meta name map onto its icon name override.
+        // TODO: come up with overrides based on the `icon` meta, might require "swizzling" the CodeBlock component.
+        //       the override might place the icon as an MDX inside the title yet disable the default icon attribution.
+        //       alternatively, make the override go into the table directly.
       },
       lazy: false,
       langs: [
@@ -86,86 +98,141 @@ export default defineConfig({
         'tsx',
         'yaml',
         ...['fift', 'func', 'tlb', 'tolk', 'tasm'].map((name) =>
-          JSON.parse(readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8'))
+          JSON.parse(readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8')),
         ),
       ],
       langAlias: {
-        'mytonctrl': 'shellscript',
-        'tact': 'text',
-        'asm': 'tasm',
-        'md': 'mdx',
-        'tl': 'tlb',
-        'env': 'ini',
-        'circom': 'cpp',
-        'boc': 'text',
+        mytonctrl: 'shellscript',
+        tact: 'text',
+        asm: 'tasm',
+        md: 'mdx',
+        tl: 'tlb',
+        env: 'ini',
+        circom: 'cpp',
+        boc: 'text',
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerRenderIndentGuides({ indent: 2 }),
         transformerMetaHighlight(),
         transformerMetaWordHighlight(),
-        transformerNotationHighlight({ matchAlgorithm: "v3" }),
-        transformerNotationWordHighlight({ matchAlgorithm: "v3" }),
-        transformerNotationDiff({ matchAlgorithm: "v3" }),
-        transformerNotationFocus({ matchAlgorithm: "v3" }),
+        transformerNotationHighlight({ matchAlgorithm: 'v3' }),
+        transformerNotationWordHighlight({ matchAlgorithm: 'v3' }),
+        transformerNotationDiff({ matchAlgorithm: 'v3' }),
+        transformerNotationFocus({ matchAlgorithm: 'v3' }),
         {
-          name: "no-copy",
+          name: 'Disable copying with a noCopy attribute',
           pre(pre) {
-            const raw = this.options?.meta?.__raw
-            if (!raw) return pre
-            const { attributes } = parseCodeBlockAttributes(raw, ["noCopy"])
-            if ("noCopy" in attributes) {
-              pre.properties.allowCopy = ""
+            const raw = this.options?.meta?.__raw;
+            if (!raw) return pre;
+            const { attributes } = parseCodeBlockAttributes(raw, ['noCopy']);
+            if ('noCopy' in attributes) {
+              pre.properties.allowCopy = '';
             }
-            return pre
+            return pre;
           },
-        }
+        },
       ],
     },
-    remarkPlugins: [
-      remarkMath,
-      [remarkGfm, {
-        singleTilde: false,
-        stringLength: stringWidth,
-      }],
-      remarkMdxMermaid,
-      remarkMdxFiles,
-    ],
-    rehypePlugins: (v) => [
-      // NOTE: KaTeX support should be placed before everything else!
-      rehypeKatex,
-      ...v,
-      function rehypeBasePath(): ReturnType<typeof rehypeKatex> {
-        return (tree, _file) => {
-          const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-          if (base.length === 0) return
-          if (!base.startsWith('/')) return;
-          const prefix = base.replace(/\/*$/, '') + '/';
-          const urlAttrs = ['src', 'darkSrc', 'href', 'poster'];
-          const rewrite = (value: unknown) =>
-            typeof value === 'string' && value.startsWith('/') && !value.startsWith(prefix)
-              ? prefix + value.replace(/^\/*/, '')
-              : value;
-          // Visit all nodes to rewrite all non-/docs prefixed root-relative media links properly.
+    remarkPlugins: (v) => [
+      // NOTE: `title=` → `tab=` meta pre-processing in CodeGroup components,
+      //       which should be placed before default plugins!
+      function remarkCodeGroup() {
+        return (tree) => {
           visitParents(tree, (node: any) => {
-            if (node.type === 'element' && node.properties) {
-              for (const attr of urlAttrs) {
-                if (typeof node.properties?.[attr] === 'string') {
-                  node.properties[attr] = rewrite(node.properties[attr]);
-                }
-              }
-            } else if (
-              (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') &&
-              Array.isArray(node.attributes)
-            ) {
-              for (const attr of node.attributes) {
-                if (attr.type === 'mdxJsxAttribute' && urlAttrs.includes(attr.name)) {
-                  attr.value = rewrite(attr.value);
-                }
+            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'CodeGroup') return;
+            for (const child of node.children) {
+              if (child.type === 'code' && child.meta) {
+                child.meta = child.meta.replace(/\btitle=/, 'tab=');
               }
             }
           });
         };
       },
+      // NOTE: sourcing `items[]` in Tabs components based on values in child Tab components,
+      //       which should be placed before default plugins!
+      function remarkTabs() {
+        return (tree) => {
+          visitParents(tree, (node: any) => {
+            if (node.type !== 'mdxJsxFlowElement' || node.name !== 'Tabs') return;
+            let vals = [];
+            for (const child of node.children) {
+              if (child.type !== 'mdxJsxFlowElement' || child.name !== 'Tab') continue;
+              const valueAttr = (child.attributes || []).find(
+                // @ts-ignore
+                (attr) => attr.type === 'mdxJsxAttribute' && attr.name === 'value',
+              );
+              if (!valueAttr || !valueAttr.value) continue;
+              vals.push(valueAttr.value);
+            }
+            if (vals.length === 0) return;
+            if (!node.attributes) node.attributes = [];
+            const existing = node.attributes.findIndex(
+              // @ts-ignore
+              (attr) => attr.type === 'mdxJsxAttribute' && attr.name === 'items',
+            );
+            if (existing !== -1) return;
+            node.attributes.push({
+              type: 'mdxJsxAttribute',
+              name: 'items',
+              value: {
+                type: 'mdxJsxAttributeValueExpression',
+                value: `[${vals.map((v) => JSON.stringify(v)).join(', ')}]`,
+                data: {
+                  estree: {
+                    type: 'Program',
+                    body: [
+                      {
+                        type: 'ExpressionStatement',
+                        expression: {
+                          type: 'ArrayExpression',
+                          elements: vals.map((v) => ({
+                            type: 'Literal',
+                            value: v,
+                            raw: JSON.stringify(v),
+                          })),
+                        },
+                      },
+                    ],
+                    sourceType: 'module',
+                  },
+                },
+              },
+            });
+          });
+        };
+      },
+      // Default Fumadocs remark plugins
+      ...v,
+      // Additional plugins
+      remarkMath,
+      [
+        remarkGfm,
+        {
+          singleTilde: false,
+          stringLength: stringWidth,
+        },
+      ],
+      remarkMdxMermaid,
+      remarkMdxFiles,
+      remarkSteps,
+    ],
+    rehypePlugins: (v) => [
+      // NOTE: KaTeX support should be placed before everything else!
+      rehypeKatex,
+      ...v,
     ],
   },
+  // See: https://github.com/fuma-nama/fumapress/blob/dev/apps/docs/press.config.tsx
+  // See: https://github.com/fuma-nama/fumapress/tree/dev/packages/core/src/plugins
+  // The following plugins are unavailable in Fumadocs directly
+  plugins: [
+    // flexsearchPlugin(), // NOTE: consider using it over Orama
+    // llmsPlugin(), // NOTE: using it
+    // takumiPlugin(), // NOTE: consider using it over Next.js's OG generation iff there's some reason to do so
+    // imagePlugin({ formats: ["image/webp", "image/png"] }), // NOTE: optimize images in each PR in its CI
+    // linkValidationPlugin(), // NOTE: it is very shallow and we require much more checks
+    // sitemapPlugin(), // NOTE: will be added manually
+    // mcpPlugin(), // NOTE: llms.txt + skill files are better, because MCP are not always picked up from the context
+  ],
 });

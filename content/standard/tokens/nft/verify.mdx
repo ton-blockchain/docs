@@ -13,7 +13,7 @@ Because the collection is the source of truth, verification goes through it:
 
 There is an [API method](/ecosystem/api/toncenter/v3/nfts/get-nft-items?playground=open) that performs this verification off-chain with a single request. Provide the addresses of the NFT item and NFT collection:
 
-```ts TypeScript
+```ts title="TypeScript"
 async function main() {
   const itemAddress = "EQD3LzasMd4GAmhIEkCQ4k6LnziTqNZ6VPtRfeZKHu0Fmkho";
   const collectionAddress = "EQCOtGTvX-RNSaiUavmqNcDeblB3-TloZpvYuyGOdFnfy-1N";
@@ -42,7 +42,7 @@ main();
 
 First, read the NFT item index. If the collection returns the same NFT item address for that index, the item belongs to the collection.
 
-```ts TypeScript
+```ts title="TypeScript"
 import { Address, Cell } from "@ton/ton";
 
 async function main() {

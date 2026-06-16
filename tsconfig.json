@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,18 +15,10 @@
     "jsx": "react-jsx",
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/public/*": [
-        "./public/*"
-      ],
-      "@/snippets/*": [
-        "./snippets/*"
-      ],
-      "collections/*": [
-        "./.source/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/public/*": ["./public/*"],
+      "@/snippets/*": ["./snippets/*"],
+      "collections/*": ["./.source/*"]
     },
     "plugins": [
       {
@@ -46,7 +34,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", "ctx"]
 }

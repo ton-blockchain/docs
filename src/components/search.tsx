@@ -1,14 +1,18 @@
 'use client';
+import { useState } from 'react';
 import {
   SearchDialog,
   SearchDialogClose,
   SearchDialogContent,
   SearchDialogHeader,
+  SearchDialogFooter,
   SearchDialogIcon,
   SearchDialogInput,
   SearchDialogList,
   SearchDialogOverlay,
   type SharedProps,
+  TagsList,
+  TagsListItem,
 } from 'fumadocs-ui/components/dialog/search';
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { create } from '@orama/orama';
@@ -23,6 +27,7 @@ function initOrama() {
 }
 
 export default function DefaultSearchDialog(props: SharedProps) {
+  const [tag] = useState<string | undefined>();
   const { locale } = useI18n(); // (optional) for i18n
   const { search, setSearch, query } = useDocsSearch(
     process.env.NEXT_CONFIG === 'vercel'
@@ -35,7 +40,8 @@ export default function DefaultSearchDialog(props: SharedProps) {
           initOrama,
           locale,
           from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
-        }
+          // tag,
+        },
   );
 
   return (
@@ -48,6 +54,11 @@ export default function DefaultSearchDialog(props: SharedProps) {
           <SearchDialogClose />
         </SearchDialogHeader>
         <SearchDialogList items={query.data !== 'empty' ? query.data : null} />
+        {/* <SearchDialogFooter className="flex flex-row">
+          <TagsList tag={tag} onTagChange={setTag}>
+            <TagsListItem value="my-value">My Value</TagsListItem>
+          </TagsList>
+        </SearchDialogFooter> */}
       </SearchDialogContent>
     </SearchDialog>
   );

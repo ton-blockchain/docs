@@ -1,6 +1,7 @@
 // Node.js
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 // Remark
 import { remark } from 'remark';
@@ -24,6 +25,16 @@ import { visitParents } from 'unist-util-visit-parents';
  * Custom
  * @typedef {{ok: true} | {ok: false; error: string}} CheckResult
  */
+
+// WARN: Must match Next.js build output folder
+export const outDir = 'out';
+
+// WARN: Must match gitConfig.repo in src/lib/shared.ts
+export const prefix = '/docs';
+
+// WARN: Must match next.config.static.ts isGitHubPagesBuild
+export const isGitHubPagesBuild =
+  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 
 /** @param src {string} */
 export function ansiRed(src) {
@@ -120,6 +131,32 @@ export function prefixWithSlash(src) {
 }
 
 /**
+ * Synchronously runs a single command (no pipes!) and returns its exit code.
+ * NOTE: Consider making it into a template literal handler.
+ *
+ * @param command {string}
+ * @param timeout {number} seconds
+ */
+export function $(command, timeout = 60 * 10) {
+  const spaced = command.split(' ');
+  const result = spawnSync(spaced[0], spaced.slice(1), {
+    encoding: 'utf8',
+    timeout: 1_000 * timeout,
+  });
+  if (result.status != 0) {
+    const errMsg = result.error ?? result.stdout + '\n' + result.stderr;
+    console.log(errMsg);
+    return {
+      ok: false,
+      code: result.status,
+      error: errMsg,
+    };
+  }
+  console.log(result.stdout);
+  return { ok: true, code: result.status, output: result.output };
+}
+
+/**
  * Creates the Remark parser with same settings as in `remarkConfig` inside `package.json`.
  */
 export async function initMdxParser() {
@@ -170,9 +207,16 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
    */
   const commonIgnoreMap = Object.freeze({
     files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) => join(dir, it)),
-    dirs: ['.git', '.github', '.idea', '.vscode', '__MACOSX', 'node_modules', '__pycache__', 'stats'].map((it) =>
-      join(dir, it),
-    ),
+    dirs: [
+      '.git',
+      '.github',
+      '.idea',
+      '.vscode',
+      '__MACOSX',
+      'node_modules',
+      '__pycache__',
+      'stats',
+    ].map((it) => join(dir, it)),
   });
 
   /**
@@ -201,19 +245,21 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
   /** @param subDir {string} */
   const recurse = (subDir) => {
     // Collects files and dirs one level deep, excluding common ignore targets
-    const intermediates = readdirSync(subDir, { withFileTypes: true, encoding: 'utf8', recursive: false }).filter(
-      (it) => {
-        const relPath = join(it.parentPath, it.name);
-        if (it.isFile()) {
-          return commonIgnoreMap.files.includes(relPath) === false;
-        }
-        if (it.isDirectory()) {
-          return commonIgnoreMap.dirs.includes(relPath) === false;
-        }
-        // Otherwise
-        return false;
-      },
-    );
+    const intermediates = readdirSync(subDir, {
+      withFileTypes: true,
+      encoding: 'utf8',
+      recursive: false,
+    }).filter((it) => {
+      const relPath = join(it.parentPath, it.name);
+      if (it.isFile()) {
+        return commonIgnoreMap.files.includes(relPath) === false;
+      }
+      if (it.isDirectory()) {
+        return commonIgnoreMap.dirs.includes(relPath) === false;
+      }
+      // Otherwise
+      return false;
+    });
     // Processes collected items and filters out extension-specific ignore targets,
     // recursively descending in directories and pushing files into `results` array
     // if they match the target `ext` and are not ignored.

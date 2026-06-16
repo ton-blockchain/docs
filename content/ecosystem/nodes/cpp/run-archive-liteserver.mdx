@@ -76,12 +76,12 @@ If the result is `4096`, the `-o ashift=12` parameter must be used during pool c
 Create a ZFS pool named `data`. Use `-o ashift=12` for 4K blocks (standard for most NVMe drives):
 
 <CodeGroup>
-  ```bash Single drive
+  ```bash title="Single drive"
   # Replace <DISK> with the device identifier (e.g., /dev/nvme1n1)
   sudo zpool create -o ashift=12 data <DISK>
   ```
 
-  ```bash Multiple drives (Stripe)
+  ```bash title="Multiple drives (Stripe)"
   # Combine multiple disks to increase capacity and performance
   sudo zpool create -o ashift=12 data <DISK1> <DISK2> <DISK3>
   ```
@@ -284,11 +284,11 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 Run the installer from the operator account with `sudo` so it can create system users and services:
 
 <CodeGroup>
-  ```bash Mainnet
+  ```bash title="Mainnet"
   sudo -v && nohup sudo bash install.sh -m liteserver -n mainnet --archive > mytonctrl_installation.log 2>&1 &
   ```
 
-  ```bash Testnet
+  ```bash title="Testnet"
   sudo -v && nohup sudo bash install.sh -m liteserver -n testnet --archive > mytonctrl_installation.log 2>&1 &
   ```
 </CodeGroup>

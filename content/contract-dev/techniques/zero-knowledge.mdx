@@ -21,17 +21,17 @@ Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and 
 ## Initialize a project
 
 <Steps>
-  <Step
-    title="Create a new project"
-  >
+  <Step>
+    ### Create a new project
+
     ```bash
     npm create ton@latest ZkSimple && cd ZkSimple
     ```
   </Step>
 
-  <Step
-    title="Install dependencies"
-  >
+  <Step>
+    ### Install dependencies
+
     ```bash
     npm install snarkjs @types/snarkjs export-ton-verifier@latest
     ```
@@ -41,9 +41,9 @@ Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and 
 ## Create the Circom circuit
 
 <Steps>
-  <Step
-    title="Create the circuit directory"
-  >
+  <Step>
+    ### Create the circuit directory
+
     ```bash
     mkdir -p circuits/Multiplier && cd circuits/Multiplier
     ```
@@ -51,9 +51,9 @@ Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and 
     Run the commands from the following steps in the `circuits/Multiplier` directory, or adjust the paths accordingly if running from the project root.
   </Step>
 
-  <Step
-    title="Implement the circuit"
-  >
+  <Step>
+    ### Implement the circuit
+
     This circuit proves knowledge of two numbers `a` and `b`, whose product is equal to the public output `c`, without revealing `a` and `b` themselves.
 
     ```circom title="./circuits/Multiplier/Multiplier.circom"
@@ -72,9 +72,9 @@ Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and 
     ```
   </Step>
 
-  <Step
-    title="Compile the circuit"
-  >
+  <Step>
+    ### Compile the circuit
+
     ```bash
     circom Multiplier.circom --r1cs --wasm --sym --prime bls12381
     ```
@@ -86,9 +86,9 @@ Create, compile, and test a simple [Circom](https://docs.circom.io/) scheme and 
     - `Multiplier_js/Multiplier.wasm` — artifact for generating proof
   </Step>
 
-  <Step
-    title="Check the constraints"
-  >
+  <Step>
+    ### Check the constraints
+
     ```bash
     snarkjs r1cs info Multiplier.r1cs
     ```
@@ -121,18 +121,18 @@ The trusted setup is a one-time ceremony that generates the proving and verifica
 Choose the "power of tau" parameter (`10`) as low as possible, because it affects execution time, but not too low, because the more constraints in the scheme, the higher the parameter required.
 
 <Steps>
-  <Step
-    title="Execute the first phase"
-  >
+  <Step>
+    ### Execute the first phase
+
     ```bash
       snarkjs powersoftau new bls12-381 10 pot10_0000.ptau -v
       snarkjs powersoftau contribute pot10_0000.ptau pot10_0001.ptau --name="First contribution" -v -e="some random text"
     ```
   </Step>
 
-  <Step
-    title="Execute the second phase"
-  >
+  <Step>
+    ### Execute the second phase
+
     ```bash
       snarkjs powersoftau prepare phase2 pot10_0001.ptau pot10_final.ptau -v
       snarkjs groth16 setup Multiplier.r1cs pot10_final.ptau Multiplier_0000.zkey
@@ -140,17 +140,17 @@ Choose the "power of tau" parameter (`10`) as low as possible, because it affect
     ```
   </Step>
 
-  <Step
-    title="Export the verification key"
-  >
+  <Step>
+    ### Export the verification key
+
     ```bash
     snarkjs zkey export verificationkey Multiplier_final.zkey verification_key.json
     ```
   </Step>
 
-  <Step
-    title="Clean up artifacts"
-  >
+  <Step>
+    ### Clean up artifacts
+
     ```bash
     rm pot10_0000.ptau pot10_0001.ptau pot10_final.ptau Multiplier_0000.zkey
     ```
@@ -162,17 +162,17 @@ Choose the "power of tau" parameter (`10`) as low as possible, because it affect
 ## Export the verifier contract
 
 <Steps>
-  <Step
-    title="Export the verifier contract"
-  >
+  <Step>
+    ### Export the verifier contract
+
     ```bash
     npx export-ton-verifier ./circuits/Multiplier/Multiplier_final.zkey ./contracts/verifier_multiplier.tolk
     ```
   </Step>
 
-  <Step
-    title="Generate TypeScript wrappers"
-  >
+  <Step>
+    ### Generate TypeScript wrappers
+
     These TypeScript wrappers enable type-safe interaction with the verifier contract.
 
     ```bash
@@ -188,9 +188,9 @@ Choose the "power of tau" parameter (`10`) as low as possible, because it affect
 </Callout>
 
 <Steps>
-  <Step
-    title="Import dependencies"
-  >
+  <Step>
+    ### Import dependencies
+
     ```ts title="./tests/ZkSimple.spec.ts"
     import * as snarkjs from 'snarkjs';
     import path from 'path';
@@ -199,9 +199,9 @@ Choose the "power of tau" parameter (`10`) as low as possible, because it affect
     ```
   </Step>
 
-  <Step
-    title="Implement local verification"
-  >
+  <Step>
+    ### Implement local verification
+
     ```ts title="./tests/ZkSimple.spec.ts"
     it("should verify the proof locally", async () => {
       const wasmPath = path.join(
@@ -229,9 +229,9 @@ Choose the "power of tau" parameter (`10`) as low as possible, because it affect
     ```
   </Step>
 
-  <Step
-    title="Implement on-chain verification"
-  >
+  <Step>
+    ### Implement on-chain verification
+
     ```ts title="./tests/ZkSimple.spec.ts"
     it("should verify the proof on-chain", async () => {
       const { pi_a, pi_b, pi_c, pubInputs } = await groth16CompressProof(proof, publicSignals);
@@ -267,9 +267,9 @@ The same workflow applies to other stacks, the key requirement is to obtain a pr
 Use the Arkworks library to generate the proof and verification key, then convert them into snarkjs format with ark-snarkjs.
 
 <Steps>
-  <Step
-    title="Create a new project"
-  >
+  <Step>
+    #### Create a new project
+
     ```bash
     cargo init
     cargo add ark-bls12-381 ark-ff ark-groth16 ark-r1cs-std ark-relations ark-snark ark-snarkjs ark-std rand@0.8.5
@@ -282,9 +282,9 @@ Use the Arkworks library to generate the proof and verification key, then conver
     </Callout>
   </Step>
 
-  <Step
-    title="Implement the circuit"
-  >
+  <Step>
+    #### Implement the circuit
+
     Implement the circuit logic using Arkworks primitives, similar to a Circom circuit.
 
     <Callout
@@ -296,15 +296,15 @@ Use the Arkworks library to generate the proof and verification key, then conver
     </Callout>
   </Step>
 
-  <Step
-    title="Compile, generate proof, perform trusted setup"
-  >
+  <Step>
+    #### Compile, generate proof, perform trusted setup
+
     Follow the same workflow as in [the Circom section](#create-the-circom-circuit) and [the trusted setup section](#initialize-trusted-setup), but implement the logic in Rust with Arkworks instead of Circom. The resulting proof and verification key will be in Arkworks format, which can be converted to snarkjs format with ark-snarkjs.
   </Step>
 
-  <Step
-    title="Export the proof and verification key"
-  >
+  <Step>
+    #### Export the proof and verification key
+
     The following script will create the directory and files automatically.
 
     ```rust title="Rust"
@@ -320,9 +320,9 @@ Use the Arkworks library to generate the proof and verification key, then conver
     ```
   </Step>
 
-  <Step
-    title="Export the verifier contract"
-  >
+  <Step>
+    #### Export the verifier contract
+
     ```bash
     npx export-ton-verifier ./circuits/Arkworks/MulCircuit/json/verification_key.json ./contracts/verifier_ark.tolk
     ```
@@ -334,9 +334,9 @@ Use the Arkworks library to generate the proof and verification key, then conver
 Use the gnark library to generate the proof and verification key, then convert them to the snarkjs format with gnark-to-snarkjs.
 
 <Steps>
-  <Step
-    title="Create a new project"
-  >
+  <Step>
+    #### Create a new project
+
     ```bash
     mkdir zk-ton-gnark && cd zk-ton-gnark
     go mod init zk-ton-gnark
@@ -352,18 +352,18 @@ Use the gnark library to generate the proof and verification key, then convert t
     </Callout>
   </Step>
 
-  <Step
-    title="Install the dependencies"
-  >
+  <Step>
+    #### Install the dependencies
+
     ```bash
     go get github.com/consensys/gnark@latest
     go get github.com/mysteryon88/gnark-to-snarkjs@latest
     ```
   </Step>
 
-  <Step
-    title="Export the proof and verification key"
-  >
+  <Step>
+    #### Export the proof and verification key
+
     ```go title="Go"
     {
       proof_out, _ := os.Create("proof.json")
@@ -378,9 +378,9 @@ Use the gnark library to generate the proof and verification key, then convert t
     ```
   </Step>
 
-  <Step
-    title="Export the verifier contract"
-  >
+  <Step>
+    #### Export the verifier contract
+
     ```bash
     npx export-ton-verifier ./circuits/cubic-gnark/verification_key.json ./contracts/verifier_cubic.tolk
     ```

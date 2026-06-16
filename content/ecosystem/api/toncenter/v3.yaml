@@ -282,7 +282,7 @@ paths:
       security: []
       description: Get smart contract information.
       tags:
-      - Api/v2
+      - API v2
       summary: Get Address Information
       operationId: api_v3_get_v2_addressInformation
       parameters:
@@ -576,7 +576,7 @@ paths:
       description: Estimate fees required for query processing. Fields body, init-code and init-data accepted in serialized
         format (b64-encoded).
       tags:
-      - Api/v2
+      - API v2
       summary: Estimate Fee
       operationId: api_v3_post_v2_estimate_fee
       requestBody:
@@ -1033,7 +1033,7 @@ paths:
       security: []
       description: Send an external message to the TON network.
       tags:
-      - Api/v2
+      - API v2
       summary: Send Message
       operationId: api_v3_post_v2_message
       requestBody:
@@ -1737,7 +1737,7 @@ paths:
         ]
         ```
       tags:
-      - Api/v2
+      - API v2
       summary: Run Get-Method
       operationId: api_v3_post_v2_rungetmethod
       requestBody:
@@ -2235,7 +2235,7 @@ paths:
       description: 'Get wallet smart contract information. The following wallets are supported: `v1r1`, `v1r2`, `v1r3`, `v2r1`,
         `v2r2`, `v3r1`, `v3r2`, `v4r1`, `v4r2`, `v5beta`, `v5r1`. In case the account is not a wallet error code 409 is returned.'
       tags:
-      - Api/v2
+      - API v2
       summary: Get Wallet Information
       operationId: api_v3_get_wallet_information
       parameters:
@@ -2295,6 +2295,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RequestError'
+tags:
+- name: Accounts
+  description: Information about accounts
+- name: Actions and traces
+  description: High-level actions and execution traces
+- name: Blockchain Data
+  description: Blocks, transactions and messages
+- name: Jettons
+  description: Jetton masters, wallets, transfers and burns
+- name: NFTs
+  description: NFT collections, items and transfers
+- name: Dns
+  description: DNS records
+- name: Multisig
+  description: Multisig wallets and orders
+- name: Stats
+  description: Aggregated blockchain statistics
+- name: Vesting
+  description: Vesting contracts
+- name: Utils
+  description: Some useful methods
+- name: API v2
+  description: Endpoints proxied from API v2
 components:
   schemas:
     AccountBalance:
@@ -2989,7 +3012,7 @@ components:
         actions:
           type: array
           items:
-            $ref: '#/components/schemas/index.OrderAction'
+            $ref: '#/components/schemas/OrderAction'
         address:
           type: string
         approvals_mask:
@@ -3481,7 +3504,7 @@ components:
         vesting_contracts:
           type: array
           items:
-            $ref: '#/components/schemas/index.VestingInfo'
+            $ref: '#/components/schemas/VestingInfo'
     WalletState:
       type: object
       properties:

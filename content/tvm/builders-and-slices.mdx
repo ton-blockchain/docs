@@ -18,26 +18,26 @@ For example, serialize the following numbers to a cell:
 
 First, create an empty builder using [`NEWC`](/tvm/instructions#c8-newc):
 
-```fift Fift
+```fift title="Fift"
 NEWC  // returns empty builder x{}
 ```
 
 Then, put a number on the stack:
 
-```fift Fift
+```fift title="Fift"
 1 INT  // stack: x{} 1
 ```
 
 And call [`STU`](/tvm/instructions#cbcc-stu) ("STore Unsigned integer") to store integer into builder (swapping builder and value to meet `STU` input order):
 
-```fift Fift
+```fift title="Fift"
 SWAP  // stack: 1 x{}
 4 STU  // stack: x{0001}
 ```
 
 Then, store the other two numbers:
 
-```fift Fift
+```fift title="Fift"
 2 INT  // x{0001} 2
 SWAP  // 2 x{0001}
 4 STU  // x{00010010}
@@ -55,14 +55,14 @@ Slice allows reading data back from a cell, field by field. For example, deseria
 
 [`CTOS`](/tvm/instructions#d0-ctos) ("Cell TO Slice") loads a `Cell` to a `Slice`.
 
-```fift Fift
+```fift title="Fift"
 // assume a cell with bitstring x{0001001011111111} is on the stack
 CTOS  // x{0001001011111111}
 ```
 
 Then, call [`LDU`](/tvm/instructions#d3cc-ldu) ("LoaD Unsigned integer") to read first value (`uint4`).
 
-```fift Fift
+```fift title="Fift"
 4 LDU  // 1 x{001011111111}
 ```
 
@@ -70,7 +70,7 @@ Then, call [`LDU`](/tvm/instructions#d3cc-ldu) ("LoaD Unsigned integer") to read
 
 Similarly, read another two numbers:
 
-```fift Fift
+```fift title="Fift"
 4 LDU // 1 2 x{11111111}
 8 LDI // 1 2 -1 x{}
 ```

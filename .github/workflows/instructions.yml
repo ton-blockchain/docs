@@ -46,7 +46,7 @@ jobs:
 
       - name: Update instructions.mdx and cp0.json
         # cp0.txt is a workaround: mintlify gives 404 for url /resources/tvm/cp0.json -_-
-        run: python3 .github/scripts/tvm-instruction-gen.py tvm-spec/cp0.json public/tvm/cp0.txt content/tvm/instructions.mdx
+        run: python3 .github/scripts/generate-tvm-instructions-table.py tvm-spec/cp0.json public/tvm/cp0.txt content/tvm/instructions.mdx
 
       - name: Check for changes
         id: git-diff

@@ -1,34 +1,34 @@
 // import {readFileSync} from "node:fs";
-import {fileURLToPath} from "node:url";
-import type {NextConfig} from 'next';
-import {createMDX} from 'fumadocs-mdx/next';
-import {ghPagesUrl, gitConfig} from './src/lib/shared';
+import { fileURLToPath } from 'node:url';
+import type { NextConfig } from 'next';
+import { createMDX } from 'fumadocs-mdx/next';
+import { ghPagesUrl, gitConfig } from './src/lib/shared';
 
 const withMDX = createMDX();
 const isGitHubPagesBuild =
-  process.env.GITHUB_ACTIONS === "true" || process.env.GITHUB_PAGES === "true"
-const isVercelBuild = process.env.VERCEL === "1"
-const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild
+  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
+const isVercelBuild = process.env.VERCEL === '1';
+const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
 
 const resolveBaseUrl = () => {
-  const publicUrl = process.env.NEXT_PUBLIC_SITE_URL
-  if (publicUrl !== undefined && publicUrl !== "") {
-    return publicUrl
+  const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (publicUrl !== undefined && publicUrl !== '') {
+    return publicUrl;
   }
 
   if (isGitHubPagesBuild) {
     return ghPagesUrl;
   }
 
-  return "http://localhost:3000"
+  return 'http://localhost:3000';
 };
 
 const resolveBasePath = () => {
   if (isGitHubPagesBuild) {
-    return `/${gitConfig.repo}`
+    return `/${gitConfig.repo}`;
   }
 
-  return undefined
+  return undefined;
 };
 
 const config: NextConfig = {
@@ -41,16 +41,18 @@ const config: NextConfig = {
   },
   basePath: resolveBasePath(),
   turbopack: {
-    root: fileURLToPath(new URL(".", import.meta.url)),
+    root: fileURLToPath(new URL('.', import.meta.url)),
   },
   images: { unoptimized: true },
-  serverExternalPackages: ["typescript"],
-  ...(isLocalBuild ? {
-    experimental: {
-      cpus: 4,
-      workerThreads: false,
-    },
-  } : {}),
+  serverExternalPackages: ['typescript'],
+  ...(isLocalBuild
+    ? {
+        experimental: {
+          cpus: 4,
+          workerThreads: false,
+        },
+      }
+    : {}),
 };
 
 export default withMDX(config);

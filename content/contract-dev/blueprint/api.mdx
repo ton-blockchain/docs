@@ -87,7 +87,7 @@ This function ensures consistent hashing of external-in messages by following [T
 
 ### `compile`
 
-Compiles a contract using the specified configuration for `tact`, `func`, or `tolk` languages.
+Compiles a contract using the specified configuration for `func` or `tolk` languages.
 
 ```typescript
 async function compile(name: string, opts?: CompileOpts): Promise<Cell>
@@ -704,39 +704,6 @@ export const compile: CompilerConfig = {
   optimizationLevel: 2,
   withStackComments: true,
   withSrcLineComments: true
-};
-```
-
-### `TactLegacyCompilerConfig`
-
-Configuration for the Tact compiler (legacy configuration format).
-
-```typescript
-type TactLegacyCompilerConfig = {
-  lang: 'tact';
-  target: string;
-  options?: Options;
-};
-```
-
-**Properties:**
-
-- `lang` — compiler language identifier (must be `'tact'`)
-- `target` — path to the main Tact source file
-- `options` — additional Tact compiler options
-
-**Usage example:**
-
-```typescript title="./wrappers/MyContract.compile.ts"
-import { CompilerConfig } from '@ton/blueprint';
-
-export const compile: CompilerConfig = {
-  lang: 'tact',
-  target: 'contracts/my_contract.tact',
-  options: {
-    debug: false,
-    external: true
-  }
 };
 ```
 
