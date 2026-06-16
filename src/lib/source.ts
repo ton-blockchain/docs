@@ -128,16 +128,22 @@ export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
 }
 
 function getLLMContentPath(url: string) {
-  return `${docsContentRoute}` + url.replace(/\/*$/, '') + '/content.md';
+  const match = url.match(/^([^?#]*)(?:[?#].*)?$/);
+  const pathname = (match?.[1] ?? url).replace(/\/+$/, '');
+  return `${docsContentRoute}${pathname}/content.md`;
 }
 
 export function processLLMLinks(md: string): string {
   return (
     md
       // ](/…) inline + ![](/…)
-      .replace(/(\]\()(\/[^)\s]*)/g, (_m, p, url) => p + getLLMContentPath(url))
+      .replace(/(\]\()(\/[^)\s]*)/g, (m, p, url) =>
+        url.startsWith('//') ? m : p + getLLMContentPath(url),
+      )
       // []: /… reference defs
-      .replace(/(\]:\s+)(\/\S*)/g, (_m, p, url) => p + getLLMContentPath(url))
+      .replace(/(\]:\s+)(\/\S*)/g, (m, p, url) =>
+        url.startsWith('//') ? m : p + getLLMContentPath(url),
+      )
   );
 }
 

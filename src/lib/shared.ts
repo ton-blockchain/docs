@@ -25,14 +25,15 @@ export function toPascalCase(name: string): string {
 }
 
 export function withBasePath(src: string): string {
+  const normalizedPrefix = pathPrefix.length > 1 ? pathPrefix.replace(/\/+$/, '') : pathPrefix;
   // locally or not on GitHub Pages
-  if (!pathPrefix) return src;
+  if (!normalizedPrefix) return src;
   // external, relative, or data:
   if (!src.startsWith('/') || src.startsWith('//')) return src;
   // already prefixed
-  if (src === pathPrefix || src.startsWith(pathPrefix + '/')) return src;
+  if (src === normalizedPrefix || src.startsWith(normalizedPrefix + '/')) return src;
   //
-  return pathPrefix + src;
+  return normalizedPrefix + src;
 }
 
 export function withBaseUrl(src: string): string {
@@ -40,5 +41,5 @@ export function withBaseUrl(src: string): string {
   if (!urlPrefix) return src;
   // external, relative, or data:
   if (!src.startsWith('/') || src.startsWith('//')) return src;
-  return pathPrefix + src;
+  return urlPrefix + src;
 }

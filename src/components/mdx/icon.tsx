@@ -40,7 +40,7 @@ const ICON_ALIASES: Record<string, string> = {
   'file-pdf': 'FileText',
   'list-ol': 'ListOrdered',
   message: 'MessageSquare',
-  'input-text': 'FormInput',
+  'input-text': 'TextCursorInput',
   'arrow-left-arrow-right': 'ArrowLeftRight',
   'chart-diagram': 'Workflow',
   'building-columns': 'Landmark',
