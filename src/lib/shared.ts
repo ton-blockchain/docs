@@ -14,10 +14,22 @@ export const gitConfig = {
 export const ghPagesUrl = `https://${gitConfig.user}.github.io/${gitConfig.repo}`;
 
 // Functions
+
 export function toPascalCase(name: string): string {
   return name
     .split(/[-_\s]+/)
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join('');
+}
+
+export function withBasePath(src: string): string {
+  // locally or not on GitHub Pages
+  if (!pathPrefix) return src;
+  // external, relative, or data:
+  if (!src.startsWith('/') || src.startsWith('//')) return src;
+  // already prefixed
+  if (src === pathPrefix || src.startsWith(pathPrefix + '/')) return src;
+  //
+  return pathPrefix + src;
 }

@@ -5,7 +5,7 @@
     "dev": "next dev",
     "start": "next dev",
     "start:vercel": "NEXT_CONFIG=vercel next start",
-    "build": "node scripts/pre-build.mjs && cross-env NODE_OPTIONS=--max_old_space_size=2048 next build && node scripts/post-build.mjs",
+    "build": "node scripts/pre-build.mjs && cross-env NODE_OPTIONS=--max_old_space_size=4096 next build && node scripts/post-build.mjs",
     "build:vercel": "node scripts/pre-build.mjs && NEXT_CONFIG=vercel next build",
     "build:serve": "serve out",
     "check:types": "fumadocs-mdx && next typegen && tsc --noEmit",
