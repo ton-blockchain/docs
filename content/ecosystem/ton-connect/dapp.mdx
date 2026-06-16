@@ -34,9 +34,9 @@ To proceed with a dApp integration, select your framework or environment:
 ### React
 
 <Steps>
-  <Step
-    title="Install necessary libraries"
-  >
+  <Step>
+    #### Install necessary libraries
+
     Install the `@tonconnect/ui-react` package:
 
     ```shell
@@ -50,9 +50,9 @@ To proceed with a dApp integration, select your framework or environment:
     ```
   </Step>
 
-  <Step
-    title="Create a TON Connect manifest"
-  >
+  <Step>
+    #### Create a TON Connect manifest
+
     [TON Connect manifest](/ecosystem/ton-connect/manifest) is a small JSON file that lets wallets discover information about your dApp. It should be named `tonconnect-manifest.json`, placed at `https://<YOUR_APP_URL>/tonconnect-manifest.json`, and be accessible with a direct GET request.
 
     <Callout>
@@ -90,9 +90,9 @@ To proceed with a dApp integration, select your framework or environment:
     See more detailed information here: [TON Connect manifest](/ecosystem/ton-connect/manifest).
   </Step>
 
-  <Step
-    title="Add a button in the UI"
-  >
+  <Step>
+    #### Add a button in the UI
+
     Users need a clear way of connecting their wallets to your app, so you must give a clear UI element to do so. Usually, that is a <kbd>Connect wallet</kbd> button.
 
     Some in-wallet browsers automatically open a wallet connection modal when your dApp loads. Still, always provide a button alternative in case the user dismissed the modal window or wants to connect a wallet after doing their research.
@@ -127,9 +127,9 @@ To proceed with a dApp integration, select your framework or environment:
     </Callout>
   </Step>
 
-  <Step
-    title="Utilize TON Connect in your dApp"
-  >
+  <Step>
+    #### Utilize TON Connect in your dApp
+
     <Card
       title="Common usage recipes"
       href="#usage"

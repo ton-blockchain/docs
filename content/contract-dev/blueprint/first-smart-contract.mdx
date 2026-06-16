@@ -22,9 +22,9 @@ This tutorial covers building, deploying, and interacting with a smart contract 
 ## Development environment
 
 <Steps>
-  <Step
-    title="Set up development environment"
-  >
+  <Step>
+    ### Set up development environment
+
     Use the [Blueprint](/contract-dev/blueprint/overview) development toolkit for smart contracts. Start a new project with:
 
     ```bash
@@ -49,9 +49,9 @@ This tutorial covers building, deploying, and interacting with a smart contract 
     </FenceTable>
   </Step>
 
-  <Step
-    title="Move into the project directory"
-  >
+  <Step>
+    ### Move into the project directory
+
     ```bash
     cd Example
     ```
@@ -91,9 +91,9 @@ The contract uses [**Tolk**](/tolk/overview) language.
 The TON ecosystem provides editor plugins with syntax support for IDEs and code editors. View them [here](/contract-dev/ide/overview).
 
 <Steps>
-  <Step
-    title="Define contract storage"
-  >
+  <Step>
+    ### Define contract storage
+
     Open the `./contracts/first_contract.tolk` file.
 
     To define contract storage, store the `counter` value. Tolk makes it simple with <Tooltip tip="A structure is a composite data type that groups named fields, each having its own type, into one unit." cta="Learn more" href="/tolk/overview">structures</Tooltip>:
@@ -118,9 +118,9 @@ The TON ecosystem provides editor plugins with syntax support for IDEs and code 
     Structures serialize and deserialize automatically into [cells](/foundations/serialization/cells), the storage unit in TON. The `fromCell` and `toCell` functions handle conversion between structures and cells.
   </Step>
 
-  <Step
-    title="Implement message handlers"
-  >
+  <Step>
+    ### Implement message handlers
+
     To process messages, implement the `onInternalMessage` function. It receives one argument — the incoming message. Focus on the `body` field, which contains the payload sent by a user or another contract.
 
     Define two message structures:
@@ -176,9 +176,9 @@ The TON ecosystem provides editor plugins with syntax support for IDEs and code 
     ```
   </Step>
 
-  <Step
-    title="Add getter functions"
-  >
+  <Step>
+    ### Add getter functions
+
     Write a getter function to return the current counter:
 
     ```tolk title="./contracts/first_contract.tolk"
@@ -189,9 +189,9 @@ The TON ecosystem provides editor plugins with syntax support for IDEs and code 
     ```
   </Step>
 
-  <Step
-    title="Complete contract code"
-  >
+  <Step>
+    ### Complete contract code
+
     The contract now includes:
 
     - Storage — persistent `counter` value
@@ -287,9 +287,9 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
 ## Deploy to testnet
 
 <Steps>
-  <Step
-    title="Create a wrapper file"
-  >
+  <Step>
+    ### Create a wrapper file
+
     To deploy, create a wrapper class. Wrappers make it easy to interact with contracts from TypeScript.
     A wrapper is an off-chain helper that represents a deployed contract, builds message bodies as cells, sends messages, and wraps get-method calls and response parsing.
 
@@ -340,9 +340,9 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     - The method `sendDeploy` sends the first message with `stateInit`, the structure holding the contract's initial code and data, which triggers deployment. In practice, this can be an empty message with Toncoin attached.
   </Step>
 
-  <Step
-    title="Create the deployment script"
-  >
+  <Step>
+    ### Create the deployment script
+
     Open the `./scripts/deployFirstContract.ts` file and replace its content with the following code.
     It deploys the contract.
 
@@ -368,9 +368,9 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     The `sendDeploy` method accepts three arguments. Only two arguments are passed because `provider.open` automatically provides the `ContractProvider` as the first argument.
   </Step>
 
-  <Step
-    title="Run the script"
-  >
+  <Step>
+    ### Run the script
+
     TON provides two networks for deployment:
 
     - **testnet** — developer sandbox.
@@ -394,9 +394,9 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     For flags and options, see the [Blueprint deployment guide](/contract-dev/blueprint/deploy).
   </Step>
 
-  <Step
-    title="Confirm transaction"
-  >
+  <Step>
+    ### Confirm transaction
+
     <Callout
       title="Wallet required"
       type="note"
@@ -432,9 +432,9 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
 Deployment also counts as a message sent to the contract. The next step is to send a message with a body to trigger contract logic.
 
 <Steps>
-  <Step
-    title="Update wrapper class"
-  >
+  <Step>
+    ### Update wrapper class
+
     Update the wrapper class with three methods: `sendIncrease`, `sendReset`, and `getCounter`:
 
     ```typescript title="./wrappers/FirstContract.ts" expandable
@@ -514,9 +514,9 @@ Deployment also counts as a message sent to the contract. The next step is to se
     - Next 32 bits: `42` — increase by this amount
   </Step>
 
-  <Step
-    title="Send messages to the contract"
-  >
+  <Step>
+    ### Send messages to the contract
+
     With the contract deployed and wrapper methods in place, the next step is to send messages to it.
 
     Create a script `./scripts/sendIncrease.ts` that increases the counter:
@@ -584,9 +584,9 @@ Deployment also counts as a message sent to the contract. The next step is to se
     </Callout>
   </Step>
 
-  <Step
-    title="Reset the counter"
-  >
+  <Step>
+    ### Reset the counter
+
     To reset the counter, create a script `./scripts/sendReset.ts`:
 
     ```typescript title="./scripts/sendReset.ts"
@@ -621,9 +621,9 @@ Deployment also counts as a message sent to the contract. The next step is to se
     ```
   </Step>
 
-  <Step
-    title="Read contract data with get methods"
-  >
+  <Step>
+    ### Read contract data with get methods
+
     Get methods are special functions in TON smart contracts that run locally on a node. Unlike message-based interactions, get methods are:
 
     - Free — no gas fees, as the call does not modify the blockchain state.

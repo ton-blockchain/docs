@@ -197,10 +197,9 @@ Supported streaming providers:
 </Callout>
 
 <Steps>
-  <Step
-    title="Install the SDK for Omniston"
-    noAnchor="true"
-  >
+  <Step>
+    #### Install the SDK for Omniston
+
     Swaps with Omniston require its SDK to be installed:
 
     ```shell
@@ -208,10 +207,9 @@ Supported streaming providers:
     ```
   </Step>
 
-  <Step
-    title="Set up one or more providers"
-    noAnchor="true"
-  >
+  <Step>
+    #### Set up one or more providers
+
     ```ts
     // Or @ton/appkit-react for React
     import {
@@ -599,10 +597,9 @@ If there is an existing dApp that uses either `@tonconnect/ui-react` or `@toncon
 Before migrating, [install AppKit and peer packages](#installation) and add necessary polyfills.
 
 <Steps>
-  <Step
-    title="Ensure the TON Connect UI package is of the latest version"
-    noAnchor="true"
-  >
+  <Step>
+    #### Ensure the TON Connect UI package is of the latest version
+
     Ensure that TON Connect packages are of the latest version:
 
     ```shell
@@ -610,10 +607,9 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
     ```
   </Step>
 
-  <Step
-    title="Initialize AppKit and replace TonConnectUIProvider"
-    noAnchor="true"
-  >
+  <Step>
+    #### Initialize AppKit and replace TonConnectUIProvider
+
     Use `AppKitProvider` in place of the `TonConnectUIProvider`:
 
     ```tsx
@@ -652,10 +648,9 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
     Refer to the [complete initialization setup](#complete-setup) for all the possible AppKit configuration options.
   </Step>
 
-  <Step
-    title="Keep existing hooks as is"
-    noAnchor="true"
-  >
+  <Step>
+    #### Keep existing hooks as is
+
     The `AppKitProvider` bridges to TON Connect under the hood. Existing few `@tonconnect/ui-react` hooks, such as `useTonAddress()`, `useTonWallet()`, and others, will continue to work inside the `AppKitProvider` automatically.
   </Step>
 </Steps>
@@ -665,19 +660,17 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
 Before migrating, [install AppKit and peer packages](#installation) and add necessary polyfills.
 
 <Steps>
-  <Step
-    title="Ensure the TON Connect UI package is of the latest version"
-    noAnchor="true"
-  >
+  <Step>
+    #### Ensure the TON Connect UI package is of the latest version
+
     ```shell
     npm up @tonconnect/ui --save
     ```
   </Step>
 
-  <Step
-    title="Initialize AppKit and reuse TonConnectUI object"
-    noAnchor="true"
-  >
+  <Step>
+    #### Initialize AppKit and reuse TonConnectUI object
+
     It is possible to reuse the existing `TonConnectUI` object when configuring AppKit [connectors](#connectors):
 
     ```ts
@@ -706,10 +699,9 @@ Before migrating, [install AppKit and peer packages](#installation) and add nece
     Refer to the [complete initialization setup](#complete-setup) for all the possible AppKit configuration options.
   </Step>
 
-  <Step
-    title="Replace method calls with exported functions"
-    noAnchor="true"
-  >
+  <Step>
+    #### Replace method calls with exported functions
+
     Instead of consolidating everything within the instantiated `TonConnectUI` object, AppKit offers several tree-shakable functions that enhance and expand the capabilities of the existing `TonConnectUI` functionality. Refer to [relevant how-to pages](/ecosystem/appkit/overview#quick-start) for concrete examples.
   </Step>
 </Steps>

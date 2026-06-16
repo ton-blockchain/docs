@@ -171,132 +171,134 @@ Placeholders:
 >
   Transfer details such as amount, addresses, and the transaction hash.
 
-  <Expandable
-    title="data properties"
-  >
-    <ResponseField
-      name="amount"
-      type="string"
-      required
+  <Accordions>
+    <Accordion
+      title="data properties"
     >
-      Human-readable payment amount with decimals. For example, 10.5.
-    </ResponseField>
+      <ResponseField
+        name="amount"
+        type="string"
+        required
+      >
+        Human-readable payment amount with decimals. For example, 10.5.
+      </ResponseField>
 
-    <ResponseField
-      name="rawAmount"
-      type="string"
-      required
-    >
-      Amount in base units; nanotons for TON.
-    </ResponseField>
+      <ResponseField
+        name="rawAmount"
+        type="string"
+        required
+      >
+        Amount in base units; nanotons for TON.
+      </ResponseField>
 
-    <ResponseField
-      name="senderAddr"
-      type="string"
-      required
-    >
-      Sender wallet address on TON blockchain.
-    </ResponseField>
+      <ResponseField
+        name="senderAddr"
+        type="string"
+        required
+      >
+        Sender wallet address on TON blockchain.
+      </ResponseField>
 
-    <ResponseField
-      name="recipientAddr"
-      type="string"
-      required
-    >
-      Recipient wallet address on TON blockchain.
-    </ResponseField>
+      <ResponseField
+        name="recipientAddr"
+        type="string"
+        required
+      >
+        Recipient wallet address on TON blockchain.
+      </ResponseField>
 
-    <ResponseField
-      name="asset"
-      type="string"
-      required
-    >
-      Asset identifier. Use "TON" for TON coin or a jetton master address for tokens.
-    </ResponseField>
+      <ResponseField
+        name="asset"
+        type="string"
+        required
+      >
+        Asset identifier. Use "TON" for TON coin or a jetton master address for tokens.
+      </ResponseField>
 
-    <ResponseField
-      name="assetTicker"
-      type="string"
-    >
-      Human-readable asset ticker. For example, TON or USDT.
-    </ResponseField>
+      <ResponseField
+        name="assetTicker"
+        type="string"
+      >
+        Human-readable asset ticker. For example, TON or USDT.
+      </ResponseField>
 
-    <ResponseField
-      name="status"
-      type="string"
-      required
-    >
-      Transfer status: `success` or `failed`. Process only `success` status. Log `failed` status for investigation.
-    </ResponseField>
+      <ResponseField
+        name="status"
+        type="string"
+        required
+      >
+        Transfer status: `success` or `failed`. Process only `success` status. Log `failed` status for investigation.
+      </ResponseField>
 
-    <ResponseField
-      name="reference"
-      type="string"
-      required
-    >
-      Unique transfer reference. Use this to match the webhook with the internal order or transaction.
-    </ResponseField>
+      <ResponseField
+        name="reference"
+        type="string"
+        required
+      >
+        Unique transfer reference. Use this to match the webhook with the internal order or transaction.
+      </ResponseField>
 
-    <ResponseField
-      name="bodyBase64Hash"
-      type="string"
-      required
-    >
-      Base64 hash of the transfer body. Use for advanced verification.
-    </ResponseField>
+      <ResponseField
+        name="bodyBase64Hash"
+        type="string"
+        required
+      >
+        Base64 hash of the transfer body. Use for advanced verification.
+      </ResponseField>
 
-    <ResponseField
-      name="txHash"
-      type="string"
-      required
-    >
-      Transaction hash on-chain. Use this to verify the transaction if needed.
-    </ResponseField>
+      <ResponseField
+        name="txHash"
+        type="string"
+        required
+      >
+        Transaction hash on-chain. Use this to verify the transaction if needed.
+      </ResponseField>
 
-    <ResponseField
-      name="traceId"
-      type="string"
-      required
-    >
-      Trace ID for tracking the transaction across systems.
-    </ResponseField>
+      <ResponseField
+        name="traceId"
+        type="string"
+        required
+      >
+        Trace ID for tracking the transaction across systems.
+      </ResponseField>
 
-    <ResponseField
-      name="commentToSender"
-      type="string"
-    >
-      Optional note visible to the sender during signing.
-    </ResponseField>
+      <ResponseField
+        name="commentToSender"
+        type="string"
+      >
+        Optional note visible to the sender during signing.
+      </ResponseField>
 
-    <ResponseField
-      name="commentToRecipient"
-      type="string"
-    >
-      Optional note visible to the recipient. Use for order IDs or invoice numbers.
-    </ResponseField>
+      <ResponseField
+        name="commentToRecipient"
+        type="string"
+      >
+        Optional note visible to the recipient. Use for order IDs or invoice numbers.
+      </ResponseField>
 
-    <ResponseField
-      name="date"
-      type="string"
-      required
-    >
-      ISO 8601 timestamp of the transfer completion.
-    </ResponseField>
+      <ResponseField
+        name="date"
+        type="string"
+        required
+      >
+        ISO 8601 timestamp of the transfer completion.
+      </ResponseField>
 
-    <ResponseField
-      name="errorCode"
-      type="number"
-    >
-      Error code if the transfer failed.
-    </ResponseField>
+      <ResponseField
+        name="errorCode"
+        type="number"
+      >
+        Error code if the transfer failed.
+      </ResponseField>
 
-    <ResponseField
-      name="errorMessage"
-      type="string"
-    >
-      Error message if the transfer failed.
-    </ResponseField>
-  </Expandable>
+      <ResponseField
+        name="errorMessage"
+        type="string"
+      >
+        Error message if the transfer failed.
+      </ResponseField>
+    </Accordion>
+  </Accordions>
 </ResponseField>
 
 ## Verify webhook signatures
@@ -496,7 +498,7 @@ app.post("/webhooks/tonpay", async (req, res) => {
 
 TON Pay retries failed webhook deliveries.
 
-<CardGroup cols={2}>
+<Columns cols={2}>
   <Card
     title="Retry attempts"
     icon="rotate"
@@ -510,7 +512,7 @@ TON Pay retries failed webhook deliveries.
   >
     1s, 5s, and 15s.
   </Card>
-</CardGroup>
+</Columns>
 
 ### Delivery outcomes
 
@@ -673,7 +675,7 @@ TON Pay retries failed webhook deliveries.
 
 ## Next steps
 
-<CardGroup cols={2}>
+<Columns cols={2}>
   <Card
     title="Build a transfer"
     icon="paper-plane"
@@ -689,4 +691,4 @@ TON Pay retries failed webhook deliveries.
   >
     Query transfer status and details.
   </Card>
-</CardGroup>
+</Columns>

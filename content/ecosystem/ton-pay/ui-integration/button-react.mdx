@@ -19,17 +19,17 @@ sidebarTitle: "Add TON Pay button React"
 ## Install packages
 
 <Steps>
-  <Step
-    title="Install necessary libraries"
-  >
+  <Step>
+    ### Install necessary libraries
+
     ```bash
     npm install @ton-pay/ui-react @ton-pay/api @tonconnect/ui-react
     ```
   </Step>
 
-  <Step
-    title="Create a TON Connect manifest"
-  >
+  <Step>
+    ### Create a TON Connect manifest
+
     Create [`tonconnect-manifest.json`](/ecosystem/ton-connect/manifest) in the app public directory:
 
     ```json
@@ -41,9 +41,9 @@ sidebarTitle: "Add TON Pay button React"
     ```
   </Step>
 
-  <Step
-    title="Wrap the app with the provider"
-  >
+  <Step>
+    ### Wrap the app with the provider
+
     Wrap the root component with `TonConnectUIProvider`.
 
     ```tsx
@@ -72,9 +72,9 @@ sidebarTitle: "Add TON Pay button React"
 The `useTonPay` hook simplifies wallet connection and transaction handling. Use it for a direct integration path.
 
 <Steps>
-  <Step
-    title="Import required dependencies"
-  >
+  <Step>
+    ### Import required dependencies
+
     ```tsx
     import { TonPayButton } from "@ton-pay/ui-react";
     import { useTonPay } from "@ton-pay/ui-react";
@@ -83,9 +83,9 @@ The `useTonPay` hook simplifies wallet connection and transaction handling. Use 
     ```
   </Step>
 
-  <Step
-    title="Set up the component"
-  >
+  <Step>
+    ### Set up the component
+
     ```tsx
     function PaymentComponent() {
       const { pay } = useTonPay();
@@ -93,9 +93,9 @@ The `useTonPay` hook simplifies wallet connection and transaction handling. Use 
     ```
   </Step>
 
-  <Step
-    title="Create the payment handler"
-  >
+  <Step>
+    ### Create the payment handler
+
     ```tsx
       const handlePayment = async () => {
         setIsLoading(true);
@@ -135,9 +135,9 @@ The `useTonPay` hook simplifies wallet connection and transaction handling. Use 
     </Callout>
   </Step>
 
-  <Step
-    title="Render the button"
-  >
+  <Step>
+    ### Render the button
+
     ```tsx
       return (
         <TonPayButton
@@ -156,9 +156,9 @@ The `useTonPay` hook simplifies wallet connection and transaction handling. Use 
 Use TON Connect hooks directly when full control over the connection flow is required.
 
 <Steps>
-  <Step
-    title="Import TON Connect hooks"
-  >
+  <Step>
+    ### Import TON Connect hooks
+
     ```tsx
     import { TonPayButton } from "@ton-pay/ui-react";
     import {
@@ -171,9 +171,9 @@ Use TON Connect hooks directly when full control over the connection flow is req
     ```
   </Step>
 
-  <Step
-    title="Set up hooks and state"
-  >
+  <Step>
+    ### Set up hooks and state
+
     ```tsx
     function DirectPaymentComponent() {
       const address = useTonAddress(true);
@@ -183,9 +183,9 @@ Use TON Connect hooks directly when full control over the connection flow is req
     ```
   </Step>
 
-  <Step
-    title="Create the payment handler"
-  >
+  <Step>
+    ### Create the payment handler
+
     ```tsx
       const handlePay = async () => {
         // Check if wallet is connected
@@ -225,9 +225,9 @@ Use TON Connect hooks directly when full control over the connection flow is req
     ```
   </Step>
 
-  <Step
-    title="Render the button"
-  >
+  <Step>
+    ### Render the button
+
     ```tsx
       return <TonPayButton handlePay={handlePay} isLoading={isLoading} />;
     }
@@ -491,9 +491,9 @@ function PaymentWithOwnUI() {
 Create the payment message on a backend to store tracking identifiers and validate parameters before sending.
 
 <Steps>
-  <Step
-    title="Create a backend endpoint"
-  >
+  <Step>
+    ### Create a backend endpoint
+
     Build an endpoint that returns the message for `TonPayButton`.
 
     ```ts
@@ -520,9 +520,9 @@ Create the payment message on a backend to store tracking identifiers and valida
     ```
   </Step>
 
-  <Step
-    title="Call the endpoint from the frontend"
-  >
+  <Step>
+    ### Call the endpoint from the frontend
+
     ```tsx
     import { TonPayButton, useTonPay } from "@ton-pay/ui-react";
     import { useState } from "react";

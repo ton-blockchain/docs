@@ -46,9 +46,9 @@ These parameters are shared across all paginated endpoints.
 This example uses the `transactions` endpoint, but the same `limit` and `offset` pattern applies to all paginated endpoints.
 
 <Steps>
-  <Step
-    title="Fetch the first page"
-  >
+  <Step>
+    ### Fetch the first page
+
     Send a request with `account` and `limit`. `offset` defaults to `0` for the first page.
 
     ```bash
@@ -86,9 +86,9 @@ This example uses the `transactions` endpoint, but the same `limit` and `offset`
     Three transactions returned, sorted by logical time in descending order (newest first).
   </Step>
 
-  <Step
-    title="Fetch the next page"
-  >
+  <Step>
+    ### Fetch the next page
+
     Set `offset=3` to skip the first 3 results and get the next batch.
 
     ```bash
@@ -126,9 +126,9 @@ This example uses the `transactions` endpoint, but the same `limit` and `offset`
     No overlap with the previous page. Offset pagination does not produce duplicates.
   </Step>
 
-  <Step
-    title="Repeat until the last page"
-  >
+  <Step>
+    ### Repeat until the last page
+
     Continue incrementing `offset` by the `limit` value on each request (`offset=6`, `offset=9`, ...). When the response returns fewer transactions than the `limit`, all results have been retrieved.
   </Step>
 </Steps>
