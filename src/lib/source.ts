@@ -3,7 +3,7 @@ import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { openapiPlugin } from 'fumadocs-openapi/server';
 import { icons } from 'lucide-react';
-import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase } from './shared';
+import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase, withBaseUrl } from './shared';
 
 // NOTE: Consider using the following as a plugin instead:
 //       import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
@@ -127,10 +127,28 @@ export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
   };
 }
 
+function getLLMContentPath(url: string) {
+  const match = url.match(/^([^?#]*)(?:[?#].*)?$/);
+  const pathname = (match?.[1] ?? url).replace(/\/+$/, '');
+  return `${docsContentRoute}${pathname}/content.md`;
+}
+
+export function processLLMLinks(md: string): string {
+  return (
+    md
+      // ](/…) inline + ![](/…)
+      .replace(/(\]\()(\/[^)\s]*)/g, (m, p, url) =>
+        url.startsWith('//') ? m : p + getLLMContentPath(url),
+      )
+      // []: /… reference defs
+      .replace(/(\]:\s+)(\/\S*)/g, (m, p, url) =>
+        url.startsWith('//') ? m : p + getLLMContentPath(url),
+      )
+  );
+}
+
 export async function getLLMText(page: (typeof source)['$inferPage']) {
-  const processed = await page.data.getText('processed');
+  const processed = processLLMLinks(await page.data.getText('processed'));
 
-  return `# ${page.data.title} (${page.url})
-
-${processed}`;
+  return `# ${page.data.title} (${withBaseUrl(getLLMContentPath(page.url))})\n\n${processed}`;
 }

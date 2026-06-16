@@ -35,13 +35,13 @@ const rewrite = (path) => {
 /** @param {string} text */
 const prefixUrls = (text) => {
   const attrPattern =
-    /\b(src|href|poster|darkSrc)=(["'])(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^"']*)\2/g;
+    /\b(src|href|poster|darkSrc)=(["'])(\/(?:images|logo|pdfs|videos)\/(?!\/)[^"']*)\2/g;
   const doubleQuoteAttrPattern =
-    /\b(src|href|poster|darkSrc)":"(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^"]*)"/g;
-  const cssUrlPattern = /url\((["']?)(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^)"']*)\1\)/g;
+    /\b(src|href|poster|darkSrc)":"(\/(?:images|logo|pdfs|videos)\/(?!\/)[^"]*)"/g;
+  const cssUrlPattern = /url\((["']?)(\/(?:images|logo|pdfs|videos)\/(?!\/)[^)"']*)\1\)/g;
   // NOTE: only for api/search?
   const specAttrPattern =
-    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:images|logo|pdfs|tvm|videos)\/(?!\/)[^\\"']*)\2/g;
+    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:images|logo|pdfs|videos)\/(?!\/)[^\\"']*)\2/g;
   let replacements = 0;
   const next = text
     .replace(attrPattern, (match, attr, quote, path) => {
@@ -75,8 +75,8 @@ const prefixUrls = (text) => {
 const prefixAssetLinks = (dir) => {
   /** @type {{ files: number; replacements: number }} */
   const stats = { files: 0, replacements: 0 };
-  // NOTE: only edit html, never .txt, .js, .css, .md?
-  const exts = new Set(['.html']);
+  // NOTE: never edit .css?
+  const exts = new Set(['.html', '.txt', '.js', '.md']);
 
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
@@ -151,10 +151,11 @@ const main = (dir) => {
     process.exit(1);
   }
 
-  console.log(pfx, `prefixing links...`);
-  const { files, replacements } = prefixAssetLinks(dir);
-  console.log(pfx, `${files} files, ${replacements} replacements`);
-  console.log();
+  // NOTE: consider removing in favor of a remark plugin pre- or post-processing
+  // console.log(pfx, `prefixing links...`);
+  // const { files, replacements } = prefixAssetLinks(dir);
+  // console.log(pfx, `${files} files, ${replacements} replacements`);
+  // console.log();
   console.log(pfx, `generating static http-refresh redirects...`);
   const { redirects } = generateStaticRedirects(dir);
   console.log(pfx, `${redirects} redirects`);

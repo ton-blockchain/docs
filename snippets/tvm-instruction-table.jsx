@@ -22,7 +22,7 @@ export const TvmInstructionTable = () => {
 
   const PERSIST_KEY = 'tvm-instruction-table::filters';
 
-  const SPEC_URL = 'tvm/cp0.txt';
+  const SPEC_URL = 'cp0.txt';
 
   const CATEGORY_MAP = {
     stack_basic: 'Stack basics',

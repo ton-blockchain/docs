@@ -53,8 +53,6 @@ export function CalloutContainer({
   ...props
 }: CalloutContainerProps) {
   const type = resolveAlias(inputType);
-  const colorSuffix = (inputType as unknown) === 'danger' ? 'error' : type;
-
   return (
     <div
       className={cn(
@@ -63,7 +61,13 @@ export function CalloutContainer({
       )}
       style={
         {
-          '--callout-color': `var(--color-fd-${colorSuffix}, var(--color-fd-muted))`,
+          '--callout-color': {
+            info: 'var(--color-fd-info, var(--color-fd-primary))',
+            warning: 'var(--color-fd-warning, var(--color-fd-primary))',
+            error: 'var(--color-fd-error, var(--color-fd-primary))',
+            success: 'var(--color-fd-success, var(--color-fd-primary))',
+            idea: 'var(--color-fd-idea, var(--color-fd-primary))',
+          }[(inputType as unknown) === 'danger' ? 'error' : type],
           ...style,
         } as object
       }
@@ -71,13 +75,11 @@ export function CalloutContainer({
     >
       {icon ??
         {
-          info: <Info className={iconClass} />,
-          warning: <TriangleAlert className={iconClass} />,
-          error: <CircleX className={iconClass} />,
-          success: <CircleCheck className={iconClass} />,
-          idea: (
-            <Lightbulb className="size-5 -me-0.5 fill-(--callout-color) text-(--callout-color)" />
-          ),
+          info: <Info className={cn(iconClass, 'text-fd-card')} />,
+          warning: <TriangleAlert className={cn(iconClass, 'text-fd-card')} />,
+          error: <CircleX className={cn(iconClass, 'text-fd-card')} />,
+          success: <CircleCheck className={cn(iconClass, 'text-fd-card')} />,
+          idea: <Lightbulb className={cn(iconClass, 'text-(--callout-color)')} />,
         }[type]}
       <div className="flex flex-col gap-2 min-w-0 flex-1">{children}</div>
     </div>

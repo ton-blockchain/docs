@@ -1,4 +1,7 @@
 'use client';
+
+import Link from 'fumadocs-core/link';
+import { ImageZoom } from './image-zoom';
 import { Callout } from './callout';
 
 /**
@@ -25,7 +28,7 @@ export const Image = ({
   height = 342,
   width = 608,
   noZoom = false,
-  center = false,
+  center = true,
 }) => {
   const isSVG = src.match(/\.svg(?:[#?].*?)?$/i) !== null;
   const shouldInvert = isSVG && !darkSrc;
@@ -98,7 +101,7 @@ export const Image = ({
   // Resulting images
   const images = (
     <>
-      <img
+      <ImageZoom
         className="block dark:hidden"
         src={src}
         alt={alt}
@@ -106,10 +109,10 @@ export const Image = ({
         {...(width && { width: widthPx })}
         // @ts-ignore
         {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
-          noZoom: 'true',
+          isDisabled: true,
         })}
       />
-      <img
+      <ImageZoom
         className={`hidden dark:block ${shouldInvert ? 'invert' : ''}`}
         src={darkSrc ?? src}
         alt={darkAlt ?? alt}
@@ -117,7 +120,7 @@ export const Image = ({
         {...(width && { width: widthPx })}
         // @ts-ignore
         {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
-          noZoom: 'true',
+          isDisabled: true,
         })}
       />
     </>
@@ -129,17 +132,17 @@ export const Image = ({
     if (shouldCenter) {
       return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <a href={href} target={target ?? '_self'}>
+          <Link href={href} target={target ?? '_self'}>
             {images}
-          </a>
+          </Link>
         </div>
       );
     }
 
     return (
-      <a href={href} target={target ?? '_self'}>
+      <Link href={href} target={target ?? '_self'}>
         {images}
-      </a>
+      </Link>
     );
   }
 

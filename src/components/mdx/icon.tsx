@@ -37,6 +37,24 @@ const ICON_ALIASES: Record<string, string> = {
   'signal-stream': 'RadioTower',
   'user-group': 'Users',
   'chart-line': 'ChartLine',
+  'file-pdf': 'FileText',
+  'list-ol': 'ListOrdered',
+  message: 'MessageSquare',
+  'input-text': 'TextCursorInput',
+  'arrow-left-arrow-right': 'ArrowLeftRight',
+  'chart-diagram': 'Workflow',
+  'building-columns': 'Landmark',
+  'layer-group': 'Layers',
+  'table-cells': 'Grid3x3',
+  'floppy-disk': 'Save',
+  'file-js': 'FileCode',
+  // Brand icons that Lucide does not ship are mapped to the closest generic glyph:
+  react: 'Atom',
+  github: 'GitBranch',
+  npm: 'Package',
+  js: 'Braces',
+  telegram: 'Send',
+  'square-n': 'SquareCode',
 };
 
 /**

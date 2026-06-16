@@ -49,7 +49,6 @@ const config: NextConfig = {
     ? {
         experimental: {
           cpus: 4,
-          workerThreads: false,
         },
       }
     : {}),

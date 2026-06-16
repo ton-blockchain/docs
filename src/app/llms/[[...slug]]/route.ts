@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 export const revalidate = false;
 
-export async function GET(_req: Request, { params }: RouteContext<'/llms.mdx/[[...slug]]'>) {
+export async function GET(_req: Request, { params }: RouteContext<'/llms/[[...slug]]'>) {
   const { slug } = await params;
   // remove the appended "content.md"
   const page = source.getPage(slug?.slice(0, -1));
@@ -11,7 +11,7 @@ export async function GET(_req: Request, { params }: RouteContext<'/llms.mdx/[[.
 
   return new Response(await getLLMText(page), {
     headers: {
-      'Content-Type': 'text/markdown',
+      'Content-Type': 'text/markdown; charset=utf-8',
     },
   });
 }

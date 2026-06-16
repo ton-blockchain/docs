@@ -56,7 +56,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      {page.data._openapi ? (
+      {page.data._openapi || page.slugs.includes('whitepapers') ? (
         <></>
       ) : (
         <div className="flex flex-row flex-wrap gap-2 items-center border-b pb-6">
@@ -98,6 +98,7 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
   return {
     title: page.data.title,
     description: page.data.description,
+    metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
     alternates: {
       ...(page.data.url ? {} : { canonical: page.url }),
       types: {
