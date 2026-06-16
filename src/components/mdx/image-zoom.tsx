@@ -42,7 +42,11 @@ export function ImageZoom({ zoomInProps, children, rmiz, ...props }: ImageZoomPr
       }}
     >
       {children ?? (
-        <Image sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px" {...props} src={src} />
+        <Image
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"
+          {...props}
+          src={src}
+        />
       )}
     </Zoom>
   );

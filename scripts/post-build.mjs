@@ -75,8 +75,8 @@ const prefixUrls = (text) => {
 const prefixAssetLinks = (dir) => {
   /** @type {{ files: number; replacements: number }} */
   const stats = { files: 0, replacements: 0 };
-  // NOTE: only edit html, never .txt, .js, .css, .md?
-  const exts = new Set(['.html']);
+  // NOTE: never edit .css?
+  const exts = new Set(['.html', '.txt', '.js', '.md']);
 
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
@@ -151,10 +151,11 @@ const main = (dir) => {
     process.exit(1);
   }
 
-  console.log(pfx, `prefixing links...`);
-  const { files, replacements } = prefixAssetLinks(dir);
-  console.log(pfx, `${files} files, ${replacements} replacements`);
-  console.log();
+  // NOTE: consider removing in favor of a remark plugin pre- or post-processing
+  // console.log(pfx, `prefixing links...`);
+  // const { files, replacements } = prefixAssetLinks(dir);
+  // console.log(pfx, `${files} files, ${replacements} replacements`);
+  // console.log();
   console.log(pfx, `generating static http-refresh redirects...`);
   const { redirects } = generateStaticRedirects(dir);
   console.log(pfx, `${redirects} redirects`);
