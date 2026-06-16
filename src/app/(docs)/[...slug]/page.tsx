@@ -98,6 +98,7 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
   return {
     title: page.data.title,
     description: page.data.description,
+    metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
     alternates: {
       ...(page.data.url ? {} : { canonical: page.url }),
       types: {

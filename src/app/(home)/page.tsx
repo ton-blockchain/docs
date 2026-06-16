@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'TON documentation',
   description:
     'TON is a blockchain platform designed for scalable smart contracts, applications, and payments at consumer scale.',
+  metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
   openGraph: {
     images: 'logo/og-image.png',
   },

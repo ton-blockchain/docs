@@ -13,11 +13,17 @@ export default function NotFound() {
       sidebar={{
         collapsible: false,
       }}
+      tabMode="top"
+      // NOTE: Must mirror (docs)/layout.tsx
       containerProps={{
         style: {
-          gridTemplate: `"sidebar . header toc toc"
-"sidebar . toc-popover toc toc"
-"sidebar . main toc toc" 1fr / var(--fd-sidebar-col) minmax(min-content, 1fr) minmax(0, calc(var(--fd-layout-width,97rem) - var(--fd-sidebar-width) - var(--fd-toc-width))) var(--fd-toc-width) minmax(min-content, 1fr)`,
+          gridTemplate: [
+            `"sidebar . header toc toc"`,
+            `"sidebar . tabs toc toc"`,
+            `"sidebar . toc-popover toc toc"`,
+            `"sidebar . main toc toc"`,
+            `1fr / var(--fd-sidebar-col) minmax(min-content, 1fr) minmax(0, calc(var(--fd-layout-width,97rem) - var(--fd-sidebar-width) - var(--fd-toc-width))) var(--fd-toc-width) minmax(min-content, 1fr)`,
+          ].join(' '),
         },
       }}
     >
