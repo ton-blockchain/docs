@@ -27,18 +27,18 @@ type Path = {
 // Quick links grouped by audience, mirroring the "journeys" on the legacy index page.
 const paths: Path[] = [
   {
-    title: 'Beginner',
-    description: 'TON fundamentals for newcomers entering Web3 through TON.',
+    title: 'Onboarding',
+    description: 'For newcomers entering Web3 through TON.',
     icon: Rocket,
     links: [
-      { title: 'How to read this documentation?', href: '/start-here' },
+      { title: 'Overview of TON and the documentation', href: '/start-here' },
       { title: 'Use a TON wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
       { title: 'Introduction to Tolk', href: '/tolk/overview' },
     ],
   },
   {
-    title: 'Apps',
-    description: 'Everything one needs to build applications on TON.',
+    title: 'Applications',
+    description: 'Everything one needs to build dApps on TON.',
     icon: Blocks,
     links: [
       {
@@ -142,7 +142,23 @@ function QuickLinkRow({ title, href }: QuickLink) {
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col justify-center text-center flex-1">
+    <div className="relative isolate flex flex-1 flex-col justify-center text-center">
+      {/* background dots */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(color-mix(in oklab, var(--color-fd-primary), transparent 80%) 1px, transparent 1.4px)',
+            backgroundSize: '24px 24px',
+            backdropFilter: 'blur(10px)',
+          }}
+        />
+      </div>
+
       <div className="relative isolate mx-auto w-full max-w-5xl px-6 py-12 text-left sm:py-16">
         {/* hero */}
         <section className="flex flex-col items-start gap-8 py-8 lg:flex-row lg:items-center lg:gap-12 lg:py-12">
@@ -168,9 +184,7 @@ export default function HomePage() {
                 className="flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-fd-primary/10 text-fd-primary">
-                    <Icon className="size-5" />
-                  </div>
+                  <Icon className="size-6 text-fd-primary" />
                   <h3 className="text-lg font-semibold">{title}</h3>
                 </div>
                 <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
@@ -205,9 +219,7 @@ export default function HomePage() {
               const inner = (
                 <>
                   <div className="flex items-center gap-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-fd-primary/10 text-fd-primary">
-                      <Icon className="size-4.5" />
-                    </div>
+                    <Icon className="size-4.5 text-fd-primary" />
                     <h3 className="font-semibold">{title}</h3>
                   </div>
                   <p className="mt-3 text-sm text-fd-muted-foreground">{description}</p>
