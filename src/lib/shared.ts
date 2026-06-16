@@ -1,11 +1,12 @@
 // Constants
 const pathPrefix = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+const urlPrefix = (process.env.NEXT_PUBLIC_BASE_URL ?? '').replace(/\/+$/, '');
 export const appName = 'TON Docs';
 // Next.js automatically prepends `basePath` to sidebar and page <Link> hrefs.
 // Do not include the prefix here lest you want to double it (e.g. /docs/docs/... on GitHub Pages).
 export const docsRoute = `/`;
 export const docsImageRoute = `${pathPrefix}/og`;
-export const docsContentRoute = `${pathPrefix}/llms.mdx`;
+export const docsContentRoute = `${pathPrefix}/llms`;
 export const gitConfig = {
   user: 'ton-org',
   repo: 'docs',
@@ -31,5 +32,13 @@ export function withBasePath(src: string): string {
   // already prefixed
   if (src === pathPrefix || src.startsWith(pathPrefix + '/')) return src;
   //
+  return pathPrefix + src;
+}
+
+export function withBaseUrl(src: string): string {
+  // locally or not on GitHub Pages
+  if (!urlPrefix) return src;
+  // external, relative, or data:
+  if (!src.startsWith('/') || src.startsWith('//')) return src;
   return pathPrefix + src;
 }
