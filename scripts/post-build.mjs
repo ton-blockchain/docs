@@ -11,10 +11,19 @@
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 // Node.js
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { join, extname } from 'node:path';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join, extname, dirname } from 'node:path';
 // Common
 import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects } from './common.mjs';
+
+/**
+ * @param {string} path - file path
+ * @param {string} data - file contents
+ */
+const writeFileWithDirs = (path, data) => {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, data, { encoding: 'utf8' });
+};
 
 /** @param {string} path */
 const rewrite = (path) => {
@@ -26,8 +35,10 @@ const rewrite = (path) => {
 /** @param {string} text */
 const prefixUrls = (text) => {
   const attrPattern = /\b(src|href|poster|darkSrc)=(["'])(\/(?!\/)[^"']*)\2/g;
-  const specAttrPattern = /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?!\/)[^"']*)\2/g;
+  const doubleQuoteAttrPattern = /\b(src|href|poster|darkSrc)":"(\/(?!\/)[^"]*)"/g;
   const cssUrlPattern = /url\((["']?)(\/(?!\/)[^)"']*)\1\)/g;
+  // NOTE: only for api/search?
+  const specAttrPattern = /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?!\/)[^\\"']*)\2/g;
   let replacements = 0;
   const next = text
     .replace(attrPattern, (match, attr, quote, path) => {
@@ -35,6 +46,12 @@ const prefixUrls = (text) => {
       if (rewritten === path) return match;
       replacements += 1;
       return `${attr}=${quote}${rewritten}${quote}`;
+    })
+    .replace(doubleQuoteAttrPattern, (match, attr, path) => {
+      const rewritten = rewrite(path);
+      if (rewritten === path) return match;
+      replacements += 1;
+      return `${attr}":"${rewritten}"`;
     })
     .replace(specAttrPattern, (match, attr, quote, path) => {
       const rewritten = rewrite(path);
@@ -84,35 +101,59 @@ const generateStaticRedirects = (dir) => {
   /** @type {{ redirects: number }} */
   const stats = { redirects: 0 };
   const reds = getRedirects(getConfig());
-
+  /**
+   * @param {string} a
+   * @param {string} b
+   */
+  const compose = (a, b) =>
+    a.replace(/\/+$/, '') + '/' + b.replace(/^\/+/, '').replace(/\.(?:html|mdx?)$/, '');
   for (const red of reds) {
-    // take the source, take the destination, write the html
-    red.source;
+    if (
+      red.destination.startsWith('http') ||
+      red.destination.startsWith('TODO') ||
+      red.destination.endsWith('/:slug*')
+    ) {
+      continue;
+    }
+    const path = compose(dir, red.source) + '.html';
+    const dest = compose(prefix, red.destination);
+    // console.log('Creating', path, 'that leads to', dest);
+    writeFileWithDirs(
+      path,
+      `
+      <!doctype html>
+        <title>Redirecting to: ${dest}</title>
+        <meta httpEquiv="refresh" content="0;url=${dest}" />
+        <meta name="robots" content="noindex, follow" />
+      </html>
+      `,
+    );
     stats.redirects += 1;
   }
 
   return stats;
 };
 
-const main = () => {
+/** @param {string} dir */
+const main = (dir) => {
   const pfx = 'post-build:';
   if (!isGitHubPagesBuild) {
     console.log(pfx, 'skipped (not a GitHub Pages build)');
     process.exit(0);
   }
 
-  if (!existsSync(outDir) || !statSync(outDir).isDirectory()) {
-    console.log(pfx, 'skipped — out/ not found');
+  if (!existsSync(dir) || !statSync(dir).isDirectory()) {
+    console.log(pfx, `skipped — ${dir}/ directory not found`);
     process.exit(1);
   }
 
   console.log(pfx, `prefixing links...`);
-  const { files, replacements } = prefixAssetLinks(outDir);
+  const { files, replacements } = prefixAssetLinks(dir);
   console.log(pfx, `${files} files, ${replacements} replacements`);
   console.log();
   console.log(pfx, `generating static http-refresh redirects...`);
-  const { redirects } = generateStaticRedirects(outDir);
+  const { redirects } = generateStaticRedirects(dir);
   console.log(pfx, `${redirects} redirects`);
 };
 
-main();
+main(outDir);

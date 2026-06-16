@@ -113,6 +113,7 @@ const checkExist = (config) => {
   // Tracking found special destinations
   const specialDestinationsExist = {
     todos: false,
+    notFound: false,
     issues: false,
     olderDocs: false,
     otherGithubLinks: false,
@@ -147,6 +148,11 @@ const checkExist = (config) => {
     // TODOs
     if (path.startsWith('TODO')) {
       specialDestinationsExist.todos = true;
+      return true;
+    }
+    // Explicit 404s
+    if (path === '/404') {
+      specialDestinationsExist.notFound = true;
       return true;
     }
     // End-of-line wildcard redirects
@@ -267,6 +273,9 @@ const checkExist = (config) => {
   }
   if (specialDestinationsExist.todos) {
     console.log(composeWarning('Found TODO-prefixed destinations!'));
+  }
+  if (specialDestinationsExist.notFound) {
+    console.log(composeWarning('Found explicit 404 destinations!'));
   }
   if (specialDestinationsExist.olderDocs) {
     console.log(composeWarning('Found destinations that point to old-docs.ton.org!'));
