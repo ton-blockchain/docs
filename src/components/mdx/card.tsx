@@ -31,7 +31,7 @@ export type ColumnsProps = HTMLAttributes<HTMLDivElement> & {
 /** Responsive grid of cards */
 export function Columns({ cols = 2, className, children, ...props }: ColumnsProps) {
   return (
-    <div {...props} className={cn('grid gap-3 @container', COLS[cols] ?? COLS[2], className)}>
+    <div {...props} className={cn('grid gap-x-3 gap-y-1 @container', COLS[cols] ?? COLS[2], className)}>
       {children}
     </div>
   );
@@ -105,7 +105,7 @@ export function Card({
       {img ? (
         <img src={img} alt="" className="not-prose w-full object-cover object-center" />
       ) : null}
-      <div className={cn('relative p-4', horizontal && 'flex items-start gap-4')}>
+      <div className={cn('relative p-4', horizontal && 'flex items-center gap-4')}>
         {showArrow ? (
           <div
             aria-hidden
