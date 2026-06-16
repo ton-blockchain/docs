@@ -37,6 +37,7 @@ const ICON_ALIASES: Record<string, string> = {
   'signal-stream': 'RadioTower',
   'user-group': 'Users',
   'chart-line': 'ChartLine',
+  'file-pdf': 'FileText',
 };
 
 /**
