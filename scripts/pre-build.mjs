@@ -22,9 +22,17 @@ const main = () => {
     'check:navigation',
     'check:redirects',
   ];
+  let failed = false;
   for (const script of scripts) {
     console.log(pfx, `running ${script}...`);
-    if (!$(`npm run ${script}`).ok) return;
+    if (!$(`npm run ${script}`).ok) {
+      failed = true;
+      continue;
+    }
+  }
+  if (failed) {
+    // TODO: start exiting with exit code 1
+    return;
   }
 };
 
