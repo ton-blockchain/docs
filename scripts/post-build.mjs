@@ -35,13 +35,13 @@ const rewrite = (path) => {
 /** @param {string} text */
 const prefixUrls = (text) => {
   const attrPattern =
-    /\b(src|href|poster|darkSrc)=(["'])(\/(?:images|logo|pdfs|videos)\/(?!\/)[^"']*)\2/g;
+    /\b(src|href|poster|darkSrc)=(["'])(\/(?:logo|videos)\/(?!\/)[^"']*)\2/g;
   const doubleQuoteAttrPattern =
-    /\b(src|href|poster|darkSrc)":"(\/(?:images|logo|pdfs|videos)\/(?!\/)[^"]*)"/g;
-  const cssUrlPattern = /url\((["']?)(\/(?:images|logo|pdfs|videos)\/(?!\/)[^)"']*)\1\)/g;
+    /\b(src|href|poster|darkSrc)":"(\/(?:logo|videos)\/(?!\/)[^"]*)"/g;
+  const cssUrlPattern = /url\((["']?)(\/(?:logo|videos)\/(?!\/)[^)"']*)\1\)/g;
   // NOTE: only for api/search?
   const specAttrPattern =
-    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:images|logo|pdfs|videos)\/(?!\/)[^\\"']*)\2/g;
+    /\b(src|href|poster|darkSrc)(\\["']):\2(\/(?:logo|videos)\/(?!\/)[^\\"']*)\2/g;
   let replacements = 0;
   const next = text
     .replace(attrPattern, (match, attr, quote, path) => {
@@ -152,6 +152,7 @@ const main = (dir) => {
   }
 
   // NOTE: consider removing in favor of a remark plugin pre- or post-processing
+  console.log(pfx, `skipped link prefixing`);
   // console.log(pfx, `prefixing links...`);
   // const { files, replacements } = prefixAssetLinks(dir);
   // console.log(pfx, `${files} files, ${replacements} replacements`);
