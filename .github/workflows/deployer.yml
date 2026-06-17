@@ -60,17 +60,31 @@ jobs:
           ALLOW_NET: true
         run: |
           npm run build
-          if [ '${{ env.GITHUB_PAGES }}' ]; then
-            nlines=20
-            target='llms.txt'
-            test -f "$target" && echo -e "\nFirst $nlines lines of $target" && head -$nlines "out/$target"
-            target='llms-full.txt'
-            test -f "$target" && echo -e "\nFirst $nlines lines of $target" && head -$nlines "out/$target"
-            target='llms/foundations/tlb/overview/content.md'
-            test -f "$target" && echo -e "\nFirst $nlines lines of $target" && head -$nlines "out/$target"
-            target='404.html'
-            test -f "$target" && echo -e "\nFirst $nlines lines of $target" && head -$nlines "out/$target"
-          fi
+          # See some file contents
+          nlines=50
+          target='llms.txt'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "out/$target"
+          } || echo "out/$target not found"
+          #
+          target='llms-full.txt'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "out/$target"
+          } || echo "out/$target not found"
+          #
+          target='llms/foundations/tlb/overview/content.md'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "out/$target"
+          } || echo "out/$target not found"
+          #
+          target='404.html'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "out/$target"
+          } || echo "out/$target not found"
 
       - name: Save NPM cache
         id: npm-cache-save
