@@ -3,7 +3,7 @@ import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { openapiPlugin } from 'fumadocs-openapi/server';
 import { icons } from 'lucide-react';
-import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase, withBaseUrl } from './shared';
+import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase, withBaseUrl } from '@/lib/shared';
 
 // NOTE: Consider using the following as a plugin instead:
 //       import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
@@ -148,6 +148,9 @@ export function processLLMLinks(md: string): string {
 }
 
 export async function getLLMText(page: (typeof source)['$inferPage']) {
+  // TODO: Process OpenAPI page texts differently, generate virtual page contents for LLMs.
+  // import { openapi, codeUsages } from '@/lib/openapi';
+  // if (page.data._openapi) { }
   const processed = processLLMLinks(await page.data.getText('processed'));
 
   return `# ${page.data.title} (${withBaseUrl(getLLMContentPath(page.url))})\n\n${processed}`;

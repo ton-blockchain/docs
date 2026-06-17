@@ -18,7 +18,7 @@ To start a local preview, run the following command at the root of the documenta
 npm start
 ```
 
-View the local preview at `http://localhost:3000`.
+View the local preview at `http://localhost:3000`. Starting a local preview at least once is required for regenerating the `.source/` folder, contents of which is used in certain files in the `src/` directory.
 
 ### Spell checks
 

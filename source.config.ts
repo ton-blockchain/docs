@@ -23,6 +23,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import stringWidth from 'string-width';
 import { visitParents } from 'unist-util-visit-parents';
+import { withBasePath } from './src/lib/shared';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
@@ -216,6 +217,28 @@ export default defineConfig({
       remarkMdxMermaid,
       remarkMdxFiles,
       remarkSteps,
+      // NOTE: processing links to video or logo assets,
+      //       which should be placed after everything else!
+      function remarkMiscAssetLinks() {
+        if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => { };
+        const isMiscAsset = /^\/(?:logo|videos)\//;
+        const mediaAttrs = new Set(['src', 'poster', 'darkSrc']);
+        const rewrite = (url: unknown) =>
+          typeof url === 'string' && isMiscAsset.test(url) ? withBasePath(url) : url;
+        return (tree) => {
+          visitParents(tree, (node: any) => {
+            if (node.type === 'video') {
+              node.url = rewrite(node.url);
+            } else if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
+              for (const attr of node.attributes ?? []) {
+                if (attr.type === 'mdxJsxAttribute' && mediaAttrs.has(attr.name)) {
+                  attr.value = rewrite(attr.value);
+                }
+              }
+            }
+          });
+        };
+      },
     ],
     rehypePlugins: (v) => [
       // NOTE: KaTeX support should be placed before everything else!
