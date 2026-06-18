@@ -15,12 +15,12 @@ The purpose of _send modes_ is to modify the above logic by specifying:
 
 The send modes are specified via an 8-bit bitmask `mode` parameter of the [`SENDRAWMSG`](/tvm/instructions#fb00-sendrawmsg) or the [`SENDMSG`](/tvm/instructions#fb08-sendmsg) instructions. The resulting mode value can have the following base modes:
 
-| Mode value | Tolk constant                                                                                                                     | Description                                                                                               |
-| ---------: | :-------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-|        `0` | `SEND_MODE_REGULAR`                                                                                                               | Default mode.                                                                                             |
-|       `64` | `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`                                                                                     | Complex logic. Will be described below.                                                                   |
+| Mode value | Tolk constant                                                                                                                               | Description                                                                                               |
+| ---------: | :------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+|        `0` | `SEND_MODE_REGULAR`                                                                                                                         | Default mode.                                                                                             |
+|       `64` | `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`                                                                                               | Complex logic. Will be described below.                                                                   |
 |      `128` | <Badge color="red" size="sm" title="Careless use can result in a total balance loss">Use with caution</Badge> `SEND_MODE_CARRY_ALL_BALANCE` | Send all remaining balance of the account.                                                                |
-|     `1024` | `SEND_MODE_ESTIMATE_FEE_ONLY`                                                                                                     | Only available for the `SENDMSG` instruction. Does not send the message, only estimates the forward fees. |
+|     `1024` | `SEND_MODE_ESTIMATE_FEE_ONLY`                                                                                                               | Only available for the `SENDMSG` instruction. Does not send the message, only estimates the forward fees. |
 
 Additionally, the resulting `mode` can have the following optional flags added:
 
