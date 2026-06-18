@@ -48,7 +48,7 @@ Contracts must define a message type that contains new code, new data, or both, 
 The upgrade runs in a single transaction. New code becomes active after the transaction completes, and new data is available when the transaction ends. If the message does not provide enough Toncoin to run both the compute phase and the action phase, the entire transaction is aborted and no state changes from the upgrade are applied. Test the upgrade script to estimate gas requirements, and send enough Toncoin to execute the full upgrade transaction.
 
 <Callout type="caution">
-  Sending a transaction with the `SendIgnoreErrors` flag will ignore the insufficient funds error, and the transaction will succeed. This can leave a contract in an unusable state with a new storage structure but old code that cannot read it.
+  Sending a transaction with the [`SEND_MODE_IGNORE_ERRORS` flag](/foundations/messages/modes) will ignore the insufficient funds error, and the transaction will succeed. This can leave a contract in an unusable state with a new storage structure but old code that cannot read it.
 
   Learn more about [execution phases](/foundations/phases) and [sending modes](/foundations/messages/modes) in the docs.
 </Callout>

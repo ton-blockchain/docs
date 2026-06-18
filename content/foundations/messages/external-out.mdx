@@ -35,7 +35,7 @@ For an outbound external message, `init` field also can store arbitrary data, as
 
 ## Message modes
 
-As outbound external messages do not carry any Toncoin value, the price of their handling is paid similarly to [`SendPayFwdFeesSeparately`](/foundations/messages/modes) mode. However, using any mode other than [`SendIgnoreErrors`](/foundations/messages/modes), [`SendBounceIfActionFail`](/foundations/messages/modes), or [`SendPayFwdFeesSeparately`](/foundations/messages/modes) for outbound external messages results in [exit code `34`](/tvm/exit-codes#34:-invalid-or-unsupported-action). In this case, regardless of whether the [`SendIgnoreErrors`](/foundations/messages/modes) mode was used, the action phase will fail. Mode [`SendPayFwdFeesSeparately`](/foundations/messages/modes) does not change the message behavior.
+As outbound external messages do not carry any Toncoin value, the price of their handling is paid similarly to [`SEND_MODE_PAY_FEES_SEPARATELY`](/foundations/messages/modes) mode. However, using any mode other than [`SEND_MODE_IGNORE_ERRORS`](/foundations/messages/modes), [`SEND_MODE_BOUNCE_ON_ACTION_FAIL`](/foundations/messages/modes), or [`SEND_MODE_PAY_FEES_SEPARATELY`](/foundations/messages/modes) for outbound external messages results in [exit code `34`](/tvm/exit-codes#34:-invalid-or-unsupported-action). In this case, regardless of whether the [`SEND_MODE_IGNORE_ERRORS`](/foundations/messages/modes) mode was used, the action phase will fail. Mode [`SEND_MODE_PAY_FEES_SEPARATELY`](/foundations/messages/modes) does not change the message behavior.
 
 ## Example in Tolk
 

@@ -16,12 +16,26 @@ import { getMDXComponents } from '@/components/mdx';
 import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
 import { ScrollTop } from '@/components/ui/scroll-top';
 
+const localSkippedPagePaths = new Set([
+  'foundations/whitepapers/catchain.mdx',
+  'foundations/whitepapers/tblkch.mdx',
+  'foundations/whitepapers/ton.mdx',
+  'foundations/whitepapers/tvm.mdx',
+  'languages/fift/whitepaper.mdx',
+  'tvm/instructions.mdx',
+]);
+
+function shouldSkipLocalPage(path: string) {
+  return process.env.NEXT_BUILD_TYPE === 'local' && localSkippedPagePaths.has(path);
+}
+
 export default async function Page(props: PageProps<'/[...slug]'>) {
   const params = await props.params;
   const page = source.getPage(params.slug);
 
   if (!page) notFound();
   if (page.data.url) {
+    // TODO: consider using `redirect()` from next/navigation
     return (
       <>
         <meta httpEquiv="refresh" content={`0; url=${page.data.url}`} />
@@ -38,12 +52,27 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
     );
   }
 
-  const MDX = page.data.body;
+  if (shouldSkipLocalPage(page.path)) {
+    return (
+      <DocsPage toc={[]} full={page.data.full}>
+        <DocsTitle>{page.data.title}</DocsTitle>
+        <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
+        <DocsBody>
+          <p>
+            This large reference page is skipped in local builds to avoid compiling an oversized MDX
+            module.
+          </p>
+        </DocsBody>
+      </DocsPage>
+    );
+  }
+
+  const { body: MDX, toc } = await page.data.load();
   const markdownUrl = getPageMarkdownUrl(page).url;
 
   return (
     <DocsPage
-      toc={page.data.toc}
+      toc={toc}
       full={page.data.full}
       tableOfContent={{
         style: 'clerk',

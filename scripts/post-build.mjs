@@ -34,10 +34,8 @@ const rewrite = (path) => {
 
 /** @param {string} text */
 const prefixUrls = (text) => {
-  const attrPattern =
-    /\b(src|href|poster|darkSrc)=(["'])(\/(?:logo|videos)\/(?!\/)[^"']*)\2/g;
-  const doubleQuoteAttrPattern =
-    /\b(src|href|poster|darkSrc)":"(\/(?:logo|videos)\/(?!\/)[^"]*)"/g;
+  const attrPattern = /\b(src|href|poster|darkSrc)=(["'])(\/(?:logo|videos)\/(?!\/)[^"']*)\2/g;
+  const doubleQuoteAttrPattern = /\b(src|href|poster|darkSrc)":"(\/(?:logo|videos)\/(?!\/)[^"]*)"/g;
   const cssUrlPattern = /url\((["']?)(\/(?:logo|videos)\/(?!\/)[^)"']*)\1\)/g;
   // NOTE: only for api/search?
   const specAttrPattern =

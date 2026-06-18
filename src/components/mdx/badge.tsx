@@ -54,15 +54,17 @@ export function Badge({
   shape = 'rounded',
   variant: variantProp,
   color = 'gray',
+  title,
   since,
 }: {
   children: React.ReactNode;
+  className?: string;
   size?: BadgeSize;
   shape?: BadgeShape;
   variant?: BadgeVariant;
   color?: BadgeColor;
+  title?: string;
   since?: string;
-  className?: string;
 }) {
   const variant = variantProp ?? 'solid';
   const commonProps = {
@@ -92,12 +94,16 @@ export function Badge({
         )}
       >
         <span className="size-1.5 rounded-full bg-fd-primary" />
-        <span>Available since {since}</span>
+        <span {...(title && { title })}>Available since {since}</span>
       </div>
     );
   }
 
-  return <span {...commonProps}>{children}</span>;
+  return (
+    <span {...commonProps} {...(title && { title })}>
+      {children}
+    </span>
+  );
 }
 
 // <span className="inline-block rounded px-1.5 py-0.5 text-xs border">{children}</span>

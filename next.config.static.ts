@@ -36,6 +36,13 @@ const config: NextConfig = {
   reactStrictMode: true,
   env: {
     NEXT_CONFIG: 'static',
+    NEXT_BUILD_TYPE: isLocalBuild
+      ? 'local'
+      : isVercelBuild
+        ? 'vercel'
+        : isGitHubPagesBuild
+          ? 'github'
+          : 'unknown',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
     NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
   },
@@ -45,13 +52,32 @@ const config: NextConfig = {
   },
   images: { unoptimized: true },
   serverExternalPackages: ['typescript'],
-  ...(isLocalBuild
-    ? {
-        experimental: {
-          cpus: 4,
-        },
+  ...(isLocalBuild && {
+    experimental: {
+      // workerThreads: false,
+      // --webpack --disable-source-maps --no-server-fast-refresh
+      cpus: 3,
+      webpackMemoryOptimizations: true,
+      webpackBuildWorker: true,
+      turbopackMemoryLimit: 4294967296, // 4 GiB
+      // Despite browser console warnings, this is a great RAM usage optimization
+      serverSourceMaps: false,
+      preloadEntriesOnStart: false,
+      memoryBasedWorkersCount: true,
+    },
+    // These source maps do not affect local builds much:
+    // productionBrowserSourceMaps: false,
+    // enablePrerenderSourceMaps: false,
+    webpack: (config, { dev }) => {
+      if (dev) {
+        config.devtool = false;
       }
-    : {}),
+      return config;
+    },
+    typescript: {
+      ignoreBuildErrors: true,
+    },
+  }),
 };
 
 export default withMDX(config);

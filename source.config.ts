@@ -32,18 +32,23 @@ export const docs = defineDocs({
     schema: pageSchema
       .extend({
         sidebarTitle: z.string().optional(),
+        /** An additional badge next to the page name in the sidebar tree */
         tag: z.string().optional(),
+        /** Special pages that are included in the navigation,
+            yet redirect immediately to the given external URL */
         url: z.httpUrl().optional(),
+        /** Excludes the page from search index, yet not from LLM-generated pages */
         noindex: z.coerce.boolean().default(false),
       })
       .transform((frontmatter) => ({
         ...frontmatter,
-        // NOTE: A tag must not be used with an openapi specified in the frontmatter
-        ...(frontmatter._openapi ? { tag: undefined } : {}),
+        // NOTE: A tag or url must not be used with an openapi specified in the frontmatter
+        ...(frontmatter._openapi ? { tag: undefined, url: undefined } : {}),
       })),
     postprocess: {
       includeProcessedMarkdown: true,
     },
+    async: true,
   },
   meta: {
     schema: metaSchema.extend({
@@ -75,7 +80,7 @@ export default defineConfig({
         //       the override might place the icon as an MDX inside the title yet disable the default icon attribution.
         //       alternatively, make the override go into the table directly.
       },
-      lazy: false,
+      lazy: process.env.NEXT_BUILD_TYPE === 'local' ? true : false,
       langs: [
         'console',
         'cpp',
@@ -220,16 +225,14 @@ export default defineConfig({
       // NOTE: processing links to video or logo assets,
       //       which should be placed after everything else!
       function remarkMiscAssetLinks() {
-        if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => { };
+        if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => {};
         const isMiscAsset = /^\/(?:logo|videos)\//;
         const mediaAttrs = new Set(['src', 'poster', 'darkSrc']);
         const rewrite = (url: unknown) =>
           typeof url === 'string' && isMiscAsset.test(url) ? withBasePath(url) : url;
         return (tree) => {
           visitParents(tree, (node: any) => {
-            if (node.type === 'video') {
-              node.url = rewrite(node.url);
-            } else if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
+            if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
               for (const attr of node.attributes ?? []) {
                 if (attr.type === 'mdxJsxAttribute' && mediaAttrs.has(attr.name)) {
                   attr.value = rewrite(attr.value);

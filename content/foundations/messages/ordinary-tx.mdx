@@ -28,4 +28,4 @@ The fields of an ordinary transaction are:
 - `action` holds the result of the action phase. This field is `Nothing` if the compute phase failed and is populated otherwise.
 - `aborted` indicates whether the action phase was unsuccessful.
 - `bounce` holds the result of the bounce phase and is `Nothing` if the bounce phase was not executed.
-- `destroyed` indicates whether the account was deleted in the action phase by using [`SendDestroyIfZero`](/foundations/messages/modes). If the contract was deleted in the action phase, this flag is `true`.
+- `destroyed` indicates whether the account was deleted in the action phase by using [`SEND_MODE_DESTROY`](/foundations/messages/modes). If the contract was deleted in the action phase, this flag is `true`.
