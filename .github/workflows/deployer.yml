@@ -22,6 +22,9 @@ jobs:
   build:
     name: "Docs build"
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build
+      cancel-in-progress: true
     permissions:
       contents: read
     steps:
