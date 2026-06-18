@@ -13,6 +13,7 @@ export function Mermaid({ chart }: { chart: string }) {
       fg: 'var(--color-fd-foreground)',
       interactive: true,
       transparent: true,
+      // ...(chart.startsWith('graph') && {font: 'monospace'}),
     });
 
     return <div className="flex justify-center" dangerouslySetInnerHTML={{ __html: svg }} />;
@@ -48,6 +49,7 @@ function MermaidContent({ chart }: { chart: string }) {
   const { resolvedTheme } = useTheme();
   const { default: mermaid } = use(cachePromise('mermaid', () => import('mermaid')));
 
+  // See: https://mermaid.js.org/config/theming.html#theme-variables
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'loose',
@@ -60,7 +62,7 @@ function MermaidContent({ chart }: { chart: string }) {
     flowchart: {
       diagramPadding: 2,
       rankSpacing: 30,
-    }
+    },
   });
 
   const { svg, bindFunctions } = use(

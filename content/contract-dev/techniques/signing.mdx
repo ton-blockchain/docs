@@ -21,7 +21,7 @@ Specification:
 
 ## Other primitives
 
-TVM exposes additional cryptographic primitives beyond Ed25519. These are useful for cross-chain compatibility and advanced protocols:
+TVM exposes additional [cryptographic primitives beyond Ed25519](/tvm/instructions#cryptography). These are useful for cross-chain compatibility and advanced protocols:
 
 | Primitive                                                                                     | Purpose                                                                       |
 | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -30,9 +30,7 @@ TVM exposes additional cryptographic primitives beyond Ed25519. These are useful
 | [BLS12-381](https://en.wikipedia.org/wiki/BLS_digital_signature)                              | Pairing-based operations for signature aggregation and zero-knowledge proofs. |
 | [Ristretto255](https://en.wikipedia.org/wiki/Curve25519#Ristretto)                            | Prime-order group over Curve25519 for advanced cryptographic constructions.   |
 
-For details, see crypto instructions in [TVM instructions](/tvm/instructions).
-
-This guide focuses on Ed25519, usually used for TON.
+This guide focuses on Ed25519, which is usually used for TON.
 
 ## Signing pipeline
 
@@ -132,30 +130,31 @@ When designing a signed message, decide how to organize the data to be signed �
 
 ### Approach 1: Signed data as slice
 
-After loading the signature from the message body, the signed data remains as a slice — part of the cell that may contain additional data and references.
+After loading the signature from the message body, the signed data remains as a slice — part of the cell that may contain additional data and references. This approach is used in wallets v1–v5.
 
-This approach is used in wallets v1–v5.
+Schema for the wallet v3r2:
 
-Schema for wallet v3r2:
-
-```tlb
-msg_body$_ signature:bits512 subwallet_id:uint32
-           seqno:uint32 valid_until:uint32
-           mode:uint8 message_to_send:^Cell
-           = ExternalInMessage;
+```tlb title="TL-B"
+msg_body$_ signature:bits512
+  subwallet_id:uint32
+  seqno:uint32
+  valid_until:uint32
+  mode:uint8
+  message_to_send:^Cell
+  = ExternalInMessage;
 ```
 
 ```mermaid
 graph
     subgraph Cell["Message body"]
         direction LR
-        A[**signature**]
+        A[<b><pre>signature</pre></b>]
         subgraph Signed["Signed data"]
         direction LR
-            B[subwallet_id]
-            C[seqno]
-            D[valid_until]
-            E[mode]
+            B[<pre>subwallet_id</pre>]
+            C[<pre>seqno</pre>]
+            D[<pre>valid_until</pre>]
+            E[<pre>mode</pre>]
             F((message<br>to send))
         end
     end
@@ -170,7 +169,8 @@ graph
 
 Verification:
 
-```tolk
+```tolk title="Tolk"
+var inMsgBody = in.body;
 val signature = inMsgBody.loadBits(512);
 val signedData = inMsgBody;   // remaining data
 
@@ -193,13 +193,11 @@ This cost is high because `slice.hash()` internally rebuilds a cell from the sli
 
 ### Approach 2: Signed data as cell
 
-The signed data is stored in a **separate cell**, placed as a reference in the message body.
+The signed data is stored in a **separate cell**, placed as a reference in the message body. This approach is used in preprocessed wallet v2 and highload wallet v3.
 
-This approach is used in preprocessed wallet v2 and highload wallet v3.
+Schema for the preprocessed wallet v2:
 
-Schema for preprocessed wallet v2:
-
-```tlb
+```tlb title="TL-B"
 _ valid_until:uint64 seqno:uint16 actions:^Cell = MsgInner;
 
 msg_body$_ signature:bits512 msg_inner:^MsgInner = ExternalInMessage;
@@ -208,28 +206,34 @@ msg_body$_ signature:bits512 msg_inner:^MsgInner = ExternalInMessage;
 ```mermaid
 graph LR
     subgraph Root["Message body"]
-        direction LR
-        A[**signature**]
+        direction TD
+        A[<b>signature</b>]
         B((msg_inner))
     end
 
     subgraph Ref["Signed data (next cell)"]
-        direction LR
+        direction TD
         C[valid_until]
         D[seqno]
         E((actions))
     end
 
     A ~~~ B
-    B -.-> Ref
+    Root -.-> Ref
     C ~~~ D
     D ~~~ E
 
+    style A font-family:monospace
+    style B font-family:monospace
+    style C font-family:monospace
+    style D font-family:monospace
+    style E font-family:monospace
 ```
 
 Verification:
 
-```tolk
+```tolk title="Tolk"
+var inMsgBody = in.body;
 val signature = inMsgBody.loadBits(512);
 val signedData = inMsgBody.loadRef(); // Signed data as cell
 
@@ -251,7 +255,8 @@ Starting with TVM v12, builder hashing is available through the `HASHBU` instruc
 
 Verification (optimized):
 
-```tolk
+```tolk title="Tolk"
+var inMsgBody = in.body;
 val signature = inMsgBody.loadBits(512);
 val signedData = inMsgBody;
 
@@ -277,20 +282,18 @@ Reference: [`GlobalVersions.md` — TVM improvements](https://github.com/ton-blo
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en/download/) 18 or later LTS
+- `@ton/core` and `@ton/crypto` installed:
+  ```bash
+  npm install @ton/core @ton/crypto
+  ```
 
-### Step 0: Install dependencies
-
-```bash
-npm install @ton/core @ton/crypto
-```
-
-### Step 1: Generate or load a mnemonic
+### Step 1: Generate or load a mnemonic [step]
 
 A mnemonic is the wallet's master secret. It derives the private key used to sign messages.
 
 Generate a new mnemonic:
 
-```typescript
+```ts title="TypeScript"
 import { mnemonicNew } from '@ton/crypto';
 
 const mnemonic = await mnemonicNew(24); // Array of 24 words
@@ -298,7 +301,7 @@ const mnemonic = await mnemonicNew(24); // Array of 24 words
 
 Load an existing mnemonic:
 
-```typescript
+```ts title="TypeScript"
 // Read from environment; do not inline secrets
 const mnemonic = (process.env.MNEMONIC ?? 'MNEMONIC_WORDS').split(' ');
 ```
@@ -310,11 +313,11 @@ const mnemonic = (process.env.MNEMONIC ?? 'MNEMONIC_WORDS').split(' ');
   Anyone with access to the mnemonic can control the wallet and all its funds. Store it securely using a password manager, a hardware wallet, or encrypted storage. Never commit it to version control.
 </Callout>
 
-### Step 2: Derive the keypair
+### Step 2: Derive the keypair [step]
 
 Convert the mnemonic to an Ed25519 keypair:
 
-```typescript
+```ts title="TypeScript"
 import { mnemonicToPrivateKey } from '@ton/crypto';
 
 const keyPair = await mnemonicToPrivateKey(mnemonic);
@@ -322,11 +325,11 @@ const keyPair = await mnemonicToPrivateKey(mnemonic);
 // keyPair.secretKey  — used to sign messages
 ```
 
-### Step 3: Build the signed data
+### Step 3: Build the signed data [step]
 
 Build the message data that will be signed:
 
-```typescript
+```ts title="TypeScript"
 import { beginCell } from '@ton/core';
 
 // Build signed data (example: wallet message)
@@ -340,22 +343,22 @@ const signedData = beginCell()
     .endCell();
 ```
 
-### Step 4: Create the signature
+### Step 4: Create the signature [step]
 
 Sign the hash of the signed data:
 
-```typescript
+```ts title="TypeScript"
 import { sign } from '@ton/crypto';
 
 const signature = sign(signedData.hash(), keyPair.secretKey);
 // signature is a Buffer with 512 bits
 ```
 
-### Step 5: Build the message body
+### Step 5: Build the message body [step]
 
 Choose the structure based on the contract design:
 
-```typescript
+```ts title="TypeScript"
 // Approach 1: Signed data as slice
 const messageBodyInline = beginCell()
     .storeBuffer(signature)             // 512 bits
