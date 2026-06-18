@@ -222,22 +222,24 @@ export default defineConfig({
       remarkMdxMermaid,
       remarkMdxFiles,
       remarkSteps,
-      // NOTE: processing links to video or logo assets,
+      // NOTE: processing links to video assets,
       //       which should be placed after everything else!
-      function remarkMiscAssetLinks() {
+      function remarkVideoAssetLinks() {
         if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => {};
-        const isMiscAsset = /^\/(?:logo|videos)\//;
+        const assetLinkRegex = /^\/(?:videos|images)\//;
+        const mdxJsxTypes = new Set(['mdxJsxFlowElement', 'mdxJsxTextElement']);
+        const mediaElems = new Set(['video', 'source']);
         const mediaAttrs = new Set(['src', 'poster', 'darkSrc']);
         const rewrite = (url: unknown) =>
-          typeof url === 'string' && isMiscAsset.test(url) ? withBasePath(url) : url;
+          typeof url === 'string' && assetLinkRegex.test(url) ? withBasePath(url) : url;
+
         return (tree) => {
           visitParents(tree, (node: any) => {
-            if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
-              for (const attr of node.attributes ?? []) {
-                if (attr.type === 'mdxJsxAttribute' && mediaAttrs.has(attr.name)) {
-                  attr.value = rewrite(attr.value);
-                }
-              }
+            if (!mdxJsxTypes.has(node.type)) return;
+            if (!mediaElems.has(node.name)) return;
+            for (const attr of node.attributes ?? []) {
+              if (attr.type !== 'mdxJsxAttribute' || !mediaAttrs.has(attr.name)) continue;
+              attr.value = rewrite(attr.value);
             }
           });
         };

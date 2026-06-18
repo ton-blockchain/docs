@@ -15,6 +15,15 @@ import { $ } from './common.mjs';
 
 const main = () => {
   const pfx = 'pre-build:';
+  const isGitHubPagesBuild =
+    process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
+  const isVercelBuild = process.env.VERCEL === '1';
+  const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
+  console.log(
+    pfx,
+    'build type is —',
+    isLocalBuild ? 'local' : isVercelBuild ? 'vercel' : isGitHubPagesBuild ? 'github' : 'unknown',
+  );
   const scripts = [
     'check:types',
     'check:openapi',
