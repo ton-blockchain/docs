@@ -33,9 +33,17 @@ const resolveBasePath = () => {
 
 const config: NextConfig = {
   output: 'export',
+  // output: !isLocalBuild ? 'export' : undefined,
   reactStrictMode: true,
   env: {
     NEXT_CONFIG: 'static',
+    NEXT_BUILD_TYPE: isLocalBuild
+      ? 'local'
+      : isVercelBuild
+        ? 'vercel'
+        : isGitHubPagesBuild
+          ? 'github'
+          : 'unknown',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
     NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
   },
@@ -45,13 +53,26 @@ const config: NextConfig = {
   },
   images: { unoptimized: true },
   serverExternalPackages: ['typescript'],
-  ...(isLocalBuild
-    ? {
-        experimental: {
-          cpus: 4,
-        },
+  ...(isLocalBuild && {
+    experimental: {
+      // workerThreads: false,
+      cpus: 3,
+      webpackMemoryOptimizations: true,
+      turbopackMemoryLimit: 4294967296, // 4 GiB
+      // memoryBasedWorkersCount: true,
+    },
+    // outputFileTracingExcludes: {
+    //   '/[...slug]': ['./content/**/*.mdx'],
+    // },
+    productionBrowserSourceMaps: false,
+    webpack: (config, { dev }) => {
+      if (dev) {
+        // config.mode = 'development';
+        config.devtool = false;
       }
-    : {}),
+      return config;
+    },
+  }),
 };
 
 export default withMDX(config);

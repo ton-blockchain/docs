@@ -85,6 +85,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
 }
 
 export async function generateStaticParams() {
+  if (process.env.NEXT_BUILD_TYPE === 'local') return [];
   return source.generateParams();
 }
 
