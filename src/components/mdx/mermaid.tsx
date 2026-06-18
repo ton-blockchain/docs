@@ -3,6 +3,8 @@
 import { use, useEffect, useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { renderMermaidSVG } from 'beautiful-mermaid';
+import { ReadableStreamBYOBReader } from 'stream/web';
+import cluster from 'cluster';
 
 export function Mermaid({ chart }: { chart: string }) {
   try {
@@ -51,7 +53,14 @@ function MermaidContent({ chart }: { chart: string }) {
     securityLevel: 'loose',
     fontFamily: 'inherit',
     themeCSS: 'margin: 1.5rem auto 0;',
-    theme: resolvedTheme === 'dark' ? 'dark' : 'default',
+    theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
+    themeVariables: {
+      clusterBkg: 'transparent',
+    },
+    flowchart: {
+      diagramPadding: 2,
+      rankSpacing: 30,
+    }
   });
 
   const { svg, bindFunctions } = use(
