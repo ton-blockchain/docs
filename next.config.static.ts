@@ -60,12 +60,14 @@ const config: NextConfig = {
       webpackMemoryOptimizations: true,
       webpackBuildWorker: true,
       turbopackMemoryLimit: 4294967296, // 4 GiB
+      // Despite browser console warnings, this is a great RAM usage optimization
       serverSourceMaps: false,
       preloadEntriesOnStart: false,
       memoryBasedWorkersCount: true,
     },
-    productionBrowserSourceMaps: false,
-    enablePrerenderSourceMaps: false,
+    // These source maps do not affect local builds much:
+    // productionBrowserSourceMaps: false,
+    // enablePrerenderSourceMaps: false,
     webpack: (config, { dev }) => {
       if (dev) {
         config.devtool = false;

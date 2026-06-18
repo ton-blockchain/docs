@@ -19,7 +19,7 @@ In the system, the typical trace looks like this, with transactions moving from 
 
 ```mermaid
 flowchart LR
-    User1((User)) -->> Receiver((Receiver)) -->> A((A)) -->> B((B)) -->> User2((User))
+    User1((User)) --> Receiver((Receiver)) --> A((A)) --> B((B)) --> User2((User))
 
     style User1 r:50
     style Receiver r:50
@@ -38,7 +38,7 @@ There is _no separate_ message balance and contract balance. After the message i
 
 ```mermaid
 flowchart LR
-    User1((User)) -->> A((A)) -->> B((B)) -->> User2((User))
+    User1((User)) --> A((A)) --> B((B)) --> User2((User))
 
     style User1 r:50
     style A r:50
