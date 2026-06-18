@@ -131,7 +131,7 @@ export const Image = ({
     // Centered horizontally
     if (shouldCenter) {
       return (
-        <span style={{ display: 'flex', justifyContent: 'center' }}>
+        <span className="flex justify-center">
           <Link href={href} target={target ?? '_self'}>
             {images}
           </Link>
@@ -148,7 +148,7 @@ export const Image = ({
 
   // Not a link, centered horizontally
   if (shouldCenter) {
-    return <span style={{ display: 'flex', justifyContent: 'center' }}>{images}</span>;
+    return <span className="flex justify-center">{images}</span>;
   }
 
   // Not a link, placed as is
