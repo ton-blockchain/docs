@@ -34,7 +34,9 @@ flowchart LR
   The following explanation uses an abstract contract system and is not connected to any existing project. It is primarily applicable to systems that follow a carry-value pattern, where Toncoin is passed between contracts as part of message processing.
 </Callout>
 
-There is _no separate_ message balance and contract balance. After the message is received, coins from the message are stored to the contract balance, and then the contract is executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help to properly divide contract balance in the action phase. These diagrams of a possible value flow illustrates this.
+There is _no separate_ message balance and contract balance. After the message is received, the coins from the message are stored in the contract balance, and the contract is then executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help properly divide the contract balance during the action phase.
+
+The following diagrams illustrate the possible value flow.
 
 ```mermaid
 flowchart LR
