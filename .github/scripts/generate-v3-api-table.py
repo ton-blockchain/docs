@@ -10,8 +10,8 @@ except ImportError:
     print("PyYAML not installed. Run: pip install pyyaml")
     exit(1)
 
-SPEC_PATH = 'ecosystem/api/toncenter/v3.yaml'
-MDX_PATH = 'ecosystem/api/toncenter/v3/overview.mdx'
+SPEC_PATH = 'content/ecosystem/api/toncenter/v3.yaml'
+MDX_PATH = 'content/ecosystem/api/toncenter/v3/overview.mdx'
 MARKER = 'API_V3_ENDPOINTS'
 LINK_BASE = '/ecosystem/api/toncenter/v3'
 
@@ -27,13 +27,13 @@ TAG_ORDER = [
     'vesting',
     'stats',
     'utils',
-    'api/v2',
+    'api v2',
 ]
 
 # Map tag slugs to Mintlify's actual URL slugs
-TAG_SLUG_MAP = {
-    'api-v2': 'apiv2',
-}
+# TAG_SLUG_MAP = {
+#     'api-v2': 'api-v2',
+# }
 
 
 def load_openapi_spec(filepath: Path) -> dict:
@@ -78,7 +78,7 @@ def generate_mintlify_link(endpoint: dict) -> str:
     tag = endpoint['tag'].lower().replace(' ', '-').replace('_', '-').replace('/', '-')
 
     # Apply tag slug mapping for Mintlify
-    tag = TAG_SLUG_MAP.get(tag, tag)
+    # tag = TAG_SLUG_MAP.get(tag, tag)
 
     summary = endpoint.get('summary', '')
 
@@ -129,14 +129,16 @@ def generate_table(endpoints: list) -> str:
 
             # Handle tag display
             display_tag = tag
-            if tag.lower() == 'api/v2':
+            if tag.lower() == 'api v2':
                 display_tag = 'Legacy (v2)'
+            elif tag.lower() == 'blockchain data':
+                display_tag = 'Blockchain data'
             elif tag.islower():
                 display_tag = tag.capitalize()
 
             method_display = f"[`{method} {path}`]({link})"
 
-            lines.append(f"| **{display_tag}** | {method_display} | {summary} |")
+            lines.append(f"| {display_tag} | {method_display} | {summary} |")
 
     return '\n'.join(lines)
 

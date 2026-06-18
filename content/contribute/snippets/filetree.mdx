@@ -1,0 +1,218 @@
+---
+title: "FileTree component"
+sidebarTitle: "FileTree"
+---
+
+<Callout type="info">
+  Currently a wrapper around Fumadocs `<File>`,
+  `<Files>`, and `<Folder>` components.
+</Callout>
+
+To display the structure of a directory with files and collapsible subdirectories, use the `<FileTree>` component. Click on a subdirectory to open or close it.
+
+<Callout type="note">
+  Additionally, notes can be added to files and directories, which are displayed after their names.
+</Callout>
+
+The `<FileTree>` is a wrapper over the built-in [`<Tree>` component](https://www.mintlify.com/docs/components/tree) provided by Mintlify, but with a data-driven interface: pass a list of objects and strings instead of [composing JSX children manually](#using-\<tree>-directly).
+
+## Import
+
+## Usage
+
+Specify the structure of files and directories inside the [`items` property](#items-required) as a JavaScript list of strings, objects, and nested lists.
+
+```mdx
+<FileTree items={[ /* ...entries, see below... */ ]} />
+```
+
+### Specify files and placeholders
+
+```mdx
+{/* Files and a placeholder by the end */}
+<FileTree
+  items={[
+    "file-name-1.ml",
+    "file-name-2.hs",
+    "file-name-3.mp3",
+    "...", // will be rendered as …
+  ]}
+/>
+```
+
+<FileTree
+  items={["file-name-1.ml", "file-name-2.hs", "file-name-3.mp3", "..."]}
+/>
+
+### Add notes and comments
+
+```mdx
+{/* Using objects to add notes or nested folders */}
+<FileTree
+  items={[
+    "file-name-1",
+    { kind: "file", name: "file-name-2", note: "very important file" },
+    {
+      kind: "folder",
+      name: "best-folder",
+      note: "not really",
+      open: false, // otherwise defaults to true
+      items: ["file-name-3-within-subfolder"],
+    },
+  ]}
+/>
+```
+
+<FileTree
+  items={["file-name-1", {
+    kind: "file",
+    name: "file-name-2",
+    note: "very important file"
+  }, {
+    kind: "folder",
+    name: "best-folder",
+    note: "not really",
+    open: false,
+    items: ["file-name-3-within-subfolder"]
+  }]}
+/>
+
+### Specify folders and their state
+
+```mdx
+{/* Make all sub-folders be closed by default */}
+<FileTree
+  items={[
+    { kind: "folder", name: "folder-1", open: true, items: ["something1"] },
+    { kind: "folder", name: "folder-2", items: ["something2"] },
+  ]}
+  defaultOpen={false} {/* otherwise defaults to true */}
+/>
+```
+
+<FileTree
+  items={[{
+    kind: "folder",
+    name: "folder-1",
+    open: true,
+    items: ["something1"]
+  }, {
+    kind: "folder",
+    name: "folder-2",
+    items: ["something2"]
+  }]}
+  defaultOpen={false}
+/>
+
+## `<FileTree>` props
+
+**Implementation:** [`filetree.jsx`](https://github.com/ton-org/docs/blob/main/snippets/filetree.jsx)
+
+The `<FileTree>` component accepts the following props:
+
+### `items` (required)
+
+**type:** `FileTreeItem[]`
+
+Hierarchy of files and folders to display.
+
+The `FileTreeItem` can be one of the following kinds:
+
+- `...` or `…` — both display a placeholder entry `…` indicating additional items in a directory that are intentionally omitted
+- any `string` — name of the file inside the currently described directory
+- `{ kind: "file", ...fields... }` — an extended syntax for files, with the following fields:
+  - `name: string` — the filename;
+  - `note?: string` — optional comment, displayed next to the filename;
+- `{ kind: "folder", ...fields... }` — syntax for folders and directories, with the following fields:
+  - `name: string` — the directory name;
+  - `note?: string` — optional comment, displayed next to the directory name;
+  - `open?: boolean` — whether to open the directory, defaults to `true`;
+  - `items: FileTreeItem[]` — nested files and folders;
+
+<Callout type="note">
+  Folders are open by default. That is, their `open` property is `true` unless specified otherwise.
+</Callout>
+
+### `defaultOpen`
+
+**type:** `boolean` <br />
+**default:** `true`
+
+Whether to open all folders on page load. Can be overridden by the `open` property of individual [`FileTreeItem` entries](#items-required).
+
+## Using underlying components directly
+
+For cases where a data-driven approach is unnecessary, use the Fumadocs' `<Files>`, `<Folder>`, and `<File>` components directly. They requires no import and the `<Files>` component accepts `<File>` and `<Folder>` sub-components as children.
+
+```mdx
+<Files>
+  <Folder name="app" defaultOpen>
+    <File name="layout.tsx" />
+    <File name="page.tsx" />
+    <Folder name="api" defaultOpen>
+      <Folder name="auth">
+        <File name="route.ts" />
+      </Folder>
+      <File name="route.ts" />
+    </Folder>
+    <Folder name="components">
+      <File name="button.tsx" />
+      <File name="dialog.tsx" />
+      <File name="tabs.tsx" />
+    </Folder>
+  </Folder>
+  <File name="package.json" />
+</Files>
+```
+
+<Files>
+  <Folder
+    name="app"
+    defaultOpen
+  >
+    <File
+      name="layout.tsx"
+    />
+
+    <File
+      name="page.tsx"
+    />
+
+    <Folder
+      name="api"
+      defaultOpen
+    >
+      <Folder
+        name="auth"
+      >
+        <File
+          name="route.ts"
+        />
+      </Folder>
+
+      <File
+        name="route.ts"
+      />
+    </Folder>
+
+    <Folder
+      name="components"
+    >
+      <File
+        name="button.tsx"
+      />
+
+      <File
+        name="dialog.tsx"
+      />
+
+      <File
+        name="tabs.tsx"
+      />
+    </Folder>
+  </Folder>
+
+  <File
+    name="package.json"
+  />
+</Files>
