@@ -4,6 +4,7 @@ import { Image, type ImageProps } from 'fumadocs-core/framework';
 import type { ComponentProps } from 'react';
 import Zoom, { type UncontrolledProps } from 'react-medium-image-zoom';
 import '../../styles/image-zoom.css';
+import { cn } from '@/lib/cn';
 import { withBasePath } from '@/lib/shared';
 
 export type ImageZoomProps = ImageProps & {
@@ -45,6 +46,7 @@ export function ImageZoom({ zoomInProps, children, rmiz, ...props }: ImageZoomPr
         <Image
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"
           {...props}
+          className={cn(props.className, 'transition rounded-xl')}
           src={src}
         />
       )}

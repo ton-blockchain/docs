@@ -121,6 +121,12 @@ svg[aria-roledescription='sankey'] > g.links > g.link {
   mix-blend-mode: normal !important;
 }
 
+/* Round borders of Mermaid's graph diagrams */
+svg[aria-roledescription='flowchart-v2'] .cluster rect {
+  rx: 12;
+  ry: 12;
+}
+
 /* Vertically cap long code blocks so they scroll instead of stretching the page. */
 figure.shiki > div[role='region'] {
   max-height: 42rem;
