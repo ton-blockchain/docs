@@ -225,7 +225,7 @@ export default defineConfig({
       // NOTE: processing links to video or logo assets,
       //       which should be placed after everything else!
       function remarkMiscAssetLinks() {
-        if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => { };
+        if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => {};
         const isMiscAsset = /^\/(?:logo|videos)\//;
         const mediaAttrs = new Set(['src', 'poster', 'darkSrc']);
         const rewrite = (url: unknown) =>

@@ -3,7 +3,13 @@ import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { openapiPlugin } from 'fumadocs-openapi/server';
 import { icons } from 'lucide-react';
-import { docsContentRoute, docsImageRoute, docsRoute, toPascalCase, withBaseUrl } from '@/lib/shared';
+import {
+  docsContentRoute,
+  docsImageRoute,
+  docsRoute,
+  toPascalCase,
+  withBaseUrl,
+} from '@/lib/shared';
 
 // NOTE: Consider using the following as a plugin instead:
 //       import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
