@@ -287,7 +287,7 @@ fun onInternalMessage(in: InMessage) {
     // Compute + forward fees go here.
     val otherFees = 0;
     // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
-    assert (in.valueCoins > totalStorageFees + otherFees)
+    assert (in.valueCoins >= totalStorageFees + otherFees)
         throw ERR_NOT_ENOUGH_TON;
 }
 ```
@@ -342,7 +342,7 @@ fun onInternalMessage(in: InMessage) {
     val otherFees = 0;  // Compute + forward fees go here.
     // n equals 3 because receiver -> A -> B
     // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
-    assert (in.valueCoins > freezeLimit * 3 + otherFees)
+    assert (in.valueCoins >= freezeLimit * 3 + otherFees)
         throw ERR_NOT_ENOUGH_TON;
 }
 ```
@@ -393,7 +393,7 @@ fun onInternalMessage(in: InMessage) {
         3 * FreezeDueLimit;
 
     // `ERR_INSUFFICIENT_TON_ATTACHED` means "insufficient Toncoin attached".
-    assert (in.valueCoins > msg.amount + minFees)
+    assert (in.valueCoins >= msg.amount + minFees)
         throw ERR_INSUFFICIENT_TON_ATTACHED;
 
     // Send remaining value for fees...

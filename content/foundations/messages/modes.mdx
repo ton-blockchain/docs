@@ -73,7 +73,7 @@ The algorithm for the resulting value of outgoing internal message and amount of
 Assume that
 
 - `value = 0.1 TON`;
-- `mode = 80 = 10010000` (that is, `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE + SEND_MODE_BOUNCE_ON_ACTION_FAIL`);
+- `mode = 80 = 00001010000` (that is, `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE + SEND_MODE_BOUNCE_ON_ACTION_FAIL`);
 - `msg_balance_remaining = 0 TON` (for instance, there was previous sending message action with mode `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`);
 - `remaining_balance = 2 TON`;
 - `fwd_fees = 0.01 TON`;
@@ -100,7 +100,7 @@ Then the sending proceeds as follows:
 
 ### Outgoing external messages
 
-The algorithm above describes the sending process only for outgoing internal messages. However, outgoing external message can have only the following three modes: `SEND_MODE_BOUNCE_ON_ACTION_FAIL`, `SEND_MODE_IGNORE_ERRORS`, and `SEND_MODE_PAY_FEES_SEPARATELY` (use of any other leads to an error). `SEND_MODE_PAY_FEES_SEPARATELY` can be used, but have no effect. `SEND_MODE_BOUNCE_ON_ACTION_FAIL` and `SEND_MODE_IGNORE_ERRORS` have the same behavior, i.e. send bounce message in a case of any error and ignore almost all errors during the processing.
+The algorithm above describes the sending process only for outgoing internal messages. However, outgoing external message can have only the following three modes: `SEND_MODE_BOUNCE_ON_ACTION_FAIL`, `SEND_MODE_IGNORE_ERRORS`, and `SEND_MODE_PAY_FEES_SEPARATELY` (use of any other leads to an error). `SEND_MODE_PAY_FEES_SEPARATELY` can be used, but have no effect. For outgoing external messages, `SEND_MODE_BOUNCE_ON_ACTION_FAIL` and `SEND_MODE_IGNORE_ERRORS` have the same behavior, i.e., to ignore almost all errors during the action phase processing.
 
 There is no `value` field in external messages, so the forward fees are always deducted from account's balance.
 
