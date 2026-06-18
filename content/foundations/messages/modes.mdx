@@ -19,7 +19,7 @@ The send modes are specified via an 8-bit bitmask `mode` parameter of the [`SEND
 | ---------: | :-------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 |        `0` | `SEND_MODE_REGULAR`                                                                                                               | Default mode.                                                                                             |
 |       `64` | `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`                                                                                     | Complex logic. Will be described below.                                                                   |
-|      `128` | <Badge color="red" title="Careless use can result in a total balance loss">Use with caution</Badge> `SEND_MODE_CARRY_ALL_BALANCE` | Send all remaining balance of the account.                                                                |
+|      `128` | <Badge color="red" size="sm" title="Careless use can result in a total balance loss">Use with caution</Badge> `SEND_MODE_CARRY_ALL_BALANCE` | Send all remaining balance of the account.                                                                |
 |     `1024` | `SEND_MODE_ESTIMATE_FEE_ONLY`                                                                                                     | Only available for the `SENDMSG` instruction. Does not send the message, only estimates the forward fees. |
 
 Additionally, the resulting `mode` can have the following optional flags added:
