@@ -109,7 +109,7 @@ export const Image = ({
         {...(width && { width: widthPx })}
         // @ts-ignore
         {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
-          isDisabled: true,
+          rmiz: { isDisabled: true },
         })}
       />
       <ImageZoom
@@ -120,7 +120,7 @@ export const Image = ({
         {...(width && { width: widthPx })}
         // @ts-ignore
         {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
-          isDisabled: true,
+          rmiz: { isDisabled: true },
         })}
       />
     </>
