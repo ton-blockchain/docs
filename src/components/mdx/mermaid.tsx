@@ -3,8 +3,6 @@
 import { use, useEffect, useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { renderMermaidSVG } from 'beautiful-mermaid';
-import { ReadableStreamBYOBReader } from 'stream/web';
-import cluster from 'cluster';
 
 export function Mermaid({ chart }: { chart: string }) {
   try {
