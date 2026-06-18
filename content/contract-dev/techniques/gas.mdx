@@ -34,7 +34,7 @@ flowchart LR
   The following explanation uses an abstract contract system and is not connected to any existing project. It is primarily applicable to systems that follow a carry-value pattern, where Toncoin is passed between contracts as part of message processing.
 </Callout>
 
-There is _no separate_ message balance and contract balance. After the message is received, coins from the message are stored to the contract balance, and then the contract is executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help to properly divide contract balance in the action phase. This diagram of a possible value flow illustrates this.
+There is _no separate_ message balance and contract balance. After the message is received, coins from the message are stored to the contract balance, and then the contract is executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help to properly divide contract balance in the action phase. These diagrams of a possible value flow illustrates this.
 
 ```mermaid
 flowchart LR
@@ -63,7 +63,7 @@ A,Forward fee (A->B),20
 Old balance on B,B,20
 B,Storage fee (B),5
 B,Compute fee (B),10
-B,Forward fee (B->C),15
+B,Forward fee (B->User),15
 B,Remaining value on B,70
 ```
 
@@ -169,7 +169,11 @@ val fwdFee = calculateForwardFee(
   The `maxCells` argument limits the number of cells to visit. Usually it is set to 8192 since it is the [limit for message size](/foundations/limits#message-and-transaction-limits). It can be used to cap the amount of gas spent on size calculation.
 </Callout>
 
-If intermediate `(cells, bits)` values are not required, `msg.send()` with mode 1024 can be used instead, allowing TVM to perform the same calculations as `calculateForwardFee()`. In TVM, this is implemented as [`SENDRAWMSG`](/tvm/instructions#fb00-sendrawmsg) and consumes approximately the same amount of gas.
+If intermediate `(cells, bits)` values are not required, use `msg.estimateFeeWithoutSending()`, allowing TVM to perform the same calculations as `calculateForwardFee()`. In TVM, this is implemented as [`SENDMSG`](/tvm/instructions#fb08-sendmsg) with the [`+1024` mode](/foundations/messages/modes) set, and consumes approximately the same amount of gas.
+
+<Callout type="tip">
+  To obtain an estimate and also send the message, use the `msg.sendAndEstimateFee()` function.
+</Callout>
 
 ### Optimized forward fee calculation
 
@@ -281,7 +285,7 @@ fun onInternalMessage(in: InMessage) {
     // Compute + forward fees go here.
     val otherFees = 0;
     // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
-    assert (in.valueCoins >= totalStorageFees + otherFees)
+    assert (in.valueCoins > totalStorageFees + otherFees)
         throw ERR_NOT_ENOUGH_TON;
 }
 ```
@@ -336,7 +340,7 @@ fun onInternalMessage(in: InMessage) {
     val otherFees = 0;  // Compute + forward fees go here.
     // n equals 3 because receiver -> A -> B
     // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
-    assert (in.valueCoins >= freezeLimit * 3 + otherFees)
+    assert (in.valueCoins > freezeLimit * 3 + otherFees)
         throw ERR_NOT_ENOUGH_TON;
 }
 ```
@@ -387,7 +391,7 @@ fun onInternalMessage(in: InMessage) {
         3 * FreezeDueLimit;
 
     // `ERR_INSUFFICIENT_TON_ATTACHED` means "insufficient Toncoin attached".
-    assert (in.valueCoins >= msg.amount + minFees)
+    assert (in.valueCoins > msg.amount + minFees)
         throw ERR_INSUFFICIENT_TON_ATTACHED;
 
     // Send remaining value for fees...
