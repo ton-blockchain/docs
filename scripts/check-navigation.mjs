@@ -48,7 +48,7 @@ const checkUnique = (config) => {
   const navLinks = getNavLinks(config);
   if (navLinks.length != navLinksSet.size) {
     const duplicates = navLinks.filter(
-      (val, idx) => navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1
+      (val, idx) => navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1,
     );
     return {
       ok: false,
@@ -71,7 +71,7 @@ const checkUnique = (config) => {
 const checkExist = (config) => {
   const uniqPages = [...getNavLinksSet(config)];
   const missingPages = uniqPages.filter((it) => {
-    const rel = it.replace(/^\/+/, '').replace(/#.*$/, '') + '.mdx';
+    const rel = it.replace(/^\/+content/, 'content').replace(/#.*$/, '') + '.mdx';
     return !(existsSync(rel) && statSync(rel).isFile());
   });
   if (missingPages.length !== 0) {
@@ -175,7 +175,10 @@ const main = async () => {
 
   if (shouldRunAll || argCover) {
     console.log('🏁 Checking the coverage of .mdx pages by docs.json...');
-    handleCheckResult(await checkCover(config), 'All non-API, regular .mdx pages without stubs are present in docs.json.');
+    handleCheckResult(
+      await checkCover(config),
+      'All non-API, regular .mdx pages without stubs are present in docs.json.',
+    );
   }
 
   // In case of errors, exit with code 1
