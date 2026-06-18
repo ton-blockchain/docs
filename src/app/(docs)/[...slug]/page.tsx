@@ -73,7 +73,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
   return (
     <DocsPage
       toc={toc}
-      full={page.data.full}
+      full={page.data.full || toc.length === 0}
       tableOfContent={{
         style: 'clerk',
         footer: (
