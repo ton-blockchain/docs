@@ -1,6 +1,7 @@
 // Node.js
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 // Remark
 import { remark } from 'remark';
@@ -24,6 +25,16 @@ import { visitParents } from 'unist-util-visit-parents';
  * Custom
  * @typedef {{ok: true} | {ok: false; error: string}} CheckResult
  */
+
+// WARN: Must match Next.js build output folder
+export const outDir = 'out';
+
+// WARN: Must match gitConfig.repo in src/lib/shared.ts
+export const prefix = '/docs';
+
+// WARN: Must match next.config.static.ts isGitHubPagesBuild
+export const isGitHubPagesBuild =
+  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 
 /** @param src {string} */
 export function ansiRed(src) {
@@ -116,7 +127,33 @@ export function composeSuccess(msg) {
 
 /** @param src {string} */
 export function prefixWithSlash(src) {
-  return '/' + src.replace(/^\/+/, '');
+  return '/content/' + src.replace(/^\/*(?:content\/+)?/, '');
+}
+
+/**
+ * Synchronously runs a single command (no pipes!) and returns its exit code.
+ * NOTE: Consider making it into a template literal handler.
+ *
+ * @param command {string}
+ * @param timeout {number} seconds
+ */
+export function $(command, timeout = 60 * 10) {
+  const spaced = command.split(' ');
+  const result = spawnSync(spaced[0], spaced.slice(1), {
+    encoding: 'utf8',
+    timeout: 1_000 * timeout,
+  });
+  if (result.status != 0) {
+    const errMsg = result.error ?? result.stdout + '\n' + result.stderr;
+    console.log(errMsg);
+    return {
+      ok: false,
+      code: result.status,
+      error: errMsg,
+    };
+  }
+  console.log(result.stdout);
+  return { ok: true, code: result.status, output: result.output };
 }
 
 /**
@@ -159,7 +196,7 @@ export function hasStub(parser, filepath) {
  * @param [dir='.'] {string} directory to start with, defaults to `.` (present directory, assuming the root of the repo)
  * @returns {string[]} file paths relative to `dir` or an empty array if there is none, `dir` does not exist or `ext` is empty
  */
-export function findUnignoredFiles(ext = 'mdx', dir = '.') {
+export function findUnignoredFiles(ext = 'mdx', dir = './content') {
   if (ext === '' || !existsSync(dir) || !statSync(dir).isDirectory()) {
     return [];
   }
@@ -170,9 +207,16 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
    */
   const commonIgnoreMap = Object.freeze({
     files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) => join(dir, it)),
-    dirs: ['.git', '.github', '.idea', '.vscode', '__MACOSX', 'node_modules', '__pycache__', 'stats'].map((it) =>
-      join(dir, it),
-    ),
+    dirs: [
+      '.git',
+      '.github',
+      '.idea',
+      '.vscode',
+      '__MACOSX',
+      'node_modules',
+      '__pycache__',
+      'stats',
+    ].map((it) => join(dir, it)),
   });
 
   /**
@@ -186,7 +230,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
         // Snippets and page parts
         'snippets',
         'scripts',
-        'resources',
+        'public',
         // Pages covered in OpenAPI specs rather than in docs.json
         'ecosystem/api/toncenter/v2',
         'ecosystem/api/toncenter/v3',
@@ -201,19 +245,21 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
   /** @param subDir {string} */
   const recurse = (subDir) => {
     // Collects files and dirs one level deep, excluding common ignore targets
-    const intermediates = readdirSync(subDir, { withFileTypes: true, encoding: 'utf8', recursive: false }).filter(
-      (it) => {
-        const relPath = join(it.parentPath, it.name);
-        if (it.isFile()) {
-          return commonIgnoreMap.files.includes(relPath) === false;
-        }
-        if (it.isDirectory()) {
-          return commonIgnoreMap.dirs.includes(relPath) === false;
-        }
-        // Otherwise
-        return false;
-      },
-    );
+    const intermediates = readdirSync(subDir, {
+      withFileTypes: true,
+      encoding: 'utf8',
+      recursive: false,
+    }).filter((it) => {
+      const relPath = join(it.parentPath, it.name);
+      if (it.isFile()) {
+        return commonIgnoreMap.files.includes(relPath) === false;
+      }
+      if (it.isDirectory()) {
+        return commonIgnoreMap.dirs.includes(relPath) === false;
+      }
+      // Otherwise
+      return false;
+    });
     // Processes collected items and filters out extension-specific ignore targets,
     // recursively descending in directories and pushing files into `results` array
     // if they match the target `ext` and are not ignored.
@@ -254,8 +300,8 @@ export function getConfig() {
 
 /**
  * Get navigation links from the docs.json configuration.
- * Notice that each link is prefixed by a single slash /
- * regardless if it was present originally.
+ * Notice that each link is prefixed by 'content' and a single slash /,
+ * regardless if the latter was present originally.
  *
  * @param config {DocsConfig}
  * @returns {string[]}
@@ -287,8 +333,8 @@ export function getNavLinks(config) {
 
 /**
  * Get navigation links from the docs.json configuration as a Set.
- * Notice that each link is prefixed by a single slash /
- * regardless if it was present originally.
+ * Notice that each link is prefixed by 'content' and a single slash /,
+ * regardless if the latter was present originally.
  *
  * @param config {DocsConfig}
  * @returns {ReadonlySet<string>}

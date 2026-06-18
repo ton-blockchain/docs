@@ -1,19 +1,27 @@
 # Ignore folders
 node_modules/
 /pending/
+/stats/
+.source
+/coverage
+/.next/
+/out/
+/build
+/ctx/
 
 # Ignore some whitepapers
-/languages/fift/whitepaper.mdx
-/foundations/whitepapers/tblkch.mdx
-/foundations/whitepapers/ton.mdx
-/foundations/whitepapers/tvm.mdx
-
-# Ignore some root files
-/index.mdx
-/LICENSE*
+/content/languages/fift/whitepaper.mdx
+/content/foundations/whitepapers/tblkch.mdx
+/content/foundations/whitepapers/ton.mdx
+/content/foundations/whitepapers/tvm.mdx
 
 # Ignore generated files and directories
-/tvm/instructions.mdx
-/ecosystem/api/toncenter/v2/
-/ecosystem/api/toncenter/v3/
-/ecosystem/api/toncenter/smc-index/
+/content/tvm/instructions.mdx
+/content/ecosystem/api/toncenter/v2/
+/content/ecosystem/api/toncenter/v3/
+/content/ecosystem/api/toncenter/smc-index/
+
+# Ignore some other files
+/content/index.mdx
+/LICENSE*
+*.tsbuildinfo
