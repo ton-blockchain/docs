@@ -33,7 +33,6 @@ const resolveBasePath = () => {
 
 const config: NextConfig = {
   output: 'export',
-  // output: !isLocalBuild ? 'export' : undefined,
   reactStrictMode: true,
   env: {
     NEXT_CONFIG: 'static',
@@ -56,21 +55,25 @@ const config: NextConfig = {
   ...(isLocalBuild && {
     experimental: {
       // workerThreads: false,
+      // --webpack --disable-source-maps --no-server-fast-refresh
       cpus: 3,
       webpackMemoryOptimizations: true,
+      webpackBuildWorker: true,
       turbopackMemoryLimit: 4294967296, // 4 GiB
-      // memoryBasedWorkersCount: true,
+      serverSourceMaps: false,
+      preloadEntriesOnStart: false,
+      memoryBasedWorkersCount: true,
     },
-    // outputFileTracingExcludes: {
-    //   '/[...slug]': ['./content/**/*.mdx'],
-    // },
     productionBrowserSourceMaps: false,
+    enablePrerenderSourceMaps: false,
     webpack: (config, { dev }) => {
       if (dev) {
-        // config.mode = 'development';
         config.devtool = false;
       }
       return config;
+    },
+    typescript: {
+      ignoreBuildErrors: true,
     },
   }),
 };

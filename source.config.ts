@@ -80,7 +80,7 @@ export default defineConfig({
         //       the override might place the icon as an MDX inside the title yet disable the default icon attribution.
         //       alternatively, make the override go into the table directly.
       },
-      lazy: false,
+      lazy: process.env.NEXT_BUILD_TYPE === 'local' ? true : false,
       langs: [
         'console',
         'cpp',

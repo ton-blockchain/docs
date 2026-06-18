@@ -25,10 +25,7 @@ function resolveLucideIcon(name: string | undefined) {
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
   baseUrl: docsRoute,
-  source: ((it) =>
-    process.env.NEXT_BUILD_TYPE === 'local'
-      ? { files: it.files.filter((jt) => !jt.path.includes('whitepapers') && !jt.path.includes('fift/whitepaper') && !jt.path.includes('tvm/instructions')) }
-      : it)(docs.toFumadocsSource()),
+  source: docs.toFumadocsSource(),
   icon: resolveLucideIcon,
   pageTree: {
     transformers: [

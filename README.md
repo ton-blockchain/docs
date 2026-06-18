@@ -20,6 +20,9 @@ npm start
 
 View the local preview at `http://localhost:3000`. Starting a local preview at least once is required for regenerating the `.source/` folder, contents of which is used in certain files in the `src/` directory.
 
+> \[!IMPORTANT]
+> Around 8 Gb of free RAM space is needed for local previews to run.
+
 ### Spell checks
 
 > \[!NOTE]
