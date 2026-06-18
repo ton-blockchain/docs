@@ -13,7 +13,7 @@ export function Mermaid({ chart }: { chart: string }) {
       transparent: true,
     });
 
-    return <div dangerouslySetInnerHTML={{ __html: svg }} />;
+    return <div className="flex justify-center" dangerouslySetInnerHTML={{ __html: svg }} />;
   } catch {
     return <MermaidFallback chart={chart} />;
   }
@@ -62,6 +62,7 @@ function MermaidContent({ chart }: { chart: string }) {
 
   return (
     <div
+      className="flex justify-center"
       ref={(container) => {
         if (container) bindFunctions?.(container);
       }}
