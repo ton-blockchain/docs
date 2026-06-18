@@ -105,8 +105,8 @@ export const Image = ({
         className="block dark:hidden"
         src={src}
         alt={alt}
-        {...(height && { height: heightPx })}
-        {...(width && { width: widthPx })}
+        height={heightPx}
+        width={widthPx}
         // @ts-ignore
         {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
           rmiz: { isDisabled: true },
@@ -116,8 +116,8 @@ export const Image = ({
         className={`hidden dark:block ${shouldInvert ? 'invert' : ''}`}
         src={darkSrc ?? src}
         alt={darkAlt ?? alt}
-        {...(height && { height: heightPx })}
-        {...(width && { width: widthPx })}
+        height={heightPx}
+        width={widthPx}
         // @ts-ignore
         {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
           rmiz: { isDisabled: true },
@@ -131,11 +131,11 @@ export const Image = ({
     // Centered horizontally
     if (shouldCenter) {
       return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <span style={{ display: 'flex', justifyContent: 'center' }}>
           <Link href={href} target={target ?? '_self'}>
             {images}
           </Link>
-        </div>
+        </span>
       );
     }
 
@@ -148,7 +148,7 @@ export const Image = ({
 
   // Not a link, centered horizontally
   if (shouldCenter) {
-    return <div style={{ display: 'flex', justifyContent: 'center' }}>{images}</div>;
+    return <span style={{ display: 'flex', justifyContent: 'center' }}>{images}</span>;
   }
 
   // Not a link, placed as is
