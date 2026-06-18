@@ -287,7 +287,7 @@ Reference: [`GlobalVersions.md` — TVM improvements](https://github.com/ton-blo
   npm install @ton/core @ton/crypto
   ```
 
-### Step 1: Generate or load a mnemonic [step]
+### Step 1: Generate or load a mnemonic \[step]
 
 A mnemonic is the wallet's master secret. It derives the private key used to sign messages.
 
@@ -313,7 +313,7 @@ const mnemonic = (process.env.MNEMONIC ?? 'MNEMONIC_WORDS').split(' ');
   Anyone with access to the mnemonic can control the wallet and all its funds. Store it securely using a password manager, a hardware wallet, or encrypted storage. Never commit it to version control.
 </Callout>
 
-### Step 2: Derive the keypair [step]
+### Step 2: Derive the keypair \[step]
 
 Convert the mnemonic to an Ed25519 keypair:
 
@@ -325,7 +325,7 @@ const keyPair = await mnemonicToPrivateKey(mnemonic);
 // keyPair.secretKey  — used to sign messages
 ```
 
-### Step 3: Build the signed data [step]
+### Step 3: Build the signed data \[step]
 
 Build the message data that will be signed:
 
@@ -343,7 +343,7 @@ const signedData = beginCell()
     .endCell();
 ```
 
-### Step 4: Create the signature [step]
+### Step 4: Create the signature \[step]
 
 Sign the hash of the signed data:
 
@@ -354,7 +354,7 @@ const signature = sign(signedData.hash(), keyPair.secretKey);
 // signature is a Buffer with 512 bits
 ```
 
-### Step 5: Build the message body [step]
+### Step 5: Build the message body \[step]
 
 Choose the structure based on the contract design:
 
