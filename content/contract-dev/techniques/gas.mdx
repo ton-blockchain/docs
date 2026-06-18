@@ -327,9 +327,9 @@ fun onInternalMessage(in: InMessage) {
 
 If the remaining trace involves `n` unique contracts, no more than `n` freeze limits are required to cover their storage fees. Therefore, the receiver contract should perform the following check:
 
-<Aside type="caution">
+<Callout type="caution">
   `FreezeDueLimit` is network-specific. The value below uses the current mainnet `freeze_due_limit`; verify the target network configuration before reusing it.
-</Aside>
+</Callout>
 
 ```tolk title="Tolk"
 const FreezeDueLimit: coins = ton("0.1");  // Current mainnet freeze_due_limit.
