@@ -5,6 +5,7 @@
 const config = {
   singleQuote: true,
   printWidth: 100,
+  bracketSpacing: true,
   overrides: [
     {
       files: ['*.yml', '*.yaml', '*.py'],
