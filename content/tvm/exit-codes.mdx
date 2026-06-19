@@ -518,9 +518,9 @@ If the destination address in the outbound message is invalid, e.g., it does not
   If the optional `mode` flag +2 is set, this error won't be thrown, and the given message won't be sent.
 </Callout>
 
-### 37: Not enough Toncoin
+### 37: Not enough GRAMs
 
-If all funds of the inbound message with base `mode` 64 set have already been consumed and there are not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value (`CurrencyCollection`) is invalid, or there are not enough funds to pay forward fees or not enough funds after deducting fees, an error with exit code 37 is thrown: `Not enough Toncoin`.
+If all funds of the inbound message with base `mode` 64 set have already been consumed and there are not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value (`CurrencyCollection`) is invalid, or there are not enough funds to pay forward fees or not enough funds after deducting fees, an error with exit code 37 is thrown: `Not enough GRAMs`.
 
 <Callout>
   If the optional `mode` flag +2 is set, this error won't be thrown, and the given message won't be sent.
@@ -528,7 +528,7 @@ If all funds of the inbound message with base `mode` 64 set have already been co
 
 ### 38: Not enough extra currencies
 
-Besides the native currency, Toncoin, TON Blockchain supports up to $2^{32}$ extra currencies. They differ from creating new Jettons because extra currencies are natively supported — one can potentially just specify an additional `HashmapE` of extra currency amounts in addition to the Toncoin amount in the internal message to another contract. Unlike Jettons, extra currencies can only be stored and transferred and do not have any other functionality.
+Besides the native currency, GRAM, TON Blockchain supports up to $2^{32}$ extra currencies. They differ from creating new Jettons because extra currencies are natively supported — one can potentially just specify an additional `HashmapE` of extra currency amounts in addition to the GRAM amount in the internal message to another contract. Unlike Jettons, extra currencies can only be stored and transferred and do not have any other functionality.
 
 When there is not enough extra currency to send the specified amount, an exit code 38 is thrown: `Not enough extra currencies`.
 
