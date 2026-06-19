@@ -222,28 +222,6 @@ export default defineConfig({
       remarkMdxMermaid,
       remarkMdxFiles,
       remarkSteps,
-      // NOTE: processing links to video assets,
-      //       which should be placed after everything else!
-      function remarkVideoAssetLinks() {
-        if (!process.env.NEXT_PUBLIC_BASE_PATH) return () => {};
-        const assetLinkRegex = /^\/(?:videos|images)\//;
-        const mdxJsxTypes = new Set(['mdxJsxFlowElement', 'mdxJsxTextElement']);
-        const mediaElems = new Set(['video', 'source']);
-        const mediaAttrs = new Set(['src', 'poster', 'darkSrc']);
-        const rewrite = (url: unknown) =>
-          typeof url === 'string' && assetLinkRegex.test(url) ? withBasePath(url) : url;
-
-        return (tree) => {
-          visitParents(tree, (node: any) => {
-            if (!mdxJsxTypes.has(node.type)) return;
-            if (!mediaElems.has(node.name)) return;
-            for (const attr of node.attributes ?? []) {
-              if (attr.type !== 'mdxJsxAttribute' || !mediaAttrs.has(attr.name)) continue;
-              attr.value = rewrite(attr.value);
-            }
-          });
-        };
-      },
     ],
     rehypePlugins: (v) => [
       // NOTE: KaTeX support should be placed before everything else!
