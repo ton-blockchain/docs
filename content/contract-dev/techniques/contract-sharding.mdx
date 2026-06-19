@@ -2,7 +2,7 @@
 title: "Contract sharding"
 ---
 
-Some protocols need to store a lot of information in contracts, for example, token contracts with many users. In TON, there is a [limit `max_acc_state_bits`](/foundations/limits#message-and-transaction-limites) on how much can be stored in a single contract. The solution is to split the data across multiple contracts.
+Some protocols need to store a lot of information in contracts, for example, token contracts with many users. In TON, there is a [limit `max_acc_state_bits`](/foundations/limits#message-and-transaction-limits) on how much can be stored in a single contract. The solution is to split the data across multiple contracts.
 
 Each such contract, referred to as a _child_ contract, is associated with a key that determines its address within a parent contract. Some protocols also introduce a _parent_ contract that coordinates child contracts.
 
@@ -18,7 +18,7 @@ The contract address depends on the initial data provided in [`StateInit`](/foun
 
 Consider NFTs: the collection acts as the parent contract, and each NFT item is a child contract. The key in this case is the item index, and only the collection can set the initial owner.
 
-For jettons, the parent contract is the minter, and the child contracts are user wallets. The key is the wallet's smart contract address.
+For jettons, the parent contract is the minter, and the child contracts are jetton wallets. The key is the address of the jetton wallet's owner, and the value is the owner's jetton balance.
 
 Both patterns follow the same principle: each key maps to a separate contract. In jetton protocols, there is a unique wallet contract per user, while in NFT collections, there is a unique item contract per NFT index, regardless of who owns the item.
 
@@ -37,19 +37,26 @@ In general, data structures that can scale to very large sizes are difficult to 
 The following example shows a parent contract that deploys child contracts and assigns each child a sequence number. The shared storage file defines the data layouts and message types used by both contracts.
 
 ```tolk title="storage.tolk"
-// Shared storage layouts and messages used by both contracts.
+// Shared storage layouts, messages, and errors used by both contracts.
+
+enum Errors {
+    NotFromParent  = 100
+    NotFromAdmin   = 101
+    InvalidMessage = 0xFFFF
+}
 
 struct TodoChildStorage {
     parentAddress: address
+    // Sequence number of a child.
     seqno: uint64
 }
 
-fun TodoChildStorage.load() {
-    return TodoChildStorage.fromCell(contract.getData())
+fun TodoChildStorage.load(): TodoChildStorage {
+    return TodoChildStorage.fromCell(contract.getData());
 }
 
 fun TodoChildStorage.save(self) {
-    contract.setData(self.toCell())
+    contract.setData(self.toCell());
 }
 
 struct TodoParentStorage {
@@ -60,12 +67,12 @@ struct TodoParentStorage {
     todoChildCode: cell
 }
 
-fun TodoParentStorage.load() {
-    return TodoParentStorage.fromCell(contract.getData())
+fun TodoParentStorage.load(): TodoParentStorage {
+    return TodoParentStorage.fromCell(contract.getData());
 }
 
 fun TodoParentStorage.save(self) {
-    contract.setData(self.toCell())
+    contract.setData(self.toCell());
 }
 
 // Child prints its sequence number when it receives this message.
@@ -82,18 +89,23 @@ import "storage"
 
 type TodoChildMessage = Identify
 
+contract TodoChild {
+    storage: TodoChildStorage
+    incomingMessages: TodoChildMessage
+}
+
 fun onInternalMessage(in: InMessage) {
     val msg = lazy TodoChildMessage.fromSlice(in.body);
 
     match (msg) {
         Identify => {
             val storage = lazy TodoChildStorage.load();
-            assert (in.senderAddress == storage.parentAddress) throw 0xFFFF;
+            assert (in.senderAddress == storage.parentAddress) throw Errors.NotFromParent;
             debug.print(storage.seqno);
         }
         else => {
             // Ignore empty top-up messages, reject everything else.
-            assert (in.body.isEmpty()) throw 0xFFFF;
+            assert (in.body.isEmpty()) throw Errors.InvalidMessage;
         }
     }
 }
@@ -110,6 +122,11 @@ The parent contract owns the deployment logic. It derives each child address fro
 import "storage"
 
 type TodoParentMessage = DeployAnother
+
+contract TodoParent {
+    storage: TodoParentStorage
+    incomingMessages: TodoParentMessage
+}
 
 // Build StateInit for a TodoChild instance owned by the given parent.
 fun calcDeployedTodoChild(
@@ -136,7 +153,7 @@ fun onInternalMessage(in: InMessage) {
     match (msg) {
         DeployAnother => {
             var storage = lazy TodoParentStorage.load();
-            assert (in.senderAddress == storage.adminAddress) throw 0xFFFF;
+            assert (in.senderAddress == storage.adminAddress) throw Errors.NotFromAdmin;
             // `numChildren` is used as the next child id. Because deployment
             // is sent with SEND_MODE_IGNORE_ERRORS, failed sends can leave gaps.
             storage.numChildren += 1;
@@ -150,18 +167,34 @@ fun onInternalMessage(in: InMessage) {
                     storage.numChildren,
                     storage.todoChildCode,
                 ),
-                value: ton("0.1"),
+                value: grams("0.1"),
                 body: Identify {},
             });
 
             storage.save();
             deployMsg.send(SEND_MODE_IGNORE_ERRORS);
         }
+        else => {
+            // Ignore empty top-up messages, reject everything else.
+            assert (in.body.isEmpty()) throw Errors.InvalidMessage;
+        }
     }
 }
+
+// The deploy message sent with BounceMode.Only256BitsOfBody can bounce back if the child fails to deploy.
+fun onBouncedMessage(_in: InMessageBounced) {}
 
 get fun numChildren(): uint64 {
     val storage = lazy TodoParentStorage.load();
     return storage.numChildren;
+}
+
+get fun childAddress(seqno: uint64): address {
+    val storage = lazy TodoParentStorage.load();
+    return calcDeployedTodoChild(
+        contract.getAddress(),
+        seqno,
+        storage.todoChildCode,
+    ).calculateAddress();
 }
 ```
