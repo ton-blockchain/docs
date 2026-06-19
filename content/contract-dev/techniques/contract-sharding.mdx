@@ -64,7 +64,7 @@ contract TodoParent with Deployable {
         let init: StateInit = initOf TodoChild(self.numChildren);
         send(SendParameters{
             to: contractAddress(init),
-            value: grams("0.1"),            // pay for message, the deployment, and give some TON for storage
+            value: ton("0.1"),              // pay for message, the deployment, and give some TON for storage
             mode: SendIgnoreErrors,
             code: init.code,                // attaching the `StateInit` will cause the message to deploy
             data: init.data,
