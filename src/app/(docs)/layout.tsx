@@ -4,6 +4,45 @@ import { source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
 
+const tabTitles = [
+  'Onboarding',
+  'Nodes',
+  'Applications',
+  'APIs',
+  'Smart contracts',
+  'TVM',
+  'Foundations',
+] as const;
+
+function getUrls(title: (typeof tabTitles)[number]): Set<string> | undefined {
+  const pages = source.getPages().map((it) => it.path.replace(/^\/*/, '/').replace(/\.mdx$/, ''));
+  switch (title) {
+    case 'Onboarding':
+      return new Set(pages.filter((it) => it.startsWith('/onboarding/') || it === '/start-here'));
+    case 'Nodes':
+      return new Set(pages.filter((it) => it.startsWith('/nodes/')));
+    case 'Applications':
+      return new Set(pages.filter((it) => it.startsWith('/applications/')));
+    case 'APIs':
+      return new Set(pages.filter((it) => it.startsWith('/apis/')));
+    case 'Smart contracts':
+      return new Set(
+        pages.filter(
+          (it) =>
+            it.startsWith('/standard/') ||
+            it.startsWith('/contract-dev/') ||
+            it.startsWith('/tolk/'),
+        ),
+      );
+    case 'TVM':
+      return new Set(pages.filter((it) => it.startsWith('/tvm/')));
+    case 'Foundations':
+      return new Set(pages.filter((it) => it.startsWith('/foundations/')));
+    default:
+      return new Set([]);
+  }
+}
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <DocsLayout
@@ -14,15 +53,44 @@ export default function Layout({ children }: { children: ReactNode }) {
         collapsible: false,
       }}
       // TODO: was used for experiments, would be automatically populated
-      //       with `root: true` items in meta.json files after restructuring
+      //       with `root: true` items in meta.json files after restructuring.
+      //       (alternatively): will be populated manually in the following manner:
       // tabs={[
       //   {
-      //     title: 'aaaa',
+      //     title: 'Onboarding',
       //     url: '/start-here',
+      //     urls: getUrls('Onboarding'),
       //   },
       //   {
-      //     title: 'aaaa2',
-      //     url: '/payments/overview',
+      //     title: 'Nodes',
+      //     url: '/get-support',
+      //     urls: getUrls('Nodes'),
+      //   },
+      //   {
+      //     title: 'Applications',
+      //     url: '/from-ethereum',
+      //     urls: getUrls('Applications'),
+      //   },
+      //   {
+      //     title: 'APIs',
+      //     url: '/more-tutorials',
+      //     urls: getUrls('APIs'),
+      //   },
+      //   {
+      //     // union of standard/, contract-dev/, and tolk/
+      //     title: 'Smart contracts',
+      //     url: '/contract-dev/overview',
+      //     urls: getUrls('Smart contracts'),
+      //   },
+      //   {
+      //     title: 'TVM',
+      //     url: '/tvm/overview',
+      //     urls: getUrls('TVM'),
+      //   },
+      //   {
+      //     title: 'Foundations',
+      //     url: '/foundations/config',
+      //     urls: getUrls('Foundations'),
       //   },
       // ]}
       tabMode="top"
