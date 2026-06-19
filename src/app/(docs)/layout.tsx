@@ -4,44 +4,23 @@ import { source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
 
-const tabTitles = [
-  'Onboarding',
-  'Nodes',
-  'Applications',
-  'APIs',
-  'Smart contracts',
-  'TVM',
-  'Foundations',
-] as const;
-
-function getUrls(title: (typeof tabTitles)[number]): Set<string> | undefined {
-  const pages = source.getPages().map((it) => it.path.replace(/^\/*/, '/').replace(/\.mdx$/, ''));
-  switch (title) {
-    case 'Onboarding':
-      return new Set(pages.filter((it) => it.startsWith('/onboarding/') || it === '/start-here'));
-    case 'Nodes':
-      return new Set(pages.filter((it) => it.startsWith('/nodes/')));
-    case 'Applications':
-      return new Set(pages.filter((it) => it.startsWith('/applications/')));
-    case 'APIs':
-      return new Set(pages.filter((it) => it.startsWith('/apis/')));
-    case 'Smart contracts':
-      return new Set(
-        pages.filter(
-          (it) =>
-            it.startsWith('/standard/') ||
-            it.startsWith('/contract-dev/') ||
-            it.startsWith('/tolk/'),
-        ),
-      );
-    case 'TVM':
-      return new Set(pages.filter((it) => it.startsWith('/tvm/')));
-    case 'Foundations':
-      return new Set(pages.filter((it) => it.startsWith('/foundations/')));
-    default:
-      return new Set([]);
-  }
-}
+const pagePaths = source.getPages().map((it) => it.path.replace(/^\/*/, '/').replace(/\.mdx$/, ''));
+const tabUrls: Record<string, Set<string>> = {
+  Onboarding: new Set(
+    pagePaths.filter((it) => it.startsWith('/onboarding/') || it === '/start-here'),
+  ),
+  Nodes: new Set(pagePaths.filter((it) => it.startsWith('/nodes/'))),
+  Applications: new Set(pagePaths.filter((it) => it.startsWith('/applications/'))),
+  APIs: new Set(pagePaths.filter((it) => it.startsWith('/apis/'))),
+  Contracts: new Set(
+    pagePaths.filter(
+      (it) =>
+        it.startsWith('/standard/') || it.startsWith('/contract-dev/') || it.startsWith('/tolk/'),
+    ),
+  ),
+  TVM: new Set(pagePaths.filter((it) => it.startsWith('/tvm/'))),
+  Foundations: new Set(pagePaths.filter((it) => it.startsWith('/foundations/'))),
+};
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -59,38 +38,38 @@ export default function Layout({ children }: { children: ReactNode }) {
       //   {
       //     title: 'Onboarding',
       //     url: '/start-here',
-      //     urls: getUrls('Onboarding'),
+      //     urls: tabUrls.Onboarding,
       //   },
       //   {
       //     title: 'Nodes',
       //     url: '/get-support',
-      //     urls: getUrls('Nodes'),
+      //     urls: tabUrls.Nodes,
       //   },
       //   {
       //     title: 'Applications',
       //     url: '/from-ethereum',
-      //     urls: getUrls('Applications'),
+      //     urls: tabUrls.Applications,
       //   },
       //   {
       //     title: 'APIs',
       //     url: '/more-tutorials',
-      //     urls: getUrls('APIs'),
+      //     urls: tabUrls.APIs,
       //   },
       //   {
       //     // union of standard/, contract-dev/, and tolk/
       //     title: 'Smart contracts',
       //     url: '/contract-dev/overview',
-      //     urls: getUrls('Smart contracts'),
+      //     urls: tabUrls.Contracts,
       //   },
       //   {
       //     title: 'TVM',
       //     url: '/tvm/overview',
-      //     urls: getUrls('TVM'),
+      //     urls: tabUrls.TVM,
       //   },
       //   {
       //     title: 'Foundations',
       //     url: '/foundations/config',
-      //     urls: getUrls('Foundations'),
+      //     urls: tabUrls.Foundations,
       //   },
       // ]}
       tabMode="top"
