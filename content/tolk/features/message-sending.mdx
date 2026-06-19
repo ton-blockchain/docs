@@ -7,7 +7,7 @@ Tolk provides a high-level function `createMessage`, which is followed by `send`
 ```tolk
 val reply = createMessage({
     bounce: BounceMode.NoBounce,
-    value: ton("0.05"),
+    value: grams("0.05"),
     dest: senderAddress,
     body: RequestedInfo { ... }
 });
@@ -20,16 +20,16 @@ When handling a message, some values can be represented in multiple valid forms.
 
 ### Message value
 
-The message value consists of a Toncoin amount:
+The message value consists of a GRAM amount:
 
 ```tolk
-value: someTonAmount
+value: someGramAmount
 ```
 
-When extra currencies are required, the message value includes both Toncoin and a dictionary:
+When extra currencies are required, the message value includes both GRAM and a dictionary:
 
 ```tolk
-value: (someTonAmount, extraDict)
+value: (someGramAmount, extraDict)
 ```
 
 This is possible because the `value` field is defined as a union:
@@ -250,7 +250,7 @@ While a field `stateInit: ContractState | cell` is named as `stateInit`, emphasi
 
 ## `createExternalLogMessage`
 
-`createExternalLogMessage` follows the same general model as `createMessage`. [External outgoing messages](/foundations/messages/external-out) do not support bounce behavior, attached Toncoin, or related options, so the set of available fields is different. External messages are used only for emitting logs intended for indexers.
+`createExternalLogMessage` follows the same general model as `createMessage`. [External outgoing messages](/foundations/messages/external-out) do not support bounce behavior, attached GRAM, or related options, so the set of available fields is different. External messages are used only for emitting logs intended for indexers.
 
 Example:
 

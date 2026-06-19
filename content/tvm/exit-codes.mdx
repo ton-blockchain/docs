@@ -41,7 +41,7 @@ The following table lists exit codes with their origin (where they can occur) an
 | [34](#34-invalid-or-unsupported-action)                   | [Action phase][a]                   | Action is invalid or not supported.                                                                    |
 | [35](#35-invalid-source-address-in-outbound-message)      | [Action phase][a]                   | Invalid source address in outbound message.                                                            |
 | [36](#36-invalid-destination-address-in-outbound-message) | [Action phase][a]                   | Invalid destination address in outbound message.                                                       |
-| [37](#37-not-enough-toncoin)                              | [Action phase][a]                   | Not enough Toncoin.                                                                                    |
+| [37](#37-not-enough-grams)                                | [Action phase][a]                   | Not enough GRAMs.                                                                                      |
 | [38](#38-not-enough-extra-currencies)                     | [Action phase][a]                   | Not enough extra currencies.                                                                           |
 | [39](#39-outbound-message-does-not-fit-into-cell)         | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.                                             |
 | [40](#40-cannot-process-message)                          | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large, or its Merkle depth is too big. |
@@ -486,17 +486,17 @@ If there are more than 255 actions queued for execution, the [action phase](#act
 import "@stdlib/gas-payments";
 
 fun onInternalMessage() {
-    // For example, let's attempt to queue the reservation of a specific amount of nanoToncoins
+    // For example, let's attempt to queue the reservation of a specific amount of nanograms
     // This won't fail in the compute phase, but will result in exit code 33 in the action phase
     repeat (256) {
-        reserveToncoinsOnBalance(1000000, RESERVE_MODE_AT_MOST);
+        reserveGramsOnBalance(1000000, RESERVE_MODE_AT_MOST);
     }
 }
 ```
 
 ### 34: Invalid or unsupported action
 
-There are only four supported actions at the moment: changing the contract code, sending a message, reserving a specific amount of nanoToncoin, and changing the library cell. If there is any issue with the specified action (invalid message, unsupported action, etc.), an error with exit code 34 is thrown: `Invalid or unsupported action`.
+There are only four supported actions at the moment: changing the contract code, sending a message, reserving a specific amount of nanograms, and changing the library cell. If there is any issue with the specified action (invalid message, unsupported action, etc.), an error with exit code 34 is thrown: `Invalid or unsupported action`.
 
 ```tolk title="Tolk"
 fun onInternalMessage() {

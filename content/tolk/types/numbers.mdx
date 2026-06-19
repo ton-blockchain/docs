@@ -15,13 +15,13 @@ Tolk provides additional integer types to accommodate (de)serialization:
 
 There are also types of variable bit-width:
 
-| Name                 | Inclusive range                       | Space taken            | Notes                                                                         |
-| -------------------- | ------------------------------------- | ---------------------- | ----------------------------------------------------------------------------- |
-| Unsigned `coins`     | 0 to 2<sup>120</sup>-1                | Between 4 and 124 bits | They represent nanoToncoin, where 10<sup>9</sup> nanoToncoin equals 1 Toncoin |
-| Unsigned `varuint16` | Same as `coins`                       | Same as `coins`        | Rarely used                                                                   |
-| Unsigned `varuint32` | 0 to 2<sup>248</sup>-1                | Between 5 and 253 bits | Rarely used                                                                   |
-| Signed `varint16`    | -2<sup>119</sup> to 2<sup>119</sup>-1 | Same as `coins`        | Rarely used                                                                   |
-| Signed `varint32`    | -2<sup>247</sup> to 2<sup>247</sup>-1 | Between 5 and 253 bits | Rarely used                                                                   |
+| Name                 | Inclusive range                       | Space taken            | Notes                                                                  |
+| -------------------- | ------------------------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| Unsigned `coins`     | 0 to 2<sup>120</sup>-1                | Between 4 and 124 bits | They represent nanograms, where 10<sup>9</sup> nanograms equals 1 GRAM |
+| Unsigned `varuint16` | Same as `coins`                       | Same as `coins`        | Rarely used                                                            |
+| Unsigned `varuint32` | 0 to 2<sup>248</sup>-1                | Between 5 and 253 bits | Rarely used                                                            |
+| Signed `varint16`    | -2<sup>119</sup> to 2<sup>119</sup>-1 | Same as `coins`        | Rarely used                                                            |
+| Signed `varint32`    | -2<sup>247</sup> to 2<sup>247</sup>-1 | Between 5 and 253 bits | Rarely used                                                            |
 
 <Callout type="caution">
   All these types are **257-bit integers at runtime**. [Overflows can occur at runtime](/tvm/exit-codes#4%3A-integer-overflow), but they are more likely during serialization.
@@ -77,11 +77,11 @@ fun demo(d: Demo) {
 
 The virtual machine supports only signed 257-bit integers. Floating-point numbers do not exist.
 
-Represent monetary, Toncoin values with `coins`:
+Represent monetary GRAM values with `coins`:
 
 ```tolk
-// 1.23 Toncoin or 1,230,000,000 nanoToncoin
-const MIN_BALANCE = ton("1.23")
+// 1.23 GRAM or 1,230,000,000 nanograms
+const MIN_BALANCE = grams("1.23")
 ```
 
 ## Serialization
@@ -194,9 +194,9 @@ fun f(op: int32, qid: uint64) {
 }
 ```
 
-### Type `coins` and function `ton("0.05")`
+### Type `coins` and function `grams("0.05")`
 
-Similar to `int32`, Tolk has a dedicated `coins` type representing nanoToncoin values.
+Similar to `int32`, Tolk has a dedicated `coins` type representing nanogram values.
 
 The `coins` type has special serialization rules. It's serialized as variadic integer: small values consume fewer, large values consume more.
 
@@ -204,13 +204,15 @@ Arithmetic with `coins` degrades to `int`, similar to `intN`, except for additio
 
 Values of type `int` can be cast back to `coins`, following the same rules as `intN`.
 
-There is a `ton` built-in function, which calculates nanoToncoin values at compile-time. It accepts only constants and literals, e.g., `ton(some_variable)` is invalid.
+There is a `grams` built-in function, which calculates nanogram values at compile-time. It accepts only constants and literals, e.g., `grams(some_variable)` is invalid.
 
 ```tolk
-const ONE_TON = ton("1");     // `coins`, value: 1000000000
+const ONE_GRAM = grams("1");     // `coins`, value: 1000000000
 
 fun calcCost() {
-    val cost = ton("0.05");   // `coins`, value: 50000000
-    return ONE_TON + cost;
+    val cost = grams("0.05");   // `coins`, value: 50000000
+    return ONE_GRAM + cost;
 }
 ```
+
+The old `ton("0.05")` function is still available for backward compatibility, but `grams` is preferred.

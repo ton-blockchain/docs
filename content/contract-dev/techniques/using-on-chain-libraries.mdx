@@ -92,7 +92,7 @@ fun onInternalMessage(in: InMessage) {
         calculateGasFeeWithoutFlatPrice(-1, sizeCountingGas) +
         calculateStorageFee(-1, DEFAULT_DURATION, orderBits, orderCells);
 
-    reserveToncoinsOnBalance(toReserve, RESERVE_MODE_BOUNCE_ON_ACTION_FAIL);
+    reserveGramsOnBalance(toReserve, RESERVE_MODE_BOUNCE_ON_ACTION_FAIL);
 
     val reply = createMessage({
         bounce: BounceMode.NoBounce,

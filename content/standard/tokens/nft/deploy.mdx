@@ -193,7 +193,7 @@ struct NftItemInitAtDeployment {
 struct (0x00000001) DeployNft {
     queryId: uint64
     itemIndex: uint64
-    attachTonAmount: coins
+    attachGrams: coins
     initParams: Cell<NftItemInitAtDeployment>
 }
 
@@ -206,7 +206,7 @@ fun onInternalMessage(in: InMessage) {
         queryId: 0,
         itemIndex: <INDEX>,
         // will be sent to the item contract on deployment
-        attachTonAmount: ton("0.005"),
+        attachGrams: grams("0.005"),
         initParams: NftItemInitAtDeployment {
             recipientAddress: address("<RECIPIENT_ADDRESS>"),
             content: ("<ITEM_CONTENT>" as SnakeString).toCell()
@@ -216,7 +216,7 @@ fun onInternalMessage(in: InMessage) {
     val msg = createMessage({
         bounce: true,
         dest: address("<COLLECTION_ADDRESS>"),
-        value: ton("0.01"),
+        value: grams("0.01"),
         body: deploy
     });
 
