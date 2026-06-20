@@ -78,7 +78,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
       tableOfContent={{
         style: 'clerk',
         footer: (
-          <div className="my-3 space-y-3">
+          <div className="my-0 space-y-3">
             <ScrollTop />
           </div>
         ),

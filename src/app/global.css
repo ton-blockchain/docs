@@ -52,6 +52,8 @@ html > body[data-scroll-locked] {
 #nd-docs-layout > .items-end {
   grid-area: tabs;
   align-items: center;
+  /* Disable on mobile */
+  display: none;
 }
 
 #nd-docs-layout {
@@ -71,6 +73,8 @@ html > body[data-scroll-locked] {
     position: sticky;
     top: var(--fd-docs-row-2);
     z-index: 10;
+    /* Re-enable when width is sufficient */
+    display: none;
   }
 
   /* placing ToC popover below the tab bar */
