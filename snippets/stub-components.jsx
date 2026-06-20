@@ -58,14 +58,18 @@ export const ResponseField = ({ name = '', type = '', required = false, children
  *   children: any
  * }} props
  */
-export const Tooltip = ({ tip = '', cta = '', href = '', children }) => (
-  <span title={tip} className="underline decoration-dotted decoration-fd-muted-foreground">
-    {children}
-    {cta && href && (
-      <>
-        {' '}
-        <Link href={href}>{cta}</Link>
-      </>
-    )}
-  </span>
-);
+export const Tooltip = ({ tip = '', cta = '', href = '', children }) =>
+  (cta && href && (
+    <Link href={href}>
+      <span
+        title={tip.replace(/\.* *$/, '. ') + cta.replace(/\.*$/, '.')}
+        className="underline decoration-dotted decoration-fd-muted-foreground"
+      >
+        {children}
+      </span>
+    </Link>
+  )) || (
+    <span title={tip} className="underline decoration-dotted decoration-fd-muted-foreground">
+      {children}
+    </span>
+  );

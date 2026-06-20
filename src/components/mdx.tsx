@@ -57,7 +57,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     FileTree,
     Icon,
     Badge,
-    // Page-specific components
+    // Page-specific components that require complex React state management or imports.
+    // Other page-specific components should be placed in /snippets and imported directly on the target page.
     CatchainVisualizer,
     TvmInstructionTable,
     // NOTE: dummy or shim components
