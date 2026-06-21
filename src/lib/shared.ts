@@ -8,9 +8,9 @@ export const docsRoute = `/`;
 export const docsImageRoute = `/og`;
 export const docsContentRoute = `/llms`;
 export const gitConfig = {
-  user: 'ton-org',
-  repo: 'docs',
-  branch: 'main',
+  user: process.env.NEXT_GIT_USER ?? 'ton-org',
+  repo: process.env.NEXT_GIT_REPO ?? 'docs',
+  branch: process.env.NEXT_GIT_BRANCH ?? 'main',
 };
 export const ghPagesUrl = `https://${gitConfig.user}.github.io/${gitConfig.repo}`;
 

@@ -1,4 +1,4 @@
-// import {readFileSync} from "node:fs";
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
 import { createMDX } from 'fumadocs-mdx/next';
@@ -9,6 +9,8 @@ const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 const isVercelBuild = process.env.VERCEL === '1';
 const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
+const gitUrl = execSync('git config --get remote.origin.url').toString().trim();
+const gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
 
 const resolveBaseUrl = () => {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -45,6 +47,9 @@ const config: NextConfig = {
           : 'unknown',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
     NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
+    NEXT_GIT_USER: gitRepoMatch?.at(1),
+    NEXT_GIT_REPO: gitRepoMatch?.at(2),
+    NEXT_GIT_BRANCH: 'main',
   },
   basePath: resolveBasePath(),
   turbopack: {
