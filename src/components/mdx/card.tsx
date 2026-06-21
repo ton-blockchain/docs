@@ -112,7 +112,10 @@ export function Card({
         {showArrow ? (
           <div
             aria-hidden
-            className="absolute top-4 right-4 text-fd-muted-foreground transition-colors group-hover:text-fd-primary"
+            className={cn(
+              'absolute top-2 right-2 text-fd-muted-foreground transition-colors',
+              !disabled && 'group-hover:text-fd-primary',
+            )}
           >
             <ArrowUpRight className="size-4" />
           </div>
@@ -128,7 +131,17 @@ export function Card({
           </div>
         ) : null}
         <div className="min-w-0 flex-1">
-          {title ? <h3 className="not-prose mb-1 text-sm font-medium">{title}</h3> : null}
+          {title ? (
+            <h3
+              className={cn(
+                'not-prose text-sm font-medium',
+                children || description ? 'mb-1' : '',
+                !disabled && 'group-hover:text-fd-primary',
+              )}
+            >
+              {title}
+            </h3>
+          ) : null}
           {description ? (
             <p className="my-0! text-sm text-fd-muted-foreground">{description}</p>
           ) : null}
@@ -139,7 +152,7 @@ export function Card({
             <div className="mt-4">
               <span
                 className={cn(
-                  'flex items-center gap-2 text-sm font-medium text-fd-muted-foreground',
+                  'flex items-center gap-1 text-sm font-medium text-fd-muted-foreground',
                   !disabled && 'group-hover:text-fd-primary',
                 )}
               >

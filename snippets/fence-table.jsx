@@ -1,11 +1,12 @@
+/** @param {{ children: any }} props */
 export const FenceTable = ({ children }) => {
   return (
     <pre
       style={{
-        'font-family': 'monospace',
-        'white-space': 'pre',
-        'overflow-x': 'auto',
-        'font-size': '14px',
+        fontFamily: 'monospace',
+        whiteSpace: 'pre',
+        overflowX: 'auto',
+        fontSize: '14px',
       }}
     >
       {children}

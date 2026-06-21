@@ -1,28 +1,28 @@
-import { source } from '@/lib/source';
-import { createFromSource } from 'fumadocs-core/search/server';
+import { source, getSearchablePages } from '@/lib/source';
+import { flexsearchFromSource } from 'fumadocs-core/search/flexsearch';
 
 const searchSource: typeof source = {
   ...source,
-  getPages: (locale?: string) =>
-    source.getPages(locale).filter((p) => !p.data.url && !p.data.noindex),
+  getPages: getSearchablePages,
 };
-const searchAPI = createFromSource(searchSource, {
-  // https://docs.orama.com/docs/orama-js/supported-languages
-  language: 'english',
-  // buildIndex(page) {
+
+// https://www.fumadocs.dev/docs/headless/search/flexsearch#static-export
+const searchAPI = flexsearchFromSource(searchSource, {
+  document: {
+    // Shaves off nearly half of the built index while retaining search quality.
+    tokenize: 'tolerant',
+  },
+  // async buildIndex(page) {
   //   return {
-  //     id: page.url,
-  //     url: page.url,
   //     title: page.data.title,
   //     description: page.data.description,
-  //     structuredData: page.data.structuredData,
-  //     tag: page.slugs[0],
-  //     // TODO: redirects for /-based folder paths to overview pages.
-  //   }
-  // },
-  sort: {
-    enabled: true,
-  },
+  //     url: page.url,
+  //     id: page.url,
+  //     structuredData: await page.data.structuredData(),
+  //     breadcrumbs: page.slugs.slice(0, -1),
+  //     // tag: undefined,
+  //   };
+  // }
 });
 
 export const revalidate = false;

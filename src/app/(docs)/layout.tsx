@@ -4,6 +4,24 @@ import { source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
 
+const pagePaths = source.getPages().map((it) => it.path.replace(/^\/*/, '/').replace(/\.mdx$/, ''));
+const tabUrls: Record<string, Set<string>> = {
+  Onboarding: new Set(
+    pagePaths.filter((it) => it.startsWith('/onboarding/') || it === '/start-here'),
+  ),
+  Nodes: new Set(pagePaths.filter((it) => it.startsWith('/nodes/'))),
+  Applications: new Set(pagePaths.filter((it) => it.startsWith('/applications/'))),
+  APIs: new Set(pagePaths.filter((it) => it.startsWith('/apis/'))),
+  Contracts: new Set(
+    pagePaths.filter(
+      (it) =>
+        it.startsWith('/standard/') || it.startsWith('/contract-dev/') || it.startsWith('/tolk/'),
+    ),
+  ),
+  TVM: new Set(pagePaths.filter((it) => it.startsWith('/tvm/'))),
+  Foundations: new Set(pagePaths.filter((it) => it.startsWith('/foundations/'))),
+};
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <DocsLayout
@@ -14,15 +32,44 @@ export default function Layout({ children }: { children: ReactNode }) {
         collapsible: false,
       }}
       // TODO: was used for experiments, would be automatically populated
-      //       with `root: true` items in meta.json files after restructuring
+      //       with `root: true` items in meta.json files after restructuring.
+      //       (alternatively): will be populated manually in the following manner:
       // tabs={[
       //   {
-      //     title: 'aaaa',
+      //     title: 'Onboarding',
       //     url: '/start-here',
+      //     urls: tabUrls.Onboarding,
       //   },
       //   {
-      //     title: 'aaaa2',
-      //     url: '/payments/overview',
+      //     title: 'Nodes',
+      //     url: '/get-support',
+      //     urls: tabUrls.Nodes,
+      //   },
+      //   {
+      //     title: 'Applications',
+      //     url: '/from-ethereum',
+      //     urls: tabUrls.Applications,
+      //   },
+      //   {
+      //     title: 'APIs',
+      //     url: '/more-tutorials',
+      //     urls: tabUrls.APIs,
+      //   },
+      //   {
+      //     // union of standard/, contract-dev/, and tolk/
+      //     title: 'Smart contracts',
+      //     url: '/contract-dev/overview',
+      //     urls: tabUrls.Contracts,
+      //   },
+      //   {
+      //     title: 'TVM',
+      //     url: '/tvm/overview',
+      //     urls: tabUrls.TVM,
+      //   },
+      //   {
+      //     title: 'Foundations',
+      //     url: '/foundations/config',
+      //     urls: tabUrls.Foundations,
       //   },
       // ]}
       tabMode="top"

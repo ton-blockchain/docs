@@ -4,7 +4,7 @@ import { ArrowUpCircleIcon } from 'lucide-react';
 
 export function ScrollTop({ ...props }: React.ComponentPropsWithRef<'button'>) {
   const handleScrollToTop = React.useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
   return (

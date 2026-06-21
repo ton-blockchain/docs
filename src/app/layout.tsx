@@ -1,8 +1,6 @@
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
-import logoDark from '@/public/logo/dark.svg';
-import logoLight from '@/public/logo/light.svg';
+import { getQuickJumpPages } from '@/lib/source';
 
 import './global.css';
 import 'katex/dist/katex.css';
@@ -11,28 +9,32 @@ const inter = Inter({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  icons: {
-    icon: [
-      {
-        url: logoLight.src,
-        media: '(prefers-color-scheme: light)',
-        type: 'image/svg+xml',
-      },
-      {
-        url: logoDark.src,
-        media: '(prefers-color-scheme: dark)',
-        type: 'image/svg+xml',
-      },
-    ],
-  },
-};
+// const mono = JetBrains_Mono({
+//   variable: '--font-mono',
+//   subsets: ['latin'],
+// });
+
+// export const metadata = createMetadata({
+//   title: {
+//     template: '%s | Fumadocs',
+//     default: 'Fumadocs',
+//   },
+//   description: 'The React.js documentation framework.',
+//   metadataBase: baseUrl,
+// });
+
+// export const viewport: Viewport = {
+//   themeColor: [
+//     { media: '(prefers-color-scheme: dark)', color: '#1E2337' },
+//     { media: '(prefers-color-scheme: light)', color: '#F7F9FB' },
+//   ],
+// };
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <Provider>{children}</Provider>
+        <Provider quickJumpPages={getQuickJumpPages()}>{children}</Provider>
       </body>
     </html>
   );

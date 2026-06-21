@@ -5,12 +5,12 @@ export const appName = 'TON Docs';
 // Next.js automatically prepends `basePath` to sidebar and page <Link> hrefs.
 // Do not include the prefix here lest you want to double it (e.g. /docs/docs/... on GitHub Pages).
 export const docsRoute = `/`;
-export const docsImageRoute = `${pathPrefix}/og`;
-export const docsContentRoute = `${pathPrefix}/llms`;
+export const docsImageRoute = `/og`;
+export const docsContentRoute = `/llms`;
 export const gitConfig = {
-  user: 'ton-org',
-  repo: 'docs',
-  branch: 'main',
+  user: process.env.NEXT_GIT_USER ?? 'ton-org',
+  repo: process.env.NEXT_GIT_REPO ?? 'docs',
+  branch: process.env.NEXT_GIT_BRANCH ?? 'main',
 };
 export const ghPagesUrl = `https://${gitConfig.user}.github.io/${gitConfig.repo}`;
 

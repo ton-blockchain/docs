@@ -31,7 +31,7 @@ TON documentation exposes several AI-facing surfaces:
 
 - The contextual menu can copy page content, open a page in external AI tools, or connect to the documentation MCP.
 - The [`llms.txt`](https://docs.ton.org/llms.txt) file provides a machine-readable index of documentation pages.
-- Raw Markdown is available through `.md` page routes. This is useful when a tool needs the page content without the site UI. For example, to obtain raw contents of this page, query `https://docs.ton.org/ecosystem/ai/overview.md`.
+- Raw Markdown is available through prepending `/llms` and appending `content.md` to the page routes. This is useful when a tool needs the page content without the site UI. For example, to obtain raw contents of this page, `/ecosystem/ai/overview`, query `/llms/ecosystem/ai/overview/content.md`.
 
 {/* TODO(restore when available):
   - The in-site assistant can answer questions over the docs and cite relevant pages. Assistant can be invoked by a shortcut <kbd>Ctrl+K</kbd> (or <kbd>Cmd+K</kbd> on macOS), a query in the floating input field at the bottom of each page, from any selection on the page, or via a button on each code block to explain its contents.

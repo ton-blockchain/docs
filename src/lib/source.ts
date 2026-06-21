@@ -115,6 +115,20 @@ export function getIndexablePages(locale?: string) {
   return source.getPages(locale).filter((page) => !page.data.url);
 }
 
+export function getSearchablePages(locale?: string) {
+  return source.getPages(locale).filter((page) => !page.data.url && !page.data.noindex);
+}
+
+export function getQuickJumpPages(locale?: string) {
+  const pages = getSearchablePages(locale);
+  return pages.map((page) => ({
+    title: page.data.title,
+    normalizedTitle: page.data.title.toLocaleLowerCase(locale),
+    url: page.url,
+  }));
+}
+
+/** The `url` is prefixed by metadataBase elsewhere */
 export function getPageImage(page: (typeof source)['$inferPage']) {
   const segments = [...page.slugs, 'image.png'];
 
@@ -124,6 +138,7 @@ export function getPageImage(page: (typeof source)['$inferPage']) {
   };
 }
 
+/** The `url` is prefixed by metadataBase elsewhere */
 export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
   const segments = [...page.slugs, 'content.md'];
 
@@ -133,10 +148,11 @@ export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
   };
 }
 
+/** MUST NOT be wrapped in withBaseUrl() because it calls it internally already */
 function getLLMContentPath(url: string) {
   const match = url.match(/^([^?#]*)(?:[?#].*)?$/);
   const pathname = (match?.[1] ?? url).replace(/\/+$/, '');
-  return `${docsContentRoute}${pathname}/content.md`;
+  return withBaseUrl(`${docsContentRoute}${pathname}/content.md`);
 }
 
 export function processLLMLinks(md: string): string {
@@ -159,5 +175,5 @@ export async function getLLMText(page: (typeof source)['$inferPage']) {
   // if (page.data._openapi) { }
   const processed = processLLMLinks(await page.data.getText('processed'));
 
-  return `# ${page.data.title} (${withBaseUrl(getLLMContentPath(page.url))})\n\n${processed}`;
+  return `# ${page.data.title} (${getLLMContentPath(page.url)})\n\n${processed}`;
 }

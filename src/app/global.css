@@ -7,6 +7,16 @@
 @source '../**/*.{ts,jsx,tsx}';
 
 /**
+ * Adding a custom variant to apply transparent backgrounds when the browser supports
+ * color mix with some transparency or percentages.
+ */
+@custom-variant supports-tp-mix {
+  @supports (background: color-mix(in oklab, red 60%, transparent)) {
+    @slot;
+  }
+}
+
+/**
  * Common, baseline color changes
  * @see https://tailwindcss.com/docs/theme
  */
@@ -52,6 +62,8 @@ html > body[data-scroll-locked] {
 #nd-docs-layout > .items-end {
   grid-area: tabs;
   align-items: center;
+  /* Disable on mobile */
+  display: none;
 }
 
 #nd-docs-layout {
@@ -65,6 +77,21 @@ html > body[data-scroll-locked] {
   #nd-docs-layout {
     --fd-tabs-height: var(--fd-toc-popover-height);
   }
+
+  /* making tab bar as sticky as ToC popover */
+  #nd-docs-layout > .items-end {
+    position: sticky;
+    top: var(--fd-docs-row-2);
+    z-index: 10;
+    /* Re-enable when width is sufficient */
+    display: none;
+  }
+
+  /* placing ToC popover below the tab bar */
+  /* TODO: restore when tabs are used */
+  /* #nd-docs-layout > div[data-toc-popover] {
+    top: var(--fd-toc-popover-height);
+  } */
 }
 
 /* 75rem ~ 1200px with font-size 16 */
@@ -81,21 +108,23 @@ html > body[data-scroll-locked] {
     margin-inline: calc(var(--spacing) * 8);
     align-items: stretch;
     padding-inline: inherit;
+    justify-content: space-around;
+    position: sticky;
+    top: var(--fd-docs-row-1);
+    z-index: 10;
   }
-}
 
-/* 90rem ~ 1440px with font-size 16 */
-@media (min-width: 1440px) {
-  /* tab bar matching the page contents width */
-  #nd-docs-layout > .items-end {
-    margin-inline: calc(var(--spacing) * 11);
-  }
+  /* offset ToC by the height of the tab tar */
+  /* TODO: restore when tabs are used */
+  /* #nd-toc {
+    padding-top: calc(var(--spacing) * 14 + 3rem);
+  } */
 }
 
 /* 48rem ~ 768px with font-size 16 */
 @media (min-width: 768px) {
   /* Remove border around theme toggle buttons in non-mobile layouts */
-  button[data-theme-toggle] {
+  aside > div > div > button[data-theme-toggle] {
     border: none;
   }
 }

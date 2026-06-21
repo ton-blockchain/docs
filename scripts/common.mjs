@@ -1,5 +1,5 @@
 // Node.js
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -228,14 +228,20 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
       files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) => join(dir, it)),
       dirs: [
         // Snippets and page parts
-        'snippets',
-        'scripts',
-        'public',
+        ...['snippets', 'scripts', 'public'].map((it) => join(dir, it)),
         // Pages covered in OpenAPI specs rather than in docs.json
-        'ecosystem/api/toncenter/v2',
-        'ecosystem/api/toncenter/v3',
-        'ecosystem/api/toncenter/smc-index',
-      ].map((it) => join(dir, it)),
+        ...['ecosystem/api/toncenter/v2', 'ecosystem/api/toncenter/v3']
+          .map((it) => join(dir, it))
+          .flatMap((dirWithOverview) =>
+            existsSync(dirWithOverview)
+              ? readdirSync(dirWithOverview, { withFileTypes: true })
+                  .filter((it) => it.isDirectory())
+                  .map((it) => join(dirWithOverview, it.name))
+              : [],
+          ),
+        // Does not have an overview:
+        join(dir, 'ecosystem/api/toncenter/smc-index'),
+      ],
     },
   });
 
@@ -299,14 +305,25 @@ export function getConfig() {
 }
 
 /**
+ * Write docs.json-representing object into docs.json file.
+ *
+ * @param {Readonly<DocsConfig>} config
+ */
+export function writeConfig(config) {
+  const docsJsonUrl = new URL('../docs.json', import.meta.url);
+  writeFileSync(docsJsonUrl, JSON.stringify(config, null, 2) + '\n', 'utf8');
+}
+
+/**
  * Get navigation links from the docs.json configuration.
  * Notice that each link is prefixed by 'content' and a single slash /,
  * regardless if the latter was present originally.
  *
+ * @deprecated use `getNavLinks()` instead.
  * @param config {DocsConfig}
  * @returns {string[]}
  */
-export function getNavLinks(config) {
+function getNavLinksOld(config) {
   /** @type {string[]} */
   const links = [];
   /** @param page {any} */
@@ -329,6 +346,20 @@ export function getNavLinks(config) {
   // @ts-ignore
   config.navigation?.pages.forEach(processPage);
   return links;
+}
+
+/**
+ * Get navigation links from the `content/` directory
+ * Notice that each link is prefixed by a single slash /,
+ * whether it was present originally or not.
+ *
+ * NOTE: no longer requires a parsed docs.json config!
+ *
+ * @param _config {DocsConfig | undefined}
+ * @returns {string[]}
+ */
+export function getNavLinks(_config) {
+  return findUnignoredFiles('mdx').map((it) => prefixWithSlash(it.replace(/\.mdx$/i, '')));
 }
 
 /**

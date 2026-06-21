@@ -36,6 +36,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
   if (!page) notFound();
   if (page.data.url) {
     // TODO: consider using `redirect()` from next/navigation
+    //       redirect from / pages to /overview pages
     return (
       <>
         <meta httpEquiv="refresh" content={`0; url=${page.data.url}`} />
@@ -78,11 +79,12 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
       tableOfContent={{
         style: 'clerk',
         footer: (
-          <div className="my-3 space-y-3">
+          <div className="my-0 space-y-3">
             <ScrollTop />
           </div>
         ),
       }}
+      // breadcrumb={{ enabled: false }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>

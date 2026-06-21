@@ -38,8 +38,7 @@ const prefixUrls = (text) => {
   const doubleQuoteAttrPattern = /\b(src|poster|darkSrc)":"(\/(?:videos)\/(?!\/)[^"]*)"/g;
   const cssUrlPattern = /url\((["']?)(\/(?:videos)\/(?!\/)[^)"']*)\1\)/g;
   // NOTE: only for api/search?
-  const specAttrPattern =
-    /\b(src|poster|darkSrc)(\\["']):\2(\/(?:videos)\/(?!\/)[^\\"']*)\2/g;
+  const specAttrPattern = /\b(src|poster|darkSrc)(\\["']):\2(\/(?:videos)\/(?!\/)[^\\"']*)\2/g;
   let replacements = 0;
   const next = text
     .replace(attrPattern, (match, attr, quote, path) => {
