@@ -1,22 +1,28 @@
 'use client';
-import { useState } from 'react';
+
+import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 import {
   SearchDialog,
   SearchDialogClose,
   SearchDialogContent,
   SearchDialogHeader,
-  SearchDialogFooter,
+  // SearchDialogFooter,
   SearchDialogIcon,
   SearchDialogInput,
   SearchDialogList,
   SearchDialogOverlay,
   type SharedProps,
-  TagsList,
-  TagsListItem,
+  type SearchItemType,
+  // TagsList,
+  // TagsListItem,
 } from 'fumadocs-ui/components/dialog/search';
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { create } from '@orama/orama';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
+import { useTreeContext } from 'fumadocs-ui/contexts/tree';
+import type { Item, Node } from 'fumadocs-core/page-tree';
 
 function initOrama() {
   return create({
@@ -27,7 +33,7 @@ function initOrama() {
 }
 
 export default function DefaultSearchDialog(props: SharedProps) {
-  const [tag] = useState<string | undefined>();
+  // const [tag] = useState<string | undefined>();
   const { locale } = useI18n(); // (optional) for i18n
   const { search, setSearch, query } = useDocsSearch(
     process.env.NEXT_CONFIG === 'vercel'
@@ -43,6 +49,45 @@ export default function DefaultSearchDialog(props: SharedProps) {
           // tag,
         },
   );
+  const { full } = useTreeContext();
+  const router = useRouter();
+  const searchMap = useMemo(() => {
+    const map = new Map<string, Item>();
+
+    function onNode(node: Node) {
+      if (node.type === 'page' && typeof node.name === 'string') {
+        map.set(node.name.toLowerCase(), node);
+      } else if (node.type === 'folder') {
+        if (node.index) onNode(node.index);
+        for (const item of node.children) onNode(item);
+      }
+    }
+
+    for (const item of full.children) onNode(item);
+    return map;
+  }, [full]);
+  const titleJumpAction = useMemo<SearchItemType | undefined>(() => {
+    if (search.length === 0) return;
+
+    const normalized = search.toLowerCase();
+    for (const [k, page] of searchMap) {
+      if (!k.startsWith(normalized)) continue;
+
+      return {
+        id: 'quick-action',
+        type: 'action',
+        node: (
+          <div className="inline-flex items-center gap-2 text-fd-muted-foreground">
+            <ArrowRight className="size-4" />
+            <p>
+              Jump to <span className="font-medium text-fd-foreground">{page.name}</span>
+            </p>
+          </div>
+        ),
+        onSelect: () => router.push(page.url),
+      };
+    }
+  }, [router, search, searchMap]);
 
   return (
     <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
@@ -53,7 +98,16 @@ export default function DefaultSearchDialog(props: SharedProps) {
           <SearchDialogInput />
           <SearchDialogClose />
         </SearchDialogHeader>
-        <SearchDialogList items={query.data !== 'empty' ? query.data : null} />
+        <SearchDialogList
+          items={
+            query.data !== 'empty' || titleJumpAction
+              ? [
+                  ...(titleJumpAction ? [titleJumpAction] : []),
+                  ...(Array.isArray(query.data) ? query.data : []),
+                ]
+              : null
+          }
+        />
         {/* <SearchDialogFooter className="flex flex-row">
           <TagsList tag={tag} onTagChange={setTag}>
             <TagsListItem value="my-value">My Value</TagsListItem>
