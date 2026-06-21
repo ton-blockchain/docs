@@ -112,7 +112,7 @@ export function Card({
         {showArrow ? (
           <div
             aria-hidden
-            className="absolute top-4 right-4 text-fd-muted-foreground transition-colors group-hover:text-fd-primary"
+            className="absolute top-2 right-2 text-fd-muted-foreground transition-colors group-hover:text-fd-primary"
           >
             <ArrowUpRight className="size-4" />
           </div>
@@ -128,7 +128,13 @@ export function Card({
           </div>
         ) : null}
         <div className="min-w-0 flex-1">
-          {title ? <h3 className="not-prose mb-1 text-sm font-medium">{title}</h3> : null}
+          {title ? (
+            <h3
+              className={cn('not-prose text-sm font-medium', children || description ? 'mb-1' : '')}
+            >
+              {title}
+            </h3>
+          ) : null}
           {description ? (
             <p className="my-0! text-sm text-fd-muted-foreground">{description}</p>
           ) : null}
