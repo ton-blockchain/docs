@@ -50,8 +50,7 @@ export default function DefaultSearchDialog({
 
     const normalized = search.toLowerCase();
     for (const page of quickJumpPages) {
-      // NOTE: this could be a fuzzy search instead
-      if (!page.normalizedTitle.startsWith(normalized)) continue;
+      if (!page.normalizedTitle.includes(normalized)) continue;
 
       return {
         id: 'quick-action',
