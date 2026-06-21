@@ -1,5 +1,5 @@
 // Node.js
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -296,6 +296,15 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
  */
 export function getConfig() {
   return Object.freeze(JSON.parse(readFileSync('./docs.json', 'utf8')));
+}
+
+/**
+ * Write docs.json-representing object into docs.json file.
+ *
+ * @param {Readonly<DocsConfig>} config
+ */
+export function writeConfig(config) {
+  writeFileSync('./docs.json', JSON.stringify(config, null, 2) + '\n', 'utf8');
 }
 
 /**
