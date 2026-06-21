@@ -36,6 +36,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
   if (!page) notFound();
   if (page.data.url) {
     // TODO: consider using `redirect()` from next/navigation
+    //       redirect from / pages to /overview pages
     return (
       <>
         <meta httpEquiv="refresh" content={`0; url=${page.data.url}`} />
