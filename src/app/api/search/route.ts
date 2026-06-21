@@ -8,10 +8,6 @@ const searchSource: typeof source = {
 
 // https://www.fumadocs.dev/docs/headless/search/flexsearch#static-export
 const searchAPI = flexsearchFromSource(searchSource, {
-  document: {
-    // Shaves off nearly half of the built index while retaining search quality.
-    tokenize: 'tolerant',
-  },
   // async buildIndex(page) {
   //   return {
   //     title: page.data.title,
