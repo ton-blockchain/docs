@@ -107,9 +107,9 @@ Beware that a contract cannot generally prove that no messages remain in flight.
 
 ## Missing replay protection
 
-Replay protection is a security mechanism that prevents an attacker from [reusing a previous message](https://en.wikipedia.org/wiki/Replay_attack). External messages without replay protection can be re-executed multiple times by an attacker which could lead to fund loss or other undesired behavior.
+Replay protection is a security mechanism that prevents an attacker from [reusing a previous message](https://en.wikipedia.org/wiki/Replay_attack). External messages without replay protection can be executed multiple times by an attacker which could lead to fund loss or other undesired behavior.
 
-Replay state is not authentication by itself: bind the sequence nummber to a signed request containing a contract-specific domain and expiration time.
+Replay state is not authentication by itself: bind the sequence number to a signed request containing a contract-specific domain and expiration time.
 
 ### Secure implementation
 
