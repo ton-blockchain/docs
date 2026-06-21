@@ -6,7 +6,7 @@ There are several anti-patterns and potential attack vectors that smart contract
 
 ## Signed/unsigned integer vulnerabilities
 
-Improper handling of signed integers can allow attackers to exploit overflow/underflow conditions.
+Improper handling of signed integers can allow attackers to exploit overflow or underflow conditions.
 
 ### Vulnerable code
 
@@ -26,11 +26,15 @@ fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: int)
 ### Secure implementation
 
 ```tolk
-fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: int): void {
+fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: uint /* prefer unsigned */): void {
     var fromVotes = getVotingPower(votes, from);
     var toVotes = getVotingPower(votes, to);
 
-    assert (fromVotes >= amount) throw 998;  // Validate sufficient balance
+    // In case `amount` needs to be a signed integer, add:
+    // assert (amount >= 0) throw 997;
+
+    // Validate sufficient balance
+    assert (fromVotes >= amount) throw 998;
 
     fromVotes -= amount;
     toVotes += amount;
@@ -42,7 +46,7 @@ fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: int)
 
 ## Sending sensitive data on-chain
 
-The entire smart contract computation is transparent; confidential runtime values can be retrieved through emulation.
+The entire smart contract computation is transparent: confidential runtime values can be retrieved through emulation.
 
 ### Vulnerable code
 
@@ -53,6 +57,10 @@ val privateData = beginCell()
     .storeUint(userPrivateKey, 256)
     .endCell();
 ```
+
+### Secure approach
+
+None: do not send private or sensitive data on chain.
 
 ## Account destruction race conditions
 
@@ -563,6 +571,6 @@ fun updateCode(sender: address, newCode: cell) {
     assert (authorizedAdmin(sender)) throw ErrCode.Unauthorized;
     assert (validateCode(newCode)) throw ErrCode.InvalidCode;
 
-    contract.setCode(newCode);
+    contract.setCodePostponed(newCode);
 }
 ```
