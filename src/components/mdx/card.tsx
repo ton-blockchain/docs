@@ -112,7 +112,10 @@ export function Card({
         {showArrow ? (
           <div
             aria-hidden
-            className="absolute top-2 right-2 text-fd-muted-foreground transition-colors group-hover:text-fd-primary"
+            className={cn(
+              'absolute top-2 right-2 text-fd-muted-foreground transition-colors',
+              !disabled && 'group-hover:text-fd-primary',
+            )}
           >
             <ArrowUpRight className="size-4" />
           </div>

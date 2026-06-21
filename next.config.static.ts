@@ -9,8 +9,15 @@ const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 const isVercelBuild = process.env.VERCEL === '1';
 const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
-const gitUrl = execSync('git config --get remote.origin.url').toString().trim();
-const gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
+let gitRepoMatch: RegExpMatchArray | null = null;
+try {
+  const gitUrl = execSync('git config --get remote.origin.url', {
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+    .toString()
+    .trim();
+  gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
+} catch {}
 
 const resolveBaseUrl = () => {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -47,8 +54,8 @@ const config: NextConfig = {
           : 'unknown',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
     NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
-    NEXT_GIT_USER: gitRepoMatch?.at(1),
-    NEXT_GIT_REPO: gitRepoMatch?.at(2),
+    NEXT_GIT_USER: gitRepoMatch?.at(1) ?? 'ton-org',
+    NEXT_GIT_REPO: gitRepoMatch?.at(2) ?? 'docs',
     NEXT_GIT_BRANCH: 'main',
   },
   basePath: resolveBasePath(),

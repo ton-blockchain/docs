@@ -123,7 +123,7 @@ export function getQuickJumpPages(locale?: string) {
   const pages = getSearchablePages(locale);
   return pages.map((page) => ({
     title: page.data.title,
-    normalizedTitle: page.data.title.toLowerCase(),
+    normalizedTitle: page.data.title.toLocaleLowerCase(locale),
     url: page.url,
   }));
 }

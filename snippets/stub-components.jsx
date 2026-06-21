@@ -62,7 +62,7 @@ export const Tooltip = ({ tip = '', cta = '', href = '', children }) =>
   (cta && href && (
     <Link href={href}>
       <span
-        title={tip.replace(/\.* *$/, '. ') + cta.replace(/\.*$/, '.')}
+        title={`${tip ? tip.replace(/\.* *$/, '. ') : ''}${cta.replace(/\.*$/, '.')}`}
         className="underline decoration-dotted decoration-fd-muted-foreground"
       >
         {children}

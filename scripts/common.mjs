@@ -310,7 +310,8 @@ export function getConfig() {
  * @param {Readonly<DocsConfig>} config
  */
 export function writeConfig(config) {
-  writeFileSync('./docs.json', JSON.stringify(config, null, 2) + '\n', 'utf8');
+  const docsJsonUrl = new URL('../docs.json', import.meta.url);
+  writeFileSync(docsJsonUrl, JSON.stringify(config, null, 2) + '\n', 'utf8');
 }
 
 /**
