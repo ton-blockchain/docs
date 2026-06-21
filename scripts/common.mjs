@@ -315,7 +315,7 @@ export function writeConfig(config) {
  * @param config {DocsConfig}
  * @returns {string[]}
  */
-export function getNavLinks(config) {
+export function getNavLinksOld(config) {
   /** @type {string[]} */
   const links = [];
   /** @param page {any} */
@@ -338,6 +338,18 @@ export function getNavLinks(config) {
   // @ts-ignore
   config.navigation?.pages.forEach(processPage);
   return links;
+}
+
+/**
+ * Get navigation links from the `content/` directory
+ * Notice that each link is prefixed by a single slash /,
+ * whether it was present originally or not.
+ *
+ * @param config {DocsConfig}
+ * @returns {string[]}
+ */
+export function getNavLinks(config) {
+  return getNavLinksOld(config);
 }
 
 /**
