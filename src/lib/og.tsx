@@ -47,7 +47,7 @@ export function generate({
 }) {
   const primaryTextColor = 'rgb(248, 250, 252)';
   const secondaryTextColor = 'rgba(248, 250, 252, 0.85)';
-  const mutedTextColor = "rgba(248, 250, 252, 0.7)"
+  const mutedTextColor = 'rgba(248, 250, 252, 0.7)';
   const cardTitle = truncateText(title, 90);
   const cardDescription = description
     ? truncateText(description, 180)
@@ -139,16 +139,16 @@ export function generate({
               fontSize: 20,
               color: mutedTextColor,
               wordBreak: 'break-word',
-
-            }}>
+            }}
+          >
             <div
               style={{
-                display: "flex",
+                display: 'flex',
                 width: 8,
                 height: 8,
                 borderRadius: 999,
-                background: "#0AAAFF",
-                boxShadow: "0 0 6px rgba(26, 201, 255, 0.8)",
+                background: '#0AAAFF',
+                boxShadow: '0 0 6px rgba(26, 201, 255, 0.8)',
               }}
             />
             <span>{url}</span>

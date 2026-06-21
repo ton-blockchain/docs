@@ -7,6 +7,16 @@
 @source '../**/*.{ts,jsx,tsx}';
 
 /**
+ * Adding a custom variant to apply transparent backgrounds when the browser supports
+ * color mix with some transparency or percentages.
+ */
+@custom-variant supports-tp-mix {
+  @supports (background: color-mix(in oklab, red 60%, transparent)) {
+    @slot;
+  }
+}
+
+/**
  * Common, baseline color changes
  * @see https://tailwindcss.com/docs/theme
  */
@@ -114,7 +124,7 @@ html > body[data-scroll-locked] {
 /* 48rem ~ 768px with font-size 16 */
 @media (min-width: 768px) {
   /* Remove border around theme toggle buttons in non-mobile layouts */
-  button[data-theme-toggle] {
+  aside > div > div > button[data-theme-toggle] {
     border: none;
   }
 }

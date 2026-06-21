@@ -14,7 +14,9 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/[...slug]
   return new ImageResponse(
     generate({
       title: page.data.title,
-      url: withBaseUrl(page.url).replace(/^https?:\/\//, '').replace(/\/+$/, ''),
+      url: withBaseUrl(page.url)
+        .replace(/^https?:\/\//, '')
+        .replace(/\/+$/, ''),
       description: page.data.description,
     }),
     getImageResponseOptions(),
