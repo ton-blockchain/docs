@@ -115,8 +115,12 @@ export function getIndexablePages(locale?: string) {
   return source.getPages(locale).filter((page) => !page.data.url);
 }
 
+export function getSearchablePages(locale?: string) {
+  return source.getPages(locale).filter((page) => !page.data.url && !page.data.noindex);
+}
+
 export function getQuickJumpPages(locale?: string) {
-  const pages = getIndexablePages(locale);
+  const pages = getSearchablePages(locale);
   return pages.map((page) => ({
     title: page.data.title,
     normalizedTitle: page.data.title.toLowerCase(),

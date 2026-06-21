@@ -19,17 +19,9 @@ import {
   // TagsListItem,
 } from 'fumadocs-ui/components/dialog/search';
 import { useDocsSearch } from 'fumadocs-core/search/client';
-import { create } from '@orama/orama';
+// import { flexsearchStaticClient } from 'fumadocs-core/search/client/flexsearch-static';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
 import { getQuickJumpPages } from '@/lib/source';
-
-function initOrama() {
-  return create({
-    schema: { _: 'string' },
-    // https://docs.orama.com/docs/orama-js/supported-languages
-    language: 'english',
-  });
-}
 
 export default function DefaultSearchDialog(props: SharedProps) {
   // const [tag] = useState<string | undefined>();
@@ -41,8 +33,8 @@ export default function DefaultSearchDialog(props: SharedProps) {
           locale,
         }
       : {
-          type: 'static',
-          initOrama,
+          type: 'flexsearch-static',
+          // client: flexsearchStaticClient(),
           locale,
           from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
           // tag,
