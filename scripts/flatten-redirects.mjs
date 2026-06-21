@@ -34,14 +34,16 @@ const flattenRedirects = () => {
 
     while (true) {
       const nextFragment = destination.match(/#.*$/)?.[0];
-      if (nextFragment) { fragment = nextFragment; }
+      if (nextFragment) {
+        fragment = nextFragment;
+      }
       const path = destination.replace(/#.*$/, '');
       trace.push(path);
       if (!uniqueReds.has(path)) {
         return {
           ...redirect,
           destination: path + fragment,
-        }
+        };
       }
       if (visited.has(path)) {
         throw new Error(`Circular redirect found: ${trace.join(' → ')}`);
