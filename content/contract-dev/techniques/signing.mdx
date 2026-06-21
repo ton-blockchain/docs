@@ -361,8 +361,8 @@ Choose the structure based on the contract design:
 ```ts title="TypeScript"
 // Approach 1: Signed data as slice
 const messageBodyInline = beginCell()
-    .storeBuffer(signature)             // 512 bits
-    .storeSlice(signedData.asSlice())   // Signed data as slice
+    .storeBuffer(signature)               // 512 bits
+    .storeSlice(signedData.beginParse())  // Signed data as slice
     .endCell();
 
 // Approach 2: Signed data as cell

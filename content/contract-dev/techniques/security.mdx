@@ -124,7 +124,7 @@ The [`SETGASLIMIT`](/tvm/instructions#f801-setgaslimit) instruction can lead to 
 
 ```tolk
 fun onExternalMessage(inMsg: slice) {
-    acceptMessage();
+    acceptExternalMessage();
     // ...
 }
 ```
@@ -139,7 +139,7 @@ fun onExternalMessage(inMsg: slice) {
     assert (msgSeqno == storedSeqno) throw 33;
     assert (subwalletId == storedSubwallet) throw 34;
     assert (isSignatureValid(inMsg.hash(), signature, publicKey)) throw 35;
-    acceptMessage();
+    acceptExternalMessage();
     // handle the message (omitted)
 }
 ```
@@ -165,7 +165,7 @@ fun onInternalMessage(in: InMessage) {
     val msg = Vote.fromSlice(in.body);
 
     assert (
-        in.valueCoins > getComputeFee(voteGasUsage, false)
+        in.valueCoins > calculateGasFee(BASECHAIN, voteGasUsage)
     ) throw ErrCode.NotEnoughGas;  // Not enough gas!
 
     // ...subsequent logic...
