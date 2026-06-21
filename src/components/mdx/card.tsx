@@ -136,7 +136,7 @@ export function Card({
               className={cn(
                 'not-prose text-sm font-medium',
                 children || description ? 'mb-1' : '',
-                !disabled && 'group-hover:text-fd-primary',
+                resolvedHref && 'group-hover:text-fd-primary',
               )}
             >
               {title}
@@ -153,7 +153,7 @@ export function Card({
               <span
                 className={cn(
                   'flex items-center gap-1 text-sm font-medium text-fd-muted-foreground',
-                  !disabled && 'group-hover:text-fd-primary',
+                  resolvedHref && 'group-hover:text-fd-primary',
                 )}
               >
                 {cta}

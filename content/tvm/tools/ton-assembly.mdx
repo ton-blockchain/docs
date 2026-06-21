@@ -1,0 +1,177 @@
+---
+title: "TON Assembly (TASM)"
+---
+
+The [`ton-assembly` ↗️](https://www.npmjs.com/package/ton-assembly) NPM package provides a set of utilities for converting between the [BoC][boc]-serialized TVM bitcode, [Fift assembly](/languages/fift/fift-assembler) sources, and a [Fift](/languages/fift/overview)-like pseudocode format called TON Assembly (TASM).
+
+Available tools:
+
+- [`tasm`](#assembler) — an assembler from TASM assembly to TVM bitcode (BoC-serialized).
+- [`tdisasm`](#disassembler) — a disassembler from TVM bitcode (BoC-serialized) to TASM assembly.
+- [`tfift`](#fift-assembly-compiler) — a compiler of Fift assembly smart contract source files to TVM bitcode (BoC-serialized).
+
+## Installation
+
+The package requires [Node.js LTS 18 or later](https://nodejs.org/en/download).
+
+Run the following command to install the TASM tool suite globally:
+
+```bash
+npm install -g ton-assembly
+```
+
+## Command-line usage
+
+### Disassembler, `tdisasm`
+
+Run `tdisasm` to decompile (disassemble) [BoC][boc] files into TASM:
+
+```bash
+tdisasm contract.boc -o decompiled.tasm --verbose
+```
+
+### Assembler, `tasm`
+
+Run `tasm` to compile (assemble) TASM files into [BoC][boc]-serialized TVM bitcode:
+
+```bash
+tasm contract.tasm -o compiled.boc --verbose
+```
+
+### Fift assembly compiler, `tfift`
+
+Run `tfift` to compile [Fift assembly](/languages/fift/fift-assembler) files into [BoC][boc]-serialized TVM bitcode:
+
+```bash
+tfift contract.fif -o contract.boc
+```
+
+<Callout type="note">
+  `tfift` accepts the subset of Fift assembly emitted by Tolk and does not support arbitrary Fift programs or constructions such as `<b b> s>`.
+</Callout>
+
+Fift assembly files can be obtained by running [`acton compile --fift` ↗️](https://ton-blockchain.github.io/acton/docs/commands/compile) or [`acton built --output-fift` ↗️](https://ton-blockchain.github.io/acton/docs/commands/build) on Tolk contract sources.
+
+<Callout type="note">
+  Acton generates compatible `.fif` files from Tolk sources. Use [`acton compile --fift <OUTPUT_FILE>` ↗️](https://ton-blockchain.github.io/acton/docs/commands/compile) for a single source file. Use [`acton built --output-fift <OUTPUT_DIR>` ↗️](https://ton-blockchain.github.io/acton/docs/commands/build) for a configured project.
+</Callout>
+
+### BoC input-output format options
+
+Use `-f` to change the input-output format:
+
+- Supported formats are: `binary` (default), `hex`, `base64`.
+- `tasm` and `tfift` use `-f` to select the BoC output format.
+- `tdisasm` uses `-f` to select the BoC input format and always emits TASM text.
+
+<CodeGroup>
+  ```bash title="Assembler (tasm)"
+  # Binary output (default)
+  tasm contract.tasm -f binary -o contract.boc
+
+  # Hex output
+  tasm contract.tasm -f hex -o compiled.hex
+
+  # Base64 output
+  tasm contract.tasm -f base64 -o compiled.base64
+  ```
+
+  ```bash title="Disassembler (tdisasm)"
+  # Binary input (default)
+  tdisasm contract.boc -f binary -o decompiled.tasm
+
+  # Hex input
+  tdisasm contract.hex -f hex -o decompiled.tasm
+
+  # Base64 input
+  tdisasm contract.base64 -f base64 -o decompiled.tasm
+  ```
+</CodeGroup>
+
+Use `-s` to read input from a string argument instead of a file:
+
+- `tasm` and `tfift` take the source text, TASM or Fift assembly, respectively.
+- `tdisasm` takes a hex-or Base64-encoded BoC data, and `-f` must specify its encoding.
+
+<CodeGroup>
+  ```bash title="Assembler (tasm)"
+  # TASM source input and hex-encoded BoC output
+  tasm -s "PUSHINT_4 1" -f hex -o compiled.hex
+  ```
+
+  ```bash title="Disassembler (tdisasm)"
+  # Hex-encoded BoC input and TASM file output
+  tdisasm -s "b5ee9c72410102010027000114ff008e83f4a413ed43d901002fa64ce73b5134348034c7f487f4fffd0115501b05485b1460ec17065c" -f hex -o decompiled.tasm
+
+  # Base64-encoded BoC input and TASM file output
+  tdisasm -s "te6cckEBAgEAJwABFP8AjoP0pBPtQ9kBAC+mTOc7UTQ0gDTH9If0//0BFVAbBUhbFGDsFwZc" -f base64 -o decompiled.tasm
+  ```
+</CodeGroup>
+
+## Library usage
+
+Install the package as a project dependency:
+
+```bash
+npm install ton-assembly
+```
+
+The package exports 4 modules:
+
+- `text` parses TASM string into an abstract syntax tree (AST) represented by `Instr[]` or pretty-prints the AST as a TASM string.
+- `runtime` compiles and decompiles between `Instr[]` (AST representation), TVM binary `Cell` values, and BoC `Buffer` values.
+- `logs` parses TVM emulator execution logs.
+- `trace` correlates executed instructions with TASM source locations by using mappings produced during compilation.
+
+```ts title="TypeScript"
+import {
+  // Parsing and printing module
+  text,
+  // (De)compilation module
+  runtime,
+  // TVM logs parsing module
+  logs,
+} from "ton-assembly";
+
+// Module: text
+const code = "PUSH s0";
+//                        filepath, assembly
+const parseResult = text.parse("<code>", code);
+if (parseResult.$ === "ParseFailure") {
+  throw parseResult.error;
+} // "ParseSuccess"
+const instructions = parseResult.instructions;
+// Pretty-printed an array of `Instr` objects as a formatted assembly code string.
+console.log(text.print(instructions));
+
+// Module: runtime
+const boc = runtime.compile(instructions);
+const decompiledInstructions = runtime.decompile(boc);
+// Assembled to a BoC buffer, then disassembled it.
+console.log(text.print(decompiledInstructions));
+
+// Module: logs
+const executionLog = `
+  code cell hash:6DB0B8EFEF2B59D53B896E2A6EBCBBEF72BE9A1F8CD2DA1D0E8EA8F57C4F8AE0 offset:2608
+  stack: [98 100 0 101]
+  execute PUSHINT 0
+  gas remaining: 999999998
+  changing gas limit to 100
+  handling exception code 2: stack underflow
+  default exception handler, terminating vm with exit code 2
+  final c5:C{00000000}
+`;
+const parsedLog = logs.parse(executionLog);
+for (const line of parsedLog) {
+  if (line.$ === "VmStack") {
+    console.log("Stack contents:", line.stack);
+  }
+  if (line.$ === "VmExecute") {
+    console.log("Executing:", line.instr);
+  }
+}
+```
+
+For the examples of the `trace` module, see the [full API documentation of `ton-assembly` ↗️](https://github.com/ton-blockchain/tasm/blob/f5ce4619b168f0d3e450183816b928e50493aa69/API.md#trace-module-correlating-logs-with-source-code).
+
+[boc]: /foundations/serialization/boc
