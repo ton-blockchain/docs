@@ -4,9 +4,13 @@ title: Security best practices
 
 There are several anti-patterns and potential attack vectors that smart contract developers should be aware of. These can affect the security, efficiency, and correctness of the contracts. Below are some common pitfalls and best practices to avoid them.
 
+<Callout type="tip">
+  Provide the `$tolk` skill from the [Acton development skillset](https://ton-blockchain.github.io/acton/docs/agent-skills/overview) to the agent, making it use Tolk best practices.
+</Callout>
+
 ## Signed/unsigned integer vulnerabilities
 
-Improper handling of signed integers can allow attackers to exploit overflow or underflow conditions.
+Improper handling of signed integers can let attackers submit negative values that reverse the intended operation, exploiting overflow or underflow conditions. Tolk arithmetic uses TVM's 257-bit integers at runtime, while fixed-width types such as `uint64` primarily define serialization and range validation.
 
 ### Vulnerable code
 
@@ -26,14 +30,12 @@ fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: int)
 ### Secure implementation
 
 ```tolk
-fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: uint /* prefer unsigned */): void {
+fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: uint64): void {
     var fromVotes = getVotingPower(votes, from);
     var toVotes = getVotingPower(votes, to);
 
-    // In case `amount` needs to be a signed integer, add:
-    // assert (amount >= 0) throw 997;
-
     // Validate sufficient balance
+    assert (amount > 0) throw 997;
     assert (fromVotes >= amount) throw 998;
 
     fromVotes -= amount;
@@ -46,14 +48,14 @@ fun transferVotingPower(mutate votes: cell, from: slice, to: slice, amount: uint
 
 ## Sending sensitive data on-chain
 
-The entire smart contract computation is transparent: confidential runtime values can be retrieved through emulation.
+Contract state, messages, and computations must be treated as public. They can be inspected from blockchain data or retrieved through emulation. Hashing a low-entropy secret such as a password does not make it confidential because attackers can test candidate values off-chain.
 
 ### Vulnerable code
 
 ```tolk
 // DON'T: Store password hash or private data
 val privateData = beginCell()
-    .storeSlice("secret_password_hash")
+    .storeString("secret_password_hash")
     .storeUint(userPrivateKey, 256)
     .endCell();
 ```
@@ -62,24 +64,32 @@ val privateData = beginCell()
 
 None: do not send private or sensitive data on chain.
 
-## Account destruction race conditions
+## Account destruction
 
-Destroying accounts using [send mode](/foundations/messages/modes) `SEND_MODE_CARRY_ALL_BALANCE + SEND_MODE_DESTROY` (`128 + 32`) without proper checks can lead to fund loss in race conditions.
+The [send mode](/foundations/messages/modes) `SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_DESTROY` (`128 + 32`) transfers the remaining contract balance and destroys the account if its resulting balance is zero. This operation is irreversible and is highly vulnerable to race conditions: some messages previously sent to the contract might still be in flight.
 
 ### Vulnerable code
 
 ```tolk
 fun onInternalMessage(in: InMessage) {
     if (in.body.isEmpty()) {
-        return;  // Dangerous: empty message handling
+        return;  // Ignoring an empty top-up is normally safe
     }
 
-    // Process and destroy account
-    sendRawMessage(msg, SEND_MODE_CARRY_ALL_BALANCE + SEND_MODE_DESTROY);  // Destroys account
+    // Dangerous: no authorization or terminal-state validation
+    sendRawMessage(msg, SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_DESTROY);  // Destroys the account!
 }
 ```
 
 ### Secure approach
+
+Before scheduling account destruction:
+
+- authenticate using `in.senderAddress`, not an address supplied in the body;
+- require an explicit terminal state;
+- settle or cancel all pending operations;
+- validate the destination receiving the remaining balance;
+- document how later messages to the deleted address are handled.
 
 ```tolk
 fun onInternalMessage(in: InMessage) {
@@ -93,28 +103,70 @@ fun onInternalMessage(in: InMessage) {
 }
 ```
 
+Beware that a contract cannot generally prove that no messages remain in flight.
+
 ## Missing replay protection
 
 Replay protection is a security mechanism that prevents an attacker from [reusing a previous message](https://en.wikipedia.org/wiki/Replay_attack). External messages without replay protection can be re-executed multiple times by an attacker which could lead to fund loss or other undesired behavior.
 
+Replay state is not authentication by itself: bind the sequence nummber to a signed request containing a contract-specific domain and expiration time.
+
 ### Secure implementation
 
 ```tolk
-fun onExternalMessage(mutate inMsg: slice) {
-    var ds = contract.getData().beginParse();
-    val storedSeqno = ds.loadUint(32);
-    val msgSeqno = inMsg.loadUint(32);
+// Incoming signed request
+struct (0xBABECAFE) SignedRequest {
+    contractId: uint32
+    validUntil: uint32
+    seqno: uint32
+}
 
-    assert (msgSeqno == storedSeqno) throw 33;  // Prevent replay
+// Possible errors
+enum ReplayErrors {
+    InvalidSignature = 100,
+    InvalidContract = 101,
+    InvalidSeqno = 102,
+    Expired = 103,
+}
 
+// Contract storage
+struct Storage {
+    publicKey: uint256
+    contractId: uint32
+    seqno: uint32
+}
+
+fun Storage.load() {
+    return Storage.fromCell(contract.getData());
+}
+
+fun Storage.save(self) {
+    contract.setData(self.toCell());
+}
+
+fun onExternalMessage(inMsgBody: slice) {
+    val signature = inMsg.getLastBits(512);
+    val signedSlice = inMsgBody.removeLastBits(512);
+    val request = SignedRequest.fromSlice(signedSlice);
+    var storage = lazy Storage.load();
+
+    // Prevent all kinds of replay issues
+    assert (request.contractId == storage.contractId)
+        throw ReplayErrors.InvalidContract;
+    assert (request.seqno == storage.seqno)
+        throw ReplayErrors.InvalidSeqno;
+    assert (request.validUntil > blockchain.now())
+        throw ReplayErrors.Expired;
+    assert (
+        isSignatureValid(signedSlice.hash(), signature, storage.publicKey)
+    ) throw ReplayErrors.InvalidSignature;
+
+    // Update and store the sequence number
     acceptExternalMessage();
 
-    // Update sequence number
-    contract.setData(
-        beginCell()
-            .storeUint(storedSeqno + 1, 32)
-            .endCell()
-    );
+    storage.seqno += 1;
+    storage.save();
+    commitContractDataAndActions();
 }
 ```
 
@@ -131,7 +183,7 @@ The [`SETGASLIMIT`](/tvm/instructions#f801-setgaslimit) instruction can lead to 
 ### Vulnerable code
 
 ```tolk
-fun onExternalMessage(inMsg: slice) {
+fun onExternalMessage(inMsgBody: slice) {
     acceptExternalMessage();
     // ...
 }
@@ -142,7 +194,7 @@ fun onExternalMessage(inMsg: slice) {
 Checks before accepting an external message vary by use case. The following example is a part of [wallet v3 code](https://github.com/ton-blockchain/ton/blob/53ec9684bd213983e1fe0f7610d3e3453a4ec628/crypto/smartcont/wallet3-code.fc), that doesn't accept a message if it isn't signed by the wallet's owner.
 
 ```tolk
-fun onExternalMessage(inMsg: slice) {
+fun onExternalMessage(inMsgBody: slice) {
     // parse message and contract storage (omitted)
     assert (msgSeqno == storedSeqno) throw 33;
     assert (subwalletId == storedSubwallet) throw 34;
@@ -154,11 +206,13 @@ fun onExternalMessage(inMsg: slice) {
 
 ## Invalid throw values
 
-Exit codes `0` and `1` indicate normal execution of the compute phase of the transaction. Execution can be unexpectedly aborted by calling a `throw` directly with exit codes `0` and `1`. This can make debugging very difficult since such aborted execution would be indistinguishable from a normal one.
+Using `throw` with exit codes `0` and `1` can unexpectedly terminate execution. Since these codes indicate successful execution of the compute phase, it can be difficult to differentiate between failure and success. Prefer named developer-defined exit codes in the range `100` through `65535`.
 
 ## Gas limitation
 
-Be careful with the [Out of gas error](/tvm/exit-codes#13%3A-out-of-gas-error). It cannot be handled, so try to pre-calculate the gas consumption whenever possible. This will help avoid wasting extra gas, as the transaction will fail anyway.
+The [out of gas error](/tvm/exit-codes#13%3A-out-of-gas-error) cannot be handled in the contract's code. Measure worst-case execution paths and maintain explicit fee and reserve assumptions. Try to precompute gas consumption whenever possible.
+
+Note that checking only the attached value against the computed gas is not sufficient. Storage fees, forwarding fees, outgoing action fees, variable execution paths, and any required balance reserve must also be considered.
 
 ### Secure implementation
 
@@ -184,19 +238,21 @@ fun onInternalMessage(in: InMessage) {
 
 Generating truly secure random numbers in TON is challenging. The built-in random functions are pseudo-random and depend on logical time. An attacker can predict the randomized number by [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) the logical time in the current block.
 
+Call `random.initialize()` before `random.uint256()` or `random.range()` so repeated executions of the same contract in one block do not start from the same seed.
+
 ### Secure approach
 
-- For critical applications, avoid relying solely on on-chain solutions.
+- For critical applications, avoid relying solely on the on-chain solutions.
 
 - Use built-in random functions with randomized logical time to enhance security by making predictions harder for attackers without access to a validator node. Note, however, that it is still not entirely foolproof.
 
 - Consider using the _commit-and-disclose scheme_:
 
-1. Participants generate random numbers off-chain and send their hashes to the contract.
-1. Once all hashes are received, participants disclose their original numbers.
-1. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
+  1. Participants generate random numbers off-chain and send their hashes to the contract.
+  1. Once all hashes are received, participants disclose their original numbers.
+  1. Combine the disclosed numbers (e.g., by taking their sum) to produce a secure random value.
 
-- Don't use randomization in external message receivers, as it remains vulnerable even with randomized logical time.
+- Do not use randomization in external message receivers, as it remains vulnerable even with randomized logical time.
 
 ## Executing third-party code
 
