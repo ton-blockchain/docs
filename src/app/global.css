@@ -1,0 +1,229 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import 'fumadocs-openapi/css/preset.css';
+
+@source '../../snippets/*.{jsx,tsx}';
+@source '../**/*.{ts,jsx,tsx}';
+
+/**
+ * Adding a custom variant to apply transparent backgrounds when the browser supports
+ * color mix with some transparency or percentages.
+ */
+@custom-variant supports-tp-mix {
+  @supports (background: color-mix(in oklab, red 60%, transparent)) {
+    @slot;
+  }
+}
+
+/**
+ * Common, baseline color changes
+ * @see https://tailwindcss.com/docs/theme
+ */
+@theme {
+  --color-brand: #0098ea;
+  --color-fd-primary: #0098ea;
+  --color-fd-idea: oklch(65% 0.2 145);
+}
+
+/* Color changes for the light theme only */
+:root:not(.dark) {
+  --color-fd-background: #ffffff;
+  --color-fd-muted: #fbfbfb;
+  --color-fd-popover: #ffffff;
+  --color-fd-card: #f9f9f9;
+  --color-fd-secondary: #f9f9f9;
+  --color-fd-accent: #f1f1f1;
+}
+
+/* Color changes for the dark theme only */
+.dark,
+[data-theme='dark'] {
+  --color-brand: #5cc4f7;
+  --color-fd-primary: #5cc4f7;
+  --color-fd-idea: oklch(75% 0.2 145);
+}
+
+/* Default scrollbar adjustments */
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
+
+/*
+ * Relocating the `tabMode='top'` tab bar, see the `src/(docs)/layout.tsx`.
+ * Fumadocs hardcodes it at `grid-area: main`, where it would sit atop the page.
+ * Now, the bar is moved into the dedicated `tabs` row with proper alignment.
+ */
+#nd-docs-layout > .items-end {
+  grid-area: tabs;
+  align-items: center;
+  /* Disable on mobile */
+  display: none;
+}
+
+#nd-docs-layout {
+  /* no bar by default */
+  --fd-tabs-height: 0rem;
+}
+
+/* 48rem ~ 768px with font-size 16 */
+@media (min-width: 768px) {
+  /* tab bar of the same height as ToC popover (~2.5rem) */
+  #nd-docs-layout {
+    --fd-tabs-height: var(--fd-toc-popover-height);
+  }
+
+  /* making tab bar as sticky as ToC popover */
+  #nd-docs-layout > .items-end {
+    position: sticky;
+    top: var(--fd-docs-row-2);
+    z-index: 10;
+    /* Re-enable when width is sufficient */
+    display: none;
+  }
+
+  /* placing ToC popover below the tab bar */
+  /* TODO: restore when tabs are used */
+  /* #nd-docs-layout > div[data-toc-popover] {
+    top: var(--fd-toc-popover-height);
+  } */
+}
+
+/* 75rem ~ 1200px with font-size 16 */
+@media (min-width: 1200px) {
+  /* tab bar that is large enough to be visible,
+     yet small enough to not fight for attention with the rest of the page */
+  #nd-docs-layout {
+    --fd-tabs-height: 3rem;
+  }
+
+  /* tab bar matching the page contents width */
+  #nd-docs-layout > .items-end {
+    max-width: 900px;
+    margin-inline: calc(var(--spacing) * 8);
+    align-items: stretch;
+    padding-inline: inherit;
+    justify-content: space-around;
+    position: sticky;
+    top: var(--fd-docs-row-1);
+    z-index: 10;
+  }
+
+  /* offset ToC by the height of the tab tar */
+  /* TODO: restore when tabs are used */
+  /* #nd-toc {
+    padding-top: calc(var(--spacing) * 14 + 3rem);
+  } */
+}
+
+/* 48rem ~ 768px with font-size 16 */
+@media (min-width: 768px) {
+  /* Remove border around theme toggle buttons in non-mobile layouts */
+  aside > div > div > button[data-theme-toggle] {
+    border: none;
+  }
+}
+
+/* 40rem ~ 640px with font-size 16 */
+/* @media (min-width: 640px) {} */
+
+/* Prevent word breaks in inline code items in tables */
+td > code,
+td > em > code,
+td > strong > code,
+td > a > code {
+  white-space: nowrap;
+}
+
+/* Tabular numbers for better alignment in tables */
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fix Mermaid's Sankey diagrams for both themes */
+svg[aria-roledescription='sankey'] > g.links > g.link {
+  mix-blend-mode: normal !important;
+}
+
+/* Round borders of Mermaid's graph diagrams */
+svg[aria-roledescription='flowchart-v2'] .cluster rect {
+  rx: 12;
+  ry: 12;
+}
+
+/* Vertically cap long code blocks so they scroll instead of stretching the page. */
+figure.shiki > div[role='region'] {
+  max-height: 42rem;
+}
+
+/* transformerRenderIndentGuides */
+pre.shiki .indent {
+  display: inline-block;
+  position: relative;
+  left: var(--indent-offset);
+}
+
+pre.shiki .indent:empty {
+  height: 1lh;
+  vertical-align: bottom;
+}
+
+pre.shiki .indent::before {
+  content: '';
+  position: absolute;
+  opacity: 0.15;
+  width: 1px;
+  height: 100%;
+  background-color: currentColor;
+}
+
+/**
+ * Adjust text styles surrounding a Badge with `since` value set,
+ * which is an availability or a version change badge
+ */
+.prose h2:has(+ .availability-badge) {
+  margin-bottom: 0.5rem;
+}
+
+.prose .availability-badge {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose .availability-badge + figure {
+  margin-top: 1rem;
+}
+
+/*
+ * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
+ * that do not support the text-wrap property yet.
+ */
+.style-subsequent-openapi-tag + span {
+  white-space: nowrap;
+}
+
+/*
+ * Hide a table header when every header cell is empty.
+ * Reads as "tr in thead that does not have a th that is not empty".
+ */
+thead tr:not(:has(th:not(:empty))) {
+  display: none;
+}
+
+/* A class to hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+/* A style to hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

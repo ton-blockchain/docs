@@ -1,0 +1,95 @@
+import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import type { NextConfig } from 'next';
+import { createMDX } from 'fumadocs-mdx/next';
+import { ghPagesUrl, gitConfig } from './src/lib/shared';
+
+const withMDX = createMDX();
+const isGitHubPagesBuild =
+  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
+const isVercelBuild = process.env.VERCEL === '1';
+const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
+let gitRepoMatch: RegExpMatchArray | null = null;
+try {
+  const gitUrl = execSync('git config --get remote.origin.url', {
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+    .toString()
+    .trim();
+  gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
+} catch {}
+
+const resolveBaseUrl = () => {
+  const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (publicUrl !== undefined && publicUrl !== '') {
+    return publicUrl;
+  }
+
+  if (isGitHubPagesBuild) {
+    return ghPagesUrl;
+  }
+
+  return 'http://localhost:3000';
+};
+
+const resolveBasePath = () => {
+  if (isGitHubPagesBuild) {
+    return `/${gitConfig.repo}`;
+  }
+
+  return undefined;
+};
+
+const config: NextConfig = {
+  output: 'export',
+  reactStrictMode: true,
+  env: {
+    NEXT_CONFIG: 'static',
+    NEXT_BUILD_TYPE: isLocalBuild
+      ? 'local'
+      : isVercelBuild
+        ? 'vercel'
+        : isGitHubPagesBuild
+          ? 'github'
+          : 'unknown',
+    NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
+    NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
+    NEXT_GIT_USER: gitRepoMatch?.at(1) ?? 'ton-org',
+    NEXT_GIT_REPO: gitRepoMatch?.at(2) ?? 'docs',
+    NEXT_GIT_BRANCH: 'main',
+  },
+  basePath: resolveBasePath(),
+  turbopack: {
+    root: fileURLToPath(new URL('.', import.meta.url)),
+  },
+  images: { unoptimized: true },
+  serverExternalPackages: ['typescript'],
+  ...(isLocalBuild && {
+    experimental: {
+      // workerThreads: false,
+      // --webpack --disable-source-maps --no-server-fast-refresh
+      cpus: 3,
+      webpackMemoryOptimizations: true,
+      webpackBuildWorker: true,
+      turbopackMemoryLimit: 6442450944, // 6 GiB
+      // Despite browser console warnings, this is a great RAM usage optimization
+      serverSourceMaps: false,
+      preloadEntriesOnStart: false,
+      memoryBasedWorkersCount: true,
+    },
+    // These source maps do not affect local builds much:
+    // productionBrowserSourceMaps: false,
+    // enablePrerenderSourceMaps: false,
+    webpack: (config, { dev }) => {
+      if (dev) {
+        config.devtool = false;
+      }
+      return config;
+    },
+    typescript: {
+      ignoreBuildErrors: true,
+    },
+  }),
+};
+
+export default withMDX(config);
