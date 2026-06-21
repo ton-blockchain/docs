@@ -130,7 +130,11 @@ export function Card({
         <div className="min-w-0 flex-1">
           {title ? (
             <h3
-              className={cn('not-prose text-sm font-medium', children || description ? 'mb-1' : '')}
+              className={cn(
+                'not-prose text-sm font-medium',
+                children || description ? 'mb-1' : '',
+                !disabled && 'group-hover:text-fd-primary',
+              )}
             >
               {title}
             </h3>
@@ -145,7 +149,7 @@ export function Card({
             <div className="mt-4">
               <span
                 className={cn(
-                  'flex items-center gap-2 text-sm font-medium text-fd-muted-foreground',
+                  'flex items-center gap-1 text-sm font-medium text-fd-muted-foreground',
                   !disabled && 'group-hover:text-fd-primary',
                 )}
               >
