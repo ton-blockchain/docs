@@ -21,8 +21,7 @@ import {
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { create } from '@orama/orama';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { useTreeContext } from 'fumadocs-ui/contexts/tree';
-import type { Item, Node } from 'fumadocs-core/page-tree';
+import { getQuickJumpPages } from '@/lib/source';
 
 function initOrama() {
   return create({
@@ -49,29 +48,15 @@ export default function DefaultSearchDialog(props: SharedProps) {
           // tag,
         },
   );
-  const { full } = useTreeContext();
   const router = useRouter();
-  const searchMap = useMemo(() => {
-    const map = new Map<string, Item>();
-
-    function onNode(node: Node) {
-      if (node.type === 'page' && typeof node.name === 'string') {
-        map.set(node.name.toLowerCase(), node);
-      } else if (node.type === 'folder') {
-        if (node.index) onNode(node.index);
-        for (const item of node.children) onNode(item);
-      }
-    }
-
-    for (const item of full.children) onNode(item);
-    return map;
-  }, [full]);
-  const titleJumpAction = useMemo<SearchItemType | undefined>(() => {
+  const pages = getQuickJumpPages();
+  const quickJumpAction = useMemo<SearchItemType | undefined>(() => {
     if (search.length === 0) return;
 
     const normalized = search.toLowerCase();
-    for (const [k, page] of searchMap) {
-      if (!k.startsWith(normalized)) continue;
+    for (const page of pages) {
+      // NOTE: this could be a fuzzy search instead
+      if (!page.title.toLowerCase().startsWith(normalized)) continue;
 
       return {
         id: 'quick-action',
@@ -80,14 +65,14 @@ export default function DefaultSearchDialog(props: SharedProps) {
           <div className="inline-flex items-center gap-2 text-fd-muted-foreground">
             <ArrowRight className="size-4" />
             <p>
-              Jump to <span className="font-medium text-fd-foreground">{page.name}</span>
+              Jump to <span className="font-medium text-fd-foreground">{page.title}</span>
             </p>
           </div>
         ),
         onSelect: () => router.push(page.url),
       };
     }
-  }, [router, search, searchMap]);
+  }, [router, search]);
 
   return (
     <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
@@ -100,9 +85,9 @@ export default function DefaultSearchDialog(props: SharedProps) {
         </SearchDialogHeader>
         <SearchDialogList
           items={
-            query.data !== 'empty' || titleJumpAction
+            query.data !== 'empty' || quickJumpAction
               ? [
-                  ...(titleJumpAction ? [titleJumpAction] : []),
+                  ...(quickJumpAction ? [quickJumpAction] : []),
                   ...(Array.isArray(query.data) ? query.data : []),
                 ]
               : null

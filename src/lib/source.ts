@@ -115,6 +115,15 @@ export function getIndexablePages(locale?: string) {
   return source.getPages(locale).filter((page) => !page.data.url);
 }
 
+export function getQuickJumpPages(locale?: string) {
+  const pages = getIndexablePages(locale);
+  return pages.map((page) => ({
+    title: page.data.title,
+    normalizedTitle: page.data.title.toLowerCase(),
+    url: page.url,
+  }));
+}
+
 /** The `url` is prefixed by metadataBase elsewhere */
 export function getPageImage(page: (typeof source)['$inferPage']) {
   const segments = [...page.slugs, 'image.png'];

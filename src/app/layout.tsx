@@ -1,8 +1,5 @@
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
-import { NextProvider } from 'fumadocs-core/framework/next';
-import { TreeContextProvider } from 'fumadocs-ui/contexts/tree';
-import { source } from '@/lib/source';
 
 import './global.css';
 import 'katex/dist/katex.css';
@@ -36,11 +33,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <NextProvider>
-          <TreeContextProvider tree={source.getPageTree()}>
-            <Provider>{children}</Provider>
-          </TreeContextProvider>
-        </NextProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );
