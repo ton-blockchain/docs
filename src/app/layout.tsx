@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
+import { getQuickJumpPages } from '@/lib/source';
 
 import './global.css';
 import 'katex/dist/katex.css';
@@ -33,7 +34,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <Provider>{children}</Provider>
+        <Provider quickJumpPages={getQuickJumpPages()}>{children}</Provider>
       </body>
     </html>
   );
