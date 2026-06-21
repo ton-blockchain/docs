@@ -41,7 +41,7 @@ The following table lists exit codes with their origin (where they can occur) an
 | [34](#34-invalid-or-unsupported-action)                   | [Action phase][a]                   | Action is invalid or not supported.                                                                    |
 | [35](#35-invalid-source-address-in-outbound-message)      | [Action phase][a]                   | Invalid source address in outbound message.                                                            |
 | [36](#36-invalid-destination-address-in-outbound-message) | [Action phase][a]                   | Invalid destination address in outbound message.                                                       |
-| [37](#37-not-enough-toncoin)                              | [Action phase][a]                   | Not enough Toncoin.                                                                                    |
+| [37](#37-not-enough-grams)                                | [Action phase][a]                   | Not enough GRAMs.                                                                                      |
 | [38](#38-not-enough-extra-currencies)                     | [Action phase][a]                   | Not enough extra currencies.                                                                           |
 | [39](#39-outbound-message-does-not-fit-into-cell)         | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.                                             |
 | [40](#40-cannot-process-message)                          | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large, or its Merkle depth is too big. |
@@ -486,17 +486,17 @@ If there are more than 255 actions queued for execution, the [action phase](#act
 import "@stdlib/gas-payments";
 
 fun onInternalMessage() {
-    // For example, let's attempt to queue the reservation of a specific amount of nanoToncoins
+    // For example, let's attempt to queue the reservation of a specific amount of nanograms
     // This won't fail in the compute phase, but will result in exit code 33 in the action phase
     repeat (256) {
-        reserveToncoinsOnBalance(1000000, RESERVE_MODE_AT_MOST);
+        reserveGramsOnBalance(1000000, RESERVE_MODE_AT_MOST);
     }
 }
 ```
 
 ### 34: Invalid or unsupported action
 
-There are only four supported actions at the moment: changing the contract code, sending a message, reserving a specific amount of nanoToncoin, and changing the library cell. If there is any issue with the specified action (invalid message, unsupported action, etc.), an error with exit code 34 is thrown: `Invalid or unsupported action`.
+There are only four supported actions at the moment: changing the contract code, sending a message, reserving a specific amount of nanograms, and changing the library cell. If there is any issue with the specified action (invalid message, unsupported action, etc.), an error with exit code 34 is thrown: `Invalid or unsupported action`.
 
 ```tolk title="Tolk"
 fun onInternalMessage() {
@@ -518,9 +518,9 @@ If the destination address in the outbound message is invalid, e.g., it does not
   If the optional `mode` flag +2 is set, this error won't be thrown, and the given message won't be sent.
 </Callout>
 
-### 37: Not enough Toncoin
+### 37: Not enough GRAMs
 
-If all funds of the inbound message with base `mode` 64 set have already been consumed and there are not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value (`CurrencyCollection`) is invalid, or there are not enough funds to pay forward fees or not enough funds after deducting fees, an error with exit code 37 is thrown: `Not enough Toncoin`.
+If all funds of the inbound message with base `mode` 64 set have already been consumed and there are not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value (`CurrencyCollection`) is invalid, or there are not enough funds to pay forward fees or not enough funds after deducting fees, an error with exit code 37 is thrown: `Not enough GRAMs`.
 
 <Callout>
   If the optional `mode` flag +2 is set, this error won't be thrown, and the given message won't be sent.
@@ -528,7 +528,7 @@ If all funds of the inbound message with base `mode` 64 set have already been co
 
 ### 38: Not enough extra currencies
 
-Besides the native currency, Toncoin, TON Blockchain supports up to $2^{32}$ extra currencies. They differ from creating new Jettons because extra currencies are natively supported — one can potentially just specify an additional `HashmapE` of extra currency amounts in addition to the Toncoin amount in the internal message to another contract. Unlike Jettons, extra currencies can only be stored and transferred and do not have any other functionality.
+Besides the native currency, GRAM, TON Blockchain supports up to $2^{32}$ extra currencies. They differ from creating new Jettons because extra currencies are natively supported — one can potentially just specify an additional `HashmapE` of extra currency amounts in addition to the GRAM amount in the internal message to another contract. Unlike Jettons, extra currencies can only be stored and transferred and do not have any other functionality.
 
 When there is not enough extra currency to send the specified amount, an exit code 38 is thrown: `Not enough extra currencies`.
 

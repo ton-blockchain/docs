@@ -132,7 +132,7 @@ Constants can be declared only at the top level, not inside functions:
 
 ```tolk
 const ONE = 1
-const MAX_AMOUNT = ton("0.05")
+const MAX_AMOUNT = grams("0.05")
 const ADMIN_ADDRESS = address("EQ...")
 ```
 
@@ -292,7 +292,7 @@ To [construct and send a message](/languages/tolk/features/message-sending), a m
 ```tolk
 val reply = createMessage({
     bounce: BounceMode.NoBounce,
-    value: ton("0.05"),
+    value: grams("0.05"),
     dest: someAddress,
     body: RequestedInfo { ... }
 });

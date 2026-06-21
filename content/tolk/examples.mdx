@@ -47,9 +47,9 @@ Some files in the source directory are not runnable on their own and depend on o
   >
     ```tolk
     // 6905(computational_gas_price) * 1000(cur_gas_price) = 6905000 ~= 0.01 TON
-    const MINIMAL_MESSAGE_VALUE_BOUND = ton("0.01")
-    const MIN_TONS_FOR_STORAGE = ton("0.01")
-    const JETTON_WALLET_GAS_CONSUMPTION = ton("0.015")
+    const MINIMAL_MESSAGE_VALUE_BOUND = grams("0.01")
+    const MIN_GRAMS_FOR_STORAGE = grams("0.01")
+    const JETTON_WALLET_GAS_CONSUMPTION = grams("0.015")
     ```
   </Accordion>
 
@@ -102,7 +102,7 @@ Some files in the source directory are not runnable on their own and depend on o
         transferRecipient: address
         sendExcessesTo: address?
         customPayload: cell?
-        forwardTonAmount: coins
+        forwardGrams: coins
         forwardPayload: ForwardPayloadRemainder
     }
 
@@ -119,7 +119,7 @@ Some files in the source directory are not runnable on their own and depend on o
         // is null when minting (not initiated by another wallet)
         transferInitiator: address?
         sendExcessesTo: address?
-        forwardTonAmount: coins
+        forwardGrams: coins
         forwardPayload: ForwardPayloadRemainder
     }
 
@@ -156,7 +156,7 @@ Some files in the source directory are not runnable on their own and depend on o
     struct (0x00000015) MintNewJettons {
         queryId: uint64
         mintRecipient: address
-        tonAmount: coins
+        gramAmount: coins
         internalTransferMsg: Cell<InternalTransferStep>
     }
 
@@ -312,7 +312,7 @@ Some files in the source directory are not runnable on their own and depend on o
                         contract.getAddress(),
                         storage.jettonWalletCode,
                     ),
-                    value: msg.tonAmount,
+                    value: msg.gramAmount,
                     // a newly-deployed wallet contract will immediately handle it
                     body: msg.internalTransferMsg,
                 });
@@ -426,20 +426,20 @@ Some files in the source directory are not runnable on their own and depend on o
 
                 var msgValue = in.valueCoins;
                 var tonBalanceBeforeMsg = contract.getOriginalBalance() - msgValue;
-                var storageFee = MIN_TONS_FOR_STORAGE - min(
+                var storageFee = MIN_GRAMS_FOR_STORAGE - min(
                     tonBalanceBeforeMsg,
-                    MIN_TONS_FOR_STORAGE,
+                    MIN_GRAMS_FOR_STORAGE,
                 );
                 msgValue -= (storageFee + JETTON_WALLET_GAS_CONSUMPTION);
 
-                if (msg.forwardTonAmount) {
-                    msgValue -= (msg.forwardTonAmount + in.originalForwardFee);
+                if (msg.forwardGrams) {
+                    msgValue -= (msg.forwardGrams + in.originalForwardFee);
 
                     val notifyOwnerMsg = createMessage({
                         // cause receiver can have uninitialized contract
                         bounce: BounceMode.NoBounce,
                         dest: storage.ownerAddress,
-                        value: msg.forwardTonAmount,
+                        value: msg.forwardGrams,
                         body: TransferNotificationForRecipient {
                             queryId: msg.queryId,
                             jettonAmount: msg.jettonAmount,
@@ -477,13 +477,13 @@ Some files in the source directory are not runnable on their own and depend on o
                 storage.jettonBalance -= msg.jettonAmount;
                 storage.save();
 
-                var forwardedMessagesCount = msg.forwardTonAmount ? 2 : 1;
+                var forwardedMessagesCount = msg.forwardGrams ? 2 : 1;
                 assert (in.valueCoins >
-                    msg.forwardTonAmount +
+                    msg.forwardGrams +
                     // 3 messages: wal1->wal2,  wal2->owner, wal2->response
                     // but last one is optional (it is ok if it fails)
                     forwardedMessagesCount * in.originalForwardFee +
-                    (2 * JETTON_WALLET_GAS_CONSUMPTION + MIN_TONS_FOR_STORAGE)
+                    (2 * JETTON_WALLET_GAS_CONSUMPTION + MIN_GRAMS_FOR_STORAGE)
                 ) throw ERR_NOT_ENOUGH_TON;
 
                 val deployMsg = createMessage({
@@ -499,7 +499,7 @@ Some files in the source directory are not runnable on their own and depend on o
                         jettonAmount: msg.jettonAmount,
                         transferInitiator: storage.ownerAddress,
                         sendExcessesTo: msg.sendExcessesTo,
-                        forwardTonAmount: msg.forwardTonAmount,
+                        forwardGrams: msg.forwardGrams,
                         forwardPayload: msg.forwardPayload,
                     }
                 });
@@ -594,7 +594,7 @@ Some files in the source directory are not runnable on their own and depend on o
     title="fees-management.tolk"
   >
     ```tolk
-    const MIN_TONS_FOR_STORAGE = ton("0.05")
+    const MIN_GRAMS_FOR_STORAGE = grams("0.05")
     ```
   </Accordion>
 
@@ -738,7 +738,7 @@ Some files in the source directory are not runnable on their own and depend on o
     struct (0x00000001) DeployNft {
         queryId: uint64
         itemIndex: uint64
-        attachTonAmount: coins
+        attachGrams: coins
         initParams: Cell<NftItemInitAtDeployment>
     }
 
@@ -748,7 +748,7 @@ Some files in the source directory are not runnable on their own and depend on o
     }
 
     struct BatchDeployDictItem {
-        attachTonAmount: coins
+        attachGrams: coins
         initParams: Cell<NftItemInitAtDeployment>
     }
 
@@ -782,7 +782,7 @@ Some files in the source directory are not runnable on their own and depend on o
         newOwnerAddress: address
         sendExcessesTo: address?
         customPayload: dict
-        forwardTonAmount: coins
+        forwardGrams: coins
         forwardPayload: RemainingBitsAndRefs
     }
     ```
@@ -799,7 +799,7 @@ Some files in the source directory are not runnable on their own and depend on o
     fun deployNftItem(
         itemIndex: int,
         nftItemCode: cell,
-        attachTonAmount: coins,
+        attachGrams: coins,
         initParams: Cell<NftItemInitAtDeployment>,
     ) {
         val deployMsg = createMessage({
@@ -809,7 +809,7 @@ Some files in the source directory are not runnable on their own and depend on o
                 contract.getAddress(),
                 nftItemCode,
             ),
-            value: attachTonAmount,
+            value: attachGrams,
             body: initParams,
         });
         deployMsg.send(SEND_MODE_PAY_FEES_SEPARATELY);
@@ -836,7 +836,7 @@ Some files in the source directory are not runnable on their own and depend on o
                 deployNftItem(
                     msg.itemIndex,
                     storage.nftItemCode,
-                    msg.attachTonAmount,
+                    msg.attachGrams,
                     msg.initParams,
                 );
                 if (isLast) {
@@ -879,7 +879,7 @@ Some files in the source directory are not runnable on their own and depend on o
                     deployNftItem(
                         itemIndex,
                         storage.nftItemCode,
-                        dictItem.attachTonAmount,
+                        dictItem.attachGrams,
                         dictItem.initParams,
                     );
                     if (itemIndex == storage.nextItemIndex) {
@@ -1013,9 +1013,9 @@ Some files in the source directory are not runnable on their own and depend on o
                     throw ERROR_INVALID_WORKCHAIN;
 
                 val fwdFee = in.originalForwardFee;
-                var restAmount = contract.getOriginalBalance() - MIN_TONS_FOR_STORAGE;
-                if (msg.forwardTonAmount) {
-                    restAmount -= (msg.forwardTonAmount + fwdFee);
+                var restAmount = contract.getOriginalBalance() - MIN_GRAMS_FOR_STORAGE;
+                if (msg.forwardGrams) {
+                    restAmount -= (msg.forwardGrams + fwdFee);
                 }
                 if (msg.sendExcessesTo != null) {
                     assert (msg.sendExcessesTo.getWorkchain() == BASECHAIN)
@@ -1026,11 +1026,11 @@ Some files in the source directory are not runnable on their own and depend on o
                 // base nft spends fixed amount of gas, will not check for response
                 assert (restAmount >= 0) throw ERROR_TOO_SMALL_REST_AMOUNT;
 
-                if (msg.forwardTonAmount) {
+                if (msg.forwardGrams) {
                     val ownershipMsg = createMessage({
                         bounce: BounceMode.NoBounce,
                         dest: msg.newOwnerAddress,
-                        value: msg.forwardTonAmount,
+                        value: msg.forwardGrams,
                         body: NotificationForNewOwner {
                             queryId: msg.queryId,
                             oldOwnerAddress: storage.ownerAddress,

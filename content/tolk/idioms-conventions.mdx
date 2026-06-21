@@ -235,7 +235,7 @@ struct (0x98765432) RequestedInfo {
 fun respond(/* ... */) {
     val reply = createMessage({
         bounce: BounceMode.NoBounce,
-        value: ton("0.05"),
+        value: grams("0.05"),
         dest: addressOfB,
         body: RequestedInfo {
             // ... initialize fields

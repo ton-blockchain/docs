@@ -48,18 +48,20 @@ const hexSlice = "1020".hexToSlice()
 const rawSlice = "abcd".literalSlice()
 ```
 
-### `ton()`
+### `grams()`
 
-Calculates nanotoncoins at compile time.
+Calculates nanograms at compile time.
 
 ```tolk
-const ONE_TON = ton("1");     // `coins`, value: 1000000000
+const ONE_GRAM = grams("1");    // `coins`, value: 1000000000
 
 fun calcCost() {
-    val cost = ton("0.05");   // `coins`, value: 50000000
-    return ONE_TON + cost;
+    val cost = grams("0.05");   // `coins`, value: 50000000
+    return ONE_GRAM + cost;
 }
 ```
+
+The old `ton()` function is still available for backward compatibility, but `grams()` is preferred.
 
 ## Common functions
 
@@ -171,7 +173,7 @@ Returns `address` — the internal address of the current smart contract. It can
 
 #### `contract.getOriginalBalance`
 
-Returns `coins` — the balance of the smart contract in nanotoncoins at the start of the [compute phase](/tvm/exit-codes#compute-phase).
+Returns `coins` — the balance of the smart contract in nanograms at the start of the [compute phase](/tvm/exit-codes#compute-phase).
 
 #### `contract.getOriginalBalanceWithExtraCurrencies`
 
@@ -394,17 +396,19 @@ Checks which specific blockchain address is contained in `any_address`.
 Casts `any_address` to `address`, with a runtime check that the value is internal. To skip the check, use an [unsafe cast](/languages/tolk/types/type-checks-and-casts):
 `addr = myAny as address`.
 
-### Reserving Toncoin on the contract balance
+### Reserving GRAM on the contract balance
 
 The standard library provides several `RESERVE_MODE_XXX` constants for [reserve modes](/foundations/actions/reserve), as well as the following functions.
 
-#### `reserveToncoinsOnBalance`
+#### `reserveGramsOnBalance`
 
-Creates an output action that reserves Toncoin on the contract balance.
+Creates an output action that reserves GRAM on the contract balance.
+
+`reserveToncoinsOnBalance` is a deprecated alias for `reserveGramsOnBalance`.
 
 #### `reserveExtraCurrenciesOnBalance`
 
-Similar to `reserveToncoinsOnBalance`, but also accepts a dictionary `extraAmount`.
+Similar to `reserveGramsOnBalance`, but also accepts a dictionary `extraAmount`.
 
 ### Creating and sending messages
 

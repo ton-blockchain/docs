@@ -271,7 +271,7 @@ fun onInternalMessage(in: InMessage) {
 ```tolk
 val reply = createMessage({
     bounce: BounceMode.NoBounce,
-    value: ton("0.05"),
+    value: grams("0.05"),
     dest: senderAddress,
     body: RequestedInfo { ... }
 });
@@ -358,12 +358,12 @@ b{011000} STSLICECONST
 
 There are [differences between standard libraries](/languages/tolk/from-func/stdlib-fc). For example, functions from `stdlib.fc` started having descriptive names:
 
-|         FunC         |                Tolk               |
-| :------------------: | :-------------------------------: |
-|      `cur_lt()`      |     `blockchain.logicalTime()`    |
-|       `car(l)`       |          `list.getHead()`         |
-| `raw_reserve(coins)` | `reserveToncoinsOnBalance(coins)` |
-|      `~dump(x)`      |          `debug.print(x)`         |
+|         FunC         |              Tolk              |
+| :------------------: | :----------------------------: |
+|      `cur_lt()`      |   `blockchain.logicalTime()`   |
+|       `car(l)`       |        `list.getHead()`        |
+| `raw_reserve(coins)` | `reserveGramsOnBalance(coins)` |
+|      `~dump(x)`      |        `debug.print(x)`        |
 
 Many global-scope functions became methods for primitives:
 

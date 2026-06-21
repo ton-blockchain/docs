@@ -251,7 +251,7 @@ fun onInternalMessage(in: InMessage) {
         maxCells,
     );
     val oldBalance = contract.getOriginalBalance() - in.valueCoins;
-    reserveToncoinsOnBalance(
+    reserveGramsOnBalance(
         max(oldBalance, minTonsForStorage),
         RESERVE_MODE_AT_MOST,
     );
@@ -311,7 +311,7 @@ import "@stdlib/gas-payments";
 
 fun onInternalMessage(in: InMessage) {
     // Reserve the original balance plus any storage debt
-    reserveToncoinsOnBalance(
+    reserveGramsOnBalance(
         contract.getStorageDuePayment(),
         RESERVE_MODE_INCREASE_BY_ORIGINAL_BALANCE | RESERVE_MODE_EXACT_AMOUNT,
     );
@@ -334,7 +334,7 @@ If the remaining trace involves `n` unique contracts, no more than `n` freeze li
 </Callout>
 
 ```tolk title="Tolk"
-const FreezeDueLimit: coins = ton("0.1");  // Current mainnet freeze_due_limit.
+const FreezeDueLimit: coins = grams("0.1");  // Current mainnet freeze_due_limit.
 
 fun onInternalMessage(in: InMessage) {
     // The trace is still receiver -> A -> B
@@ -369,7 +369,7 @@ The final code in the receiver contract could look like this:
 ```tolk title="Tolk"
 import "@stdlib/gas-payments";
 
-const FreezeDueLimit: coins = ton("0.1");  // Current mainnet freeze_due_limit.
+const FreezeDueLimit: coins = grams("0.1");  // Current mainnet freeze_due_limit.
 
 fun onInternalMessage(in: InMessage) {
     val workchain = contract.getAddress().getWorkchain();
