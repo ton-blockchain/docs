@@ -30,15 +30,15 @@ The platform runs on a set of servers, called [nodes](/ecosystem/nodes/overview)
 
 The nodes that run the blockchain interact via the [ADNL](/foundations/whitepapers/ton#3-1-abstract-datagram-network-layer) protocol. User-facing applications usually use [servers](/ecosystem/api/overview) that proxy JSON HTTP requests into the ADNL network. The official version of such a proxy server is provided by the [liteserver](/ecosystem/node/overview#full-node-modes) software. There are public instances of liteserver, so developers are not required to host one on their own servers.
 
-## Toncoin and fees
+## Gram and fees
 
-_Toncoin_ is TON's primary [cryptocurrency](https://en.wikipedia.org/wiki/Cryptocurrency). It is used to pay for the execution of smart contracts, the storage of their data, and network traffic. Such payments are called [fees](/foundations/fees).
+_Gram_ (GRAM) is the TON's primary [cryptocurrency](https://en.wikipedia.org/wiki/Cryptocurrency). It is used to pay for the execution of smart contracts, the storage of their data, and network traffic. Such payments are called [fees](/foundations/fees).
 
 ## Mainnet and testnet
 
 There are two instances of TON blockchain: mainnet and testnet.
 
-_Mainnet_ is the "real" network. It's where actual payments in Toncoin are made. Applications use the mainnet by default.
+_Mainnet_ is the "real" network. It's where actual payments in Gram are made. Applications use the mainnet by default.
 
 The other network is _testnet_, and it is used by TON developers to check that their applications work correctly before deploying them to mainnet. It uses "test coins" that barely have any value.
 
@@ -68,7 +68,7 @@ It's easiest to visualize the blockchain as a set of [accounts](/foundations/add
 Over its lifetime, an account changes its [status](/foundations/status) among four values:
 
 - `nonexist`: There wasn't a single operation with the account, or it was removed. It has neither a balance, nor code.
-- `uninit`: If some Toncoin is transferred to an account, it now exists, but there is still no smart contract code on it. It now has a balance.
+- `uninit`: If some Gram is transferred to an account, it now exists, but there is still no smart contract code on it. It now has a balance.
 - `active`: After a deploy message (see below) with code and initial data is sent to an account, it becomes active and can process other messages. It now has a balance, code, and internal state.
 - `frozen`: If an account is overdue on its [storage fees](/foundations/fees#storage-fees), it will be frozen until the fees are paid. If the overdue amount reaches a maximum limit specified by the blockchain, the account goes completely bankrupt, is removed, and ceases to exist.
 
@@ -98,7 +98,7 @@ Addresses specify where [messages](/foundations/messages/overview) should be del
 - [incoming external](/foundations/messages/external-in) messages are sent from code outside the blockchain to a contract;
 - [outgoing external](/foundations/messages/external-out) messages are broadcast to the external network; somewhat similar to adding them into the globally available list of all outgoing external messages that ever happened.
 
-Every internal message should have some Toncoin attached to it so that it can pay for the cost of handling it. External messages cannot have Toncoin attached to them because they spend some of their time outside the blockchain, and only the blockchain can prove the transfer of Toncoin is correct.
+Every internal message should have some Gram attached to it so that it can pay for the cost of handling it. External messages cannot have Gram attached to them because they spend some of their time outside the blockchain, and only the blockchain can prove the transfer of Gram is correct.
 
 Incoming external messages come from an external address, and outgoing external messages go to an external address.
 
@@ -110,7 +110,7 @@ A message might also be a [deploy message](/foundations/messages/deploy) if it h
 
 ## Transactions
 
-Formally, a message is only an intent: it has a destination, possibly some Toncoin, and data. After the message is handled and all the necessary changes are applied to the blockchain, the message is packed, along with a description of those changes, into a single packet of data, called a [transaction](/foundations/messages/ordinary-tx). A transaction records the state changes on an account. [Some transactions](/foundations/messages/overview#transactions) might happen without any message.
+Formally, a message is only an intent: it has a destination, possibly some Gram, and data. After the message is handled and all the necessary changes are applied to the blockchain, the message is packed, along with a description of those changes, into a single packet of data, called a [transaction](/foundations/messages/ordinary-tx). A transaction records the state changes on an account. [Some transactions](/foundations/messages/overview#transactions) might happen without any message.
 
 ## TON Virtual Machine
 
@@ -120,11 +120,11 @@ Internal and incoming external messages execute the account's code. The code is 
 
 When execution [starts](/tvm/initialization), the message and current account state are provided to the code. By the end of execution, the account might change its state or code, or send internal or outgoing external messages.
 
-The execution follows a process whose steps are called [phases](/foundations/phases). [Fees](/foundations/fees) are deducted during this process. Fees might be deducted from the account's balance or from the Toncoin the message carries, depending on the [mode](/foundations/messages/modes) of the message, or by [explicit choice](/foundations/messages/external-in#accepting-message) made in the contract's code.
+The execution follows a process whose steps are called [phases](/foundations/phases). [Fees](/foundations/fees) are deducted during this process. Fees might be deducted from the account's balance or from the Gram the message carries, depending on the [mode](/foundations/messages/modes) of the message, or by [explicit choice](/foundations/messages/external-in#accepting-message) made in the contract's code.
 
 ### Gas
 
-Execution cost is first measured in _gas_ units, then converted to Toncoin. This unit is separate so that if code execution becomes computationally cheaper (or more expensive), validators can vote to change the [price of gas](/foundations/config#param-20-and-21-gas-prices) in Toncoin.
+Execution cost is first measured in _gas_ units, then converted to Gram. This unit is separate so that if code execution becomes computationally cheaper (or more expensive), validators can vote to change the [price of gas](/foundations/config#param-20-and-21-gas-prices) in Gram.
 
 ### Exit codes
 
@@ -167,9 +167,9 @@ A transfer message consists of a destination address and, optionally, an interna
 
 Private and public keys are generated in a program or service outside the blockchain. Public key is used in a `StateInit` during the deploy, and determines the address of the wallet account. Keypair is usually derived from a set of 24 random words called a [mnemonic](/standard/wallets/mnemonics).
 
-Before the code of the wallet can be deployed on an account with an incoming external message, some other account has to transfer Toncoin to the wallet account. As external messages cannot have any Toncoin attached to them, if no funds are in the account when it handles an external message, it cannot pay for the message that deploys a wallet. The transfer of Toncoin to a wallet account usually comes from an exchange or another user. In testnet, there is [a bot](/ecosystem/wallet-apps/get-coins) that sends test coins to an account for free.
+Before the code of the wallet can be deployed on an account with an incoming external message, some other account has to transfer Gram to the wallet account. As external messages cannot have any Gram attached to them, if no funds are in the account when it handles an external message, it cannot pay for the message that deploys a wallet. The transfer of Gram to a wallet account usually comes from an exchange or another user. In testnet, there is [a bot](/ecosystem/wallet-apps/get-coins) that sends test coins to an account for free.
 
-Usually, a transfer message is sent without an internal message in its payload and only instructs the wallet to transfer some Toncoin to a destination address. This is the reason this type of smart contract is called a wallet.
+Usually, a transfer message is sent without an internal message in its payload and only instructs the wallet to transfer some Gram to a destination address. This is the reason this type of smart contract is called a wallet.
 
 An internal message might be a request to some other contract or even a deploy message that deploys code on other accounts. In this way, a wallet acts as a proxy between a user (or an external service) and the rest of the blockchain.
 
@@ -227,4 +227,4 @@ In general, a library that converts data structures between cells and the format
 
 So, to interact with the blockchain, a couple of libraries are usually used: one that handles the connection to the blockchain and another that works with the specific type of data sent over that connection.
 
-Not all computation has to be done _on-chain_, i.e., executed inside TVM and paid for with Toncoin. Computing and storing data on the blockchain is significantly more expensive than doing so on a regular CPU. Instead, much of the work can be done in _off-chain_ code, in a regular programming language, before or after sending a request to the blockchain. The recommended development practice is to write a TypeScript library that calls contracts implemented in Tolk.
+Not all computation has to be done _on-chain_, i.e., executed inside TVM and paid for with Gram. Computing and storing data on the blockchain is significantly more expensive than doing so on a regular CPU. Instead, much of the work can be done in _off-chain_ code, in a regular programming language, before or after sending a request to the blockchain. The recommended development practice is to write a TypeScript library that calls contracts implemented in Tolk.

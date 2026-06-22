@@ -3,7 +3,7 @@ title: "Staking overview"
 sidebarTitle: "Overview"
 ---
 
-[Staking in TON](https://ton.org/en/stake) enables earning rewards by locking Toncoin to support network security and validation. TON supports several staking solutions, each designed for different use cases and operational models.
+[Staking in TON](https://ton.org/en/stake) enables earning rewards by locking Gram to support network security and validation. TON supports several staking solutions, each designed for different use cases and operational models.
 
 Staking secures the network through [proof-of-stake](https://en.wikipedia.org/wiki/Proof_of_stake). Depending on technical ability, stake size, and participation goals, users may choose between single nominator, nominator pools, or liquid staking. Some solutions are suitable only for technically experienced operators, while others are intended for businesses providing staking as a service. However, all solutions require non-trivial setup, and there are limited number of support tools.
 
@@ -21,18 +21,18 @@ The following smart contracts are commonly used in the TON ecosystem:
   type="caution"
   title="Stake requirements"
 >
-  The technical minimum stake required to participate in validation is 300,000 TON. However, the actual minimum stake is typically higher, approximately 1,000,000 TON.
+  The technical minimum stake required to participate in validation is 300,000 GRAM. However, the actual minimum stake is typically higher, approximately 1,000,000 GRAM.
 
   Validator stakes can be viewed on [tonscan.org/validators](https://tonscan.org/validators). Scroll to the bottom of the list to see the validator with the lowest stake included in the current round.
 </Callout>
 
 ## Liquid staking
 
-The [liquid staking contract](/ecosystem/staking/liquid-staking) enables staking services to issue liquid staking tokens (LSTs) that represent the underlying staking position. LSTs can be used in DeFi while the underlying TON earns rewards.
+The [liquid staking contract](/ecosystem/staking/liquid-staking) enables staking services to issue liquid staking tokens (LSTs) that represent the underlying staking position. LSTs can be used in DeFi while the underlying GRAM earns rewards.
 
 ### Key characteristics
 
-- Users deposit TON and receive wrapped tokens, e.g. tsTON, that can be used in DeFi.
+- Users deposit GRAM and receive wrapped tokens, e.g. tsTON, that can be used in DeFi.
 - Liquidity remains accessible even when underlying funds are staked.
 - Flexible staker-validator connections without centralized pools.
 - Low minimum deposits for broader participation.
@@ -65,7 +65,7 @@ The [liquid staking contract](/ecosystem/staking/liquid-staking) enables staking
 
 This solution is suitable for:
 
-- Large TON holders who stake only their own funds.
+- Large GRAM holders who stake only their own funds.
 - Setups that require separation between fund custody (owner wallet) and validator node operations.
 
 ## Nominator pools
@@ -91,7 +91,7 @@ This solution is suitable for:
 
 ## Differences from standard nominator pools
 
-- Lower minimum stake of 50 TON, compared to 10,000 TON in standard pools.
+- Lower minimum stake of 50 GRAM, compared to 10,000 GRAM in standard pools.
 - Custom contract architecture with separate owner, controller, proxy, and pool contracts.
 - Fee model where deposit and withdrawal fees vary by pool; users should check pool details before staking.
 
@@ -130,10 +130,10 @@ Third-party staking providers who use a liquidity pool for staking:
 
 |                   Protocol                   | Min deposit |  Liquidity  | Voting |          Withdrawal          | Decentralized validation |
 | :------------------------------------------: | :---------: | :---------: | :----: | :--------------------------: | :----------------------: |
-|     [Tonstakers](https://tonstakers.com)     |    1 TON    | Yes (tsTON) |   Yes  | Up to 18h (instant possible) |            Yes           |
-|         [Bemo](https://bemo.finance)         |    1 TON    | Yes (bmTON) |   No   |        36-72h cooldown       |            No            |
+|     [Tonstakers](https://tonstakers.com)     |    1 GRAM   | Yes (tsTON) |   Yes  | Up to 18h (instant possible) |            Yes           |
+|         [Bemo](https://bemo.finance)         |    1 GRAM   | Yes (bmTON) |   No   |        36-72h cooldown       |            No            |
 |         [Hipo](https://hipo.finance)         |    Varies   |  Yes (hTON) |   No   |  Avg 30h (instant possible)  |            No            |
-| [TON Nominators](https://tonvalidators.org/) |  10,000 TON |      No     |   Yes  |           Up to 18h          |            No            |
+| [TON Nominators](https://tonvalidators.org/) | 10,000 GRAM |      No     |   Yes  |           Up to 18h          |            No            |
 
 Tonstakers offers automated compounding and decentralized validation.
 

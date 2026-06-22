@@ -242,7 +242,7 @@ TonAPI Streaming API's interface is fully compatible and can be used interchange
 
 [AppKit][appkit] provides ready-to-use components for frontend applications. It handles out of the box:
 
-- TON balance for any address;
+- GRAM balance for any address;
 - Jetton balances and metadata;
 - NFT holdings;
 - Contract state reads;
@@ -258,8 +258,8 @@ Use the [public API endpoints overview](/ecosystem/api/overview) for testnet end
 
 ### How to get test tokens
 
-- For the standard faucet, up to 2 TON per hour, [use Telegram Testgiver TON bot](/ecosystem/wallet-apps/get-coins#use-testgiver-ton-bot).
-- For larger allocations up to 5,000 TON, [use the request form](/ecosystem/wallet-apps/get-coins#use-request-form).
+- For the standard faucet, up to 2 GRAM per hour, [use Telegram Testgiver TON bot](/ecosystem/wallet-apps/get-coins#use-testgiver-ton-bot).
+- For larger allocations up to 5,000 GRAM, [use the request form](/ecosystem/wallet-apps/get-coins#use-request-form).
 
 ### What to test
 
@@ -275,7 +275,7 @@ Perform the following tests to validate UX and wallet behavior.
 #### For UX and app teams
 
 1. Connect to testnet endpoints.
-1. Initiate a TON transfer.
+1. Initiate a GRAM transfer.
 1. Observe three statuses in sequence: `"pending"` → `"confirmed"` → `"finalized"`.
 1. Measure time from transaction send to `"finalized"`. It should be under 1 second on testnet.
 1. Test `"trace_invalidated"` path: intentionally send a malformed transaction and confirm that UI handles it correctly.

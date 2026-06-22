@@ -1,13 +1,13 @@
 ---
-title: "How to work with Toncoin using WalletKit on the Web platform"
-sidebarTitle: "Work with Toncoin"
+title: "How to work with Gram using WalletKit on the Web platform"
+sidebarTitle: "Work with Gram"
 ---
 
 <Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
 </Callout>
 
-To work with Toncoin, the wallet service needs to handle [contract balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from the wallet service itself](#transfers-in-the-wallet-service).
+To work with Gram, the wallet service needs to handle [contract balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from the wallet service itself](#transfers-in-the-wallet-service).
 
 ## Balances
 
@@ -20,7 +20,7 @@ Notice that both cases require querying the blockchain data via the API client s
 
 ### On-demand balance check
 
-Use the `getBalance()` method to check the wallet contract balance in TON wallets managed by WalletKit. The balance is returned in nanoToncoin, with 1 Toncoin equal to 10<sup>9</sup> nanoToncoin.
+Use the `getBalance()` method to check the wallet contract balance in TON wallets managed by WalletKit. The balance is returned in nanograms, with 1 Gram equal to 10<sup>9</sup> nanograms.
 
 <Callout type="caution">
   Do not store the balance check results anywhere in the wallet service's state, as they become outdated very quickly. For UI purposes, do [continuous balance monitoring](#continuous-balance-monitoring).
@@ -32,7 +32,7 @@ async function getBalance(walletId: string): Promise<string | undefined> {
   const wallet = kit.getWallet(walletId);
   if (!wallet) return;
 
-  // Query its balance in nanoToncoin
+  // Query its balance in nanograms
   return await wallet.getBalance();
 }
 ```
@@ -136,7 +136,7 @@ stopMonitoring();
 
 ## Transfers from dApps
 
-When a connected dApp requests a Toncoin transfer, the wallet service follows this flow:
+When a connected dApp requests a Gram transfer, the wallet service follows this flow:
 
 ```mermaid
 sequenceDiagram
@@ -282,7 +282,7 @@ async function sendToncoin(
   walletId: string,
   // Recipient's TON wallet address as a string
   recipientAddress: string,
-  // Amount in nanoToncoins
+  // Amount in nanograms
   nanoAmount: BigInt,
   // Optional comment string
   comment?: string,

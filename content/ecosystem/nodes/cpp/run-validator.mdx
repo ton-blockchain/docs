@@ -15,8 +15,8 @@ This guide explains how to run a validator TON node with MyTonCtrl from scratch.
 
 ### 1.1 Maintain costs and expenses
 
-- 200 TON per month on the validator hot wallet for its operational transactions.
-- Validator deposit stake [1 400 000 TON \~ 4 000 000 TON](#step-4-set-optimal-stake-for-validator) to cover both validation rounds.
+- 200 GRAM per month on the validator hot wallet for its operational transactions.
+- Validator deposit stake [1 400 000 GRAM \~ 4 000 000 GRAM](#step-4-set-optimal-stake-for-validator) to cover both validation rounds.
 - 100 TB/month traffic at a peak load.
 
 ### 1.2 Minimal hardware requirements
@@ -470,7 +470,7 @@ Explore validator wallet by address with [Tonviewer](https://tonviewer.com/):
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`. Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
 </Callout>
 
-Credit the validator wallet. Ensure that at least 200 TON per month is available in the validator’s wallet to cover operational fees.
+Credit the validator wallet. Ensure that at least 200 GRAM per month is available in the validator’s wallet to cover operational fees.
 
 <Image
   src="/images/nodes/run-validator/run-validator-9.png"
@@ -609,7 +609,7 @@ MyTonCtrl> pools_list
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`. Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
 </Callout>
 
-Test deposit to stake workflow. Any user can deposit to the pool via a standard direct TON transfer. Credit decent sum around 10 TON:
+Test deposit to stake workflow. Any user can deposit to the pool via a standard direct GRAM transfer. Credit decent sum around 10 GRAM:
 
 <Image
   src="/images/nodes/run-validator/run-validator-21.png"
@@ -673,7 +673,7 @@ Send a withdrawal request, a message with `w` comment from `owner` wallet to the
   </Accordion>
 </Accordions>
 
-Once the deposit is restored (except 1 TON reserve on the single nominator pool) to the owner's wallet, that means validator are set securely and ready for real stake:
+Once the deposit is restored (except 1 GRAM reserve on the single nominator pool) to the owner's wallet, that means validator are set securely and ready for real stake:
 
 <Image
   src="/images/nodes/run-validator/run-validator-23.png"
@@ -711,18 +711,18 @@ For example:
 
 ```json title="Not runnable"
 "cycle_id" : 1764052744,
-"min_stake": 701812111528562,  // ~ 701 812 TON
-"max_stake": 2008570202020000, // ~ 2 008 570 TON
+"min_stake": 701812111528562,  // ~ 701 812 GRAM
+"max_stake": 2008570202020000, // ~ 2 008 570 GRAM
 ```
 
 ```json title="Not runnable"
 "cycle_id" : 1764052745,
-"min_stake": 674810775114391,  // ~ 674 811 TON
-"max_stake": 2024432325343173, // ~ 2 024 432 TON
+"min_stake": 674810775114391,  // ~ 674 811 GRAM
+"max_stake": 2024432325343173, // ~ 2 024 432 GRAM
 ```
 
 <Callout type="tip">
-  Values retrieved in nanotons, divide this by 10<sup>9</sup> to get TON units.
+  Values retrieved in nanograms, divide this by 10<sup>9</sup> to get GRAM units.
 </Callout>
 
 ### 4.2 Retrieve stakes boundary values
@@ -732,10 +732,10 @@ To cover the approximate expected stake for odd and even cycles, choose the maxi
 For example:
 
 ```text title="Not runnable"
-// largest within 701 812 TON and 674 811 TON
+// largest within 701 812 GRAM and 674 811 GRAM
 avg_min_stake = 701812
 
-// largest within 2 008 570 TON and 2 024 432 TON
+// largest within 2 008 570 GRAM and 2 024 432 GRAM
 avg_max_stake = 2024432
 ```
 
@@ -764,7 +764,7 @@ max_expected_effective_stake = 4048864
 Then, the effective stake is approximately:
 
 ```text title="Not runnable"
-1403624 TON <= effective_stake <= 4048864 TON
+1403624 GRAM <= effective_stake <= 4048864 GRAM
 ```
 
 ### 4.4 Deposit effective stake
@@ -811,7 +811,7 @@ Make sure pair stakes are appropriately circulated, then focus on monitoring val
 
 ### 5.1 Fund the validator hot wallet
 
-Keep at least 600 TON on the validator hot wallet. This should be enough to cover operational fees for approximately 3 months.
+Keep at least 600 GRAM on the validator hot wallet. This should be enough to cover operational fees for approximately 3 months.
 
 To check the current balance:
 
@@ -907,7 +907,7 @@ Set up dashboards to monitor validators using the APIs provided below.
 
 ### 5.9 Learn slashing policy
 
-If a validator processes less than 90% of the expected blocks during a validation round, they will be fined 101 TON.
+If a validator processes less than 90% of the expected blocks during a validation round, they will be fined 101 GRAM.
 
 Learn more about the [slashing policy](/v3/documentation/nodes/validation/staking-incentives#decentralized-system-of-penalties).
 
@@ -960,7 +960,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 - Confirm that the pool is activated: `MyTonCtrl> pools_list` should show `Active` status.
 - Verify the pool has sufficient balance for at least one cycle: `balance > min_stake`.
 - Check that `single-nominator` mode is enabled: `MyTonCtrl> status_modes`.
-- Ensure the validator wallet has enough TON for operational fees.
+- Ensure the validator wallet has enough GRAM for operational fees.
 
 ### Stake was not returned after a validation cycle
 

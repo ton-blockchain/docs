@@ -39,7 +39,7 @@ Although both regular wallets and Jetton wallets are smart contracts, there are 
 The regular wallets' smart contracts are designed for off-chain interaction with their owner. In most implementations, their main purpose is to receive
 external messages and perform the operations requested in them. It is through a regular
 wallet that the user sends requests for the transfer of tokens or their burning to the Jetton wallet smart contract.
-They are designed to store only the native TON Blockchain currency: Toncoin (or TON).
+They are designed to store only the native TON Blockchain currency: Gram (or TON).
 
 On the other hand, Jetton wallet smart contracts are designed only for storing and processing tokens. They ignore any external messages and
 accept only special internal ones. They execute commands received only from the Jetton master, another Jetton wallet, or
@@ -74,9 +74,9 @@ Interactions with Jetton contracts, which users and developers most often encoun
 | `query_id`             | uint64            | Links the three messaging types—transfer, transfer notification, and excesses—to each other. To ensure this process works correctly, **always use a unique query ID**. |
 | `amount`               | VarUInteger 16    | The total jetton amount to transfer.                                                                                                                                   |
 | `destination`          | MsgAddress        | The address of the actor B's regular wallet.                                                                                                                           |
-| `response_destination` | MsgAddress        | The wallet address used to return remaining Toncoin through the excesses message.                                                                                      |
+| `response_destination` | MsgAddress        | The wallet address used to return remaining Gram through the excesses message.                                                                                         |
 | `custom_payload`       | Maybe ^Cell       | The optional custom data used by either the sender or receiver jetton wallet for internal logic.                                                                       |
-| `forward_ton_amount`   | VarUInteger 16    | Toncoin to forward to the recipient. Must `> 0` to send a transfer notification with `forward_payload` and must be less than the amount attached to this message.      |
+| `forward_ton_amount`   | VarUInteger 16    | Gram to forward to the recipient. Must `> 0` to send a transfer notification with `forward_payload` and must be less than the amount attached to this message.         |
 | `forward_payload`      | Either Cell ^Cell | Optional data. If the first `32` bits equal `0x00000000`, it is a text comment.                                                                                        |
 
 that meet the TL-B scheme specified in [TEP 0074](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md):
@@ -95,8 +95,8 @@ transfer#0f8a7ea5 query_id:uint64 amount:(VarUInteger 16) destination:MsgAddress
 | `query_id`             | uint64            | Links the three messaging types—transfer, transfer notification, and excesses—to each other. To ensure this process works correctly, **always use a unique query ID**. |
 | `amount`               | VarUInteger 16    | The total jetton amount to transfer.                                                                                                                                   |
 | `sender`               | MsgAddress        | The address of the actor A regular wallet.                                                                                                                             |
-| `response_destination` | Maybe MsgAddress  | The optional wallet address used to return remaining Toncoin through the excesses message.                                                                             |
-| `forward_ton_amount`   | VarUInteger 16    | Toncoin to forward to the recipient. Must `> 0` to send a transfer notification with `forward_payload` and must be less than the amount attached to this message.      |
+| `response_destination` | Maybe MsgAddress  | The optional wallet address used to return remaining Gram through the excesses message.                                                                                |
+| `forward_ton_amount`   | VarUInteger 16    | Gram to forward to the recipient. Must `> 0` to send a transfer notification with `forward_payload` and must be less than the amount attached to this message.         |
 | `forward_payload`      | Either Cell ^Cell | Optional data. If the first `32` bits equal `0x00000000`, it is a text comment.                                                                                        |
 
 that is not specified, but has a recommended TL-B scheme in [TEP 0074](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md):
@@ -126,7 +126,7 @@ transfer_notification#7362d09c query_id:uint64 amount:(VarUInteger 16)
            = InternalMsgBody;
 ```
 
-`Actor B Jetton wallet -> actor C smart contract`. Excess message body. This is sent only if there are remaining Toncoin after paying the fees. Contains the following data:
+`Actor B Jetton wallet -> actor C smart contract`. Excess message body. This is sent only if there are remaining Gram after paying the fees. Contains the following data:
 
 | Name       | Type   |
 | ---------- | ------ |
@@ -170,12 +170,12 @@ The rest of the messages have already been described above when analyzing the tr
 
 `Actor A regular wallet -> actor A Jetton wallet`. _Burn_ message contains the following data:
 
-| Name                   | Type           | Description                                                                       |
-| ---------------------- | -------------- | --------------------------------------------------------------------------------- |
-| `query_id`             | uint64         | To ensure this process works correctly, **always use a unique query ID**.         |
-| `amount`               | VarUInteger 16 | The total jetton amount to burn.                                                  |
-| `response_destination` | MsgAddress     | The wallet address used to return remaining Toncoin through the excesses message. |
-| `custom_payload`       | Maybe ^Cell    | The optional custom data used by the receiver jetton wallet for internal logic.   |
+| Name                   | Type           | Description                                                                     |
+| ---------------------- | -------------- | ------------------------------------------------------------------------------- |
+| `query_id`             | uint64         | To ensure this process works correctly, **always use a unique query ID**.       |
+| `amount`               | VarUInteger 16 | The total jetton amount to burn.                                                |
+| `response_destination` | MsgAddress     | The wallet address used to return remaining Gram through the excesses message.  |
+| `custom_payload`       | Maybe ^Cell    | The optional custom data used by the receiver jetton wallet for internal logic. |
 
 that meet a TL-B scheme in [TEP 0074](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md):
 
@@ -187,12 +187,12 @@ burn#595f07bc query_id:uint64 amount:(VarUInteger 16)
 
 `Actor A Jetton wallet -> Jetton master contract`. _Burn notification_ message contains the following data:
 
-| Name                   | Type           | Description                                                                       |
-| ---------------------- | -------------- | --------------------------------------------------------------------------------- |
-| `query_id`             | uint64         | To ensure this process works correctly, **always use a unique query ID**.         |
-| `amount`               | VarUInteger 16 | The total jetton amount was burned.                                               |
-| `sender`               | MsgAddress     | The address of the actor A regular wallet.                                        |
-| `response_destination` | MsgAddress     | The wallet address used to return remaining Toncoin through the excesses message. |
+| Name                   | Type           | Description                                                                    |
+| ---------------------- | -------------- | ------------------------------------------------------------------------------ |
+| `query_id`             | uint64         | To ensure this process works correctly, **always use a unique query ID**.      |
+| `amount`               | VarUInteger 16 | The total jetton amount was burned.                                            |
+| `sender`               | MsgAddress     | The address of the actor A regular wallet.                                     |
+| `response_destination` | MsgAddress     | The wallet address used to return remaining Gram through the excesses message. |
 
 that is not specified but has a recommended TL-B scheme in [TEP 0074](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md):
 

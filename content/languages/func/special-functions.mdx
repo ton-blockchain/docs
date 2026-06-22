@@ -36,8 +36,8 @@ Any of the following `recv_internal` declarations can be used:
 
 There,
 
-- `balance` is the smart contract balance in nanotons after adding the amount `msg_value` in the inbound message. It is an integer.
-- `msg_value` is the amount in nanotons included in the inbound message. It is an integer.
+- `balance` is the smart contract balance in nanograms after adding the amount `msg_value` in the inbound message. It is an integer.
+- `msg_value` is the amount in nanograms included in the inbound message. It is an integer.
 - `in_msg_cell` is the inbound message, given as a cell.
 - `in_msg_body` is the inbound message body, equal to the body field in `in_msg_cell`. The body is given as a cell slice.
 
@@ -121,7 +121,7 @@ The `run_ticktock` triggers at inbound tick and tock messages. It allows the fol
 
 There:
 
-- `balance` is the smart contract balance in nanotons. It is an integer.
+- `balance` is the smart contract balance in nanograms. It is an integer.
 - `address` is the address of the current account inside the masterchain. It is an unsigned 256-bit integer.
 - `is_tock` a flag that indicates if it is a tock message (`-1`) or a tick message (`0`).
 

@@ -75,7 +75,10 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
     <DocsPage
       toc={toc}
       full={page.data.full || toc.length === 0}
-      {...(page.data.full && { tableOfContentPopover: { enabled: false } })}
+      tableOfContentPopover={{
+        enabled: page.data.full ? false : undefined,
+        style: 'clerk',
+      }}
       tableOfContent={{
         style: 'clerk',
         footer: (

@@ -1,5 +1,5 @@
 ---
-title: "How to transfer Toncoin, Jettons and NFTs with WalletKit on the Android platform"
+title: "How to transfer Gram, Jettons and NFTs with WalletKit on the Android platform"
 sidebarTitle: "Transactions"
 ---
 
@@ -7,20 +7,20 @@ sidebarTitle: "Transactions"
   All methods require an existing wallet instance. [Create or retrieve](/ecosystem/walletkit/android/wallets) a wallet before accessing data.
 </Callout>
 
-Create transactions to send Toncoin, Jettons, and NFTs, or generate previews for users.
+Create transactions to send Gram, Jettons, and NFTs, or generate previews for users.
 
 ## Creating a transaction
 
-Before sending any transaction to the blockchain, initialize it for the appropriate asset: Toncoin, Jetton, or NFT.
+Before sending any transaction to the blockchain, initialize it for the appropriate asset: Gram, Jetton, or NFT.
 
-### Toncoin
+### Gram
 
 ```kotlin
 val message = TONTransferParams(
     // TON wallet address
     toAddress = "<TON_WALLET_ADDRESS>",
 
-    // 1 Toncoin in nanoToncoin format
+    // 1 Gram in nanograms format
     amount = "1000000000"
 )
 val transaction = wallet.createTransferTonTransaction(message)

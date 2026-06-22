@@ -21,13 +21,13 @@ Since the [Catchain 2.0 update](/ecosystem/subsecond), the masterchain coordinat
 
 TON supports several asset types for payment processing:
 
-**Toncoin** is the native currency of the network. Every wallet can receive Toncoin directly without additional setup. Transfers are simple value transfers between addresses, making Toncoin the easiest asset to process.
+**Gram** is the native currency of the network. Every wallet can receive Gram directly without additional setup. Transfers are simple value transfers between addresses, making Gram the easiest asset to process.
 
 [**Jettons**](/standard/tokens/jettons/overview) are fungible tokens following the TON Enhancement Proposal 74 (TEP-74) standard. Each Jetton type has a master contract and individual wallet contracts for each holder. When processing Jetton payments, you monitor the Jetton wallet contract associated with your deposit address. Transfer notifications include sender information and transfer amounts.
 
 Read more about [how Jettons work](/standard/tokens/jettons/how-it-works).
 
-- [Toncoin processing](/payments/toncoin)
+- [Gram processing](/payments/gram)
 - [Jetton processing](/payments/jettons)
 
 ## Implementation approaches
@@ -44,7 +44,7 @@ The choice depends on your requirements for control, development resources, and 
 
 ## Monitoring payments
 
-Payment monitoring requires polling for new blocks and filtering transactions that affect your addresses. For Toncoin, you check for incoming messages to your wallet address. For Jettons, you monitor the Jetton wallet contract associated with your address for transfer notifications.
+Payment monitoring requires polling for new blocks and filtering transactions that affect your addresses. For Gram, you check for incoming messages to your wallet address. For Jettons, you monitor the Jetton wallet contract associated with your address for transfer notifications.
 
 The typical monitoring flow involves fetching the latest workchain blocks, retrieving all transactions from them, filtering for transactions involving your addresses, parsing transaction data to extract amounts and metadata, verifying the transaction reached finality, and updating your internal payment records.
 

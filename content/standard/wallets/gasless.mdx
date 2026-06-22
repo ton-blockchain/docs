@@ -3,7 +3,7 @@ title: "Gasless transactions"
 sidebarTitle: "Gasless transactions"
 ---
 
-Gasless transactions execute wallet operations when the wallet owner does not hold Toncoin to pay [network fees](/foundations/fees). A relayer service and its on-chain contract submit transactions on behalf of users and attach Toncoin to cover gas costs.
+Gasless transactions execute wallet operations when the wallet owner does not hold Gram to pay [network fees](/foundations/fees). A relayer service and its on-chain contract submit transactions on behalf of users and attach Gram to cover gas costs.
 
 <Callout type="note">
   The wallet contract must support owner-signed internal messages — implementations that only accept external messages cannot participate in gasless flows.
@@ -15,10 +15,10 @@ Gasless transactions execute wallet operations when the wallet owner does not ho
 
 On TON, every smart contract processes two message types:
 
-- External messages: arrive from outside the blockchain. When a wallet contract receives an external message, it pays gas from its own Toncoin balance.
-- Internal messages: arrive from other contracts. Gas is paid from Toncoin attached to the message.
+- External messages: arrive from outside the blockchain. When a wallet contract receives an external message, it pays gas from its own Gram balance.
+- Internal messages: arrive from other contracts. Gas is paid from Gram attached to the message.
 
-Gasless transactions use internal messages: the relayer's contract sends an internal message with attached Toncoin to the wallet contract. The wallet executes actions without spending its own balance.
+Gasless transactions use internal messages: the relayer's contract sends an internal message with attached Gram to the wallet contract. The wallet executes actions without spending its own balance.
 
 ### Architecture
 
@@ -66,9 +66,9 @@ The relayer verifies off-chain:
 
 The relayer's contract sends an internal message to the user's wallet:
 
-- Attaches sufficient Toncoin for gas
+- Attaches sufficient Gram for gas
 - Includes the user's signed payload as the message body
-- Spends the relayer's Toncoin, not the user's
+- Spends the relayer's Gram, not the user's
 
 #### Step 4: Wallet executes
 
@@ -76,7 +76,7 @@ The wallet contract:
 
 - Verifies signature on-chain
 - Checks replay protection
-- Executes signed actions using attached Toncoin
+- Executes signed actions using attached Gram
 - Increments sequence number
 
 The blockchain sees a standard internal message. Authentication happens inside the wallet contract.
@@ -133,14 +133,14 @@ Mitigation:
 
 - Use short expiration windows (60-300 seconds)
 - Choose relayers with reputation systems
-- For high-value operations, use direct external messages when Toncoin is available
+- For high-value operations, use direct external messages when Gram is available
 - Monitor for suspicious delays or failures
 
 ### Operational risks
 
-- Insufficient gas: if the relayer attaches too little Toncoin, execution fails. The wallet's sequence number does not increment, so the user can retry with the same signed payload.
+- Insufficient gas: if the relayer attaches too little Gram, execution fails. The wallet's sequence number does not increment, so the user can retry with the same signed payload.
 - Network congestion: gas costs spike during high load. Relayers may refuse service or increase fees temporarily.
-- Jetton payment risks: jetton contracts may have restrictions, insufficient balance, or bugs. Relayers should emulate transactions off-chain before spending Toncoin.
+- Jetton payment risks: jetton contracts may have restrictions, insufficient balance, or bugs. Relayers should emulate transactions off-chain before spending Gram.
 - Prepaid credit risks: users trust the relayer to honor off-chain credit balances. No on-chain recourse if the relayer refuses service.
 - Sponsorship abuse: without rate limits and address restrictions, attackers can drain relayer resources through spam.
 
@@ -160,11 +160,11 @@ The attacker does not gain:
 - Ability to steal funds
 - Ability to modify signed actions
 
-Users can switch to alternative relayers or use external messages once Toncoin is available.
+Users can switch to alternative relayers or use external messages once Gram is available.
 
 ## Example: jetton payment
 
-Alice wants to send 100 USDT to Bob but has zero Toncoin. The relayer charges 0.5 USDT.
+Alice wants to send 100 USDT to Bob but has zero Gram. The relayer charges 0.5 USDT.
 
 Alice's wallet:
 
@@ -178,23 +178,23 @@ Relayer:
 1. Verifies signature against Alice's public key
 1. Checks that the sequence number is 42 (matches wallet state)
 1. Checks that the expiration is valid
-1. Sends internal message to Alice's wallet with 0.1 Toncoin attached
+1. Sends internal message to Alice's wallet with 0.1 Gram attached
 
 Alice's wallet contract:
 
 1. Receives the internal message
 1. Verifies signature
 1. Checks that the sequence number is 42 and the expiration is valid
-1. Executes both USDT transfers using attached 0.1 Toncoin for gas
+1. Executes both USDT transfers using attached 0.1 Gram for gas
 1. Increments sequence number to 43
 
 Result:
 
-- Alice: 0 Toncoin (unchanged), -100.5 USDT
+- Alice: 0 Gram (unchanged), -100.5 USDT
 - Bob: +100 USDT
-- Relayer: -0.1 Toncoin, +0.5 USDT
+- Relayer: -0.1 Gram, +0.5 USDT
 
-The relayer accumulates USDT fees and exchanges them for Toncoin periodically.
+The relayer accumulates USDT fees and exchanges them for Gram periodically.
 
 ## Limitations
 
@@ -222,8 +222,8 @@ Centralization: users depend on relayer uptime, policies, and willingness to ser
 
 ### Relayer requirements
 
-- Validate signatures and replay protection off-chain before spending Toncoin
-- Attach sufficient Toncoin to cover gas for wallet execution and outgoing actions
+- Validate signatures and replay protection off-chain before spending Gram
+- Attach sufficient Gram to cover gas for wallet execution and outgoing actions
 - Implement rate limiting and abuse prevention
 - For jetton payments, emulate transactions to verify successful execution
 - Forward the signed payload verbatim in the internal message body without modifying fields covered by the signature
@@ -234,4 +234,4 @@ The [wallet v5](/standard/wallets/v5) standard supports gasless via the `interna
 
 - Separate opcodes for external and internal messages prevent replay attacks
 - The contract enforces signature verification, sequence numbers, and expiration checks for owner-signed internal messages
-- A relayer forwards the signed payload verbatim as the internal message body and attaches Toncoin for gas
+- A relayer forwards the signed payload verbatim as the internal message body and attaches Gram for gas

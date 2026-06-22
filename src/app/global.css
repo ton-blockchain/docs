@@ -129,8 +129,13 @@ html > body[data-scroll-locked] {
   }
 }
 
-/* 40rem ~ 640px with font-size 16 */
-/* @media (min-width: 640px) {} */
+/* Removing background blur of the ToC popover */
+#nd-docs-layout > div[data-toc-popover] > header {
+  --blur-sm: 0;
+  --tw-backdrop-blur: initial;
+  backdrop-filter: initial;
+  background-color: var(--color-fd-background);
+}
 
 /* Prevent word breaks in inline code items in tables */
 td > code,

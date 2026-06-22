@@ -88,7 +88,7 @@ How it works:
 1. User sends signed message to service using API.
 1. Service verifies the signature.
 1. Service wraps signed message in internal message.
-1. Service sends internal message to user's wallet and pays gas in TON.
+1. Service sends internal message to user's wallet and pays gas in GRAM.
 1. Wallet contract verifies user's signature.
 1. Wallet contract checks seqno for replay protection.
 1. Wallet contract increments seqno.
@@ -98,9 +98,9 @@ Key characteristics:
 
 - Who signs: user
 - Who sends: service (internal message)
-- Who pays gas: service (in TON), gets compensated in jettons
+- Who pays gas: service (in GRAM), gets compensated in jettons
 
-This pattern enables users to pay gas in jettons instead of TON.
+This pattern enables users to pay gas in jettons instead of GRAM.
 
 ### Example 3: Server-controlled operations
 

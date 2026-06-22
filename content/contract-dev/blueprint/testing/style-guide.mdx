@@ -218,7 +218,7 @@ Always validate that gas constants and fee calculations are sufficient for compl
 Calculate required fees using formulas, but empirically discovering the minimal amount provides practical validation. Use binary search to efficiently find the threshold:
 
 ```typescript expandable
-test.skip("find minimal amount of TON for protocol", async () => {
+test.skip("find minimal amount of nanograms for protocol", async () => {
     const checkAmount = async (amount: bigint) => {
         const { user, child, parent } = await setup();
         const message: SomeMessage = { $$type: "SomeMessage" };
@@ -246,7 +246,7 @@ test.skip("find minimal amount of TON for protocol", async () => {
         }
     }
 
-    console.log(R, "is the minimal amount of nanotons for protocol");
+    console.log(R, "is the minimal amount of nanograms for protocol");
 });
 ```
 

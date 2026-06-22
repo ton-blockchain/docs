@@ -23,8 +23,8 @@ To set it up, follow the [quick start guide](#quick-start).
 
 ## Features
 
-- Balance queries: check Toncoin and jetton (token) balances, view transaction history
-- Transfers: send Toncoin, jettons, and NFTs
+- Balance queries: check Gram and jetton (token) balances, view transaction history
+- Transfers: send Gram, jettons, and NFTs
 - Assets: list, inspect, and manage popular jettons and NFTs
 - Swaps: get quotes for token swaps through DEX aggregators
 - DNS: resolve TON DNS domains and perform reverse lookups
@@ -99,7 +99,7 @@ To start using `@ton/mcp` in agentic wallets mode:
     An agentic wallet is a TON contract. There are three ways to fund it:
 
     1. During creation: use the "Initial TON deposit" field on the deployment page.
-    1. From the dashboard: use the <kbd>Fund</kbd> button to transfer Toncoin, jettons, or NFTs.
+    1. From the dashboard: use the <kbd>Fund</kbd> button to transfer Gram, jettons, or NFTs.
     1. Directly: use a wallet app like Tonkeeper to transfer assets to the agentic wallet address directly.
 
     To check the balance, ask the agent: "What is my agent balance?"
@@ -110,11 +110,11 @@ To start using `@ton/mcp` in agentic wallets mode:
 
     Once setup is complete, ask agent to perform desired actions. For example:
 
-    - `Send 1 TON to UQB.._WALLET_ADDRESS` - sign and send a transfer from the agentic wallet.
-    - `Swap 5 TON for USDT` - get a quote and execute a swap.
+    - `Send 1 GRAM to UQB.._WALLET_ADDRESS` - sign and send a transfer from the agentic wallet.
+    - `Swap 5 GRAM for USDT` - get a quote and execute a swap.
     - `Resolve the contract address of this DNS domain: DOMAIN_NAME.ton` - obtain the wallet address of the domain owner.
     - `Show my NFTs` - query all NFTs owned by the wallet.
-    - `Check my balance` - current Toncoin and jetton balances. Do not use this data for any calculations, as it becomes outdated quickly.
+    - `Check my balance` - current Gram and jetton balances. Do not use this data for any calculations, as it becomes outdated quickly.
     - `Get my last transactions` - list of several latest events initiated by the wallet.
     - `Import agentic wallet` - reinstate a wallet previously managed by another agent.
   </Step>
@@ -270,22 +270,22 @@ Serverless mode operates in [single-wallet mode](#single-wallet-mode) only and a
 - Wallet management:
   - `get_wallet` - returns the current wallet address and network: `mainnet` or `testnet`.
 - Balances and history:
-  - `get_balance` - returns the Toncoin balance of the current wallet.
-  - `get_balance_by_address` - returns the Toncoin balance for any address.
+  - `get_balance` - returns the Gram balance of the current wallet.
+  - `get_balance_by_address` - returns the Gram balance for any address.
   - `get_jetton_balance` - returns the balance of a specific jetton in the current wallet.
   - `get_jettons` - lists all jettons held by the current wallet with balances and metadata.
   - `get_jettons_by_address` - lists all jettons held by any address with balances and metadata. Supports pagination.
   - `get_jetton_info` - returns metadata for a jetton minter (master) contract: name, symbol, decimals, image, URI.
   - `get_known_jettons` - returns a built-in list of popular jettons on TON with addresses and metadata.
-  - `get_transactions` - returns recent transaction history: Toncoin transfers, jetton transfers, swaps.
+  - `get_transactions` - returns recent transaction history: Gram transfers, jetton transfers, swaps.
   - `get_transaction_status` - returns the status (pending, completed, or failed) and trace details for a transaction by its normalized hash.
 - Transfers:
-  - `send_ton` - sends Toncoin to an address. Amounts are in human-readable format. For example, `"1.5"` for 1.5 Toncoin. Returns a `normalizedHash`.
+  - `send_ton` - sends Gram to an address. Amounts are in human-readable format. For example, `"1.5"` for 1.5 Gram. Returns a `normalizedHash`.
   - `send_jetton` - sends jettons to an address. Amounts are in human-readable format. Returns a `normalizedHash`.
   - `send_nft` - transfers an NFT to another address. Returns a `normalizedHash`.
-  - `send_raw_transaction` - sends a raw transaction with full control over messages. Amounts are in nanoToncoin. Supports multiple messages. Returns a `normalizedHash`.
+  - `send_raw_transaction` - sends a raw transaction with full control over messages. Amounts are in nanograms. Supports multiple messages. Returns a `normalizedHash`.
 - Swaps:
-  - `get_swap_quote` - returns a quote for a token swap. The response includes transaction parameters ready for `send_raw_transaction`. Use `"TON"` for native Toncoin or a jetton minter (master) contract address.
+  - `get_swap_quote` - returns a quote for a token swap. The response includes transaction parameters ready for `send_raw_transaction`. Use `"TON"` for native Gram or a jetton minter (master) contract address.
 - NFTs:
   - `get_nfts` - lists NFTs in the current wallet with metadata, collection info, and attributes. Supports pagination.
   - `get_nfts_by_address` - lists NFTs held by any address. Supports pagination.

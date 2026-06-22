@@ -84,7 +84,7 @@ async function main() {
         // Total attached to the collection. Must cover
         // the forwarded amount below (0.005) plus
         // execution/storage fees;
-        // keep a safety margin (e.g., 0.01-0.02 TON)
+        // keep a safety margin (e.g., 0.01-0.02 GRAM)
         value: toNano("0.01"),
         bounce: true,
         body,
@@ -153,7 +153,7 @@ To deploy an item from a smart contract, send a message from the contract to the
 
 ### Prerequisites
 
-- Enough Testnet funds on the calling contract to cover fees and attached value (for example, ≥ 0.02 TON)
+- Enough Testnet funds on the calling contract to cover fees and attached value (for example, ≥ 0.02 GRAM)
 - `<COLLECTION_ADDRESS>`, `<RECIPIENT_ADDRESS>`, `<INDEX>`, `<ITEM_CONTENT>`
 - The calling contract must be the collection owner; otherwise the collection rejects deployments
 

@@ -158,7 +158,7 @@ stopMonitoring();
 
 ## Transfers from dApps
 
-When a connected dApp requests an NFT transfer, the wallet service follows the same flow as [Toncoin transfers](/ecosystem/walletkit/web/toncoin#transfers-from-dapps): the dApp sends a transaction request through the bridge, WalletKit emulates it and presents a preview, the user approves or declines, and the result is returned to the dApp.
+When a connected dApp requests an NFT transfer, the wallet service follows the same flow as [Gram transfers](/ecosystem/walletkit/web/gram#transfers-from-dapps): the dApp sends a transaction request through the bridge, WalletKit emulates it and presents a preview, the user approves or declines, and the result is returned to the dApp.
 
 ```ts title="TypeScript"
 kit.onTransactionRequest(async (event) => {
@@ -191,9 +191,9 @@ kit.onTransactionRequest(async (event) => {
 });
 ```
 
-There is an additional consideration for NFT transfers: they involve multiple internal messages between contracts. As such, NFT transfers always take longer than regular Toncoin-only transfers.
+There is an additional consideration for NFT transfers: they involve multiple internal messages between contracts. As such, NFT transfers always take longer than regular Gram-only transfers.
 
-As with Toncoin transfers, the wallet service should not block the UI while waiting for confirmation. With [continuous NFT ownership monitoring](#continuous-ownership-monitoring) and subsequent transaction requests, users will receive the latest information either way. Confirmations are only needed to display a list of past transactions reliably.
+As with Gram transfers, the wallet service should not block the UI while waiting for confirmation. With [continuous NFT ownership monitoring](#continuous-ownership-monitoring) and subsequent transaction requests, users will receive the latest information either way. Confirmations are only needed to display a list of past transactions reliably.
 
 ## Transfers in the wallet service
 

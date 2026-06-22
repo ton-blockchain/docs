@@ -22,7 +22,7 @@
           "Accounts"
         ],
         "summary": "Get address information",
-        "description": "Returns the current state of any account on the TON blockchain. Includes the balance (in nanotons), smart contract code and data (if deployed), account status, and a reference to the last transaction. This is the primary endpoint for checking if an address exists and what's deployed there.",
+        "description": "Returns the current state of any account on the TON blockchain. Includes the balance (in nanograms), smart contract code and data (if deployed), account status, and a reference to the last transaction. This is the primary endpoint for checking if an address exists and what's deployed there.",
         "operationId": "getAddressInformation_get",
         "parameters": [
           {
@@ -181,7 +181,7 @@
           "Accounts"
         ],
         "summary": "Get address balance",
-        "description": "Returns the TON balance of an account in nanotons. 1 TON = 1,000,000,000 nanotons. A lightweight endpoint that returns only the balance without contract code, data, or other account details. Returns \"0\" for addresses that have never received any funds.",
+        "description": "Returns the GRAM balance of an account in nanograms. 1 GRAM = 1,000,000,000 nanograms. A lightweight endpoint that returns only the balance without contract code, data, or other account details. Returns \"0\" for addresses that have never received any funds.",
         "operationId": "getAddressBalance_get",
         "parameters": [
           {
@@ -193,7 +193,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns the account balance in nanotons.",
+            "description": "Returns the account balance in nanograms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -234,7 +234,7 @@
           "Accounts"
         ],
         "summary": "Get address state",
-        "description": "Returns the lifecycle state of an account. Possible values: `uninitialized` (address has no deployed contract but can receive TON), `active` (contract is deployed and working), `frozen` (contract suspended due to zero balance, send TON to unfreeze). Refer to the [account lifecycle states documentation](/foundations/status) for details. Check this before interacting with a contract.",
+        "description": "Returns the lifecycle state of an account. Possible values: `uninitialized` (address has no deployed contract but can receive GRAM), `active` (contract is deployed and working), `frozen` (contract suspended due to zero balance, send GRAM to unfreeze). Refer to the [account lifecycle states documentation](/foundations/status) for details. Check this before interacting with a contract.",
         "operationId": "getAddressState_get",
         "parameters": [
           {
@@ -4204,7 +4204,7 @@
           "value": {
             "type": "integer",
             "format": "int64",
-            "description": "Maximum spendable amount within this time period, in nanotons."
+            "description": "Maximum spendable amount within this time period, in nanograms."
           }
         },
         "required": [
@@ -4235,7 +4235,7 @@
             "items": {
               "$ref": "#/components/schemas/RWalletLimit"
             },
-            "description": "Array of spending limit rules. Each entry defines a time window in seconds and the maximum spendable amount in nanotons within that window."
+            "description": "Array of spending limit rules. Each entry defines a time window in seconds and the maximum spendable amount in nanograms within that window."
           }
         },
         "required": [
@@ -4269,7 +4269,7 @@
           "unlocked_balance": {
             "type": "integer",
             "format": "int64",
-            "description": "Balance available for immediate withdrawal, in nanotons."
+            "description": "Balance available for immediate withdrawal, in nanograms."
           },
           "config": {
             "$ref": "#/components/schemas/RWalletConfig",
@@ -4364,12 +4364,12 @@
           "min_A": {
             "type": "integer",
             "format": "int64",
-            "description": "Minimum deposit required from Alice, in nanotons."
+            "description": "Minimum deposit required from Alice, in nanograms."
           },
           "min_B": {
             "type": "integer",
             "format": "int64",
-            "description": "Minimum deposit required from Bob, in nanotons."
+            "description": "Minimum deposit required from Bob, in nanograms."
           },
           "expire_at": {
             "type": "integer",
@@ -4379,12 +4379,12 @@
           "A": {
             "type": "integer",
             "format": "int64",
-            "description": "Alice's deposited amount in nanotons."
+            "description": "Alice's deposited amount in nanograms."
           },
           "B": {
             "type": "integer",
             "format": "int64",
-            "description": "Bob's deposited amount in nanotons."
+            "description": "Bob's deposited amount in nanograms."
           }
         },
         "required": [
@@ -4421,12 +4421,12 @@
           "min_A": {
             "type": "integer",
             "format": "int64",
-            "description": "Minimum guaranteed payout for Alice, in nanotons."
+            "description": "Minimum guaranteed payout for Alice, in nanograms."
           },
           "min_B": {
             "type": "integer",
             "format": "int64",
-            "description": "Minimum guaranteed payout for Bob, in nanotons."
+            "description": "Minimum guaranteed payout for Bob, in nanograms."
           },
           "expire_at": {
             "type": "integer",
@@ -4436,12 +4436,12 @@
           "A": {
             "type": "integer",
             "format": "int64",
-            "description": "Alice's final balance in nanotons."
+            "description": "Alice's final balance in nanograms."
           },
           "B": {
             "type": "integer",
             "format": "int64",
-            "description": "Bob's final balance in nanotons."
+            "description": "Bob's final balance in nanograms."
           }
         },
         "required": [
@@ -4470,12 +4470,12 @@
           "A": {
             "type": "integer",
             "format": "int64",
-            "description": "Alice's payout amount in nanotons."
+            "description": "Alice's payout amount in nanograms."
           },
           "B": {
             "type": "integer",
             "format": "int64",
-            "description": "Bob's payout amount in nanotons."
+            "description": "Bob's payout amount in nanograms."
           }
         },
         "required": [
@@ -5398,7 +5398,7 @@
           },
           "value": {
             "$ref": "#/components/schemas/Int256",
-            "description": "TON amount transferred with this message, in nanotons."
+            "description": "GRAM amount transferred with this message, in nanograms."
           },
           "extra_currencies": {
             "type": "array",
@@ -5409,11 +5409,11 @@
           },
           "fwd_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Forwarding fee deducted from the message value, in nanotons."
+            "description": "Forwarding fee deducted from the message value, in nanograms."
           },
           "ihr_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Instant Hypercube Routing (IHR) fee in nanotons. Always `0`. This is hardcoded at the protocol level and cannot be changed."
+            "description": "Instant Hypercube Routing (IHR) fee in nanograms. Always `0`. This is hardcoded at the protocol level and cannot be changed."
           },
           "created_lt": {
             "type": "string",
@@ -5473,15 +5473,15 @@
           },
           "fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Total fees paid for this transaction, in nanotons."
+            "description": "Total fees paid for this transaction, in nanograms."
           },
           "storage_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Storage fees in nanotons deducted from the account balance during the storage phase of this transaction. Covers the cost of storing the contract state on-chain since the last transaction."
+            "description": "Storage fees in nanograms deducted from the account balance during the storage phase of this transaction. Covers the cost of storing the contract state on-chain since the last transaction."
           },
           "other_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Fees in nanotons deducted from the account balance during the computation and action phases of this transaction. Covers the cost of TVM execution and processing outgoing messages."
+            "description": "Fees in nanograms deducted from the account balance during the computation and action phases of this transaction. Covers the cost of TVM execution and processing outgoing messages."
           },
           "in_msg": {
             "$ref": "#/components/schemas/MessageStd",
@@ -5492,7 +5492,7 @@
             "items": {
               "$ref": "#/components/schemas/MessageStd"
             },
-            "description": "Array of outbound messages produced by this transaction. Each message contains sender and recipient address objects, TON amount (nanotons as string), forwarding fee, and raw message body."
+            "description": "Array of outbound messages produced by this transaction. Each message contains sender and recipient address objects, GRAM amount (nanograms as string), forwarding fee, and raw message body."
           }
         },
         "required": [
@@ -5558,7 +5558,7 @@
           },
           "value": {
             "$ref": "#/components/schemas/Int256",
-            "description": "TON amount transferred with this message, in nanotons."
+            "description": "GRAM amount transferred with this message, in nanograms."
           },
           "extra_currencies": {
             "type": "array",
@@ -5569,11 +5569,11 @@
           },
           "fwd_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Forwarding fee deducted from the message value, in nanotons."
+            "description": "Forwarding fee deducted from the message value, in nanograms."
           },
           "ihr_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Instant Hypercube Routing (IHR) fee in nanotons. Always `0`. This is hardcoded at the protocol level and cannot be changed."
+            "description": "Instant Hypercube Routing (IHR) fee in nanograms. Always `0`. This is hardcoded at the protocol level and cannot be changed."
           },
           "created_lt": {
             "type": "string",
@@ -5610,7 +5610,7 @@
           "body_hash",
           "msg_data"
         ],
-        "description": "A message between accounts. Contains sender, recipient, TON amount transferred, and the message body. The `created_lt` field orders messages globally."
+        "description": "A message between accounts. Contains sender, recipient, GRAM amount transferred, and the message body. The `created_lt` field orders messages globally."
       },
       "Transaction": {
         "type": "object",
@@ -5646,15 +5646,15 @@
           },
           "fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Total fees paid for this transaction, in nanotons."
+            "description": "Total fees paid for this transaction, in nanograms."
           },
           "storage_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Storage fees in nanotons deducted from the account balance during the storage phase of this transaction. Covers the cost of storing the contract state on-chain since the last transaction."
+            "description": "Storage fees in nanograms deducted from the account balance during the storage phase of this transaction. Covers the cost of storing the contract state on-chain since the last transaction."
           },
           "other_fee": {
             "$ref": "#/components/schemas/Int256",
-            "description": "Fees in nanotons deducted from the account balance during the computation and action phases of this transaction. Covers the cost of TVM execution and processing outgoing messages."
+            "description": "Fees in nanograms deducted from the account balance during the computation and action phases of this transaction. Covers the cost of TVM execution and processing outgoing messages."
           },
           "in_msg": {
             "$ref": "#/components/schemas/Message",
@@ -5665,7 +5665,7 @@
             "items": {
               "$ref": "#/components/schemas/Message"
             },
-            "description": "Array of outbound messages produced by this transaction. Each message contains sender, recipient, TON amount (nanotons as string), forwarding fee, message body, and optional decoded text comment."
+            "description": "Array of outbound messages produced by this transaction. Each message contains sender, recipient, GRAM amount (nanograms as string), forwarding fee, message body, and optional decoded text comment."
           }
         },
         "required": [
@@ -6028,14 +6028,14 @@
           },
           "balance": {
             "$ref": "#/components/schemas/Int256",
-            "description": "The account balance in nanotons (the smallest unit of TON). 1 TON = 1,000,000,000 nanotons (10^9), so divide by 10^9 to get the human-readable TON amount. Refer to the [units and decimals guide](/ecosystem/wallet-apps/deep-links#read-more) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/standard/tokens/jettons/overview) for details on how Jetton decimals work."
+            "description": "The account balance in nanograms (the smallest unit of GRAM). 1 GRAM = 1,000,000,000 nanograms (10^9), so divide by 10^9 to get the human-readable GRAM amount. Refer to the [units and decimals guide](/ecosystem/wallet-apps/deep-links#read-more) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/standard/tokens/jettons/overview) for details on how Jetton decimals work."
           },
           "extra_currencies": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ExtraCurrencyBalance"
             },
-            "description": "Array of non-TON currency balances held by this account. Each entry contains a currency ID (integer) and balance amount (decimal string). Empty array if the account holds no extra currencies."
+            "description": "Array of non-GRAM currency balances held by this account. Each entry contains a currency ID (integer) and balance amount (decimal string). Empty array if the account holds no extra currencies."
           },
           "last_transaction_id": {
             "$ref": "#/components/schemas/InternalTransactionId",
@@ -6103,14 +6103,14 @@
           },
           "balance": {
             "$ref": "#/components/schemas/Int256",
-            "description": "The account balance in nanotons (the smallest unit of TON). 1 TON = 1,000,000,000 nanotons (10^9), so divide by 10^9 to get the human-readable TON amount. Refer to the [units and decimals guide](/ecosystem/wallet-apps/deep-links#read-more) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/standard/tokens/jettons/overview) for details on how Jetton decimals work."
+            "description": "The account balance in nanograms (the smallest unit of GRAM). 1 GRAM = 1,000,000,000 nanograms (10^9), so divide by 10^9 to get the human-readable GRAM amount. Refer to the [units and decimals guide](/ecosystem/wallet-apps/deep-links#read-more) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/standard/tokens/jettons/overview) for details on how Jetton decimals work."
           },
           "extra_currencies": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ExtraCurrencyBalance"
             },
-            "description": "Array of non-TON currency balances held by this account. Each entry contains a currency ID (integer) and balance amount (decimal string). Empty array if the account holds no extra currencies."
+            "description": "Array of non-GRAM currency balances held by this account. Each entry contains a currency ID (integer) and balance amount (decimal string). Empty array if the account holds no extra currencies."
           },
           "last_transaction_id": {
             "$ref": "#/components/schemas/InternalTransactionId",
@@ -6165,7 +6165,7 @@
           "balance": {
             "type": "string",
             "x-usrv-cpp-type": "ton_http::types::int256",
-            "description": "Account balance in nanotons as a decimal string."
+            "description": "Account balance in nanograms as a decimal string."
           },
           "account_state": {
             "$ref": "#/components/schemas/AccountStateEnum",
@@ -6639,7 +6639,7 @@
           },
           "transactions": {
             "type": "array",
-            "description": "Array of full transaction objects. Each entry contains the account address, timestamps, inbound/outbound messages, fees (in nanotons), and the raw transaction BoC (base64).",
+            "description": "Array of full transaction objects. Each entry contains the account address, timestamps, inbound/outbound messages, fees (in nanograms), and the raw transaction BoC (base64).",
             "items": {
               "$ref": "#/components/schemas/TransactionExt"
             }
@@ -6681,7 +6681,7 @@
             "items": {
               "$ref": "#/components/schemas/TransactionStd"
             },
-            "description": "Array of transaction objects in standardized format. Each transaction contains address, timestamps, inbound/outbound messages, fees in nanotons, and raw BoC (base64)."
+            "description": "Array of transaction objects in standardized format. Each transaction contains address, timestamps, inbound/outbound messages, fees in nanograms, and raw BoC (base64)."
           },
           "previous_transaction_id": {
             "$ref": "#/components/schemas/InternalTransactionId",
@@ -6774,22 +6774,22 @@
           "in_fwd_fee": {
             "type": "integer",
             "format": "int64",
-            "description": "Fee for importing this inbound message, in nanotons."
+            "description": "Fee for importing this inbound message, in nanograms."
           },
           "storage_fee": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage fee charged for keeping the contract state on-chain, in nanotons."
+            "description": "Storage fee charged for keeping the contract state on-chain, in nanograms."
           },
           "gas_fee": {
             "type": "integer",
             "format": "int64",
-            "description": "Computation gas fee for executing contract code, in nanotons."
+            "description": "Computation gas fee for executing contract code, in nanograms."
           },
           "fwd_fee": {
             "type": "integer",
             "format": "int64",
-            "description": "Fee for forwarding outbound messages created by this transaction, in nanotons."
+            "description": "Fee for forwarding outbound messages created by this transaction, in nanograms."
           }
         }
       },
@@ -7960,7 +7960,7 @@
             "items": {
               "$ref": "#/components/schemas/Transaction"
             },
-            "description": "Array of transaction objects, ordered newest-first. Each transaction contains the triggering inbound message, all outbound messages, fees in nanotons, timestamps, and the raw BoC (base64)."
+            "description": "Array of transaction objects, ordered newest-first. Each transaction contains the triggering inbound message, all outbound messages, fees in nanograms, timestamps, and the raw BoC (base64)."
           },
           "@extra": {
             "type": "string",

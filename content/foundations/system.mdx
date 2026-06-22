@@ -20,7 +20,7 @@ The **Elector** smart contract manages validator elections, validation rounds, a
 
 The Elector stores:
 
-- Non-withdrawn Toncoin in the `credits` hashmap.
+- Non-withdrawn Gram in the `credits` hashmap.
 - New validator applications in the `elect` hashmap.
 - Past election data in the `past_elections` hashmap (including complaints and `frozen` stakes held for `stake_held_for` periods, defined in [**ConfigParam 15**](https://tonviewer.com/config#15)).
 
@@ -35,7 +35,7 @@ The Elector stores:
 
 To apply, a validator must:
 
-1. Send a message to the Elector with their Abstract Datagram Network Layer (ADNL) address, public key, `max_factor`, and stake (TON amount).
+1. Send a message to the Elector with their Abstract Datagram Network Layer (ADNL) address, public key, `max_factor`, and stake (GRAM amount).
 1. The Elector validates the parameters and either registers the application or refunds the stake.
    _Note:_ Only masterchain addresses can apply.
 
@@ -62,7 +62,7 @@ min(stake[i] * max_factor[j], stake[j])
 
 **Example breakdown**:
 
-- **Case 1**: 9 candidates stake 100,000 TON (`max_factor=2.7`), 1 candidate stakes 10,000.
+- **Case 1**: 9 candidates stake 100,000 GRAM (`max_factor=2.7`), 1 candidate stakes 10,000.
 
 - _Without the 10,000-stake candidate_: TES = 900,000.
 

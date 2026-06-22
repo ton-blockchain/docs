@@ -7,15 +7,15 @@ sidebarTitle: "Nominator pools"
 
 ## Key parameters
 
-- Minimum nominator stake: 10,000 TON, recommended.
+- Minimum nominator stake: 10,000 GRAM, recommended.
 - Maximum nominators per pool: 40.
-- Operational costs: approximately 5 TON per validation round, paid by the validator.
+- Operational costs: approximately 5 GRAM per validation round, paid by the validator.
 - Withdrawals: full withdrawal only; partial withdrawals are not supported.
 - Governance: nominators can participate in network configuration voting.
 
 ## When to use
 
-- Staking below the validator minimum of 300,000 TON.
+- Staking below the validator minimum of 300,000 GRAM.
 - Delegating stake to trusted validators without running infrastructure.
 - Participating in network governance.
 - Using a simple staking model without liquidity tokens or DeFi participation.
@@ -36,16 +36,16 @@ sidebarTitle: "Nominator pools"
 
 1. Choose a pool on [TON Nominators](https://tonvalidators.org/) and review its parameters, commission, and minimum stake.
 1. Send a message to the nominator pool contract with:
-   - The desired TON amount.
+   - The desired GRAM amount.
    - The text comment "d" for deposit.
-1. The sent amount must be at least `min_nominator_stake + 1 TON`, while 1 TON is deducted as the deposit fee.
+1. The sent amount must be at least `min_nominator_stake + 1 GRAM`, while 1 GRAM is deducted as the deposit fee.
 1. If the pool is not currently validating, the deposit is credited immediately; otherwise, it is added to pending deposits.
 
 ## How to withdraw
 
 1. Send a message to the nominator pool contract with:
    - The text comment "w" for withdraw.
-   - Approximately 1 TON for network fees.
+   - Approximately 1 GRAM for network fees.
 1. If the pool has sufficient balance, the withdrawal is processed immediately.
 1. If not, a withdrawal request is created and processed later.
 1. Only full withdrawal is supported.
@@ -54,7 +54,7 @@ sidebarTitle: "Nominator pools"
   type="caution"
   title="Staking and withdrawal risks"
 >
-  These steps transfer TON to a smart contract. Transactions are irreversible.
+  These steps transfer GRAM to a smart contract. Transactions are irreversible.
 
   Verify the contract address and network (mainnet vs testnet) before sending funds. Withdrawals depend on pool liquidity and may be delayed if insufficient balance is available. Only full withdrawals are supported.
 
@@ -66,7 +66,7 @@ sidebarTitle: "Nominator pools"
 1. Find the proposal hash posted in [`@tonblockchain`](https://t.me/tonblockchain) or [`@tonstatus`](https://t.me/tonstatus).
 1. Send a message with comment `"y<HASH>"` to vote for or `"n<HASH>"` to vote against.
    - Example: `"yD855FFBCF813E50E10BEAB902D1177529CE79785CAE913EB96A72AE8EFBCBF47"`.
-1. Attach approximately 1 TON for network fees.
+1. Attach approximately 1 GRAM for network fees.
 
 ## Reward calculation
 
@@ -81,5 +81,5 @@ Reward data can be obtained using the [TON Center nominator pools API](https://t
 ## Validator setup
 
 - Use [MyTonCtrl nominator pools](/ecosystem/node/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode) for standard multi-nominator operation.
-- Pools can technically be configured with a minimum stake of 100 TON; however, 10,000 TON is the tested and recommended value.
+- Pools can technically be configured with a minimum stake of 100 GRAM; however, 10,000 GRAM is the tested and recommended value.
 - Validators can deploy pools manually using the [nominator pool contract](https://github.com/ton-blockchain/nominator-pool) without MyTonCtrl.

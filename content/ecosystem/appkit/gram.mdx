@@ -1,6 +1,6 @@
 ---
-title: "How to work with Toncoin using AppKit"
-sidebarTitle: "Work with Toncoin"
+title: "How to work with Gram using AppKit"
+sidebarTitle: "Work with Gram"
 ---
 
 <Callout>
@@ -18,7 +18,7 @@ Notice that both cases require querying the blockchain data via the API client s
 
 ### On-demand balance check
 
-Balances are returned as strings representing fractional Toncoin units. For example, `'0.1'` is a balance of 0.1 Toncoin or 100000000 nanoToncoin. Decimal precision of Toncoin is 9 digits, so the smallest possible balance is `'0.000000001'` Toncoin or 1 nanoToncoin.
+Balances are returned as strings representing fractional Gram units. For example, `'0.1'` is a balance of 0.1 Gram or 100000000 nanograms. Decimal precision of Gram is 9 digits, so the smallest possible balance is `'0.000000001'` Gram or 1 nanograms.
 
 <Callout type="caution">
   Do not store the balance check results anywhere in the application state, as they become outdated quickly. For UI purposes, do [continuous balance monitoring](#continuous-balance-monitoring).
@@ -32,7 +32,7 @@ Balances are returned as strings representing fractional Toncoin units. For exam
     const { data: balance } = useBalance();
 
     return (
-      <p>TON wallet balance in fractional Toncoin: {balance ?? '0'}</p>
+      <p>TON wallet balance in fractional Gram: {balance ?? '0'}</p>
     );
   };
   ```
@@ -42,7 +42,7 @@ Balances are returned as strings representing fractional Toncoin units. For exam
 
   const balance = await getBalance(kit);
   if (balance) {
-    console.log('TON wallet balance in fractional Toncoin:', balance);
+    console.log('TON wallet balance in fractional Gram:', balance);
   }
   ```
 </CodeGroup>
@@ -88,7 +88,7 @@ Modify the following examples according to the application logic:
         {isLoading ? (
           <p>Loading the balance...</p>
         ) : (
-          <p>TON wallet balance in fractional Toncoin: {balance ?? '0'}</p>
+          <p>TON wallet balance in fractional Gram: {balance ?? '0'}</p>
         )}
       </div>
     );
@@ -170,7 +170,7 @@ Modify the following examples according to the application logic:
         {isBalanceLoading ? (
           <p>Loading the balance...</p>
         ) : (
-          <p>TON wallet balance in fractional Toncoin: {balance ?? '0'}</p>
+          <p>TON wallet balance in fractional Gram: {balance ?? '0'}</p>
         )}
       </div>
     );
@@ -233,30 +233,30 @@ Modify the following examples according to the application logic:
 
 <CodeGroup>
   ```tsx title="React (component)" icon="react"
-  // Pre-built UI component for sending Toncoin transactions by clicking a button.
+  // Pre-built UI component for sending Gram transactions by clicking a button.
   // It handles success and error states while being customizable.
   import { SendTonButton } from '@ton/appkit-react';
 
   export const SendToncoin = () => {
     // For example: 'UQ...'
     const recipientAddress = '<TON_WALLET_ADDRESS>';
-    // For example, '0.1' or '1' Toncoin.
-    const toncoin = '<FRACTIONAL_AMOUNT>';
+    // For example, '0.1' or '1' Gram.
+    const gram = '<FRACTIONAL_AMOUNT>';
 
     return (
       <SendTonButton
-        // Where to send Toncoin to
+        // Where to send Gram to
         recipientAddress={recipientAddress}
 
-        // Toncoin amount
-        amount={toncoin}
+        // Gram amount
+        amount={gram}
 
         // (optional) Comment string
         comment="Hello from AppKit!"
 
         // (optional) Add custom button title
-        // Defaults to Send X TON, where X is Toncoin amount
-        text="Send TON"
+        // Defaults to Send X GRAM, where X is the amount
+        text="Send GRAM"
 
         // (optional) Handle successes
         onSuccess={(result) => console.log('Transaction sent:', result)}
@@ -282,12 +282,12 @@ Modify the following examples according to the application logic:
 
     const handleTransfer = () => {
       transfer({
-        // Where to send Toncoin to.
+        // Where to send Gram to.
         // For example: 'UQ...'
         recipientAddress: '<TON_WALLET_ADDRESS>',
 
-        // Fractional Toncoin amount string.
-        // For example, '0.1' or '10' Toncoin.
+        // Fractional Gram amount string.
+        // For example, '0.1' or '10' Gram.
         amount: '<FRACTIONAL_AMOUNT>',
 
         // (optional) Comment string. Defaults to none if not provided.
@@ -306,7 +306,7 @@ Modify the following examples according to the application logic:
     return (
       <div>
         <button onClick={handleTransfer} disabled={isPending}>
-          {isPending ? 'Transferring...' : 'Transfer TON'}
+          {isPending ? 'Transferring...' : 'Transfer GRAM'}
         </button>
         {error && <div>Error: {error.message}</div>}
         {data && (
@@ -335,7 +335,7 @@ Modify the following examples according to the application logic:
     kit: AppKit,
     /** Recipient's TON wallet address as a string */
     recipientAddress: string,
-    /** Amount in fractional Toncoin */
+    /** Amount in fractional Gram */
     amount: string,
     /** Optional comment string */
     comment?: string,

@@ -1,9 +1,9 @@
 ---
-title: "Toncoin payments processing"
-sidebarTitle: "Toncoin"
+title: "Gram payments processing"
+sidebarTitle: "Gram"
 ---
 
-Processing Toncoin payments requires choosing between two architectural approaches:
+Processing Gram payments requires choosing between two architectural approaches:
 
 - invoice-based deposits to a single address, common to all users
 - unique deposit addresses per user.
@@ -53,7 +53,7 @@ graph LR
 
 Invoice-based processing uses one wallet address to receive payments from all users. Each payment includes a unique identifier in the transaction comment field, allowing the service to attribute deposits to specific users.
 
-The implementation deploys one wallet contract (typically [Highload](/standard/wallets/highload/overview)) and generates unique invoice identifiers for each deposit. Users send Toncoin to this shared address with their invoice identifier as the comment. The service polls the wallet's transaction history, extracts comments from incoming messages, matches them against stored invoices, and credits user accounts accordingly.
+The implementation deploys one wallet contract (typically [Highload](/standard/wallets/highload/overview)) and generates unique invoice identifiers for each deposit. Users send Gram to this shared address with their invoice identifier as the comment. The service polls the wallet's transaction history, extracts comments from incoming messages, matches them against stored invoices, and credits user accounts accordingly.
 
 Transaction comments in TON use the text message format; read more in [How TON wallets work](/standard/wallets/how-it-works).
 
@@ -81,7 +81,7 @@ Transaction comments in TON use the text message format; read more in [How TON w
 - Some user wallet applications don't support comments, limiting accessibility
 - Single wallet network load [won't be sharded](/foundations/shards)
 
-Use the following TypeScript implementation for educational purposes only: [invoice-based Toncoin deposits](https://github.com/ton-org/docs-examples/blob/processing/guidebook/toncoin-processing/src/deposits/invoices.ts).
+Use the following TypeScript implementation for educational purposes only: [invoice-based Gram deposits](https://github.com/ton-org/docs-examples/blob/processing/guidebook/toncoin-processing/src/deposits/invoices.ts).
 
 ## Unique deposit addresses
 
@@ -129,9 +129,9 @@ Withdrawal processing must gather funds from multiple wallets. Either maintain a
 - Higher operational complexity managing multiple wallets
 - Deployment costs multiply by the number of users
 - Withdrawal processing requires coordination across wallets
-- Storage fees apply to each deployed contract (currently \~0.001 TON per year per contract)
+- Storage fees apply to each deployed contract (currently \~0.001 GRAM per year per contract)
 
-Use the following TypeScript implementation for educational purposes only: [unique address Toncoin deposits](https://github.com/ton-org/docs-examples/blob/processing/guidebook/toncoin-processing/src/deposits/unique-addresses.ts).
+Use the following TypeScript implementation for educational purposes only: [unique address Gram deposits](https://github.com/ton-org/docs-examples/blob/processing/guidebook/toncoin-processing/src/deposits/unique-addresses.ts).
 
 ## Withdrawal batching
 
@@ -144,7 +144,7 @@ Use the following TypeScript implementation for educational purposes only: [uniq
 ## Common abuse patterns
 
 - Reusing a previously settled invoice identifier to trigger duplicate credits when the backend does not invalidate the invoice after the first use.
-- Changing the Toncoin amount but leaving the original invoice identifier to obtain services at a lower price if expected amounts are not enforced.
+- Changing the Gram amount but leaving the original invoice identifier to obtain services at a lower price if expected amounts are not enforced.
 - Crafting comments that mimic another users invoice identifier in order to hijack their pending credit.
 - Submitting large numbers of dust payments to inflate processing costs or exhaust rate limits on transaction polling.
 

@@ -73,7 +73,7 @@ delete_pool my-pool
 **Syntax**
 
 ```mytonctrl
-new_pool <pool-name> <validator-reward-share-percent> <max-nominators-count> <min-validator-stake-ton> <min-nominator-stake-ton>
+new_pool <pool-name> <validator-reward-share-percent> <max-nominators-count> <min-validator-stake-gram> <min-nominator-stake-gram>
 ```
 
 **Behavior**
@@ -81,7 +81,7 @@ new_pool <pool-name> <validator-reward-share-percent> <max-nominators-count> <mi
 - Creates `<pool-name>.addr` and `<pool-name>-query.boc` using the official nominator pool Fift scripts.
 - `<validator-reward-share-percent>` is the operator commission (e.g., `10.5` for 10.5%).
 - `<max-nominators-count>` is the maximum number of nominators the pool will accept.
-- `<min-validator-stake-ton>` and `<min-nominator-stake-ton>` define the minimum validator self-stake and delegator stake in TON (whole-ton values are expected; convert to nanoTON before use if you need fractional amounts).
+- `<min-validator-stake-gram>` and `<min-nominator-stake-gram>` define the minimum validator self-stake and delegator stake in GRAM (whole-gram values are expected; convert to nanograms before use if you need fractional amounts).
 - Validates that no other local pool shares the same derived address.
 - Does not submit anything to the blockchain; run `activate_pool` afterward.
 
@@ -137,18 +137,18 @@ update_validator_set EQB1e...6g
 
 ### `deposit_to_pool`
 
-**Purpose:** Stake Toncoin from the validator wallet into the pool contract.
+**Purpose:** Stake Gram from the validator wallet into the pool contract.
 
 **Syntax**
 
 ```mytonctrl
-deposit_to_pool <pool-addr> <amount-ton>
+deposit_to_pool <pool-addr> <amount-gram>
 ```
 
 **Behavior**
 
 - Builds a validator deposit query, signs it with the validator wallet, and sends it to `<pool-addr>`.
-- `<amount-ton>` is a TON-denominated float or integer. Internally, the command converts it to the correct nanoTON amount.
+- `<amount-gram>` is a GRAM-denominated float or integer. Internally, the command converts it to the correct nanogram amount.
 - Useful for seeding the validator share or topping up the pool’s liquidity.
 
 **Example**
@@ -159,18 +159,18 @@ deposit_to_pool EQB1e...6g 1000
 
 ### `withdraw_from_pool`
 
-**Purpose:** Withdraw Toncoin from a nominator pool back to the validator wallet.
+**Purpose:** Withdraw Gram from a nominator pool back to the validator wallet.
 
 **Syntax**
 
 ```mytonctrl
-withdraw_from_pool <pool-addr> <amount-ton>
+withdraw_from_pool <pool-addr> <amount-gram>
 ```
 
 **Behavior**
 
 - Checks the pool state; if withdrawals are currently unlocked, it performs an immediate withdrawal, otherwise it submits a pending withdrawal request that will execute once the pool cycle allows it.
-- `<amount-ton>` is specified in TON.
+- `<amount-gram>` is specified in GRAM.
 - Requires that the validator wallet has the authority to trigger the withdrawal.
 
 **Example**
@@ -228,17 +228,17 @@ activate_single_pool vip-client
 
 ### `withdraw_from_single_pool`
 
-**Purpose:** Withdraw Toncoin from a single-nominator pool back to the validator wallet or owner as configured.
+**Purpose:** Withdraw Gram from a single-nominator pool back to the validator wallet or owner as configured.
 
 **Syntax**
 
 ```mytonctrl
-withdraw_from_single_pool <pool-addr> <amount-ton>
+withdraw_from_single_pool <pool-addr> <amount-gram>
 ```
 
 **Behavior**
 
-- Issues an immediate withdrawal request against `<pool-addr>` for `<amount-ton>` TON.
+- Issues an immediate withdrawal request against `<pool-addr>` for `<amount-gram>` GRAM.
 - Uses `WithdrawFromPoolProcess`, which executes in the current cycle without creating a pending queue.
 - Primarily used to return delegated funds or distribute rewards.
 

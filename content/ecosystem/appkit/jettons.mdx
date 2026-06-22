@@ -7,7 +7,7 @@ sidebarTitle: "Work with Jettons"
   [Initialize the AppKit](/ecosystem/appkit/init) before using examples on this page.
 </Callout>
 
-[Jettons](/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Toncoin, which is the native TON currency used in all transfers, each jetton has a separate master (minter) contract and an individual wallet contract for each holder.
+[Jettons](/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Gram, which is the native TON currency used in all transfers, each jetton has a separate master (minter) contract and an individual wallet contract for each holder.
 
 For example, USDT on TON is implemented as a jetton, and its minter contract address is `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`. By providing this address and the recipient's TON wallet contract address, AppKit knows which tokens to send and to whom.
 
@@ -132,9 +132,9 @@ Each jetton holder has a dedicated jetton wallet contract. To resolve its addres
 
 ## Balance
 
-Similar to Toncoin balance checks, [discrete one-off checks](#on-demand-balance-check) have limited value on their own and [continuous monitoring](#continuous-balance-monitoring) should be used for UI display.
+Similar to Gram balance checks, [discrete one-off checks](#on-demand-balance-check) have limited value on their own and [continuous monitoring](#continuous-balance-monitoring) should be used for UI display.
 
-Unlike Toncoin, the balance units and decimal places vary between jettons — use the `decimals` field from the [jetton's metadata](#metadata) to interpret raw amounts correctly.
+Unlike Gram, the balance units and decimal places vary between jettons — use the `decimals` field from the [jetton's metadata](#metadata) to interpret raw amounts correctly.
 
 USDT has a decimal precision of 6, meaning that the fractional balance string `'0.1'` represents a balance of 0.1 USDT, or 100000 micro USDT (raw units).
 
@@ -510,7 +510,7 @@ Modify the following example according to the application logic:
   Mitigation: Verify the correct `decimals` value before calculating transfer amounts. For USDTs, the decimals value is 6.
 </Callout>
 
-Before making a transfer, make sure there is enough Toncoin in the balance to cover the [fees](/foundations/fees).
+Before making a transfer, make sure there is enough Gram in the balance to cover the [fees](/foundations/fees).
 
 Modify the following examples according to the application logic:
 
@@ -545,7 +545,7 @@ Modify the following examples according to the application logic:
           symbol: 'USDT',
 
           // Jetton decimals to calculate raw unit amounts
-          // For example, USDT defaults to 6, while Toncoin to 9:
+          // For example, USDT defaults to 6, while Gram to 9:
           decimals: 6,
         }}
 
@@ -591,7 +591,7 @@ Modify the following examples according to the application logic:
         jettonAddress,
 
         // Jetton decimals to calculate raw unit amounts.
-        // For example, USDT defaults to 6, while Toncoin to 9:
+        // For example, USDT defaults to 6, while Gram to 9:
         jettonDecimals: 6,
 
         // (optional) Comment string. Defaults to none if not provided.

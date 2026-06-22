@@ -3,13 +3,13 @@ title: "Vesting contracts"
 sidebarTitle: "Vesting"
 ---
 
-A [vesting contract](https://en.wikipedia.org/wiki/Vesting) is a financial agreement that outlines how and when an individual earns rights to certain assets over a specified period. On TON, vesting contracts enable secure, scheduled distribution of Toncoin assets with built-in staking capabilities.
+A [vesting contract](https://en.wikipedia.org/wiki/Vesting) is a financial agreement that outlines how and when an individual earns rights to certain assets over a specified period. On TON, vesting contracts enable secure, scheduled distribution of Gram assets with built-in staking capabilities.
 
 ## What is vesting
 
 Vesting is a mechanism that locks assets for a defined period and gradually releases them according to a predetermined schedule. Traditional vesting includes a cliff period where no rights are granted initially, followed by gradual vesting over time.
 
-On TON, vesting contracts function as smart escrow services that lock Toncoin and release it according to configurable parameters. These contracts also support staking locked funds, allowing recipients to earn rewards while tokens remain locked.
+On TON, vesting contracts function as smart escrow services that lock Gram and release it according to configurable parameters. These contracts also support staking locked funds, allowing recipients to earn rewards while tokens remain locked.
 
 ## How staking works with vesting
 
@@ -55,7 +55,7 @@ The vesting contract uses a time-based unlock schedule with these parameters:
 
 Before the vesting start time, all funds are locked. After the start time, funds unlock proportionally according to the schedule. If a cliff period exists, nothing unlocks during that time. Once the cliff ends, funds unlock according to the formula.
 
-Example: With a total duration of 10 months, unlock period of 1 month, and total amount of 500 TON, the contract unlocks 50 TON each month. If a 3-month cliff exists, nothing unlocks for the first 3 months, then 150 TON unlocks at once, followed by 50 TON monthly.
+Example: With a total duration of 10 months, unlock period of 1 month, and total amount of 500 GRAM, the contract unlocks 50 GRAM each month. If a 3-month cliff exists, nothing unlocks for the first 3 months, then 150 GRAM unlocks at once, followed by 50 GRAM monthly.
 
 Use the `get_locked_amount(int at_time)` method to calculate how much remains locked at any specific time.
 
@@ -71,7 +71,7 @@ Deploying a vesting contract requires careful verification before sending funds.
 
 ### Step 1: Prepare recipient wallet
 
-The vesting sender requests the recipient's TON wallet address. If the wallet is not deployed, the sender transfers 1 TON to the recipient and requests they send it back. This verifies wallet access and ensures deployment.
+The vesting sender requests the recipient's TON wallet address. If the wallet is not deployed, the sender transfers 1 GRAM to the recipient and requests they send it back. This verifies wallet access and ensures deployment.
 
 ### Step 2: Create the vesting contract
 
@@ -84,11 +84,11 @@ The vesting sender requests the recipient's TON wallet address. If the wallet is
 Provide these details:
 
 - **Vesting start date**: Choose a deferred date for lockup without accumulation before the date
-- **Total amount**: Total vesting amount in TON
+- **Total amount**: Total vesting amount in GRAM
 - **Total vesting duration**: Duration in days (including cliff), e.g., 760 days for 2 years
 - **Cliff duration**: Period in days after vesting starts when vesting accumulates but cannot be withdrawn (zero if no cliff)
 - **Unlocking frequency**: Frequency in days (equal to total duration if no partial unlocking), e.g., 30 days for monthly
-- **In masterchain**: Check this if direct validation from the vesting wallet is required. Direct validation means participating in the blockchain's proof-of-stake consensus as a validator with a stake of 300,000 TON or more
+- **In masterchain**: Check this if direct validation from the vesting wallet is required. Direct validation means participating in the blockchain's proof-of-stake consensus as a validator with a stake of 300,000 GRAM or more
 - **Whitelist addresses**: Add addresses for staking contracts (e.g., single nominator pool addresses)
 
 Constraints:
@@ -98,7 +98,7 @@ Constraints:
 
 ### Step 4: Deploy and verify
 
-1. Select "Create" to generate the vesting wallet contract (costs 0.5 TON)
+1. Select "Create" to generate the vesting wallet contract (costs 0.5 GRAM)
 1. The vesting wallet page opens after creation
 1. Verify all parameters are correct before proceeding
 1. Share the link with the recipient so they can verify parameters
@@ -310,7 +310,7 @@ Stake through the Tonstakers liquid staking protocol.
 
 **Limitations**:
 
-- Recipients can return coins from the pool (exchange tokens back to Toncoin) during vesting
+- Recipients can return coins from the pool (exchange tokens back to Gram) during vesting
 - Recipients cannot transfer `tsTON` jettons to others until vesting expires
 - Recipients cannot use `tsTON` jettons in DeFi protocols until vesting expires
 - Voting rights are unavailable during vesting
@@ -365,7 +365,7 @@ Stake through the Tonstakers liquid staking protocol.
 1. To withdraw (unstake), send a burn message to the jetton wallet:
 
    - Destination: jetton wallet address (from step 3)
-   - Amount: gas fee (\~0.5 TON)
+   - Amount: gas fee (\~0.5 GRAM)
    - Body: burn message with operation code `op::jetton_burn` (0x595f07bc)
 
    <Callout
@@ -419,7 +419,7 @@ Stake through the Tonstakers liquid staking protocol.
 1. Stake TON by sending an empty message to the Financial contract:
 
    - Destination: Financial contract address above
-   - Amount: desired stake amount (e.g., 100 TON)
+   - Amount: desired stake amount (e.g., 100 GRAM)
    - Body: empty message (no payload)
 
    Use the [vesting.ton.org](https://vesting.ton.org/) interface.
@@ -447,7 +447,7 @@ Stake through the Tonstakers liquid staking protocol.
 1. To withdraw (unstake), send a burn message to the `bmTON` jetton wallet:
 
    - Destination: `bmTON` jetton wallet address (from step 3)
-   - Amount: \~0.5 TON (for gas fees)
+   - Amount: \~0.5 GRAM (for gas fees)
    - Body: burn message with operation code `op::jetton_burn` (0x595f07bc)
 
    <Callout
@@ -481,7 +481,7 @@ Stake through the Tonstakers liquid staking protocol.
 
    Use the HEX output in the vesting interface when sending the burn message.
 
-   After burning `bmTON`, TON is returned to the vesting contract after a cooldown period. Check the current cooldown on [Bemo documentation](https://docs.bemo.fi).
+   After burning `bmTON`, GRAM is returned to the vesting contract after a cooldown period. Check the current cooldown on [Bemo documentation](https://docs.bemo.fi).
 
 **Alternative: Bemo v1 (deprecated)**
 
@@ -493,7 +493,7 @@ For Bemo v1, the process is similar:
 
 ### Standard nominator pools
 
-Standard nominator pools are the original TON staking pools where multiple nominators can pool their stakes together with a validator.
+Standard nominator pools are the original GRAM staking pools where multiple nominators can pool their stakes together with a validator.
 
 **Requirements**:
 
@@ -508,7 +508,7 @@ Standard nominator pools are the original TON staking pools where multiple nomin
 1. Deposit stake by sending text comment "d" (lowercase):
 
    - Destination: nominator pool address
-   - Amount: desired stake amount + 1 TON (deposit processing fee)
+   - Amount: desired stake amount + 1 GRAM (deposit processing fee)
    - Body: text comment "d" (lowercase)
 
    The pool may not accept the stake if it doesn't meet the minimum requirements or if the pool is full.
@@ -517,22 +517,22 @@ Standard nominator pools are the original TON staking pools where multiple nomin
 
    - Each pool has its own `min_nominator_stake` (minimum stake amount)
    - Each pool has `max_nominators_count` (maximum number of nominators)
-   - Deposit processing fee is typically 1 TON
+   - Deposit processing fee is typically 1 GRAM
 
    Check these parameters using the pool's get-methods.
 
 1. Withdraw stake by sending text comment "w" (lowercase):
 
    - Destination: the same nominator pool address
-   - Amount: small amount for network fee (1 TON is enough)
+   - Amount: small amount for network fee (1 GRAM is enough)
    - Body: text comment "w" (lowercase)
 
-   Unspent TONs attached to the message will be returned except in very rare cases.
+   Unspent GRAMs attached to the message will be returned except in very rare cases.
 
    Withdrawal behavior depends on the pool balance:
 
-   - If there are enough Toncoin on the pool balance, withdrawal will be made immediately. All funds will be available on the pool balance when it has completed participation in the validation round but has not yet submitted a request for participation in a new round.
-   - If there are not enough Toncoin on the pool balance, a withdraw request will be created, and Toncoin will be withdrawn automatically after the end of the current validation round.
+   - If there are enough Gram on the pool balance, withdrawal will be made immediately. All funds will be available on the pool balance when it has completed participation in the validation round but has not yet submitted a request for participation in a new round.
+   - If there are not enough Gram on the pool balance, a withdraw request will be created, and Gram will be withdrawn automatically after the end of the current validation round.
 
    Only full withdrawal is supported. Partial withdrawal is not supported.
 

@@ -31,7 +31,7 @@ flowchart LR
 ### Value flow
 
 <Callout type="note">
-  The following explanation uses an abstract contract system and is not connected to any existing project. It is primarily applicable to systems that follow a carry-value pattern, where Toncoin is passed between contracts as part of message processing.
+  The following explanation uses an abstract contract system and is not connected to any existing project. It is primarily applicable to systems that follow a carry-value pattern, where Gram is passed between contracts as part of message processing.
 </Callout>
 
 There is _no separate_ message balance and contract balance. After the message is received, the coins from the message are stored in the contract balance, and the contract is then executed. [Sending message modes](/foundations/messages/modes) and [reserve actions](/foundations/actions/reserve) help properly divide the contract balance during the action phase.
@@ -71,11 +71,11 @@ B,Remaining value on B,70
 
 ### Receiver requirements
 
-Receiver contracts must verify that the attached Toncoin is sufficient to cover fees for all contracts in the subsequent trace. If an entry contract accepts an external message, it must guarantee that the message will not later fail due to insufficient attached Toncoin. "Accept" doesn't mean the call to `accept_message()`, but semantic acceptance, i.e., no throw and no asset returns.
+Receiver contracts must verify that the attached Gram is sufficient to cover fees for all contracts in the subsequent trace. If an entry contract accepts an external message, it must guarantee that the message will not later fail due to insufficient attached Gram. "Accept" doesn't mean the call to `accept_message()`, but semantic acceptance, i.e., no throw and no asset returns.
 
-The reason for this requirement is that reverting the contract system state is usually not possible, because the Toncoin is already spent.
+The reason for this requirement is that reverting the contract system state is usually not possible, because the Gram is already spent.
 
-When a contract system's correctness depends on successful execution of the remaining transaction trace, it must guarantee that an incoming message carries enough attached Toncoin to cover all fees. This article describes how to compute those fees.
+When a contract system's correctness depends on successful execution of the remaining transaction trace, it must guarantee that an incoming message carries enough attached Gram to cover all fees. This article describes how to compute those fees.
 
 ## Define fee limits
 
@@ -118,9 +118,9 @@ const GasSwapRequest: int = 12000;
 
 ## Compute fees
 
-There are two kinds of values: gas units and Toncoin. The price of contract execution is fixed in gas units. However, the price of the gas itself is determined by the [blockchain configuration](/foundations/config).
+There are two kinds of values: gas units and Gram. The price of contract execution is fixed in gas units. However, the price of the gas itself is determined by the [blockchain configuration](/foundations/config).
 
-Convert gas to Toncoin on-chain using blockchain configuration:
+Convert gas to Gram on-chain using blockchain configuration:
 
 ```tolk title="Tolk"
 import "@stdlib/gas-payments";
@@ -229,7 +229,7 @@ Storage fees for sending messages cannot be predicted in advance, because they d
 
 ### Maintain a positive reserve
 
-Always keep a minimum balance on all contracts in the system. Storage fees get deducted from this reserve. The reserve gets replenished with each external interaction. Do not hardcode Toncoin values for fees. Instead, hardcode the maximum possible contract size in cells and bits.
+Always keep a minimum balance on all contracts in the system. Storage fees get deducted from this reserve. The reserve gets replenished with each external interaction. Do not hardcode Gram values for fees. Instead, hardcode the maximum possible contract size in cells and bits.
 
 This approach affects code of internal contracts.
 
@@ -257,7 +257,7 @@ fun onInternalMessage(in: InMessage) {
     );
     // Process operation with remaining value...
 }
-// NOTE: This contract requires code allowing the owner to withdraw Toncoin from it.
+// NOTE: This contract requires code allowing the owner to withdraw Gram from it.
 ```
 
 In this approach, a receiver contract should calculate maximum possible storage fees for all contracts in trace.
@@ -286,7 +286,7 @@ fun onInternalMessage(in: InMessage) {
     val totalStorageFees = storageForA + storageForB;
     // Compute + forward fees go here.
     val otherFees = 0;
-    // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
+    // `ERR_NOT_ENOUGH_TON` means "not enough Gram attached".
     assert (in.valueCoins >= totalStorageFees + otherFees)
         throw ERR_NOT_ENOUGH_TON;
 }
@@ -341,7 +341,7 @@ fun onInternalMessage(in: InMessage) {
     val freezeLimit = FreezeDueLimit;
     val otherFees = 0;  // Compute + forward fees go here.
     // n equals 3 because receiver -> A -> B
-    // `ERR_NOT_ENOUGH_TON` means "not enough Toncoin attached".
+    // `ERR_NOT_ENOUGH_TON` means "not enough Gram attached".
     assert (in.valueCoins >= freezeLimit * 3 + otherFees)
         throw ERR_NOT_ENOUGH_TON;
 }
@@ -360,7 +360,7 @@ it("should not accumulate excess balance", async () => {
 });
 ```
 
-This confirms that all incoming value was consumed or forwarded, with none left behind. It helps identify any bugs that cause accumulation of Toncoin on any contract.
+This confirms that all incoming value was consumed or forwarded, with none left behind. It helps identify any bugs that cause accumulation of Gram on any contract.
 
 ## Implement fee validation
 
@@ -392,14 +392,14 @@ fun onInternalMessage(in: InMessage) {
         calculateGasFee(workchain, GasVaultPayout) +
         3 * FreezeDueLimit;
 
-    // `ERR_INSUFFICIENT_TON_ATTACHED` means "insufficient Toncoin attached".
+    // `ERR_INSUFFICIENT_TON_ATTACHED` means "insufficient Gram attached".
     assert (in.valueCoins >= msg.amount + minFees)
         throw ERR_INSUFFICIENT_TON_ATTACHED;
 
     // Send remaining value for fees...
 
     // It may also be necessary to handle fees on this exact
-    // contract if it is not supposed to hold incoming Toncoin.
+    // contract if it is not supposed to hold incoming Gram.
     // That can be done using either of the two approaches
     // described above.
 }

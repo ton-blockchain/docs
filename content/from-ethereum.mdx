@@ -32,7 +32,7 @@ Consider a practical example: liquidity withdrawal on a DEX.
   <Image
     src="/images/from-ethereum/burn-tx-ton-light.png"
     darkSrc="/images/from-ethereum/burn-tx-ton-dark.png"
-    alt="TON burn"
+    alt="GRAM burn"
   />
 
 Executing a large transaction on Ethereum or any other EVM-based blockchain comes with certain limitations: [call depth](https://ethereum.org/developers/docs/evm/#evm-instructions) of 1,024 nested calls and the [block gas limit](https://ethereum.org/developers/docs/blocks/#block-size). With TON's asynchronous execution model, a trace — a chain of transactions — can have any length, as long as there are enough fees to continue it. For example, the [trace](https://tonviewer.com/transaction/e887503f7dac857be80487e3ed0774db962379d1c153e6df7b9b5313c657ab94) resulting from this message consisted of more than 1.5 million transactions, lasting more than 4,000 blocks until completion.

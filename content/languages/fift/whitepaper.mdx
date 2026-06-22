@@ -362,7 +362,7 @@ When Fift encounters a string that is absent from the dictionary but is a valid 
 
 Apart from that, Fift offers some support for decimal and common fractions. If a string consists of two valid integer literals separated by a slash `/`, then Fift interprets it as a fractional literal and represents it by two _Integer_'s `p` and `q` in the stack, the numerator `p` and the denominator `q`. For instance, `-17/12` pushes `−17` and `12` into the Fift stack (being thus equivalent to `-17 12`), and `-0x11/0b1100` does the same thing. Decimal, binary, and hexadecimal fractions, such as `2.39` or `-0x11.ef`, are also represented by two integers `p` and `q`, where `q` is a suitable power of the base (10, 2, or 16, respectively). For instance, `2.39` is equivalent to `239 100`, and `-0x11.ef` is equivalent to `-0x11ef 0x100`.
 
-Such a representation of fractions is especially convenient for using them with the scaling primitive */ and its variants, thus converting common and decimal fractions into a suitable fixed-point representation. For instance, if we want to represent fractional amounts of Grams by integer amounts of nanotons, we can define some helper words:
+Such a representation of fractions is especially convenient for using them with the scaling primitive */ and its variants, thus converting common and decimal fractions into a suitable fixed-point representation. For instance, if we want to represent fractional amounts of Grams by integer amounts of nanograms, we can define some helper words:
 
 ```fift
 1000000000 constant Gram

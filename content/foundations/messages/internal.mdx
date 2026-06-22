@@ -35,7 +35,7 @@ message$_
 - `bounced` — whether the message has been [bounced](#bounces).
 - `src` — address of the contract that sent the message.
 - `dest` — address of the account that received the message.
-- `value` — amount of Toncoin and extra-currency attached to the message.
+- `value` — amount of Gram and extra-currency attached to the message.
 - `extra_flags` — used with the [new bounce format](#new-bounce-format).
 - `fwd_fee` — fee charged for forwarding the message.
 - `created_lt` — logical time when the message was created.
@@ -84,13 +84,13 @@ It is possible to simultaneously send both the payload in the `body` field and t
 
 ## Message value
 
-The message may set `value` field that tells to transfer Toncoin and extra-currency to the recipient of the message. The actually transferred amount depends on the value of this field and a [send mode](/foundations/messages/modes).
+The message may set `value` field that tells to transfer Gram and extra-currency to the recipient of the message. The actually transferred amount depends on the value of this field and a [send mode](/foundations/messages/modes).
 
 ## Bounces
 
 A bounce message is used to inform the sender that handling of their message failed. It is sent automatically to a sender when
 
-- there is enough Toncoin to send it left from handling the failed message,
+- there is enough Gram to send it left from handling the failed message,
 - and the message is bounceable,
 - and when either
   - a contract throws an error from the [compute phase](/foundations/phases#compute-phase) during message processing, and the state was not committed by [`COMMIT`](/tvm/instructions#f80f-commit) TVM instruction,
@@ -102,7 +102,7 @@ If the `bounce` flag is set to `true`, the message is bounceable. If the bounce 
 
 - `src` and `dest` fields are swapped.
 - The `bounced` flag is set to `true` to tell it's the bounce message.
-- The `bounce` flag is set to `false` to prevent infinite loop of bouncing messages until no Toncoin is left to spend.
+- The `bounce` flag is set to `false` to prevent infinite loop of bouncing messages until no Gram is left to spend.
 - `body` is replaced with the concatenation of 32 bits equal to one (`0xffffffff`) and the first 256 bits of the old `body`. The new `body` is stored in the message in-place, with [`left`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L10) of the `Either`.
 
 This message is then sent to the `src` address of the original message.

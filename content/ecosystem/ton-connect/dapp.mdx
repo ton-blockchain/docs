@@ -260,12 +260,12 @@ function App() {
       <TonConnectButton />
       <button
         {/*
-          Notice that it is important to specify Toncoin in nanoToncoin format,
-          where 1 Toncoin is equal to 10⁹ nanoToncoin:
+          Notice that it is important to specify Gram in nanograms format,
+          where 1 Gram is equal to 10⁹ nanograms:
         */}
         onClick={() => sendToncoin(String(100_000_000))}
       >
-        Send 0.1 TON
+        Send 0.1 GRAM
       </button>
     </TonConnectUIProvider>
   );
@@ -274,12 +274,12 @@ function App() {
 
 Now, execute `npm run dev` to launch and preview your app in the browser at `http://localhost:5173`. All changes in code will be reflected live.
 
-Connect a wallet and try using the <kbd>Send 0.1 TON</kbd> button. Notice that the exact sum of Toncoin shown in your wallet **will be different**, because there are certain fees required for such a transfer by the blockchain itself.
+Connect a wallet and try using the <kbd>Send 0.1 GRAM</kbd> button. Notice that the exact sum of Gram shown in your wallet **will be different**, because there are certain fees required for such a transfer by the blockchain itself.
 
 When building apps, make sure to **always take fees into consideration** and show them to the end-user.
 
 <Callout type="caution">
-  This example sends **real TON** from the connected wallet. Try it with a testnet wallet first or send less Toncoin, e.g., 0.001 TON instead of 1 TON, to avoid surprises.
+  This example sends **real GRAM** from the connected wallet. Try it with a testnet wallet first or send less Gram, e.g., 0.001 GRAM instead of 1 GRAM, to avoid surprises.
 </Callout>
 
 ### Next.js
@@ -334,7 +334,7 @@ function MyApp({ Component, pageProps }) {
 For quick testing, use the following single-file HTML example.
 
 <Callout type="caution">
-  This example sends **real Toncoin** from the connected wallet. Try it with a testnet wallet first or send less Toncoin, e.g., 0.001 TON instead of 1, to avoid surprises.
+  This example sends **real Gram** from the connected wallet. Try it with a testnet wallet first or send less Gram, e.g., 0.001 Gram instead of 1, to avoid surprises.
 </Callout>
 
 ```html title="index.html" expandable
@@ -347,7 +347,7 @@ For quick testing, use the following single-file HTML example.
 </head>
 <body>
   <div id="ton-connect"></div>
-  <button id="send" disabled>Send 0.1 TON</button>
+  <button id="send" disabled>Send 0.1 GRAM</button>
   <script>
     const ui = new TON_CONNECT_UI.TonConnectUI({
       // Let's re-use the manifest from the demo app
@@ -356,7 +356,7 @@ For quick testing, use the following single-file HTML example.
     });
     ui.onStatusChange(w => document.getElementById('send').disabled = !w);
     document.getElementById('send').onclick = async () => {
-      // This will send 0.1 Toncoin from the connected wallet, beware!
+      // This will send 0.1 Gram from the connected wallet, beware!
       try {
         await ui.sendTransaction({
           validUntil: Math.floor(Date.now()/1000) + 300,

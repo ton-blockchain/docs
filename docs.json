@@ -189,7 +189,7 @@
             "pages": [
               "ecosystem/appkit/overview",
               "ecosystem/appkit/init",
-              "ecosystem/appkit/toncoin",
+              "ecosystem/appkit/gram",
               "ecosystem/appkit/jettons",
               "ecosystem/appkit/nfts",
               "ecosystem/appkit/swap",
@@ -207,7 +207,7 @@
                   "ecosystem/walletkit/web/wallets",
                   "ecosystem/walletkit/web/connections",
                   "ecosystem/walletkit/web/events",
-                  "ecosystem/walletkit/web/toncoin",
+                  "ecosystem/walletkit/web/gram",
                   "ecosystem/walletkit/web/jettons",
                   "ecosystem/walletkit/web/nfts"
                 ]
@@ -372,7 +372,7 @@
         "group": "Payment processing",
         "pages": [
           "payments/overview",
-          "payments/toncoin",
+          "payments/gram",
           "payments/jettons"
         ]
       },
@@ -4172,6 +4172,21 @@
     {
       "source": "/tvm/tools/ton-decompiler",
       "destination": "/tvm/tools/ton-assembly",
+      "permanent": true
+    },
+    {
+      "source": "/payments/toncoin",
+      "destination": "/payments/gram",
+      "permanent": true
+    },
+    {
+      "source": "/ecosystem/appkit/toncoin",
+      "destination": "/ecosystem/appkit/gram",
+      "permanent": true
+    },
+    {
+      "source": "/ecosystem/walletkit/web/toncoin",
+      "destination": "/ecosystem/walletkit/web/gram",
       "permanent": true
     }
   ]

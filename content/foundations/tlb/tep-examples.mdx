@@ -30,7 +30,7 @@ Thus, a cell corresponds to this TL-B scheme if it sequentially contains:
   serialized as the previous field.
 - Optional custom data. For the description of how the `Maybe` type works,
   see [simple examples page](/languages/tl-b/simple-examples).
-- The amount of nanotons to be sent to the new owner. For the explanation of how `VarUInteger n` works, see
+- The amount of nanograms to be sent to the new owner. For the explanation of how `VarUInteger n` works, see
   [simple examples page](/languages/tl-b/simple-examples).
 - The optional custom data that should be sent to the new owner. For the description of how the `Either` type works,
   see [simple examples page](/languages/tl-b/simple-examples).
@@ -69,11 +69,11 @@ Thus, a cell corresponds to this TL-B scheme if it sequentially contains:
 - An address to which to send a response with confirmation of a successful transfer and the rest of the incoming message coins. It is
   serialized as the previous field.
 - Optional custom data.
-- The amount of nanotons to be sent to the new owner.
+- The amount of nanograms to be sent to the new owner.
 - Optional custom data that should be sent to the `destination` address.
 
 If `forward_amount > 0`, the receiver's jetton-wallet should send a message to the `destination` address with
-`forward_amount` nanotons attached and with the following TL-B schema.
+`forward_amount` nanograms attached and with the following TL-B schema.
 
 ```tlb
 transfer_notification#7362d09c query_id:uint64 amount:(VarUInteger 16)
