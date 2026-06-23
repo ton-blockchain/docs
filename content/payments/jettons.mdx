@@ -22,14 +22,14 @@ Before implementing jetton payment processing, understand these core concepts:
 **Transfer flow**: Jetton transfers involve multiple messages. A user sends a `transfer` message to their jetton wallet, which sends an `internal_transfer` to the recipient's jetton wallet, which then sends a `transfer_notification` to the recipient's address if `forward_ton_amount > 0`.
 
 <Callout type="caution">
-  Jetton transfers are considered successful only when the recipient receives `transfer_notification`. Services must set `forward_ton_amount` to at least 0.000000001 TON (1 nanoton) when sending tokens to trigger notifications. Without this, transfers won't be compliant and may not be processed by exchanges and other services.
+  Jetton transfers are considered successful only when the recipient receives `transfer_notification`. Services must set `forward_ton_amount` to at least 0.000000001 Gram (1 nanogram) when sending tokens to trigger notifications. Without this, transfers won't be compliant and may not be processed by exchanges and other services.
 </Callout>
 
 **Security model**: Always validate that jetton wallets belong to the expected master contract. Anyone can deploy fake jetton wallet contracts with arbitrary balances.
 
 This article covers processing jetton deposits using transfer notifications. All approaches require maintaining an allowlist of trusted jetton master contracts.
 
-For architectural patterns and deposit methods comparison, see [Toncoin processing](/payments/toncoin).
+For architectural patterns and deposit methods comparison, see [Gram processing](/payments/gram).
 
 ## Processing deposits
 

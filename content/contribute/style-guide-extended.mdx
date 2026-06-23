@@ -831,7 +831,7 @@ Objective. Enforce a single source of truth for terms and casing. (Why: one auth
 
 Non-exhaustive; finalize in the term bank. (Why: examples guide writers now, while the term bank remains the single source of truth.)
 
-- TON, TON Blockchain, TON Ecosystem (proper nouns).
+- TON (for the currency, use GRAM), TON Blockchain, TON Ecosystem (proper nouns).
 - smart contract, wallet, account, message, jetton, nominator, validator, collator, node, liteserver (common nouns, lowercase mid-sentence).
 - accountchain, shardchain, workchain, masterchain, basechain — common nouns; use lowercase mid-sentence. **MUST NOT** use CamelCase forms (`ShardChain`, `WorkChain`, `MasterChain`, `BaseChain`, `AccountChain`) or spaced variants (e.g., “Shard Chain”).
 - BoC (abbrev.) / bag of cells (common noun). Abbreviation **MUST** be “BoC” (not “BOC”).
@@ -858,7 +858,7 @@ Objective. Present quantitative information unambiguously for a global developer
 
 - You **MUST** use numerals for all technical quantities (latency, memory, fees, block heights, versions, ports), regardless of size. (Why: digits are faster to scan and less ambiguous than words in technical contexts.)
 
-  - Good: “Set the fee to 0.2 TON.”
+  - Good: “Set the fee to 0.2 GRAM.”
 - For general prose without units, you **MAY** spell out zero–nine and use numerals for 10+, but prefer numerals whenever a value matters to a task. (Why: numbers highlight actionable values and make comparisons obvious.)
 - You **SHOULD** use thousands separators for numbers ≥ 10,000: 10,000, 1,234,567. (Why: separators improve readability and reduce digit-counting mistakes.)
 - **MUST NOT** add separators to codes/IDs (e.g., block hashes, transaction IDs, addresses), even if they contain digits; keep copyable values intact. (Why: added punctuation breaks copy/paste and changes identifiers.) \[HIGH]
@@ -867,7 +867,7 @@ Objective. Present quantitative information unambiguously for a global developer
 ### 14.2 Units and conventions
 
 - Use binary units (KiB, MiB, GiB) for memory/storage sizes and SI units (kB, MB, Gbps, ms) for network throughput, latency, and timing. Be consistent within each category. (Why: binary vs SI units have different meanings; consistency prevents 2× errors.)
-- Currency amounts **MUST** specify the unit (e.g., TON, USDT). When precision matters, show decimals explicitly (e.g., 0.000001 TON). (Why: omitting units or precision leads to costly misinterpretation.) \[HIGH]
+- Currency amounts **MUST** specify the unit (e.g., GRAM, USDT). When precision matters, show decimals explicitly (e.g., 0.000001 GRAM). (Why: omitting units or precision leads to costly misinterpretation.) \[HIGH]
 - Address/hash values **MUST NOT** be silently truncated. If truncation aids readability, use a consistent truncation pattern (e.g., first 4 / last 4 with an ellipsis: `EQC…9gA`) and state clearly that the value is truncated. (Why: silent truncation causes copy/paste failures and verification mistakes.) \[HIGH]
 
 ### 14.3 Dates and times
@@ -980,8 +980,8 @@ Objective. Keep repository structure and UI labels consistent. (Why: predictable
 
   ```mdx
   ---
-  title: "How to get testnet Toncoin"
-  sidebarTitle: "Get testnet Toncoin"
+  title: "How to get testnet Gram"
+  sidebarTitle: "Get testnet Gram"
   ---
   ```
 

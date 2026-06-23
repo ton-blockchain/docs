@@ -1,5 +1,5 @@
 ---
-title: "How to transfer Toncoin, Jettons and NFTs with WalletKit on the iOS platform"
+title: "How to transfer Gram, Jettons and NFTs with WalletKit on the iOS platform"
 sidebarTitle: "Transactions"
 ---
 
@@ -7,16 +7,16 @@ sidebarTitle: "Transactions"
   All methods require an existing wallet instance. [Create or retrieve](/ecosystem/walletkit/ios/wallets) a wallet before accessing data.
 </Callout>
 
-Create transactions to send Toncoin, Jettons, and NFTs, or generate previews for users.
+Create transactions to send Gram, Jettons, and NFTs, or generate previews for users.
 
 ## Creating a transaction
 
-Before sending any transaction to the blockchain, initialize it for the appropriate asset: Toncoin, Jetton, or NFT.
+Before sending any transaction to the blockchain, initialize it for the appropriate asset: Gram, Jetton, or NFT.
 
-### Toncoin
+### Gram
 
 ```swift
-// Transaction for 1 Toncoin
+// Transaction for 1 Gram
 let amountFormatter = TONTokenAmountFormatter()
 
 // Provide the user's input here
@@ -24,7 +24,7 @@ guard let amount = amountFormatter.amount(from: "1") else {
     return
 }
 let message = TONTransferMessage(
-    // TON wallet address
+    // GRAM wallet address
     toAddress: address,
     amount: amount,
 )
@@ -43,7 +43,7 @@ guard let amount = amountFormatter.amount(from: "1") else {
     return
 }
 let parameters = TONJettonTransferParams(
-    // TON wallet address
+    // GRAM wallet address
     toAddress: address,
     // Address of a Jetton minter contract
     jettonAddress: jettonAddress,
@@ -56,7 +56,7 @@ let transaction = try await wallet.transferJettonTransaction(parameters: paramet
 
 ```swift
 let parameters = TONNFTTransferParamsHuman(
-    // TON wallet address
+    // GRAM wallet address
     toAddress: address,
     // Address of an NFT item contract
     nftAddress: nft.address,
@@ -92,6 +92,6 @@ try await wallet.send(transaction: transaction)
     title="Manage wallets"
     href="./wallets"
   >
-    Create and manage TON wallets
+    Create and manage GRAM wallets
   </Card>
 </Columns>

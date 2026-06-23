@@ -32,7 +32,7 @@ Consider a practical example: liquidity withdrawal on a DEX.
   <Image
     src="/images/from-ethereum/burn-tx-ton-light.png"
     darkSrc="/images/from-ethereum/burn-tx-ton-dark.png"
-    alt="TON burn"
+    alt="GRAM burn"
   />
 
 Executing a large transaction on Ethereum or any other EVM-based blockchain comes with certain limitations: [call depth](https://ethereum.org/developers/docs/evm/#evm-instructions) of 1,024 nested calls and the [block gas limit](https://ethereum.org/developers/docs/blocks/#block-size). With TON's asynchronous execution model, a trace — a chain of transactions — can have any length, as long as there are enough fees to continue it. For example, the [trace](https://tonviewer.com/transaction/e887503f7dac857be80487e3ed0774db962379d1c153e6df7b9b5313c657ab94) resulting from this message consisted of more than 1.5 million transactions, lasting more than 4,000 blocks until completion.
@@ -47,7 +47,7 @@ In Ethereum, there are two types of accounts: externally owned accounts (EOA), a
 
 In TON, there is no such separation. Every valid address represents an on-chain [account](/foundations/addresses/overview), each with its own state and balance, that could be changed through transactions. This means that "wallets" in TON are smart contracts that operate under the same rules as any other contract on the blockchain.
 
-The [TON wallet](/standard/wallets/comparison) smart contract works as a proxy: handles an external message, checks message is sent by the wallet's owner using regular [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography), and sends an internal message somewhere further in the network.
+The [GRAM wallet](/standard/wallets/comparison) smart contract works as a proxy: handles an external message, checks message is sent by the wallet's owner using regular [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography), and sends an internal message somewhere further in the network.
 
 ### Limited contract storage
 

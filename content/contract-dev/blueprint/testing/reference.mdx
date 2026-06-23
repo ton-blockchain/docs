@@ -206,7 +206,7 @@ Creates a treasury wallet contract. This wallet is used as an alternative to the
 - `params` — optional treasury parameters
   - `workchain` — the workchain ID of the treasury (default: 0)
   - `predeploy` — if set, the treasury will be deployed at the moment of creation
-  - `balance` — initial balance of the treasury (default: 1\_000\_000 TON if omitted)
+  - `balance` — initial balance of the treasury (default: 1\_000\_000 GRAM if omitted)
   - `resetBalanceIfZero` — if set and the treasury balance is zero at the moment of calling the method, it resets the balance to `balance`
 
 **Returns:** promise resolving to treasury contract wrapper
@@ -958,20 +958,20 @@ await contract.sendDeploy(sender, toNano('0.05'));
 getBalance(provider: ContractProvider): Promise<bigint>
 ```
 
-Returns the current TON balance of the treasury.
+Returns the current GRAM balance of the treasury.
 
 **Parameters:**
 
 - `provider` — `ContractProvider`
 
-**Returns:** promise resolving to balance in nanoTON
+**Returns:** promise resolving to balance in nanograms
 
 **Usage example:**
 
 ```typescript
 const treasury = await blockchain.treasury('user');
 const balance = await treasury.getBalance();
-console.log(`Treasury balance: ${balance} nanoTON`);
+console.log(`Treasury balance: ${balance} nanograms`);
 ```
 
 #### `createTransfer()`
@@ -1000,7 +1000,7 @@ Treasury contracts are pre-funded wallets that work like regular wallet contract
 **Usage example:**
 
 ```typescript
-// Create treasury with default 1M TON balance
+// Create treasury with default 1M GRAM balance
 const treasury = await blockchain.treasury('user');
 
 // Create treasury with custom balance
@@ -1562,7 +1562,7 @@ export function internal(params: {
 
 - `from` — sender `Address`
 - `to` — recipient `Address`
-- `value` — message value in nanoTON
+- `value` — message value in nanograms
 - `body` — optional message body `Cell`
 - `stateInit` — optional [`StateInit`](/foundations/messages/deploy) for contract deployment
 - `bounce` — bounce flag (default: true for bounceable messages)
@@ -1754,7 +1754,7 @@ export type FlatTransaction = {
 - `from` — sender address (if internal message)
 - `to` — recipient address
 - `on` — contract address being called
-- `value` — message value in nanoTON
+- `value` — message value in nanograms
 - `ec` — extra currencies as `[currencyId, amount]` pairs
 - `body` — message body cell
 - `inMessageBounced` — whether the incoming message was bounced
@@ -1806,9 +1806,9 @@ const exactMatch: FlatTransactionComparable = {
 
 // Function-based matching
 const conditionalMatch: FlatTransactionComparable = {
-    value: (v) => v !== undefined && v >= toNano('0.1'), // At least 0.1 TON
+    value: (v) => v !== undefined && v >= toNano('0.1'), // At least 0.1 GRAM
     exitCode: (code) => code === 0 || code === undefined, // Success or no code
-    totalFees: (fees) => fees !== undefined && fees < toNano('0.01') // Less than 0.01 TON fees
+    totalFees: (fees) => fees !== undefined && fees < toNano('0.01') // Less than 0.01 GRAM fees
 };
 
 // Mixed matching

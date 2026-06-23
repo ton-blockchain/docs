@@ -6,10 +6,10 @@ title: "Stake calculation"
   type="caution"
   title="Stake affects locked funds"
 >
-  Stake configuration directly controls how much TON is locked in the elector contract for a full validation round. Misconfiguration can lock the entire balance, leaving no funds for the next election. Review each setting carefully before applying changes on TON Mainnet.
+  Stake configuration directly controls how much GRAM is locked in the elector contract for a full validation round. Misconfiguration can lock the entire balance, leaving no funds for the next election. Review each setting carefully before applying changes on TON Mainnet.
 </Callout>
 
-MyTonCtrl automatically calculates the stake amount before submitting an election entry. The calculation balances operator preferences, staking mode, network-imposed limits, and fee reserves to produce a single integer value (in TON) sent to the [elector contract](/foundations/system).
+MyTonCtrl automatically calculates the stake amount before submitting an election entry. The calculation balances operator preferences, staking mode, network-imposed limits, and fee reserves to produce a single integer value (in GRAM) sent to the [elector contract](/foundations/system).
 
 ## Inputs
 
@@ -17,9 +17,9 @@ The calculation draws on several sources:
 
 | Source                                                           | Parameter              | Role                                                                                                              |
 | ---------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Operator setting                                                 | `stake`                | Fixed stake amount (TON). When set, overrides percentage-based calculation.                                       |
+| Operator setting                                                 | `stake`                | Fixed stake amount (GRAM). When set, overrides percentage-based calculation.                                      |
 | Operator setting                                                 | `stakePercent`         | Percentage of balance to stake. Defaults to `100` when unset.                                                     |
-| Wallet state                                                     | `balance`              | Current TON balance of the staking account (validator wallet, pool, or controller).                               |
+| Wallet state                                                     | `balance`              | Current GRAM balance of the staking account (validator wallet, pool, or controller).                              |
 | Validator console                                                | Active validator count | Number of validators currently running on this node. Determines whether the node is new or already participating. |
 | [On-chain config #17](/foundations/config#param-17-stake-limits) | `minStake`             | Network minimum stake. Submissions below this value are rejected by the elector.                                  |
 | [On-chain config #17](/foundations/config#param-17-stake-limits) | `maxStake`             | Network maximum stake. Submissions above this value are clamped.                                                  |
@@ -53,7 +53,7 @@ When the node operates through a standard nominator pool (not a single nominator
 stake = balance - 20
 ```
 
-The 20 TON reserve covers the higher fee overhead of pool operations (deploy, process, and distribute messages).
+The 20 GRAM reserve covers the higher fee overhead of pool operations (deploy, process, and distribute messages).
 
 <Callout type="note">
   Single nominator pools are excluded from this rule. They fall through to the percentage-based calculation (Priority 4) because single nominator pools behave like direct staking economically.
@@ -67,7 +67,7 @@ When the node uses a liquid staking controller, MyTonCtrl sets:
 stake = balance - 50
 ```
 
-The 50 TON reserve is the largest of all modes. Liquid staking controllers perform complex multi-step transactions (minting, burning, and balance adjustments), requiring a bigger fee cushion.
+The 50 GRAM reserve is the largest of all modes. Liquid staking controllers perform complex multi-step transactions (minting, burning, and balance adjustments), requiring a bigger fee cushion.
 
 ### Priority 4: Percentage-based calculation (default)
 
@@ -93,7 +93,7 @@ The logic depends on whether the node already has active validators:
 
   No halving is needed. The returning stake from the previous round replenishes the balance in time for the next election.
 
-  **Fee deduction at 100%:** when `stakePercent` is exactly `100`, MyTonCtrl subtracts 20 TON from the result to prevent draining the wallet completely. At lower percentages, the non-staked remainder covers fees implicitly.
+  **Fee deduction at 100%:** when `stakePercent` is exactly `100`, MyTonCtrl subtracts 20 GRAM from the result to prevent draining the wallet completely. At lower percentages, the non-staked remainder covers fees implicitly.
 
 ## Validation guards
 
@@ -111,16 +111,16 @@ The asymmetry is intentional. Exceeding the maximum is recoverable — MyTonCtrl
 
 Each staking mode reserves a different amount for transaction fees:
 
-| Mode                              | Reserve (TON) | Reason                                                        |
-| --------------------------------- | ------------- | ------------------------------------------------------------- |
-| Saved fixed stake                 | 0             | The stored value is used as-is; only validation guards apply. |
-| Nominator pool                    | 20            | Multiple messages for pool lifecycle operations.              |
-| Liquid staking controller         | 50            | Complex multi-step DeFi transactions.                         |
-| Percentage at 100% (default mode) | 20            | General safety margin when no non-staked remainder exists.    |
+| Mode                              | Reserve (GRAM) | Reason                                                        |
+| --------------------------------- | -------------- | ------------------------------------------------------------- |
+| Saved fixed stake                 | 0              | The stored value is used as-is; only validation guards apply. |
+| Nominator pool                    | 20             | Multiple messages for pool lifecycle operations.              |
+| Liquid staking controller         | 50             | Complex multi-step DeFi transactions.                         |
+| Percentage at 100% (default mode) | 20             | General safety margin when no non-staked remainder exists.    |
 
 ## Examples
 
-### New validator with 800,000 TON balance
+### New validator with 800,000 GRAM balance
 
 Settings: `stakePercent = 99`, no fixed `stake`, single nominator pool mode.
 
@@ -129,28 +129,28 @@ Settings: `stakePercent = 99`, no fixed `stake`, single nominator pool mode.
 1. No active validators detected (new node): halving applies.
 1. `stake = 800,000 * 99 / 100 / 2 = 396,000`.
 1. `396,000 > minStake` (300,000): halving is kept.
-1. Result: **396,000 TON** is submitted. The remaining balance covers the next election.
+1. Result: **396,000 GRAM** is submitted. The remaining balance covers the next election.
 
-### Returning validator with 1,600,000 TON balance
+### Returning validator with 1,600,000 GRAM balance
 
 Settings: `stakePercent = 99`, single nominator pool mode, already validating.
 
 1. Falls through to percentage-based calculation.
 1. Active validators present: no halving.
 1. `stake = 1,600,000 * 99 / 100 = 1,584,000`.
-1. Result: **1,584,000 TON** is submitted.
+1. Result: **1,584,000 GRAM** is submitted.
 
-### New validator with exactly 600,100 TON (near minimum)
+### New validator with exactly 600,100 GRAM (near minimum)
 
 Settings: `stakePercent = 100`, single nominator pool mode.
 
 1. Falls through to percentage-based calculation.
 1. No active validators: halving would give `600,100 / 2 = 300,050`.
 1. `300,050 > minStake` (300,000): halving is kept.
-1. `stakePercent == 100`: 20 TON fee deduction applies: `300,050 - 20 = 300,030`.
-1. Result: **300,030 TON** is submitted.
+1. `stakePercent == 100`: 20 GRAM fee deduction applies: `300,050 - 20 = 300,030`.
+1. Result: **300,030 GRAM** is submitted.
 
-### New validator with exactly 500,000 TON (halving would go below minimum)
+### New validator with exactly 500,000 GRAM (halving would go below minimum)
 
 Settings: `stakePercent = 100`, single nominator pool mode.
 
@@ -158,20 +158,20 @@ Settings: `stakePercent = 100`, single nominator pool mode.
 1. No active validators: halving would give `500,000 / 2 = 250,000`.
 1. `250,000 < minStake` (300,000): halving is abandoned.
 1. Full percentage is used: `500,000`.
-1. `stakePercent == 100`: 20 TON fee deduction: `500,000 - 20 = 499,980`.
-1. Result: **499,980 TON** is submitted.
+1. `stakePercent == 100`: 20 GRAM fee deduction: `500,000 - 20 = 499,980`.
+1. Result: **499,980 GRAM** is submitted.
 
 <Callout type="note">
   When halving is abandoned due to minimum stake constraints, the node participates only in every second validation round until the balance grows enough to cover both rounds.
 </Callout>
 
-### Nominator pool with 2,000,000 TON balance
+### Nominator pool with 2,000,000 GRAM balance
 
 Settings: standard nominator pool mode (not single nominator).
 
 1. Pool mode detected (Priority 2).
 1. `stake = 2,000,000 - 20 = 1,999,980`.
-1. Result: **1,999,980 TON** is submitted.
+1. Result: **1,999,980 GRAM** is submitted.
 
 ## See also
 

@@ -118,12 +118,12 @@ Subscriptions that include `"account_state_change"` receive notifications for ea
 
 This event is emitted only for `"confirmed"` and `"finalized"` finality levels.
 
-| Field      | Type           | Description                                                                                                                                                                                                                        |
-| ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`     | `string`       | Always `"account_state_change"`.                                                                                                                                                                                                   |
-| `finality` | `string`       | `"confirmed"` or `"finalized"`.                                                                                                                                                                                                    |
-| `account`  | `string`       | Account address in raw format, e.g., `0:abc...RAW_ADDRESS`.                                                                                                                                                                        |
-| `state`    | `AccountState` | Account state without full code and data [BoCs](/foundations/serialization/boc). Includes state hash, nanoToncoin balance, [account status](/foundations/status), data and code hashes. All hashes are given in the Base64 format. |
+| Field      | Type           | Description                                                                                                                                                                                                                      |
+| ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`     | `string`       | Always `"account_state_change"`.                                                                                                                                                                                                 |
+| `finality` | `string`       | `"confirmed"` or `"finalized"`.                                                                                                                                                                                                  |
+| `account`  | `string`       | Account address in raw format, e.g., `0:abc...RAW_ADDRESS`.                                                                                                                                                                      |
+| `state`    | `AccountState` | Account state without full code and data [BoCs](/foundations/serialization/boc). Includes state hash, nanograms balance, [account status](/foundations/status), data and code hashes. All hashes are given in the Base64 format. |
 
 ```jsonc title="Notification example"
 {
@@ -142,7 +142,7 @@ This event is emitted only for `"confirmed"` and `"finalized"` finality levels.
 
 ### `"jettons_change"`
 
-Subscriptions that include `"jettons_change"` receive notifications for each transaction on a jetton wallet contract when the subscribed address is its own address or its owner's TON wallet address.
+Subscriptions that include `"jettons_change"` receive notifications for each transaction on a jetton wallet contract when the subscribed address is its own address or its owner's GRAM wallet address.
 
 This event is emitted only for `"confirmed"` and `"finalized"` finality levels.
 

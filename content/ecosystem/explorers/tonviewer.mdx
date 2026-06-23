@@ -63,7 +63,7 @@ Examine the accounts involved — wallet addresses, jetton wallets, jetton maste
 
 Examine each message (edge in the trace). Its payload defines the intended actions and the transferred value:
 
-- value — amount of TON or jettons transferred
+- value — amount of GRAM or jettons transferred
 - opcode — instruction type
 - payload — instructions
 
@@ -100,7 +100,7 @@ At point **A** (mintmachine.ton), an external-in message initiates the operation
 
 3. **Read messages**
 
-- A → B: jetton transfer message with 0.2 TON attached to cover execution fees.
+- A → B: jetton transfer message with 0.2 GRAM attached to cover execution fees.
 
 4. **Check transaction phases**
 
@@ -109,7 +109,7 @@ The transaction at **B** failed during execution, with a non-zero exit code.
 5. **Find the failure point**
 
 Exit code `48` per [jetton contract logic](https://github.com/ton-blockchain/jetton-contract/blob/main/contracts/op-codes.fc#L33) indicates that there isn't enough gas to complete the transfer.
-The attached TON was insufficient to cover execution and forwarding, so the contract aborted the transfer.
+The attached GRAM was insufficient to cover execution and forwarding, so the contract aborted the transfer.
 
 ### NFT transfer
 
@@ -132,8 +132,8 @@ At point **A** (address `UQDj…D0lN`), the user’s wallet sends an external-in
 
 3. **Read messages**
 
-- A → B: NFT transfer message with 0.04 TON attached.
-- B → A: bounce returning 0.036514 TON.
+- A → B: NFT transfer message with 0.04 GRAM attached.
+- B → A: bounce returning 0.036514 GRAM.
 
 4. **Check transaction phases**
 
@@ -168,7 +168,7 @@ The trace begins at point **A** (the user’s `mintmachine.ton` contract). An ex
 
 3. **Read messages**
 
-- A → B: 0.3 TON transferred via a jetton transfer.
+- A → B: 0.3 GRAM transferred via a jetton transfer.
 - B → C: jetton internal transfer to the DEX wallet.
 - C → D: swap request sent to the DEX contract.
 - C → A: return of excess funds.
@@ -187,7 +187,7 @@ This explains why, despite all transactions succeeding, the swap reverted: the o
 
 ## Successful use case
 
-Analyze a [token swap](https://tonviewer.com/transaction/b1dce2881224590a7c60e61594c68bd477f84fe81519b373da8fbed9c0269565) from **REDO** to **TON**.
+Analyze a [token swap](https://tonviewer.com/transaction/b1dce2881224590a7c60e61594c68bd477f84fe81519b373da8fbed9c0269565) from **REDO** to **GRAM**.
 
 <Image
   src="/images/tonviewer/dex-swap-successful.png"
@@ -210,7 +210,7 @@ An **external-in** message arrives at point **A** (mintmachine.ton), initiating 
 
 3. **Read messages**
 
-- A → B: 0.2 TON transferred via a jetton transfer.
+- A → B: 0.2 GRAM transferred via a jetton transfer.
 - B → C: internal jetton transfer to the DEX wallet.
 - C → D: valid amount forwarded to the DEX contract for swap execution.
 - C → A: return of excess funds.

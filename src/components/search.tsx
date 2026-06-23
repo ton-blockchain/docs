@@ -58,8 +58,8 @@ export default function DefaultSearchDialog({
         node: (
           <div className="inline-flex items-center gap-2 text-fd-muted-foreground">
             <ArrowRight className="size-4" />
-            <p>
-              Jump to <span className="font-medium text-fd-foreground pt-0.5">{page.title}</span>
+            <p className="pt-0.5">
+              Jump to <span className="font-medium text-fd-foreground">{page.title}</span>
             </p>
           </div>
         ),

@@ -8,7 +8,7 @@ The TON blockchain stores its [configuration parameters](/foundations/config) on
 ## Prerequisites
 
 - The [`fift`](/languages/fift/overview#installation) and [`lite-client`](https://github.com/ton-blockchain/ton/releases/latest) binaries from the latest TON release.
-- A masterchain wallet holding at least 4 Toncoin to cover the proposal fee.
+- A masterchain wallet holding at least 4 Gram to cover the proposal fee.
 
 The guide assumes familiarity with [Fift](/languages/fift/overview), the [Lite Client](/ecosystem/nodes/overview#interacting-with-ton-nodes), and the structure of [TON configuration parameters](/foundations/config).
 
@@ -150,7 +150,7 @@ B5EE9C7241010301002C0001216E5650525E838CB0000000085E9455904001010BF300000008A002
 (Saved to file config-msg-body.boc)
 ```
 
-`config-msg-body.boc` now holds the internal message body for the configuration smart contract. Send it from a masterchain wallet attached to enough Toncoin to cover the fee.
+`config-msg-body.boc` now holds the internal message body for the configuration smart contract. Send it from a masterchain wallet attached to enough Gram to cover the fee.
 
 <Callout
   type="caution"
@@ -195,7 +195,7 @@ The arguments are: `critical?` flag = `0`, lifetime = `1100000` seconds (about 1
   The next command moves funds on TON Mainnet and changes validator and network behavior. On-chain transfers are final, and reversing a configuration change takes another accepted proposal. Confirm both the address and the amount on TON Testnet before repeating on TON Mainnet.
 </Callout>
 
-The storage fee is 2.3408 Toncoin. Add at least 1.5 Toncoin for processing and send 4 Toncoin in total; any surplus is refunded. Sign the transfer with [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif), or the appropriate Fift script for the controlling wallet:
+The storage fee is 2.3408 Gram. Add at least 1.5 Gram for processing and send 4 Gram in total; any surplus is refunded. Sign the transfer with [`wallet.fif`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/smartcont/wallet.fif), or the appropriate Fift script for the controlling wallet:
 
 ```bash
 fift -s wallet.fif my-wallet -1:5555555555555555555555555555555555555555555555555555555555555555 31 4. -B config-msg-body.boc
@@ -342,7 +342,7 @@ Only validators listed in parameter `#34` may vote, identified there by their pe
 
 - The script writes `vote-msg-body.boc`, the body of an internal message that carries the signed vote.
 
-- Send `vote-msg-body.boc` from any masterchain smart contract, typically the validator's controlling smart contract, attaching a small amount of Toncoin for processing. Around 1.5 Toncoin is enough. This step mirrors the procedure used during validator elections:
+- Send `vote-msg-body.boc` from any masterchain smart contract, typically the validator's controlling smart contract, attaching a small amount of Gram for processing. Around 1.5 Gram is enough. This step mirrors the procedure used during validator elections:
 
   ```bash
   fift -s wallet.fif my_wallet_id -1:5555555555555555555555555555555555555555555555555555555555555555 1 1.5 -B vote-msg-body.boc

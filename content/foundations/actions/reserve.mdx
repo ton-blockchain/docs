@@ -2,19 +2,19 @@
 title: "Reserve coins"
 ---
 
-_Reserving coins_ is one of the actions that a smart contract can perform during the [action phase](/foundations/phases#action-phase). In TVM it is implemented via the [`RAWRESERVE`](/tvm/instructions#fb02-rawreserve) instruction that takes from the stack an `amount` of Toncoin (in nanotoncoins) to reserve and an integer `mode` specifying a way of the reservation. The reservation action is queued to the _output action list_ of a smart contract, which contains other actions such as _message sends_.
+_Reserving coins_ is one of the actions that a smart contract can perform during the [action phase](/foundations/phases#action-phase). In TVM it is implemented via the [`RAWRESERVE`](/tvm/instructions#fb02-rawreserve) instruction that takes from the stack an `amount` of Gram (in nanograms) to reserve and an integer `mode` specifying a way of the reservation. The reservation action is queued to the _output action list_ of a smart contract, which contains other actions such as _message sends_.
 
-The `RAWRESERVE` instruction is equivalent to creating an outbound message carrying the specified `amount` of nanotoncoin to oneself. But unlike regular sending of a message, the reservation action does not create a new message and does not incur any forward fees. Its primary goal is to limit the amount of Toncoin that can be spent by subsequent actions.
+The `RAWRESERVE` instruction is equivalent to creating an outbound message carrying the specified `amount` of nanograms to oneself. But unlike regular sending of a message, the reservation action does not create a new message and does not incur any forward fees. Its primary goal is to limit the amount of Gram that can be spent by subsequent actions.
 
 ## Modes
 
 The `mode` parameter is a bitmask that specifies how a reserved amount is calculated. The resulting mode value can have the following base modes:
 
-| Mode value | Convenient name    | Description                                             |
-| :--------: | ------------------ | ------------------------------------------------------- |
-|     `0`    | `ReserveExact`     | Reserves exactly the specified `amount` of nanotoncoin. |
-|     `1`    | `ReserveAllExcept` | Reserves all but the specified `amount` of nanotoncoin. |
-|     `2`    | `ReserveAtMost`    | Reserves at most the specified `amount` of nanotoncoin. |
+| Mode value | Convenient name    | Description                                           |
+| :--------: | ------------------ | ----------------------------------------------------- |
+|     `0`    | `ReserveExact`     | Reserves exactly the specified `amount` of nanograms. |
+|     `1`    | `ReserveAllExcept` | Reserves all but the specified `amount` of nanograms. |
+|     `2`    | `ReserveAtMost`    | Reserves at most the specified `amount` of nanograms. |
 
 Additionally, the resulting `mode` can have the following optional flags added:
 
@@ -28,7 +28,7 @@ Additionally, the resulting `mode` can have the following optional flags added:
 
 Notation:
 
-- `amount` – the amount of Toncoin passed to the `RAWRESERVE` instruction.
+- `amount` – the amount of Gram passed to the `RAWRESERVE` instruction.
 - `mode` – the integer mode passed to the `RAWRESERVE` instruction.
 - `original_balance`:
   - if after the storage phase, account's balance is less than the value of incoming message with bounce flag set to `false`, then `original_balance` is set to 0;
@@ -81,7 +81,7 @@ The following errors can occur during the reservation flow:
 - If `mode` has flag `8` but not flag `4`, then the error [`34`](/tvm/exit-codes#34%3A-invalid-or-unsupported-action) is thrown.
 - If after step 3, `reserve` is negative, then the error [`34`](/tvm/exit-codes#34%3A-invalid-or-unsupported-action) is thrown.
 - Passing a negative `amount` also results in the same error.
-- If after step 4, `reserve` is greater than `remaining_balance`, then the error [`37`](/tvm/exit-codes#37%3A-not-enough-toncoin) ("Not enough Toncoin") is thrown.
+- If after step 4, `reserve` is greater than `remaining_balance`, then the error [`37`](/tvm/exit-codes#37%3A-not-enough-grams) ("Not enough GRAMs") is thrown.
 - Some problems with unpacking the reserve action cell.
 - A problem related to extra-currency.
 

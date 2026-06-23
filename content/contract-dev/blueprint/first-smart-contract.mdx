@@ -18,7 +18,7 @@ This tutorial covers building, deploying, and interacting with a smart contract 
 - Basic familiarity with a command-line interface and executing commands
 - Node.js—`v22` or later— [download here](https://nodejs.org/)
   - Check if installed: `node -v` in terminal
-- Installed [TON wallet](/ecosystem/wallet-apps/tonkeeper) with [Toncoin on testnet](/ecosystem/wallet-apps/get-coins)
+- Installed [GRAM wallet](/ecosystem/wallet-apps/tonkeeper) with [Gram on testnet](/ecosystem/wallet-apps/get-coins)
 
 ## Development environment
 
@@ -338,7 +338,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
       - code — compiled bytecode
       - data — the initial storage layout
     - The contract [address](/foundations/addresses/overview) is derived deterministically from `code` and `data` using `contractAddress`.
-    - The method `sendDeploy` sends the first message with `stateInit`, the structure holding the contract's initial code and data, which triggers deployment. In practice, this can be an empty message with Toncoin attached.
+    - The method `sendDeploy` sends the first message with `stateInit`, the structure holding the contract's initial code and data, which triggers deployment. In practice, this can be an empty message with Gram attached.
   </Step>
 
   <Step>
@@ -383,7 +383,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
       type="danger"
       title="Funds at risk"
     >
-      On-chain deployments spend Toncoin and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
+      On-chain deployments spend Gram and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
     </Callout>
 
     Run the script with:
@@ -402,7 +402,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
       title="Wallet required"
       type="note"
     >
-      If a wallet is not installed, check the [wallet section](/ecosystem/wallet-apps/tonkeeper) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Toncoin on the testnet](/ecosystem/wallet-apps/get-coins).
+      If a wallet is not installed, check the [wallet section](/ecosystem/wallet-apps/tonkeeper) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Gram on the testnet](/ecosystem/wallet-apps/get-coins).
     </Callout>
 
     Scan the QR code displayed in the console, and confirm the transaction in the wallet app.
@@ -533,7 +533,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
     export async function run(provider: NetworkProvider) {
       // `provider.open()` creates a connection to the deployed contract
       const firstContract = provider.open(new FirstContract(contractAddress));
-      // `toNano('0.05')` converts 0.05 TON to nanotons
+      // `toNano('0.05')` converts 0.05 GRAM to nanograms
       // `increaseBy: 42` tells the contract to increase the counter by 42
       await firstContract.sendIncrease(provider.sender(), { value: toNano('0.05'), increaseBy: 42 });
       // `waitForLastTransaction()` waits for the transaction to be processed on-chain
@@ -547,7 +547,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
       type="danger"
       title="Funds at risk"
     >
-      On-chain deployments spend Toncoin and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
+      On-chain deployments spend Gram and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
     </Callout>
 
     To run this script:
@@ -656,7 +656,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
       type="danger"
       title="Funds at risk"
     >
-      On-chain deployments spend Toncoin and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
+      On-chain deployments spend Gram and are irreversible. Verify the network before executing. Use testnet for practice; use mainnet only for actual deployment.
     </Callout>
 
     To run this script:

@@ -26,7 +26,7 @@ The collection is the source of truth for items. It should provide each NFT item
 
 ### NFT item
 
-Following TON's [contract sharding](/contract-dev/contract-sharding) approach, each NFT item is its own smart contract account. It provides the collection address, index, current owner, and individual metadata. On a valid transfer from the current owner, it updates the owner, optionally notifies the new owner, and returns excess Toncoin to the specified address.
+Following TON's [contract sharding](/contract-dev/contract-sharding) approach, each NFT item is its own smart contract account. It provides the collection address, index, current owner, and individual metadata. On a valid transfer from the current owner, it updates the owner, optionally notifies the new owner, and returns excess Gram to the specified address.
 
 <Callout type="caution">
   Not every NFT that stores a collection address actually belongs to that collection. [Verify](/standard/tokens/nft/verify) that the collection returns the item's address for the item's index.
@@ -34,7 +34,7 @@ Following TON's [contract sharding](/contract-dev/contract-sharding) approach, e
 
 ## Transfer NFT item
 
-The current owner sends a transfer message to the NFT item contract. The item updates its owner field and, optionally, sends a notification and/or excess Toncoin to the specified addresses.
+The current owner sends a transfer message to the NFT item contract. The item updates its owner field and, optionally, sends a notification and/or excess Gram to the specified addresses.
 
 ```mermaid
 flowchart TD
@@ -48,15 +48,15 @@ flowchart TD
 
 Transfer message body contains the following data:
 
-| Field                  | Type                | Description                                                              |
-| ---------------------- | ------------------- | ------------------------------------------------------------------------ |
-| `transfer`             | `uint32`            | tag equal to `0x5fcc3d14`                                                |
-| `query_id`             | `uint64`            | arbitrary request number                                                 |
-| `new_owner`            | `MsgAddress`        | address of the new owner of the NFT item                                 |
-| `response_destination` | `MsgAddress`        | optional address to receive excess Toncoin, usually the sender's address |
-| `custom_payload`       | `Maybe ^Cell`       | optional custom data                                                     |
-| `forward_amount`       | `VarUInteger 16`    | the amount of Toncoin to be sent to the new owner                        |
-| `forward_payload`      | `Either Cell ^Cell` | optional data that should be forwarded to the new owner                  |
+| Field                  | Type                | Description                                                           |
+| ---------------------- | ------------------- | --------------------------------------------------------------------- |
+| `transfer`             | `uint32`            | tag equal to `0x5fcc3d14`                                             |
+| `query_id`             | `uint64`            | arbitrary request number                                              |
+| `new_owner`            | `MsgAddress`        | address of the new owner of the NFT item                              |
+| `response_destination` | `MsgAddress`        | optional address to receive excess Gram, usually the sender's address |
+| `custom_payload`       | `Maybe ^Cell`       | optional custom data                                                  |
+| `forward_amount`       | `VarUInteger 16`    | the amount of Gram to be sent to the new owner                        |
+| `forward_payload`      | `Either Cell ^Cell` | optional data that should be forwarded to the new owner               |
 
 ```tlb title="TL-B"
 transfer#5fcc3d14 query_id:uint64

@@ -33,7 +33,7 @@ const paths: Path[] = [
     icon: Rocket,
     links: [
       { title: 'Overview of TON and the documentation', href: '/start-here' },
-      { title: 'Use a TON wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
+      { title: 'Use a GRAM wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
       { title: 'Introduction to Tolk', href: '/tolk/overview' },
     ],
   },

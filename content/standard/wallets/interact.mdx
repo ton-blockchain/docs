@@ -165,7 +165,7 @@ Wallet apps can attach short human-readable notes — commonly called _comments_
 
 Because comments ride inside ordinary internal messages, the format works identically for:
 
-- native Toncoin transfers between wallets;
+- native Gram transfers between wallets;
 - [Jetton transfers](/standard/tokens/jettons/api#forward-payload-formats), where the wallet forwards an internal message to the token wallet along with the comment payload;
 - [NFT transfers](/standard/tokens/nft/api#forward-payload-formats), where the comment travels in the same forwarding message that moves the ownership record.
 
@@ -176,7 +176,7 @@ To include a comment in an outgoing transfer, construct an internal message body
 1. Allocate a cell.
 1. Store the 32-bit zero opcode.
 1. Store the text as a [byte string](/standard/tokens/metadata#snake-data-encoding) (UTF-8 encoded).
-1. Send the internal message along with the desired Toncoin, [Jettons](/standard/tokens/jettons/how-it-works), or [NFT](/standard/tokens/nft/how-it-works) payload.
+1. Send the internal message along with the desired Gram, [Jettons](/standard/tokens/jettons/how-it-works), or [NFT](/standard/tokens/nft/how-it-works) payload.
 
 Receivers that follow the convention will display the decoded text to the user. Contracts that do not recognize the opcode will simply ignore it or treat the message body as opaque data, so comments are backward-compatible with existing transfers.
 

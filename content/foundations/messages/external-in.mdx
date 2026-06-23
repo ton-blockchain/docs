@@ -25,7 +25,7 @@ where
 
 - `src` — the external address of the sender of the message.
 - `dest` — the [internal address](/foundations/addresses/overview#internal-addresses) of the contract that will receive the message.
-- `import_fee` — the amount of Toncoin that the contract will pay for this message.
+- `import_fee` — the amount of Gram that the contract will pay for this message.
 
 The value of these fields can be manipulated by [nodes](/ecosystem/nodes/overview) or [API providers](/ecosystem/api/overview) that deliver the message unless they are included in the signed payload. However, wallet contracts usually do not include these fields in the signed payload, and only the contents of the `body` field are signed.
 

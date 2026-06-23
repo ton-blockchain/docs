@@ -11,15 +11,15 @@ NFT messages and methods specified in TEPs.
 
 #### Transfer message layout
 
-| Field                  | Type                | Description                                                              |
-| ---------------------- | ------------------- | ------------------------------------------------------------------------ |
-| `transfer`             | `uint32`            | tag equal to `0x5fcc3d14`                                                |
-| `query_id`             | `uint64`            | arbitrary request number                                                 |
-| `new_owner`            | `MsgAddress`        | address of the new owner of the NFT item                                 |
-| `response_destination` | `MsgAddress`        | optional address to receive excess Toncoin, usually the sender's address |
-| `custom_payload`       | `Maybe ^Cell`       | optional custom data                                                     |
-| `forward_amount`       | `VarUInteger 16`    | the amount of Toncoin to be sent to the new owner                        |
-| `forward_payload`      | `Either Cell ^Cell` | optional data that should be forwarded to the new owner                  |
+| Field                  | Type                | Description                                                           |
+| ---------------------- | ------------------- | --------------------------------------------------------------------- |
+| `transfer`             | `uint32`            | tag equal to `0x5fcc3d14`                                             |
+| `query_id`             | `uint64`            | arbitrary request number                                              |
+| `new_owner`            | `MsgAddress`        | address of the new owner of the NFT item                              |
+| `response_destination` | `MsgAddress`        | optional address to receive excess Gram, usually the sender's address |
+| `custom_payload`       | `Maybe ^Cell`       | optional custom data                                                  |
+| `forward_amount`       | `VarUInteger 16`    | the amount of Gram to be sent to the new owner                        |
+| `forward_payload`      | `Either Cell ^Cell` | optional data that should be forwarded to the new owner               |
 
 #### Forward payload formats
 

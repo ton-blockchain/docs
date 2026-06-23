@@ -14,7 +14,7 @@ Retrieve wallet information, Jettons, and NFTs using WalletKit.
 ### Balance
 
 ```kotlin
-// Returns balance in nanoToncoin
+// Returns balance in nanograms
 val balance = wallet.getBalance()
 ```
 
@@ -39,7 +39,7 @@ val jettons = wallet.getJettons(limit = 10, offset = 0)
 // E.g., EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs for USDT
 val jettonAddress = "<JETTON_ADDRESS>"
 
-// Returns balance in nanoToncoin with decimals count according to Jetton specification
+// Returns balance in nanograms with decimals count according to Jetton specification
 val balance = wallet.getJettonBalance(jettonAddress)
 ```
 
@@ -76,13 +76,13 @@ val nft = wallet.getNFT(nftAddress)
     title="Transactions"
     href="./transactions"
   >
-    Transfer Toncoin, Jettons and NFTs
+    Transfer Gram, Jettons and NFTs
   </Card>
 
   <Card
     title="Manage wallets"
     href="./wallets"
   >
-    Create and manage TON wallets
+    Create and manage GRAM wallets
   </Card>
 </Columns>

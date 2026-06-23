@@ -86,7 +86,7 @@ type APIOptions = {
   type="number"
   required
 >
-  Human-readable payment amount. Decimals are allowed, for example, 10.5 TON.
+  Human-readable payment amount. Decimals are allowed, for example, 10.5 GRAM.
 </ParamField>
 
 <ParamField
@@ -94,7 +94,7 @@ type APIOptions = {
   type="string"
   required
 >
-  Asset to transfer. Use "TON" for Toncoin or a jetton master address or constant, for example, USDT.
+  Asset to transfer. Use "GRAM" for Gram or a jetton master address or constant, for example, USDT.
 </ParamField>
 
 <Callout
@@ -125,7 +125,7 @@ type APIOptions = {
   body="queryId"
   type="number"
 >
-  Jetton only. Numeric identifier embedded into the jetton payload for idempotency and tracking. Ignored for Toncoin payments.
+  Jetton only. Numeric identifier embedded into the jetton payload for idempotency and tracking. Ignored for Gram payments.
 </ParamField>
 
 <ParamField
@@ -157,7 +157,7 @@ Built-in constants can be used instead of raw addresses.
 ```ts
 import { createTonPayTransfer, TON, USDT } from "@ton-pay/api";
 
-// Toncoin transfer
+// Gram transfer
 await createTonPayTransfer(
   {
     amount: 1,
@@ -365,7 +365,7 @@ const result = await createTonPayTransfer(
   <Step>
     #### Obtain testnet TON
 
-    - Use testnet wallet account: [Tonkeeper](/ecosystem/wallet-apps/tonkeeper) or other TON wallets.
+    - Use testnet wallet account: [Tonkeeper](/ecosystem/wallet-apps/tonkeeper) or other GRAM wallets.
     - [Get testnet TON](/ecosystem/wallet-apps/get-coins) from a faucet to test transactions.
   </Step>
 

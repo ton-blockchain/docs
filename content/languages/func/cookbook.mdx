@@ -1597,7 +1597,7 @@ await contractV1.sendUpgrade(provider.sender(), {
 
 When a smart contract needs to send an internal message, it must first construct the message as a `cell`. This includes specifying technical flags, the recipient's address, and additional data.
 
-The most common case involves sending an internal message that is bounceable, with no `StateInit`, and with message body serialized in the same message cell. The following `build_message` function illustrates this common case. The function receives as parameters the destination address `dest_addr` encoded as a slice, the amount in nanotons to send `amount`, and the requested operation opcode `opcode`:
+The most common case involves sending an internal message that is bounceable, with no `StateInit`, and with message body serialized in the same message cell. The following `build_message` function illustrates this common case. The function receives as parameters the destination address `dest_addr` encoded as a slice, the amount in nanograms to send `amount`, and the requested operation opcode `opcode`:
 
 ```func
 cell build_message(slice dest_addr, int amount, int opcode) {
@@ -1607,7 +1607,7 @@ cell build_message(slice dest_addr, int amount, int opcode) {
       ;; In particular, the bounceable header is true.
       .store_uint(0x18, 1 + 1 + 1 + 1 + 2)
       .store_slice(dest_addr)  ;; destination address
-      .store_coins(amount)     ;; amount to send in nanotons
+      .store_coins(amount)     ;; amount to send in nanograms
 
       ;; Sets 7 more headers to their default values.
       ;; Sets default value 0 to all the 7 headers.
@@ -1648,7 +1648,7 @@ Here is an example on how to use function `build_message` to send a message:
 ```func
 ;; Create a slice from a string containing the destination address
 slice addr = "EQArzP5prfRJtDM5WrMNWyr9yUTAi0c9o6PfR4hkWy9UQXHx"a;
-;; The amount to send in nanotons
+;; The amount to send in nanograms
 int amount = 1000000000;
 ;; The opcode for the requested operation
 int op = 20;
@@ -1690,7 +1690,7 @@ cell build_message(slice dest_addr, int amount, cell message_body) {
       ;; In particular, the bounceable header is true.
       .store_uint(0x18, 1 + 1 + 1 + 1 + 2)
       .store_slice(dest_addr)  ;; destination address
-      .store_coins(amount)     ;; amount to send in nanotons
+      .store_coins(amount)     ;; amount to send in nanograms
 
       ;; Sets 6 more headers to their default values.
       ;; Sets default value 0 to all the 6 headers.
@@ -1725,7 +1725,7 @@ Here is an example on how to use function `build_message` to send a message:
 ```func
 ;; Create a slice from a string containing the destination address
 slice addr = "EQArzP5prfRJtDM5WrMNWyr9yUTAi0c9o6PfR4hkWy9UQXHx"a;
-;; The amount to send in nanotons
+;; The amount to send in nanograms
 int amount = 1000000000;
 ;; Create a cell storing the message body
 cell message_body = begin_cell()
@@ -1769,7 +1769,7 @@ cell build_message(slice dest_addr, int amount, slice message_body) {
       ;; In particular, the bounceable header is true.
       .store_uint(0x18, 1 + 1 + 1 + 1 + 2)
       .store_slice(dest_addr)  ;; destination address
-      .store_coins(amount)     ;; amount to send in nanotons
+      .store_coins(amount)     ;; amount to send in nanograms
 
       ;; Sets 7 more headers to their default values.
       ;; Sets default value 0 to all the 7 headers.
@@ -1795,7 +1795,7 @@ Here is an example on how to use function `build_message` to send a message:
 ```func
 ;; Create a slice from a string containing the destination address
 slice addr = "EQArzP5prfRJtDM5WrMNWyr9yUTAi0c9o6PfR4hkWy9UQXHx"a;
-;; The amount to send in nanotons
+;; The amount to send in nanograms
 int amount = 1000000000;
 ;; Create a slice storing the message body
 slice message_body = begin_cell()
@@ -1841,7 +1841,7 @@ cell build_message(slice dest_addr, int amount, slice comment) {
       ;; In particular, the bounceable header is true.
       .store_uint(0x18, 1 + 1 + 1 + 1 + 2)
       .store_slice(dest_addr)  ;; destination address
-      .store_coins(amount)     ;; amount to send in nanotons
+      .store_coins(amount)     ;; amount to send in nanograms
 
       ;; Sets 7 more headers to their default values.
       ;; Sets default value 0 to all the 7 headers.
@@ -1871,7 +1871,7 @@ Here is an example on how to use function `build_message` to send a message:
 ```func
 ;; Create a slice from a string containing the destination address
 slice addr = "EQArzP5prfRJtDM5WrMNWyr9yUTAi0c9o6PfR4hkWy9UQXHx"a;
-;; The amount to send in nanotons
+;; The amount to send in nanograms
 int amount = 1000000000;
 ;; Create a slice storing the comment
 slice comment = "Hello from FunC!";
@@ -1911,7 +1911,7 @@ The following example illustrates the idea:
 ```func
 ;; Create a slice from a string containing the destination address
 slice addr = "EQArzP5prfRJtDM5WrMNWyr9yUTAi0c9o6PfR4hkWy9UQXHx"a;
-;; The amount to send in nanotons
+;; The amount to send in nanograms
 int amount = 1000000000;
 
 ;; Create a cell storing the message body
@@ -1972,7 +1972,7 @@ The following function illustrates the case for the message body included in the
       ;; In particular, the bounceable header is true.
       .store_uint(0x18, 1 + 1 + 1 + 1 + 2)
       .store_slice(dest_addr)  ;; destination address
-      .store_coins(amount)     ;; amount to send in nanotons
+      .store_coins(amount)     ;; amount to send in nanograms
 
       ;; Sets 5 more headers to their default values.
       ;; Sets default value 0 to all the 5 headers.
@@ -2023,7 +2023,7 @@ As a second example, the following function also includes a `StateInit`, but the
       ;; In particular, the bounceable header is true.
       .store_uint(0x18, 1 + 1 + 1 + 1 + 2)
       .store_slice(dest_addr)  ;; destination address
-      .store_coins(amount)     ;; amount to send in nanotons
+      .store_coins(amount)     ;; amount to send in nanograms
 
       ;; Sets 5 more headers to their default values.
       ;; Sets default value 0 to all the 5 headers.
@@ -2077,7 +2077,7 @@ This is particularly useful for proxy contracts that receive payments and forwar
 ```func
 ;; Create a slice from a string containing the destination address
 slice addr = "EQArzP5prfRJtDM5WrMNWyr9yUTAi0c9o6PfR4hkWy9UQXHx"a;
-;; The amount to send in nanotons.
+;; The amount to send in nanograms.
 ;; In this case, it is irrelevant the sent amount,
 ;; because, later, the send mode 128 will include
 ;; all the contract's balance in the message
@@ -2129,7 +2129,7 @@ destination address, and the slice to send as body.
     ;; will be the redirected message's body
     slice body = in_msg_body;
 
-    ;; The amount to send in nanotons
+    ;; The amount to send in nanograms
     int amount = 1000000000;
 
     ;; Create the message cell

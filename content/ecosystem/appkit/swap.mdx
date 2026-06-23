@@ -7,7 +7,7 @@ sidebarTitle: "Swap tokens"
   [Initialize the AppKit](/ecosystem/appkit/init) before using examples on this page. Swap functionality requires a configured [swap provider](#available-providers).
 </Callout>
 
-AppKit supports on-chain token swaps through [pluggable swap providers](#create-a-custom-swap-provider). Supported swap kinds are Toncoin to jetton and jetton to jetton.
+AppKit supports on-chain token swaps through [pluggable swap providers](#create-a-custom-swap-provider). Supported swap kinds are Gram to jetton and jetton to jetton.
 
 The swap flow has two steps: [get a quote](#get-a-swap-quote) for the desired trade, then [build and send the swap transaction](#build-and-send-the-swap-transaction).
 
@@ -57,11 +57,11 @@ A swap quote estimates how many tokens are received for a given input amount. Th
       // Source token: what to swap
       from: {
         // Either a source jetton master (minter) contract address
-        // or a Toncoin identifier in its stead
+        // or a Gram identifier in its stead
         address: fromAddress ?? 'ton',
 
         // Decimal precision of the token to calculate raw unit amounts
-        // For example, Toncoin = 9, USDT (jetton) = 6
+        // For example, Gram = 9, USDT (jetton) = 6
         decimals: fromDecimals,
       },
 
@@ -123,22 +123,22 @@ A swap quote estimates how many tokens are received for a given input amount. Th
     kit: AppKit,
     /**
      * Source jetton master (minter) contract address
-     * or Toncoin 'ton' identifier
+     * or Gram 'ton' identifier
      */
     fromAddress: string,
     /**
      * Decimal precision of the source token to calculate raw amounts
-     * For example, Toncoin = 9, USDT (jetton) = 6
+     * For example, Gram = 9, USDT (jetton) = 6
      */
     fromDecimals: number,
     /**
      * Target jetton master (minter) contract address
-     * or Toncoin 'ton' identifier
+     * or Gram 'ton' identifier
      */
     toAddress: string,
     /**
      * Decimal precision of the target token to calculate raw amounts
-     * For example, Toncoin = 9, USDT (jetton) = 6
+     * For example, Gram = 9, USDT (jetton) = 6
      */
     toDecimals: number,
     /**

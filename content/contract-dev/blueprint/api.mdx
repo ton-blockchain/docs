@@ -26,17 +26,17 @@ function tonDeepLink(
 **Parameters:**
 
 - `address` — the recipient's TON address
-- `amount` — the amount of nanoTON to send
+- `amount` — the amount of nanograms to send
 - `body` — optional message body as a Cell
 - `stateInit` — optional [`StateInit`](/foundations/messages/deploy) cell for deploying a contract
 - `testOnly` — optional flag to determine output address format
 
-**Returns:** a URL deep link that can be opened in TON wallets
+**Returns:** a URL deep link that can be opened in GRAM wallets
 
 **Example:**
 
 ```typescript
-const link = tonDeepLink(myAddress, 10_000_000n); // 0.01 TON
+const link = tonDeepLink(myAddress, 10_000_000n); // 0.01 GRAM
 // "ton://transfer/..."
 ```
 
@@ -295,7 +295,7 @@ Retrieves the current state of a contract, including its balance, code, and data
 ```typescript
 export async function run(provider: NetworkProvider) {
   const state = await provider.getContractState(contractAddress);
-  console.log(`Contract balance: ${fromNano(state.balance)} TON`);
+  console.log(`Contract balance: ${fromNano(state.balance)} GRAM`);
 }
 ```
 
@@ -412,7 +412,7 @@ Displays a yes/no prompt to the user and waits for their response.
 ```typescript
 export async function run(provider: NetworkProvider) {
   const ui = provider.ui();
-  const confirmed = await ui.prompt('Deploy to mainnet? This will cost real TON');
+  const confirmed = await ui.prompt('Deploy to mainnet? This will cost real GRAM');
   if (confirmed) {
     ui.write('Proceeding with deployment...');
   } else {

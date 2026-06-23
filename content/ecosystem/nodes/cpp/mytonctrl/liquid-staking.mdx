@@ -83,18 +83,18 @@ add_controller EQDf...9A
 
 ### `deposit_to_controller`
 
-**Purpose:** Top up a controller contract with Toncoin from the validator wallet.
+**Purpose:** Top up a controller contract with Gram from the validator wallet.
 
 **Syntax**
 
 ```mytonctrl
-deposit_to_controller <controller-addr> <amount-ton>
+deposit_to_controller <controller-addr> <amount-gram>
 ```
 
 **Behavior**
 
-- Signs the `top-up.boc` script with the validator wallet and sends `<amount-ton>` TON to `<controller-addr>`.
-- Use decimal TON amounts; the command handles the nanoTON conversion internally.
+- Signs the `top-up.boc` script with the validator wallet and sends `<amount-gram>` TON to `<controller-addr>`.
+- Use decimal GRAM amounts; the command handles the nanogram conversion internally.
 
 **Example**
 
@@ -109,13 +109,13 @@ deposit_to_controller EQDf...9A 2000
 **Syntax**
 
 ```mytonctrl
-withdraw_from_controller <controller-addr> [amount-ton]
+withdraw_from_controller <controller-addr> [amount-gram]
 ```
 
 **Behavior**
 
 - Requests an immediate withdrawal when the controller state permits it; otherwise, it queues a pending withdrawal that is handled automatically later.
-- If `[amount-ton]` is omitted, MyTonCtrl withdraws nearly the entire balance (leaving \~10 TON to cover rent).
+- If `[amount-gram]` is omitted, MyTonCtrl withdraws nearly the entire balance (leaving \~10 GRAM to cover rent).
 
 **Examples**
 
@@ -151,13 +151,13 @@ stop_controller EQDf...9A
 **Syntax**
 
 ```mytonctrl
-stop_and_withdraw_controller <controller-addr> [amount-ton]
+stop_and_withdraw_controller <controller-addr> [amount-gram]
 ```
 
 **Behavior**
 
 - Flags the controller as stopped (same as `stop_controller`).
-- Triggers a withdrawal for `[amount-ton]` TON; when omitted, withdraws almost the full balance (balance minus \~10.1 TON to keep the contract alive).
+- Triggers a withdrawal for `[amount-gram]` TON; when omitted, withdraws almost the full balance (balance minus \~10.1 GRAM to keep the contract alive).
 
 **Example**
 
@@ -261,4 +261,4 @@ test_calculate_loan_amount
 **Behavior**
 
 - Sends a local HTTP request to the TON HTTP API (`/runGetMethod`) using the configured loan parameters (`min_loan`, `max_loan`, `max_interest_percent`).
-- Prints the raw response (nanoTON value) used to size controller loans.
+- Prints the raw response (nanogram value) used to size controller loans.

@@ -94,10 +94,10 @@ This parameter is the address of the [elector smart contract](/foundations/syste
 
 ## Param 2: TON minting address
 
-This parameter represents the address of the system, on behalf of which new Toncoin are minted and sent as rewards for validating the blockchain.
+This parameter represents the address of the system, on behalf of which new Gram are minted and sent as rewards for validating the blockchain.
 
 <Callout>
-  If parameter 2 is missing, parameter 0 is used instead — newly minted Toncoin come from the configuration smart contract.
+  If parameter 2 is missing, parameter 0 is used instead — newly minted Gram come from the configuration smart contract.
 </Callout>
 
 [Parameter #2 on mainnet](https://tonviewer.com/config#2)
@@ -220,7 +220,7 @@ This parameter defines the cost of filing complaints about the incorrect operati
 
 ## Param 14: block reward
 
-This parameter indicates the reward for creating a block in the TON Blockchain. Values are in nanotons (also referred to as nanograms); therefore, the reward for block creation in the masterchain is 1.7 Toncoin, while in the basechain, it is 1.0 Toncoin. In the event of a workchain split, the block reward is also divided: if there are two shardchains within the workchain, then the reward for each shard block will be 0.5 Toncoin.
+This parameter indicates the reward for creating a block in the TON Blockchain. Values are in nanograms; therefore, the reward for block creation in the masterchain is 1.7 Gram, while in the basechain, it is 1.0 Gram. In the event of a workchain split, the block reward is also divided: if there are two shardchains within the workchain, then the reward for each shard block will be 0.5 Gram.
 
 [Parameter #14 on mainnet](https://tonviewer.com/config#14)
 
@@ -348,11 +348,11 @@ This parameter represents the stake parameters configuration in the TON Blockcha
 
 ### Configuration parameters
 
-- `min_stake`: This parameter represents the minimum amount of Toncoin that an interested party needs to stake to participate in the validation process.
+- `min_stake`: This parameter represents the minimum amount of Gram that an interested party needs to stake to participate in the validation process.
 
-- `max_stake`: This parameter represents the maximum amount of Toncoin that an interested party can stake.
+- `max_stake`: This parameter represents the maximum amount of Gram that an interested party can stake.
 
-- `min_total_stake`: This parameter represents the minimum total amount of Toncoin that the chosen set of validators must hold.
+- `min_total_stake`: This parameter represents the minimum total amount of Gram that the chosen set of validators must hold.
 
 - `max_stake_factor`: This parameter is a multiplier indicating how many times the maximum effective stake (pledge) can exceed the minimum stake sent by any other validator.
 
@@ -390,7 +390,7 @@ Note: Param 20 defines gas settings for the masterchain; Param 21 defines gas se
 
 - `flat_gas_limit` and `flat_gas_price`: A certain starting amount of gas is provided at a price of `flat_gas_price` (to offset the costs of launching the TON Virtual Machine).
 
-- `gas_price`: This parameter reflects the price of gas in the network, in nanotons per 65536 gas units.
+- `gas_price`: This parameter reflects the price of gas in the network, in nanograms per 65536 gas units.
 
 - `gas_limit`: This parameter represents the maximum amount of gas that can be consumed per transaction.
 
@@ -400,7 +400,7 @@ Note: Param 20 defines gas settings for the masterchain; Param 21 defines gas se
 
 - `block_gas_limit`: This parameter represents the maximum amount of gas that can be consumed within a single block.
 
-- `freeze_due_limit` and `delete_due_limit`: Limits of accumulated storage fees (in nanotons) at which a contract is frozen and deleted, respectively.
+- `freeze_due_limit` and `delete_due_limit`: Limits of accumulated storage fees (in nanograms) at which a contract is frozen and deleted, respectively.
 
 <Callout>
   You can find more about `gas_credit` and other parameters in the section of external messages [here](/foundations/messages/external-in#accepting-message).
@@ -676,7 +676,7 @@ Lists of validators from the previous (32), current (34), and next (36) rounds. 
 
 ## Param 40: misbehavior punishment
 
-This parameter defines the structure of the configuration for punishment for improper behavior (non-validation). In the absence of the parameter, the default fine size is 101 Toncoin.
+This parameter defines the structure of the configuration for punishment for improper behavior (non-validation). In the absence of the parameter, the default fine size is 101 Gram.
 
 ### Configuration parameters
 
@@ -772,7 +772,7 @@ More details about precompiled contracts are on [this page](/foundations/precomp
 
 ## Param 71 - 73: outbound bridges
 
-This parameter pertains to bridges for wrapping Toncoin in other networks:
+This parameter pertains to bridges for wrapping Gram in other networks:
 
 - ETH-TON **(71)**
 
@@ -782,7 +782,7 @@ This parameter pertains to bridges for wrapping Toncoin in other networks:
 
 ### Configuration parameters
 
-- `bridge_address`: This is the bridge contract address that accepts TON to issue wrapped Toncoin in other networks.
+- `bridge_address`: This is the bridge contract address that accepts TON to issue wrapped Gram in other networks.
 
 - `oracle_multisig_address`: This is the bridge management wallet address. A multisig wallet is a type of digital wallet that requires signatures from multiple parties to authorize a transaction. It is often used to increase security. The oracles act as the parties.
 

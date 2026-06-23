@@ -56,7 +56,7 @@ async function main() {
     // extract private and public keys from the mnemonic
     const keyPair = await mnemonicToPrivateKey(MNEMONIC.split(" "));
 
-    // create a client for TON wallet
+    // create a client for GRAM wallet
     const wallet = WalletContractV5R1.create({
         workchain: 0,
         // public key is required to deploy a new wallet

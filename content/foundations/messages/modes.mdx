@@ -35,7 +35,7 @@ Additionally, the resulting `mode` can have the following optional flags added:
 
 Notation:
 
-- `value` – the amount of Toncoin indicated in the outgoing message.
+- `value` – the amount of Gram indicated in the outgoing message.
 - `mode` – the bitmask passed to the `SENDRAWMSG` or the `SENDMSG` instructions.
 - `msg_balance_remaining` – the remaining value of the incoming message. At the start of the action phase it equals either the incoming message value or account's balance before compute phase if it was less than the value of incoming message with bounce flag set to `false`. At the start of sending message process, it is zero if there was the previous sending message action with modes `SEND_MODE_CARRY_ALL_BALANCE` or `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`, otherwise it equals the value described above.
 - `remaining_balance` – the remaining balance of the account at the start of the action.
@@ -45,7 +45,7 @@ Notation:
 - `final_value` – the final value of the outgoing message.
 - `req` – value that will be deducted from the account balance.
 
-The algorithm for the resulting value of outgoing internal message and amount of nanotoncoins that will be deducted from account's balance is as follows:
+The algorithm for the resulting value of outgoing internal message and amount of nanograms that will be deducted from account's balance is as follows:
 
 1. Check that `mode` has flag `SEND_MODE_BOUNCE_ON_ACTION_FAIL`:
    - if so, then in case of any failure the action phase will be interrupted, the bounce phase will be initiated;
@@ -72,31 +72,31 @@ The algorithm for the resulting value of outgoing internal message and amount of
 
 Assume that
 
-- `value = 0.1 TON`;
+- `value = 0.1 GRAM`;
 - `mode = 80 = 00001010000` (that is, `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE + SEND_MODE_BOUNCE_ON_ACTION_FAIL`);
-- `msg_balance_remaining = 0 TON` (for instance, there was previous sending message action with mode `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`);
-- `remaining_balance = 2 TON`;
-- `fwd_fees = 0.01 TON`;
-- `gas_fees = 0.005 TON`;
-- `action_fine = 0 TON`.
+- `msg_balance_remaining = 0 GRAM` (for instance, there was previous sending message action with mode `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`);
+- `remaining_balance = 2 GRAM`;
+- `fwd_fees = 0.01 GRAM`;
+- `gas_fees = 0.005 GRAM`;
+- `action_fine = 0 GRAM`.
 
 Then the sending proceeds as follows:
 
 - `mode` has flag `SEND_MODE_BOUNCE_ON_ACTION_FAIL`? Yes.
 - `mode` has flag `SEND_MODE_IGNORE_ERRORS`? No.
-- Set `final_value = 0.1 TON`.
+- Set `final_value = 0.1 GRAM`.
 - `mode` has base mode `SEND_MODE_CARRY_ALL_BALANCE`? No.
 - `mode` has base mode `SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE`? Yes.
   - `mode` has flag `SEND_MODE_PAY_FEES_SEPARATELY`? No.
-  - Increase `final_value` by `msg_balance_remaining - gas_fees - action_fine = 0 TON - 0.005 TON - 0 TON = -0.005 TON`.
-  - Now, `final_value = 0.1 TON - 0.005 TON = 0.095 TON`.
-- Set `req = final_value = 0.095 TON`.
+  - Increase `final_value` by `msg_balance_remaining - gas_fees - action_fine = 0 GRAM - 0.005 GRAM - 0 GRAM = -0.005 GRAM`.
+  - Now, `final_value = 0.1 GRAM - 0.005 GRAM = 0.095 GRAM`.
+- Set `req = final_value = 0.095 GRAM`.
 - `mode` has flag `SEND_MODE_PAY_FEES_SEPARATELY`? No.
-  - Decrease `final_value` by `fwd_fees = 0.01 TON`.
-  - Now, `final_value = 0.095 TON - 0.01 TON = 0.085 TON`.
+  - Decrease `final_value` by `fwd_fees = 0.01 GRAM`.
+  - Now, `final_value = 0.095 GRAM - 0.01 GRAM = 0.085 GRAM`.
 - Set `msg_balance_remaining` to zero (it is already zero).
-- Decrease `remaining_balance` by `req = 0.095 TON`.
-  - Now, `remaining_balance = 2 TON - 0.095 TON = 1.905 TON`.
+- Decrease `remaining_balance` by `req = 0.095 GRAM`.
+  - Now, `remaining_balance = 2 GRAM - 0.095 GRAM = 1.905 GRAM`.
 
 ### Outgoing external messages
 

@@ -147,7 +147,7 @@ TVM has inner structure `GasLimits` for gas manipulations. Its fields are:
 
 - `gas_max`: the equivalent of contract's balance at the start of the compute phase in gas units.
 - `gas_limit`: the amount of gas that can be consumed during the virtual machine execution. At the start of the execution, it equals:
-  - minimum of `gas_max` and the amount of gas that can be bought with the incoming message value (i.e., the amount of TON coins attached to the message) in the case of an internal message;
+  - minimum of `gas_max` and the amount of gas that can be bought with the incoming message value (i.e., the amount of GRAM coins attached to the message) in the case of an internal message;
   - `0` in the case of an external message.
 - `gas_credit`: the amount of free gas that can be spent during the execution before accepting an external message. At the start of the execution, it equals:
   - minimum of `gas_max` and corresponding value in configuration parameter `20` for masterchain and `21` for basechain in the case of an external message;
