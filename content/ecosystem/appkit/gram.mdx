@@ -9,7 +9,7 @@ sidebarTitle: "Work with Gram"
 
 ## Balance
 
-Blockchain state changes constantly as new blocks are produced. This has implications for when and how to check TON wallet contract balances:
+Blockchain state changes constantly as new blocks are produced. This has implications for when and how to check GRAM wallet contract balances:
 
 - [Discrete one-off checks](#on-demand-balance-check) have almost no value on their own — the state might change immediately after the query completes, invalidating its results. Thus, such checks are only practical when making outgoing transfers.
 - [Continuous monitoring](#continuous-balance-monitoring) is useful for UI display, showing the most recent balance to users, but should not be used for transaction confirmations.
@@ -32,7 +32,7 @@ Balances are returned as strings representing fractional Gram units. For example
     const { data: balance } = useBalance();
 
     return (
-      <p>TON wallet balance in fractional Gram: {balance ?? '0'}</p>
+      <p>GRAM wallet balance in fractional Gram: {balance ?? '0'}</p>
     );
   };
   ```
@@ -42,7 +42,7 @@ Balances are returned as strings representing fractional Gram units. For example
 
   const balance = await getBalance(kit);
   if (balance) {
-    console.log('TON wallet balance in fractional Gram:', balance);
+    console.log('GRAM wallet balance in fractional Gram:', balance);
   }
   ```
 </CodeGroup>
@@ -88,7 +88,7 @@ Modify the following examples according to the application logic:
         {isLoading ? (
           <p>Loading the balance...</p>
         ) : (
-          <p>TON wallet balance in fractional Gram: {balance ?? '0'}</p>
+          <p>GRAM wallet balance in fractional Gram: {balance ?? '0'}</p>
         )}
       </div>
     );
@@ -170,7 +170,7 @@ Modify the following examples according to the application logic:
         {isBalanceLoading ? (
           <p>Loading the balance...</p>
         ) : (
-          <p>TON wallet balance in fractional Gram: {balance ?? '0'}</p>
+          <p>GRAM wallet balance in fractional Gram: {balance ?? '0'}</p>
         )}
       </div>
     );
@@ -239,7 +239,7 @@ Modify the following examples according to the application logic:
 
   export const SendToncoin = () => {
     // For example: 'UQ...'
-    const recipientAddress = '<TON_WALLET_ADDRESS>';
+    const recipientAddress = '<GRAM_WALLET_ADDRESS>';
     // For example, '0.1' or '1' Gram.
     const gram = '<FRACTIONAL_AMOUNT>';
 
@@ -284,7 +284,7 @@ Modify the following examples according to the application logic:
       transfer({
         // Where to send Gram to.
         // For example: 'UQ...'
-        recipientAddress: '<TON_WALLET_ADDRESS>',
+        recipientAddress: '<GRAM_WALLET_ADDRESS>',
 
         // Fractional Gram amount string.
         // For example, '0.1' or '10' Gram.
@@ -333,7 +333,7 @@ Modify the following examples according to the application logic:
   async function sendToncoin(
     /** Initialized AppKit instance */
     kit: AppKit,
-    /** Recipient's TON wallet address as a string */
+    /** Recipient's GRAM wallet address as a string */
     recipientAddress: string,
     /** Amount in fractional Gram */
     amount: string,

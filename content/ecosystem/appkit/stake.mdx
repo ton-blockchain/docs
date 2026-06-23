@@ -142,8 +142,8 @@ Retail staking UIs should display the provider and an up-to-date quote before as
       // Quote direction: 'stake' or 'unstake'
       direction: 'stake',
 
-      // Staking user's TON wallet address
-      userAddress: address ?? '<TON_WALLET_ADDRESS>',
+      // Staking user's GRAM wallet address
+      userAddress: address ?? '<GRAM_WALLET_ADDRESS>',
 
       // Fractional Gram amount string.
       // For example, '0.1' or '10' Gram.
@@ -201,7 +201,7 @@ Retail staking UIs should display the provider and an up-to-date quote before as
       // Quote direction: 'stake' or 'unstake'
       direction: 'stake',
 
-      // Staking user's TON wallet address
+      // Staking user's GRAM wallet address
       userAddress,
 
       // Fractional Gram amount string.
@@ -243,8 +243,8 @@ Build the transaction from the quote, then send it through the connected wallet:
       // Quote direction: 'stake' or 'unstake'
       direction: 'stake',
 
-      // Staking user's TON wallet address
-      userAddress: address ?? '<TON_WALLET_ADDRESS>',
+      // Staking user's GRAM wallet address
+      userAddress: address ?? '<GRAM_WALLET_ADDRESS>',
 
       // Fractional Gram amount string.
       // For example, '0.1' or '10' Gram.
@@ -311,7 +311,7 @@ Build the transaction from the quote, then send it through the connected wallet:
       // Quote direction: 'stake' or 'unstake'
       direction: 'stake',
 
-      // Staking user's TON wallet address
+      // Staking user's GRAM wallet address
       userAddress,
 
       // Fractional Gram amount string.
@@ -348,8 +348,8 @@ After the transaction is sent, query the staking balance for the connected walle
     const { data: balance, isLoading, error } = useStakedBalance({
       providerId,
 
-      // Staking user's TON wallet address
-      userAddress: address ?? '<TON_WALLET_ADDRESS>',
+      // Staking user's GRAM wallet address
+      userAddress: address ?? '<GRAM_WALLET_ADDRESS>',
     });
 
     if (!providerId) {
@@ -389,7 +389,7 @@ After the transaction is sent, query the staking balance for the connected walle
     const balance = await getStakedBalance(kit, {
       providerId,
 
-      // Staking user's TON wallet address
+      // Staking user's GRAM wallet address
       userAddress,
     });
 

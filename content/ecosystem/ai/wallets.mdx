@@ -19,7 +19,7 @@ Each agentic wallet is a smart contract deployed as [Soulbound Token (SBT)](/sta
 The deployment process goes as follows:
 
 1. The agent creates a pair of keys (public and private), keeping the private key in the local config registry.
-1. User deploys an agentic wallet from their regular TON wallet by providing the operator's public key and wallet address (owner address).
+1. User deploys an agentic wallet from their regular GRAM wallet by providing the operator's public key and wallet address (owner address).
 1. The contract checks that the sender's address matches the stored owner's address. If it doesn't match, the wallet will be deployed in an uninitialized state and will not appear in explorers, preventing the creation of unwanted wallets without the user's consent.
 1. If deployment is successful, the agent receives the address of the new wallet.
 
@@ -45,7 +45,7 @@ The [agentic wallets dashboard](https://agents.ton.org/) is a web interface for 
 - Revocation - revoke agent access by removing the operator key.
 - Funding and withdrawal - deposit or withdraw Gram, jettons, and NFTs.
 
-Connect an existing TON wallet to access the dashboard.
+Connect an existing GRAM wallet to access the dashboard.
 
 ## Get started
 

@@ -62,13 +62,13 @@ class YourCustomWalletEventsHandler: TONBridgeEventsHandler {
 // Call an appropriate method corresponding to the user's response
 
 // To approve
-try await request.approve(walletAddress: /* TON wallet address */)
+try await request.approve(walletAddress: /* GRAM wallet address */)
 
 // To reject
 try await request.reject(reason: /* rejection reason */)
 ```
 
-After approval, the connection will be established, and the wallet service will be able to receive and handle other events associated with the corresponding TON wallet.
+After approval, the connection will be established, and the wallet service will be able to receive and handle other events associated with the corresponding GRAM wallet.
 
 ## Handling events
 

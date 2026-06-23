@@ -4,12 +4,12 @@ sidebarTitle: "Work with Jettons"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one TON wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
+  [Initialize the WalletKit](/ecosystem/walletkit/web/init), [set up at least one GRAM wallet](/ecosystem/walletkit/web/wallets), handle [connection requests](/ecosystem/walletkit/web/connections) and [transaction requests](/ecosystem/walletkit/web/events) before using examples on this page.
 </Callout>
 
 [Jettons](/standard/tokens/jettons/overview) are fungible tokens on TON, similar to ERC-20 tokens on Ethereum. Unlike Gram, which is the native TON currency used in all transfers, each Jetton has a separate master (minter) contract and an individual wallet contract for each holder.
 
-For example, USDT on TON is implemented as a Jetton, and its minter contract address is `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`. By providing this address and the recipient's TON wallet contract address, WalletKit knows which tokens to send and to whom.
+For example, USDT on TON is implemented as a Jetton, and its minter contract address is `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`. By providing this address and the recipient's GRAM wallet contract address, WalletKit knows which tokens to send and to whom.
 
 To work with Jettons, the wallet service needs to handle [Jetton balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-in-the-wallet-service).
 
@@ -26,7 +26,7 @@ To work with Jettons, the wallet service needs to handle [Jetton balances](#bala
 
 Jetton balances are stored in individual Jetton wallet contracts, one per holder per Jetton kind.
 
-It is possible to obtain the current Jetton balance by providing the address of the Jetton master (minter) contract for a given Jetton, or by querying a TON wallet. The latter can be done either by the `getJettons()` method of wallet adapters or by calling `kit.jettons.getAddressJettons()` and passing it the TON wallet address.
+It is possible to obtain the current Jetton balance by providing the address of the Jetton master (minter) contract for a given Jetton, or by querying a GRAM wallet. The latter can be done either by the `getJettons()` method of wallet adapters or by calling `kit.jettons.getAddressJettons()` and passing it the GRAM wallet address.
 
 Similar to Gram balance checks, [discrete one-off checks](#on-demand-balance-check) have limited value on their own and [continuous monitoring](#continuous-balance-monitoring) should be used for UI display.
 
@@ -45,7 +45,7 @@ Use the `getJettonBalance()` method to check a specific Jetton balance for a wal
 const JETTON_MASTER_ADDRESS = '<JETTON_MASTER_ADDRESS>';
 
 async function getJettonBalance(walletId: string): Promise<string | undefined> {
-  // Get TON wallet instance
+  // Get GRAM wallet instance
   const wallet = kit.getWallet(walletId);
   if (!wallet) return;
 
@@ -220,7 +220,7 @@ async function sendJetton(
   walletId: string,
   // Jetton master (minter) contract address
   jettonAddress: string,
-  // Recipient's TON wallet address as a string
+  // Recipient's GRAM wallet address as a string
   recipientAddress: string,
   // Amount in the smallest Jetton units (accounting for decimals)
   jettonAmount: bigint,

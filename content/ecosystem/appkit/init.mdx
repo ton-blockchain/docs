@@ -121,7 +121,7 @@ const kit = new AppKit({
 
 ### Connectors
 
-The [basic setup](#initialization) allows for direct API requests but is insufficient for connecting TON wallets via the TON Connect protocol. For that, configure a connector and host a public [app manifest file](/ecosystem/ton-connect/manifest#app-manifest) adjusted to the needs of a given dApp.
+The [basic setup](#initialization) allows for direct API requests but is insufficient for connecting GRAM wallets via the TON Connect protocol. For that, configure a connector and host a public [app manifest file](/ecosystem/ton-connect/manifest#app-manifest) adjusted to the needs of a given dApp.
 
 For local development and testing, use the [manifest file from this demo dApp](https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json).
 
@@ -130,7 +130,7 @@ For local development and testing, use the [manifest file from this demo dApp](h
   import {
     AppKit,
     AppKitProvider,
-    // Enables TON wallet connections
+    // Enables GRAM wallet connections
     createTonConnectConnector,
   } from '@ton/appkit-react';
   import '@ton/appkit-react/styles.css';
@@ -156,7 +156,7 @@ For local development and testing, use the [manifest file from this demo dApp](h
   ```ts title="TypeScript" icon="globe" expandable
   import {
     AppKit,
-    // Enables TON wallet connections
+    // Enables GRAM wallet connections
     createTonConnectConnector,
   } from '@ton/appkit';
 
@@ -176,7 +176,7 @@ For local development and testing, use the [manifest file from this demo dApp](h
 
 ### Providers
 
-The [setup with connectors](#connectors) connects to TON wallets via services such as [Tonkeeper](/ecosystem/wallet-apps/tonkeeper). To enable advanced DeFi operations like asset swaps or staking, or to set up a [streaming API](/ecosystem/api/toncenter/streaming/overview) service, configure providers.
+The [setup with connectors](#connectors) connects to GRAM wallets via services such as [Tonkeeper](/ecosystem/wallet-apps/tonkeeper). To enable advanced DeFi operations like asset swaps or staking, or to set up a [streaming API](/ecosystem/api/toncenter/streaming/overview) service, configure providers.
 
 Supported swap providers:
 
@@ -353,7 +353,7 @@ The following initialization example sets up everything at once:
     },
     // 2. Configure connectors.
     connectors: [
-      // Enables connections with TON wallet services, such as Tonkeeper or MyTonWallet.
+      // Enables connections with GRAM wallet services, such as Tonkeeper or MyTonWallet.
       createTonConnectConnector({
         tonConnectOptions: {
           // Public link to the application manifest JSON file.
@@ -426,7 +426,7 @@ The following initialization example sets up everything at once:
     },
     // 2. Configure connectors.
     connectors: [
-      // Enables connections with TON wallet services, such as Tonkeeper or MyTonWallet.
+      // Enables connections with GRAM wallet services, such as Tonkeeper or MyTonWallet.
       createTonConnectConnector({
         tonConnectOptions: {
           // Public link to the application manifest JSON file.
@@ -586,7 +586,7 @@ Check whether a network supports real-time subscriptions with the `hasStreamingP
 
 ## Relation to TON Connect libraries
 
-Lower-level TON Connect libraries, such as `@tonconnect/ui-react` and `@tonconnect/ui`, only give access to wallet services via the TON Connect protocol and basic facilities to query connected TON wallets with direct API calls.
+Lower-level TON Connect libraries, such as `@tonconnect/ui-react` and `@tonconnect/ui`, only give access to wallet services via the TON Connect protocol and basic facilities to query connected GRAM wallets with direct API calls.
 
 AppKit builds on the foundation provided by these libraries and extends functionality with convenient components, hooks, and functions. It enables balance tracking and asset management, gives ready-made React UI components for common cases, handles API-related state management, and even registers DeFi integrations for advanced use cases.
 

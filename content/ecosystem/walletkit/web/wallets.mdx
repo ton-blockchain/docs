@@ -1,19 +1,19 @@
 ---
-title: "How to manage TON wallets with WalletKit on the Web platform"
-sidebarTitle: "Manage TON wallets"
+title: "How to manage GRAM wallets with WalletKit on the Web platform"
+sidebarTitle: "Manage GRAM wallets"
 ---
 
 <Callout>
   [Initialize the WalletKit](/ecosystem/walletkit/web/init) before using examples on this page.
 </Callout>
 
-The [basic configuration earlier](/ecosystem/walletkit/web/init#initialization) is enough to outline necessary wallet information and initialize the WalletKit, but it isn't enough for deeper interactions with the blockchain. For that, you need to set up at least one TON wallet contract.
+The [basic configuration earlier](/ecosystem/walletkit/web/init#initialization) is enough to outline necessary wallet information and initialize the WalletKit, but it isn't enough for deeper interactions with the blockchain. For that, you need to set up at least one GRAM wallet contract.
 
 ## Initialization
 
 1. First, obtain the signer. It can be instantiated [from a mnemonic](#from-mnemonic), from [a private key](#from-private-key), or be [made custom](#from-custom-signer).
 
-1. Then, select a wallet adapter — it is an implementation of the `WalletInterface` type for a particular TON wallet contract. Currently, WalletKit provides two: `WalletV5R1Adapter` (recommended) and `WalletV4R2Adapter`.
+1. Then, select a wallet adapter — it is an implementation of the `WalletInterface` type for a particular GRAM wallet contract. Currently, WalletKit provides two: `WalletV5R1Adapter` (recommended) and `WalletV4R2Adapter`.
 
    Adapter takes in a signer from the previous step and a number of options, namely:
 
@@ -56,7 +56,7 @@ The [basic configuration earlier](/ecosystem/walletkit/web/init#initialization) 
 1. Finally, pass the adapter to the `addWallet()` method of the kit to complete the wallet initialization process:
 
    ```ts title="TypeScript"
-    // Notice that addWallet() method returns an initialized TON wallet,
+    // Notice that addWallet() method returns an initialized GRAM wallet,
     // which can be used on its own elsewhere.
     const wallet = await kit.addWallet(walletAdapter);
     console.log('Wallet address:', wallet.getAddress());
@@ -90,7 +90,7 @@ See the complete example for each signer kind:
 
 ### From mnemonic
 
-To initialize a TON wallet from an existing BIP-39 or TON-specific mnemonic seed phrase, the signer should be instantiated with the `fromMnemonic()` method of the utility `Signer` class of the WalletKit.
+To initialize a GRAM wallet from an existing BIP-39 or TON-specific mnemonic seed phrase, the signer should be instantiated with the `fromMnemonic()` method of the utility `Signer` class of the WalletKit.
 
 <Callout type="danger">
   Never specify the mnemonic phrase directly in your code. It is a "password" to your wallet and all its funds.
@@ -135,7 +135,7 @@ const wallet = await kit.addWallet(walletAdapter);
 ```
 
 <Callout type="caution">
-  If you do not yet have a mnemonic for an existing TON wallet or you want to create a new one, you can generate a TON-specific mnemonic with the `CreateTonMnemonic()` function. However, it is crucial to use that function only **once per wallet** and then save it securely.
+  If you do not yet have a mnemonic for an existing GRAM wallet or you want to create a new one, you can generate a TON-specific mnemonic with the `CreateTonMnemonic()` function. However, it is crucial to use that function only **once per wallet** and then save it securely.
 
   You **must NOT** invoke this function amidst the rest of your project code.
 
@@ -150,7 +150,7 @@ const wallet = await kit.addWallet(walletAdapter);
 
 ### From private key
 
-To initialize a TON wallet from an existing private key, the signer should be instantiated with the `fromPrivateKey()` method of the utility `Signer` class of the WalletKit.
+To initialize a GRAM wallet from an existing private key, the signer should be instantiated with the `fromPrivateKey()` method of the utility `Signer` class of the WalletKit.
 
 If there is a [mnemonic](#from-mnemonic), one can convert it to an Ed25519 key pair with public and private key by using the `MnemonicToKeyPair()` function.
 
@@ -261,7 +261,7 @@ const wallet = await kit.addWallet(walletAdapter);
 
 ### Multiple wallets
 
-You can add multiple TON wallets to WalletKit and switch between them as needed.
+You can add multiple GRAM wallets to WalletKit and switch between them as needed.
 
 ```ts title="TypeScript"
 const wallet1 = await kit.addWallet(walletAdapter1);
@@ -299,7 +299,7 @@ To obtain all added wallets, use the `getWallets()` method of the initialized ki
 
 ```ts title="TypeScript"
 const wallets: Wallet[] = kit.getWallets();
-wallets.forEach(w => console.log('TON wallet address:', w.getAddress()));
+wallets.forEach(w => console.log('GRAM wallet address:', w.getAddress()));
 ```
 
 ### Remove a single wallet

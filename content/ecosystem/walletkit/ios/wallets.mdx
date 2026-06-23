@@ -1,6 +1,6 @@
 ---
-title: "How to manage TON wallets with WalletKit on the iOS platform"
-sidebarTitle: "Manage TON wallets"
+title: "How to manage GRAM wallets with WalletKit on the iOS platform"
+sidebarTitle: "Manage GRAM wallets"
 ---
 
 <Callout type="tip">
@@ -86,7 +86,7 @@ let wallets = try await walletKit.wallets()
 Get a specific wallet by an address:
 
 ```swift
-let wallet = try walletKit.wallet(address: "<TON_WALLET_ADDRESS>")
+let wallet = try walletKit.wallet(address: "<GRAM_WALLET_ADDRESS>")
 ```
 
 ## Removing wallets
@@ -94,7 +94,7 @@ let wallet = try walletKit.wallet(address: "<TON_WALLET_ADDRESS>")
 Remove a single wallet:
 
 ```swift
-try await walletKit.remove(walletAddress: "<TON_WALLET_ADDRESS>")
+try await walletKit.remove(walletAddress: "<GRAM_WALLET_ADDRESS>")
 ```
 
 ## Next steps

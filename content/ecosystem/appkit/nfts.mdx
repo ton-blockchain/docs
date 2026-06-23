@@ -104,7 +104,7 @@ Obtain the information of a specific NFT by its address and check the ownership:
 
 #### All NFTs
 
-Retrieve NFTs held by the connected TON wallet or an arbitrary address. If there are many held NFTs, provide the `limit` option to retrieve fewer items and the `offset` option to paginate the item lists.
+Retrieve NFTs held by the connected GRAM wallet or an arbitrary address. If there are many held NFTs, provide the `limit` option to retrieve fewer items and the `offset` option to paginate the item lists.
 
 <CodeGroup>
   ```tsx title="React" icon="react"
@@ -122,8 +122,8 @@ Retrieve NFTs held by the connected TON wallet or an arbitrary address. If there
       isLoading,
       error,
     } = useNftsByAddress({
-      // TON wallet address of the NFT holder
-      address: address ?? '<TON_WALLET_ADDRESS>',
+      // GRAM wallet address of the NFT holder
+      address: address ?? '<GRAM_WALLET_ADDRESS>',
     });
 
     // Alternatively, query the connected wallet directly
@@ -168,7 +168,7 @@ Retrieve NFTs held by the connected TON wallet or an arbitrary address. If there
   ): Promise<NFT[]> {
     const selectedWallet = getSelectedWallet(kit);
     const response = await getNftsByAddress(kit, {
-      address: selectedWallet?.getAddress() ?? '<TON_WALLET_ADDRESS>',
+      address: selectedWallet?.getAddress() ?? '<GRAM_WALLET_ADDRESS>',
     });
 
     // Alternatively, query the connected wallet directly
@@ -346,7 +346,7 @@ Modify the following examples according to the application logic:
   async function sendNft(
     /** Initialized AppKit instance */
     kit: AppKit,
-    /** Recipient's TON wallet address as a string */
+    /** Recipient's GRAM wallet address as a string */
     recipientAddress: string,
     /** NFT contract address */
     nftAddress: string,
