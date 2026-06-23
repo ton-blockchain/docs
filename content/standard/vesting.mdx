@@ -401,14 +401,14 @@ Stake through the Tonstakers liquid staking protocol.
 
 ### Liquid staking: Bemo
 
-[Bemo](https://bemo.finance) is a liquid staking protocol in TON. When staking TON, the protocol mints `bmTON` tokens that represent the staked position and automatically accumulate rewards.
+[Bemo](https://bemo.finance) is a liquid staking protocol in TON. When staking Gram, the protocol mints `bmTON` tokens that represent the staked position and automatically accumulate rewards.
 
 **Limitations**:
 
 - The vesting contract supports only basic staking through empty messages
 - `bmTON` jettons remain locked in the vesting contract until vesting expires
 - Jettons accumulate staking rewards automatically
-- Staking and unstaking TON is possible during vesting
+- Staking and unstaking Gram is possible during vesting
 - Transferring `bmTON` to others is not possible until vesting expires
 - Using `bmTON` in DeFi protocols is not possible until vesting expires
 
@@ -416,7 +416,7 @@ Stake through the Tonstakers liquid staking protocol.
 
 1. Request whitelisting of Bemo v2 Financial contract: `0:92c4664f1ea6b74ed9ce0e031a9fc0843348dfe87a58faea27fcd31e1608caaa` (or `EQCSxGZPHqa3TtnODgMan8CEM0jf6HpY-uon_NMeFgjKqkEY` in user-friendly format)
 
-1. Stake TON by sending an empty message to the Financial contract:
+1. Stake GRAMs by sending an empty message to the Financial contract:
 
    - Destination: Financial contract address above
    - Amount: desired stake amount (e.g., 100 GRAM)

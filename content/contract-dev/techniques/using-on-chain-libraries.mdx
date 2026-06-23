@@ -9,7 +9,7 @@ Before using on-chain libraries, read about [library cells](/foundations/seriali
   type="danger"
   title="Funds at risk"
 >
-  Keep enough TON on the account that hosts the library to cover at least 10 years of storage. If the balance becomes too low, the library freezes and becomes inaccessible.
+  Keep enough Gram on the account that hosts the library to cover at least 10 years of storage. If the balance becomes too low, the library freezes and becomes inaccessible.
 </Callout>
 
 ## When to use
@@ -108,7 +108,7 @@ fun onInternalMessage(in: InMessage) {
 }
 ```
 
-This contract requires enough TON for at least 10 years of storage. That prevents the library from freezing shortly after publication and becoming inaccessible.
+This contract requires enough Gram for at least 10 years of storage. That prevents the library from freezing shortly after publication and becoming inaccessible.
 
 The key line is `setLibCode(libToPublish, PUBLIC_LIBRARY_MODE);`. This call publishes an ordinary cell with the flag set to `2`, which makes the library public.
 

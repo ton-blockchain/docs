@@ -46,14 +46,13 @@ Run `tfift` to compile [Fift assembly](/languages/fift/fift-assembler) files int
 tfift contract.fif -o contract.boc
 ```
 
-<Callout type="note">
-  `tfift` accepts the subset of Fift assembly emitted by Tolk and does not support arbitrary Fift programs or constructions such as `<b b> s>`.
-</Callout>
-
-Fift assembly files can be obtained by running [`acton compile --fift` ↗️](https://ton-blockchain.github.io/acton/docs/commands/compile) or [`acton built --output-fift` ↗️](https://ton-blockchain.github.io/acton/docs/commands/build) on Tolk contract sources.
+`tfift` accepts the subset of Fift assembly emitted by Tolk and does not support arbitrary Fift programs or constructions such as `<b b> s>`.
 
 <Callout type="note">
-  Acton generates compatible `.fif` files from Tolk sources. Use [`acton compile --fift <OUTPUT_FILE>` ↗️](https://ton-blockchain.github.io/acton/docs/commands/compile) for a single source file. Use [`acton built --output-fift <OUTPUT_DIR>` ↗️](https://ton-blockchain.github.io/acton/docs/commands/build) for a configured project.
+  Acton generates compatible `.fif` files from Tolk sources:
+
+  - Use [`acton compile --fift <OUTPUT_FILE>` ↗️](https://ton-blockchain.github.io/acton/docs/commands/compile) to compile a single Tolk source file into Fift.
+  - Use [`acton built --output-fift <OUTPUT_DIR>` ↗️](https://ton-blockchain.github.io/acton/docs/commands/build) to build Fift files in a configured Acton project.
 </Callout>
 
 ### BoC input-output format options
@@ -101,10 +100,12 @@ Use `-s` to read input from a string argument instead of a file:
 
   ```bash title="Disassembler (tdisasm)"
   # Hex-encoded BoC input and TASM file output
-  tdisasm -s "b5ee9c72410102010027000114ff008e83f4a413ed43d901002fa64ce73b5134348034c7f487f4fffd0115501b05485b1460ec17065c" -f hex -o decompiled.tasm
+  tdisasm -s "b5ee9c72410102010027000114ff008e83f4a413ed43d901002fa64ce73b5134348034c7f487f4fffd0115501b05485b1460ec17065c" \
+          -f hex -o decompiled.tasm
 
   # Base64-encoded BoC input and TASM file output
-  tdisasm -s "te6cckEBAgEAJwABFP8AjoP0pBPtQ9kBAC+mTOc7UTQ0gDTH9If0//0BFVAbBUhbFGDsFwZc" -f base64 -o decompiled.tasm
+  tdisasm -s "te6cckEBAgEAJwABFP8AjoP0pBPtQ9kBAC+mTOc7UTQ0gDTH9If0//0BFVAbBUhbFGDsFwZc" \
+          -f base64 -o decompiled.tasm
   ```
 </CodeGroup>
 

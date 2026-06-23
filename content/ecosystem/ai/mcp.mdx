@@ -98,7 +98,7 @@ To start using `@ton/mcp` in agentic wallets mode:
 
     An agentic wallet is a TON contract. There are three ways to fund it:
 
-    1. During creation: use the "Initial TON deposit" field on the deployment page.
+    1. During creation: use the "Initial Gram deposit" field on the deployment page.
     1. From the dashboard: use the <kbd>Fund</kbd> button to transfer Gram, jettons, or NFTs.
     1. Directly: use a wallet app like Tonkeeper to transfer assets to the agentic wallet address directly.
 
@@ -285,7 +285,7 @@ Serverless mode operates in [single-wallet mode](#single-wallet-mode) only and a
   - `send_nft` - transfers an NFT to another address. Returns a `normalizedHash`.
   - `send_raw_transaction` - sends a raw transaction with full control over messages. Amounts are in nanograms. Supports multiple messages. Returns a `normalizedHash`.
 - Swaps:
-  - `get_swap_quote` - returns a quote for a token swap. The response includes transaction parameters ready for `send_raw_transaction`. Use `"TON"` for native Gram or a jetton minter (master) contract address.
+  - `get_swap_quote` - returns a quote for a token swap. The response includes transaction parameters ready for `send_raw_transaction`. Use `"GRAM"` for native Gram or a jetton minter (master) contract address.
 - NFTs:
   - `get_nfts` - lists NFTs in the current wallet with metadata, collection info, and attributes. Supports pagination.
   - `get_nfts_by_address` - lists NFTs held by any address. Supports pagination.

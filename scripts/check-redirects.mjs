@@ -18,6 +18,7 @@
 // Node.js
 import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 
 // Common utils
 import {
@@ -401,8 +402,23 @@ const checkPrevious = async (config) => {
  * @return {Promise<CheckResult>}
  */
 const checkUpstream = async (localConfig) => {
+  /** @type {RegExpMatchArray | null} */
+  let gitRepoMatch = null;
+  try {
+    const gitUrl = execSync('git config --get remote.origin.url', {
+      stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 1_000 * 60 * 30,
+    })
+      .toString()
+      .trim();
+    gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
+  } catch {}
+  // @ts-ignore
+  const user = gitRepoMatch?.at(1) ?? 'ton-org';
+  // @ts-ignore
+  const repo = gitRepoMatch?.at(2) ?? 'docs';
   const response = await fetch(
-    'https://raw.githubusercontent.com/ton-org/docs/refs/heads/main/docs.json',
+    `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/main/docs.json`,
   );
 
   /** @type {DocsConfig} */

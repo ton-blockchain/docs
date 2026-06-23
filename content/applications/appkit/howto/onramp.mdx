@@ -1,0 +1,51 @@
+---
+title: "How to use on-ramps with AppKit"
+sidebarTitle: "Use on-ramps"
+---
+
+Crypto on-ramp in AppKit covers external bridge flows that bring value into a GRAM wallet from another blockchain.
+
+The crypto-on-ramp manager gives the app one surface for quotes, deposits, and status polling. The provider owns bridge routes, fees, limits, and completion status. AppKit does not expose a fiat on-ramp API.
+
+## Crypto on-ramp
+
+A crypto on-ramp starts with bridge intent: a source chain, a source asset, and a GRAM destination. AppKit asks the provider for a quote, creates a deposit, and exposes the chain-specific instructions needed to fund it.
+
+Deposit addresses, memos, source-chain confirmations, bridge timing, and refunds are provider concerns. AppKit surfaces status so the app can track progress without pretending to move funds itself.
+
+```ts
+import { createCryptoOnrampDeposit, getCryptoOnrampQuote, getCryptoOnrampStatus } from '@ton/appkit';
+
+const quote = await getCryptoOnrampQuote(appKit, {
+  amount: '50000000', // 50 USDT in base units
+  sourceCurrency: {
+    chain: 'eip155:42161',
+    address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+    symbol: 'USDT',
+    decimals: 6,
+  },
+  targetCurrency: { address: 'gram', symbol: 'GRAM', decimals: 9 },
+  recipientAddress: wallet.getAddress().toString(),
+});
+
+const deposit = await createCryptoOnrampDeposit(appKit, {
+  quote,
+  refundAddress: '0xYourArbitrumAddress',
+});
+const status = await getCryptoOnrampStatus(appKit, {
+  depositId: deposit.depositId,
+  providerId: deposit.providerId,
+});
+```
+
+## Tips
+
+- Treat a hosted URL or deposit instruction as the start of a long-running provider process.
+- Verify completion through provider status, not wallet state alone.
+- Surface provider fees, limits, and timing as provider data rather than guaranteed outcomes.
+
+## Related pages
+
+- [Use providers](/applications/appkit/howto/providers)
+- [Configure networks](/applications/appkit/howto/networks)
+- [How-to guides](/applications/appkit/howto/howto)

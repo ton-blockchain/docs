@@ -137,6 +137,11 @@ html > body[data-scroll-locked] {
   background-color: var(--color-fd-background);
 }
 
+/* Make ToC fit its contents width */
+#nd-toc {
+  --fd-toc-width: fit-content;
+}
+
 /* Prevent word breaks in inline code items in tables */
 td > code,
 td > em > code,

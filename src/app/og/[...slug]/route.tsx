@@ -13,7 +13,7 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/[...slug]
 
   return new ImageResponse(
     generate({
-      title: page.data.title,
+      title: page.data.title.replace(/`/g, ''),
       url: (() => {
         const normalized = withBaseUrl(page.url).replace(/^https?:\/\//, '');
         return normalized === '/' ? normalized : normalized.replace(/\/+$/, '');
