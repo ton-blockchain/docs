@@ -1,7 +1,18 @@
 import type { Metadata } from 'next';
 import type { ComponentType } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Blocks, Brain, BrickWall, FileCode2, LifeBuoy, Rocket, Send, Server, Users } from 'lucide-react';
+import {
+  ArrowRight,
+  Blocks,
+  Brain,
+  BrickWall,
+  FileCode2,
+  LifeBuoy,
+  Rocket,
+  Send,
+  Server,
+  Users,
+} from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'TON documentation',
@@ -44,10 +55,6 @@ const paths: Path[] = [
     icon: Blocks,
     links: [
       {
-        title: 'Go to section overview',
-        href: '/applications/overview',
-      },
-      {
         title: 'Build applications with AppKit',
         href: '/applications/appkit/overview',
       },
@@ -79,13 +86,14 @@ const paths: Path[] = [
   },
   {
     title: 'TVM: TON Virtual Machine',
-    description: '',
+    description: 'Skim the detailed reference of the smart-contract runtime.',
     icon: Brain,
     links: [
-      { title: 'Go to section overview', href: '/tvm/overview' },
-      { title: 'TVM exit codes', href: '/tvm/exit-codes' },
-      { title: 'TVM instructions', href: '/tvm/instructions' },
-    ]
+      { title: 'Overview', href: '/tvm/overview' },
+      { title: 'Exit codes', href: '/tvm/exit-codes' },
+      { title: 'Instructions', href: '/tvm/instructions' },
+      { title: 'Gas', href: '/tvm/gas' },
+    ],
   },
   {
     title: 'Nodes',
@@ -93,20 +101,28 @@ const paths: Path[] = [
     icon: Server,
     links: [
       { title: 'Nodes overview', href: '/ecosystem/nodes/overview' },
-      {
-        title: 'Validator node',
-        href: '/ecosystem/nodes/overview#validator-node',
-      },
       { title: 'C++ node setup', href: '/ecosystem/nodes/cpp/setup-mytonctrl' },
+      {
+        title: 'Run a validator node',
+        href: '/ecosystem/nodes/cpp/run-validator',
+      },
+      {
+        title: 'Run a liteserver node',
+        href: '/ecosystem/nodes/cpp/run-liteserver',
+      },
       { title: 'Rust node setup', href: '/ecosystem/nodes/rust/quick-start' },
     ],
   },
   {
-    title: 'Foundations',
-    description: 'Learn all the ins and outs of the blockchain and web3 services.',
+    title: 'Blockchain foundations',
+    description: 'Learn all the ins and outs of the TON blockchain.',
     icon: BrickWall,
     links: [
-      { title: 'Nodes overview', href: '/ecosystem/nodes/overview' },
+      { title: 'TL-B', href: '/foundations/tlb/overview' },
+      { title: 'Addresses', href: '/foundations/addresses/overview' },
+      { title: 'Transaction fees', href: '/foundations/fees' },
+      { title: 'Limits', href: '/foundations/limits' },
+      { title: 'Config', href: '/foundations/config' },
     ],
   },
 ];
