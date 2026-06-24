@@ -40,7 +40,7 @@ type SignMessageResult = {
 };
 ```
 
-## Gasless transactions via TonAPI relayer
+## Gasless transactions via relayer
 
 The most common use is a gasless jetton transfer: the relayer takes its fee in the same jetton, so the user never holds Gram.
 
@@ -74,7 +74,7 @@ sequenceDiagram
     TonAPI->>Chain: broadcast external message
 ```
 
-REST endpoints are documented in the [TonAPI gasless reference](https://docs.tonconsole.com/tonapi/rest-api/gasless). A parallel [TonAPI cookbook recipe](https://docs.tonconsole.com/tonapi/cookbook/gasless-transfer) shows the same flow.
+REST endpoints are documented in the [gasless reference](https://docs.tonconsole.com/tonapi/rest-api/gasless). A parallel [cookbook recipe](https://docs.tonconsole.com/tonapi/cookbook/gasless-transfer) shows the same flow.
 
 ```ts
 import {

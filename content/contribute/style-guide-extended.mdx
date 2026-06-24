@@ -166,7 +166,7 @@ Rules (binding).
 - Emojis in compact tables **MAY** be used sparingly as visual indicators only when they follow a widely understood convention (for example, `✅` / `❌` for supported/not supported, or `★` to mark a recommended option) and **MUST** be paired with a text label in the same cell or a descriptive header (e.g., “Supported — Yes/No”). Do not rely on an emoji alone to convey meaning, and **MUST NOT** use decorative or non-standard pictograms (for example, a play triangle to indicate videos). (Why: paired, conventional icons preserve clarity for screen readers, localization, and cases where emojis don’t render.)
 - Even where emojis are technically allowed (code/output or compact tables), they **SHOULD** be rare and **MUST** have a clear purpose. If the same meaning is clear without the emoji, remove it. (Why: conventional text remains clearer for global readers and translators.)
 - Use plain terms over legalese/Latinisms. “Use” not “utilize”; “before” not “prior to.” (Why: common words improve comprehension and reduce rereads; they are also translated more consistently.)
-- Avoid first-person pronouns (“we”, “I”, “our”). When an organization, product, or service is the actor, use its proper name (e.g., “Tonkeeper”, “TON”) or a neutral noun (“the node”, “the SDK”). Prefer imperative instructions without “you”. See [§5.8](#5-8-dont-get-personal) and [§5.10](#5-10-pronouns-and-person-references). (Why: neutral, explicit actors read cleanly and translate reliably.)
+- Avoid first-person pronouns (“we”, “I”, “our”). When an organization, product, or service is the actor, use its proper name (e.g., “MyTonWallet”, “TON”) or a neutral noun (“the node”, “the SDK”). Prefer imperative instructions without “you”. See [§5.8](#5-8-dont-get-personal) and [§5.10](#5-10-pronouns-and-person-references). (Why: neutral, explicit actors read cleanly and translate reliably.)
 
 Marketing and promotional language (ban).
 
@@ -337,7 +337,7 @@ See also: [Appendix B](#b-banned-and-preferred-terms) lists additional banned in
 
 - Do **NOT** anthropomorphize software or networks with gendered pronouns. Use neutral nouns or “it” (e.g., “the node restarts”, “it fails to start”). (Why: avoids confusion and maintains technical tone.)
 
-- For organizations, products, and services, use the proper name (e.g., “TON”, “Tonkeeper”) or the neutral “it”; do not use “we/I/our” in documentation. (Why: consistent, neutral references read cleanly and translate reliably.)
+- For organizations, products, and services, use the proper name (e.g., “TON”, “MyTonWallet”) or the neutral “it”; do not use “we/I/our” in documentation. (Why: consistent, neutral references read cleanly and translate reliably.)
 
 ### 5.11 Parentheses
 
@@ -969,7 +969,7 @@ Objective. Keep repository structure and UI labels consistent. (Why: predictable
 
 - How-to frontmatter pattern. How-to pages **MUST** set `title: "How to X"` and **MUST** set `sidebarTitle` to either `X` or a shorter alias of X that relies on the sidebar group for context and does not repeat the group name needlessly, where X is the task phrased in sentence case. If X begins with a letter, capitalize its first character; preserve exact casing for proper nouns and code tokens inside X. (Why: consistent titles match “how to …” searches; concise sidebar labels aid scanning while avoiding redundant group nouns and keeping identifiers accurate.) \[HIGH]
 
-- Title vs sidebar semantics. The frontmatter `title` **MUST** be context-free and self-describing for search and deep links; the `sidebarTitle` **SHOULD** be concise and rely on the current navigation context. One-word generic titles (e.g., “Overview”, “Introduction”) **MUST NOT** be used as `title` except on top-level pages (`/the-page`) or when the page is a proper name/term (e.g., “Tonkeeper”, “TON Center”). In those cases, a one-word `title` **MAY** be used. Otherwise, the `title` **SHOULD** replicate or expand the section/folder name (e.g., “Sharding overview”), and the `sidebarTitle` **MAY** be “Overview”. (Why: descriptive titles improve discoverability and stand alone; short sidebar labels read better in context.)
+- Title vs sidebar semantics. The frontmatter `title` **MUST** be context-free and self-describing for search and deep links; the `sidebarTitle` **SHOULD** be concise and rely on the current navigation context. One-word generic titles (e.g., “Overview”, “Introduction”) **MUST NOT** be used as `title` except on top-level pages (`/the-page`) or when the page is a proper name/term (e.g., “MyTonWallet”, “TON Center”). In those cases, a one-word `title` **MAY** be used. Otherwise, the `title` **SHOULD** replicate or expand the section/folder name (e.g., “Sharding overview”), and the `sidebarTitle` **MAY** be “Overview”. (Why: descriptive titles improve discoverability and stand alone; short sidebar labels read better in context.)
 
   Example
 

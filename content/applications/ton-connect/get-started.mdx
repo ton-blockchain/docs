@@ -435,7 +435,7 @@ Each entry is a `WalletInfo` with the fields a custom UI needs to render a picke
 ```ts
 interface WalletInfoBase {
     name: string;        // human-readable display name
-    appName: string;     // stable identifier, e.g. "tonkeeper"
+    appName: string;     // stable identifier
     imageUrl: string;
     aboutUrl: string;
     tondns?: string;
@@ -470,15 +470,15 @@ For an HTTP wallet, `connect()` returns a universal link. Show it to the user as
 
 ```ts
 const link = connector.connect({
-    universalLink: 'https://app.tonkeeper.com/ton-connect',
-    bridgeUrl: 'https://bridge.tonapi.io/bridge',
+    universalLink: 'https://connect.mytonwallet.org',
+    bridgeUrl: 'https://tonconnectbridge.mytonwallet.org/bridge/',
 });
 ```
 
 For a JS-injected wallet (browser extension or in-wallet browser), pass the bridge key. The wallet handles the handoff in-page, so `connect()` returns `void`:
 
 ```ts
-connector.connect({ jsBridgeKey: 'tonkeeper' });
+connector.connect({ jsBridgeKey: 'mytonwallet' });
 ```
 
 To request `ton_proof` alongside the address, pass it under `request`:

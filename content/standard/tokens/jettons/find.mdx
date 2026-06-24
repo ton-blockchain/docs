@@ -81,14 +81,18 @@ const jettonWalletAddress = contractAddress(BASECHAIN, jettonWalletStateInit);
 console.log(jettonWalletAddress.toString());
 ```
 
-There are also various web services that allow you to call contract's get methods without writing any code.
-For example, let's inspect the [Tether USD](https://tonviewer.com/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?section=method) master
-contract page on Tonviewer. Inserting the owner's address in any format and executing the get method, you obtain the Jetton wallet address.
+{/* TODO(an explorer that supports calling get methods):
 
-<Image
+  There are also various web services that allow you to call contract's get methods without writing any code.
+  For example, let's inspect the [Tether USD](https://tonviewer.com/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?section=method) master
+  contract page on Tonviewer. Inserting the owner's address in any format and executing the get method, you obtain the Jetton wallet address.
+
+  <Image
   src="/images/methods.png"
   darkSrc="/images/methods.png"
   alt="Tether USDT master contract"
-/>
+  />
+
+  */}
 
 Finally, you can use [built-in APIs](/ecosystem/api/toncenter).

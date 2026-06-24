@@ -247,52 +247,18 @@ Use wallet-specific links to create simple jetton and Gram transfers. The syntax
 
 Example: transferring 1 USDT to `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`:
 
-```bash title="Tonkeeper mobile link"
-https://app.tonkeeper.com/transfer/saint.ton?amount=1000000&jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
-```
-
-```bash title="Tonkeeper web link"
-https://app.tonkeeper.com/transfer/saint.ton?amount=1000000&jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
-```
-
 ```bash title="MyTonWallet"
 https://my.tt/transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=1000000&jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
 ```
 
-Find more wallet-specific features in the documentation:
-
-- Tonkeeper - [`docs.tonconsole.com`](https://docs.tonconsole.com/tonkeeper/deep-linking)
-- MyTonWallet - [`help.mytonwallet.io`](https://help.mytonwallet.io/intro/key-features/deeplinks-in-mytonwallet)
+Find more wallet-specific features in the documentation: [MyTonWallet docs at `help.mytonwallet.io`](https://help.mytonwallet.io/intro/key-features/deeplinks-in-mytonwallet).
 
 ## Explorers links
 
-To generate a transaction link, the service must obtain the account address, logical time (lt), and transaction hash by calling the [`getTransactions`](https://toncenter.com/api/v2/#/transactions/get_transactions_getTransactions_get) method. Using these values, [Tonviewer](https://tonviewer.com), [Tonscan](https://tonscan.org), and [Gram Explorer](https://explorer.toncoin.org/) render the transaction page according to the following formats respectively:
+To generate a transaction link, the service must obtain the account address, logical time (lt), and transaction hash by calling the [`getTransactions`](https://toncenter.com/api/v2/#/transactions/get_transactions_getTransactions_get) method. Using these values, [Tonscan](https://tonscan.org) and [Gram Explorer](https://explorer.toncoin.org/) render the transaction page according to the following formats respectively:
 
-- [Tonviewer links](#tonviewer)
 - [Tonscan links](#tonscan)
 - [Gram Explorer links](#gram-explorer)
-
-### Tonviewer
-
-#### Mainnet
-
-```bash title="Tonviewer Mainnet link"
-https://tonviewer.com/transaction/<hash as hex>
-```
-
-```bash title="Tonviewer Mainnet link example"
-https://tonviewer.com/transaction/aee8d185a0c8f73c787bf1872ee9659ac53ce11a90b16b384856a7821eff8c29
-```
-
-#### Testnet
-
-```bash title="Tonviewer Testnet link"
-https://testnet.tonviewer.com/transaction/<hash as hex>
-```
-
-```bash title="Tonviewer Testnet short link example"
-https://testnet.tonviewer.com/transaction/61ef8fac43edf408fcc041aa8afaec14ac2c4f68faafe6eb18c50a921697d2f6
-```
 
 ### Tonscan
 
@@ -312,7 +278,7 @@ https://tonscan.org/tx/63333243000002:rujRhaDI9zx4e_GHLullmsU84RqQsWs4SFangh7_jC
 https://testnet.tonscan.org/tx/<lt as int>:<hash as base64url>:<account address>
 ```
 
-```bash title="Tonviewer Testnet link example"
+```bash title="Tonscan Testnet link example"
 https://testnet.tonscan.org/tx/40988257000002:Ye-PrEPt9Aj8wEGqivrsFKwsT2j6r-brGMUKkhaX0vY:kf8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM_BP
 ```
 

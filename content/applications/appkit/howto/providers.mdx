@@ -60,7 +60,7 @@ const appKit = new AppKit({
 registerProvider(appKit, createTonstakersProvider());
 ```
 
-When a network entry does not provide a custom API client, AppKit creates a TonCenter client for that network. TonAPI and TonCenter streaming providers are available through WalletKit and can be registered on `appKit.streamingManager`. Omniston and DeDust are available as swap providers, and Tonstakers is available as a staking provider. Custom DeFi backends can use the same `registerProvider` path by implementing the swap or staking interface.
+When a network entry does not provide a custom API client, AppKit creates a TON Center client for that network. TON Center streaming provider is available through WalletKit and can be registered on `appKit.streamingManager`. Omniston and DeDust are available as swap providers, and Tonstakers is available as a staking provider. Custom DeFi backends can use the same `registerProvider` path by implementing the swap or staking interface.
 
 `registerProvider` returns `void`. To replace a provider, call `registerProvider` again with the same `providerId` — the registry entry is overwritten. If the previous provider owns resources you need to clean up, hold the reference and dispose of it yourself before re-registering.
 

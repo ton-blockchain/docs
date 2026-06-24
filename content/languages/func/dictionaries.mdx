@@ -18,7 +18,7 @@ Smart contracts in TON can utilize dictionaries structured as ordered key-value 
   - **Gas consumption for updates**
     - Every update operation generates many new cells, costing 500 gas, as detailed on the [TVM instructions](/tvm/instructions) page.
     - Careless updates can lead to excessive gas usage, potentially causing operations to fail due to gas exhaustion.
-    - Example: This issue occurred with the **Wallet bot** using the **highload-v2 wallet**. Each iteration's unbounded loop and expensive dictionary updates led to gas depletion. As a result, the bot triggered repeated transactions, eventually draining its balance ([see transaction details](https://tonviewer.com/transaction/fd78228f352f582a544ab7ad7eb716610668b23b88dae48e4f4dbd4404b5d7f6)).
+    - Example: This issue occurred with the **Wallet bot** using the **highload-v2 wallet**. Each iteration's unbounded loop and expensive dictionary updates led to gas depletion. As a result, the bot triggered repeated transactions, eventually draining its balance ([see transaction details](https://tonscan.org/tx/fd78228f352f582a544ab7ad7eb716610668b23b88dae48e4f4dbd4404b5d7f6#details)).
 
   - **Storage limitation**
     - A binary tree containing $N$ key-value pairs requires $N-1$ forks, resulting in **at least** $2N-1$ cells.
