@@ -217,6 +217,13 @@ pre.shiki .indent::before {
   white-space: nowrap;
 }
 
+/* Make inline code break words on smaller width devices */
+@media (max-width: 768px) {
+  p code.prose {
+    word-break: break-all;
+  }
+}
+
 /*
  * Hide a table header when every header cell is empty.
  * Reads as "tr in thead that does not have a th that is not empty".
