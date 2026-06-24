@@ -135,15 +135,19 @@ Wallet V5 allows precomputed outgoing actions to be placed in the TVM `C5` regis
 
 ## Gasless transactions
 
-Starting with v5, the wallet smart contract supports owner-signed internal messages (`internal_signed`), which enables gasless transactions—for example, paying network fees in USDT when transferring USDT. Gasless transactions are supported not at the network protocol level, meaning that to pay fees in USDT it is necessary to rely on some off-chain infrastructure, e.g., like in Tonkeeper.
+Starting with v5, the wallet smart contract supports owner-signed internal messages (`internal_signed`), which enables gasless transactions—for example, paying network fees in USDT when transferring USDT. Gasless transactions are supported not at the network protocol level, meaning that to pay fees in USDT it is necessary to rely on some off-chain infrastructure, e.g., like in some wallet services.
 
-Flow scheme for Tonkeeper gasless transactions looks like this:
+{/* TODO: update the scheme
 
-<Image
+  Flow scheme for Tonkeeper gasless transactions looks like this:
+
+  <Image
   src="/images/wallets/gasless_light.png"
   darkSrc="/images/wallets/gasless_dark.png"
   alt="gasless"
-/>
+  />
+
+  */}
 
 ### Flow details
 
@@ -152,4 +156,4 @@ Flow scheme for Tonkeeper gasless transactions looks like this:
    1. Transfer of a small amount of USDT in favor of the service.
 1. This signed message is sent off-chain by HTTPS to the service backend. The service backend sends it to the TON Blockchain, paying Gram for network fees.
 
-The beta version of the gasless backend API is available at [`tonapi.io/api-v2`](https://tonapi.io/api-v2). If you are developing a wallet app and have feedback about these methods, please share it in [`@tonapitech`](https://t.me/tonapitech) chat.
+{/* TODO(update the API references): The beta version of the gasless backend API is available at [`tonapi.io/api-v2`](https://tonapi.io/api-v2). If you are developing a wallet app and have feedback about these methods, please share it in [`@tonapitech`](https://t.me/tonapitech) chat. */}

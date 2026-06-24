@@ -805,10 +805,10 @@ interface WalletConnectionSourceHTTP {
 }
 ```
 
-| Field           | Type     | Description                                                                                                                                                                          |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `universalLink` | `string` | HTTPS base of the wallet's universal link, e.g. `'https://app.tonkeeper.com/ton-connect'`. The SDK appends the connect parameters (`v`, `id`, `r`, optional `ret`, `trace_id`, `e`). |
-| `bridgeUrl`     | `string` | URL of the wallet's HTTP (SSE) bridge, e.g. `'https://connect.ton.org/bridge'`.                                                                                                      |
+| Field           | Type     | Description                                                                                                                                                                  |
+| --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `universalLink` | `string` | HTTPS base of the wallet's universal link, e.g. `'https://connect.gramwallet.io'`. The SDK appends the connect parameters (`v`, `id`, `r`, optional `ret`, `trace_id`, `e`). |
+| `bridgeUrl`     | `string` | URL of the wallet's HTTP (SSE) bridge, e.g. `'https://connect.ton.org/bridge'`.                                                                                              |
 
 ### `WalletConnectionSourceJS`
 
@@ -821,9 +821,9 @@ interface WalletConnectionSourceJS {
 }
 ```
 
-| Field         | Type     | Description                                                                                                                                                              |
-| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `jsBridgeKey` | `string` | Name of the `window` property where the wallet exposes its `TonConnectBridge` object. For example, `jsBridgeKey: 'tonkeeper'` resolves to `window.tonkeeper.tonconnect`. |
+| Field         | Type     | Description                                                                                                                                                                  |
+| ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `jsBridgeKey` | `string` | Name of the `window` property where the wallet exposes its `TonConnectBridge` object. For example, `jsBridgeKey: 'mytonwallet'` resolves to `window.mytonwallet.tonconnect`. |
 
 ### `WalletConnectionSourceWalletConnect`
 
@@ -895,7 +895,7 @@ interface WalletInfoRemote {
 | `features`      | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                          |
 | `platforms`     | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                    |
 | `universalLink` | `string`                                                                                         | HTTPS base of the wallet's universal link. The SDK appends the connect parameters (`v`, `id`, `r`, optional `ret`, `trace_id`, `e`). |
-| `deepLink`      | `string`                                                                                         | _Optional_. Optional custom-scheme deep link (e.g. `tonkeeper-tc://`). Same protocol parameters as the universal link.               |
+| `deepLink`      | `string`                                                                                         | _Optional_. Optional custom-scheme deep link (e.g. `mytonwallet-tc://`). Same protocol parameters as the universal link.             |
 | `bridgeUrl`     | `string`                                                                                         | URL of the wallet's HTTP (SSE) bridge endpoint.                                                                                      |
 
 ### `WalletInfoInjectable`
@@ -918,18 +918,18 @@ interface WalletInfoInjectable {
 }
 ```
 
-| Field         | Type                                                                                             | Description                                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                            |
-| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                      |
-| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                     |
-| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                        |
-| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                          |
-| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                        |
-| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                  |
-| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'tonkeeper'` → `window.tonkeeper.tonconnect`. |
-| `injected`    | `boolean`                                                                                        | `true` when the wallet is injected into the current page.                                                                          |
-| `embedded`    | `boolean`                                                                                        | `true` when the dApp is running inside this wallet's in-app browser.                                                               |
+| Field         | Type                                                                                             | Description                                                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                                |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                          |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                         |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                            |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                              |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                            |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                      |
+| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'mytonwallet'` → `window.mytonwallet.tonconnect`. |
+| `injected`    | `boolean`                                                                                        | `true` when the wallet is injected into the current page.                                                                              |
+| `embedded`    | `boolean`                                                                                        | `true` when the dApp is running inside this wallet's in-app browser.                                                                   |
 
 ### `WalletInfoCurrentlyInjected`
 
@@ -951,18 +951,18 @@ interface WalletInfoCurrentlyInjected {
 }
 ```
 
-| Field         | Type                                                                                             | Description                                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                            |
-| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                      |
-| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                     |
-| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                        |
-| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                          |
-| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                        |
-| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                  |
-| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'tonkeeper'` → `window.tonkeeper.tonconnect`. |
-| `embedded`    | `boolean`                                                                                        | `true` when the dApp is running inside this wallet's in-app browser.                                                               |
-| `injected`    | `true`                                                                                           | `true` when the wallet is injected into the current page.                                                                          |
+| Field         | Type                                                                                             | Description                                                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                                |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                          |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                         |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                            |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                              |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                            |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                      |
+| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'mytonwallet'` → `window.mytonwallet.tonconnect`. |
+| `embedded`    | `boolean`                                                                                        | `true` when the dApp is running inside this wallet's in-app browser.                                                                   |
+| `injected`    | `true`                                                                                           | `true` when the wallet is injected into the current page.                                                                              |
 
 ### `WalletInfoCurrentlyEmbedded`
 
@@ -987,18 +987,18 @@ interface WalletInfoCurrentlyEmbedded {
 }
 ```
 
-| Field         | Type                                                                                             | Description                                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                            |
-| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                      |
-| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                     |
-| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                        |
-| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                          |
-| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                        |
-| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                  |
-| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'tonkeeper'` → `window.tonkeeper.tonconnect`. |
-| `injected`    | `true`                                                                                           | `true` when the wallet is injected into the current page.                                                                          |
-| `embedded`    | `true`                                                                                           | `true` when the dApp is running inside this wallet's in-app browser.                                                               |
+| Field         | Type                                                                                             | Description                                                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                                |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                          |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                         |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                            |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                              |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                            |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                      |
+| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'mytonwallet'` → `window.mytonwallet.tonconnect`. |
+| `injected`    | `true`                                                                                           | `true` when the wallet is injected into the current page.                                                                              |
+| `embedded`    | `true`                                                                                           | `true` when the dApp is running inside this wallet's in-app browser.                                                                   |
 
 ### `WalletInfoInjected`
 

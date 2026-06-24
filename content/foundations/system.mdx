@@ -7,7 +7,7 @@ title: "System contracts"
 </Callout>
 
 <Callout>
-  System contracts are smart contracts and have on-chain addresses. See [config parameters 1–4](https://tonviewer.com/config). The Config account stores the Config contract address. To track changes, review proposals to the Config contract.
+  System contracts are smart contracts and have on-chain addresses. See [config parameters 1–4](https://tonscan.org/config). The Config account stores the Config contract address. To track changes, review proposals to the Config contract.
 </Callout>
 
 In TON, a set of special smart contracts controls consensus parameters for node operation — including TVM, catchain, fees, and chain topology — and how these parameters are stored and updated. Unlike older blockchains that hardcode these parameters, TON enables transparent on-chain governance. The current governance contracts include the **Elector** and **Config** contracts, with expansion plans (for example, the extra-currency **Minter**).
@@ -22,7 +22,7 @@ The Elector stores:
 
 - Non-withdrawn Gram in the `credits` hashmap.
 - New validator applications in the `elect` hashmap.
-- Past election data in the `past_elections` hashmap (including complaints and `frozen` stakes held for `stake_held_for` periods, defined in [**ConfigParam 15**](https://tonviewer.com/config#15)).
+- Past election data in the `past_elections` hashmap (including complaints and `frozen` stakes held for `stake_held_for` periods, defined in [**ConfigParam 15**](https://tonscan.org/config#15)).
 
 ### Key functions
 
@@ -45,9 +45,9 @@ The Elector is a special smart contract triggered by **Tick and Tock transaction
 
 **Process details:**
 
-- Take applications with stake ≥ `min_stake` ([**ConfigParam 17**](https://tonviewer.com/config#17)).
+- Take applications with stake ≥ `min_stake` ([**ConfigParam 17**](https://tonscan.org/config#17)).
 - Arrange candidates by stake in descending order.
-- If applicants exceed `max_validators` ([**ConfigParam 16**](https://tonviewer.com/config#16)), discard the lowest-staked candidates.
+- If applicants exceed `max_validators` ([**ConfigParam 16**](https://tonscan.org/config#16)), discard the lowest-staked candidates.
 - For each subset size `i` (from 1 to remaining candidates):
 - Assume the `i`-th candidate (lowest in the subset) defines the baseline.
 - Calculate effective stake (`true_stake`) for each `j`-th candidate (`j < i`) as:
@@ -99,7 +99,7 @@ To report misbehavior, a user must:
 
 The Elector registers the complaint in the `past_elections` hashmap. Current round validators then verify the complaint. If the proof is valid and the proposed fine aligns with the severity of the misbehavior, validators vote on the complaint. Approval requires agreement from over **two-thirds of the total validator weight** (not just a majority of participants).
 
-The fine is deducted from the validator's `frozen` stake in the relevant `past_elections` record if approved. These funds stay locked for the period defined by [**ConfigParam 15**](https://tonviewer.com/config#15) (`stake_held_for`).
+The fine is deducted from the validator's `frozen` stake in the relevant `past_elections` record if approved. These funds stay locked for the period defined by [**ConfigParam 15**](https://tonscan.org/config#15) (`stake_held_for`).
 
 #### Distributing rewards
 

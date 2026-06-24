@@ -18,7 +18,7 @@ This tutorial covers building, deploying, and interacting with a smart contract 
 - Basic familiarity with a command-line interface and executing commands
 - Node.js—`v22` or later— [download here](https://nodejs.org/)
   - Check if installed: `node -v` in terminal
-- Installed [GRAM wallet](/ecosystem/wallet-apps/tonkeeper) with [Gram on testnet](/ecosystem/wallet-apps/get-coins)
+- Installed [wallet service](/ecosystem/wallet-apps/web) (or a Gram wallet) with [Gram on testnet](/ecosystem/wallet-apps/get-coins)
 
 ## Development environment
 
@@ -389,7 +389,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     Run the script with:
 
     ```bash
-    npx blueprint run deployFirstContract --testnet --tonconnect --tonviewer
+    npx blueprint run deployFirstContract --testnet --tonconnect --tonscan
     ```
 
     For flags and options, see the [Blueprint deployment guide](/contract-dev/blueprint/deploy).
@@ -402,7 +402,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
       title="Wallet required"
       type="note"
     >
-      If a wallet is not installed, check the [wallet section](/ecosystem/wallet-apps/tonkeeper) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Gram on the testnet](/ecosystem/wallet-apps/get-coins).
+      If a wallet is not installed, check the [wallet section](/ecosystem/wallet-apps/web) to select and install a wallet before deploying the contract. Make sure the wallet is funded with [Gram on the testnet](/ecosystem/wallet-apps/get-coins).
     </Callout>
 
     Scan the QR code displayed in the console, and confirm the transaction in the wallet app.
@@ -411,7 +411,7 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
 
     ```text
     Using file: deployFirstContract
-    ? Choose your wallet Tonkeeper
+    ? Choose your wallet WalletName
 
     <QR_CODE_HERE>
 
@@ -419,10 +419,10 @@ Next, deploy the contract to the TON blockchain and interact with it using scrip
     Sending transaction. Approve in your wallet...
     Sent transaction
     Contract deployed at address kQBz-OQQ0Olnd4IPdLGZCqHkpuAO3zdPqAy92y6G-UUpiC_o
-    You can view it at https://testnet.tonviewer.com/kQBz-OQQ0Olnd4IPdLGZCqHkpuAO3zdPqAy92y6G-UUpiC_o
+    You can view it at https://<EXPLORER_NAME>/kQBz-OQQ0Olnd4IPdLGZCqHkpuAO3zdPqAy92y6G-UUpiC_o
     ```
 
-    The link opens the contract on [Tonviewer](/ecosystem/explorers/tonviewer), a [blockchain explorer](/ecosystem/explorers/overview) showing transactions, messages and [account states](/foundations/status).
+    The link opens the contract on a [blockchain explorer](/ecosystem/explorers/overview) showing transactions, messages and [account states](/foundations/status).
 
     Next, interact with the contract by sending messages and calling getter functions.
   </Step>
@@ -553,7 +553,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
     To run this script:
 
     ```bash
-    npx blueprint run sendIncrease --testnet --tonconnect --tonviewer
+    npx blueprint run sendIncrease --testnet --tonconnect --tonscan
     ```
 
     Expected result:
@@ -564,7 +564,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
     Sending transaction. Approve in your wallet...
     Sent transaction
     Transaction 0fc1421b06b01c65963fa76f5d24473effd6d63fc4ea3b6ea7739cc533ba62ee successfully applied!
-    You can view it at https://testnet.tonviewer.com/transaction/fe6380dc2e4fab5c2caf41164d204e2f41bebe7a3ad2cb258803759be41b5734
+    You can view it at https://<EXPLORER_URL>/transaction/fe6380dc2e4fab5c2caf41164d204e2f41bebe7a3ad2cb258803759be41b5734
     ```
 
     What happens during execution:
@@ -607,7 +607,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
     To run this script:
 
     ```bash
-    npx blueprint run sendReset --testnet --tonconnect --tonviewer
+    npx blueprint run sendReset --testnet --tonconnect --tonscan
     ```
 
     Expected result:
@@ -618,7 +618,7 @@ Deployment also counts as a message sent to the contract. The next step is to se
     Sending transaction. Approve in your wallet...
     Sent transaction
     Transaction 0fc1421b06b01c65963fa76f5d24473effd6d63fc4ea3b6ea7739cc533ba62ee successfully applied!
-    You can view it at https://testnet.tonviewer.com/transaction/fe6380dc2e4fab5c2caf41164d204e2f41bebe7a3ad2cb258803759be41b5734
+    You can view it at https://<EXPLORER_URL>/transaction/fe6380dc2e4fab5c2caf41164d204e2f41bebe7a3ad2cb258803759be41b5734
     ```
   </Step>
 

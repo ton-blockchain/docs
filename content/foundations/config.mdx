@@ -4,14 +4,14 @@ sidebarTitle: "Config"
 ---
 
 <Callout>
-  View live values on [Tonscan](https://tonscan.org/config) or [Tonviewer](https://tonviewer.com/config).
+  View live values on [Tonscan](https://tonscan.org/config).
 </Callout>
 
 TON features a complex configuration comprising many technical parameters, some of which are used by the blockchain itself, while others serve the ecosystem. However, only a limited number of individuals fully understand the significance of these parameters. This article aims to provide users with an overview of configuration parameters, their modification processes, and a straightforward explanation of each parameter and its purpose.
 
 ## Prerequisites
 
-The parameter values in the [current configuration](https://tonviewer.com/config), and the method of writing them into [cells](/foundations/serialization/boc) are outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/languages/tl-b/overview) format.
+The parameter values in the [current configuration](https://tonscan.org/config), and the method of writing them into [cells](/foundations/serialization/boc) are outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/languages/tl-b/overview) format.
 
 <Callout>
   Configuration values are TL-B typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc).
@@ -84,13 +84,13 @@ This parameter is the address of a special smart contract that stores the blockc
   In the configuration parameter, only the hash portion of the address is recorded, as the contract always resides in the masterchain (workchain -1). Therefore, the full address of the contract will be written as `-1:<value of the configuration parameter>`.
 </Callout>
 
-[Parameter #0 on mainnet](https://tonviewer.com/config#0)
+[Parameter #0 on mainnet](https://tonscan.org/config#0)
 
 ## Param 1: elector address
 
 This parameter is the address of the [elector smart contract](/foundations/system), responsible for appointing validators, distributing rewards, and voting on changes to blockchain parameters.
 
-[Parameter #1 on mainnet](https://tonviewer.com/config#1)
+[Parameter #1 on mainnet](https://tonscan.org/config#1)
 
 ## Param 2: TON minting address
 
@@ -100,7 +100,7 @@ This parameter represents the address of the system, on behalf of which new Gram
   If parameter 2 is missing, parameter 0 is used instead — newly minted Gram come from the configuration smart contract.
 </Callout>
 
-[Parameter #2 on mainnet](https://tonviewer.com/config#2)
+[Parameter #2 on mainnet](https://tonscan.org/config#2)
 
 ## Param 3: fee collector address
 
@@ -110,7 +110,7 @@ This parameter is the address of the transaction fee collector.
   If this parameter is missing (for the time being), transaction fees are directed to the elector smart contract (parameter 1).
 </Callout>
 
-[Parameter #3 on mainnet](https://tonviewer.com/config#3)
+[Parameter #3 on mainnet](https://tonscan.org/config#3)
 
 ## Param 4: root DNS address
 
@@ -122,19 +122,19 @@ This parameter is the address of the root DNS contract of the TON network.
   This contract is not responsible for selling **.ton** domains.
 </Callout>
 
-[Parameter #4 on mainnet](https://tonviewer.com/config#4)
+[Parameter #4 on mainnet](https://tonscan.org/config#4)
 
 ## Param 6: extra currency fee
 
 This parameter is responsible for minting fees for new currencies.
 
-[Parameter #6 on mainnet](https://tonviewer.com/config#6)
+[Parameter #6 on mainnet](https://tonscan.org/config#6)
 
 ## Param 7: extra currency volume
 
 This parameter stores the volume of each extra currency in circulation. The data is organized as a dictionary (also referred to as a **hashmap**). The structure uses the format `currency_id -> amount`, where the amount is represented as a `VarUInteger 32`, which is an integer ranging from `0` to `2^248-1`.
 
-[Parameter #7 on mainnet](https://tonviewer.com/config#7)
+[Parameter #7 on mainnet](https://tonscan.org/config#7)
 
 ## Param 8: network version
 
@@ -150,19 +150,19 @@ This parameter indicates the network version and additional capabilities support
 
 Thus, when updating the network, validators will vote to change parameter 8. This way, the TON Blockchain network can be updated without downtime.
 
-[Parameter #8 on mainnet](https://tonviewer.com/config#8)
+[Parameter #8 on mainnet](https://tonscan.org/config#8)
 
 ## Param 9: mandatory params
 
 This parameter contains a list (binary tree) of mandatory parameters. It ensures that certain configuration parameters are always present and cannot be removed by a proposal to change the configuration until parameter 9 changes.
 
-[Parameter #9 on mainnet](https://tonviewer.com/config#9)
+[Parameter #9 on mainnet](https://tonscan.org/config#9)
 
 ## Param 10: critical params
 
 This parameter represents a list (binary tree) of critical TON parameters whose change significantly affects the network, so more voting rounds are held.
 
-[Parameter #10 on mainnet](https://tonviewer.com/config#10)
+[Parameter #10 on mainnet](https://tonscan.org/config#10)
 
 ## Param 11: config params
 
@@ -180,7 +180,7 @@ This parameter indicates under what conditions proposals to change the TON confi
 
 - `bit_price` and `cell_price` indicate the price of storing one bit or one cell of the proposal
 
-[Parameter #11 on mainnet](https://tonviewer.com/config#11)
+[Parameter #11 on mainnet](https://tonscan.org/config#11)
 
 ## Param 12: Workchain config
 
@@ -210,19 +210,19 @@ This parameter represents the configuration of a workchain in the TON Blockchain
 
 - `format`: The format of the workchain, which includes `vm_version` and `vm_mode` - the virtual machine used there.
 
-[Parameter #12 on mainnet](https://tonviewer.com/config#12)
+[Parameter #12 on mainnet](https://tonscan.org/config#12)
 
 ## Param 13: complaint cost
 
 This parameter defines the cost of filing complaints about the incorrect operation of validators in the [elector smart contract](/foundations/system).
 
-[Parameter #13 on mainnet](https://tonviewer.com/config#13)
+[Parameter #13 on mainnet](https://tonscan.org/config#13)
 
 ## Param 14: block reward
 
 This parameter indicates the reward for creating a block in the TON Blockchain. Values are in nanograms; therefore, the reward for block creation in the masterchain is 1.7 Gram, while in the basechain, it is 1.0 Gram. In the event of a workchain split, the block reward is also divided: if there are two shardchains within the workchain, then the reward for each shard block will be 0.5 Gram.
 
-[Parameter #14 on mainnet](https://tonviewer.com/config#14)
+[Parameter #14 on mainnet](https://tonscan.org/config#14)
 
 ## Param 15: elections timing
 
@@ -318,7 +318,7 @@ hold_end = hold_start + constants['stake_held_for'] = 160009600 + 900 = 16001050
 
 Therefore, at this time, the length of one round of one parity is `160010500 - 160000000 = 10500 seconds = 175 minutes = 2.91666... hours`
 
-[Parameter #15 on mainnet](https://tonviewer.com/config#15)
+[Parameter #15 on mainnet](https://tonscan.org/config#15)
 
 ## Param 16: validators limits
 
@@ -340,7 +340,7 @@ This parameter represents the limits on the number of validators in the TON Bloc
 
 - The minimum number of validators must be no less than 1.
 
-[Parameter #16 on mainnet](https://tonviewer.com/config#16)
+[Parameter #16 on mainnet](https://tonscan.org/config#16)
 
 ## Param 17: stake limits
 
@@ -360,7 +360,7 @@ This parameter represents the stake parameters configuration in the TON Blockcha
   Each value in the arguments is determined by the `uint32` data type.
 </Callout>
 
-[Parameter #17 on mainnet](https://tonviewer.com/config#17)
+[Parameter #17 on mainnet](https://tonscan.org/config#17)
 
 ## Param 18: storage prices
 
@@ -380,7 +380,7 @@ This parameter represents the configuration for determining the prices for data 
   The rest accept values in the `uint64` data type.
 </Callout>
 
-[Parameter #18 on mainnet](https://tonviewer.com/config#18)
+[Parameter #18 on mainnet](https://tonscan.org/config#18)
 
 ## Param 20 and 21: gas prices
 
@@ -406,7 +406,7 @@ Note: Param 20 defines gas settings for the masterchain; Param 21 defines gas se
   You can find more about `gas_credit` and other parameters in the section of external messages [here](/foundations/messages/external-in#accepting-message).
 </Callout>
 
-[Parameter #20 on mainnet](https://tonviewer.com/config#20) | [Parameter #21 on mainnet](https://tonviewer.com/config#21)
+[Parameter #20 on mainnet](https://tonscan.org/config#20) | [Parameter #21 on mainnet](https://tonscan.org/config#21)
 
 ## Param 22 and 23: block limits
 
@@ -430,7 +430,7 @@ These parameters set limits on the block, upon reaching which the block is final
   If a shard has insufficient load and there is an intention to merge with a neighboring shard, the `soft_limit` indicates a threshold. When this threshold is exceeded, internal messages will stop being processed, while external messages will still be handled. External messages will continue to be processed until the total reaches a limit that is equal to half the sum of the `soft_limit` and `hard_limit`, or `(soft_limit + hard_limit) / 2`.
 </Callout>
 
-[Parameter #22 on mainnet](https://tonviewer.com/config#22) | [Parameter #23 on mainnet](https://tonviewer.com/config#23)
+[Parameter #22 on mainnet](https://tonscan.org/config#22) | [Parameter #23 on mainnet](https://tonscan.org/config#23)
 
 ## Param 24 and 25: message price
 
@@ -456,7 +456,7 @@ Parameter 25 represents the configuration for the cost of sending messages in al
 
 - `next_frac`: This parameter defines the fraction of the remaining amount that will be used for subsequent transitions along the message route.
 
-[Parameter #24 on mainnet](https://tonviewer.com/config#24) | [Parameter #25 on mainnet](https://tonviewer.com/config#25)
+[Parameter #24 on mainnet](https://tonscan.org/config#24) | [Parameter #25 on mainnet](https://tonscan.org/config#25)
 
 ## Param 28: catchain config
 
@@ -476,7 +476,7 @@ This parameter provides the configuration for the `Catchain` protocol in the TON
 
 - `shard_validators_num`: The number of validators in each shardchain validation group.
 
-[Parameter #28 on mainnet](https://tonviewer.com/config#28)
+[Parameter #28 on mainnet](https://tonscan.org/config#28)
 
 ## Param 29: consensus config
 
@@ -515,7 +515,7 @@ This parameter provides the configuration for the consensus protocol above `Catc
 - `catchain_max_blocks_coeff`: The coefficient limiting the rate of block generation in `Catchain`, [description](https://github.com/ton-blockchain/ton/blob/master/doc/catchain-dos.md).
 
 <Callout type="note">
-  For up-to-date values, see [Parameter #29 on mainnet](https://tonviewer.com/config#29).
+  For up-to-date values, see [Parameter #29 on mainnet](https://tonscan.org/config#29).
 </Callout>
 
 ### On-chain schema
@@ -559,7 +559,7 @@ _ ConsensusConfig = ConfigParam 29;
   The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
 </Callout>
 
-[Parameter #29 on mainnet](https://tonviewer.com/config#29)
+[Parameter #29 on mainnet](https://tonscan.org/config#29)
 
 ## Param 30: consensus extension
 
@@ -648,13 +648,13 @@ IDs from `0` through `14` are recognized and supported. On the mainnet, only IDs
 | `13` | `min_block_interval`                   | `uint32` milliseconds      | `0 ms`                   | Minimum interval between parent block time and the next locally generated block.                           |
 | `14` | `no_empty_blocks_on_error_timeout`     | `uint32` milliseconds      | `15,000 ms`              | How long empty-block fallback is allowed after the last finalized block when collation fails or times out. |
 
-[Parameter #30 on mainnet](https://tonviewer.com/config#30)
+[Parameter #30 on mainnet](https://tonscan.org/config#30)
 
 ## Param 31: fee-exempt contracts
 
 This parameter represents the configuration of smart contract addresses from which no fees are charged for either gas or storage, and where **tick-tock** transactions can be created. The list usually includes governance contracts. The parameter is presented as a binary tree structure — a tree (HashMap 256), where the keys are a 256-bit representation of the address. Only addresses in the masterchain can be present in this list.
 
-[Parameter #31 on mainnet](https://tonviewer.com/config#31)
+[Parameter #31 on mainnet](https://tonscan.org/config#31)
 
 ## Param 32, 34, and 36: validator lists
 
@@ -672,7 +672,7 @@ Lists of validators from the previous (32), current (34), and next (36) rounds. 
 
 - `list`: A list of validators in the tree format `id->validator-data`: `validator_addr`, `public_key`, `weight`, `adnl_addr`: These parameters provide details about each validator - their 256-bit addresses in the masterchain, public key, weight, ADNL address (the address used at the network level of the TON).
 
-[Parameter #32 on mainnet](https://tonviewer.com/config#32) | [Parameter #34 on mainnet](https://tonviewer.com/config#34) | [Parameter #36 on mainnet](https://tonviewer.com/config#36)
+[Parameter #32 on mainnet](https://tonscan.org/config#32) | [Parameter #34 on mainnet](https://tonscan.org/config#34) | [Parameter #36 on mainnet](https://tonscan.org/config#36)
 
 ## Param 40: misbehavior punishment
 
@@ -698,7 +698,7 @@ It contains several fields:
 
 - `medium_interval`, `medium_flat_mult`, `medium_proportional_mult`: Similarly, they define a "medium" period of time and multipliers for flat and proportional fines for improper behavior.
 
-[Parameter #40 on mainnet](https://tonviewer.com/config#40)
+[Parameter #40 on mainnet](https://tonscan.org/config#40)
 
 ## Param 43: account and message limits
 
@@ -744,7 +744,7 @@ If absent, the default parameters are taken:
   You can view more details about the standard parameters [here](https://github.com/ton-blockchain/ton/blob/fc9542f5e223140fcca833c189f77b1a5ae2e184/crypto/block/mc-config.h#L379) in the source code.
 </Callout>
 
-[Parameter #43 on mainnet](https://tonviewer.com/config#43)
+[Parameter #43 on mainnet](https://tonscan.org/config#43)
 
 ## Param 44: suspended addresses
 
@@ -754,7 +754,7 @@ This parameter defines the list of suspended addresses, which cannot be initiali
   The stabilization of the tokenomics is further described in the [official report](https://t.me/tonblockchain/178) of the `@tonblockchain` Telegram channel.
 </Callout>
 
-[Parameter #44 on mainnet](https://tonviewer.com/config#44)
+[Parameter #44 on mainnet](https://tonscan.org/config#44)
 
 ## Param 45: precompiled contracts
 
@@ -768,7 +768,7 @@ _ PrecompiledContractsConfig = ConfigParam 45;
 
 More details about precompiled contracts are on [this page](/foundations/precompiled).
 
-[Parameter #45 on mainnet](https://tonviewer.com/config#45)
+[Parameter #45 on mainnet](https://tonscan.org/config#45)
 
 ## Param 71 - 73: outbound bridges
 
@@ -790,7 +790,7 @@ This parameter pertains to bridges for wrapping Gram in other networks:
 
 - `external_chain_address`: This is the bridge contract address in the corresponding external blockchain.
 
-[Parameter #71 on mainnet](https://tonviewer.com/config#71) | [Parameter #72 on mainnet](https://tonviewer.com/config#72) | [Parameter #73 on mainnet](https://tonviewer.com/config#73)
+[Parameter #71 on mainnet](https://tonscan.org/config#71) | [Parameter #72 on mainnet](https://tonscan.org/config#72) | [Parameter #73 on mainnet](https://tonscan.org/config#73)
 
 ## Param 79, 81, and 82: inbound bridges
 
@@ -814,7 +814,7 @@ This parameter relates to bridges for wrapping tokens from other networks into t
 
 - `external_chain_address`: The bridge contract address in another blockchain.
 
-[Parameter #79 on mainnet](https://tonviewer.com/config#79) | [Parameter #81 on mainnet](https://tonviewer.com/config#81) | [Parameter #82 on mainnet](https://tonviewer.com/config#82)
+[Parameter #79 on mainnet](https://tonscan.org/config#79) | [Parameter #81 on mainnet](https://tonscan.org/config#81) | [Parameter #82 on mainnet](https://tonscan.org/config#82)
 
 ## Negative parameters
 

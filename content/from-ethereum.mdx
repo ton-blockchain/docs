@@ -35,7 +35,7 @@ Consider a practical example: liquidity withdrawal on a DEX.
     alt="GRAM burn"
   />
 
-Executing a large transaction on Ethereum or any other EVM-based blockchain comes with certain limitations: [call depth](https://ethereum.org/developers/docs/evm/#evm-instructions) of 1,024 nested calls and the [block gas limit](https://ethereum.org/developers/docs/blocks/#block-size). With TON's asynchronous execution model, a trace — a chain of transactions — can have any length, as long as there are enough fees to continue it. For example, the [trace](https://tonviewer.com/transaction/e887503f7dac857be80487e3ed0774db962379d1c153e6df7b9b5313c657ab94) resulting from this message consisted of more than 1.5 million transactions, lasting more than 4,000 blocks until completion.
+Executing a large transaction on Ethereum or any other EVM-based blockchain comes with certain limitations: [call depth](https://ethereum.org/developers/docs/evm/#evm-instructions) of 1,024 nested calls and the [block gas limit](https://ethereum.org/developers/docs/blocks/#block-size). With TON's asynchronous execution model, a trace — a chain of transactions — can have any length, as long as there are enough fees to continue it. For example, the [trace](https://tonscan.org/tx/e887503f7dac857be80487e3ed0774db962379d1c153e6df7b9b5313c657ab94) resulting from this message consisted of more than 1.5 million transactions, lasting more than 4,000 blocks until completion.
 
 ### On-chain get methods
 
@@ -85,13 +85,13 @@ For low-level manipulation of TON-specific data structures, there is [`@ton/core
 Web3 developers often rely on specific products and services for on-chain development.
 The following table showcases some use cases that existing TON services support.
 
-| Use case                                | Ethereum service | TON service                                                          |
-| --------------------------------------- | ---------------- | -------------------------------------------------------------------- |
-| User-friendly explorer                  | Etherscan        | [Tonviewer](https://tonviewer.com/), [Tonscan](https://tonscan.org/) |
-| Open-source dev explorer                | Blockscout       | [TON Explorer](https://explorer.toncoin.org/)                        |
-| Debugger                                | Remix Debugger   | [TxTracer](https://txtracer.ton.org/)                                |
-| IDE                                     | Remix IDE        | None, use the local [Acton toolchain](/contract-dev/acton)           |
-| Asm playground and compilation explorer | EVM.Codes        | [TxTracer](https://txtracer.ton.org/)                                |
+| Use case                                | Ethereum service | TON service                                                |
+| --------------------------------------- | ---------------- | ---------------------------------------------------------- |
+| User-friendly explorer                  | Etherscan        | [Tonscan](https://tonscan.org/)                            |
+| Open-source dev explorer                | Blockscout       | [TON Explorer](https://explorer.toncoin.org/)              |
+| Debugger                                | Remix Debugger   | [TxTracer](https://txtracer.ton.org/)                      |
+| IDE                                     | Remix IDE        | None, use the local [Acton toolchain](/contract-dev/acton) |
+| Asm playground and compilation explorer | EVM.Codes        | [TxTracer](https://txtracer.ton.org/)                      |
 
 ### Standards
 

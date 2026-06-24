@@ -9,7 +9,7 @@ Streaming in AppKit is a per-network subscription layer that turns provider even
 
 Streaming complements point-in-time API reads. Instead of asking an API client for the latest state after every interaction, the app subscribes to changes for an address on a specific network.
 
-The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a TON Center or TonAPI WebSocket stream. Registering another provider for the same network replaces the previous stream for that chain. Provider registration is covered on [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered).
+The `StreamingManager` coordinates providers by `chainId`. A streaming provider implements one transport for one network, such as a TON Center WebSocket stream. Registering another provider for the same network replaces the previous stream for that chain. Provider registration is covered on [Use providers → How they are registered](/applications/appkit/howto/providers#how-they-are-registered).
 
 ## Subscription lifetime
 

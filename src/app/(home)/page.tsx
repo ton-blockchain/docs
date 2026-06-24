@@ -44,7 +44,7 @@ const paths: Path[] = [
     icon: Rocket,
     links: [
       { title: 'Overview of TON and the documentation', href: '/start-here' },
-      { title: 'Create a Gram wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
+      { title: 'Create a TON wallet', href: '/ecosystem/wallet-apps/web' },
       { title: 'Read blockchain data with explorers', href: '/ecosystem/explorers/overview' },
       { title: 'Enable TON for agents with @ton/mcp', href: '/ecosystem/ai/mcp' },
     ],
@@ -77,7 +77,7 @@ const paths: Path[] = [
     description: 'Build, debug, and deploy smart contracts on TON.',
     icon: FileCode2,
     links: [
-      { title: 'Acton toolchain ↗️', href: '/contract-dev/acton' },
+      { title: 'Acton toolchain', href: '/contract-dev/acton' },
       { title: 'Tolk language', href: '/tolk/overview' },
       { title: 'JetBrains IDE plugin', href: '/contract-dev/ide/jetbrains' },
       { title: 'VS Code extension', href: '/contract-dev/ide/vscode' },
@@ -111,7 +111,7 @@ const paths: Path[] = [
         title: 'Run a liteserver node',
         href: '/ecosystem/nodes/cpp/run-liteserver',
       },
-      { title: 'Rust node setup', href: '/ecosystem/nodes/rust/quick-start' },
+      { title: 'Rust an archive liteserver', href: '/ecosystem/nodes/cpp/run-archive-liteserver' },
     ],
   },
   {
@@ -147,12 +147,6 @@ const support: Support[] = [
     description: 'Add the folder with many developer chats.',
     href: 'https://t.me/addlist/1r5Vcb8eljk5Yzcy',
     icon: Send,
-  },
-  {
-    title: 'TON Talents',
-    description: 'Seek skilled professionals and agencies.',
-    href: 'https://ton.org/en/talents',
-    icon: Users,
   },
 ];
 
@@ -255,7 +249,7 @@ export default function HomePage() {
             to search the docs. Still stuck? Discuss issues and best practices with other community
             members.
           </p>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             {support.map(({ title, description, href, icon: Icon }) => {
               const external = isExternal(href);
               const className =

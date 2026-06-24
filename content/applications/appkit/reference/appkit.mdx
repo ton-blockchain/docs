@@ -1689,38 +1689,22 @@ const unsubscribe = watchSelectedWallet(appKit, {
 
 ### Client
 
-#### `ApiClientTonApi`
-
-[`ApiClient`](#apiclient) implementation backed by the TonAPI indexer.
-
-Constructor: `new ApiClientTonApi(config)`
-
-| Parameter                   | Type                                          | Description                                                                                                         |
-| --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `config`                    | [`BaseApiClientConfig`](#baseapiclientconfig) | TonAPI client config — endpoint URL and API key. Defaults to TonAPI mainnet/testnet URLs based on `config.network`. |
-| `config.endpoint`           | `string`                                      | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.                |
-| `config.apiKey`             | `string`                                      | API key forwarded to the indexer for higher rate limits.                                                            |
-| `config.timeout`            | `number`                                      | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                         |
-| `config.fetchApi`           | `typeof fetch`                                | Custom `fetch` implementation. Defaults to the global `fetch`.                                                      |
-| `config.network`            | [`Network`](#network)                         | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.          |
-| `config.disableNetworkSend` | `boolean`                                     | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests.         |
-
 #### `ApiClientToncenter`
 
-[`ApiClient`](#apiclient) implementation backed by the Toncenter API.
+[`ApiClient`](#apiclient) implementation backed by the TON Center API.
 
 Constructor: `new ApiClientToncenter(config)`
 
-| Parameter                   | Type                                                    | Description                                                                                                                                               |
-| --------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config`                    | [`ApiClientToncenterConfig`](#apiclienttoncenterconfig) | Toncenter client config — endpoint URL, API key and optional DNS resolver override. Defaults to mainnet/testnet Toncenter URLs based on `config.network`. |
-| `config.dnsResolver`        | `string`                                                | Override the contract address used to resolve TON DNS records. Defaults to the network's standard root resolver.                                          |
-| `config.endpoint`           | `string`                                                | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.                                                      |
-| `config.apiKey`             | `string`                                                | API key forwarded to the indexer for higher rate limits.                                                                                                  |
-| `config.timeout`            | `number`                                                | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                                                               |
-| `config.fetchApi`           | `typeof fetch`                                          | Custom `fetch` implementation. Defaults to the global `fetch`.                                                                                            |
-| `config.network`            | [`Network`](#network)                                   | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.                                                |
-| `config.disableNetworkSend` | `boolean`                                               | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests.                                               |
+| Parameter                   | Type                                                    | Description                                                                                                                                                 |
+| --------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config`                    | [`ApiClientToncenterConfig`](#apiclienttoncenterconfig) | TON Center client config — endpoint URL, API key and optional DNS resolver override. Defaults to mainnet/testnet TON Center URLs based on `config.network`. |
+| `config.dnsResolver`        | `string`                                                | Override the contract address used to resolve TON DNS records. Defaults to the network's standard root resolver.                                            |
+| `config.endpoint`           | `string`                                                | Base URL of the indexer endpoint. Defaults to the provider's mainnet/testnet URL based on `network`.                                                        |
+| `config.apiKey`             | `string`                                                | API key forwarded to the indexer for higher rate limits.                                                                                                    |
+| `config.timeout`            | `number`                                                | Per-request timeout in milliseconds. Defaults to a provider-specific value.                                                                                 |
+| `config.fetchApi`           | `typeof fetch`                                          | Custom `fetch` implementation. Defaults to the global `fetch`.                                                                                              |
+| `config.network`            | [`Network`](#network)                                   | [`Network`](#network) the client should target. Determines the default `endpoint` when one isn't supplied.                                                  |
+| `config.disableNetworkSend` | `boolean`                                               | When `true`, swallow `sendBoc` calls instead of broadcasting them — useful for local development and tests.                                                 |
 
 ### Core
 
@@ -2151,7 +2135,7 @@ Indexer/RPC client interface used by AppKit to read on-chain state — balance, 
 
 #### `ApiClientConfig`
 
-Configuration accepted by [`NetworkConfig`](#networkconfig)'s `apiClient` — picks an [`ApiClient`](#apiclient) implementation (Toncenter / TonAPI) and supplies its endpoint URL plus optional API key.
+Configuration accepted by [`NetworkConfig`](#networkconfig)'s `apiClient` — picks an [`ApiClient`](#apiclient) implementation (TON Center) and supplies its endpoint URL plus optional API key.
 
 | Field | Type     | Description                                                                                                                         |
 | ----- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -3812,11 +3796,11 @@ Display metadata for a staking-pool token — `ticker`, `decimals` and `address`
 
 #### `TonStakersChainConfig`
 
-Per-chain Tonstakers config — optional TonAPI key for APY reads and an optional staking-provider metadata override.
+Per-chain Tonstakers config — optional API key for APY reads and an optional staking-provider metadata override.
 
 | Field         | Type                                                                  | Description                                                                                                                                       |
 | ------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tonApiToken` | `string`                                                              | TonAPI key used for APY reads. Optional — APY still works without it, but providing one is recommended when you already use TonAPI elsewhere.     |
+| `tonApiToken` | `string`                                                              | A key used for APY reads. Optional — APY still works without it, but providing one is recommended when you already use the API elsewhere.         |
 | `metadata`    | [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) | Optional [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) applied on top of the built-in Tonstakers metadata for this chain. |
 
 #### `TonStakersProviderConfig`

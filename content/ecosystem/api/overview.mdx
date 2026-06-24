@@ -3,7 +3,7 @@ title: "Overview"
 full: true
 ---
 
-Access TON data via public liteservers, hosted APIs (TON Center v2/v3, TonAPI, dTON), or self-hosted options.
+Access TON data via public liteservers, hosted APIs (TON Center v2/v3, dTON), or self-hosted options.
 
 <Callout type="note">
   For available SDKs that rely on some of these APIs, see the [SDK overview](/applications/sdks) in the Applications section.
@@ -13,35 +13,33 @@ Access TON data via public liteservers, hosted APIs (TON Center v2/v3, TonAPI, d
 
 ### Requests
 
-| Feature                   | Public liteservers                | TON Center v2            | TON Center v3         | TonAPI                                  | dTON              |
-| ------------------------- | --------------------------------- | ------------------------ | --------------------- | --------------------------------------- | ----------------- |
-| **Can be self-hosted?**   | ✅                                | ✅                       | ✅                    | ❌                                      | ❌                |
-| **Open-source**           | ✅                                | ✅                       | ✅                    | 🟡 Limited<sup>1</sup>                  | ❌                |
-| **Indexer**<sup>2</sup>   | ❌                                | ❌                       | ✅                    | ✅                                      | ✅                |
-| **Archival**<sup>3</sup>  | 🟡 Varies                         | 🟡 Depends on liteserver | ✅                    | ✅                                      | ✅                |
-| **Proofs**<sup>4</sup>    | ✅                                | ❌                       | ❌                    | ❌                                      | ❌                |
-| **Mainnet endpoint**      | [Config][c]                       | [Endpoint][etc-v2]       | [Endpoint][etc-v3]    | [Endpoint][eta-v2]                      | [GraphQL][edt]    |
-| **Testnet endpoint**      | [Config][c-tn]                    | [Endpoint][etc-v2-tn]    | [Endpoint][etc-v3-tn] | [Endpoint][eta-v2-tn]                   | [GraphQL][edt-tn] |
-| **Source / Deploy guide** | [Run node / liteserver][ls-setup] | [Deploy][etc-v2-src]     | [Source][etc-v3-src]  | [OpenTonAPI][eta-oss-src]<sup>1</sup>   | —                 |
-| **Documentation**         | [Guide][ls-doc]                   | [Docs][etc-v2-doc]       | [Docs][etc-v3-doc]    | [REST][eta-doc], [Swagger][eta-swagger] | [Site][edt-doc]   |
+| Feature                   | Public liteservers                | TON Center v2            | TON Center v3         | dTON              |
+| ------------------------- | --------------------------------- | ------------------------ | --------------------- | ----------------- |
+| **Can be self-hosted?**   | ✅                                | ✅                       | ✅                    | ❌                |
+| **Open-source**           | ✅                                | ✅                       | ✅                    | ❌                |
+| **Indexer**<sup>1</sup>   | ❌                                | ❌                       | ✅                    | ✅                |
+| **Archival**<sup>2</sup>  | 🟡 Varies                         | 🟡 Depends on liteserver | ✅                    | ✅                |
+| **Proofs**<sup>3</sup>    | ✅                                | ❌                       | ❌                    | ❌                |
+| **Mainnet endpoint**      | [Config][c]                       | [Endpoint][etc-v2]       | [Endpoint][etc-v3]    | [GraphQL][edt]    |
+| **Testnet endpoint**      | [Config][c-tn]                    | [Endpoint][etc-v2-tn]    | [Endpoint][etc-v3-tn] | [GraphQL][edt-tn] |
+| **Source / Deploy guide** | [Run node / liteserver][ls-setup] | [Deploy][etc-v2-src]     | [Source][etc-v3-src]  | —                 |
+| **Documentation**         | [Guide][ls-doc]                   | [Docs][etc-v2-doc]       | [Docs][etc-v3-doc]    | [Site][edt-doc]   |
 
-<sup>1</sup> TonAPI's full indexer is not open-source; [OpenTonAPI][eta-oss-src] is a limited open-source version.
+<sup>1</sup> **Indexer** means the service maintains its own database derived from blockchain data for richer queries (traces, jettons, NFTs, etc.), beyond raw liteserver RPC.
 
-<sup>2</sup> **Indexer** means the service maintains its own database derived from blockchain data for richer queries (traces, jettons, NFTs, etc.), beyond raw liteserver RPC.
+<sup>2</sup> **Archival** indicates historical data retention. For liteservers, this depends on the node's archival configuration; hosted indexers typically keep full history, but exact retention policies are service-specific.
 
-<sup>3</sup> **Archival** indicates historical data retention. For liteservers, this depends on the node's archival configuration; hosted indexers typically keep full history, but exact retention policies are service-specific.
-
-<sup>4</sup> **Proofs** denote responses that can be verified without trust using cryptographic proofs from the network (liteserver/tonlib-based). HTTP indexers typically do not return proof bundles in their REST/GraphQL responses.
+<sup>3</sup> **Proofs** denote responses that can be verified without trust using cryptographic proofs from the network (liteserver/tonlib-based). HTTP indexers typically do not return proof bundles in their REST/GraphQL responses.
 
 ### Streaming
 
-| Feature                    | TON Center Streaming API v2                | TonAPI Streaming API                       |
-| -------------------------- | ------------------------------------------ | ------------------------------------------ |
-| **Protocol compatibility** | Native reference implementation            | Compatible with TON Center                 |
-| **Mainnet endpoints**      | [SSE][etc-sse], [WebSocket][etc-wss]       | [SSE][eta-sse], [WebSocket][eta-wss]       |
-| **Testnet endpoints**      | [SSE][etc-sse-tn], [WebSocket][etc-wss-tn] | [SSE][eta-sse-tn], [WebSocket][eta-wss-tn] |
-| **Authentication**         | [TON Center][etc-key]                      | [Ton Console][eta-key]                     |
-| **Documentation**          | [Docs][etc-stream-doc]                     | [Same as TON Center][etc-stream-doc]       |
+| Feature                    | TON Center Streaming API v2                |
+| -------------------------- | ------------------------------------------ |
+| **Protocol compatibility** | Native reference implementation            |
+| **Mainnet endpoints**      | [SSE][etc-sse], [WebSocket][etc-wss]       |
+| **Testnet endpoints**      | [SSE][etc-sse-tn], [WebSocket][etc-wss-tn] |
+| **Authentication**         | [TON Center][etc-key]                      |
+| **Documentation**          | [Docs][etc-stream-doc]                     |
 
 ## References
 
@@ -51,8 +49,6 @@ Access TON data via public liteservers, hosted APIs (TON Center v2/v3, TonAPI, d
 - [TON Center v2 (C++, newer, recommended) source and deploy instructions][etc-v2-src]
 - [TON Center v2 (Python, older) source and deploy instructions](https://github.com/toncenter/ton-http-api)
 - [TON Center v3 source and deploy instructions][etc-v3-src]
-- [TonAPI site](https://tonapi.io), [REST docs][eta-doc], [Swagger][eta-swagger]
-- [OpenTonAPI (limited open-source)][eta-oss-src]
 - [dTON GraphQL][edt]
 
 {/* Config */}
@@ -76,19 +72,6 @@ Access TON data via public liteservers, hosted APIs (TON Center v2/v3, TonAPI, d
 [etc-wss-tn]: wss://testnet.toncenter.com/api/streaming/v2/ws
 [etc-key]: /ecosystem/api/toncenter/get-api-key
 [etc-stream-doc]: /ecosystem/api/toncenter/streaming/overview
-
-{/* TON API */}
-
-[eta-v2]: https://tonapi.io/v2
-[eta-v2-tn]: https://testnet.tonapi.io/v2
-[eta-oss-src]: https://github.com/tonkeeper/opentonapi
-[eta-doc]: https://docs.tonconsole.com/tonapi/rest-api
-[eta-swagger]: https://tonapi.io/api-v2
-[eta-sse]: https://tonapi.io/streaming/v2/sse
-[eta-sse-tn]: https://testnet.tonapi.io/streaming/v2/sse
-[eta-wss]: wss://tonapi.io/streaming/v2/ws
-[eta-wss-tn]: wss://testnet.tonapi.io/streaming/v2/ws
-[eta-key]: https://tonconsole.com/tonapi/api-keys
 
 {/* dTON */}
 

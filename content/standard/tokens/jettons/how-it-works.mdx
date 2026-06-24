@@ -240,7 +240,7 @@ There are three actions that can be performed through the UI:
 
 ### Applications
 
-The most popular user wallet applications, such as [TonKeeper](https://tonkeeper.com/), use their own SQL-like database. When the user receives a new jetton for the first time,
+The most popular user wallet applications use their own SQL-like database. When the user receives a new jetton for the first time,
 the application processes the `transfer_notification` message. Next, information about the number of jettons received is taken from it, and it is
 checked if there is information about this jetton in the applications database. If there is, information is added to the database stating that the user has a
 new type of jetton in the amount received. If not, the database starts indexing this new jetton, and after the validation process begins to show data
@@ -251,6 +251,6 @@ fields through the application. Next, it will automatically generate a transfer 
 
 ### Web services
 
-Various web services, such as [Tonviewer](https://tonviewer.com/), can also be used to obtain information about the types of user jettons and their amounts.
+Various web services can also be used to obtain information about the types of user jettons and their amounts.
 Unlike wallet applications, they also have the ability to directly invoke the get methods of related smart contracts.
 However, they are not designed to generate and send messages.

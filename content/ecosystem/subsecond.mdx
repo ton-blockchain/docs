@@ -43,7 +43,7 @@ A faster chain alone does not reduce end-to-end latency if the application conti
 
 #### Actions
 
-- Switch to a streaming API such as [TON Center Streaming API v2](#ton-center-streaming-api-v2) or [TonAPI Streaming API](#tonapi-streaming-api).
+- Switch to a streaming API such as [TON Center Streaming API v2](#ton-center-streaming-api-v2).
   Handle all four transaction statuses: `"pending"`, `"confirmed"`, `"finalized"`, and `"trace_invalidated"`.
 
 - If Streaming API cannot be used, reduce polling intervals and adjust assumptions about transaction timing.
@@ -122,8 +122,8 @@ If applications do not adapt, the upgrade will not become apparent. Projects tha
 
 For projects building on TON:
 
-- Streaming API: [TON Center](#ton-center-streaming-api-v2) or [TonAPI](#tonapi-streaming-api).
-- Data layer: [TON Center API v3](/ecosystem/api/toncenter/v3/overview) or TonAPI v2.
+- Streaming API: [TON Center](#ton-center-streaming-api-v2).
+- Data layer: [TON Center API v3](/ecosystem/api/toncenter/v3/overview).
 - SDK: [AppKit][appkit] for balances, tokens, NFTs, and contract interactions.
 - Finality: wait for `"finalized"` in critical flows.
 
@@ -172,14 +172,14 @@ SSE and WebSocket are available. Choose based on the stack:
 | WebSocket | `wss://testnet.toncenter.com/api/streaming/v2/ws`    | `wss://toncenter.com/api/streaming/v2/ws`    |
 
 <Callout type="note">
-  TonAPI also exposes Streaming API endpoints with the same SSE and WebSocket interface. Use the TON Center's [Streaming API v2 documentation][streaming] as the protocol reference.
+  TON Center's [Streaming API v2 documentation][streaming] can serve as the protocol reference for some other API providers that use the same SSE and WebSocket interface.
 
   | Protocol  | Testnet URL                                  | Mainnet URL                          |
   | --------- | -------------------------------------------- | ------------------------------------ |
   | SSE       | `https://testnet.tonapi.io/streaming/v2/sse` | `https://tonapi.io/streaming/v2/sse` |
   | WebSocket | `wss://testnet.tonapi.io/streaming/v2/ws`    | `wss://tonapi.io/streaming/v2/ws`    |
 
-  Authentication uses a [Ton Console API key](https://tonconsole.com/tonapi/api-keys).
+  Authentication uses an [API key](https://tonconsole.com/tonapi/api-keys).
 </Callout>
 
 <Callout
@@ -234,10 +234,6 @@ Example subscription (send flow):
 - Send a `ping` every 15 seconds to keep the connection alive.
 - SSE connections receive automatic server-side keepalive (`: keepalive`) every 15 seconds; no client action required.
 
-### TonAPI Streaming API
-
-TonAPI Streaming API's interface is fully compatible and can be used interchangeably with TON Center's [Streaming API v2][streaming].
-
 ### AppKit for app developers
 
 [AppKit][appkit] provides ready-to-use components for frontend applications. It handles out of the box:
@@ -254,7 +250,7 @@ Testnet runs at sub-second block generation speed. Use it for testing projects b
 
 ### Testnet endpoints
 
-Use the [public API endpoints overview](/ecosystem/api/overview) for testnet endpoints, including TON Center and TonAPI streaming endpoints.
+Use the [public API endpoints overview](/ecosystem/api/overview) for testnet endpoints, including TON Center's streaming endpoints.
 
 ### How to get test tokens
 
