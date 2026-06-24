@@ -67,9 +67,8 @@ export default defineConfig({
     // },
     rehypeCodeOptions: {
       themes: {
-        // NOTE: one-light and one-dark-pro are alternative options
-        light: 'github-light-default',
-        dark: 'dark-plus',
+        light: 'one-light',
+        dark: 'dark-plus', // one-dark-pro is an alternative option
       },
       icon: {
         extend: {
@@ -222,6 +221,20 @@ export default defineConfig({
       remarkMdxMermaid,
       remarkMdxFiles,
       remarkSteps,
+      function remarkRemoveMdxComments() {
+        return (tree: any) => {
+          function process(node: any) {
+            if (!Array.isArray(node.children)) return;
+            node.children = node.children.filter((child: any) => {
+              const isExpression =
+                child.type === 'mdxFlowExpression' || child.type === 'mdxTextExpression';
+              return !(isExpression && /^\s*\/\*[\s\S]*\*\/\s*$/.test(child.value));
+            });
+            for (const child of node.children) process(child);
+          }
+          process(tree);
+        };
+      },
     ],
     rehypePlugins: (v) => [
       // NOTE: KaTeX support should be placed before everything else!

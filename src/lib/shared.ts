@@ -37,6 +37,8 @@ export function withBasePath(src: string): string {
 }
 
 export function withBaseUrl(src: string): string {
+  // NOTE: vercel only, separate production from staging
+  // if (process.env.NEXT_CONFIG === 'vercel') return 'https://docs.ton.org' + src;
   // locally or not on GitHub Pages
   if (!urlPrefix) return src;
   // external, relative, or data:
