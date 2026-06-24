@@ -119,11 +119,11 @@ const paths: Path[] = [
     description: 'Learn all the ins and outs of the TON blockchain.',
     icon: BrickWall,
     links: [
-      { title: 'TL-B', href: '/foundations/tlb/overview' },
       { title: 'Addresses', href: '/foundations/addresses/overview' },
       { title: 'Transaction fees', href: '/foundations/fees' },
       { title: 'Limits', href: '/foundations/limits' },
       { title: 'Config', href: '/foundations/config' },
+      { title: 'TL-B', href: '/foundations/tlb/overview' },
     ],
   },
 ];
