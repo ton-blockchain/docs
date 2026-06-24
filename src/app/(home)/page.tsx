@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ComponentType } from 'react';
 import Link from 'next/link';
 import {
+  ArrowUpRight,
   ArrowRight,
   Blocks,
   Brain,
@@ -11,7 +12,6 @@ import {
   Rocket,
   Send,
   Server,
-  Users,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-type QuickLink = { title: string; href: string };
+type QuickLink = { title: string; href: string; external?: boolean | undefined };
 
 type Path = {
   title: string;
@@ -77,7 +77,7 @@ const paths: Path[] = [
     description: 'Build, debug, and deploy smart contracts on TON.',
     icon: FileCode2,
     links: [
-      { title: 'Acton toolchain', href: '/contract-dev/acton' },
+      { title: 'Acton toolchain', href: '/contract-dev/acton', external: true },
       { title: 'Tolk language', href: '/tolk/overview' },
       { title: 'JetBrains IDE plugin', href: '/contract-dev/ide/jetbrains' },
       { title: 'VS Code extension', href: '/contract-dev/ide/vscode' },
@@ -154,11 +154,12 @@ function isExternal(href: string): boolean {
   return href.startsWith('http');
 }
 
-function QuickLinkRow({ title, href }: QuickLink) {
+function QuickLinkRow({ title, href, external }: QuickLink) {
   const className =
     'group -mx-3 flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground';
+  const Component = external ? ArrowUpRight : ArrowRight;
   const arrow = (
-    <ArrowRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
+    <Component className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
   );
 
   if (isExternal(href)) {
