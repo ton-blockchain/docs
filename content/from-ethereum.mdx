@@ -71,12 +71,14 @@ For off-chain software, TypeScript is the most adopted language in TON. Most of 
 
 | Use case                              | Ethereum tool             | TON counterparts                                                                                                |
 | :------------------------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Blockchain interaction                | Ethers, Web3.js, Viem     | [`@ton/ton`](https://www.npmjs.com/package/@ton/ton), [Asset-sdk](https://github.com/ton-community/assets-sdk)  |
-| Wallet connection protocol            | WalletConnect, Wagmi      | [TON Connect](https://github.com/ton-connect)                                                                   |
-| Dev environment framework / scripting | Hardhat, Truffle, Foundry | [Acton](https://github.com/ton-blockchain/acton), [Blueprint](https://github.com/ton-org/blueprint)             |
+| Blockchain interaction                | Ethers, Web3.js, Viem     | [AppKit](/applications/appkit/overview), [`@ton/ton`](https://www.npmjs.com/package/@ton/ton), [Asset-sdk](https://github.com/ton-community/assets-sdk)  |
+| Wallet connection protocol            | WalletConnect, Wagmi      | [WalletKit](/applications/walletkit/overview) that works on [TON Connect](https://github.com/ton-blockchain/ton-connect)                                                                   |
+| Dev environment framework / scripting | Hardhat, Truffle, Foundry | [Acton](https://github.com/ton-blockchain/acton), [Blueprint (legacy)](https://github.com/ton-org/blueprint)             |
 | Simulation engine                     | Revm & Reth               | [Emulator within Acton](https://github.com/ton-blockchain/acton), [Sandbox](https://github.com/ton-org/sandbox) |
 
-For low-level manipulation of TON-specific data structures, there is [`@ton/core`](https://www.npmjs.com/package/@ton/core). Another library with wrappers for most important contracts and HTTP APIs is [`@ton/ton`](https://www.npmjs.com/package/@ton/ton).
+For low-level manipulation of TON-specific data structures, there is [`@ton/core`](https://www.npmjs.com/package/@ton/core).
+
+{/* Another library with wrappers for most important contracts and HTTP APIs is [`@ton/ton`](https://www.npmjs.com/package/@ton/ton). */}
 
 ### Services
 
