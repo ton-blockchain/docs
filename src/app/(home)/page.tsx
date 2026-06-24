@@ -111,7 +111,7 @@ const paths: Path[] = [
         title: 'Run a liteserver node',
         href: '/ecosystem/nodes/cpp/run-liteserver',
       },
-      { title: 'Rust an archive liteserver', href: '/ecosystem/nodes/cpp/run-archive-liteserver' },
+      { title: 'Run an archive liteserver', href: '/ecosystem/nodes/cpp/run-archive-liteserver' },
     ],
   },
   {
