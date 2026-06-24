@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ComponentType } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Blocks, FileCode2, LifeBuoy, Rocket, Send, Server, Users } from 'lucide-react';
+import { ArrowRight, Blocks, Brain, BrickWall, FileCode2, LifeBuoy, Rocket, Send, Server, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'TON documentation',
@@ -33,8 +33,9 @@ const paths: Path[] = [
     icon: Rocket,
     links: [
       { title: 'Overview of TON and the documentation', href: '/start-here' },
-      { title: 'Use a GRAM wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
-      { title: 'Introduction to Tolk', href: '/tolk/overview' },
+      { title: 'Create a Gram wallet', href: '/ecosystem/wallet-apps/tonkeeper' },
+      { title: 'Read blockchain data with explorers', href: '/ecosystem/explorers/overview' },
+      { title: 'Enable TON for agents with @ton/mcp', href: '/ecosystem/ai/mcp' },
     ],
   },
   {
@@ -43,18 +44,25 @@ const paths: Path[] = [
     icon: Blocks,
     links: [
       {
-        title: 'Connect wallets to the app',
-        href: '/ecosystem/ton-connect/overview',
+        title: 'Go to section overview',
+        href: '/applications/overview',
       },
       {
-        title: 'Manage and track assets with AppKit',
-        href: '/ecosystem/appkit/overview',
+        title: 'Build applications with AppKit',
+        href: '/applications/appkit/overview',
       },
       {
-        title: 'Access the blockchain via APIs',
-        href: '/ecosystem/api/overview',
+        title: 'Integrate payments with TON Pay',
+        href: '/applications/ton-pay/overview',
       },
-      { title: 'Build apps using SDKs', href: '/ecosystem/sdks' },
+      {
+        title: 'Make wallet services with WalletKit',
+        href: '/applications/walletkit/overview',
+      },
+      {
+        title: 'Create tools using SDKs',
+        href: '/applications/sdks',
+      },
     ],
   },
   {
@@ -62,12 +70,22 @@ const paths: Path[] = [
     description: 'Build, debug, and deploy smart contracts on TON.',
     icon: FileCode2,
     links: [
-      { title: 'Acton toolchain', href: '/contract-dev/acton' },
+      { title: 'Acton toolchain ↗️', href: '/contract-dev/acton' },
+      { title: 'Tolk language', href: '/tolk/overview' },
       { title: 'JetBrains IDE plugin', href: '/contract-dev/ide/jetbrains' },
       { title: 'VS Code extension', href: '/contract-dev/ide/vscode' },
+      { title: 'Standard contracts', href: '/standard/overview' },
+    ],
+  },
+  {
+    title: 'TVM: TON Virtual Machine',
+    description: '',
+    icon: Brain,
+    links: [
+      { title: 'Go to section overview', href: '/tvm/overview' },
       { title: 'TVM exit codes', href: '/tvm/exit-codes' },
       { title: 'TVM instructions', href: '/tvm/instructions' },
-    ],
+    ]
   },
   {
     title: 'Nodes',
@@ -81,6 +99,14 @@ const paths: Path[] = [
       },
       { title: 'C++ node setup', href: '/ecosystem/nodes/cpp/setup-mytonctrl' },
       { title: 'Rust node setup', href: '/ecosystem/nodes/rust/quick-start' },
+    ],
+  },
+  {
+    title: 'Foundations',
+    description: 'Learn all the ins and outs of the blockchain and web3 services.',
+    icon: BrickWall,
+    links: [
+      { title: 'Nodes overview', href: '/ecosystem/nodes/overview' },
     ],
   },
 ];

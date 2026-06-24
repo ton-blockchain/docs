@@ -102,7 +102,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
           </div>
         ),
       }}
-    // breadcrumb={{ enabled: false }}
+      // breadcrumb={{ enabled: false }}
     >
       <DocsTitle>{renderInlineCode(page.data.title)}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>

@@ -806,10 +806,10 @@ Returns: <code><a href="#stakingcontexttype">StakingContextType</a></code>.
 
 React hook returning a registered staking provider. Subscribes to provider-registry changes via [`watchStakingProviders`](/applications/appkit/reference/appkit#watchstakingproviders) and looks up by `id`, or returns the registered default when no ID is given. Returns `undefined` when no provider matches and no default has been registered (where the underlying [`getStakingProvider`](/applications/appkit/reference/appkit#getstakingprovider) action would throw).
 
-| Parameter       | Type                                                            | Description                                                                            |
-| --------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Parameter       | Type                                                                                           | Description                                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `parameters`    | [`GetStakingProviderOptions`](/applications/appkit/reference/appkit#getstakingprovideroptions) | Optional provider ID.                                                                  |
-| `parameters.id` | `string`                                                        | Provider ID to look up. When omitted, returns the registered default staking provider. |
+| `parameters.id` | `string`                                                                                       | Provider ID to look up. When omitted, returns the registered default staking provider. |
 
 Returns: <code><a href="#usestakingproviderreturntype">UseStakingProviderReturnType</a></code> — Matching staking provider instance, or `undefined` when none resolves.
 

@@ -364,8 +364,8 @@ Returns: <code>ProviderFactory\<<a href="#layerswapcryptoonrampprovider">Layersw
 
 Build a Decent-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
-| Parameter  | Type                                                | Description                                                                      |
-| ---------- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Parameter  | Type                                              | Description                                                                      |
+| ---------- | ------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `config`\* | [`DecentProviderConfig`](#swapsxyzproviderconfig) | Configuration carrying the required `apiKey` plus optional URL/sender overrides. |
 
 Returns: <code>ProviderFactory\<<a href="#swapsxyzcryptoonrampprovider">DecentCryptoOnrampProvider</a>></code>.
@@ -1818,14 +1818,14 @@ Constructor: `new LayerswapCryptoOnrampProvider(config)`
 
 Constructor: `new DecentCryptoOnrampProvider(config)`
 
-| Parameter              | Type                                                | Description                                                                                                                                                                |
-| ---------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config`\*             | [`DecentProviderConfig`](#swapsxyzproviderconfig) | Configuration carrying the required `apiKey` plus optional URL/sender overrides.                                                                                           |
-| `config.apiKey`\*      | `string`                                            | API key issued by Decent (passed as `x-api-key`)                                                                                                                        |
-| `config.apiUrl`        | `string`                                            | Override the base API URL. Defaults to `https://api-v2.swaps.xyz/api`.                                                                                                     |
-| `config.defaultSender` | `string`                                            | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
-| `config.supportedChains` | `Record<string, DecentChainConfig>`               | Full CAIP-2 source-chain map. Replaces the built-in map when provided.                                                                                                     |
-| `config.supportedCurrencies` | [`CryptoOnrampSupportedCurrencies`](#cryptoonrampsupportedcurrencies) | Curated source and destination currency lists. Replaces the built-in lists when provided.                                                                  |
+| Parameter                    | Type                                                                  | Description                                                                                                                                                                |
+| ---------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config`\*                   | [`DecentProviderConfig`](#swapsxyzproviderconfig)                     | Configuration carrying the required `apiKey` plus optional URL/sender overrides.                                                                                           |
+| `config.apiKey`\*            | `string`                                                              | API key issued by Decent (passed as `x-api-key`)                                                                                                                           |
+| `config.apiUrl`              | `string`                                                              | Override the base API URL. Defaults to `https://api-v2.swaps.xyz/api`.                                                                                                     |
+| `config.defaultSender`       | `string`                                                              | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
+| `config.supportedChains`     | `Record<string, DecentChainConfig>`                                   | Full CAIP-2 source-chain map. Replaces the built-in map when provided.                                                                                                     |
+| `config.supportedCurrencies` | [`CryptoOnrampSupportedCurrencies`](#cryptoonrampsupportedcurrencies) | Curated source and destination currency lists. Replaces the built-in lists when provided.                                                                                  |
 
 ### DeFi
 
@@ -2742,21 +2742,21 @@ Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquot
 
 Configuration accepted by [`createDecentProvider`](#createswapsxyzprovider).
 
-| Field           | Type     | Description                                                                                                                                                                |
-| --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apiKey`\*      | `string` | API key issued by Decent (passed as `x-api-key`)                                                                                                                        |
-| `apiUrl`        | `string` | Override the base API URL. Defaults to `https://api-v2.swaps.xyz/api`.                                                                                                     |
-| `defaultSender` | `string` | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
-| `supportedChains` | `Record<string, DecentChainConfig>` | Full CAIP-2 source-chain map. Replaces the built-in map when provided.                                                                                 |
-| `supportedCurrencies` | [`CryptoOnrampSupportedCurrencies`](#cryptoonrampsupportedcurrencies) | Curated source and destination currency lists. Replaces the built-in lists when provided.                                         |
+| Field                 | Type                                                                  | Description                                                                                                                                                                |
+| --------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apiKey`\*            | `string`                                                              | API key issued by Decent (passed as `x-api-key`)                                                                                                                           |
+| `apiUrl`              | `string`                                                              | Override the base API URL. Defaults to `https://api-v2.swaps.xyz/api`.                                                                                                     |
+| `defaultSender`       | `string`                                                              | EVM address used as `sender` on getAction requests. Required by the API even for deposit flows where the actual payer is unknown. Defaults to a null address when omitted. |
+| `supportedChains`     | `Record<string, DecentChainConfig>`                                   | Full CAIP-2 source-chain map. Replaces the built-in map when provided.                                                                                                     |
+| `supportedCurrencies` | [`CryptoOnrampSupportedCurrencies`](#cryptoonrampsupportedcurrencies) | Curated source and destination currency lists. Replaces the built-in lists when provided.                                                                                  |
 
 #### `DecentQuoteMetadata`
 
 Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)'s `metadata` from Decent — carries the resolved action and bridge route that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) needs.
 
-| Field        | Type                        | Description                                                                                        |
-| ------------ | --------------------------- | -------------------------------------------------------------------------------------------------- |
-| `sender`\*   | `string`                    | EVM sender address Decent was quoted for. Required when later calling `createDeposit`.          |
+| Field        | Type                      | Description                                                                                        |
+| ------------ | ------------------------- | -------------------------------------------------------------------------------------------------- |
+| `sender`\*   | `string`                  | EVM sender address Decent was quoted for. Required when later calling `createDeposit`.             |
 | `response`\* | `DecentGetActionResponse` | Raw `getAction` response cached at quote time so `createDeposit` doesn't need an extra round-trip. |
 
 #### `DecentQuoteOptions`
