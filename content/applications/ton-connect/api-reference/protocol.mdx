@@ -1,0 +1,1452 @@
+---
+title: "`@tonconnect/protocol` reference"
+sidebarTitle: "Protocol reference"
+---
+
+`@tonconnect/protocol` is the low-level package of request, response, and event models that describe the TON Connect wire format, plus the session cryptography (`SessionCrypto`, `Base64`, hex helpers) used to encrypt bridge traffic. Wallet implementers consume this package; dApp developers normally use [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk), which re-exports the relevant types.
+
+For protocol semantics behind these models, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
+
+## Installation
+
+Install from npm:
+
+```bash
+npm i @tonconnect/protocol
+```
+
+There is no CDN bundle for this package — it is intended for wallet and SDK implementers building on top of the protocol.
+
+> Generated from `@tonconnect/protocol` v3.0.0-beta.2.
+
+## `SessionCrypto`
+
+Implements the TON Connect session-encryption protocol on top of NaCl's
+`crypto_box`.
+
+The protocol is symmetric: each side encrypts the messages it sends and
+decrypts the messages it receives. On the dApp side that means encrypting
+outgoing [`AppMessage`](#appmessage) and decrypting incoming [`WalletMessage`](#walletmessage);
+the wallet does the reverse.
+
+### Constructor
+
+Reuse an existing [`KeyPair`](#keypair) (resuming a session) or generate a
+fresh one (`crypto_box.keyPair()`) when omitted.
+
+```ts
+new SessionCrypto(keyPair?: KeyPair)
+```
+
+| Parameter | Type      | Description |
+| --------- | --------- | ----------- |
+| `keyPair` | `KeyPair` | _Optional_. |
+
+### Instance properties
+
+| Property    | Type     | Description                                                                                                                                                           |
+| ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sessionId` | `string` | Bridge-level `client_id` — the public key as a 64-character lowercase hex string. Share with the peer during connect; treat as semi-private (do not publish broadly). |
+
+### `encrypt()`
+
+Encrypt `message` for `receiverPublicKey` using a fresh 24-byte random
+nonce. Returns `nonce || ciphertext` as raw bytes; base64-encode this
+value before placing it in the bridge `POST /message` body.
+
+```ts
+encrypt(message: string, receiverPublicKey: Uint8Array): Uint8Array;
+```
+
+| Parameter           | Type         | Description |
+| ------------------- | ------------ | ----------- |
+| `message`           | `string`     | —           |
+| `receiverPublicKey` | `Uint8Array` | —           |
+
+Returns `Uint8Array`.
+
+### `decrypt()`
+
+Decrypt the `nonce || ciphertext` blob received from the bridge.
+Throws if `nacl.box.open` rejects the message — wrong key, truncated
+input or tampered ciphertext.
+
+```ts
+decrypt(message: Uint8Array, senderPublicKey: Uint8Array): string;
+```
+
+| Parameter         | Type         | Description |
+| ----------------- | ------------ | ----------- |
+| `message`         | `Uint8Array` | —           |
+| `senderPublicKey` | `Uint8Array` | —           |
+
+Returns `string`.
+
+### `stringifyKeypair()`
+
+Export the underlying keypair as a [`KeyPair`](#keypair) of hex strings.
+Persist this in dApp / wallet storage to resume the session later.
+
+```ts
+stringifyKeypair(): KeyPair;
+```
+
+Returns [`KeyPair`](#keypair).
+
+## Types
+
+### `KeyPair`
+
+Serialized form of a session keypair, used to persist a session across
+page reloads. Both fields are hex-encoded (no `0x` prefix). Pass an
+existing keypair into [`SessionCrypto`](#sessioncrypto) to resume a session; omit it
+to generate a fresh one.
+
+`client_id` on the bridge is `publicKey` itself. Keep `secretKey`
+confidential — it grants the ability to decrypt messages addressed to
+this client.
+
+```ts
+interface KeyPair {
+    publicKey: string;
+    secretKey: string;
+}
+```
+
+| Field       | Type     | Description                                            |
+| ----------- | -------- | ------------------------------------------------------ |
+| `publicKey` | `string` | 32-byte public key, hex-encoded.                       |
+| `secretKey` | `string` | 32-byte secret key, hex-encoded. Must be kept private. |
+
+### `TonAddressItem`
+
+```ts
+interface TonAddressItem {
+    name: 'ton_addr';
+    network?: ChainId;
+}
+```
+
+| Field     | Type         | Description                                                                                                                                                                                    |
+| --------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | `'ton_addr'` | —                                                                                                                                                                                              |
+| `network` | `ChainId`    | _Optional_. Desired TON network global\_id the dApp wants to connect on. A hint only; the network-mismatch alert is enforced at request time (`sendTransaction` / `signData`), not at connect. |
+
+### `TonProofItem`
+
+Ask the wallet for a `ton_proof` signature binding the connected account,
+the dApp domain and a server-issued nonce. dApps use the reply to
+authenticate the user.
+
+```ts
+interface TonProofItem {
+    name: 'ton_proof';
+    payload: string;
+}
+```
+
+| Field     | Type          | Description                             |
+| --------- | ------------- | --------------------------------------- |
+| `name`    | `'ton_proof'` | —                                       |
+| `payload` | `string`      | Payload to embed in the signed message. |
+
+### `ConnectRequest`
+
+First message a dApp sends to a wallet. Carried inside the connect URL —
+not over the encrypted bridge — because the wallet is not yet connected.
+
+```ts
+interface ConnectRequest {
+    manifestUrl: string;
+    items: ConnectItem[];
+}
+```
+
+| Field         | Type            | Description                                                                                                                                                                                                                                |
+| ------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `manifestUrl` | `string`        | URL of the dApp's [`tonconnect-manifest.json`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/manifest.md). The wallet fetches this file before showing the connect prompt to extract the dApp's name, icon and policy URLs. |
+| `items`       | `ConnectItem[]` | Data items the dApp wants to receive from the wallet on successful connect. The wallet returns a matching reply for each item (or a per-item error if unsupported). At least one entry — typically `{ name: 'ton_addr' }` — is required.   |
+
+### `DisconnectRpcRequest`
+
+RPC request that tells the wallet the dApp ended the session.
+
+```ts
+interface DisconnectRpcRequest {
+    method: 'disconnect';
+    params: [];
+    id: string;
+}
+```
+
+| Field    | Type           | Description                                                 |
+| -------- | -------------- | ----------------------------------------------------------- |
+| `method` | `'disconnect'` | —                                                           |
+| `params` | `[]`           | Empty tuple — no parameters                                 |
+| `id`     | `string`       | dApp-assigned request ID; used to match the wallet response |
+
+### `SendTransactionRpcRequest`
+
+RPC request to submit and broadcast a transaction.
+
+`params[0]` is a JSON-stringified payload that mirrors the SDK's
+`SendTransactionRequest` (either raw `messages` OR structured `items`,
+plus `valid_until`, `network`, and `from`).
+
+```ts
+interface SendTransactionRpcRequest {
+    method: 'sendTransaction';
+    params: [string];
+    id: string;
+}
+```
+
+| Field    | Type                | Description                                                    |
+| -------- | ------------------- | -------------------------------------------------------------- |
+| `method` | `'sendTransaction'` | —                                                              |
+| `params` | `[string]`          | Single-element tuple: the JSON-stringified transaction payload |
+| `id`     | `string`            | dApp-assigned request ID; used to match the wallet response    |
+
+### `SignDataRpcRequest`
+
+RPC request to sign arbitrary application data and return a wallet-provided
+signature.
+
+`params[0]` is a JSON-stringified [`SignDataPayload`](#signdatapayload) — one of three
+discriminated shapes (`text`, `binary`, `cell`).
+
+```ts
+interface SignDataRpcRequest {
+    method: 'signData';
+    params: [string];
+    id: string;
+}
+```
+
+| Field    | Type         | Description                                                  |
+| -------- | ------------ | ------------------------------------------------------------ |
+| `method` | `'signData'` | —                                                            |
+| `params` | `[string]`   | Single-element tuple: the JSON-stringified sign-data payload |
+| `id`     | `string`     | dApp-assigned request ID; used to match the wallet response  |
+
+### `SignMessageRpcRequest`
+
+RPC request to sign an internal message **without** broadcasting it.
+
+`params[0]` is a JSON-stringified payload identical in shape to
+[`SendTransactionRpcRequest`](#sendtransactionrpcrequest).
+
+```ts
+interface SignMessageRpcRequest {
+    method: 'signMessage';
+    params: [string];
+    id: string;
+}
+```
+
+| Field    | Type            | Description                                                 |
+| -------- | --------------- | ----------------------------------------------------------- |
+| `method` | `'signMessage'` | —                                                           |
+| `params` | `[string]`      | Single-element tuple: the JSON-stringified payload          |
+| `id`     | `string`        | dApp-assigned request ID; used to match the wallet response |
+
+### `DeviceInfo`
+
+Wallet self-description returned inside [`ConnectEventSuccess`](#connecteventsuccess)'s `payload.device`.
+
+```ts
+interface DeviceInfo {
+    platform: 'iphone' | 'ipad' | 'android' | 'windows' | 'mac' | 'linux' | 'browser';
+    appName: string;
+    appVersion: string;
+    maxProtocolVersion: number;
+    features: Feature[];
+}
+```
+
+| Field                | Type                                                                            | Description                                                                 |
+| -------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `platform`           | `'iphone' \| 'ipad' \| 'android' \| 'windows' \| 'mac' \| 'linux' \| 'browser'` | Operating system / runtime the wallet identifies itself with.               |
+| `appName`            | `string`                                                                        | Wallet identifier — same value as the `app_name` field in the wallets list. |
+| `appVersion`         | `string`                                                                        | The version of the wallet.                                                  |
+| `maxProtocolVersion` | `number`                                                                        | Highest TON Connect protocol version the wallet implements.                 |
+| `features`           | `Feature[]`                                                                     | Capabilities the wallet advertises.                                         |
+
+### `WireSendTransaction`
+
+Compact wire form of `AppRequest<'sendTransaction'>`.
+The payload carries EITHER `ms` (raw messages) OR `i` (structured items),
+never both.
+
+```ts
+interface WireSendTransaction {
+    m: 'st';
+    f?: string;
+    n?: string;
+    vu?: number;
+    ms?: WireMessage[];
+    i?: WireItem[];
+}
+```
+
+| Field | Type            | Description                                                                 |
+| ----- | --------------- | --------------------------------------------------------------------------- |
+| `m`   | `'st'`          | Method discriminator: `sendTransaction`                                     |
+| `f`   | `string`        | _Optional_. From — sender address (optional; defaults to connected account) |
+| `n`   | `string`        | _Optional_. Network — TON chain ID (e.g. `"-239"` for mainnet)              |
+| `vu`  | `number`        | _Optional_. valid\_until — unix epoch seconds                               |
+| `ms`  | `WireMessage[]` | _Optional_. Raw messages (mutually exclusive with `i`)                      |
+| `i`   | `WireItem[]`    | _Optional_. Structured items (mutually exclusive with `ms`)                 |
+
+### `WireSignMessage`
+
+Compact wire form of `AppRequest<'signMessage'>`.
+Same shape as [`WireSendTransaction`](#wiresendtransaction); only the method discriminator differs.
+
+```ts
+interface WireSignMessage {
+    m: 'sm';
+    f?: string;
+    n?: string;
+    vu?: number;
+    ms?: WireMessage[];
+    i?: WireItem[];
+}
+```
+
+| Field | Type            | Description                                                 |
+| ----- | --------------- | ----------------------------------------------------------- |
+| `m`   | `'sm'`          | Method discriminator: `signMessage`                         |
+| `f`   | `string`        | _Optional_. From — sender address                           |
+| `n`   | `string`        | _Optional_. Network — TON chain ID                          |
+| `vu`  | `number`        | _Optional_. valid\_until — unix epoch seconds               |
+| `ms`  | `WireMessage[]` | _Optional_. Raw messages (mutually exclusive with `i`)      |
+| `i`   | `WireItem[]`    | _Optional_. Structured items (mutually exclusive with `ms`) |
+
+### `WireSignDataText`
+
+Sign-data payload: plain UTF-8 text.
+
+```ts
+interface WireSignDataText {
+    t: 'text';
+    tx: string;
+}
+```
+
+| Field | Type     | Description                |
+| ----- | -------- | -------------------------- |
+| `t`   | `'text'` | Payload type discriminator |
+| `tx`  | `string` | Text to sign               |
+
+### `WireSignDataBinary`
+
+Sign-data payload: arbitrary binary blob, base64-encoded.
+
+```ts
+interface WireSignDataBinary {
+    t: 'binary';
+    b: string;
+}
+```
+
+| Field | Type       | Description                |
+| ----- | ---------- | -------------------------- |
+| `t`   | `'binary'` | Payload type discriminator |
+| `b`   | `string`   | Base64-encoded bytes       |
+
+### `WireSignDataCell`
+
+Sign-data payload: a TVM cell with a TL-B schema.
+
+```ts
+interface WireSignDataCell {
+    t: 'cell';
+    s: string;
+    c: string;
+}
+```
+
+| Field | Type     | Description                            |
+| ----- | -------- | -------------------------------------- |
+| `t`   | `'cell'` | Payload type discriminator             |
+| `s`   | `string` | TL-B schema describing the cell layout |
+| `c`   | `string` | Base64-encoded cell BoC                |
+
+### `WireMessage`
+
+Wire form of a raw transaction message (non-structured — the caller is
+responsible for the BoC). Counterpart of the standard `SendTransaction`
+`messages[]` element.
+
+```ts
+interface WireMessage {
+    a: string;
+    am: string;
+    p?: string;
+    si?: string;
+    ec?: { [k: number]: string };
+}
+```
+
+| Field | Type                      | Description                                    |
+| ----- | ------------------------- | ---------------------------------------------- |
+| `a`   | `string`                  | Destination address                            |
+| `am`  | `string`                  | Amount in nanograms (decimal string)           |
+| `p`   | `string`                  | _Optional_. Optional one-cell BoC body, base64 |
+| `si`  | `string`                  | _Optional_. Optional state init, base64        |
+| `ec`  | `{ [k: number]: string }` | _Optional_. Extra currencies map               |
+
+### `WireTonItem`
+
+Structured item: native GRAM transfer.
+
+```ts
+interface WireTonItem {
+    t: 'gram';
+    a: string;
+    am: string;
+    p?: string;
+    si?: string;
+    ec?: { [k: number]: string };
+}
+```
+
+| Field | Type                      | Description                                    |
+| ----- | ------------------------- | ---------------------------------------------- |
+| `t`   | `'gram'`                  | Item type discriminator                        |
+| `a`   | `string`                  | Destination address                            |
+| `am`  | `string`                  | Amount in nanograms (decimal string)           |
+| `p`   | `string`                  | _Optional_. Optional one-cell BoC body, base64 |
+| `si`  | `string`                  | _Optional_. Optional state init, base64        |
+| `ec`  | `{ [k: number]: string }` | _Optional_. Extra currencies map               |
+
+### `WireJettonItem`
+
+Structured item: jetton (TEP-74) transfer.
+
+```ts
+interface WireJettonItem {
+    t: 'jetton';
+    ma: string;
+    d: string;
+    am: string;
+    aa?: string;
+    rd?: string;
+    cp?: string;
+    fa?: string;
+    fp?: string;
+    qi?: string;
+}
+```
+
+| Field | Type       | Description                                                       |
+| ----- | ---------- | ----------------------------------------------------------------- |
+| `t`   | `'jetton'` | Item type discriminator                                           |
+| `ma`  | `string`   | Jetton master contract address                                    |
+| `d`   | `string`   | Jetton recipient address                                          |
+| `am`  | `string`   | Jetton amount in elementary units                                 |
+| `aa`  | `string`   | _Optional_. GRAM to attach for fees (wallet estimates if omitted) |
+| `rd`  | `string`   | _Optional_. Where to send excess GRAM (defaults to sender)        |
+| `cp`  | `string`   | _Optional_. Optional custom\_payload cell BoC, base64             |
+| `fa`  | `string`   | _Optional_. forward\_ton\_amount in nanograms                     |
+| `fp`  | `string`   | _Optional_. Optional forward\_payload cell BoC, base64            |
+| `qi`  | `string`   | _Optional_. Optional query\_id                                    |
+
+### `WireNftItem`
+
+Structured item: NFT (TEP-62) transfer.
+
+```ts
+interface WireNftItem {
+    t: 'nft';
+    na: string;
+    no: string;
+    aa?: string;
+    rd?: string;
+    cp?: string;
+    fa?: string;
+    fp?: string;
+    qi?: string;
+}
+```
+
+| Field | Type     | Description                                                |
+| ----- | -------- | ---------------------------------------------------------- |
+| `t`   | `'nft'`  | Item type discriminator                                    |
+| `na`  | `string` | NFT item contract address                                  |
+| `no`  | `string` | New owner address                                          |
+| `aa`  | `string` | _Optional_. GRAM to attach for fees                        |
+| `rd`  | `string` | _Optional_. Where to send excess GRAM (defaults to sender) |
+| `cp`  | `string` | _Optional_. Optional custom\_payload cell BoC, base64      |
+| `fa`  | `string` | _Optional_. forward\_ton\_amount in nanograms              |
+| `fp`  | `string` | _Optional_. Optional forward\_payload cell BoC, base64     |
+| `qi`  | `string` | _Optional_. Optional query\_id                             |
+
+### `RpcTonItem`
+
+Native GRAM transfer in RPC wire form.
+
+```ts
+interface RpcTonItem {
+    type: 'gram';
+    address: string;
+    amount: string;
+    payload?: string;
+    stateInit?: string;
+    extra_currency?: { [k: number]: string };
+}
+```
+
+| Field            | Type                      | Description                                                                 |
+| ---------------- | ------------------------- | --------------------------------------------------------------------------- |
+| `type`           | `'gram'`                  | Item discriminator.                                                         |
+| `address`        | `string`                  | Destination address in TEP-2 user-friendly format.                          |
+| `amount`         | `string`                  | Nanograms to send, as a decimal string.                                     |
+| `payload`        | `string`                  | _Optional_. Optional one-cell BoC body, base64-encoded.                     |
+| `stateInit`      | `string`                  | _Optional_. Optional one-cell BoC `StateInit`, base64-encoded.              |
+| `extra_currency` | `{ [k: number]: string }` | _Optional_. TEP-92 extra currencies: `currency_id` → decimal amount string. |
+
+### `RpcJettonItem`
+
+[TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) jetton transfer in RPC wire form.
+
+```ts
+interface RpcJettonItem {
+    type: 'jetton';
+    master: string;
+    destination: string;
+    amount: string;
+    attachAmount?: string;
+    responseDestination?: string;
+    customPayload?: string;
+    forwardAmount?: string;
+    forwardPayload?: string;
+    queryId?: string;
+}
+```
+
+| Field                 | Type       | Description                                                                                   |
+| --------------------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `type`                | `'jetton'` | Item discriminator.                                                                           |
+| `master`              | `string`   | Jetton master contract address.                                                               |
+| `destination`         | `string`   | Recipient address.                                                                            |
+| `amount`              | `string`   | Jetton amount in elementary units (decimal string).                                           |
+| `attachAmount`        | `string`   | _Optional_. GRAM value to attach for transfer execution; wallet picks a default when omitted. |
+| `responseDestination` | `string`   | _Optional_. Where to refund excess GRAM. Defaults to the sender.                              |
+| `customPayload`       | `string`   | _Optional_. Raw one-cell BoC `custom_payload`, base64-encoded.                                |
+| `forwardAmount`       | `string`   | _Optional_. Nanograms forwarded to the destination wallet. Defaults to `"1"` nanogram.        |
+| `forwardPayload`      | `string`   | _Optional_. Raw one-cell BoC `forward_payload`, base64-encoded.                               |
+| `queryId`             | `string`   | _Optional_. Application-defined `query_id` for the transfer body.                             |
+
+### `RpcNftItem`
+
+[TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md) NFT transfer in RPC wire form.
+
+```ts
+interface RpcNftItem {
+    type: 'nft';
+    nftAddress: string;
+    newOwner: string;
+    attachAmount?: string;
+    responseDestination?: string;
+    customPayload?: string;
+    forwardAmount?: string;
+    forwardPayload?: string;
+    queryId?: string;
+}
+```
+
+| Field                 | Type     | Description                                                                                   |
+| --------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `type`                | `'nft'`  | Item discriminator.                                                                           |
+| `nftAddress`          | `string` | NFT item contract address.                                                                    |
+| `newOwner`            | `string` | New owner address.                                                                            |
+| `attachAmount`        | `string` | _Optional_. GRAM value to attach for transfer execution; wallet picks a default when omitted. |
+| `responseDestination` | `string` | _Optional_. Where to refund excess GRAM. Defaults to the sender.                              |
+| `customPayload`       | `string` | _Optional_. Raw one-cell BoC `custom_payload`, base64-encoded.                                |
+| `forwardAmount`       | `string` | _Optional_. Nanograms forwarded to the new owner. Defaults to `"1"` nanogram.                 |
+| `forwardPayload`      | `string` | _Optional_. Raw one-cell BoC `forward_payload`, base64-encoded.                               |
+| `queryId`             | `string` | _Optional_. Application-defined `query_id` for the transfer body.                             |
+
+### `ConnectEventSuccess`
+
+Successful connect handshake.
+
+Wallets that support the [`EmbeddedRequest`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/deeplinks.md#embedded-requests-e)
+feature MAY attach the signed result of an embedded action on
+`ConnectEventSuccess.response`.
+
+```ts
+interface ConnectEventSuccess {
+    event: 'connect';
+    id: number;
+    payload: { items: ConnectItemReply[]; device: DeviceInfo };
+    response?: WalletResponse<RpcMethod>;
+}
+```
+
+| Field      | Type                                                | Description                                                                                                                                                                                              |
+| ---------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `event`    | `'connect'`                                         | —                                                                                                                                                                                                        |
+| `id`       | `number`                                            | Monotonic event ID (separate counter from RPC `id`).                                                                                                                                                     |
+| `payload`  | `{ items: ConnectItemReply[]; device: DeviceInfo }` | —                                                                                                                                                                                                        |
+| `response` | `WalletResponse<RpcMethod>`                         | _Optional_. Result of an embedded request that traveled in the connect URL's `e` parameter. Present only when the wallet supports the `EmbeddedRequest` feature and chose to process the folded request. |
+
+### `ConnectEventError`
+
+Connect failure. The dApp should surface the matching error from
+[`CONNECT_EVENT_ERROR_CODES`](#connect_event_error_codes) and unwind any pending UI.
+
+```ts
+interface ConnectEventError {
+    event: 'connect_error';
+    id: number;
+    payload: { code: CONNECT_EVENT_ERROR_CODES; message: string };
+}
+```
+
+| Field     | Type                                                   | Description |
+| --------- | ------------------------------------------------------ | ----------- |
+| `event`   | `'connect_error'`                                      | —           |
+| `id`      | `number`                                               | —           |
+| `payload` | `{ code: CONNECT_EVENT_ERROR_CODES; message: string }` | —           |
+
+### `TonAddressItemReply`
+
+Reply for the `ton_addr` connect item — the connected account.
+
+`publicKey` and `walletStateInit` are untrusted hints. Verifiers MUST
+re-derive the public key from `walletStateInit` (or via on-chain
+`get_public_key`) and check that `contractAddress(stateInit) === address`
+before trusting it.
+
+```ts
+interface TonAddressItemReply {
+    name: 'ton_addr';
+    address: string;
+    network: ChainId;
+    walletStateInit: string;
+    publicKey: string;
+}
+```
+
+| Field             | Type         | Description                                           |
+| ----------------- | ------------ | ----------------------------------------------------- |
+| `name`            | `'ton_addr'` | —                                                     |
+| `address`         | `string`     | Raw TON address (`<workchain>:<hex>`).                |
+| `network`         | `ChainId`    | TON network the account belongs to.                   |
+| `walletStateInit` | `string`     | Base64 BoC of the wallet contract `StateInit`.        |
+| `publicKey`       | `string`     | Public key as a hex string (without `0x`). Untrusted. |
+
+### `TonProofItemReplySuccess`
+
+Successful `ton_proof` reply. `proof` carries the Ed25519 signature plus
+the bound fields needed to reconstruct the signed bytes on the verifier
+side.
+
+```ts
+interface TonProofItemReplySuccess {
+    name: 'ton_proof';
+    proof: { timestamp: number; domain: { lengthBytes: number; value: string }; payload: string; signature: string };
+}
+```
+
+| Field   | Type                                                                                                        | Description |
+| ------- | ----------------------------------------------------------------------------------------------------------- | ----------- |
+| `name`  | `'ton_proof'`                                                                                               | —           |
+| `proof` | `{ timestamp: number; domain: { lengthBytes: number; value: string }; payload: string; signature: string }` | —           |
+
+### `DisconnectEvent`
+
+Wallet-initiated session teardown. Fires when the user removes the dApp
+from the wallet's connected-apps list.
+
+```ts
+interface DisconnectEvent {
+    event: 'disconnect';
+    id: number;
+    payload: {};
+}
+```
+
+| Field     | Type           | Description                                          |
+| --------- | -------------- | ---------------------------------------------------- |
+| `event`   | `'disconnect'` | —                                                    |
+| `id`      | `number`       | Monotonic event ID (separate counter from RPC `id`). |
+| `payload` | `{}`           | Empty for `disconnect`.                              |
+
+### `DisconnectRpcResponseSuccess`
+
+Success envelope. `result` is empty — the wallet just acknowledged.
+
+```ts
+interface DisconnectRpcResponseSuccess {
+    id: string;
+    result: {};
+}
+```
+
+| Field    | Type     | Description                        |
+| -------- | -------- | ---------------------------------- |
+| `id`     | `string` | Echo of the request `id`.          |
+| `result` | `{}`     | Empty. Reserved for future fields. |
+
+### `DisconnectRpcResponseError`
+
+Failure envelope. `code` is one of [`DISCONNECT_ERROR_CODES`](#disconnect_error_codes).
+
+```ts
+interface DisconnectRpcResponseError {
+    error: { code: DISCONNECT_ERROR_CODES; message: string; data?: unknown };
+    id: string;
+}
+```
+
+| Field   | Type                                                                | Description |
+| ------- | ------------------------------------------------------------------- | ----------- |
+| `error` | `{ code: DISCONNECT_ERROR_CODES; message: string; data?: unknown }` | —           |
+| `id`    | `string`                                                            | —           |
+
+### `SendTransactionRpcResponseSuccess`
+
+Success: `result` is the base64-encoded BoC of the external message.
+
+```ts
+interface SendTransactionRpcResponseSuccess {
+    result: string;
+    id: string;
+}
+```
+
+| Field    | Type     | Description |
+| -------- | -------- | ----------- |
+| `result` | `string` | —           |
+| `id`     | `string` | —           |
+
+### `SendTransactionRpcResponseError`
+
+Failure envelope.
+
+```ts
+interface SendTransactionRpcResponseError {
+    error: { code: SEND_TRANSACTION_ERROR_CODES; message: string; data?: unknown };
+    id: string;
+}
+```
+
+| Field   | Type                                                                      | Description |
+| ------- | ------------------------------------------------------------------------- | ----------- |
+| `error` | `{ code: SEND_TRANSACTION_ERROR_CODES; message: string; data?: unknown }` | —           |
+| `id`    | `string`                                                                  | —           |
+
+### `SignDataRpcResponseSuccess`
+
+```ts
+interface SignDataRpcResponseSuccess {
+    result: { signature: string; address: string; timestamp: number; domain: string; payload: SignDataPayload };
+    id: string;
+}
+```
+
+| Field    | Type                                                                                                  | Description               |
+| -------- | ----------------------------------------------------------------------------------------------------- | ------------------------- |
+| `result` | `{ signature: string; address: string; timestamp: number; domain: string; payload: SignDataPayload }` | —                         |
+| `id`     | `string`                                                                                              | Echo of the request `id`. |
+
+### `SignDataRpcResponseError`
+
+```ts
+interface SignDataRpcResponseError {
+    error: { code: SIGN_DATA_ERROR_CODES; message: string };
+    id: string;
+}
+```
+
+| Field   | Type                                               | Description |
+| ------- | -------------------------------------------------- | ----------- |
+| `error` | `{ code: SIGN_DATA_ERROR_CODES; message: string }` | —           |
+| `id`    | `string`                                           | —           |
+
+### `SignMessageRpcResponseSuccess`
+
+```ts
+interface SignMessageRpcResponseSuccess {
+    result: { internalBoc: string };
+    id: string;
+}
+```
+
+| Field    | Type                      | Description               |
+| -------- | ------------------------- | ------------------------- |
+| `result` | `{ internalBoc: string }` | —                         |
+| `id`     | `string`                  | Echo of the request `id`. |
+
+### `SignMessageRpcResponseError`
+
+```ts
+interface SignMessageRpcResponseError {
+    error: { code: SIGN_MESSAGE_ERROR_CODES; message: string; data?: unknown };
+    id: string;
+}
+```
+
+| Field   | Type                                                                  | Description |
+| ------- | --------------------------------------------------------------------- | ----------- |
+| `error` | `{ code: SIGN_MESSAGE_ERROR_CODES; message: string; data?: unknown }` | —           |
+| `id`    | `string`                                                              | —           |
+
+### `WalletResponseTemplateSuccess`
+
+```ts
+interface WalletResponseTemplateSuccess {
+    result: string;
+    id: string;
+}
+```
+
+| Field    | Type     | Description |
+| -------- | -------- | ----------- |
+| `result` | `string` | —           |
+| `id`     | `string` | —           |
+
+### `WalletResponseTemplateError`
+
+```ts
+interface WalletResponseTemplateError {
+    error: { code: number; message: string; data?: unknown };
+    id: string;
+}
+```
+
+| Field   | Type                                                | Description |
+| ------- | --------------------------------------------------- | ----------- |
+| `error` | `{ code: number; message: string; data?: unknown }` | —           |
+| `id`    | `string`                                            | —           |
+
+### `ChainId`
+
+TON network identifier. May be extended with custom `global_id`s.
+
+```ts
+type ChainId = CHAIN | string;
+```
+
+### `AppMessage`
+
+Anything a dApp can send to a wallet over the protocol.
+
+```ts
+type AppMessage = ConnectRequest | AppRequest<keyof RpcRequests>;
+```
+
+### `ConnectItem`
+
+Data item attached to a [`ConnectRequest`](#connectrequest). Wallets reply to each item
+inside `ConnectEventSuccess.payload.items`.
+
+The protocol defines two items:
+
+- [`TonAddressItem`](#tonaddressitem) — required for the connect to be useful.
+- [`TonProofItem`](#tonproofitem) — optional `ton_proof` request used for
+  wallet authentication.
+
+```ts
+type ConnectItem = TonAddressItem | TonProofItem;
+```
+
+### `RpcRequests`
+
+Map from RPC method name to its request envelope. Used both as a type
+registry and to derive [`AppRequest`](#apprequest) via index lookup.
+
+```ts
+type RpcRequests = {
+    sendTransaction: SendTransactionRpcRequest;
+    signData: SignDataRpcRequest;
+    signMessage: SignMessageRpcRequest;
+    disconnect: DisconnectRpcRequest;
+};
+```
+
+### `AppRequest`
+
+Request envelope for the given RPC `method`. Each envelope follows the
+same `{ method, params, id }` structure;
+
+```ts
+type AppRequest<T extends RpcMethod> = RpcRequests[T];
+```
+
+### `WireEmbeddedRequest`
+
+Top-level wire shape of an embedded app-request. Discriminated on `m` (method).
+One of:
+
+- [`WireSendTransaction`](#wiresendtransaction) (`m: 'st'`)
+- [`WireSignMessage`](#wiresignmessage) (`m: 'sm'`)
+- [`WireSignData`](#wiresigndata) (`m: 'sd'`)
+
+```ts
+type WireEmbeddedRequest = WireSendTransaction | WireSignMessage | WireSignData;
+```
+
+### `WireSignData`
+
+Compact wire form of `AppRequest<'signData'>`.
+Discriminated on `t` (payload type): `text` | `binary` | `cell`.
+
+```ts
+type WireSignData = { m: 'sd'; n?: string; f?: string } & (WireSignDataText | WireSignDataBinary | WireSignDataCell);
+```
+
+### `WireItem`
+
+Wire form of a single structured item. Discriminated on `t`.
+Counterpart of the user-facing `StructuredItem` (SDK).
+
+```ts
+type WireItem = WireTonItem | WireJettonItem | WireNftItem;
+```
+
+### `DecodedEmbeddedRequest`
+
+```ts
+type DecodedEmbeddedRequest = Omit<AppRequest<'sendTransaction' | 'signMessage' | 'signData'>, 'id'>;
+```
+
+### `Feature`
+
+Capability entries advertised by a wallet inside `DeviceInfo.features`.
+
+```ts
+type Feature =
+    | SendTransactionFeatureDeprecated
+    | SendTransactionFeature
+    | SignDataFeature
+    | SignMessageFeature
+    | EmbeddedRequestFeature;
+```
+
+### `FeatureName`
+
+```ts
+type FeatureName = Exclude<Feature, 'SendTransaction'>['name'];
+```
+
+### `SendTransactionFeatureDeprecated`
+
+```ts
+type SendTransactionFeatureDeprecated = 'SendTransaction';
+```
+
+### `StructuredItemType`
+
+Item kinds a wallet may accept inside `sendTransaction.items` /
+`signMessage.items`. Maps to the structured wallet-built transfers:
+native GRAM, [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) jetton,
+[TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md) NFT.
+
+```ts
+type StructuredItemType = 'gram' | 'jetton' | 'nft';
+```
+
+### `SendTransactionFeature`
+
+```ts
+type SendTransactionFeature = {
+    name: 'SendTransaction';
+    maxMessages: number;
+    extraCurrencySupported?: boolean;
+    itemTypes?: StructuredItemType[];
+};
+```
+
+### `SignDataType`
+
+```ts
+type SignDataType = 'text' | 'binary' | 'cell';
+```
+
+### `SignDataFeature`
+
+```ts
+type SignDataFeature = { name: 'SignData'; types: SignDataType[] };
+```
+
+### `SignMessageFeature`
+
+```ts
+type SignMessageFeature = {
+    name: 'SignMessage';
+    maxMessages: number;
+    extraCurrencySupported?: boolean;
+    itemTypes?: StructuredItemType[];
+};
+```
+
+### `EmbeddedRequestFeature`
+
+Wallet supports the embedded-request transport (`e` query parameter on the
+connect URL).
+
+```ts
+type EmbeddedRequestFeature = { name: 'EmbeddedRequest' };
+```
+
+### `RpcMethod`
+
+The set of methods a dApp can invoke after a successful connect. Wallets
+accept the methods they advertise via [`Feature`](#feature).
+
+```ts
+type RpcMethod = 'disconnect' | 'sendTransaction' | 'signData' | 'signMessage';
+```
+
+### `RpcStructuredItem`
+
+Wire-format structured items used inside JSON-RPC payloads and embedded-request
+expansion. These match the shape that travels over the bridge / URL — field
+casing follows the protocol (e.g. `extra_currency` snake\_case).
+
+The rich, user-facing counterparts (with camelCase fields and SDK-level
+conveniences) live in `@tonconnect/sdk` as `StructuredItem`.
+
+```ts
+type RpcStructuredItem = RpcTonItem | RpcJettonItem | RpcNftItem;
+```
+
+### `ConnectEvent`
+
+Wallet reply to a [`ConnectRequest`](#connectrequest). Either a success
+(`ConnectEventSuccess`) carrying the user's account and the
+requested data items, or [`ConnectEventError`](#connecteventerror) when the user declines
+or the wallet fails to fulfil the request.
+
+```ts
+type ConnectEvent = ConnectEventSuccess | ConnectEventError;
+```
+
+### `ConnectItemReply`
+
+Per-item reply inside [`ConnectEventSuccess`](#connecteventsuccess)`.payload.items`. Wallets
+either fulfil the item or return a [`ConnectItemReplyError`](#connectitemreplyerror) carrying a
+[`CONNECT_ITEM_ERROR_CODES`](#connect_item_error_codes) code (`400` when the item is unsupported).
+
+```ts
+type ConnectItemReply = TonAddressItemReply | TonProofItemReply;
+```
+
+### `TonProofItemReply`
+
+Reply for the `ton_proof` connect item. Either a success carrying the
+signed proof or a per-item error when the wallet doesn't support the item.
+
+```ts
+type TonProofItemReply = TonProofItemReplySuccess | TonProofItemReplyError;
+```
+
+### `TonProofItemReplyError`
+
+```ts
+type TonProofItemReplyError = ConnectItemReplyError<TonProofItemReplySuccess['name']>;
+```
+
+### `ConnectItemReplyError`
+
+Generic per-item error envelope used inside `payload.items[]` when the
+wallet cannot fulfil a specific item — for example a wallet that doesn't
+implement `ton_proof` returns `{ name: 'ton_proof', error: { code: 400 } }`.
+
+```ts
+type ConnectItemReplyError<T> = { name: T; error: { code: CONNECT_ITEM_ERROR_CODES; message?: string } };
+```
+
+### `WalletEvent`
+
+Server-initiated events the wallet emits to the dApp.
+
+- [`ConnectEvent`](#connectevent) — `connect` success or `connect_error`. Emitted
+  in response to a [`ConnectRequest`](#connectrequest).
+- [`DisconnectEvent`](#disconnectevent) — wallet-initiated session teardown.
+
+```ts
+type WalletEvent = ConnectEvent | DisconnectEvent;
+```
+
+### `WalletMessage`
+
+Anything a wallet can send to a dApp over the protocol.
+
+```ts
+type WalletMessage = WalletEvent | WalletResponse<RpcMethod>;
+```
+
+### `DisconnectRpcResponse`
+
+Wallet reply to a `disconnect` RPC. Success carries an empty result; error
+narrows the `code` enum to [`DISCONNECT_ERROR_CODES`](#disconnect_error_codes).
+
+```ts
+type DisconnectRpcResponse = DisconnectRpcResponseSuccess | DisconnectRpcResponseError;
+```
+
+### `SendTransactionRpcResponse`
+
+Wallet reply to a `sendTransaction` RPC.
+
+```ts
+type SendTransactionRpcResponse = SendTransactionRpcResponseSuccess | SendTransactionRpcResponseError;
+```
+
+### `SignDataRpcResponse`
+
+Wallet reply to a `signData` RPC.
+
+```ts
+type SignDataRpcResponse = SignDataRpcResponseSuccess | SignDataRpcResponseError;
+```
+
+### `SignDataPayload`
+
+Discriminated payload for `signData`.
+
+```ts
+type SignDataPayload =
+    & { network?: ChainId; from?: string }
+    & (SignDataPayloadText | SignDataPayloadBinary | SignDataPayloadCell);
+```
+
+### `SignDataPayloadText`
+
+```ts
+type SignDataPayloadText = { type: 'text'; text: string };
+```
+
+### `SignDataPayloadBinary`
+
+```ts
+type SignDataPayloadBinary = { type: 'binary'; bytes: string };
+```
+
+### `SignDataPayloadCell`
+
+```ts
+type SignDataPayloadCell = { type: 'cell'; schema: string; cell: string };
+```
+
+### `SignMessageRpcResponse`
+
+Wallet reply to a `signMessage` RPC. Success carries the signed internal
+message BoC; error narrows the `code` enum to
+[`SIGN_MESSAGE_ERROR_CODES`](#sign_message_error_codes).
+
+```ts
+type SignMessageRpcResponse = SignMessageRpcResponseSuccess | SignMessageRpcResponseError;
+```
+
+### `WalletResponseTemplate`
+
+```ts
+type WalletResponseTemplate = WalletResponseTemplateSuccess | WalletResponseTemplateError;
+```
+
+### `RpcResponses`
+
+Map from RPC method name to its success / error response envelope.
+
+Used to derive [`WalletResponse`](#walletresponse).
+
+```ts
+type RpcResponses = {
+    sendTransaction: { error: SendTransactionRpcResponseError; success: SendTransactionRpcResponseSuccess };
+    signData: { error: SignDataRpcResponseError; success: SignDataRpcResponseSuccess };
+    signMessage: { error: SignMessageRpcResponseError; success: SignMessageRpcResponseSuccess };
+    disconnect: { error: DisconnectRpcResponseError; success: DisconnectRpcResponseSuccess };
+};
+```
+
+### `WalletResponseSuccess`
+
+```ts
+type WalletResponseSuccess<T extends RpcMethod> = RpcResponses[T]['success'];
+```
+
+### `WalletResponseError`
+
+```ts
+type WalletResponseError<T extends RpcMethod> = RpcResponses[T]['error'];
+```
+
+### `WalletResponse`
+
+Wallet reply to an [`AppRequest`](#apprequest).
+
+```ts
+type WalletResponse<T extends RpcMethod> = WalletResponseSuccess<T> | WalletResponseError<T>;
+```
+
+### `CHAIN`
+
+Two baseline TON network IDs.
+
+```ts
+enum CHAIN {
+    MAINNET = '-239',
+    TESTNET = '-3',
+}
+```
+
+### `CONNECT_EVENT_ERROR_CODES`
+
+Error codes the wallet may return in [`ConnectEventError`](#connecteventerror).
+
+```ts
+enum CONNECT_EVENT_ERROR_CODES {
+    UNKNOWN_ERROR = 0,
+    BAD_REQUEST_ERROR = 1,
+    MANIFEST_NOT_FOUND_ERROR = 2,
+    MANIFEST_CONTENT_ERROR = 3,
+    UNKNOWN_APP_ERROR = 100,
+    USER_REJECTS_ERROR = 300,
+    METHOD_NOT_SUPPORTED = 400,
+}
+```
+
+| Member                     | Value | Description                                              |
+| -------------------------- | ----- | -------------------------------------------------------- |
+| `UNKNOWN_ERROR`            | `0`   | Unexpected wallet-side failure.                          |
+| `BAD_REQUEST_ERROR`        | `1`   | Request payload is malformed.                            |
+| `MANIFEST_NOT_FOUND_ERROR` | `2`   | Wallet could not fetch the `tonconnect-manifest.json`.   |
+| `MANIFEST_CONTENT_ERROR`   | `3`   | Manifest was fetched but fails JSON / schema validation. |
+| `UNKNOWN_APP_ERROR`        | `100` | Wallet does not know the app / session.                  |
+| `USER_REJECTS_ERROR`       | `300` | User explicitly declined the connect prompt.             |
+| `METHOD_NOT_SUPPORTED`     | `400` | Wallet does not support the requested method.            |
+
+### `CONNECT_ITEM_ERROR_CODES`
+
+Per-item error codes returned inside a [`ConnectItemReplyError`](#connectitemreplyerror).
+
+```ts
+enum CONNECT_ITEM_ERROR_CODES {
+    UNKNOWN_ERROR = 0,
+    METHOD_NOT_SUPPORTED = 400,
+}
+```
+
+| Member                 | Value | Description                                |
+| ---------------------- | ----- | ------------------------------------------ |
+| `UNKNOWN_ERROR`        | `0`   | Unexpected wallet-side failure.            |
+| `METHOD_NOT_SUPPORTED` | `400` | Wallet does not support this connect item. |
+
+### `DISCONNECT_ERROR_CODES`
+
+Error codes the wallet may return from `disconnect`.
+
+```ts
+enum DISCONNECT_ERROR_CODES {
+    UNKNOWN_ERROR = 0,
+    BAD_REQUEST_ERROR = 1,
+    UNKNOWN_APP_ERROR = 100,
+    METHOD_NOT_SUPPORTED = 400,
+}
+```
+
+### `SEND_TRANSACTION_ERROR_CODES`
+
+Error codes the wallet may return from `sendTransaction`.
+
+```ts
+enum SEND_TRANSACTION_ERROR_CODES {
+    UNKNOWN_ERROR = 0,
+    BAD_REQUEST_ERROR = 1,
+    UNKNOWN_APP_ERROR = 100,
+    USER_REJECTS_ERROR = 300,
+    METHOD_NOT_SUPPORTED = 400,
+}
+```
+
+| Member                 | Value | Description                               |
+| ---------------------- | ----- | ----------------------------------------- |
+| `UNKNOWN_ERROR`        | `0`   | Unexpected wallet-side failure.           |
+| `BAD_REQUEST_ERROR`    | `1`   | Request payload is malformed.             |
+| `UNKNOWN_APP_ERROR`    | `100` | Wallet does not know the dApp / session.  |
+| `USER_REJECTS_ERROR`   | `300` | User explicitly declined the transaction. |
+| `METHOD_NOT_SUPPORTED` | `400` | Wallet does not support the method.       |
+
+### `SIGN_DATA_ERROR_CODES`
+
+Error codes the wallet may return from `signData`.
+
+```ts
+enum SIGN_DATA_ERROR_CODES {
+    UNKNOWN_ERROR = 0,
+    BAD_REQUEST_ERROR = 1,
+    UNKNOWN_APP_ERROR = 100,
+    USER_REJECTS_ERROR = 300,
+    METHOD_NOT_SUPPORTED = 400,
+}
+```
+
+| Member                 | Value | Description                                                        |
+| ---------------------- | ----- | ------------------------------------------------------------------ |
+| `UNKNOWN_ERROR`        | `0`   | Unexpected wallet-side failure.                                    |
+| `BAD_REQUEST_ERROR`    | `1`   | Invalid request payload.                                           |
+| `UNKNOWN_APP_ERROR`    | `100` | Wallet does not know the dApp / session.                           |
+| `USER_REJECTS_ERROR`   | `300` | User explicitly declined.                                          |
+| `METHOD_NOT_SUPPORTED` | `400` | Wallet does not support `signData` method or the requested `type`. |
+
+### `SIGN_MESSAGE_ERROR_CODES`
+
+Error codes the wallet may return from `signMessage`.
+
+```ts
+enum SIGN_MESSAGE_ERROR_CODES {
+    UNKNOWN_ERROR = 0,
+    BAD_REQUEST_ERROR = 1,
+    UNKNOWN_APP_ERROR = 100,
+    USER_REJECTS_ERROR = 300,
+    METHOD_NOT_SUPPORTED = 400,
+}
+```
+
+| Member                 | Value | Description                              |
+| ---------------------- | ----- | ---------------------------------------- |
+| `UNKNOWN_ERROR`        | `0`   | Unexpected wallet-side failure.          |
+| `BAD_REQUEST_ERROR`    | `1`   | Invalid request payload.                 |
+| `UNKNOWN_APP_ERROR`    | `100` | Wallet does not know the dApp / session. |
+| `USER_REJECTS_ERROR`   | `300` | User explicitly declined.                |
+| `METHOD_NOT_SUPPORTED` | `400` | Wallet does not support `signMessage`.   |
+
+## Namespaces
+
+### `Base64`
+
+UTF-8 base64 codec used by `@tonconnect/protocol`. Wraps the NaCl
+helpers with optional URL-safe encoding and a typed decoder that can
+yield a string, an object (JSON-parsed), or the raw byte array.
+
+#### `Base64.encode()`
+
+```ts
+Base64.encode(value: string | object | Uint8Array, urlSafe: boolean = false): string;
+```
+
+#### `Base64.decode()`
+
+```ts
+Base64.decode(
+    value: string,
+    urlSafe: boolean = false
+): { toString(): string; toObject<T>(): T | null; toUint8Array(): Uint8Array };
+```
+
+## Utility functions
+
+### `decodeWireEmbeddedRequest()`
+
+Decode a compact [`WireEmbeddedRequest`](#wireembeddedrequest) back to the standard JSON-RPC
+[`AppRequest`](#apprequest)-shaped `{ method, params: [JSON-string] }`.
+
+```ts
+function decodeWireEmbeddedRequest(wire: WireEmbeddedRequest): DecodedEmbeddedRequest;
+```
+
+| Parameter | Type                  | Description |
+| --------- | --------------------- | ----------- |
+| `wire`    | `WireEmbeddedRequest` | —           |
+
+Returns [`DecodedEmbeddedRequest`](#decodedembeddedrequest).
+
+### `decodeEmbeddedRequestParam()`
+
+Decode the `e` URL parameter and return `{ method, params: [string] }` —
+the same shape as a bridge [`AppRequest`](#apprequest) (without `id`).
+
+The `e` value is `base64url(JSON.stringify(WireEmbeddedRequest))`.
+
+```ts
+function decodeEmbeddedRequestParam(reqParam: string): DecodedEmbeddedRequest;
+```
+
+| Parameter  | Type     | Description |
+| ---------- | -------- | ----------- |
+| `reqParam` | `string` | —           |
+
+Returns [`DecodedEmbeddedRequest`](#decodedembeddedrequest).
+
+### `concatUint8Arrays()`
+
+Concatenate two byte arrays into a new `Uint8Array`.
+
+```ts
+function concatUint8Arrays(buffer1: Uint8Array, buffer2: Uint8Array): Uint8Array;
+```
+
+| Parameter | Type         | Description |
+| --------- | ------------ | ----------- |
+| `buffer1` | `Uint8Array` | —           |
+| `buffer2` | `Uint8Array` | —           |
+
+Returns `Uint8Array`.
+
+### `splitToUint8Arrays()`
+
+Split `array` at `index` and return the two halves as fresh
+`Uint8Array`s.
+
+```ts
+function splitToUint8Arrays(array: Uint8Array, index: number): [Uint8Array, Uint8Array];
+```
+
+| Parameter | Type         | Description |
+| --------- | ------------ | ----------- |
+| `array`   | `Uint8Array` | —           |
+| `index`   | `number`     | —           |
+
+Returns `[Uint8Array, Uint8Array]`.
+
+### `toHexString()`
+
+Hex-encode a byte array, lowercase, no `0x` prefix.
+
+```ts
+function toHexString(byteArray: Uint8Array): string;
+```
+
+| Parameter   | Type         | Description |
+| ----------- | ------------ | ----------- |
+| `byteArray` | `Uint8Array` | —           |
+
+Returns `string`.
+
+### `hexToByteArray()`
+
+Inverse of [`toHexString`](#tohexstring). Throws when `hexString` has an odd length.
+
+```ts
+function hexToByteArray(hexString: string): Uint8Array;
+```
+
+| Parameter   | Type     | Description |
+| ----------- | -------- | ----------- |
+| `hexString` | `string` | —           |
+
+Returns `Uint8Array`.
+
+### `isNode()`
+
+`true` when running inside Node.js (detected via `process.versions.node`).
+
+```ts
+function isNode(): boolean;
+```
+
+Returns `boolean`.
+
+## Related pages
+
+- [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk) — dApp-facing connector built on these models.
+- [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) — framework-agnostic UI on top of the SDK.
+- [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react) — React bindings.
+- [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.

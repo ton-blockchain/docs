@@ -1,0 +1,42 @@
+---
+title: "AppKit how-to guides"
+sidebarTitle: "Overview"
+---
+
+How-to guides explain how AppKit features work, then show the code path for using them in an app.
+
+Follow these guides when you need both the model behind a feature and the practical code that drives it. For installation and the minimum setup, use [Get started guides](/applications/appkit/get-started/get-started).
+
+<Callout>
+  Every how-to guide assumes an `AppKit` instance and the React provider are already mounted unless it is showing setup. Code samples use public package imports and keep product-state decisions separate from wallet approval.
+</Callout>
+
+## Core setup
+
+| Guide                                                                 | What it covers                                                       |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [Set up AppKit](/applications/appkit/howto/appkit)                    | Runtime state, configuration, lifecycle, and React provider setup.   |
+| [Connect to a wallet](/applications/appkit/howto/connect-to-a-wallet) | Wallet and connector model, connect UI, selected wallet, and errors. |
+| [Use providers](/applications/appkit/howto/providers)                 | I clients, streaming providers, swap providers, and staking setup.   |
+| [Configure networks](/applications/appkit/howto/networks)             | Mainnet, testnet, default network, API clients, and mismatch checks. |
+
+## Wallet data and assets
+
+| Guide                                                     | What it covers                                                       |
+| --------------------------------------------------------- | -------------------------------------------------------------------- |
+| [Read balances](/applications/appkit/howto/read-balances) | Gram and jetton reads for the selected wallet or any address.        |
+| [Send Gram](/applications/appkit/howto/send-gram)         | Gram transfer flow, amount handling, and settlement checks.          |
+| [Send jettons](/applications/appkit/howto/send-jettons)   | Jetton metadata, decimals, transfer requests, and settlement checks. |
+| [Manage NFTs](/applications/appkit/howto/nfts)            | NFT reads, rendering, transfer requests, and ownership verification. |
+| [Sign data](/applications/appkit/howto/sign-data)         | Text, binary, and cell signatures with verifier-side checks.         |
+| [Use streaming](/applications/appkit/howto/streaming)     | Live balance, jetton, and transaction updates.                       |
+
+## Product flows
+
+| Guide                                                           | What it covers                                                    |
+| --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [Perform swaps](/applications/appkit/howto/swaps)               | Quote freshness, provider routing, build flow, and settlement.    |
+| [Stake and unstake](/applications/appkit/howto/staking)         | Stake and unstake quotes, provider metadata, balances, and sends. |
+| [Use on-ramps](/applications/appkit/howto/onramp)               | Fiat redirects, crypto deposits, provider status, and completion. |
+| [Send gasless transactions](/applications/appkit/howto/gasless) | Jetton-paid fees, relayer estimates, wallet signing, and sends.   |
+| [Use UI widgets](/applications/appkit/howto/use-ui-widgets)     | Default UI, render props, hooks, and vertical flow components.    |

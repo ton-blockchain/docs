@@ -3,7 +3,7 @@ title: "TVM registers"
 sidebarTitle: "Registers"
 ---
 
-TVM registers hold special values, such as contract storage, list of output actions, or exception handler
+TVM registers hold special values, such as contract storage, list of output actions, or exception handler.
 
 Only `c4` (new state) and `c5` (final actions) represent durable effects of a successful on-chain run. Everything else is transient.
 
@@ -205,7 +205,7 @@ The zero element of the `c7` tuple is an environment information (which itself i
       <td>INCOMINGVALUE</td>
       <td>value of incoming message</td>
       <td>tuple</td>
-      <td>tuple of integer (TON value) and cell or `null` (extra currencies dictionary)</td>
+      <td>tuple of integer (GRAM value) and cell or `null` (extra currencies dictionary)</td>
     </tr>
 
     <tr>

@@ -69,7 +69,7 @@ Examples of valid prerequisite categories:
 - **Software already installed** (not installed during the guide). Specify version and link to download page.
 - **Accounts or access already obtained**: API keys, RPC endpoints, wallet accounts.
 - **Artifacts from prior work**: `"A deployed contract from [Deploy a counter](/path/to/guide)"`, `"A funded testnet wallet"`.
-- **Funds or tokens**: "Testnet TON from the [faucet](https://...)".
+- **Funds or tokens**: "Testnet GRAM from the [faucet](https://...)".
 - **Unusual hardware** (only when relevant): "A machine with at least 16 GiB RAM".
 
 ### 2.2 What does not belong in Prerequisites
@@ -101,7 +101,7 @@ Good:
 ```text
 Prerequisites:
 - [Node.js](https://nodejs.org/en/download/) 20 or later LTS
-- A funded testnet wallet (get testnet TON from the [faucet](https://t.me/testgiver_ton_bot))
+- A funded testnet wallet (get testnet GRAM from the [faucet](https://t.me/testgiver_ton_bot))
 - An RPC endpoint — use a public endpoint or get one from [TON Center](https://toncenter.com/)
 ```
 
@@ -831,7 +831,10 @@ Objective. Enforce a single source of truth for terms and casing. (Why: one auth
 
 Non-exhaustive; finalize in the term bank. (Why: examples guide writers now, while the term bank remains the single source of truth.)
 
-- TON (for the currency, use GRAM), TON Blockchain, TON Ecosystem (proper nouns).
+- TON, TON Blockchain, TON Ecosystem (proper nouns).
+  - The native TON currency is called `Gram` (**NOT** `Toncoin`), and its ticker is `GRAM` (**NOT** `TON`).
+  - Do **NOT** use "TON" when meaning the currency, not the blockchain. Instead, use "Gram" as the currency and "GRAM" as the token ticker.
+  - Do **NOT** use "GRAM" when meaning the blockchain, not the currency ticker.
 - smart contract, wallet, account, message, jetton, nominator, validator, collator, node, liteserver (common nouns, lowercase mid-sentence).
 - accountchain, shardchain, workchain, masterchain, basechain — common nouns; use lowercase mid-sentence. **MUST NOT** use CamelCase forms (`ShardChain`, `WorkChain`, `MasterChain`, `BaseChain`, `AccountChain`) or spaced variants (e.g., “Shard Chain”).
 - BoC (abbrev.) / bag of cells (common noun). Abbreviation **MUST** be “BoC” (not “BOC”).
@@ -839,7 +842,7 @@ Non-exhaustive; finalize in the term bank. (Why: examples guide writers now, whi
 
 ### 13.5 Placeholder names
 
-- In commands and prose, placeholders **MUST** be `<ANGLE_CASE>` with descriptive names: `<WALLET_ADDR>`, `<AMOUNT_TON>`, `<RPC_URL>`. (Why: a single, visible pattern reduces copy/paste mistakes.)
+- In commands and prose, placeholders **MUST** be `<ANGLE_CASE>` with descriptive names: `<WALLET_ADDR>`, `<AMOUNT_GRAM>`, `<RPC_URL>`. (Why: a single, visible pattern reduces copy/paste mistakes.)
 - In programming-language code, placeholders **MAY** use `UPPER_SNAKE` without angle brackets when `< >` would clash with syntax (see [§10.1](#10-1-general-rules)). (Why: avoids syntax errors while keeping placeholders obvious.)
 - **MUST NOT** use `{curly}` or `[square]` placeholder syntax in copy-pasteable commands, as they are easy to misread as literal characters. (Why: braces/brackets are often treated as literals by shells and new users.) \[HIGH]
 
@@ -847,6 +850,7 @@ Non-exhaustive; finalize in the term bank. (Why: examples guide writers now, whi
 
 - Banned (inclusive/biased): whitelist/blacklist; master/slave; sanity check. \[HIGH]
 - Banned (filler/tone): simply, just, obviously, clearly, please note.
+- Banned (outdated): Toncoin (use Gram instead).
 - Preferred: (omit filler); allowlist/denylist; primary/replica; smoke check or basic check.
   Rationale: clarity, inclusivity, and reduced ambiguity.
 

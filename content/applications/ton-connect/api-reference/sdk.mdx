@@ -1,0 +1,1850 @@
+---
+title: "`@tonconnect/sdk` reference"
+sidebarTitle: "SDK reference"
+---
+
+`@tonconnect/sdk` is the JavaScript client library for the TON Connect protocol. It exposes the `TonConnect` connector for wallet connection, transaction signing, and message signing; the `WalletsListManager` for browsing supported wallets; and the models, errors, and utilities the protocol uses on the wire.
+
+This page is reference-level. For an integration walkthrough, see [Get started](/applications/ton-connect/get-started). For protocol semantics behind the API, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
+
+## Installation
+
+Install from npm:
+
+```bash
+npm i @tonconnect/sdk
+```
+
+Or include the bundle via CDN. The package is exposed on `window.TonConnectSDK`:
+
+```html
+<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+```
+
+For a pinned version, replace `@latest` with the desired version.
+
+> Generated from `@tonconnect/sdk` v4.0.0-beta.2.
+
+## `TonConnect`
+
+Headless TON Connect connector — implements the [`ITonConnect`](#itonconnect) contract.
+Wraps the protocol handshake and the HTTP / JS bridge / WalletConnect transports.
+
+### Constructor
+
+Create a new connector. See [`TonConnectOptions`](#tonconnectoptions) for every option;
+the most common shape is `{ manifestUrl }` in the browser, and
+`{ manifestUrl, storage }` in Node.js / non-browser hosts.
+
+```ts
+new TonConnect(options?: TonConnectOptions)
+```
+
+| Parameter | Type                | Description |
+| --------- | ------------------- | ----------- |
+| `options` | `TonConnectOptions` | _Optional_. |
+
+**Throws:** `DappMetadataError` when `manifestUrl` is omitted and `window.location.origin` is not available.
+
+### Instance properties
+
+| Property    | Type              | Description                                                   |
+| ----------- | ----------------- | ------------------------------------------------------------- |
+| `connected` | `boolean`         | Shows if the wallet is connected right now.                   |
+| `account`   | `Account \| null` | Current connected account or null if no account is connected. |
+| `wallet`    | `Wallet \| null`  | Current connected wallet or null if no account is connected.  |
+
+### `getWallets()`
+
+Returns available wallets list.
+
+```ts
+getWallets(): Promise<WalletInfo[]>;
+```
+
+Returns `Promise<WalletInfo[]>`.
+
+### `onStatusChange()`
+
+Allows to subscribe to connection status changes and handle connection errors.
+
+```ts
+onStatusChange(
+    callback: (wallet: Wallet | null) => void,
+    errorsHandler?: (err: TonConnectError) => void
+): () => void;
+```
+
+| Parameter       | Type                               | Description                                                                                      |
+| --------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `callback`      | `(wallet: Wallet \| null) => void` | Will be called after connections status changes with actual wallet or null.                      |
+| `errorsHandler` | `(err: TonConnectError) => void`   | _Optional_. Will be called with some instance of TonConnectError when connect error is received. |
+
+Returns `() => void`. Unsubscribe callback.
+
+### `connect()`
+
+Generates universal link for an external wallet and subscribes to the wallet's bridge, or sends connect request to the injected wallet.
+
+```ts
+connect<T extends WalletConnectionSource | Pick<WalletConnectionSourceHTTP, 'bridgeUrl'>[]>(
+    wallet: T,
+    options?: OptionalTraceable<{
+        request?: ConnectAdditionalRequest;
+        openingDeadlineMS?: number;
+        signal?: AbortSignal;
+        embeddedRequest?: ConsumableLike<EmbeddedRequest>;
+    }>
+): T extends WalletConnectionSourceJS ? void : T extends WalletConnectionSourceWalletConnect ? void : string;
+```
+
+| Parameter | Type                                                                                                                                                             | Description                                                                                                          |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `wallet`  | `T`                                                                                                                                                              | Wallet's bridge url and universal link for an external wallet or jsBridge key for the injected wallet.               |
+| `options` | `OptionalTraceable<{ request?: ConnectAdditionalRequest; openingDeadlineMS?: number; signal?: AbortSignal; embeddedRequest?: ConsumableLike<EmbeddedRequest> }>` | _Optional_. `openingDeadlineMS` sets the connection opening deadline, and `signal` controls connection cancellation. |
+
+Returns `T extends WalletConnectionSourceJS ? void : T extends WalletConnectionSourceWalletConnect ? void : string`. Universal link if external wallet was passed or void for the injected wallet.
+
+**Possible errors:**
+
+- [`WalletAlreadyConnectedError`](#error-catalogue)
+- [`TonConnectError`](#tonconnecterror)
+
+A legacy overload is preserved for backwards compatibility and marked `@deprecated` — use connect(wallet, options) instead.
+
+```ts
+connect<T extends WalletConnectionSource | Pick<WalletConnectionSourceHTTP, 'bridgeUrl'>[]>(
+    wallet: T,
+    request?: ConnectAdditionalRequest,
+    options?: OptionalTraceable<{
+        openingDeadlineMS?: number;
+        signal?: AbortSignal;
+        embeddedRequest?: ConsumableLike<EmbeddedRequest>;
+    }>
+): T extends WalletConnectionSourceJS ? void : T extends WalletConnectionSourceWalletConnect ? void : string;
+```
+
+### `restoreConnection()`
+
+Try to restore existing session and reconnect to the corresponding wallet. Call it immediately when your app is loaded.
+
+```ts
+restoreConnection(
+    options?: OptionalTraceable<{ openingDeadlineMS?: number; signal?: AbortSignal }>
+): Promise<void>;
+```
+
+| Parameter | Type                                                                      | Description |
+| --------- | ------------------------------------------------------------------------- | ----------- |
+| `options` | `OptionalTraceable<{ openingDeadlineMS?: number; signal?: AbortSignal }>` | _Optional_. |
+
+Returns `Promise<void>`.
+
+### `sendTransaction()`
+
+Asks connected wallet to sign and send the transaction.
+
+```ts
+sendTransaction(
+    transaction: SendTransactionRequest,
+    options?: OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>
+): Promise<Traceable<SendTransactionResponse>>;
+```
+
+| Parameter     | Type                                                                      | Description                                                                                                             |
+| ------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `transaction` | `SendTransactionRequest`                                                  | Transaction to send.                                                                                                    |
+| `options`     | `OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>` | _Optional_. onRequestSent will be called after the request was sent to the wallet and signal for the transaction abort. |
+
+Returns `Promise<Traceable<SendTransactionResponse>>`. The signed transaction BoC identifies the transaction on the blockchain.
+
+**Possible errors:**
+
+- [`WalletNotConnectedError`](#error-catalogue)
+- [`WalletWrongNetworkError`](#error-catalogue)
+- [`WalletNotSupportFeatureError`](#error-catalogue)
+- [`UserRejectsError`](#error-catalogue)
+- [`TonConnectError`](#tonconnecterror)
+
+A legacy overload is preserved for backwards compatibility and marked `@deprecated` — use sendTransaction(transaction, options) instead.
+
+```ts
+sendTransaction(
+    transaction: SendTransactionRequest,
+    onRequestSent?: () => void
+): Promise<Traceable<SendTransactionResponse>>;
+```
+
+### `signData()`
+
+Ask the connected wallet to sign opaque data (`SignDataPayload`).
+The signature is bound to the user's wallet address, the dApp's domain,
+a timestamp, and the payload — verify on the backend or on-chain.
+
+```ts
+signData(
+    data: SignDataPayload,
+    options?: OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>
+): Promise<Traceable<SignDataResponse>>;
+```
+
+| Parameter | Type                                                                                  | Description |
+| --------- | ------------------------------------------------------------------------------------- | ----------- |
+| `data`    | [`SignDataPayload`](/applications/ton-connect/api-reference/protocol#signdatapayload) | —           |
+| `options` | `OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>`             | _Optional_. |
+
+Returns `Promise<Traceable<SignDataResponse>>`. The [`SignDataResponse`](#signdataresponse) plus, when available, the `traceId` the SDK propagated through the bridge.
+
+**Possible errors:**
+
+- [`WalletNotConnectedError`](#error-catalogue) — no wallet is connected.
+- [`WalletWrongNetworkError`](#error-catalogue) — wallet network differs from the request.
+- [`WalletNotSupportFeatureError`](#error-catalogue) — wallet does not advertise the requested `SignData.types`.
+- [`UserRejectsError`](#error-catalogue) — user declined.
+- [`TonConnectError`](#tonconnecterror) — bridge / validation error.
+
+### `signMessage()`
+
+Ask the connected wallet to sign an internal message **without
+broadcasting it**.
+
+Same payload shape as [`sendTransaction`](#sendtransaction); supported by wallets that
+advertise the `SignMessage` feature (typically Wallet V5).
+
+```ts
+signMessage(
+    message: SignMessageRequest,
+    options?: OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>
+): Promise<Traceable<SignMessageResponse>>;
+```
+
+| Parameter | Type                                                                      | Description |
+| --------- | ------------------------------------------------------------------------- | ----------- |
+| `message` | `SignMessageRequest`                                                      | —           |
+| `options` | `OptionalTraceable<{ onRequestSent?: () => void; signal?: AbortSignal }>` | _Optional_. |
+
+Returns `Promise<Traceable<SignMessageResponse>>`. A signed BoC the dApp can wrap in an external
+message and submit through a relayer (e.g. for a gasless jetton
+transfer).
+
+**Possible errors:**
+
+- [`WalletNotConnectedError`](#error-catalogue) — no wallet is connected.
+- [`WalletWrongNetworkError`](#error-catalogue) — wallet network differs from the request.
+- [`WalletNotSupportFeatureError`](#error-catalogue) — wallet does not advertise `SignMessage`.
+- [`UserRejectsError`](#error-catalogue) — user declined.
+- [`TonConnectError`](#tonconnecterror) — bridge / validation error.
+
+### `setConnectionNetwork()`
+
+Set desired network for the connection. Can only be set before connecting.
+If wallet connects with a different chain, the SDK will throw an error and abort connection.
+
+```ts
+setConnectionNetwork(network?: ChainId): void;
+```
+
+| Parameter | Type                                                                  | Description                                                                                                 |
+| --------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `network` | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | _Optional_. Desired network ID (e.g., `-239`, `-3`, or a custom ID). Pass `undefined` to allow any network. |
+
+**Possible errors:**
+
+- [`TonConnectError`](#tonconnecterror)
+
+### `disconnect()`
+
+Disconnect from the connected wallet and drop current session.
+
+```ts
+disconnect(options?: OptionalTraceable<{ signal?: AbortSignal }>): Promise<void>;
+```
+
+| Parameter | Type                                          | Description |
+| --------- | --------------------------------------------- | ----------- |
+| `options` | `OptionalTraceable<{ signal?: AbortSignal }>` | _Optional_. |
+
+Returns `Promise<void>`.
+
+**Possible errors:**
+
+- [`WalletNotConnectedError`](#error-catalogue)
+- [`TonConnectError`](#tonconnecterror)
+
+### `getSessionId()`
+
+Gets the current session ID if available.
+
+```ts
+getSessionId(): Promise<string | null>;
+```
+
+Returns `Promise<string | null>`. Session ID string or null if not available.
+
+### `pauseConnection()`
+
+Pause bridge HTTP connection. Might be helpful, if you want to pause connections while browser tab is unfocused,
+or if you use SDK with NodeJS and want to save server resources.
+
+```ts
+pauseConnection(): void;
+```
+
+### `unPauseConnection()`
+
+Unpause bridge HTTP connection if it is paused.
+
+```ts
+unPauseConnection(): Promise<void>;
+```
+
+Returns `Promise<void>`.
+
+### Static methods
+
+| Method                                          | Description                                                                                                                                                                            |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TonConnect.isWalletInjected(walletJSKey)`      | `true` when a wallet identified by `walletJSKey` exposes a JS bridge on the current page. The fastest way to detect a browser extension before deciding which connect source to build. |
+| `TonConnect.isInsideWalletBrowser(walletJSKey)` | `true` when the dApp is running inside the named wallet's in-app browser. Use it to pick the JS-bridge transport automatically and skip the QR-code modal.                             |
+| `TonConnect.getWallets()`                       | Fetch the wallets-list registry without instantiating a connector. Equivalent to `ITonConnect.getWallets` but usable before constructing a [`TonConnect`](#tonconnect).                |
+
+## `ITonConnect`
+
+Public contract of the TON Connect connector.
+
+```ts
+interface ITonConnect {
+    connected: boolean;
+    account: Account | null;
+    wallet: Wallet | null;
+    /* see TonConnect.getWallets */
+    getWallets(...): Promise<WalletInfo[]>;
+    /* see TonConnect.onStatusChange */
+    onStatusChange(...): () => void;
+    /* see TonConnect.connect */
+    connect(...): T extends WalletConnectionSourceJS ? void : T extends WalletConnectionSourceWalletConnect ? void : string;
+    /* see TonConnect.restoreConnection */
+    restoreConnection(...): Promise<void>;
+    /* see TonConnect.pauseConnection */
+    pauseConnection(...): void;
+    /* see TonConnect.unPauseConnection */
+    unPauseConnection(...): Promise<void>;
+    /* see TonConnect.setConnectionNetwork */
+    setConnectionNetwork(...): void;
+    /* see TonConnect.disconnect */
+    disconnect(...): Promise<void>;
+    /* see TonConnect.sendTransaction */
+    sendTransaction(...): Promise<OptionalTraceable<SendTransactionResponse>>;
+    /* see TonConnect.signData */
+    signData(...): Promise<OptionalTraceable<SignDataResponse>>;
+    /* see TonConnect.signMessage */
+    signMessage(...): Promise<OptionalTraceable<SignMessageResponse>>;
+    /* see TonConnect.getSessionId */
+    getSessionId(...): Promise<string | null>;
+}
+```
+
+## `WalletsListManager`
+
+Fetches and caches the wallets-list registry (`wallets-v2.json`) and merges
+it with any JS-injectable wallets the SDK detects on the page.
+
+### Constructor
+
+```ts
+new WalletsListManager(
+    options?: {
+        walletsListSource?: string;
+        cacheTTLMs?: number;
+        onDownloadDurationMeasured?: (duration: number | undefined) => void;
+    }
+)
+```
+
+| Parameter | Type                                                                                                                        | Description |
+| --------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `options` | `{ walletsListSource?: string; cacheTTLMs?: number; onDownloadDurationMeasured?: (duration: number \| undefined) => void }` | _Optional_. |
+
+### `getWallets()`
+
+```ts
+getWallets(): Promise<WalletInfo[]>;
+```
+
+Returns `Promise<WalletInfo[]>`.
+
+### `getEmbeddedWallet()`
+
+```ts
+getEmbeddedWallet(): Promise<WalletInfoCurrentlyEmbedded | null>;
+```
+
+Returns `Promise<WalletInfoCurrentlyEmbedded | null>`.
+
+### `getRemoteWallet()`
+
+```ts
+getRemoteWallet(appName: string): Promise<WalletInfoRemote>;
+```
+
+| Parameter | Type     | Description |
+| --------- | -------- | ----------- |
+| `appName` | `string` | —           |
+
+Returns `Promise<WalletInfoRemote>`.
+
+## `BrowserEventDispatcher`
+
+A concrete implementation of EventDispatcher that dispatches events to the browser window.
+
+### Constructor
+
+```ts
+new BrowserEventDispatcher()
+```
+
+### `dispatchEvent()`
+
+Dispatches an event with the given name and details to the browser window.
+
+```ts
+dispatchEvent<P extends `ton-connect-${string}` | `ton-connect-ui-${string}`>(
+    eventName: P,
+    eventDetails: T & { type: RemoveTonConnectPrefix<P> }
+): Promise<void>;
+```
+
+| Parameter      | Type                                      | Description                           |
+| -------------- | ----------------------------------------- | ------------------------------------- |
+| `eventName`    | `P`                                       | The name of the event to dispatch.    |
+| `eventDetails` | `T & { type: RemoveTonConnectPrefix<P> }` | The details of the event to dispatch. |
+
+Returns `Promise<void>`. A promise that resolves when the event has been dispatched.
+
+### `addEventListener()`
+
+Adds an event listener to the browser window.
+
+```ts
+addEventListener<P extends `ton-connect-${string}` | `ton-connect-ui-${string}`>(
+    eventName: P,
+    listener: (event: CustomEvent<T & { type: RemoveTonConnectPrefix<P> }>) => void,
+    options?: AddEventListenerOptions
+): Promise<() => void>;
+```
+
+| Parameter   | Type                                                                    | Description                               |
+| ----------- | ----------------------------------------------------------------------- | ----------------------------------------- |
+| `eventName` | `P`                                                                     | The name of the event to listen for.      |
+| `listener`  | `(event: CustomEvent<T & { type: RemoveTonConnectPrefix<P> }>) => void` | The listener to add.                      |
+| `options`   | `AddEventListenerOptions`                                               | _Optional_. The options for the listener. |
+
+Returns `Promise<() => void>`. A function that removes the listener.
+
+## `Consumable`
+
+Single-shot value envelope. Holds a value until exactly one consumer calls
+`Consumable.consume`; subsequent reads return `undefined`.
+
+### Constructor
+
+Wrap `value`. If `value` is already a [`Consumable`](#consumable), returns it
+unchanged so the type stays flat.
+
+```ts
+new Consumable(value: ConsumableLike<T>)
+```
+
+| Parameter | Type                | Description |
+| --------- | ------------------- | ----------- |
+| `value`   | `ConsumableLike<T>` | —           |
+
+### Instance properties
+
+| Property   | Type      | Description                                       |
+| ---------- | --------- | ------------------------------------------------- |
+| `consumed` | `boolean` | `true` once `Consumable.consume` has been called. |
+
+### `peek()`
+
+Read the wrapped value without consuming it. `undefined` once consumed.
+
+```ts
+peek(): T | undefined;
+```
+
+Returns `T | undefined`.
+
+### `consume()`
+
+Take ownership of the wrapped value. The next call returns `undefined`.
+Use this when the value is about to be acted on exactly once.
+
+```ts
+consume(): T | undefined;
+```
+
+Returns `T | undefined`.
+
+## Types
+
+### `IEnvironment`
+
+Represents the client environment in which the application is running.
+
+```ts
+interface IEnvironment {
+    getLocale(): string;
+    getBrowser(): string;
+    getPlatform(): string;
+    getTelegramUser(): TelegramUser | undefined;
+    getClientEnvironment(): 'web' | 'miniapp' | (string & {});
+}
+```
+
+### `DappMetadata`
+
+```ts
+interface DappMetadata {
+    name: string;
+    icon: string;
+    url: string;
+}
+```
+
+| Field  | Type     | Description                                                                                                                                                                                                                                                                                                                                                                   |
+| ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name` | `string` | dApp name. It is not used as an identifier. Defaults to `document.title` when available, or `Unknown dApp` otherwise.                                                                                                                                                                                                                                                         |
+| `icon` | `string` | URL to the dApp icon. Must be PNG, ICO, ... . SVG icons are not supported. Defaults to `best quality favicon declared via <link> in the document or '' if there are no any icons in the document.`                                                                                                                                                                            |
+| `url`  | `string` | dApp URL. Will be used as the dApp identifier. Will be used to open the dApp after click to its icon in the wallet. Pass url without closing slash, e.g. '[https://mydapp.com](https://mydapp.com)' instead of '[https://mydapp.com/](https://mydapp.com/)'. Defaults to `window.location.origin` if exists, otherwise (if not explicitly specified) an error will be thrown. |
+
+### `ConnectAdditionalRequest`
+
+Extra items to attach to the [`ConnectRequest`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#connectrequest)
+the SDK sends to the wallet.
+
+```ts
+interface ConnectAdditionalRequest {
+    tonProof?: string;
+}
+```
+
+| Field      | Type     | Description                                                                                     |
+| ---------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `tonProof` | `string` | _Optional_. Application payload for future verification to bind into the `ton_proof` signature. |
+
+### `SendTransactionRequestBase`
+
+Fields shared by both payload shapes of [`sendTransaction`](#sendtransaction) / [`signMessage`](#signmessage).
+
+```ts
+interface SendTransactionRequestBase {
+    validUntil: number;
+    network?: ChainId;
+    from?: string;
+}
+```
+
+| Field        | Type                                                                  | Description                                                                                                                      |
+| ------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `validUntil` | `number`                                                              | Deadline in unix epoch seconds. The wallet refuses the request after this moment.                                                |
+| `network`    | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | _Optional_. Target [TON network identifier](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#network_id). |
+| `from`       | `string`                                                              | _Optional_. Sender address in raw `<workchain>:<hex>` format. Defaults to `Account.address`.                                     |
+
+### `SendTransactionRequestWithMessages`
+
+Send a transaction using the raw `messages[]` payload.
+
+```ts
+interface SendTransactionRequestWithMessages {
+    validUntil: number;
+    network?: ChainId;
+    from?: string;
+    messages: { address: string; amount: string; stateInit?: string; payload?: string; extraCurrency?: { [k: number]: string } }[];
+    items?: undefined;
+}
+```
+
+| Field        | Type                                                                                                                   | Description                                                                                                                                                                                                                                                                                                                     |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `validUntil` | `number`                                                                                                               | Deadline in unix epoch seconds. The wallet refuses the request after this moment.                                                                                                                                                                                                                                               |
+| `network`    | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid)                                                  | _Optional_. Target [TON network identifier](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#network_id).                                                                                                                                                                                                |
+| `from`       | `string`                                                                                                               | _Optional_. Sender address in raw `<workchain>:<hex>` format. Defaults to `Account.address`.                                                                                                                                                                                                                                    |
+| `messages`   | `{ address: string; amount: string; stateInit?: string; payload?: string; extraCurrency?: { [k: number]: string } }[]` | Outgoing messages — at least one, no more than the wallet's `SendTransactionFeature.maxMessages` (declared in `Wallet.device.features`). Submission is grouped (one signed external) but execution is not atomic: each recipient contract is processed independently, so some messages can fail or bounce while others succeed. |
+| `items`      | `undefined`                                                                                                            | _Optional_.                                                                                                                                                                                                                                                                                                                     |
+
+### `SendTransactionRequestWithItems`
+
+Send a transaction using structured items. Use only when you
+know the wallet advertises the needed `SendTransactionFeature.itemTypes`.
+
+```ts
+interface SendTransactionRequestWithItems {
+    validUntil: number;
+    network?: ChainId;
+    from?: string;
+    items: StructuredItem[];
+    messages?: undefined;
+}
+```
+
+| Field        | Type                                                                  | Description                                                                                                                      |
+| ------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `validUntil` | `number`                                                              | Deadline in unix epoch seconds. The wallet refuses the request after this moment.                                                |
+| `network`    | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | _Optional_. Target [TON network identifier](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#network_id). |
+| `from`       | `string`                                                              | _Optional_. Sender address in raw `<workchain>:<hex>` format. Defaults to `Account.address`.                                     |
+| `items`      | `StructuredItem[]`                                                    | Structured items. The wallet builds the BoC for each.                                                                            |
+| `messages`   | `undefined`                                                           | _Optional_.                                                                                                                      |
+
+### `SendTransactionResponse`
+
+Result of [`sendTransaction`](#sendtransaction) method.
+
+```ts
+interface SendTransactionResponse {
+    boc: string;
+}
+```
+
+| Field | Type     | Description                                             |
+| ----- | -------- | ------------------------------------------------------- |
+| `boc` | `string` | Base64-encoded BoC of the broadcasted external message. |
+
+### `TonItem`
+
+Native GRAM transfer.
+
+```ts
+interface TonItem {
+    type: 'gram';
+    address: string;
+    amount: string;
+    payload?: string;
+    stateInit?: string;
+    extraCurrency?: { [k: number]: string };
+}
+```
+
+| Field           | Type                      | Description                                                                                                                                                                                 |
+| --------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`          | `'gram'`                  | —                                                                                                                                                                                           |
+| `address`       | `string`                  | Destination address in [TEP-2](https://github.com/ton-blockchain/TEPs/blob/master/text/0002-address.md) user-friendly base64url form. The bounceable flag is taken from the address itself. |
+| `amount`        | `string`                  | Nanograms to send, as a decimal string (e.g. `"5000000"` for 0.005 Gram).                                                                                                                   |
+| `payload`       | `string`                  | _Optional_. Optional one-cell BoC body, base64-encoded. Omit for a plain transfer.                                                                                                          |
+| `stateInit`     | `string`                  | _Optional_. Optional one-cell BoC `StateInit`, base64-encoded. Use it to deploy a contract together with the value transfer.                                                                |
+| `extraCurrency` | `{ [k: number]: string }` | _Optional_. Extra currencies to attach: map of TEP-92 currency ID (decimal integer key) to amount in elementary units (decimal string value).                                               |
+
+### `JettonItem`
+
+[TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md)
+jetton transfer. The wallet resolves the user's jetton-wallet address from
+`master`, builds the transfer body and attaches enough Gram to pay for the
+jetton-wallet execution.
+
+```ts
+interface JettonItem {
+    type: 'jetton';
+    master: string;
+    destination: string;
+    amount: string;
+    attachAmount?: string;
+    responseDestination?: string;
+    customPayload?: string;
+    forwardAmount?: string;
+    forwardPayload?: string;
+    queryId?: string;
+}
+```
+
+| Field                 | Type       | Description                                                                                                                                  |
+| --------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`                | `'jetton'` | —                                                                                                                                            |
+| `master`              | `string`   | Jetton master contract address (friendly format).                                                                                            |
+| `destination`         | `string`   | Recipient address (friendly format).                                                                                                         |
+| `amount`              | `string`   | Jetton amount in elementary units.                                                                                                           |
+| `attachAmount`        | `string`   | _Optional_. Nanograms to attach to the jetton-wallet call.                                                                                   |
+| `responseDestination` | `string`   | _Optional_. Where to refund excess Gram. Defaults to the sender.                                                                             |
+| `customPayload`       | `string`   | _Optional_. Raw one-cell BoC `custom_payload`, base64-encoded.                                                                               |
+| `forwardAmount`       | `string`   | _Optional_. Nanograms forwarded to the destination wallet — drives the `transfer_notification` to the recipient. Defaults to `"1"` nanogram. |
+| `forwardPayload`      | `string`   | _Optional_. Raw one-cell BoC `forward_payload`, base64-encoded.                                                                              |
+| `queryId`             | `string`   | _Optional_. Application-defined `query_id` for the transfer body.                                                                            |
+
+### `NftItem`
+
+[TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md)
+NFT transfer. The wallet builds the `transfer#5fcc3d14` body addressed to the
+NFT item contract.
+
+```ts
+interface NftItem {
+    type: 'nft';
+    nftAddress: string;
+    newOwner: string;
+    attachAmount?: string;
+    responseDestination?: string;
+    customPayload?: string;
+    forwardAmount?: string;
+    forwardPayload?: string;
+    queryId?: string;
+}
+```
+
+| Field                 | Type     | Description                                                       |
+| --------------------- | -------- | ----------------------------------------------------------------- |
+| `type`                | `'nft'`  | —                                                                 |
+| `nftAddress`          | `string` | NFT item contract address (friendly format).                      |
+| `newOwner`            | `string` | New owner address (friendly format).                              |
+| `attachAmount`        | `string` | _Optional_. Nanograms to attach.                                  |
+| `responseDestination` | `string` | _Optional_. Where to refund excess Gram.                          |
+| `customPayload`       | `string` | _Optional_. Raw one-cell BoC `custom_payload`, base64-encoded.    |
+| `forwardAmount`       | `string` | _Optional_. Nanograms forwarded to the new owner.                 |
+| `forwardPayload`      | `string` | _Optional_. Raw one-cell BoC `forward_payload`, base64-encoded.   |
+| `queryId`             | `string` | _Optional_. Application-defined `query_id` for the transfer body. |
+
+### `SignMessageResponse`
+
+Result of [`signMessage`](#signmessage) method.
+
+```ts
+interface SignMessageResponse {
+    internalBoc: string;
+}
+```
+
+| Field         | Type     | Description                                                                                                        |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `internalBoc` | `string` | Base64-encoded BoC of the signed internal message. The wallet does **not** broadcast. Submit it through a relayer. |
+
+### `AnalyticsSettings`
+
+Analytics configuration forwarded to the SDK's internal tracker.
+
+Analytics is opt-out. The default mode is `'telemetry'` —
+minimal, anonymous signals used for technical research and issue debugging.
+Set `mode: 'off'` to disable, or `mode: 'full'` to opt into the full event
+stream.
+
+```ts
+interface AnalyticsSettings {
+    mode?: AnalyticsMode;
+}
+```
+
+| Field  | Type            | Description                                                                                                                                                                           |
+| ------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mode` | `AnalyticsMode` | _Optional_. - `'off'` — no events are collected or sent. - `'telemetry'` — technical analytics only (default). - `'full'` — full user-action event stream. Defaults to `'telemetry'`. |
+
+### `TonConnectOptions`
+
+Constructor options for the [`TonConnect`](#tonconnect) connector.
+
+For most browser dApps `{ manifestUrl }` is enough; the SDK fills in
+`localStorage`, fetches the canonical wallets list, and runs analytics in
+the default `'telemetry'` mode.
+
+```ts
+interface TonConnectOptions {
+    manifestUrl?: string;
+    storage?: IStorage;
+    eventDispatcher?: EventDispatcher<SdkActionEvent>;
+    walletsListSource?: string;
+    walletsListCacheTTLMs?: number;
+    walletsRequiredFeatures?: RequiredFeatures;
+    disableAutoPauseConnection?: boolean;
+    environment?: IEnvironment;
+    analytics?: AnalyticsSettings;
+}
+```
+
+| Field                        | Type                              | Description                                                                                                                                                                                                                                                              |
+| ---------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `manifestUrl`                | `string`                          | _Optional_. HTTPS URL of the dApp's `tonconnect-manifest.json`. The wallet fetches this file before showing the connect prompt to extract the dApp's name, icon and policy URLs. If omitted, the SDK falls back to `${window.location.origin}/tonconnect-manifest.json`. |
+| `storage`                    | `IStorage`                        | _Optional_. Storage backend for protocol state (session keys, last connected wallet). Defaults to `window.localStorage` in the browser. Required when running the SDK in Node.js.                                                                                        |
+| `eventDispatcher`            | `EventDispatcher<SdkActionEvent>` | _Optional_. Custom event dispatcher for user-action events. Defaults to `window.dispatchEvent` in the browser, emitting `CustomEvent`s prefixed with `ton-connect-`.                                                                                                     |
+| `walletsListSource`          | `string`                          | _Optional_. Override the wallets-list JSON source. Must point to a file matching the [wallets-v2 schema](https://github.com/ton-connect/wallets-list). Defaults to `'https://config.ton.org/wallets-v2.json'`.                                                           |
+| `walletsListCacheTTLMs`      | `number`                          | _Optional_. In-memory cache TTL for the fetched wallets list, in milliseconds. `Infinity` (default) caches forever for the lifetime of the page. Defaults to `Infinity`.                                                                                                 |
+| `walletsRequiredFeatures`    | `RequiredFeatures`                | _Optional_. Required wallet capabilities. Wallets that do not advertise every requested feature are hidden from the picker (and rejected at connect time if the user selects one through a custom flow).                                                                 |
+| `disableAutoPauseConnection` | `boolean`                         | _Optional_. Disable the automatic pause / unpause of the SSE bridge connection driven by `document.visibilitychange`.                                                                                                                                                    |
+| `environment`                | `IEnvironment`                    | _Optional_. Override the runtime environment (platform, user-agent, Telegram user context). The SDK auto-detects in browsers; pass an [`IEnvironment`](#ienvironment) implementation when embedding the SDK in a non-standard host.                                      |
+| `analytics`                  | `AnalyticsSettings`               | _Optional_. Analytics configuration.                                                                                                                                                                                                                                     |
+
+### `Account`
+
+The TON account that the wallet exposed to the dApp during the connect handshake.
+
+One [`Wallet`](#wallet) maps to exactly one [`Account`](#account) for the lifetime of the session.
+To switch accounts the user has to disconnect and reconnect from the dApp UI.
+
+```ts
+interface Account {
+    address: string;
+    chain: ChainId;
+    walletStateInit: string;
+    publicKey?: string;
+}
+```
+
+| Field             | Type                                                                  | Description                                                                                                                                                                                                                                                                                                |
+| ----------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `address`         | `string`                                                              | User's address in raw hex form `<workchain>:<hex>`. Use [`toUserFriendlyAddress`](#touserfriendlyaddress) to render the non-bounceable base64url form (`UQ…` on mainnet, `0Q…` on testnet) used in user-facing UI.                                                                                         |
+| `chain`           | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | TON network identifier. See [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid).                                                                                                                                                                                                         |
+| `walletStateInit` | `string`                                                              | Base64-encoded (not URL-safe) BoC of the wallet contract `StateInit` cell.                                                                                                                                                                                                                                 |
+| `publicKey`       | `string`                                                              | _Optional_. Ed25519 public key advertised by the wallet during connect, hex-encoded **without** the `0x` prefix. The value is not authoritative — do not trust it directly when verifying signatures. Re-derive it from `Account.walletStateInit` or call `get_public_key` on the wallet contract instead. |
+
+### `WalletConnectionSourceHTTP`
+
+Connect via the wallet's HTTP (SSE) bridge plus a universal link.
+
+Both fields are sourced from the wallets list entry — see
+[`wallets-list.md`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/wallets-list.md).
+
+```ts
+interface WalletConnectionSourceHTTP {
+    universalLink: string;
+    bridgeUrl: string;
+}
+```
+
+| Field           | Type     | Description                                                                                                                                                                          |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `universalLink` | `string` | HTTPS base of the wallet's universal link, e.g. `'https://app.tonkeeper.com/ton-connect'`. The SDK appends the connect parameters (`v`, `id`, `r`, optional `ret`, `trace_id`, `e`). |
+| `bridgeUrl`     | `string` | URL of the wallet's HTTP (SSE) bridge, e.g. `'https://connect.ton.org/bridge'`.                                                                                                      |
+
+### `WalletConnectionSourceJS`
+
+Connect via an injected JS bridge — the wallet is a browser extension or the
+dApp is running inside the wallet's webview.
+
+```ts
+interface WalletConnectionSourceJS {
+    jsBridgeKey: string;
+}
+```
+
+| Field         | Type     | Description                                                                                                                                                              |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `jsBridgeKey` | `string` | Name of the `window` property where the wallet exposes its `TonConnectBridge` object. For example, `jsBridgeKey: 'tonkeeper'` resolves to `window.tonkeeper.tonconnect`. |
+
+### `WalletConnectionSourceWalletConnect`
+
+Connect via the WalletConnect transport. Requires [`initializeWalletConnect`](#initializewalletconnect)
+to have been called once at app startup.
+
+```ts
+interface WalletConnectionSourceWalletConnect {
+    type: 'wallet-connect';
+}
+```
+
+| Field  | Type               | Description |
+| ------ | ------------------ | ----------- |
+| `type` | `'wallet-connect'` | —           |
+
+### `WalletInfoBase`
+
+Common fields shared by every wallet returned from the wallets list.
+
+```ts
+interface WalletInfoBase {
+    name: string;
+    appName: string;
+    imageUrl: string;
+    tondns?: string;
+    aboutUrl: string;
+    features?: Feature[];
+    platforms: ('ios' | 'android' | 'macos' | 'windows' | 'linux' | 'chrome' | 'firefox' | 'safari')[];
+}
+```
+
+| Field       | Type                                                                                             | Description                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `name`      | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                       |
+| `appName`   | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime. |
+| `imageUrl`  | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                |
+| `tondns`    | `string`                                                                                         | _Optional_.                                                                                                   |
+| `aboutUrl`  | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                     |
+| `features`  | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                   |
+| `platforms` | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                             |
+
+### `WalletInfoRemote`
+
+Wallet reached over the HTTP (SSE) bridge.
+
+```ts
+interface WalletInfoRemote {
+    name: string;
+    appName: string;
+    imageUrl: string;
+    tondns?: string;
+    aboutUrl: string;
+    features?: Feature[];
+    platforms: ('ios' | 'android' | 'macos' | 'windows' | 'linux' | 'chrome' | 'firefox' | 'safari')[];
+    universalLink: string;
+    deepLink?: string;
+    bridgeUrl: string;
+}
+```
+
+| Field           | Type                                                                                             | Description                                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`          | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                              |
+| `appName`       | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                        |
+| `imageUrl`      | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                       |
+| `tondns`        | `string`                                                                                         | _Optional_.                                                                                                                          |
+| `aboutUrl`      | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                            |
+| `features`      | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                          |
+| `platforms`     | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                    |
+| `universalLink` | `string`                                                                                         | HTTPS base of the wallet's universal link. The SDK appends the connect parameters (`v`, `id`, `r`, optional `ret`, `trace_id`, `e`). |
+| `deepLink`      | `string`                                                                                         | _Optional_. Optional custom-scheme deep link (e.g. `tonkeeper-tc://`). Same protocol parameters as the universal link.               |
+| `bridgeUrl`     | `string`                                                                                         | URL of the wallet's HTTP (SSE) bridge endpoint.                                                                                      |
+
+### `WalletInfoInjectable`
+
+Wallet exposed through a JS bridge — typically a browser extension, or the
+dApp running inside the wallet's webview.
+
+```ts
+interface WalletInfoInjectable {
+    name: string;
+    appName: string;
+    imageUrl: string;
+    tondns?: string;
+    aboutUrl: string;
+    features?: Feature[];
+    platforms: ('ios' | 'android' | 'macos' | 'windows' | 'linux' | 'chrome' | 'firefox' | 'safari')[];
+    jsBridgeKey: string;
+    injected: boolean;
+    embedded: boolean;
+}
+```
+
+| Field         | Type                                                                                             | Description                                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                            |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                      |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                     |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                        |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                          |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                        |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                  |
+| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'tonkeeper'` → `window.tonkeeper.tonconnect`. |
+| `injected`    | `boolean`                                                                                        | `true` when the wallet is injected into the current page.                                                                          |
+| `embedded`    | `boolean`                                                                                        | `true` when the dApp is running inside this wallet's in-app browser.                                                               |
+
+### `WalletInfoCurrentlyInjected`
+
+[`WalletInfoInjectable`](#walletinfoinjectable) narrowed to wallets actually injected on the
+current page. Filter the wallets list with `isWalletInfoCurrentlyInjected`.
+
+```ts
+interface WalletInfoCurrentlyInjected {
+    name: string;
+    appName: string;
+    imageUrl: string;
+    tondns?: string;
+    aboutUrl: string;
+    features?: Feature[];
+    platforms: ('ios' | 'android' | 'macos' | 'windows' | 'linux' | 'chrome' | 'firefox' | 'safari')[];
+    jsBridgeKey: string;
+    embedded: boolean;
+    injected: true;
+}
+```
+
+| Field         | Type                                                                                             | Description                                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                            |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                      |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                     |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                        |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                          |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                        |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                  |
+| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'tonkeeper'` → `window.tonkeeper.tonconnect`. |
+| `embedded`    | `boolean`                                                                                        | `true` when the dApp is running inside this wallet's in-app browser.                                                               |
+| `injected`    | `true`                                                                                           | `true` when the wallet is injected into the current page.                                                                          |
+
+### `WalletInfoCurrentlyEmbedded`
+
+[`WalletInfoCurrentlyInjected`](#walletinfocurrentlyinjected) narrowed to the case where the dApp is
+running inside the wallet's webview. Detect with `isWalletInfoCurrentlyEmbedded`.
+
+When the dApp boots inside a wallet, prefer connecting via this entry rather
+than showing a QR-code modal.
+
+```ts
+interface WalletInfoCurrentlyEmbedded {
+    name: string;
+    appName: string;
+    imageUrl: string;
+    tondns?: string;
+    aboutUrl: string;
+    features?: Feature[];
+    platforms: ('ios' | 'android' | 'macos' | 'windows' | 'linux' | 'chrome' | 'firefox' | 'safari')[];
+    jsBridgeKey: string;
+    injected: true;
+    embedded: true;
+}
+```
+
+| Field         | Type                                                                                             | Description                                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                                            |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime.                      |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                                     |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                                        |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                                          |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                                        |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                                                  |
+| `jsBridgeKey` | `string`                                                                                         | `window` property name where the wallet exposes its `TonConnectBridge` object. `key: 'tonkeeper'` → `window.tonkeeper.tonconnect`. |
+| `injected`    | `true`                                                                                           | `true` when the wallet is injected into the current page.                                                                          |
+| `embedded`    | `true`                                                                                           | `true` when the dApp is running inside this wallet's in-app browser.                                                               |
+
+### `WalletInfoInjected`
+
+_Deprecated_ — Use [`WalletInfoInjectable`](#walletinfoinjectable) or [`WalletInfoCurrentlyInjected`](#walletinfocurrentlyinjected) instead.
+
+```ts
+interface WalletInfoInjected {
+    name: string;
+    appName: string;
+    imageUrl: string;
+    tondns?: string;
+    aboutUrl: string;
+    features?: Feature[];
+    platforms: ('ios' | 'android' | 'macos' | 'windows' | 'linux' | 'chrome' | 'firefox' | 'safari')[];
+    jsBridgeKey: string;
+    injected: boolean;
+    embedded: boolean;
+}
+```
+
+| Field         | Type                                                                                             | Description                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`                                                                                         | Human-readable display name shown in the wallet picker.                                                       |
+| `appName`     | `string`                                                                                         | Wallet identifier — equals the `DeviceInfo.appName` reported by the connected [`Wallet`](#wallet) at runtime. |
+| `imageUrl`    | `string`                                                                                         | HTTPS URL of the wallet icon. 288×288 PNG on a non-transparent background, no rounded corners.                |
+| `tondns`      | `string`                                                                                         | _Optional_.                                                                                                   |
+| `aboutUrl`    | `string`                                                                                         | Info or landing page for the wallet — shown to new users.                                                     |
+| `features`    | `Feature[]`                                                                                      | _Optional_. Wallet capabilities advertised in the registry.                                                   |
+| `platforms`   | `('ios' \| 'android' \| 'macos' \| 'windows' \| 'linux' \| 'chrome' \| 'firefox' \| 'safari')[]` | Operating systems / browsers the wallet supports.                                                             |
+| `jsBridgeKey` | `string`                                                                                         | —                                                                                                             |
+| `injected`    | `boolean`                                                                                        | —                                                                                                             |
+| `embedded`    | `boolean`                                                                                        | —                                                                                                             |
+
+### `Wallet`
+
+The connected wallet as seen by the dApp. Returned by `ITonConnect.wallet`
+and emitted on every [`onStatusChange`](#onstatuschange) callback after a successful connect;
+`null` while no wallet is connected.
+
+```ts
+interface Wallet {
+    device: DeviceInfo;
+    provider: 'http' | 'injected';
+    account: Account;
+    connectItems?: { tonProof?: TonProofItemReply };
+    embeddedResponse?: EmbeddedResponse;
+}
+```
+
+| Field              | Type                                                                        | Description                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `device`           | [`DeviceInfo`](/applications/ton-connect/api-reference/protocol#deviceinfo) | Metadata reported by the wallet during the connect handshake — platform, application name and version, max supported protocol version, and the list of advertised features.                                                                                                                                                                                                             |
+| `provider`         | `'http' \| 'injected'`                                                      | Transport carrying the session. - `'http'` — the wallet is reached through the HTTP (SSE) bridge listed in the wallets registry. dApp and wallet typically run on different devices. - `'injected'` — the wallet exposes a JS bridge object on `window` (a browser extension, or the dApp running inside the wallet's webview).                                                         |
+| `account`          | `Account`                                                                   | Account the user picked during connect.                                                                                                                                                                                                                                                                                                                                                 |
+| `connectItems`     | `{ tonProof?: TonProofItemReply }`                                          | _Optional_. Replies for the optional [`ConnectItem`s](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#connectrequest) the dApp requested in addition to `ton_addr`.                                                                                                                                                                                             |
+| `embeddedResponse` | `EmbeddedResponse`                                                          | _Optional_. Result of an embedded request, when one was folded into the connect URL. Set only if the SDK encoded an [`EmbeddedRequest`](/applications/ton-connect/how-to/embedded-request) into the connect URL, and the wallet advertises the [`EmbeddedRequest`](#embeddedrequest) feature and processed it during connect. Absence means the wallet completed only the connect step. |
+
+### `IStorage`
+
+Async key-value store used by the SDK to persist protocol state (session
+keys, last connected wallet info, restoration markers).
+
+In the browser the SDK uses `window.localStorage` by default. In Node.js,
+React Native or any other environment without a `localStorage` global the
+dApp MUST pass a custom implementation on `TonConnectOptions.storage`.
+
+```ts
+interface IStorage {
+    setItem(key: string, value: string): Promise<void>;
+    getItem(key: string): Promise<string | null>;
+    removeItem(key: string): Promise<void>;
+}
+```
+
+### `EventDispatcher`
+
+Interface for an event dispatcher that sends events.
+
+```ts
+interface EventDispatcher {
+    dispatchEvent<P extends `ton-connect-${string}` | `ton-connect-ui-${string}`>(
+        eventName: P,
+        eventDetails: T & { type: RemoveTonConnectPrefix<P> }
+    ): Promise<void>;
+    addEventListener<P extends `ton-connect-${string}` | `ton-connect-ui-${string}`>(
+        eventName: P,
+        listener: (event: CustomEvent<T & { type: RemoveTonConnectPrefix<P> }>) => void,
+        options?: AddEventListenerOptions
+    ): Promise<() => void>;
+}
+```
+
+### `AnalyticsMode`
+
+```ts
+type AnalyticsMode = 'off' | 'telemetry' | 'full';
+```
+
+### `TelegramUser`
+
+Basic Telegram user information.
+
+```ts
+type TelegramUser = { id: number; isPremium: boolean };
+```
+
+### `EmbeddedRequest`
+
+Method + payload pair the SDK can fold into the connect URL as an
+[embedded request](/applications/ton-connect/how-to/embedded-request) (`e` parameter).
+
+```ts
+type EmbeddedRequest =
+    | { method: 'sendTransaction'; request: SendTransactionRequest }
+    | { method: 'signData'; request: SignDataPayload }
+    | { method: 'signMessage'; request: SignMessageRequest };
+```
+
+### `SendTransactionRequest`
+
+Payload of [`sendTransaction`](#sendtransaction) method.
+
+```ts
+type SendTransactionRequest = SendTransactionRequestWithMessages | SendTransactionRequestWithItems;
+```
+
+### `StructuredItem`
+
+Structured items describe **what** the transaction should do (send Gram,
+transfer a jetton, transfer an NFT) and let the wallet build the BoC.
+
+Wallets advertise structured-item support through the
+`SendTransactionFeature.itemTypes` and `SignMessageFeature.itemTypes` features.
+
+```ts
+type StructuredItem = TonItem | JettonItem | NftItem;
+```
+
+### `SignDataResponse`
+
+Result of [`signData`](#signdata) method.
+
+```ts
+type SignDataResponse = { signature: string; address: string; timestamp: number; domain: string; payload: SignDataPayload };
+```
+
+### `SignMessageRequest`
+
+Payload for `ITonConnect.signMessage` / `TonConnectUI.signMessage`.
+
+Identical in shape to [`SendTransactionRequest`](#sendtransactionrequest).
+
+```ts
+type SignMessageRequest = SendTransactionRequest;
+```
+
+### `RequiredFeatures`
+
+Wallet capabilities the dApp depends on.
+
+Top-level keys combine as a logical AND — declaring [`sendTransaction`](#sendtransaction) and
+[`signMessage`](#signmessage) requires both. A wallet matches when every requirement listed
+appears in its `DeviceInfo.features`.
+
+```ts
+type RequiredFeatures = {
+    sendTransaction?: RequiredSendTransactionFeature;
+    signData?: RequiredSignDataFeature;
+    signMessage?: RequiredSignMessageFeature;
+    embeddedRequest?: RequiredEmbeddedRequestFeature;
+};
+```
+
+### `RequiredSendTransactionFeature`
+
+Filter for the wallet's [`SendTransaction`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature)
+capability.
+
+```ts
+type RequiredSendTransactionFeature = { minMessages?: number; extraCurrencyRequired?: boolean; itemTypes?: StructuredItemType[] };
+```
+
+### `RequiredSignDataFeature`
+
+Filter for the wallet's [`SignData`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature)
+capability.
+
+```ts
+type RequiredSignDataFeature = { types: SignDataType[] };
+```
+
+### `RequiredSignMessageFeature`
+
+Filter for the wallet's [`SignMessage`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature)
+capability. Same shape as [`RequiredSendTransactionFeature`](#requiredsendtransactionfeature); checked
+against the wallet's `SignMessage` feature entry.
+
+```ts
+type RequiredSignMessageFeature = { minMessages?: number; extraCurrencyRequired?: boolean; itemTypes?: StructuredItemType[] };
+```
+
+### `RequiredEmbeddedRequestFeature`
+
+Marker filter for the wallet's
+[`EmbeddedRequest`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#feature)
+feature. The feature itself has no parameters; pass `{}` to require it.
+
+```ts
+type RequiredEmbeddedRequestFeature = {};
+```
+
+### `WalletConnectionSource`
+
+Selector passed to `ITonConnect.connect()` that tells the SDK _how_ to reach
+a specific wallet. Discriminated union of the three transports the protocol
+supports.
+
+```ts
+type WalletConnectionSource = WalletConnectionSourceHTTP | WalletConnectionSourceJS | WalletConnectionSourceWalletConnect;
+```
+
+### `WalletInfo`
+
+```ts
+type WalletInfo = WalletInfoRemote | WalletInfoInjectable | (WalletInfoRemote & WalletInfoInjectable);
+```
+
+### `EmbeddedResponse`
+
+Result the wallet attached to the connect event when an
+[embedded request](/applications/ton-connect/how-to/embedded-request)
+was folded into the connect URL.
+
+Discriminated by `ok`:
+
+- `ok: true` — the wallet processed the request. `result` carries the regular
+  method response (`SendTransactionResponse`, [`SignDataResponse`](#signdataresponse) or
+  [`SignMessageResponse`](#signmessageresponse)), whichever method was embedded.
+- `ok: false` — the wallet returned an error in place of a result. `error`
+  matches the RPC error shape; the per-method error tables live in the
+  [RPC specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md).
+
+```ts
+type EmbeddedResponse =
+    | { ok: true; result: SendTransactionResponse | SignDataResponse | SignMessageResponse }
+    | { ok: false; error: { code: number; message: string; data?: unknown } };
+```
+
+### `WalletConnectMetadata`
+
+Metadata information about your application that will be displayed to users during WalletConnect pairing.
+
+```ts
+type WalletConnectMetadata = { name: string; description: string; url: string; icons: string[] };
+```
+
+### `WalletConnectOptions`
+
+Configuration options for initializing WalletConnect integration.
+
+```ts
+type WalletConnectOptions = { projectId: string; metadata: WalletConnectMetadata };
+```
+
+### `RemoveTonConnectPrefix`
+
+Removes the `ton-connect-` and `ton-connect-ui-` prefixes from the given string.
+
+```ts
+type RemoveTonConnectPrefix<T> = T extends `ton-connect-ui-${infer Rest}` ? Rest : T extends `ton-connect-${infer Rest}` ? Rest : T;
+```
+
+### `AddTonConnectPrefix`
+
+```ts
+type AddTonConnectPrefix<T extends string> = `ton-connect-${T}` | `ton-connect-ui-${T}`;
+```
+
+### `RequestVersionEvent`
+
+Request TON Connect UI version.
+
+```ts
+type RequestVersionEvent = { type: 'request-version' };
+```
+
+### `ResponseVersionEvent`
+
+Response TON Connect UI version.
+
+```ts
+type ResponseVersionEvent = { type: 'response-version'; version: string };
+```
+
+### `VersionEvent`
+
+Version events.
+
+```ts
+type VersionEvent = RequestVersionEvent | ResponseVersionEvent;
+```
+
+### `Version`
+
+Version of the TON Connect SDK and TON Connect UI.
+
+```ts
+type Version = { ton_connect_sdk_lib: string | null; ton_connect_ui_lib: string | null };
+```
+
+### `SessionInfo`
+
+```ts
+type SessionInfo = { clientId: string | null; walletId: string | null };
+```
+
+### `AuthType`
+
+Requested authentication type: 'ton\_addr' or 'ton\_proof'.
+
+```ts
+type AuthType = ConnectItem['name'];
+```
+
+### `ConnectionInfo`
+
+Information about a connected wallet.
+
+```ts
+type ConnectionInfo = {
+    wallet_address: string | null;
+    wallet_state_init: string | null;
+    wallet_type: string | null;
+    wallet_version: string | null;
+    auth_type: AuthType;
+    custom_data:
+        & {
+            chain_id: string | null;
+            provider: 'http' | 'injected' | null;
+            client_id: string | null;
+            wallet_id: string | null;
+        }
+        & Version;
+};
+```
+
+### `ConnectionStartedEvent`
+
+Initial connection event when a user initiates a connection.
+
+```ts
+type ConnectionStartedEvent = { type: 'connection-started'; custom_data: Version; trace_id?: string | null };
+```
+
+### `ConnectionCompletedEvent`
+
+Successful connection event when a user successfully connected a wallet.
+
+```ts
+type ConnectionCompletedEvent = { type: 'connection-completed'; is_success: true; trace_id?: string | null } & ConnectionInfo;
+```
+
+### `ConnectionErrorEvent`
+
+Connection error event when a user cancels a connection or there is an error during the connection process.
+
+```ts
+type ConnectionErrorEvent = {
+    type: 'connection-error';
+    is_success: false;
+    error_message: string;
+    error_code: CONNECT_EVENT_ERROR_CODES | null;
+    custom_data: { client_id: string | null; wallet_id: string | null } & Version;
+    trace_id?: string | null;
+};
+```
+
+### `ConnectionEvent`
+
+Connection events.
+
+```ts
+type ConnectionEvent = ConnectionStartedEvent | ConnectionCompletedEvent | ConnectionErrorEvent;
+```
+
+### `ConnectionRestoringStartedEvent`
+
+Connection restoring started event when initiates a connection restoring process.
+
+```ts
+type ConnectionRestoringStartedEvent = { type: 'connection-restoring-started'; custom_data: Version; trace_id?: string | null };
+```
+
+### `ConnectionRestoringCompletedEvent`
+
+Connection restoring completed event when successfully restored a connection.
+
+```ts
+type ConnectionRestoringCompletedEvent =
+    & { type: 'connection-restoring-completed'; is_success: true; trace_id?: string | null }
+    & ConnectionInfo;
+```
+
+### `ConnectionRestoringErrorEvent`
+
+Connection restoring error event when there is an error during the connection restoring process.
+
+```ts
+type ConnectionRestoringErrorEvent = {
+    type: 'connection-restoring-error';
+    is_success: false;
+    error_message: string;
+    custom_data: Version;
+    trace_id?: string | null;
+};
+```
+
+### `ConnectionRestoringEvent`
+
+Connection restoring events.
+
+```ts
+type ConnectionRestoringEvent = ConnectionRestoringStartedEvent | ConnectionRestoringCompletedEvent | ConnectionRestoringErrorEvent;
+```
+
+### `TransactionMessage`
+
+Transaction message.
+
+```ts
+type TransactionMessage = { address: string | null; amount: string | null };
+```
+
+### `TransactionFullMessage`
+
+Transaction message.
+
+```ts
+type TransactionFullMessage = { address: string | null; amount: string | null; payload: string | null; state_init: string | null };
+```
+
+### `TransactionInfo`
+
+Transaction information.
+
+```ts
+type TransactionInfo = { valid_until: string | null; from: string | null; messages: TransactionMessage[] };
+```
+
+### `TransactionFullInfo`
+
+Transaction information.
+
+```ts
+type TransactionFullInfo = Omit<TransactionInfo, 'messages'> & { messages: TransactionFullMessage[] };
+```
+
+### `TransactionSentForSignatureEvent`
+
+Initial transaction event when a user initiates a transaction.
+
+```ts
+type TransactionSentForSignatureEvent =
+    & { type: 'transaction-sent-for-signature'; trace_id?: string | null }
+    & ConnectionInfo
+    & TransactionInfo;
+```
+
+### `TransactionSignedEvent`
+
+Transaction signed event when a user successfully signed a transaction.
+
+```ts
+type TransactionSignedEvent =
+    & {
+        type: 'transaction-signed';
+        is_success: true;
+        signed_transaction: string;
+        trace_id?: string | null;
+    }
+    & ConnectionInfo
+    & TransactionInfo;
+```
+
+### `TransactionSigningFailedEvent`
+
+Transaction error event when a user cancels a transaction or there is an error during the transaction process.
+
+```ts
+type TransactionSigningFailedEvent =
+    & {
+        type: 'transaction-signing-failed';
+        is_success: false;
+        error_message: string;
+        error_code: SEND_TRANSACTION_ERROR_CODES | null;
+        trace_id?: string | null;
+    }
+    & ConnectionInfo
+    & TransactionFullInfo;
+```
+
+### `TransactionSigningEvent`
+
+Transaction events.
+
+```ts
+type TransactionSigningEvent = TransactionSentForSignatureEvent | TransactionSignedEvent | TransactionSigningFailedEvent;
+```
+
+### `DataSentForSignatureEvent`
+
+```ts
+type DataSentForSignatureEvent =
+    & { type: 'sign-data-request-initiated'; data: SignDataPayload; trace_id?: string | null }
+    & ConnectionInfo;
+```
+
+### `DataSignedEvent`
+
+```ts
+type DataSignedEvent =
+    & {
+        type: 'sign-data-request-completed';
+        is_success: true;
+        data: SignDataPayload;
+        signed_data: SignDataResponse;
+        trace_id?: string | null;
+    }
+    & ConnectionInfo;
+```
+
+### `DataSigningFailedEvent`
+
+```ts
+type DataSigningFailedEvent =
+    & {
+        type: 'sign-data-request-failed';
+        is_success: false;
+        error_message: string;
+        error_code: SIGN_DATA_ERROR_CODES | null;
+        data: SignDataPayload;
+        trace_id?: string | null;
+    }
+    & ConnectionInfo;
+```
+
+### `DataSigningEvent`
+
+```ts
+type DataSigningEvent = DataSentForSignatureEvent | DataSignedEvent | DataSigningFailedEvent;
+```
+
+### `DisconnectionEvent`
+
+Disconnect event when a user initiates a disconnection.
+
+```ts
+type DisconnectionEvent = { type: 'disconnection'; scope: 'dapp' | 'wallet'; trace_id?: string | null } & ConnectionInfo;
+```
+
+### `WalletModalOpenedEvent`
+
+Represents the event triggered when the wallet modal is opened.
+
+```ts
+type WalletModalOpenedEvent = {
+    type: 'wallet-modal-opened';
+    client_id: string | null;
+    visible_wallets: string[];
+    custom_data: Version;
+    trace_id: string | null;
+};
+```
+
+### `SelectedWalletEvent`
+
+Represents the event triggered when the wallet is selected.
+
+```ts
+type SelectedWalletEvent = {
+    type: 'selected-wallet';
+    client_id: string | null;
+    visible_wallets: string[];
+    wallets_menu: 'explicit_wallet' | 'main_screen' | 'other_wallets';
+    wallet_redirect_method?: 'tg_link' | 'external_link';
+    wallet_redirect_link?: string;
+    wallet_type: string | null;
+    custom_data: Version;
+    trace_id: string | null;
+};
+```
+
+### `SdkActionEvent`
+
+User action events.
+
+```ts
+type SdkActionEvent =
+    | VersionEvent
+    | ConnectionEvent
+    | ConnectionRestoringEvent
+    | DisconnectionEvent
+    | TransactionSigningEvent
+    | DataSigningEvent
+    | WalletModalOpenedEvent
+    | SelectedWalletEvent;
+```
+
+### `WithoutVersion`
+
+Parameters without version field.
+
+```ts
+type WithoutVersion<T> = T extends [Version, ...infer Rest] ? [...Rest] : never;
+```
+
+### `ConsumableLike`
+
+Accept either a bare value or a value already wrapped in a [`Consumable`](#consumable).
+
+```ts
+type ConsumableLike<T> = T | Consumable<T>;
+```
+
+### `Traceable`
+
+Wraps a value with a required `traceId` — a UUID
+used to correlate logs and analytics across the dApp, bridge and wallet for
+one user-visible operation.
+
+```ts
+type Traceable<T extends {} = {}> = { traceId: string } & T;
+```
+
+### `OptionalTraceable`
+
+Wraps a value with an optional `traceId`.
+
+```ts
+type OptionalTraceable<T extends {} = {}> = { traceId?: string } & T;
+```
+
+### `UUIDTypes`
+
+```ts
+type UUIDTypes<TBuf extends Uint8Array = Uint8Array> = string | TBuf;
+```
+
+### `Version7Options`
+
+```ts
+type Version7Options = { random?: Uint8Array; msecs?: number; seq?: number; rng?: () => Uint8Array };
+```
+
+## Utility functions
+
+### `initializeWalletConnect()`
+
+Initializes the WalletConnect integration.
+
+This function must be called once before using WalletConnect features.
+A second call will throw an error to prevent accidental re-initialization.
+
+```ts
+function initializeWalletConnect(
+    UniversalConnectorCls: Function,
+    walletConnectOptions: WalletConnectOptions
+): void;
+```
+
+| Parameter               | Type                   | Description                                                                    |
+| ----------------------- | ---------------------- | ------------------------------------------------------------------------------ |
+| `UniversalConnectorCls` | `Function`             | A `UniversalConnector` class imported from `@reown/appkit-universal-connector` |
+| `walletConnectOptions`  | `WalletConnectOptions` | Configuration options used for initializing WalletConnect.                     |
+
+**Example:**
+
+```ts
+import { UniversalConnector } from '@reown/appkit-universal-connector';
+
+initializeWalletConnect(UniversalConnector, {
+    projectId: 'abcd1234abcd1234abcd1234abcd1234',
+    metadata: {
+        name: 'Demo DApp',
+        icons: [
+            'https://example.com/my-icon.png'
+        ],
+        url: window.location.origin,
+        description: 'Demo DApp'
+    }
+});
+```
+
+### `isWalletConnectInitialized()`
+
+```ts
+function isWalletConnectInitialized(): boolean;
+```
+
+Returns `boolean`.
+
+### `toUserFriendlyAddress()`
+
+Convert a raw `<workchain>:<hex>` TON address into the URL-safe,
+non-bounceable user-friendly form (`UQ…` on mainnet, `0Q…` on testnet).
+
+```ts
+function toUserFriendlyAddress(hexAddress: string, testOnly: boolean = false): string;
+```
+
+| Parameter    | Type      | Description                                                |
+| ------------ | --------- | ---------------------------------------------------------- |
+| `hexAddress` | `string`  | — raw address, e.g. `'0:348bcf...0415f'`.                  |
+| `testOnly`   | `boolean` | _Optional_. — set the test-only flag; Defaults to `false`. |
+
+Returns `string`. Base64url-encoded user-friendly address.
+
+### `checkRequiredWalletFeatures()`
+
+Test whether a wallet's advertised `features` satisfy a
+[`RequiredFeatures`](#requiredfeatures) filter.
+
+```ts
+function checkRequiredWalletFeatures(
+    features: Feature[],
+    walletsRequiredFeatures?: RequiredFeatures
+): boolean;
+```
+
+| Parameter                 | Type               | Description |
+| ------------------------- | ------------------ | ----------- |
+| `features`                | `Feature[]`        | —           |
+| `walletsRequiredFeatures` | `RequiredFeatures` | _Optional_. |
+
+Returns `boolean`. `true` when every constraint in `walletsRequiredFeatures` matches, `false` otherwise.
+
+### `enableQaMode()`
+
+```ts
+function enableQaMode(): void;
+```
+
+### `isQaModeEnabled()`
+
+```ts
+function isQaModeEnabled(): boolean;
+```
+
+Returns `boolean`.
+
+### `UUIDv7()`
+
+```ts
+function UUIDv7(options?: Version7Options, buf?: undefined, offset?: number): string;
+```
+
+| Parameter | Type              | Description |
+| --------- | ----------------- | ----------- |
+| `options` | `Version7Options` | _Optional_. |
+| `buf`     | `undefined`       | _Optional_. |
+| `offset`  | `number`          | _Optional_. |
+
+Returns `string`.
+
+### Type guards
+
+| Function                               | Description                                                                                                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `hasItems(req)`                        | Type guard: narrows to [`SendTransactionRequestWithItems`](#sendtransactionrequestwithitems).                                                                                  |
+| `hasMessages(req)`                     | Type guard: narrows to [`SendTransactionRequestWithMessages`](#sendtransactionrequestwithmessages).                                                                            |
+| `isWalletInfoCurrentlyInjected(value)` | Checks if [`WalletInfo`](#walletinfo) is [`WalletInfoInjectable`](#walletinfoinjectable) and `WalletInfo` is injected to the current webpage (`walletInfo.injected === true`). |
+| `isWalletInfoCurrentlyEmbedded(value)` | Checks if [`WalletInfo`](#walletinfo) is [`WalletInfoInjectable`](#walletinfoinjectable) and dApp is opened inside this wallet's browser.                                      |
+| `isWalletInfoInjectable(value)`        | Checks if [`WalletInfo`](#walletinfo) is [`WalletInfoInjectable`](#walletinfoinjectable), but doesn't check if it is injected to the page or not.                              |
+| `isWalletInfoRemote(value)`            | Checks if [`WalletInfo`](#walletinfo) is [`WalletInfoRemote`](#walletinforemote).                                                                                              |
+| `isWalletInfoInjected(value)`          | _Deprecated_ — Use `isWalletInfoInjectable` or `isWalletInfoCurrentlyInjected` instead.                                                                                        |
+
+### URL helpers
+
+| Function                                  | Description                                                                                                                                                                                                                                                                             |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isTelegramUrl(link)`                     | Type guard for Telegram links — matches both the `tg://` scheme and `https://t.me/…`.                                                                                                                                                                                                   |
+| `isConnectUrl(link)`                      | Type guard that returns `true` when `link` looks like a TON Connect connect URL — i.e. it carries the `ton_addr` request item (raw or Telegram-encoded). Useful for discriminating handler URLs in deep-link routers.                                                                   |
+| `encodeTelegramUrlParameters(parameters)` | Encode query parameters for transport inside a Telegram universal link. Telegram normalizes ASCII punctuation in URLs, which breaks the encoded connect payload; this helper substitutes the affected characters with pass-through markers that `decodeTelegramUrlParameters` reverses. |
+| `decodeTelegramUrlParameters(parameters)` | Inverse of `encodeTelegramUrlParameters`.                                                                                                                                                                                                                                               |
+
+### Tracker events
+
+| Function                                                                                                                                    | Description                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `createRequestVersionEvent()`                                                                                                               | Create a request version event.                |
+| `createResponseVersionEvent(version)`                                                                                                       | Create a response version event.               |
+| `createVersionInfo(version)`                                                                                                                | Create a version info.                         |
+| `createConnectionStartedEvent(version, traceId?)`                                                                                           | Create a connection init event.                |
+| `createConnectionCompletedEvent(version, wallet, sessionInfo?, traceId?)`                                                                   | Create a connection completed event.           |
+| `createConnectionErrorEvent(version, error_message, errorCode, sessionInfo?, traceId?)`                                                     | Create a connection error event.               |
+| `createConnectionRestoringStartedEvent(version, traceId?)`                                                                                  | Create a connection restoring started event.   |
+| `createConnectionRestoringCompletedEvent(version, wallet, sessionInfo?, traceId?)`                                                          | Create a connection restoring completed event. |
+| `createConnectionRestoringErrorEvent(version, errorMessage, traceId?)`                                                                      | Create a connection restoring error event.     |
+| `createTransactionSentForSignatureEvent(version, wallet, transaction, sessionInfo?, traceId?)`                                              | Create a transaction init event.               |
+| `createTransactionSignedEvent(version, wallet, transaction, signedTransaction, sessionInfo?, traceId?)`                                     | Create a transaction signed event.             |
+| `createTransactionSigningFailedEvent(version, wallet, transaction, errorMessage, errorCode, sessionInfo?, traceId?)`                        | Create a transaction error event.              |
+| `createDataSentForSignatureEvent(version, wallet, data, sessionInfo?, traceId?)`                                                            | —                                              |
+| `createDataSignedEvent(version, wallet, data, signedData, sessionInfo?, traceId?)`                                                          | —                                              |
+| `createDataSigningFailedEvent(version, wallet, data, errorMessage, errorCode, sessionInfo?, traceId?)`                                      | —                                              |
+| `createDisconnectionEvent(version, wallet, scope, sessionInfo?, traceId?)`                                                                  | —                                              |
+| `createWalletModalOpenedEvent(version, visibleWallets, clientId?, traceId?)`                                                                | —                                              |
+| `createSelectedWalletEvent(version, visibleWallets, lastSelectedWallet, walletsMenu, redirectLink, redirectLinkType?, clientId?, traceId?)` | —                                              |
+
+## Errors
+
+Every error from this package extends [`TonConnectError`](#tonconnecterror). Use `err instanceof TonConnectError` as a coarse filter; check the concrete class for finer handling.
+
+### `TonConnectError`
+
+Base class for every error thrown by `@tonconnect/sdk`. Catch it to handle
+TON Connect failures uniformly.
+
+```ts
+class TonConnectError extends Error {
+    constructor(message?: string, options?: { cause?: T });
+}
+```
+
+### Error catalogue
+
+| Class                                | Thrown when                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WrongAddressError`                  | Thrown when passed address is in incorrect format.                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `ParseHexError`                      | Thrown when passed hex is in incorrect format.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `UserRejectsError`                   | Thrown when user rejects the action in the wallet.                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `BadRequestError`                    | Thrown when request to the wallet contains errors.                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `UnknownAppError`                    | Thrown when the wallet returns `UNKNOWN_APP` (code 100): the session or app is unknown to the wallet.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `LocalstorageNotFoundError`          | Thrown when no `storage` was specified in [`TonConnectOptions`](#tonconnectoptions) and a default `localStorage` was not detected in the Node.js environment.                                                                                                                                                                                                                                                                                                                                  |
+| `UnknownError`                       | Unhanded unknown error.                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `WalletAlreadyConnectedError`        | Thrown when wallet connection called but wallet already connected.                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `WalletMissingRequiredFeaturesError` | Thrown when a wallet completes the connect handshake but its advertised `DeviceInfo.features` do not satisfy the dApp's `walletsRequiredFeatures` filter. The SDK aborts the connection and emits this error to [`onStatusChange`](#onstatuschange)'s error handler. Use `cause.connectEvent` to inspect what the wallet returned (its [`DeviceInfo`](/applications/ton-connect/api-reference/protocol#deviceinfo), the `ConnectItemReply` array) when surfacing a useful message to the user. |
+| `WalletNotConnectedError`            | Thrown when send transaction or other methods called while wallet is not connected.                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `WalletNotInjectedError`             | Thrown when there is an attempt to connect to the injected wallet while it is not exists in the webpage.                                                                                                                                                                                                                                                                                                                                                                                       |
+| `WalletNotSupportFeatureError`       | Thrown when the dApp issues a request the connected wallet does not advertise support for — e.g. [`signMessage`](#signmessage) on a wallet missing the `SignMessageFeature`, or `signData({ type: 'cell' })` on a wallet whose `SignDataFeature.types` lacks `'cell'`. `cause.requiredFeature` reflects what the SDK looked for, so the UI can tell the user which capability is missing and prompt them to switch wallet.                                                                     |
+| `WalletWrongNetworkError`            | Thrown when the wallet is connected to a network that does not match the one the dApp requested via `ITonConnect.setConnectionNetwork` or the `network` field of [`sendTransaction`](#sendtransaction) / [`signData`](#signdata) / [`signMessage`](#signmessage).                                                                                                                                                                                                                              |
+| `FetchWalletsError`                  | Thrown when an error occurred while fetching the wallets list.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+
+## Related pages
+
+- [Get started](/applications/ton-connect/get-started) — integration walkthrough.
+- [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) — framework-agnostic UI on top of the SDK.
+- [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react) — React bindings.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types re-exported by the SDK.
+- [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.

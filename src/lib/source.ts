@@ -50,6 +50,13 @@ export const source = loader({
               { key: '0', className: 'text-[0.8125rem]' },
               node.name,
             );
+            // Wrap file name in <code> for package reference pages
+          } else if (typeof node.name === 'string' && node.name.match(/^`[^`]+`$/)) {
+            node.name = createElement(
+              'code',
+              { key: '0', className: 'text-[0.8125rem]' },
+              node.name.slice(1, -1),
+            );
           }
           // Apply the tag from the page frontmatter if the openapi field is unset
           if (file.data.tag && !file.data._openapi) {
@@ -122,8 +129,8 @@ export function getSearchablePages(locale?: string) {
 export function getQuickJumpPages(locale?: string) {
   const pages = getSearchablePages(locale);
   return pages.map((page) => ({
-    title: page.data.title,
-    normalizedTitle: page.data.title.toLocaleLowerCase(locale),
+    title: page.data.title.replace(/`/g, ''),
+    normalizedTitle: page.data.title.toLocaleLowerCase(locale).replace(/`/g, ''),
     url: page.url,
   }));
 }

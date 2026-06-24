@@ -13,7 +13,7 @@
     "check:links": "echo 'TODO: REPLACE mint broken-links --check-snippets WITH NEW LINK CHECKS'",
     "check:redirects": "node scripts/check-redirects.mjs",
     "check:navigation": "node scripts/check-navigation.mjs",
-    "check:fs": "echo 'https://github.com/ton-org/docs/issues/1182'",
+    "check:fs": "echo 'Issue no. 1182 on GitHub:' && git config remote.origin.url",
     "check:fmt": "remark . -e mdx,md --no-stdout --quiet --frail && prettier --check .",
     "check:fmt:some": "remark --no-stdout --quiet --frail --silently-ignore",
     "check:spell": "cspell --no-progress --show-suggestions .",

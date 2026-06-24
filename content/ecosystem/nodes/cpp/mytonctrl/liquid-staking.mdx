@@ -83,7 +83,7 @@ add_controller EQDf...9A
 
 ### `deposit_to_controller`
 
-**Purpose:** Top up a controller contract with Gram from the validator wallet.
+**Purpose:** Top up a controller contract with GRAM from the validator wallet.
 
 **Syntax**
 
@@ -93,7 +93,7 @@ deposit_to_controller <controller-addr> <amount-gram>
 
 **Behavior**
 
-- Signs the `top-up.boc` script with the validator wallet and sends `<amount-gram>` TON to `<controller-addr>`.
+- Signs the `top-up.boc` script with the validator wallet and sends `<amount-gram>` GRAM to `<controller-addr>`.
 - Use decimal GRAM amounts; the command handles the nanogram conversion internally.
 
 **Example**
@@ -157,7 +157,7 @@ stop_and_withdraw_controller <controller-addr> [amount-gram]
 **Behavior**
 
 - Flags the controller as stopped (same as `stop_controller`).
-- Triggers a withdrawal for `[amount-gram]` TON; when omitted, withdraws almost the full balance (balance minus \~10.1 GRAM to keep the contract alive).
+- Triggers a withdrawal for `[amount-gram]` GRAM; when omitted, withdraws almost the full balance (balance minus \~10.1 GRAM to keep the contract alive).
 
 **Example**
 

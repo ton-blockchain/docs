@@ -29,6 +29,21 @@ function shouldSkipLocalPage(path: string) {
   return process.env.NEXT_BUILD_TYPE === 'local' && localSkippedPagePaths.has(path);
 }
 
+function renderInlineCode(title: string) {
+  return title.split(/(`[^`\n]+`)/g).map((part, index) =>
+    /^`[^`\n]+`$/.test(part) ? (
+      <code
+        key={index}
+        className="rounded border border-fd-border bg-fd-muted px-1 py-0.5 font-mono text-[0.85em] font-normal"
+      >
+        {part.slice(1, -1)}
+      </code>
+    ) : (
+      part
+    ),
+  );
+}
+
 export default async function Page(props: PageProps<'/[...slug]'>) {
   const params = await props.params;
   const page = source.getPage(params.slug);
@@ -42,7 +57,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
         <meta httpEquiv="refresh" content={`0; url=${page.data.url}`} />
         <meta name="robots" content="noindex, follow" />
         <DocsPage toc={[]}>
-          <DocsTitle>{page.data.title}</DocsTitle>
+          <DocsTitle>{renderInlineCode(page.data.title)}</DocsTitle>
           <DocsBody>
             <p>
               Redirecting to <a href={page.data.url}>{page.data.url}</a>…
@@ -56,7 +71,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
   if (shouldSkipLocalPage(page.path)) {
     return (
       <DocsPage toc={[]} full={page.data.full}>
-        <DocsTitle>{page.data.title}</DocsTitle>
+        <DocsTitle>{renderInlineCode(page.data.title)}</DocsTitle>
         <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
         <DocsBody>
           <p>
@@ -89,7 +104,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
       }}
       // breadcrumb={{ enabled: false }}
     >
-      <DocsTitle>{page.data.title}</DocsTitle>
+      <DocsTitle>{renderInlineCode(page.data.title)}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       {page.data._openapi || page.slugs.includes('whitepapers') ? (
         <></>
@@ -131,7 +146,7 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
   const image = getPageImage(page);
   const md = getPageMarkdownUrl(page);
   return {
-    title: page.data.title,
+    title: page.data.title.replace(/`/g, ''),
     description: page.data.description,
     metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
     alternates: {
@@ -141,7 +156,7 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
       },
     },
     openGraph: {
-      title: page.data.title,
+      title: page.data.title.replace(/`/g, ''),
       ...(page.data.description ? { description: page.data.description } : {}),
       url: page.url,
       type: 'article',
@@ -149,12 +164,12 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
         url: image.url,
         width: 1200,
         height: 630,
-        alt: page.data.title,
+        alt: page.data.title.replace(/`/g, ''),
       },
     },
     twitter: {
       card: 'summary_large_image',
-      title: page.data.title,
+      title: page.data.title.replace(/`/g, ''),
       ...(page.data.description ? { description: page.data.description } : {}),
       images: image.url,
     },

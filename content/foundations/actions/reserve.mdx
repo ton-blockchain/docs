@@ -56,22 +56,22 @@ If there were no errors, then the reservation action was successful, and the sub
 
 For example, suppose that:
 
-- `amount` = `0.1` TON;
+- `amount` = `0.1` GRAM;
 - `mode` = `1 + 4 + 8` (`ReserveAllExcept`, `ReserveAddOriginalBalance`, `ReserveInvertSign`);
-- `original_balance` = `2` TON;
-- `remaining_balance` = `3` TON.
+- `original_balance` = `2` GRAM;
+- `remaining_balance` = `3` GRAM.
 
 Then the reservation proceeds as follows:
 
 1. `mode` has flag `ReserveBounceIfActionFail`? No.
-1. `reserve` = `0.1` TON.
+1. `reserve` = `0.1` GRAM.
 1. `mode` has flag `ReserveAddOriginalBalance`? Yes.
    - `mode` has flag `ReserveInvertSign`? Yes.
-   - Thus, `reserve` = `original_balance - reserve` = `2 - 0.1` = `1.9` TON.
+   - Thus, `reserve` = `original_balance - reserve` = `2 - 0.1` = `1.9` GRAM.
 1. `mode` has flag `ReserveAtMost`? No.
 1. `mode` has flag `ReserveAllExcept`? Yes.
-   - Thus, `reserve` = `remaining_balance - reserve` = `3 - 1.9` = `1.1` TON.
-1. `remaining_balance` = `remaining_balance - reserve` = `3 - 1.1` = `1.9` TON.
+   - Thus, `reserve` = `remaining_balance - reserve` = `3 - 1.9` = `1.1` GRAM.
+1. `remaining_balance` = `remaining_balance - reserve` = `3 - 1.1` = `1.9` GRAM.
 
 ## Errors
 

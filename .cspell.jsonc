@@ -72,7 +72,7 @@
     },
     // Do not check for banned words (denylists or flagWords) in certain files
     {
-      "filename": "content/contribute/style-guide*.mdx",
+      "filename": "content/**/contribute/style-guide*.mdx",
       "ignoreWords": ["tos", "DOI", "boc", "BOC"],
       "ignoreRegExpList": [
         "\\b[tT]on[a-zA-Z]+\\b", // ton or Ton-prefixed words
@@ -84,7 +84,7 @@
       ],
     },
     {
-      "filename": "content/tolk/features/compiler-optimizations.mdx",
+      "filename": "content/**/tolk/features/compiler-optimizations.mdx",
       "ignoreWords": ["fifting"],
     },
     {
@@ -112,13 +112,17 @@
       ],
     },
     {
-      "filename": "content/ecosystem/ai/mcp.mdx",
+      "filename": "content/**/ecosystem/ai/mcp.mdx",
       "ignoreWords": [
         "mcp", // lowercase in the title
       ],
     },
     {
-      "filename": "content/foundations/whitepapers/overview.mdx",
+      "filename": "content/**/appkit/reference/appkit*.mdx",
+      "ignoreWords": ["providerId", "AppkitUIToken"],
+    },
+    {
+      "filename": "content/**/foundations/whitepapers/overview.mdx",
       "ignoreWords": [
         "Toncoin", // intentional mention of the old currency name
       ],
@@ -187,7 +191,7 @@
     //
     // Custom patterns
     //
-    "url: \".*?\"", // frontmatter url field
+    "^url: \".*?\"$", // frontmatter url field
     "\\s*[^\\s]*?=[\"'\\{]", // arbitrary JSX attribute names
     "=\\s*\".*?\"", // string values of JSX attributes
     "=\\s*'.*?'", // string values of JSX attributes
@@ -199,6 +203,6 @@
     "^import[ \\t].+$", // import ...
     "/^export[ \\t].+?(?=\\r?\\n\\r?\\n)/gms", // export ...
     "(?<!\\\\)\\{(?:[^{}]|\\{(?:[^{}]|\\{[^{}]*\\})*\\})*\\}", // jsx expressions in {}
-    "openapi: .+$", // part of the frontmatter on OpenAPI-generated MDX pages
+    "^_?openapi: .+$", // part of the frontmatter on OpenAPI-generated MDX pages
   ],
 }
