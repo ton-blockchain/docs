@@ -93,6 +93,7 @@ const paths: Path[] = [
       { title: 'Exit codes', href: '/tvm/exit-codes' },
       { title: 'Instructions', href: '/tvm/instructions' },
       { title: 'Gas', href: '/tvm/gas' },
+      { title: 'Registers', href: '/tvm/registers' },
     ],
   },
   {
