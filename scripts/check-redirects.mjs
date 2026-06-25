@@ -6,7 +6,7 @@
 │  1. Uniqueness of redirect sources                                           │
 │  2. Existence of redirect destination files                                  │
 │  3. Redirects against the previous TON Documentation URLs                    │
-│  4. Redirects against the upstream docs.json structure                       │
+│  4. Redirects against the upstream meta.json and content/ structure          │
 │                                                                              │
 │  By default, it checks all, but to only check either specify `unique`,       │
 │  `exist`, `previous` or `upstream` as a command-line argument, respectively. │
@@ -18,7 +18,7 @@
 // Node.js
 import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { execSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 
 // Common utils
 import {
@@ -31,6 +31,8 @@ import {
   getConfig,
   getNavLinksSet,
   getRedirects,
+  $,
+  findUnignoredFiles,
 } from './common.mjs';
 
 /**
@@ -79,7 +81,7 @@ const checkUnique = (config) => {
       ),
     );
   }
-  const navLinks = getNavLinksSet(config);
+  const navLinks = getNavLinksSet();
   const navOverrides = redirectSources.filter((it) => navLinks.has(fmt(it)));
   if (navOverrides.length !== 0) {
     errors.push(
@@ -363,8 +365,8 @@ const checkPrevious = async (config) => {
     sidebar.forEach(processItem);
   });
 
-  // 3. Process docs.json and compare its structure and redirects to old links
-  const currLinks = getNavLinksSet(config);
+  // 3. Process meta.json and content/ and compare their structure and redirects to old links
+  const currLinks = getNavLinksSet();
   const prevOnlyLinks = prevLinks.filter((it) => !currLinks.has(it));
   if (prevOnlyLinks.length === 0) {
     return { ok: true };
@@ -393,8 +395,8 @@ const checkPrevious = async (config) => {
 };
 
 /**
- * Check redirects against the upstream docs.json structure.
- * Ensures that changes made to docs.json in the PR
+ * Check redirects against the upstream meta.json and content/ structure.
+ * Ensures that changes made to the file structure in the PR
  * provide necessary redirects in case local links
  * deviated from the links on the main branch.
  *
@@ -402,29 +404,34 @@ const checkPrevious = async (config) => {
  * @return {Promise<CheckResult>}
  */
 const checkUpstream = async (localConfig) => {
-  /** @type {RegExpMatchArray | null} */
-  let gitRepoMatch = null;
-  try {
-    const gitUrl = execSync('git config --get remote.origin.url', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 1_000 * 60 * 30,
-    })
-      .toString()
-      .trim();
-    gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
-  } catch {}
-  // @ts-ignore
-  const user = gitRepoMatch?.at(1) ?? 'ton-org';
-  // @ts-ignore
-  const repo = gitRepoMatch?.at(2) ?? 'docs';
-  const response = await fetch(
-    `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/main/docs.json`,
-  );
+  const findUnignoredMdxUpstream = () => {
+    const originCmd = $('git config --get remote.origin.url');
+    if (!originCmd.ok) return [];
+    const gitRepo = originCmd.out.trim();
+    const cwd = process.cwd();
+    const tmp = tmpdir();
+    const repo = join(tmp, 'ton-docs-1000');
+    const isCloned = existsSync(repo) && statSync(repo).isDirectory();
+    if (isCloned) {
+      process.chdir(repo); // NOTE: in another dir, restore the cwd
+      const fetchCmd = $('git fetch');
+      const pullCmd = $('git pull');
+      if (!fetchCmd.ok || !pullCmd.ok) {
+        process.chdir(cwd); // NOTE: restoring the cwd
+        return [];
+      }
+    } else {
+      const gitCmd = $(`git clone --depth=1 ${gitRepo} ${repo}`);
+      if (!gitCmd.ok) return [];
+      process.chdir(repo);
+    }
+    const files = findUnignoredFiles('mdx').map((it) => prefixWithSlash(it.replace(/\.mdx$/i, '')));
+    process.chdir(cwd); // NOTE: restoring the cwd
+    return files;
+  };
 
-  /** @type {DocsConfig} */
-  const upstreamConfig = Object.freeze(await response.json());
-  const upstreamNavLinks = getNavLinksSet(upstreamConfig);
-  const localNavLinks = getNavLinksSet(localConfig);
+  const upstreamNavLinks = Object.freeze(new Set(findUnignoredMdxUpstream()));
+  const localNavLinks = getNavLinksSet();
 
   const upstreamOnlyLinks = [...upstreamNavLinks].filter((it) => !localNavLinks.has(it));
   if (upstreamOnlyLinks.length === 0) {
@@ -448,8 +455,8 @@ const checkUpstream = async (localConfig) => {
         'Missing pages or redirects for the following upstream URLs:',
         missingSources,
         [
-          'Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream docs.json!',
-          `${ansiYellow('How to fix:')} if you did not rename, move, or delete any pages from docs.json, merge the latest main branch into your branch. Otherwise, add necessary redirects pointing to existing pages.`,
+          'Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream meta.json and content/ structure!',
+          `${ansiYellow('How to fix:')} if you did not rename, move, or delete any pages in meta.json files or content/ directory, merge the latest main branch into your branch. Otherwise, add necessary redirects pointing to existing pages.`,
         ].join('\n'),
       ),
     };
@@ -471,7 +478,7 @@ const main = async () => {
   const argUnique = rawArgs.includes('unique'); // all sources are unique
   const argExist = rawArgs.includes('exist'); // all destinations exist
   const argPrevious = rawArgs.includes('previous'); // sources cover previous TON Docs
-  const argUpstream = rawArgs.includes('upstream'); // sources cover upstream docs.json structure
+  const argUpstream = rawArgs.includes('upstream'); // sources cover upstream meta.json and content/ structure
   const args = [argUnique, argExist, argPrevious, argUpstream];
   const shouldRunAll = args.every((it) => it) || args.every((it) => !it);
   let errored = false;
@@ -508,7 +515,7 @@ const main = async () => {
   }
 
   if (shouldRunAll || argUpstream) {
-    console.log('🏁 Checking redirects against the upstream docs.json structure...');
+    console.log('🏁 Checking redirects against the upstream meta.json and content/ structure...');
     if (allowNet) {
       handleCheckResult(await checkUpstream(config), 'Full coverage.');
     } else {

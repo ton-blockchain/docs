@@ -1,6 +1,6 @@
 // The .jsonc extension allows free use of comments and trailing commas.
 // The file is named with a dot in front to discourage frequent editing —
-// target dictionaries are located in the public/dictionaries/ directory.
+// target dictionaries are located in the src/dictionaries/ directory.
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
@@ -9,22 +9,22 @@
     {
       // Allowed words
       "name": "main-list",
-      "path": "public/dictionaries/custom.txt",
+      "path": "src/dictionaries/custom.txt",
       "addWords": true,
     },
     {
       // Banned words with no clear or correct replacements
       // For a few words with those, see the flagWords property later in this file
       "name": "deny-list",
-      "path": "public/dictionaries/ban.txt",
+      "path": "src/dictionaries/ban.txt",
     },
     {
       "name": "2lw-deny-list",
-      "path": "public/dictionaries/two-letter-words-ban.txt",
+      "path": "src/dictionaries/two-letter-words-ban.txt",
     },
     {
       "name": "tvm-instructions",
-      "path": "public/dictionaries/tvm-instructions.txt",
+      "path": "src/dictionaries/tvm-instructions.txt",
     },
   ],
   "dictionaries": ["main-list", "deny-list", "2lw-deny-list", "tvm-instructions"],
@@ -105,17 +105,11 @@
       ],
     },
     {
-      "filename": "public/grammars/*.json",
+      "filename": "src/grammars/*.json",
       "ignoreWords": ["tlb"],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
-      ],
-    },
-    {
-      "filename": "content/**/ecosystem/ai/mcp.mdx",
-      "ignoreWords": [
-        "mcp", // lowercase in the title
       ],
     },
     {

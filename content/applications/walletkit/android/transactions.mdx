@@ -17,7 +17,7 @@ Before sending any transaction to the blockchain, initialize it for the appropri
 
 ```kotlin
 val message = TONTransferParams(
-    // GRAM wallet address
+    // TON wallet address
     toAddress = "<TON_WALLET_ADDRESS>",
 
     // 1 Gram in nanograms format
@@ -30,7 +30,7 @@ val transaction = wallet.createTransferTonTransaction(message)
 
 ```kotlin
 val parameters = TONJettonTransferParams(
-    // GRAM wallet address
+    // TON wallet address
     toAddress = "<TON_WALLET_ADDRESS>",
 
     // Address of a Jetton minter contract
@@ -47,7 +47,7 @@ val transaction = wallet.createTransferJettonTransaction(parameters)
 
 ```kotlin
 val parameters = TONNFTTransferParamsHuman(
-    // GRAM wallet address
+    // TON wallet address
     toAddress = "<TON_WALLET_ADDRESS>",
 
     // Address of an NFT item contract
@@ -85,6 +85,6 @@ wallet.sendTransaction(transaction)
     title="Manage wallets"
     href="./wallets"
   >
-    Create and manage GRAM wallets
+    Create and manage TON wallets
   </Card>
 </Columns>

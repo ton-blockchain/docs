@@ -6,7 +6,10 @@ import { createOpenAPI } from 'fumadocs-openapi/server';
  * @type {Omit<import('fumadocs-openapi').Config, 'input' | 'output'>}
  */
 const commonConfig = {
-  frontmatter: () => ({ noindex: true }),
+  frontmatter: (title) => ({
+    noindex: true,
+    sidebarTitle: title.replace(/\s*\((?:GET|POST)\)\s*$/, ''),
+  }),
   includeDescription: true,
   addGeneratedComment: true,
   beforeWrite: (files) => files.forEach((file) => (file.content += '\n')),
@@ -30,10 +33,10 @@ const genV2 = async () =>
     input: createOpenAPI({
       // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
       input: () => ({
-        v2: path.resolve('./content/ecosystem/api/toncenter/v2.json'),
+        v2: path.resolve('./content/api/v2.json'),
       }),
     }),
-    output: path.resolve('./content/ecosystem/api/toncenter/v2'),
+    output: path.resolve('./content/api/v2'),
     per: 'operation',
     groupBy: 'tag',
     name: (path) => commonNameTransform(path.info.title),
@@ -45,10 +48,10 @@ const genV3 = async () =>
     input: createOpenAPI({
       // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
       input: () => ({
-        v3: path.resolve('./content/ecosystem/api/toncenter/v3.yaml'),
+        v3: path.resolve('./content/api/v3.yaml'),
       }),
     }),
-    output: path.resolve('./content/ecosystem/api/toncenter/v3'),
+    output: path.resolve('./content/api/v3'),
     per: 'operation',
     groupBy: 'tag',
     name: (path) => commonNameTransform(path.info.title),
@@ -60,10 +63,10 @@ const genSmcIndex = async () =>
     input: createOpenAPI({
       // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
       input: () => ({
-        'smc-index': path.resolve('./content/ecosystem/api/toncenter/smc-index.json'),
+        'smc-index': path.resolve('./content/api/smc-index.json'),
       }),
     }),
-    output: path.resolve('./content/ecosystem/api/toncenter/smc-index'),
+    output: path.resolve('./content/api/smc-index'),
     per: 'operation',
     groupBy: 'none',
     name: (path) => commonNameTransform(path.info.title),

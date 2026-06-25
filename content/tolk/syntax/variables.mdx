@@ -115,7 +115,7 @@ fun demo() {
 }
 ```
 
-To make updates to `userId` visible in `demo`, declare the parameter with [`mutate`](/languages/tolk/syntax/mutability#mutate-for-a-parameter): `mutate userId`.
+To make updates to `userId` visible in `demo`, declare the parameter with [`mutate`](/tolk/syntax/mutability#mutate-for-a-parameter): `mutate userId`.
 
 ## Constants
 
@@ -155,9 +155,9 @@ const MINIMAL_COST = grams("0.05")
 const ZERO_POINT: Point = { x: 0, y: 0 }
 ```
 
-To calculate CRC32 and similar values at compile time, use [`"...".crc32()`](/languages/tolk/types/strings#compile-time-methods) and similar compile-time methods.
+To calculate CRC32 and similar values at compile time, use [`"...".crc32()`](/tolk/types/strings#compile-time-methods) and similar compile-time methods.
 
-To group integer constants, use [enums](/languages/tolk/types/enums).
+To group integer constants, use [enums](/tolk/types/enums).
 
 ## Global variables
 
@@ -186,7 +186,7 @@ get fun devTrace() {
 }
 ```
 
-In Tolk, avoid globals when possible. Use [auto-serialization](/languages/tolk/features/auto-serialization) and [`lazy` loading](/languages/tolk/features/lazy-loading).
+In Tolk, avoid globals when possible. Use [auto-serialization](/tolk/features/auto-serialization) and [`lazy` loading](/tolk/features/lazy-loading).
 
 <Callout type="caution">
   Use globals with care. Until initialized, a global holds TVM `NULL`, and any invalid access leads to a runtime failure.

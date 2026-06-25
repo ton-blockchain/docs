@@ -4,10 +4,10 @@ sidebarTitle: "Work with NFTs"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one GRAM wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
+  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Callout>
 
-[NFTs](/blockchain-basics/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/blockchain-basics/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
+[NFTs](/contracts/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/contracts/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
 
 To work with NFTs, the wallet service needs to handle [NFT ownership queries](#ownership) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-in-the-wallet-service).
 
@@ -24,7 +24,7 @@ To work with NFTs, the wallet service needs to handle [NFT ownership queries](#o
 
 NFT ownership is tracked through individual NFT item contracts. Unlike jettons, which have a balance, one either owns a specific NFT item or does not.
 
-To obtain a list of NFTs owned by a user, query their GRAM wallet by either the `getNfts()` method of wallet adapters or by calling `kit.nfts.getAddressNfts()` and passing it the GRAM wallet address.
+To obtain a list of NFTs owned by a user, query their TON wallet by either the `getNfts()` method of wallet adapters or by calling `kit.nfts.getAddressNfts()` and passing it the TON wallet address.
 
 Similar to other asset queries, [discrete one-off checks](#on-demand-ownership-check) have limited value on their own and [continuous monitoring](#continuous-ownership-monitoring) should be used for UI display.
 
@@ -38,7 +38,7 @@ Use the `getNfts()` method to check which NFTs are owned by a wallet managed by 
 
 ```ts title="TypeScript"
 async function getNfts(walletId: string): Promise<NftItem[] | undefined> {
-  // Get GRAM wallet instance
+  // Get TON wallet instance
   const wallet = kit.getWallet(walletId);
   if (!wallet) return;
 
@@ -218,7 +218,7 @@ async function sendNft(
   walletId: string,
   // NFT item contract address
   nftAddress: string,
-  // Recipient's GRAM wallet address as a string
+  // Recipient's TON wallet address as a string
   recipientAddress: string,
   // Optional comment string
   comment?: string,
@@ -270,12 +270,12 @@ async function sendNft(
 
 NFTs:
 
-- [NFT overview](/blockchain-basics/standard/tokens/nft/overview)
-- [NFT metadata](/blockchain-basics/standard/tokens/nft/metadata)
+- [NFT overview](/contracts/standard/tokens/nft/overview)
+- [NFT metadata](/contracts/standard/tokens/nft/metadata)
 
 General:
 
 - [Handle transaction requests](/applications/walletkit/web/events#handle-ontransactionrequest)
-- [Transaction fees](/blockchain-basics/primitives/fees)
+- [Transaction fees](/foundations/fees)
 - [WalletKit overview](/applications/walletkit/overview)
 - [TON Connect overview](/applications/ton-connect/overview)

@@ -4,11 +4,11 @@ sidebarTitle: "Standard libraries"
 ---
 
 Tolk provides a standard library that evolved from [FunC's standard library](/languages/func/stdlib).
-Therefore, many functions from `stdlib.fc` can be mapped to Tolk, and most of these functions were converted into [methods](/languages/tolk/syntax/functions-methods).
+Therefore, many functions from `stdlib.fc` can be mapped to Tolk, and most of these functions were converted into [methods](/tolk/syntax/functions-methods).
 
 ## Functions vs methods
 
-Tolk supports [declaring methods](/languages/tolk/syntax/functions-methods), including primitives. Consequently, many FunC global-scope functions are now methods, e.g., `cell.hash()`, `tuple.size()`, etc.
+Tolk supports [declaring methods](/tolk/syntax/functions-methods), including primitives. Consequently, many FunC global-scope functions are now methods, e.g., `cell.hash()`, `tuple.size()`, etc.
 
 ```tolk
 @pure
@@ -20,9 +20,9 @@ In FunC, `x.f()` works equally to `f(x)`. For instance, `someTuple.tuple_size()`
 
 ## Renamed and removed functions
 
-For `load_xxx`, `store_xxx`, and `skip_xxx`, use [automatic serialization](/languages/tolk/features/auto-serialization). Methods `slice.loadXXX`, `builder.storeXXX`, and `slice.skipXXX` are available for manual cell parsing, but their use is not recommended.
+For `load_xxx`, `store_xxx`, and `skip_xxx`, use [automatic serialization](/tolk/features/auto-serialization). Methods `slice.loadXXX`, `builder.storeXXX`, and `slice.skipXXX` are available for manual cell parsing, but their use is not recommended.
 
-For `idict_xxx`, `udict_xxx`, and `dict_xxx`, use [native maps](/languages/tolk/types/maps). Dictionaries remain available in the file `@stdlib/tvm-dicts`, but their is not recommended.
+For `idict_xxx`, `udict_xxx`, and `dict_xxx`, use [native maps](/tolk/types/maps). Dictionaries remain available in the file `@stdlib/tvm-dicts`, but their is not recommended.
 
 Other functions:
 
@@ -138,7 +138,7 @@ import "@stdlib/lisp-lists"
 
 ## Mutating functions
 
-In FunC, `x~method` mutates, whereas `x.method` returns a copy. In Tolk, methods are called with dot `.` and may [mutate](/languages/tolk/syntax/mutability) the object.
+In FunC, `x~method` mutates, whereas `x.method` returns a copy. In Tolk, methods are called with dot `.` and may [mutate](/tolk/syntax/mutability) the object.
 
 | FunC                               | Tolk                                      |
 | ---------------------------------- | ----------------------------------------- |
@@ -152,7 +152,7 @@ In FunC, `x~method` mutates, whereas `x.method` returns a copy. In Tolk, methods
 
 Tolk provides functions out of the box.
 
-The [standard library](/languages/tolk/features/standard-library) is split into multiple files. Functions from `common.tolk` are always available, and most FunC analogues are included. Functions from other files must be explicitly imported:
+The [standard library](/tolk/features/standard-library) is split into multiple files. Functions from `common.tolk` are always available, and most FunC analogues are included. Functions from other files must be explicitly imported:
 
 ```tolk
 import "@stdlib/gas-payments"

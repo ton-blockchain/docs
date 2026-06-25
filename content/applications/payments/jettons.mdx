@@ -6,7 +6,7 @@ sidebarTitle: "Jettons"
 Processing jetton payments requires understanding TON's sharded token architecture. Unlike single-contract token systems, each jetton type consists of a master contract and individual wallet contracts for each holder.
 
 <Callout type="note">
-  Jettons are fungible tokens on TON. Each jetton has a master contract (minter) and separate wallet contracts for every holder. Read more in [How Jettons Work](/standard/tokens/jettons/how-it-works).
+  Jettons are fungible tokens on TON. Each jetton has a master contract (minter) and separate wallet contracts for every holder. Read more in [How Jettons Work](/contracts/standard/tokens/jettons/how-it-works).
 </Callout>
 
 <Callout type="caution">
@@ -29,7 +29,7 @@ Before implementing jetton payment processing, understand these core concepts:
 
 This article covers processing jetton deposits using transfer notifications. All approaches require maintaining an allowlist of trusted jetton master contracts.
 
-For architectural patterns and deposit methods comparison, see [Gram processing](/payments/gram).
+For architectural patterns and deposit methods comparison, see [Gram processing](/applications/payments/gram).
 
 ## Processing deposits
 
@@ -64,7 +64,7 @@ When a transaction arrives at the deposit wallet:
 1. Verify there are no outgoing messages (`tx.out_msgs.length === 0`)
 1. Parse the message body:
    - Check the opcode (first 32 bits of `tx.in_msg.body`) equals `0x7362d09c` (transfer\_notification)
-   - Extract `query_id`, `amount`, `sender`, and `forward_payload` [according to TL-B](/standard/tokens/jettons/api)
+   - Extract `query_id`, `amount`, `sender`, and `forward_payload` [according to TL-B](/contracts/standard/tokens/jettons/api)
 1. Verify the amount matches the expected value
 
 ### Crediting user accounts

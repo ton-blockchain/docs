@@ -10,9 +10,10 @@ export default function NotFound() {
       nav={{ title: <ThemeLogo /> }}
       githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}`}
       tree={source.getPageTree()}
-      sidebar={{
-        collapsible: false,
-      }}
+      sidebar={{ collapsible: false }}
+      // NOTE: pass the same tabs as (docs)/layout.tsx
+      // NOTE: use common/shared options, see other fumadocs repos.
+      // NOTE: consider mirroring the docs page layout, and making the links be something like cards (or just use literal cards).
       tabMode="top"
       // NOTE: Must mirror (docs)/layout.tsx
       containerProps={{

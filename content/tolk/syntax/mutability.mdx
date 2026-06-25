@@ -109,7 +109,7 @@ fun slice.readFlags(mutate self) {
 
 Thus, when calling `someSlice.readFlags()`, the object is mutated.
 
-Methods for [structures](/languages/tolk/types/structures) are declared in the same way:
+Methods for [structures](/tolk/types/structures) are declared in the same way:
 
 ```tolk
 struct Point {
@@ -164,7 +164,7 @@ flags = s.loadInt(32);
 
 ## `T.fromSlice(s)` does not modify `s`
 
-[Auto-serialization](/languages/tolk/features/auto-serialization) with `fromSlice` follows the same mutability rules. Passing an argument without `mutate` never modifies the original variable.
+[Auto-serialization](/tolk/features/auto-serialization) with `fromSlice` follows the same mutability rules. Passing an argument without `mutate` never modifies the original variable.
 
 In a call `f(anyVariable)`, the variable remains unchanged. If a function needs to modify its argument, the call must explicitly use `mutate`: `f(mutate anyVariable)`.
 

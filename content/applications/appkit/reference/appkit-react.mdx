@@ -1222,7 +1222,7 @@ Presentational UI for the crypto-to-TON onramp widget — renders the from/to se
 | `setRefundAddress`\*          | `(address: string) => void`                                                                                      | Updates `refundAddress`.                                                                        |
 | `targetBalance`\*             | `string`                                                                                                         | Connected wallet's balance of the selected target token (formatted, token units).               |
 | `isLoadingTargetBalance`\*    | `boolean`                                                                                                        | Whether the target token balance is being fetched.                                              |
-| `isWalletConnected`\*         | `boolean`                                                                                                        | Whether a GRAM wallet is currently connected.                                                   |
+| `isWalletConnected`\*         | `boolean`                                                                                                        | Whether a TON wallet is currently connected.                                                    |
 | `canContinue`\*               | `boolean`                                                                                                        | Whether the user can proceed — valid amount, quote available, and wallet connected.             |
 | `onReset`\*                   | `() => void`                                                                                                     | Invalidates the active quote and clears the deposit, returning the widget to its initial state. |
 
@@ -1958,7 +1958,7 @@ return (
         <Input.Field>
             <Input.Input value={value} onChange={(event) => setValue(event.target.value)} placeholder="EQ..." />
         </Input.Field>
-        <Input.Caption>Paste a GRAM wallet address.</Input.Caption>
+        <Input.Caption>Paste a TON wallet address.</Input.Caption>
     </Input>
 );
 ```
@@ -2314,7 +2314,7 @@ Shape of the `CryptoOnrampContext` value — selection state, quote/deposit data
 | `setRefundAddress`\*          | `(address: string) => void`                                                                                      | Updates `refundAddress`.                                                                        |
 | `targetBalance`\*             | `string`                                                                                                         | Connected wallet's balance of the selected target token (formatted, token units).               |
 | `isLoadingTargetBalance`\*    | `boolean`                                                                                                        | Whether the target token balance is being fetched.                                              |
-| `isWalletConnected`\*         | `boolean`                                                                                                        | Whether a GRAM wallet is currently connected.                                                   |
+| `isWalletConnected`\*         | `boolean`                                                                                                        | Whether a TON wallet is currently connected.                                                    |
 | `canContinue`\*               | `boolean`                                                                                                        | Whether the user can proceed — valid amount, quote available, and wallet connected.             |
 | `onReset`\*                   | `() => void`                                                                                                     | Invalidates the active quote and clears the deposit, returning the widget to its initial state. |
 
@@ -2406,7 +2406,7 @@ Props for [`CryptoOnrampWidgetUI`](#cryptoonrampwidgetui) (and for the custom re
 | `setRefundAddress`\*          | `(address: string) => void`                                                                                      | Updates `refundAddress`.                                                                        |
 | `targetBalance`\*             | `string`                                                                                                         | Connected wallet's balance of the selected target token (formatted, token units).               |
 | `isLoadingTargetBalance`\*    | `boolean`                                                                                                        | Whether the target token balance is being fetched.                                              |
-| `isWalletConnected`\*         | `boolean`                                                                                                        | Whether a GRAM wallet is currently connected.                                                   |
+| `isWalletConnected`\*         | `boolean`                                                                                                        | Whether a TON wallet is currently connected.                                                    |
 | `canContinue`\*               | `boolean`                                                                                                        | Whether the user can proceed — valid amount, quote available, and wallet connected.             |
 | `onReset`\*                   | `() => void`                                                                                                     | Invalidates the active quote and clears the deposit, returning the widget to its initial state. |
 

@@ -17,6 +17,10 @@
   cursor: zoom-in;
 }
 
+[data-rmiz-content='found'] img[data-rmiz-disabled='true'] {
+  cursor: default;
+}
+
 [data-rmiz-modal][open] {
   width: 100vw /* fallback */;
   width: 100dvw;

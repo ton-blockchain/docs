@@ -1,15 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-  // MarkdownCopyButton,
-  // ViewOptionsPopover,
-  // } from 'fumadocs-ui/layouts/notebook/page';
-} from 'fumadocs-ui/layouts/docs/page';
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { getMDXComponents } from '@/components/mdx';
@@ -23,6 +15,8 @@ const localSkippedPagePaths = new Set([
   'foundations/whitepapers/tvm.mdx',
   'languages/fift/whitepaper.mdx',
   'tvm/instructions.mdx',
+  'applications/appkit/reference/appkit.mdx',
+  'applications/appkit/reference/appkit-react.mdx',
 ]);
 
 function shouldSkipLocalPage(path: string) {
@@ -34,7 +28,8 @@ function renderInlineCode(title: string) {
     /^`[^`\n]+`$/.test(part) ? (
       <code
         key={index}
-        className="rounded border border-fd-border bg-fd-muted px-1 py-0.5 font-mono text-[0.85em] font-normal"
+        className="rounded border border-fd-border bg-fd-muted px-1 py-0.5 font-mono font-normal"
+        // text-[0.85em]
       >
         {part.slice(1, -1)}
       </code>
@@ -102,7 +97,11 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
           </div>
         ),
       }}
-      // breadcrumb={{ enabled: false }}
+      breadcrumb={{
+        // NOTE: breadcrumbs do not make much sense with a tab bar on top
+        enabled: false,
+        includeSeparator: true,
+      }}
     >
       <DocsTitle>{renderInlineCode(page.data.title)}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
@@ -110,11 +109,6 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
         <></>
       ) : (
         <div className="flex flex-row flex-wrap gap-2 items-center border-b pb-6">
-          {/* <MarkdownCopyButton markdownUrl={markdownUrl} />
-        <ViewOptionsPopover
-          markdownUrl={markdownUrl}
-          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/${page.path}`}
-        /> */}
           <LLMCopyButton markdownUrl={markdownUrl} />
           <ViewOptions
             markdownUrl={markdownUrl}

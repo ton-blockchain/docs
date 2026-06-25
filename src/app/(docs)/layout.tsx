@@ -3,21 +3,22 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
+// import { SidebarSingleOpen } from '@/components/ui/sidebar-so';
 
 const pagePaths = source.getPages().map((it) => it.path.replace(/^\/*/, '/').replace(/\.mdx$/, ''));
 const tabUrls: Record<string, Set<string>> = {
   Onboarding: new Set(
-    pagePaths.filter((it) => it.startsWith('/onboarding/') || it === '/start-here'),
+    pagePaths.filter(
+      (it) =>
+        it.startsWith('/onboarding/') ||
+        ['/start-here', '/get-support', '/from-ethereum', '/tps'].includes(it),
+    ),
   ),
   Nodes: new Set(pagePaths.filter((it) => it.startsWith('/nodes/'))),
   Applications: new Set(pagePaths.filter((it) => it.startsWith('/applications/'))),
-  APIs: new Set(pagePaths.filter((it) => it.startsWith('/apis/'))),
-  Contracts: new Set(
-    pagePaths.filter(
-      (it) =>
-        it.startsWith('/standard/') || it.startsWith('/contract-dev/') || it.startsWith('/tolk/'),
-    ),
-  ),
+  APIs: new Set(pagePaths.filter((it) => it.startsWith('/api/'))),
+  Contracts: new Set(pagePaths.filter((it) => it.startsWith('/contracts/'))),
+  Tolk: new Set(pagePaths.filter((it) => it.startsWith('/tolk/'))),
   TVM: new Set(pagePaths.filter((it) => it.startsWith('/tvm/'))),
   Foundations: new Set(pagePaths.filter((it) => it.startsWith('/foundations/'))),
 };
@@ -28,50 +29,64 @@ export default function Layout({ children }: { children: ReactNode }) {
       nav={{ title: <ThemeLogo /> }}
       githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}`}
       tree={source.getPageTree()}
-      sidebar={{
-        collapsible: false,
-      }}
-      // TODO: was used for experiments, would be automatically populated
-      //       with `root: true` items in meta.json files after restructuring.
-      //       (alternatively): will be populated manually in the following manner:
-      // tabs={[
-      //   {
-      //     title: 'Onboarding',
-      //     url: '/start-here',
-      //     urls: tabUrls.Onboarding,
-      //   },
-      //   {
-      //     title: 'Nodes',
-      //     url: '/get-support',
-      //     urls: tabUrls.Nodes,
-      //   },
-      //   {
-      //     title: 'Applications',
-      //     url: '/from-ethereum',
-      //     urls: tabUrls.Applications,
-      //   },
-      //   {
-      //     title: 'APIs',
-      //     url: '/more-tutorials',
-      //     urls: tabUrls.APIs,
-      //   },
-      //   {
-      //     // union of standard/, contract-dev/, and tolk/
-      //     title: 'Smart contracts',
-      //     url: '/contract-dev/overview',
-      //     urls: tabUrls.Contracts,
-      //   },
-      //   {
-      //     title: 'TVM',
-      //     url: '/tvm/overview',
-      //     urls: tabUrls.TVM,
-      //   },
-      //   {
-      //     title: 'Foundations',
-      //     url: '/foundations/config',
-      //     urls: tabUrls.Foundations,
-      //   },
-      // ]}
+      sidebar={{ collapsible: true }}
+      tabs={[
+        {
+          title: 'Onboarding',
+          url: '/start-here',
+          urls: tabUrls.Onboarding,
+        },
+        {
+          title: 'Nodes',
+          url: '/nodes/overview',
+          urls: tabUrls.Nodes,
+        },
+        {
+          title: 'Applications',
+          url: '/applications/overview',
+          urls: tabUrls.Applications,
+        },
+        {
+          title: 'APIs',
+          url: '/api/overview',
+          urls: tabUrls.APIs,
+        },
+        {
+          title: 'Smart contracts',
+          url: '/contracts/overview',
+          urls: tabUrls.Contracts,
+        },
+        {
+          title: (
+            <>
+              <span className="style-tab-normal">Tolk</span>
+              <span className="style-tab-wide">Tolk language</span>
+            </>
+          ),
+          url: '/tolk/overview',
+          urls: tabUrls.Tolk,
+        },
+        {
+          title: (
+            <>
+              <span className="style-tab-normal">TVM</span>
+              <span className="style-tab-wide">TON Virtual Machine</span>
+            </>
+          ),
+          url: '/tvm/overview',
+          urls: tabUrls.TVM,
+        },
+        {
+          title: (
+            <>
+              <span className="style-tab-normal">Foundations</span>
+              <span className="style-tab-wide">Blockchain foundations</span>
+            </>
+          ),
+          url: '/foundations/overview',
+          urls: tabUrls.Foundations,
+        },
+      ]}
       tabMode="top"
       // Fumadocs works with a named-area CSS grid: each layout part self-places via its own `grid-area`.
       // This re-remplate brings the sidebar to the left and adds a tab row/band for `tabMode='top'`.
@@ -97,6 +112,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         },
       }}
     >
+      {/* <SidebarSingleOpen /> */}
       {children}
     </DocsLayout>
   );

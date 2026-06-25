@@ -3,7 +3,7 @@ title: "Serialization"
 sidebarTitle: "Serialization"
 ---
 
-This page assumes prior knowledge of the [TL-B](/languages/tl-b/overview) and [TVM](/tvm/overview). It serves as a concise low-level reference.
+This page assumes prior knowledge of the [TL-B](/foundations/tlb/overview) and [TVM](/tvm/overview). It serves as a concise low-level reference.
 
 A consolidated summary of how Tolk types are serialized into TL-B–compatible binary data.
 
@@ -420,7 +420,7 @@ Shaped components are serialized sequentially: serialization is identical to ten
 ## `map<K, V>`
 
 - Maybe reference: `0` for empty or `1+ref` for dictionary contents
-- TL-B: [`HashmapE n X`](/languages/tl-b/complex-and-non-trivial-examples#hashmap)
+- TL-B: [`HashmapE n X`](/foundations/tlb/complex-and-non-trivial-examples#hashmap)
 - Stored using `STDICT`
 - Loaded using `LDDICT`
 

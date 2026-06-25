@@ -2,7 +2,7 @@
 """
 Docs stats tool
 
-- Reads navigation from docs.json (only visible pages)
+- Reads navigation from .mdx files in content/ directory (all pages)
 - Filters stubs by explicit <Stub .../> tag only
 - Counts words/images and prints a concise summary
 - Optional: history (last commit per UTC day, committer date) and simple charts
@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DOCS_JSON_PATH = REPO_ROOT / "docs.json"
+DOCS_CONTENTS_PATH = REPO_ROOT / "content"
 STATS_DIR = REPO_ROOT / "stats"
 CHART_DIR = STATS_DIR / "charts"
 HISTORY_CSV = STATS_DIR / "history.csv"
@@ -42,30 +42,32 @@ def read_json(path: Path) -> dict:
     return json.loads(path.read_text("utf-8"))
 
 
-def nav_slugs(docs: dict) -> List[str]:
-    pages = docs.get("navigation", {}).get("pages", [])
-    out: List[str] = []
-
-    def visit(node):
-        if isinstance(node, str):
-            out.append(node)
-        elif isinstance(node, dict):
-            if isinstance(node.get("pages"), list):
-                for ch in node["pages"]:
-                    visit(ch)
-            if isinstance(node.get("page"), str):
-                out.append(node["page"])
-
-    for n in pages:
-        visit(n)
-    seen = set()
-    uniq = []
-    for s in out:
-        if s not in seen:
-            seen.add(s)
-            uniq.append(s)
-    return uniq
-
+# NOTE: was used to process docs.json
+# def nav_slugs(docs: dict) -> List[str]:
+#     pages = docs.get("navigation", {}).get("pages", [])
+#     out: List[str] = []
+#     def visit(node):
+#         if isinstance(node, str):
+#             out.append(node)
+#         elif isinstance(node, dict):
+#             if isinstance(node.get("pages"), list):
+#                 for ch in node["pages"]:
+#                     visit(ch)
+#             if isinstance(node.get("page"), str):
+#                 out.append(node["page"])
+#     for n in pages:
+#         visit(n)
+#     seen = set()
+#     uniq = []
+#     for s in out:
+#         if s not in seen:
+#             seen.add(s)
+#             uniq.append(s)
+#     return uniq
+#
+# NOTE: new implementation that uses content/
+def nav_slugs() -> List[str]:
+    return list(map(lambda it: Path(*it.parts[1:]), Path(DOCS_CONTENTS_PATH).glob("**/*.mdx")))
 
 def resolve_file(slug: str) -> Optional[str]:
     for rel in (
@@ -197,8 +199,8 @@ def write_json(path: Path, obj: dict) -> None:
 
 
 def run_latest() -> None:
-    docs = read_json(DOCS_JSON_PATH)
-    slugs = nav_slugs(docs)
+    # docs = read_json(DOCS_CONTENTS_PATH)
+    slugs = nav_slugs()
     pages_all: List[Dict] = []
     stubs: List[Dict] = []
     warnings: List[str] = []
@@ -319,8 +321,8 @@ def resolve_at_commit(slug: str, sha: str) -> Optional[Tuple[str, str]]:
 
 
 def compute_snapshot(docs_json_str: str, sha: str) -> Tuple[Dict, Dict, List[Dict]]:
-    docs = json.loads(docs_json_str)
-    slugs = nav_slugs(docs)
+    # docs = json.loads(docs_json_str)
+    slugs = nav_slugs()
     pages: List[Dict] = []
     stubs: List[Dict] = []
     for slug in slugs:
@@ -430,8 +432,8 @@ def run_charts() -> None:
 
 
 def main():
-    if not DOCS_JSON_PATH.exists():
-        print("docs.json not found", file=sys.stderr)
+    if not DOCS_CONTENTS_PATH.exists():
+        print("content/ not found", file=sys.stderr)
         sys.exit(1)
     ap = argparse.ArgumentParser(description="Docs stats (clean)")
     ap.add_argument(

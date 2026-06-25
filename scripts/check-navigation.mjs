@@ -5,7 +5,7 @@
 │  The script can check:                                                       │
 │  1. Uniqueness of navigation paths                                           │
 │  2. Existence of .mdx files on navigation paths                              │
-│  3. Coverage of .mdx files by navigation structure in docs.json              │
+│  3. Coverage of .mdx files by navigation structure in meta.json files        │
 │                                                                              │
 │  By default, it checks all, but to only check one specify `unique`,          │
 │  `exist` or `coverage` as a command-line argument, respectively.             │
@@ -40,12 +40,11 @@ import {
 /**
  * Check that all navigation paths are unique.
  *
- * @param config {Readonly<DocsConfig>} Local docs.json configuration
  * @return {CheckResult}
  */
-const checkUnique = (config) => {
-  const navLinksSet = getNavLinksSet(config);
-  const navLinks = getNavLinks(config);
+const checkUnique = () => {
+  const navLinksSet = getNavLinksSet();
+  const navLinks = getNavLinks();
   if (navLinks.length != navLinksSet.size) {
     const duplicates = navLinks.filter(
       (val, idx) => navLinks.indexOf(val) !== idx && navLinks.indexOf(val, idx + 1) === -1,
@@ -55,7 +54,7 @@ const checkUnique = (config) => {
       error: composeErrorList(
         'Found duplicate navigation paths:',
         duplicates,
-        'Navigation paths in docs.json must be unique!',
+        'Navigation paths in meta.json files must be unique!',
       ),
     };
   }
@@ -65,11 +64,10 @@ const checkUnique = (config) => {
 /**
  * Check that all navigation .mdx pages exist.
  *
- * @param config {Readonly<DocsConfig>} Local docs.json configuration
  * @return {CheckResult}
  */
-const checkExist = (config) => {
-  const uniqPages = [...getNavLinksSet(config)];
+const checkExist = () => {
+  const uniqPages = [...getNavLinksSet()];
   const missingPages = uniqPages.filter((it) => {
     const rel = it.replace(/^\/+content/, 'content').replace(/#.*$/, '') + '.mdx';
     return !(existsSync(rel) && statSync(rel).isFile());
@@ -80,7 +78,7 @@ const checkExist = (config) => {
       error: composeErrorList(
         'Nonexistent paths found:',
         missingPages,
-        'Some navigation paths in docs.json point to nonexisting .mdx pages!',
+        'Some navigation paths in meta.json files point to nonexisting .mdx pages!',
       ),
     };
   }
@@ -89,13 +87,12 @@ const checkExist = (config) => {
 };
 
 /**
- * Check that all existing non-API .mdx pages are covered by `config`.
+ * Check that all existing non-API .mdx pages are covered by meta.json files.
  *
- * @param config {Readonly<DocsConfig>} Local docs.json configuration
  * @return {Promise<CheckResult>}
  */
-const checkCover = async (config) => {
-  const uniqPages = getNavLinksSet(config);
+const checkCover = async () => {
+  const uniqPages = getNavLinksSet();
   const parser = await initMdxParser();
   /** @type string[] */
   const stubPages = [];
@@ -117,7 +114,7 @@ const checkCover = async (config) => {
     return false;
   });
   if (stubPages.length !== 0) {
-    const msg = 'Found stub pages not present in docs.json navigation!';
+    const msg = 'Found stub pages not present in meta.json navigation!';
     console.log(composeWarningList(msg, stubPages));
   }
   if (forgottenPages.length !== 0) {
@@ -126,7 +123,7 @@ const checkCover = async (config) => {
       error: composeErrorList(
         'Missing navigation entries for the following files:',
         forgottenPages,
-        'Some non-API and non-stub .mdx pages are not present in docs.json!',
+        'Some non-API and non-stub .mdx pages are not present in meta.json files!',
       ),
     };
   }
@@ -142,7 +139,7 @@ const main = async () => {
   const rawArgs = process.argv.slice(2);
   const argUnique = rawArgs.includes('unique'); // all references are unique
   const argExist = rawArgs.includes('exist'); // all referenced .mdx files exist
-  const argCover = rawArgs.includes('cover'); // all .mdx files are covered by docs.json
+  const argCover = rawArgs.includes('cover'); // all .mdx files are covered by meta.json files
   const args = [argUnique, argCover, argExist];
   const shouldRunAll = args.every((it) => it) || args.every((it) => !it);
   let errored = false;
@@ -164,20 +161,20 @@ const main = async () => {
   };
 
   if (shouldRunAll || argUnique) {
-    console.log('🏁 Checking the uniqueness of navigation paths in docs.json...');
-    handleCheckResult(checkUnique(config), 'All paths are unique.');
+    console.log('🏁 Checking the uniqueness of navigation paths...');
+    handleCheckResult(checkUnique(), 'All paths are unique.');
   }
 
   if (shouldRunAll || argExist) {
-    console.log('🏁 Checking the existence of navigation .mdx pages in docs.json...');
-    handleCheckResult(checkExist(config), 'All referenced pages exist.');
+    console.log('🏁 Checking the existence of navigation .mdx pages...');
+    handleCheckResult(checkExist(), 'All referenced pages exist.');
   }
 
   if (shouldRunAll || argCover) {
-    console.log('🏁 Checking the coverage of .mdx pages by docs.json...');
+    console.log('🏁 Checking the coverage of .mdx pages by meta.json files...');
     handleCheckResult(
-      await checkCover(config),
-      'All non-API, regular .mdx pages without stubs are present in docs.json.',
+      await checkCover(),
+      'All non-API, regular .mdx pages without stubs are present.',
     );
   }
 

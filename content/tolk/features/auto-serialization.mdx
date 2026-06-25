@@ -22,7 +22,7 @@ fun demo() {
 
 ## Type serialization
 
-A `struct` can define [a serialization](/languages/tolk/types/overall-serialization) prefix. 32-bit prefixes are commonly used as opcodes for incoming and outgoing messages:
+A `struct` can define [a serialization](/tolk/types/overall-serialization) prefix. 32-bit prefixes are commonly used as opcodes for incoming and outgoing messages:
 
 ```tolk
 struct (0x7362d09c) TransferNotification {
@@ -334,7 +334,7 @@ Frequently used fields should remain in the struct; less-frequent fields can be 
 
 ## What if serialization is unavailable?
 
-A common mistake is using `int`. [It cannot be serialized](/languages/tolk/types/numbers#stack-layout-and-serialization); instead, use `int32`, `uint64`, etc.
+A common mistake is using `int`. [It cannot be serialized](/tolk/types/numbers#stack-layout-and-serialization); instead, use `int32`, `uint64`, etc.
 
 ```tolk
 struct Storage {
@@ -358,7 +358,7 @@ hint: replace `int` with `int32` / `uint64` / `coins` / etc.
 
 ## Integration with message sending
 
-Auto-serialization can be applied when [sending messages](/languages/tolk/features/message-sending) to other contracts:
+Auto-serialization can be applied when [sending messages](/tolk/features/message-sending) to other contracts:
 
 ```tolk
 val reply = createMessage({
@@ -372,7 +372,7 @@ reply.send(SEND_MODE_REGULAR);
 
 ## `lazy` for deserialization
 
-Tolk provides a special keyword [`lazy`](/languages/tolk/features/lazy-loading) for use with auto-deserialization.
+Tolk provides a special keyword [`lazy`](/tolk/features/lazy-loading) for use with auto-deserialization.
 The compiler loads only the requested fields, rather than the entire struct.
 
 ```tolk

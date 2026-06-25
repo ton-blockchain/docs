@@ -1,0 +1,143 @@
+---
+title: "100,000 Transactions Per Second (TPS)"
+sidebarTitle: "100k TPS"
+description: "TON Blockchain set the world record on its first performance test on Oct 31st, 2023"
+---
+
+<Image
+  src="https://storage.googleapis.com/ton-strapi/100_000_Transactions_per_Second_372c12d2d5/100_000_Transactions_per_Second_372c12d2d5.png"
+  alt=""
+  noZoom="true"
+  fullWidth="true"
+/>
+
+On 31 October, the TON Blockchain set the world record as the fastest and most scalable blockchain. Thanks to its unique architecture, allowing infinite scaling to process millions of transactions per second from billions of users, TON sets the standard for the ultimate Web3 infrastructure.
+
+## Public test
+
+During the <a href="https://www.youtube.com/live/jWWl1sLGY7s?feature=share" target="_blank" rel="noreferrer noopener">livestream</a> hosted by the TON Foundation and <a href="https://www.certik.com/resources/blog/7KVtBkHfJkcj0U6u0kKtPe-how-certik-verified-tons-tps-results" target="_blank" rel="noreferrer noopener">audited by Certik</a>, **the TON Blockchain set a world record by achieving 104,715 transactions per second.**
+
+This is an astonishing result for any blockchain, but what's even more exceptional is the fact that this performance significantly outperforms even the most used centralized payment systems:
+
+<Image
+  src="https://storage.googleapis.com/ton-strapi/Toncoin_copy_93ef07bbf4/Toncoin_copy_93ef07bbf4.png"
+  alt="Transactions Per Second — Visa: avg. 6k, max. 65k; MasterCard: avg. 412, max. 5k; PayPal: avg. 707, max. Unknown"
+  caption="Figures for 2022"
+/>
+
+For a comparison, let's look at the top 25 blockchains from <a href="https://coinmarketcap.com/coins/" target="_blank" rel="noreferrer noopener">CoinMarketCap</a>:
+
+<Image
+  src="https://storage.googleapis.com/ton-strapi/Confirmed_TPS_1_a00f47e8f7/Confirmed_TPS_1_a00f47e8f7.png"
+  alt="Confirmed TPS numbers for top-25 blockchains from CoinMarketCap"
+/>
+
+As you can see, TON outperforms both well-known blockchains and bank payment networks by a margin and, in most cases, by dozens of times.
+
+## Overview of the test
+
+For the test, TON rented 256 servers from Alibaba Cloud for validator nodes and launched a separate TON Blockchain network.
+
+Next, we created a special "bomb" smart contract that clones itself and continuously transmits transactions so that the load on the network grows exponentially.
+
+The test had to be performed on a separate test network, as such a “bomb” would result in spending astronomical money to pay network fees. On the test network, this method creates massive amounts of transactions, as if millions of users were sending them.
+
+We detonated the "bomb" for 10 minutes, resulting in intense load growth, and the network split into shardchains. Finally, the network split into 512 shards and processed 90-110K transactions per second. The network maintained this load for a while until we manually shut it down.
+
+The entire test was conducted publicly in real-time by TON's core team, overseen by independent auditor Certik, and documented in detail. All technical details and test results can be found <a href="https://live.ton.org" target="_blank" rel="noreferrer noopener">here</a>.
+
+## How TON achieves this scalability and speed
+
+Special blockchain nodes called validators process user transactions, such as sending coins from one user to another or exchanging assets on a decentralized exchange. These nodes are the core building blocks of the TON Blockchain.
+
+The efficiency of the TON Blockchain lies in the fact that as the number of users or load grows, it can split into "sub-blockchains," called [shardchains](/foundations/shards). Each shardchain is operated by its own group of validators, distributing the load. When the load decreases, the shardchains "collapse" back together.
+
+In technical language, this is called "dynamic sharding." Few modern blockchains can boast such an architecture, and TON is a leader among them.
+
+## No limits
+
+The most impressive thing is that the result is far from the limit. TON can handle millions of transactions per second if there are enough validator nodes in the network.
+
+While preparing for today's test, we encountered that no cloud provider or data center is interested in renting out thousands of productive servers for the short time required for the test. We will try to solve this administrative challenge to show you the following tests with even more grandiose results.
+
+In a real-world network, servers for validator nodes are rented for long periods by independent operators in different data centers. Part of the network commission from each transaction goes to validators as a reward for keeping the network running. If there is a heavy load and a large number of transactions, the total reward will increase accordingly, stimulating organic growth in the number of new validators.
+
+## TON vs. Solana
+
+The previous title holder of the fastest blockchain was Solana. Let's compare TON and Solana separately.
+
+In addition to the fact that TON beats Solana's confirmed result in absolute numbers by a margin, there are qualitative differences that show that TON is the next-generation blockchain.
+
+- As described above, the TON blockchain uses dynamic sharding. The main advantage of this approach is that the blockchain can scale almost infinitely by adding new validator nodes. In contrast, monolithic blockchains such as Solana have their physical limit, after which it's impossible to scale further.
+
+- <a href="https://ton.org/comparison_of_blockchains.pdf" target="_blank" rel="noreferrer noopener">In a separate post</a>, we provide three historical examples that prove that vertical scaling has always been a technological dead end, replaced by horizontal scaling or sharding.
+
+- TON allows fast processing of not only simple transactions such as transferring coins between users but also fast execution of Turing-complete smart contracts. This means complex decentralized exchanges, marketplaces, or other decentralized applications do not slow down the blockchain. That's why we used the complex smart contract in this public test.
+
+  While Solana's blockchain is optimized for the swift execution of specialized and predefined transactions, the performance dramatically decreases when executing arbitrary transactions.
+
+## Comparing blockchain speeds
+
+### Time to finality
+
+When users interact with the blockchain, they create transactions, which are grouped into blocks, and the blocks are added to the blockchain. In many blockchains, a block can still change after it has been added, so you need to wait a while to be assured that the payment has gone through.
+
+This is called Time-to-finality. In Bitcoin, it is about 60 minutes, and in Ethereum, it is about 13 minutes.
+
+This indicator must be considered because it is important not only to send a transaction but also to ensure it is successfully and irreversibly completed. For example, the seller is unlikely to give you the goods until he is absolutely sure that he has received the payment.
+
+The good news is that in TON, once a block is written to the blockchain, it is final and cannot be changed. Currently, on the main network, blocks are created approximately every 4-6 seconds, so the time-to-finality of TON is 6 seconds.
+
+<Callout
+  title="TON got faster"
+>
+  Since the original test and publication, the time to finality in TON has been reduced to less than a second per masterchain block after implementing the [Catchain 2.0 consensus upgrade](https://t.me/toncore/104). See the [sub-second finality](/subsecond) article for more details and actionable steps for projects on TON.
+</Callout>
+
+### Transactions
+
+When comparing metrics, we should ensure that all blockchains adhere to the same meaning of terms.
+
+We use the common meaning of "transaction" - some atomic action, such as a balance change or the execution of a smart contract, the result of which is recorded to the block.
+
+It is worth noting that some blockchains understand something different under this term. As an example, the SUI blockchain shows hundreds of thousands of "transactions," but it refers to transactions as operations, and a single atomic write to a block can contain dozens of such operations. At one operation per write, the speed in SUI drops to 10K TPS.
+
+### Layer 1 and Layer 2
+
+Full-fledged blockchains are called Layer 1 or L1 networks. These blockchains include, for example, Bitcoin, Ethereum, and TON.
+
+Some projects supercharge and enhance blockchains - called Layer 2 or L2, respectively. This approach has both pros and cons. Given that these solutions are not decentralized blockchains, it is easy for them to achieve greater speed and performance at the cost of decentralization or functionality. An example of an L2 blockchain that offers better performance but significantly reduces functionality is Bitcoin's Lightning Network.
+
+While TON, being Layer 1, outperforms most Layer 2 solutions in speed and performance, we are also working on our own Layer 2 solution, the TON Payment Network.
+
+This solution will enable instant micropayments without network fees, which could be useful for several applications. The first stage of work, <a href="https://telegra.ph/TON-Payments-07-01" target="_blank" rel="noreferrer noopener">the payment channel technology</a>, has already been completed, and you can explore our future plans in the <a href="https://ton.org/roadmap?filterBy=ton_payment" target="_blank" rel="noreferrer noopener">roadmap</a>.
+
+## Space for optimization
+
+While working on the test, we discovered that TON can scale further not only by adding validator nodes but also by optimizing the node itself.
+
+We already performed such optimization - splitting the validator into two nodes - a collator and a validator. This kernel update, “<a href="https://github.com/ton-blockchain/ton/tree/accelerator" target="_blank" rel="noreferrer noopener">Accelerator</a>,” will be released on the mainnet after thorough testing. We have also planned other optimization and parallelization that can make the performance of the node even better.
+
+## Conclusion
+
+The goal of the TON project is to achieve mass adoption of cryptocurrencies and decentralized technologies. We are systematically moving towards this goal - a vivid example is the <a href="https://t.me/tonblockchain/213" target="_blank" rel="noreferrer noopener">recently announced joint initiative of TON with Telegram</a>, a messenger with 800+ million monthly active users.
+
+With today's public test, we have confirmed that TON is technically ahead of all other existing blockchain projects and is ready for mass adoption.
+
+## References
+
+- Visa, <a href="https://www.sec.gov/Archives/edgar/data/1403161/000140316122000081/v-20220930.htm" target="_blank" rel="noreferrer noopener">Annual Report For SEC</a>, September 30, 2022. According to this document, Visa processed 192,530 million transactions in 2022. Thus average TPS is 6,105 (192530e6 / 365 / 24 / 60 / 60). Maximum TPS is 65,000 according to <a href="https://www.visa.co.uk/dam/VCOM/download/corporate/media/visanet-technology/aboutvisafactsheet.pdf" target="_blank" rel="noreferrer noopener">Visa's Fact Sheet</a>.
+
+- MasterCard, <a href="https://cointelegraph.com/news/bitcoin-lightning-network-vs-visa-and-mastercard-how-do-they-stack-up" target="_blank" rel="noreferrer noopener">Cointelegraph's Network Comparison</a> stated maximum TPS at 5,000
+
+- PayPal, <a href="https://www.sec.gov/Archives/edgar/data/1633917/000163391723000033/pypl-20221231.htm" target="_blank" rel="noreferrer noopener">Annual Report For SEC</a>, December 31, 2022. According to this document, PayPal processed 22.3 billion transactions in 2022. Thus the average TPS is 707 (22.3e9 / 365 / 24 / 60 / 60).
+
+- Ethereum and Bitcoin TPS are sourced from <a href="https://academy.binance.com/en/glossary/transactions-per-second-tps" target="_blank" rel="noreferrer noopener">Binance Academy</a>
+
+- For Solana, we exclude the “test in an ideal laboratory environment,” and look at <a href="https://solana.blog/seriously-how-fast-can-solana-blockchain-get/" target="_blank" rel="noreferrer noopener">the test results on the testnet</a>.
+
+- <a href="https://blog.sui.io/sui-performance-update/" target="_blank" rel="noreferrer noopener">SUI states</a>, “The TPS capacity measurement most consistent with Sui's design, least application-dependent, and most practical to track, is the number of individual transactions within a Programmable Transaction Block (PTB) executed per second. For this and future updates, all mentions and measurements of TPS follow this convention.” Tests show 10,871 TPS if PTB contains 1 transaction.
+
+- <a href="https://ethereum.org/fil/roadmap/single-slot-finality/#:~:text=It%20takes%20about%2015%20minutes,finalized%20in%20the%20same%20slot" target="_blank" rel="noreferrer noopener">Ethereum Time-to-Finality</a>
+
+- <a href="https://academy.binance.com/en/glossary/finality" target="_blank" rel="noreferrer noopener">Bitcoin Time-to-Finality</a>

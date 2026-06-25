@@ -216,7 +216,7 @@ See also: [TON Connect's wallet manifest](/applications/ton-connect/core-concept
         name: "SendTransaction";
 
         // Max number of messages that can be sent in a single transaction.
-        // Depends on the GRAM wallet used, because different kinds can handle
+        // Depends on the TON wallet used, because different kinds can handle
         // different number of messages. For example,
         // - ledger wallet would only handle 1 message per transaction
         // - wallet v4r2 handles up to 4 messages
@@ -236,7 +236,7 @@ See also: [TON Connect's wallet manifest](/applications/ton-connect/core-concept
       }
   ```
 
-  The `maxMessages` number depends on the GRAM wallet used, because every wallet has its own limit on the volume of messages.
+  The `maxMessages` number depends on the TON wallet used, because every wallet has its own limit on the volume of messages.
 
   For example,
 
@@ -426,7 +426,7 @@ See also: [TON Connect's wallet manifest](/applications/ton-connect/core-concept
 
 <Columns cols={2}>
   <Card
-    title="Manage GRAM wallets"
+    title="Manage TON wallets"
     icon="wallet"
     horizontal="true"
     href="/applications/walletkit/web/wallets"

@@ -68,7 +68,7 @@ The following table lists exit codes with their origin (where they can occur) an
 In [Blueprint][bp] tests, exit codes from the [compute phase](#compute-phase) are specified in the `exitCode` field of the object argument for the `toHaveTransaction()` method of the `expect()` matcher. The field for the [result](#action-phase) codes (exit codes from the [action phase](#action-phase)) in the same `toHaveTransaction()` method is called `actionResultCode`.
 
 <Callout type="note">
-  Read more about expecting specific exit codes: [Explore TVM logs](/contract-dev/blueprint/debug#explore-tvm-logs).
+  Read more about expecting specific exit codes: [Explore TVM logs](/contracts/blueprint/debug#explore-tvm-logs).
 </Callout>
 
 Additionally, one can examine the result of sending a message to a contract and discover the phases of each transaction and their values, including exit (or result) codes for the [compute phase](#compute-phase) (or [action phase](#action-phase)).
@@ -586,8 +586,8 @@ Tolk utilizes exit codes below 128. Note that exit codes used by Tolk indicate c
 - **9:** If there is a slice or array deserialization invalidation, an [exit code 9: cell underflow](#9-cell-underflow) is thrown.
 - **63:** If there is an opcode (or prefix) mismatch when unpacking a struct, a Tolk-specific exit code 63 is thrown. Additionally, it is the default exit code for `throwIfOpcodeDoesNotMatch()` function, which can be overridden.
 
-[tlb]: /languages/tl-b/overview
+[tlb]: /foundations/tlb/overview
 [tvm]: /tvm/overview
-[bp]: /contract-dev/blueprint/overview
+[bp]: /contracts/blueprint/overview
 [sb]: https://github.com/ton-org/sandbox
 [jest]: https://jestjs.io

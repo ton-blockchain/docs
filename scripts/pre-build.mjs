@@ -11,7 +11,7 @@
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 // Common utils
-import { $ } from './common.mjs';
+import { $, ansiGreen } from './common.mjs';
 
 const main = () => {
   const pfx = 'pre-build:';
@@ -40,8 +40,9 @@ const main = () => {
     }
   }
   if (failed) {
-    // TODO: start exiting with exit code 1
-    return;
+    process.exit(1);
+  } else {
+    console.log(pfx, ansiGreen('great success!'));
   }
 };
 

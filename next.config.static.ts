@@ -8,6 +8,8 @@ const withMDX = createMDX();
 const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 const isVercelBuild = process.env.VERCEL === '1';
+const isVercelProd =
+  isVercelBuild && !['development', 'staging'].includes(process.env.VERCEL_ENV ?? '');
 const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
 let gitRepoMatch: RegExpMatchArray | null = null;
 try {
@@ -48,7 +50,9 @@ const config: NextConfig = {
     NEXT_BUILD_TYPE: isLocalBuild
       ? 'local'
       : isVercelBuild
-        ? 'vercel'
+        ? isVercelProd
+          ? 'vercel'
+          : 'vercel-dev'
         : isGitHubPagesBuild
           ? 'github'
           : 'unknown',

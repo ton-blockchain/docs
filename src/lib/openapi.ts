@@ -6,9 +6,9 @@ import { registerDefault } from 'fumadocs-openapi/requests/generators/all';
 export const openapi = createOpenAPI({
   // NOTE: Keys here must match the keys used in .github/scripts/generate-openapi-pages.mjs
   input: () => ({
-    v2: path.resolve('./content/ecosystem/api/toncenter/v2.json'),
-    v3: path.resolve('./content/ecosystem/api/toncenter/v3.yaml'),
-    'smc-index': path.resolve('./content/ecosystem/api/toncenter/smc-index.json'),
+    v2: path.resolve('./content/api/v2.json'),
+    v3: path.resolve('./content/api/v3.yaml'),
+    'smc-index': path.resolve('./content/api/smc-index.json'),
   }),
 });
 

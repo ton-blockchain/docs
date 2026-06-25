@@ -101,7 +101,7 @@ export const source = loader({
                 'span',
                 {
                   className:
-                    'ms-auto border border-current px-1 rounded-lg text-xs text-nowrap whitespace-nowrap',
+                    'border border-current px-1 rounded-lg text-xs text-nowrap whitespace-nowrap',
                 },
                 file.data.tag,
               ),
@@ -128,11 +128,19 @@ export function getSearchablePages(locale?: string) {
 
 export function getQuickJumpPages(locale?: string) {
   const pages = getSearchablePages(locale);
-  return pages.map((page) => ({
-    title: page.data.title.replace(/`/g, ''),
-    normalizedTitle: page.data.title.toLocaleLowerCase(locale).replace(/`/g, ''),
-    url: page.url,
-  }));
+  return pages
+    .map((page) => ({
+      title: page.data.title.replace(/`/g, ''),
+      normalizedTitle: page.data.title.toLocaleLowerCase(locale).replace(/`/g, ''),
+      url: page.url,
+    }))
+    .sort((a, b) => {
+      const aIsOverview = /\boverview\b/.test(a.normalizedTitle);
+      const bIsOverview = /\boverview\b/.test(b.normalizedTitle);
+
+      if (aIsOverview !== bIsOverview) return aIsOverview ? -1 : 1;
+      return a.normalizedTitle.localeCompare(b.normalizedTitle, locale);
+    });
 }
 
 /** The `url` is prefixed by metadataBase elsewhere */

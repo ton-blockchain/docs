@@ -2941,7 +2941,7 @@ type GetJettonsReturnType = JettonsResponse | null;
 
 #### `Jetton`
 
-Fungible TEP-74 token held in the user's GRAM wallet — carries the master contract address, the user's jetton-wallet address, current balance, and token metadata.
+Fungible TEP-74 token held in the user's TON wallet — carries the master contract address, the user's jetton-wallet address, current balance, and token metadata.
 
 | Field             | Type                                          | Description                                                                                           |
 | ----------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -3134,7 +3134,7 @@ type GetNftsReturnType = NFTsResponse | null;
 
 #### `NFT`
 
-Non-fungible TEP-62 token held in the user's GRAM wallet — carries the contract address, optional collection link, owner, sale state, and on-chain metadata.
+Non-fungible TEP-62 token held in the user's TON wallet — carries the contract address, optional collection link, owner, sale state, and on-chain metadata.
 
 | Field                    | Type                                                     | Description                                                                    |
 | ------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -3407,7 +3407,7 @@ type TokenAmount = string;
 
 #### `UserFriendlyAddress`
 
-User-friendly GRAM wallet address as a base64url string (e.g., `"EQDtFp...4q2"`).
+User-friendly TON wallet address as a base64url string (e.g., `"EQDtFp...4q2"`).
 
 ```ts
 type UserFriendlyAddress = string;
