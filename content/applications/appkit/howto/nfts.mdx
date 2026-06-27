@@ -6,7 +6,7 @@ sidebarTitle: "Manage NFTs"
 Read, render, and transfer NFTs owned by the connected wallet.
 
 <Callout type="caution">
-  **Verify NFT authenticity.** Scammers create fake NFTs that mimic popular collections. An NFT item contract can claim any collection address, so reading the `collection` field from the item alone is not sufficient. To verify that an NFT item genuinely belongs to a collection, query the collection contract with the item's index and check that the returned address matches the item's address. See [how to verify an NFT item](/blockchain-basics/standard/tokens/nft/verify) for the full procedure.
+  **Verify NFT authenticity.** Scammers create fake NFTs that mimic popular collections. An NFT item contract can claim any collection address, so reading the `collection` field from the item alone is not sufficient. To verify that an NFT item genuinely belongs to a collection, query the collection contract with the item's index and check that the returned address matches the item's address. See [how to verify an NFT item](/contracts/standard/tokens/nft/verify) for the full procedure.
 </Callout>
 
 ## How it works
@@ -69,7 +69,7 @@ return (
   Transferring an NFT is irreversible — once sent, only the new owner can transfer it back. Verify both the NFT address and the recipient address before initiating a transfer. A common failure mode is **stale ownership**: the NFT changes owners between the read and the transfer attempt. Reread `ownerAddress` before opening the wallet. If `isOnSale` is true, also check `realOwnerAddress`.
 </Callout>
 
-Before opening the wallet, make sure the sender's wallet has enough Gram to cover the [fees](/blockchain-basics/primitives/fees).
+Before opening the wallet, make sure the sender's wallet has enough Gram to cover the [fees](/foundations/fees).
 
 An NFT transfer carries the destination owner address, the NFT contract address, and an optional small Gram amount that is forwarded to the recipient message. For NFTs the recommended pattern is to build the request offline with `createTransferNftTransaction`, then hand it to `<Send />`. This keeps the transaction shape testable.
 

@@ -1,5 +1,6 @@
 ---
 title: "Coming from Ethereum"
+sidebarTitle: "From Ethereum"
 ---
 
 Learn how to develop and build on TON coming from the Ethereum (EVM) ecosystem.
@@ -47,7 +48,7 @@ In Ethereum, there are two types of accounts: externally owned accounts (EOA), a
 
 In TON, there is no such separation. Every valid address represents an on-chain [account](/foundations/addresses/overview), each with its own state and balance, that could be changed through transactions. This means that "wallets" in TON are smart contracts that operate under the same rules as any other contract on the blockchain.
 
-The [GRAM wallet](/standard/wallets/comparison) smart contract works as a proxy: handles an external message, checks message is sent by the wallet's owner using regular [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography), and sends an internal message somewhere further in the network.
+The [TON wallet](/contracts/standard/wallets/comparison) smart contract works as a proxy: handles an external message, checks message is sent by the wallet's owner using regular [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography), and sends an internal message somewhere further in the network.
 
 ### Limited contract storage
 
@@ -59,7 +60,7 @@ In Ethereum, it's possible to store any amount of data in a single contract. Unb
   Every map that is expected to grow beyond 1,000 values is dangerous. In the TVM map, key access is asymptotically logarithmic, meaning that gas consumption continuously increases to find keys as the map grows.
 </Callout>
 
-Instead, [sharding](/contract-dev/contract-sharding) should be used.
+Instead, [sharding](/contracts/techniques/contract-sharding) should be used.
 
 ## Ecosystem
 
@@ -67,7 +68,7 @@ Instead, [sharding](/contract-dev/contract-sharding) should be used.
 
 The recommended programming language for smart contract development in TON is [Tolk](/tolk/overview). Other established languages also exist and are still used, albeit in legacy status.
 
-For off-chain software, TypeScript is the most adopted language in TON. Most of the tooling, bindings and [SDKs](/ecosystem/sdks) are implemented in TypeScript.
+For off-chain software, TypeScript is the most adopted language in TON. Most of the tooling, bindings and [SDKs](/applications/sdks) are implemented in TypeScript.
 
 | Use case                              | Ethereum tool             | TON counterparts                                                                                                                                        |
 | :------------------------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -99,12 +100,12 @@ The table maps Ethereum standards and proposals, including ERC and EIP, to their
 
 Due to significant differences in execution models, most of the standards in TON differ significantly in semantics and general approach compared to their Ethereum analogs.
 
-| Description                             | Ethereum standard                       | TON Standard (TEP)                                                 |
-| --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------ |
-| Fungible token standard                 | ERC-20                                  | [Jettons (TEP-0074)](/standard/tokens/jettons/overview)            |
-| Non-fungible token standard             | ERC-721                                 | [NFT standard (TEP-0062)](/standard/tokens/nft/overview)           |
-| Token metadata                          | ERC-4955 (Not exactly, but close match) | [Token Data Standard (TEP-0064)](/standard/tokens/metadata)        |
-| NFT royalty standard                    | EIP-2981                                | [NFT Royalty Standard (TEP-0066)](/standard/tokens/nft/comparison) |
-| DNS-like registry                       | ENS (EIP-137)                           | [DNS Standard (TEP-0081)](/foundations/web3/overview)              |
-| Soulbound / account-bound token concept | EIP-4973                                | [SBT Standard (TEP-0085)](/standard/tokens/nft/comparison#sbt)     |
-| Wallet connection protocol              | WalletConnect / EIP-1193                | [TonConnect (TEP-0115)](/ecosystem/ton-connect/overview)           |
+| Description                             | Ethereum standard                       | TON Standard (TEP)                                                           |
+| --------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
+| Fungible token standard                 | ERC-20                                  | [Jettons (TEP-0074)](/contracts/standard/tokens/jettons/overview)            |
+| Non-fungible token standard             | ERC-721                                 | [NFT standard (TEP-0062)](/contracts/standard/tokens/nft/overview)           |
+| Token metadata                          | ERC-4955 (Not exactly, but close match) | [Token Data Standard (TEP-0064)](/contracts/standard/tokens/metadata)        |
+| NFT royalty standard                    | EIP-2981                                | [NFT Royalty Standard (TEP-0066)](/contracts/standard/tokens/nft/comparison) |
+| DNS-like registry                       | ENS (EIP-137)                           | [DNS Standard (TEP-0081)](/foundations/web3/overview)                        |
+| Soulbound / account-bound token concept | EIP-4973                                | [SBT Standard (TEP-0085)](/contracts/standard/tokens/nft/comparison#sbt)     |
+| Wallet connection protocol              | WalletConnect / EIP-1193                | [TonConnect (TEP-0115)](/applications/ton-connect/overview)                  |

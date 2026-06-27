@@ -10,10 +10,10 @@ except ImportError:
     print("PyYAML not installed. Run: pip install pyyaml")
     exit(1)
 
-SPEC_PATH = 'content/ecosystem/api/toncenter/v3.yaml'
-MDX_PATH = 'content/ecosystem/api/toncenter/v3/overview.mdx'
+SPEC_PATH = 'content/api/v3.yaml'
+MDX_PATH = 'content/api/v3/overview.mdx'
 MARKER = 'API_V3_ENDPOINTS'
-LINK_BASE = '/ecosystem/api/toncenter/v3'
+LINK_BASE = '/api/v3'
 
 # Tag display order
 TAG_ORDER = [
@@ -45,7 +45,7 @@ def load_openapi_spec(filepath: Path) -> dict:
 def extract_endpoints(spec: dict) -> list:
     """Extract endpoints from the OpenAPI spec."""
     endpoints = []
-    seen_paths = set()
+    # seen_paths = set()
     paths = spec.get('paths', {})
 
     for path, path_item in paths.items():
@@ -58,9 +58,9 @@ def extract_endpoints(spec: dict) -> list:
             tag = tags[0] if tags else 'Other'
 
             # Avoid duplicates
-            if path in seen_paths:
-                continue
-            seen_paths.add(path)
+            # if path in seen_paths:
+            #     continue
+            # seen_paths.add(path)
 
             endpoints.append({
                 'path': path,

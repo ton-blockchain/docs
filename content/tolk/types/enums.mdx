@@ -69,7 +69,7 @@ match (g.to) {
 
 ## Exhaustive pattern matching
 
-[`match`](/languages/tolk/syntax/pattern-matching) on enums requires coverage of all cases:
+[`match`](/tolk/syntax/pattern-matching) on enums requires coverage of all cases:
 
 ```tolk
 match (someColor) {
@@ -136,7 +136,7 @@ fun validate(id: int) {
 
 ## Stack layout and serialization
 
-Every enum is [backed by TVM](/languages/tolk/types/overall-tvm-stack) `INT` and [serialized](/languages/tolk/types/overall-serialization) as `(u)intN`, where `N` is:
+Every enum is [backed by TVM](/tolk/types/overall-tvm-stack) `INT` and [serialized](/tolk/types/overall-serialization) as `(u)intN`, where `N` is:
 
 - specified manually, for example: `enum Role: int8 { ... }`;
 - or calculated automatically to fit all values.

@@ -9,7 +9,7 @@ sidebarTitle: "Quick start"
 
 ## TON Connect manifest
 
-Before installing and setting up the TON Pay SDK, the application must provide a TON Connect manifest, which is a JSON file that defines application metadata. Wallets use the [TON Connect manifest](/ecosystem/ton-connect/manifest) to discover the application.
+Before installing and setting up the TON Pay SDK, the application must provide a TON Connect manifest, which is a JSON file that defines application metadata. Wallets use the [TON Connect manifest](/applications/ton-connect/core-concepts#manifest) to discover the application.
 
 ## First payment
 
@@ -127,7 +127,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
       type="danger"
       title="Client-only processing is fragile"
     >
-      Users can close the tab before transaction results are persisted, which breaks tracking and confirmation logic. Build messages and track transactions in the [Send payments using React](/ecosystem/ton-pay/payment-integration/payments-react) guide.
+      Users can close the tab before transaction results are persisted, which breaks tracking and confirmation logic. Build messages and track transactions in the [Send payments using React](/applications/ton-pay/payment-integration/payments-react) guide.
     </Callout>
 
     <Accordions>
@@ -327,7 +327,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
     }
     ```
 
-    The [status lookup guide](/ecosystem/ton-pay/payment-integration/status-info) describes the response fields and lookup methods used in this step.
+    The [status lookup guide](/applications/ton-pay/payment-integration/status-info) describes the response fields and lookup methods used in this step.
   </Step>
 </Steps>
 
@@ -393,7 +393,7 @@ export default function App() {
 
 ## See also
 
-- [Build a transfer](/ecosystem/ton-pay/payment-integration/transfer)
-- [Send payments using React](/ecosystem/ton-pay/payment-integration/payments-react)
-- [Webhooks](/ecosystem/ton-pay/webhooks)
-- [API reference](/ecosystem/ton-pay/api-reference)
+- [Build a transfer](/applications/ton-pay/payment-integration/transfer)
+- [Send payments using React](/applications/ton-pay/payment-integration/payments-react)
+- [Webhooks](/applications/ton-pay/webhooks)
+- [API reference](/applications/ton-pay/api-reference)

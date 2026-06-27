@@ -16,7 +16,7 @@ reply.send(SEND_MODE_REGULAR);
 
 ## Union types in contracts interaction
 
-When handling a message, some values can be represented in multiple valid forms. [Union types](/languages/tolk/types/unions) allow expressing these alternatives explicitly, so the same message-handling logic can accept and correctly process any of them.
+When handling a message, some values can be represented in multiple valid forms. [Union types](/tolk/types/unions) allow expressing these alternatives explicitly, so the same message-handling logic can accept and correctly process any of them.
 
 ### Message value
 
@@ -148,7 +148,7 @@ createMessage({
 - If `body` is large or has unpredictable size, it is stored as a ref.
 
 The decision is made at compile time. No runtime checks are involved.
-This is implemented using [generics](/languages/tolk/types/generics):
+This is implemented using [generics](/tolk/types/generics):
 
 ```tolk
 fun createMessage<TBody>(

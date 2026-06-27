@@ -59,7 +59,7 @@ As such, for each pair of `initial_code` and `initial_data`, there exists a spec
   Although the deployed smart contract code and data may change during its lifetime, the address where it is deployed does **not** change.
 </Callout>
 
-Some contracts can transform into another contract with specified code and data as their first action. They are called [vanity](/contract-dev/techniques/vanity) contracts because they allow for a wider range of account IDs, helping to find a subjectively prettier address for the new contract. Their off-chain generation parts try different `StateInit` values, often by changing a salt, until the resulting account ID has a desired prefix or suffix. After deployment, the contract can set its runtime code and data to the intended contract state, retaining the address obtained with the initial `StateInit`.
+Some contracts can transform into another contract with specified code and data as their first action. They are called [vanity](/contracts/techniques/vanity) contracts because they allow for a wider range of account IDs, helping to find a subjectively prettier address for the new contract. Their off-chain generation parts try different `StateInit` values, often by changing a salt, until the resulting account ID has a desired prefix or suffix. After deployment, the contract can set its runtime code and data to the intended contract state, retaining the address obtained with the initial `StateInit`.
 
 ## External addresses
 

@@ -135,25 +135,41 @@ export function prefixWithSlash(src) {
  * NOTE: Consider making it into a template literal handler.
  *
  * @param command {string}
- * @param timeout {number} seconds
+ * @param [opts] {Options}
+ *
+ * @typedef Options
+ * @property [timeout] {number} seconds, defaults to 60 * 10, i.e., 10 minutes
+ * @property [quiet] {boolean} only log errors, defaults to true
+ * @property [silent] {boolean} log nothing, defaults to false
+ *
+ * @returns {{
+ *   ok: true,
+ *   code: number,
+ *   out: string,
+ *   lines: (string | null)[]
+ * } | {
+ *   ok: false,
+ *   code: number | null,
+ *   error: string | Error
+ * }}
  */
-export function $(command, timeout = 60 * 10) {
+export function $(command, opts = { timeout: 60 * 10, quiet: true, silent: false }) {
   const spaced = command.split(' ');
   const result = spawnSync(spaced[0], spaced.slice(1), {
     encoding: 'utf8',
-    timeout: 1_000 * timeout,
+    timeout: 1_000 * (opts.timeout ?? 60 * 10),
   });
   if (result.status != 0) {
     const errMsg = result.error ?? result.stdout + '\n' + result.stderr;
-    console.log(errMsg);
+    if (!opts.silent) console.log(errMsg);
     return {
       ok: false,
       code: result.status,
       error: errMsg,
     };
   }
-  console.log(result.stdout);
-  return { ok: true, code: result.status, output: result.output };
+  if (!opts.quiet && !opts.silent) console.log(result.stdout);
+  return { ok: true, code: result.status, out: result.stdout, lines: result.output };
 }
 
 /**
@@ -192,6 +208,8 @@ export function hasStub(parser, filepath) {
  * Recursively finds files with a target extension `ext` starting from a given directory `dir`.
  * Ignores common and extension-specific irrelevant files — see the code for details.
  *
+ * TODO: actually check meta.json files for coverage of real paths.
+ *
  * @param [ext='mdx'] {string} extension of the file without a leading dot; defaults to mdx
  * @param [dir='.'] {string} directory to start with, defaults to `.` (present directory, assuming the root of the repo)
  * @returns {string[]} file paths relative to `dir` or an empty array if there is none, `dir` does not exist or `ext` is empty
@@ -229,8 +247,8 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
       dirs: [
         // Snippets and page parts
         ...['snippets', 'scripts', 'public'].map((it) => join(dir, it)),
-        // Pages covered in OpenAPI specs rather than in docs.json
-        ...['ecosystem/api/toncenter/v2', 'ecosystem/api/toncenter/v3']
+        // Pages covered in OpenAPI specs rather than in meta.json files
+        ...['api/v2', 'api/v3']
           .map((it) => join(dir, it))
           .flatMap((dirWithOverview) =>
             existsSync(dirWithOverview)
@@ -240,7 +258,7 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
               : [],
           ),
         // Does not have an overview:
-        join(dir, 'ecosystem/api/toncenter/smc-index'),
+        join(dir, 'api/smc-index'),
       ],
     },
   });
@@ -323,7 +341,7 @@ export function writeConfig(config) {
  * @param config {DocsConfig}
  * @returns {string[]}
  */
-function getNavLinksOld(config) {
+export function getNavLinksFromFile(config) {
   /** @type {string[]} */
   const links = [];
   /** @param page {any} */
@@ -353,25 +371,21 @@ function getNavLinksOld(config) {
  * Notice that each link is prefixed by a single slash /,
  * whether it was present originally or not.
  *
- * NOTE: no longer requires a parsed docs.json config!
- *
- * @param _config {DocsConfig | undefined}
  * @returns {string[]}
  */
-export function getNavLinks(_config) {
+export function getNavLinks() {
   return findUnignoredFiles('mdx').map((it) => prefixWithSlash(it.replace(/\.mdx$/i, '')));
 }
 
 /**
- * Get navigation links from the docs.json configuration as a Set.
+ * Get navigation links from the meta.json files and content/ folder as a Set.
  * Notice that each link is prefixed by 'content' and a single slash /,
  * regardless if the latter was present originally.
  *
- * @param config {DocsConfig}
  * @returns {ReadonlySet<string>}
  */
-export function getNavLinksSet(config) {
-  return Object.freeze(new Set(getNavLinks(config)));
+export function getNavLinksSet() {
+  return Object.freeze(new Set(getNavLinks()));
 }
 
 /**

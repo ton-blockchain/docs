@@ -2,7 +2,7 @@
 title: "TON Assembly (TASM)"
 ---
 
-The [`ton-assembly` ↗️](https://www.npmjs.com/package/ton-assembly) NPM package provides a set of utilities for converting between the [BoC][boc]-serialized TVM bitcode, [Fift assembly](/languages/fift/fift-assembler) sources, and a [Fift](/languages/fift/overview)-like pseudocode format called TON Assembly (TASM).
+The [`@ton/tasm` ↗️](https://www.npmjs.com/package/@ton/tasm) NPM package provides a set of utilities for converting between the [BoC][boc]-serialized TVM bitcode, [Fift assembly](/languages/fift/fift-assembler) sources, and a [Fift](/languages/fift/overview)-like pseudocode format called TON Assembly (TASM).
 
 Available tools:
 
@@ -17,7 +17,7 @@ The package requires [Node.js LTS 18 or later](https://nodejs.org/en/download).
 Run the following command to install the TASM tool suite globally:
 
 ```bash
-npm install -g ton-assembly
+npm install -g @ton/tasm
 ```
 
 ## Command-line usage
@@ -114,7 +114,7 @@ Use `-s` to read input from a string argument instead of a file:
 Install the package as a project dependency:
 
 ```bash
-npm install ton-assembly
+npm install @ton/tasm
 ```
 
 The package exports 4 modules:
@@ -132,7 +132,7 @@ import {
   runtime,
   // TVM logs parsing module
   logs,
-} from "ton-assembly";
+} from "@ton/tasm";
 
 // Module: text
 const code = "PUSH s0";
@@ -173,6 +173,6 @@ for (const line of parsedLog) {
 }
 ```
 
-For the examples of the `trace` module, see the [full API documentation of `ton-assembly` ↗️](https://github.com/ton-blockchain/tasm/blob/f5ce4619b168f0d3e450183816b928e50493aa69/API.md#trace-module-correlating-logs-with-source-code).
+For the examples of the `trace` module, see the [full API documentation of `@ton/tasm` ↗️](https://github.com/ton-blockchain/tasm/blob/f5ce4619b168f0d3e450183816b928e50493aa69/API.md#trace-module-correlating-logs-with-source-code).
 
 [boc]: /foundations/serialization/boc

@@ -62,36 +62,77 @@ html > body[data-scroll-locked] {
 #nd-docs-layout > .items-end {
   grid-area: tabs;
   align-items: center;
+  border-bottom-style: solid;
+  /* border-bottom-style: none; */
   /* Disable on mobile */
+  display: none;
+}
+
+/* #nd-docs-layout > .items-end > a {
+  white-space: nowrap;
+} */
+
+/* use smaller title spans by default */
+#nd-docs-layout > .items-end > a > span.style-tab-normal {
+  display: inline-block;
+}
+
+/* use smaller title spans by default */
+#nd-docs-layout > .items-end > a > span.style-tab-wide {
   display: none;
 }
 
 #nd-docs-layout {
   /* no bar by default */
   --fd-tabs-height: 0rem;
+  --fd-page-inline-padding: 1rem;
 }
 
-/* 48rem ~ 768px with font-size 16 */
 @media (min-width: 768px) {
+  #nd-docs-layout {
+    --fd-page-inline-padding: 1.5rem;
+  }
+}
+
+/* NOTE: Kept for posterity */
+/* 48rem ~ 768px with font-size 16 */
+/* @media (min-width: 768px) {} */
+
+/* 50rem ~ 800 px */
+@media (min-width: 800px) {
   /* tab bar of the same height as ToC popover (~2.5rem) */
   #nd-docs-layout {
     --fd-tabs-height: var(--fd-toc-popover-height);
   }
 
-  /* making tab bar as sticky as ToC popover */
+  /* make tab bar as sticky as ToC popover */
   #nd-docs-layout > .items-end {
     position: sticky;
-    top: var(--fd-docs-row-2);
+    top: var(--fd-docs-row-1);
     z-index: 10;
-    /* Re-enable when width is sufficient */
-    display: none;
+    /* re-enable tab bar when width is sufficient */
+    display: flex;
+    gap: calc(var(--spacing) * 4);
   }
 
-  /* placing ToC popover below the tab bar */
-  /* TODO: restore when tabs are used */
-  /* #nd-docs-layout > div[data-toc-popover] {
-    top: var(--fd-toc-popover-height);
-  } */
+  /* place ToC popover below the tab bar */
+  #nd-docs-layout > div[data-toc-popover] {
+    top: calc(var(--fd-docs-row-3));
+    /* top: calc(var(--fd-toc-popover-height)); */
+  }
+
+  /* place floating sidebar panel below the ToC popover */
+  #nd-docs-layout > div[data-sidebar-panel] {
+    /* 2.5 rem offset is there for the tab bar in case there is no ToC on the page */
+    top: calc(calc(var(--spacing) * 4) + 2.5rem + var(--fd-docs-row-3));
+    /* top: calc(calc(var(--spacing) * 4) + var(--fd-docs-row-3) * 2); */
+  }
+}
+
+@media (min-width: 1000px) {
+  #nd-docs-layout > .items-end {
+    gap: calc(var(--spacing) * 8);
+  }
 }
 
 /* 75rem ~ 1200px with font-size 16 */
@@ -104,22 +145,94 @@ html > body[data-scroll-locked] {
 
   /* tab bar matching the page contents width */
   #nd-docs-layout > .items-end {
-    max-width: 900px;
-    margin-inline: calc(var(--spacing) * 8);
+    gap: calc(var(--spacing) * 6);
+    width: 100%;
+    max-width: calc(900px - var(--fd-page-inline-padding) * 2);
+    /* max-width: 900px; */
+    margin-inline: auto;
+    /* margin-inline: calc(var(--spacing) * 8); */
     align-items: stretch;
-    padding-inline: inherit;
-    justify-content: space-around;
-    position: sticky;
-    top: var(--fd-docs-row-1);
-    z-index: 10;
+    justify-content: space-between;
+    /* justify-content: space-around; */
+    /* position: sticky; */
+    /* top: var(--fd-docs-row-1); */
+    /* z-index: 10; */
+    /* re-enable tab bar when width is sufficient */
+    /* display: flex; */
+  }
+
+  /* #nd-docs-layout > .items-end::after { */
+  /* content: ''; */
+  /* position: absolute; */
+  /* inset-inline: auto; */
+  /* inset-inline: calc(var(--spacing) * 12); */
+  /* bottom: 0; */
+  /* border-bottom-style: solid; */
+  /* border-bottom: 1px solid var(--color-fd-border); */
+  /* } */
+
+  /* tab bar matching the full (no ToC) page contents width */
+  #nd-docs-layout:has(> article#nd-page[data-full='true']) > .items-end {
+    max-width: calc(1168px - var(--fd-page-inline-padding) * 2);
+    /* max-width: 1168px; */
+    justify-content: space-between;
+  }
+
+  /* switch to wider title spans by when there is no ToC */
+  #nd-docs-layout:has(> article#nd-page[data-full='true'])
+    > .items-end
+    > a
+    > span.style-tab-normal {
+    display: none;
+  }
+
+  /* switch to wider title spans by when there is no ToC */
+  #nd-docs-layout:has(> article#nd-page[data-full='true']) > .items-end > a > span.style-tab-wide {
+    display: inline-block;
   }
 
   /* offset ToC by the height of the tab tar */
-  /* TODO: restore when tabs are used */
-  /* #nd-toc {
-    padding-top: calc(var(--spacing) * 14 + 3rem);
+  #nd-toc {
+    padding-top: calc(var(--spacing) * 12 + 3rem);
+  }
+
+  /* NOTE: experiments with hiding the tab bar when the sidebar is hidden */
+  /* #nd-docs-layout:has(> div[data-sidebar-placeholder] > aside#nd-sidebar[data-collapsed="true"]) > .items-end {
+    display: none;
   } */
+  /* #nd-docs-layout:has(aside#nd-sidebar[data-collapsed='true']) > .items-end {
+    display: none;
+  } */
+  /* data-sidebar-panel .opacity-0 */
 }
+
+/* Match Fumadocs' `xl:px-8` page padding. */
+@media (min-width: 1280px) {
+  #nd-docs-layout {
+    --fd-page-inline-padding: 2rem;
+  }
+}
+
+/* Restore the floating sidebar panel top offset */
+@media (min-width: 1300px) {
+  #nd-docs-layout > div[data-sidebar-panel] {
+    top: calc(calc(var(--spacing) * 4) + var(--fd-docs-row-3));
+  }
+}
+
+@media (min-width: 1400px) {
+  #nd-docs-layout > .items-end {
+    padding-inline: 0;
+  }
+}
+
+/* 100rem ~ 1600px with font-size 16 */
+/* @media (min-width: 1600px) and (max-width: 3600px) { */
+/* Sligtly adjust the margins of breadcrumbs */
+/* article#nd-page > div.items-center > svg.lucide-chevron-right { */
+/* margin-bottom: 2px; */
+/* } */
+/* } */
 
 /* 48rem ~ 768px with font-size 16 */
 @media (min-width: 768px) {
@@ -128,6 +241,11 @@ html > body[data-scroll-locked] {
     border: none;
   }
 }
+
+/* NOTE: experiments with margins for folders on the top-level */
+/* aside#nd-sidebar > div > div > div > div[data-state] {
+  margin-top: calc(var(--spacing) * 6);
+} */
 
 /* Removing background blur of the ToC popover */
 #nd-docs-layout > div[data-toc-popover] > header {

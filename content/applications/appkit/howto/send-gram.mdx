@@ -90,7 +90,7 @@ await transferTon(appKit, {
 
 ## Confirm settlement
 
-TON achieves transaction [finality](/blockchain-basics/payments/overview#transaction-finality) after a single masterchain block confirmation, with new blocks produced roughly every 400 ms. Once a transaction appears in a masterchain block, it becomes irreversible.
+TON achieves transaction [finality](/applications/payments/overview#transaction-finality) after a single masterchain block confirmation, with new blocks produced roughly every 400 ms. Once a transaction appears in a masterchain block, it becomes irreversible.
 
 `sendTransaction` returning a `boc` means **the user signed**. Settlement is a separate state — verify with `getTransactionStatus(appKit, { boc })`, which returns `'unknown' | 'pending' | 'completed' | 'failed'` along with `totalMessages`, `pendingMessages`, and `onchainMessages` for trace progress. Treat only `status === 'completed'` as final.
 

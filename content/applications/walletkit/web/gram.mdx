@@ -4,14 +4,14 @@ sidebarTitle: "Work with Gram"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one GRAM wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
+  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Callout>
 
 To work with Gram, the wallet service needs to handle [contract balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-from-the-wallet-service).
 
 ## Balances
 
-Blockchain state changes constantly as new blocks are produced. This has implications for when and how to check GRAM wallet contract balances:
+Blockchain state changes constantly as new blocks are produced. This has implications for when and how to check TON wallet contract balances:
 
 - [Discrete one-off checks](#on-demand-balance-check) have almost no value on their own — the state might change immediately after the query completes, invalidating its results. Thus, such checks are only practical when handling `transaction` requests.
 - [Continuous monitoring](#continuous-balance-monitoring) is useful for UI display, showing the most recent balance to users, but should not be used for transaction confirmations.
@@ -20,7 +20,7 @@ Notice that both cases require querying the blockchain data via the API client s
 
 ### On-demand balance check
 
-Use the `getBalance()` method to check the wallet contract balance in GRAM wallets managed by WalletKit. The balance is returned in nanograms, with 1 Gram equal to 10<sup>9</sup> nanograms.
+Use the `getBalance()` method to check the wallet contract balance in TON wallets managed by WalletKit. The balance is returned in nanograms, with 1 Gram equal to 10<sup>9</sup> nanograms.
 
 <Callout type="caution">
   Do not store the balance check results anywhere in the wallet service's state, as they become outdated very quickly. For UI purposes, do [continuous balance monitoring](#continuous-balance-monitoring).
@@ -28,7 +28,7 @@ Use the `getBalance()` method to check the wallet contract balance in GRAM walle
 
 ```ts title="TypeScript"
 async function getBalance(walletId: string): Promise<string | undefined> {
-  // Get GRAM wallet instance
+  // Get TON wallet instance
   const wallet = kit.getWallet(walletId);
   if (!wallet) return;
 
@@ -278,7 +278,7 @@ import type { TONTransferRequest, Base64String } from '@ton/walletkit';
 async function sendGram(
   // Sender's GRAM `walletId` as a string
   walletId: string,
-  // Recipient's GRAM wallet address as a string
+  // Recipient's TON wallet address as a string
   recipientAddress: string,
   // Amount in nanograms
   nanoAmount: BigInt,
@@ -332,6 +332,6 @@ async function sendGram(
 ## See also
 
 - [Handle transaction requests](/applications/walletkit/web/events#handle-ontransactionrequest)
-- [Transaction fees](/blockchain-basics/primitives/fees)
+- [Transaction fees](/foundations/fees)
 - [WalletKit overview](/applications/walletkit/overview)
 - [TON Connect overview](/applications/ton-connect/overview)

@@ -5,6 +5,7 @@ import type { Redirect } from 'next/dist/lib/load-custom-routes';
 import { createMDX } from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
+const isVercelProd = !['development', 'staging'].includes(process.env.VERCEL_ENV ?? '');
 
 type DocsConfig = {
   redirects?: Redirect[];
@@ -36,6 +37,7 @@ const config: NextConfig = {
   env: {
     NEXT_CONFIG: 'vercel',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
+    NEXT_BUILD_TYPE: isVercelProd ? 'vercel' : 'vercel-dev',
   },
   turbopack: {
     root: fileURLToPath(new URL('.', import.meta.url)),

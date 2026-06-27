@@ -16,6 +16,8 @@ import { Callout } from './callout';
  *   width?: string | number,
  *   noZoom?: string | boolean,
  *   center?: string | boolean,
+ *   fullWidth?: string | boolean,
+ *   caption?: string,
  * }} props
  */
 export const Image = ({
@@ -29,12 +31,14 @@ export const Image = ({
   width = 608,
   noZoom = false,
   center = true,
+  fullWidth = false,
+  caption = '',
 }) => {
   const isSVG = src.match(/\.svg(?:[#?].*?)?$/i) !== null;
   const shouldInvert = isSVG && !darkSrc;
   const shouldCreateLink = href !== undefined;
   const minPx = 9;
-  const maxPx = 608;
+  const maxPx = 900;
   const expectedPx = `a number or a string with a number that is greater than ${minPx - 1} and less than or equal to ${maxPx}`;
 
   /**
@@ -96,30 +100,36 @@ export const Image = ({
 
   // Typecast string | boolean values to boolean-only
   const shouldCenter = center === 'true' || center === true ? true : false;
-  const shouldNotZoom = noZoom === 'true' || noZoom === true ? true : false;
+  const shouldNotZoom =
+    noZoom === 'true' || noZoom === true || shouldCreateLink || shouldInvert ? true : false;
+  const shouldUseFullWidth = fullWidth === 'true' || fullWidth === true ? true : false;
+  const extraImageClasses = `${shouldUseFullWidth ? 'w-full h-auto' : ''} ${shouldNotZoom ? 'cursor-default' : ''}`;
+  const extraWrapperClasses = `${shouldCenter ? 'flex justify-center' : ''} ${shouldUseFullWidth ? 'w-full' : ''}`;
 
   // Resulting images
   const images = (
     <>
       <ImageZoom
-        className="block dark:hidden"
+        className={`block dark:hidden ${extraImageClasses}`}
         src={src}
         alt={alt}
         height={heightPx}
         width={widthPx}
+        data-rmiz-disabled={shouldNotZoom ? 'true' : undefined}
         // @ts-ignore
-        {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
+        {...(shouldNotZoom && {
           rmiz: { isDisabled: true },
         })}
       />
       <ImageZoom
-        className={`hidden dark:block ${shouldInvert ? 'invert' : ''}`}
+        className={`hidden dark:block ${shouldInvert ? 'invert' : ''} ${extraImageClasses}`}
         src={darkSrc ?? src}
         alt={darkAlt ?? alt}
         height={heightPx}
         width={widthPx}
+        data-rmiz-disabled={shouldNotZoom ? 'true' : undefined}
         // @ts-ignore
-        {...((shouldCreateLink || shouldInvert || shouldNotZoom) && {
+        {...(shouldNotZoom && {
           rmiz: { isDisabled: true },
         })}
       />
@@ -127,30 +137,37 @@ export const Image = ({
   );
 
   // Is a clickable link
-  if (shouldCreateLink) {
-    // Centered horizontally
-    if (shouldCenter) {
-      return (
-        <span className="flex justify-center">
-          <Link href={href} target={target ?? '_self'}>
-            {images}
-          </Link>
-        </span>
-      );
-    }
+  const mbLink = shouldCreateLink ? (
+    <Link
+      href={href}
+      target={target ?? '_self'}
+      className={shouldUseFullWidth ? 'block w-full' : undefined}
+    >
+      {images}
+    </Link>
+  ) : (
+    images
+  );
 
+  // Should be centered horizontally
+  const mbCentered = extraWrapperClasses.trim() ? (
+    <span className={extraWrapperClasses}>{mbLink}</span>
+  ) : (
+    mbLink
+  );
+
+  // Has a non-empty caption
+  if (caption !== '') {
     return (
-      <Link href={href} target={target ?? '_self'}>
-        {images}
-      </Link>
+      <figure className={shouldUseFullWidth ? 'w-full' : undefined}>
+        {mbCentered}
+        <figcaption className="mt-2 text-center text-sm italic text-fd-muted-foreground">
+          {caption}
+        </figcaption>
+      </figure>
     );
   }
 
-  // Not a link, centered horizontally
-  if (shouldCenter) {
-    return <span className="flex justify-center">{images}</span>;
-  }
-
-  // Not a link, placed as is
-  return images;
+  // No caption, yet might be either clickable or centered (or both)
+  return mbCentered;
 };

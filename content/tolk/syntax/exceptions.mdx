@@ -44,7 +44,7 @@ throw ERR_CODE;
 
 Non-constant expressions such as `throw someVariable` are supported but not recommended. It works, but the compiler cannot determine possible error codes and therefore cannot provide a correct ABI for external callers.
 
-An exception can carry an argument of type [`unknown`](/languages/tolk/types/unknown):
+An exception can carry an argument of type [`unknown`](/tolk/types/unknown):
 
 ```tolk
 throw (ERR_CODE, errArg);
@@ -64,7 +64,7 @@ assert (msg.validUntil > blockchain.now()) throw E_EXPIRED;
 - The long form `assert (condition) throw ERR_CODE` is preferred.
 - The short form `assert (condition, ERR_CODE)` exists but is not recommended.
 
-The `condition` must be a [`bool`](/languages/tolk/types/booleans). Integers are not implicitly converted: use `assert (someInt != 0)` instead of `assert (someInt)`.
+The `condition` must be a [`bool`](/tolk/types/booleans). Integers are not implicitly converted: use `assert (someInt != 0)` instead of `assert (someInt)`.
 
 An `assert` statement is equivalent to:
 
@@ -83,7 +83,7 @@ During contract execution, TVM may throw runtime exceptions. For example:
 - `tuple.push(value)` will fail when the tuple has 255 elements already.
 - etc.
 
-Additionally, an [out-of-gas exception](/tvm/exit-codes#14%3A-out-of-gas-error) may occur at **any** point, and it cannot be caught using a [`catch`](#try-catch-statement) block. It can only be prevented by writing [exhaustive testing suites](/contract-dev/testing/overview).
+Additionally, an [out-of-gas exception](/tvm/exit-codes#14%3A-out-of-gas-error) may occur at **any** point, and it cannot be caught using a [`catch`](#try-catch-statement) block. It can only be prevented by writing [exhaustive testing suites](/contracts/blueprint/testing/overview).
 
 ## `try catch` statement
 

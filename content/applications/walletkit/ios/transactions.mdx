@@ -24,7 +24,7 @@ guard let amount = amountFormatter.amount(from: "1") else {
     return
 }
 let message = TONTransferMessage(
-    // GRAM wallet address
+    // TON wallet address
     toAddress: address,
     amount: amount,
 )
@@ -43,7 +43,7 @@ guard let amount = amountFormatter.amount(from: "1") else {
     return
 }
 let parameters = TONJettonTransferParams(
-    // GRAM wallet address
+    // TON wallet address
     toAddress: address,
     // Address of a Jetton minter contract
     jettonAddress: jettonAddress,
@@ -56,7 +56,7 @@ let transaction = try await wallet.transferJettonTransaction(parameters: paramet
 
 ```swift
 let parameters = TONNFTTransferParamsHuman(
-    // GRAM wallet address
+    // TON wallet address
     toAddress: address,
     // Address of an NFT item contract
     nftAddress: nft.address,
@@ -92,6 +92,6 @@ try await wallet.send(transaction: transaction)
     title="Manage wallets"
     href="./wallets"
   >
-    Create and manage GRAM wallets
+    Create and manage TON wallets
   </Card>
 </Columns>

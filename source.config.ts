@@ -103,7 +103,7 @@ export default defineConfig({
         'tsx',
         'yaml',
         ...['fift', 'func', 'tlb', 'tolk', 'tasm'].map((name) =>
-          JSON.parse(readFileSync(`./public/grammars/${name}.tmLanguage.json`, 'utf8')),
+          JSON.parse(readFileSync(`./src/grammars/${name}.tmLanguage.json`, 'utf8')),
         ),
       ],
       langAlias: {

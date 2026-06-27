@@ -41,7 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The manifest URL must be publicly accessible and served over HTTPS in production. Replace `<APP_URL>` with the public HTTPS origin that serves `tonconnect-manifest.json`. [The manifest file](/ecosystem/ton-connect/manifest) provides application metadata required for wallet identification.
+The manifest URL must be publicly accessible and served over HTTPS in production. Replace `<APP_URL>` with the public HTTPS origin that serves `tonconnect-manifest.json`. [The manifest file](/applications/ton-connect/core-concepts#manifest) provides application metadata required for wallet identification.
 
 ### Payment component
 
@@ -628,7 +628,7 @@ async function handleTransaction() {
 
 ## Optional API key configuration
 
-When using TON Connect with server-side message building, [the optional API key can be included](/ecosystem/ton-pay/payment-integration/payments-tonconnect#api-key-configuration) in the backend:
+When using TON Connect with server-side message building, [the optional API key can be included](/applications/ton-pay/payment-integration/payments-tonconnect#api-key-configuration) in the backend:
 
 ```typescript
 import { createTonPayTransfer } from "@ton-pay/api";
@@ -717,7 +717,7 @@ export function TestnetPayment({ amount }: { amount: number }) {
   <Card
     title="Webhook integration"
     icon="webhook"
-    href="/ecosystem/ton-pay/payment-integration/transfer"
+    href="/applications/ton-pay/payment-integration/transfer"
   >
     Receive real-time notifications when payments complete.
   </Card>
@@ -725,7 +725,7 @@ export function TestnetPayment({ amount }: { amount: number }) {
   <Card
     title="Transaction status"
     icon="magnifying-glass"
-    href="/ecosystem/ton-pay/payment-integration/status-info"
+    href="/applications/ton-pay/payment-integration/status-info"
   >
     Query payment status using reference or body hash.
   </Card>

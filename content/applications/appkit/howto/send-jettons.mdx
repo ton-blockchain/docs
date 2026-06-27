@@ -7,7 +7,7 @@ Transfer a jetton (a TON fungible token) from the connected wallet to another ad
 
 ## How it works
 
-Jettons are TON fungible tokens. Each holder has a jetton wallet contract derived from `(jettonMaster, ownerAddress)` — the owner is the user's GRAM wallet, and the jetton wallet is a separate contract owned by it. Transfer UI asks for the recipient's owner address, not their jetton wallet address. AppKit derives the sender's jetton wallet internally (that's the destination of the outer TON message), builds the inner jetton transfer payload that names the recipient's owner address, and wraps it in the outer message. The sender's jetton wallet then forwards the transfer to the recipient's jetton wallet on-chain. For example, USDT on TON is implemented as a jetton with the master address `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`.
+Jettons are TON fungible tokens. Each holder has a jetton wallet contract derived from `(jettonMaster, ownerAddress)` — the owner is the user's TON wallet, and the jetton wallet is a separate contract owned by it. Transfer UI asks for the recipient's owner address, not their jetton wallet address. AppKit derives the sender's jetton wallet internally (that's the destination of the outer TON message), builds the inner jetton transfer payload that names the recipient's owner address, and wraps it in the outer message. The sender's jetton wallet then forwards the transfer to the recipient's jetton wallet on-chain. For example, USDT on TON is implemented as a jetton with the master address `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`.
 
 Each jetton stores `name`, `symbol`, and `decimals` in its metadata. Amounts are decimal strings in the jetton's own units, so read the `decimals` field from chain metadata before building a transfer — different jettons can use different precision. USDT uses 6 decimals, so `'0.1'` represents 100,000 micro-USDT.
 
@@ -26,7 +26,7 @@ A connected wallet, the React provider mounted, and the jetton's master address.
   Transferring without accounting for `decimals` can send drastically more or fewer tokens than intended. Verify the `decimals` value from chain metadata before calculating transfer amounts.
 </Callout>
 
-Before opening the wallet, make sure the sender's wallet has enough Gram to cover the [fees](/blockchain-basics/primitives/fees).
+Before opening the wallet, make sure the sender's wallet has enough Gram to cover the [fees](/foundations/fees).
 
 ## Component (recommended)
 

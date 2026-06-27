@@ -3,12 +3,12 @@ title: "Tensors"
 sidebarTitle: "Tensors"
 ---
 
-Tensors represent ordered collections of values and are written in the form `(T1, T2, ...)`. They occupy multiple [TVM stack entries](/languages/tolk/types/overall-tvm-stack) sequentially and are [serialized](/languages/tolk/types/overall-serialization) in the same order. For example, `(int, slice)` represents two values following one another.
+Tensors represent ordered collections of values and are written in the form `(T1, T2, ...)`. They occupy multiple [TVM stack entries](/tolk/types/overall-tvm-stack) sequentially and are [serialized](/tolk/types/overall-serialization) in the same order. For example, `(int, slice)` represents two values following one another.
 
-Tensors are anonymous [structures](/languages/tolk/types/structures) and behave identically. Large tensors are impractical — use structures whenever possible.
+Tensors are anonymous [structures](/tolk/types/structures) and behave identically. Large tensors are impractical — use structures whenever possible.
 
 <Callout type="caution">
-  In many general-purpose languages, syntax `(A, B, C, ...)` is used for _tuples_, not tensors, which are a different type. However, in TON, a [tuple](/languages/tolk/types/tuples) is a distinct TVM primitive that has its own syntax `[a, b, ...]` and semantics.
+  In many general-purpose languages, syntax `(A, B, C, ...)` is used for _tuples_, not tensors, which are a different type. However, in TON, a [tuple](/tolk/types/tuples) is a distinct TVM primitive that has its own syntax `[a, b, ...]` and semantics.
 
   For example, a tensor `(int, int, int)` represents three integers on the stack, whereas a tuple `[int, int, int]` is a single stack entry that contains three integers within itself.
 </Callout>

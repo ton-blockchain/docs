@@ -122,7 +122,7 @@ Make sure the guide as a whole clearly covers the risk, scope, rollback or mitig
 ## Images
 
 - Use the `<Image>` component for all images. Markdown image syntax `![...](...)` and raw `<img ...>` are not allowed.
-- Store images under `public/images/` and reference them with root-absolute paths, for example `<Image src="/public/images/<GROUP>/<FILE>.png" />`. **MUST NOT** use relative `src` such as `./` or `../`.
+- Store images under `public/images/` and reference them with root-absolute paths without the `/public` prefix, for example `<Image src="/images/<GROUP>/<FILE>.png" />`. **MUST NOT** use relative `src` such as `./` or `../`.
 - Provide meaningful, non-empty `alt` text (never `alt=""`); add `darkSrc` when the dark theme needs different contrast. Keep sizes/aspect ratios consistent across a page.
 - SVGs: if you omit `darkSrc`, colors are auto-inverted in dark mode; add `darkSrc` if inversion isn’t correct.
 

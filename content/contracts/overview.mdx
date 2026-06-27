@@ -1,0 +1,60 @@
+---
+title: "Smart contracts"
+sidebarTitle: "Overview"
+description: "How to build, test, deploy, debug, and otherwise interact with TON smart contracts"
+---
+
+This section covers the recommended toolchain, editor support, standard contracts, reusable techniques, and the legacy TypeScript environment.
+
+<Callout
+  type="caution"
+  title="The Web IDE is retired"
+>
+  The Web IDE at `ide.ton.org` has been retired and is no longer available. Develop locally with the [Acton toolchain](#toolchain) and one of the [editor plugins](#ides-and-editor-plugins) below.
+</Callout>
+
+## Toolchain
+
+[Tolk](/tolk/overview) is the recommended language for TON smart contracts. [Acton ↗️](/contract-dev/acton) is the recommended all-in-one toolchain for the entire contract development lifecycle, including building, testing, and deploying Tolk contracts.
+
+<Callout
+  type="note"
+  title="External documentation"
+>
+  [Acton ↗️](/contract-dev/acton) documentation is hosted and updated externally.
+</Callout>
+
+### IDEs and editor plugins
+
+Add support for the Acton toolchain, Tolk language, and intermediate TON languages to a local editor:
+
+- [VS Code and forks](/contracts/ide/vscode) — extension for VS Code, VSCodium, Cursor, Windsurf, and other VS Code-based editors
+- [JetBrains IDEs](/contracts/ide/jetbrains) — plugin for IntelliJ IDEA, WebStorm, CLion, PyCharm, and other JetBrains IDEs
+
+## Standard contracts
+
+Descriptions of the most popular standardized contracts and how to work with them: [Standard contracts](/contracts/standard/overview).
+
+## Quick start
+
+Follow the [quickstart page in the Acton documentation](https://ton-blockchain.github.io/acton/docs/quickstart).
+
+## Techniques
+
+Focused how-to guides for advanced smart contract tasks:
+
+- [Signing and signature verification](/contracts/techniques/signing)
+- [Contract sharding](/contracts/techniques/contract-sharding)
+- [Security](/contracts/techniques/security)
+- [Gas optimization](/contracts/techniques/gas)
+- [On-chain jetton processing](/contracts/techniques/on-chain-jetton-processing)
+- [Using on-chain libraries](/contracts/techniques/using-on-chain-libraries)
+- [Random number generation](/contracts/techniques/random)
+- [Contract upgrades](/contracts/techniques/upgrades)
+- [Vanity addresses](/contracts/techniques/vanity)
+- [Zero-knowledge proofs](/contracts/techniques/zero-knowledge)
+- [Groth16 examples](/contracts/techniques/groth16-examples)
+
+## Blueprint (legacy)
+
+[Blueprint](/contracts/blueprint/overview) is a legacy TypeScript environment that is still supported for older projects.

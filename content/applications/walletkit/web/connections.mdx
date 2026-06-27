@@ -4,7 +4,7 @@ sidebarTitle: "Handle connections"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/applications/walletkit/web/init) and [set up at least one GRAM wallet](/applications/walletkit/web/wallets) before using examples on this page.
+  [Initialize the WalletKit](/applications/walletkit/web/init) and [set up at least one TON wallet](/applications/walletkit/web/wallets) before using examples on this page.
 </Callout>
 
 To use a wallet service for initiating blockchain transactions and signing data, dApps need to set up a connection over the bridge first. Connection is established via `connect` requests and terminated via `disconnect` requests.
@@ -36,7 +36,7 @@ To work with connection-specific requests, the WalletKit offers three methods wh
 
 ### Handle `onConnectRequest`
 
-When a user wants to connect a GRAM wallet from the dApp, the dApp fires the `connect` request over the bridge. The wallet service then handles it with the `onConnectRequest` method of the WalletKit.
+When a user wants to connect a TON wallet from the dApp, the dApp fires the `connect` request over the bridge. The wallet service then handles it with the `onConnectRequest` method of the WalletKit.
 
 On the dApp side, this flow is often initiated by pressing the "Connect a wallet" button, followed by selecting the user's wallet service. Additionally, a dApp can produce a [QR code or a deep link](#qr-codes-and-deep-links), which initiate the connection flow from within the wallet service.
 
@@ -71,7 +71,7 @@ kit.onConnectRequest(async (event) => {
 
 #### Wallet selection
 
-When there are several GRAM wallets added, ask the user to select one before approving the connection request.
+When there are several TON wallets added, ask the user to select one before approving the connection request.
 
 ```ts title="TypeScript"
 kit.onConnectRequest(async (event) => {
@@ -83,7 +83,7 @@ kit.onConnectRequest(async (event) => {
       await kit.rejectConnectRequest(event, 'No wallets available');
       return;
     }
-    // Selecting the 1st GRAM wallet by default
+    // Selecting the 1st TON wallet by default
     let selectedWallet = { ok: true, wallet: wallets[0] };
     // Yet, asking the user to pick one if there are many
     if (wallets.length > 1) {
@@ -152,12 +152,12 @@ async function handleDeepLink(url: string) {
 
 ### Handle `onDisconnect`
 
-When a user disconnects a wallet service and its GRAM wallet from the dApp, the dApp fires the `disconnect` request over the bridge. The wallet service then handles it with the `onDisconnect` method of the WalletKit.
+When a user disconnects a wallet service and its TON wallet from the dApp, the dApp fires the `disconnect` request over the bridge. The wallet service then handles it with the `onDisconnect` method of the WalletKit.
 
 ```ts title="TypeScript"
 kit.onDisconnect(async (event) => {
   // Clean up any UI state related to this connection.
-  console.log(`Disconnected from a dApp that used this GRAM wallet: ${event.walletAddress}`);
+  console.log(`Disconnected from a dApp that used this TON wallet: ${event.walletAddress}`);
 });
 ```
 

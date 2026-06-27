@@ -2,13 +2,15 @@ import type { Metadata } from 'next';
 import type { ComponentType } from 'react';
 import Link from 'next/link';
 import {
-  ArrowUpRight,
   ArrowRight,
+  ArrowUpRight,
   Blocks,
-  Brain,
   BrickWall,
-  FileCode2,
+  CloudLightning,
+  FileCodeCorner,
+  Fuel,
   LifeBuoy,
+  MessageCircleCode,
   Rocket,
   Send,
   Server,
@@ -44,9 +46,9 @@ const paths: Path[] = [
     icon: Rocket,
     links: [
       { title: 'Overview of TON and the documentation', href: '/start-here' },
-      { title: 'Create a TON wallet', href: '/ecosystem/wallet-apps/web' },
-      { title: 'Read blockchain data with explorers', href: '/ecosystem/explorers/overview' },
-      { title: 'Enable TON for agents with @ton/mcp', href: '/ecosystem/ai/mcp' },
+      { title: 'Create a TON wallet', href: '/onboarding/wallet-apps/web' },
+      { title: 'Read blockchain data with explorers', href: '/onboarding/explorers/overview' },
+      { title: 'Enable TON for agents with @ton/mcp', href: '/onboarding/ai/mcp' },
     ],
   },
   {
@@ -73,21 +75,67 @@ const paths: Path[] = [
     ],
   },
   {
-    title: 'Smart contracts',
-    description: 'Build, debug, and deploy smart contracts on TON.',
-    icon: FileCode2,
+    title: 'Nodes',
+    description: 'Run and manage TON blockchain nodes.',
+    icon: Server,
     links: [
-      { title: 'Acton toolchain', href: '/contract-dev/acton', external: true },
-      { title: 'Tolk language', href: '/tolk/overview' },
-      { title: 'JetBrains IDE plugin', href: '/contract-dev/ide/jetbrains' },
-      { title: 'VS Code extension', href: '/contract-dev/ide/vscode' },
-      { title: 'Standard contracts', href: '/standard/overview' },
+      { title: 'Overview', href: '/nodes/overview' },
+      { title: 'C++ node setup', href: '/nodes/cpp/setup-mytonctrl' },
+      {
+        title: 'Run a validator node',
+        href: '/nodes/cpp/run-validator',
+      },
+      {
+        title: 'Run a liteserver node',
+        href: '/nodes/cpp/run-liteserver',
+      },
+      { title: 'Run an archive liteserver', href: '/nodes/cpp/run-archive-liteserver' },
+    ],
+  },
+  {
+    title: 'APIs',
+    description: 'Access TON data via hosted APIs or self-hosted options.',
+    icon: CloudLightning,
+    links: [
+      { title: 'Overview', href: '/api/overview' },
+      { title: 'API v2: direct liteserver', href: '/api/v2/overview' },
+      { title: 'API v3: indexed database', href: '/api/v3/overview' },
+      { title: 'Streaming API: status updates', href: '/api/streaming/overview' },
+      { title: 'Get API key', href: '/api/get-api-key' },
+    ],
+  },
+  {
+    title: 'Smart contracts',
+    description: 'Build, debug, and deploy smart contracts.',
+    icon: FileCodeCorner,
+    links: [
+      { title: 'Overview', href: '/contracts/overview' },
+      { title: 'Acton toolchain', href: '/contracts/acton', external: true },
+      { title: 'JetBrains IDE plugin', href: '/contracts/ide/jetbrains' },
+      { title: 'VS Code extension', href: '/contracts/ide/vscode' },
+      { title: 'Standard contracts', href: '/contracts/standard/overview' },
+    ],
+  },
+  {
+    title: 'Tolk language',
+    description: 'Master the language of TON smart contracts.',
+    icon: MessageCircleCode,
+    links: [
+      { title: 'Overview', href: '/tolk/overview' },
+      { title: 'Basic syntax', href: '/tolk/basic-syntax' },
+      { title: 'Idioms and conventions', href: '/tolk/idioms-conventions' },
+      { title: 'Type system', href: '/tolk/types/list-of-types' },
+      {
+        title: 'Standard library reference',
+        href: 'https://ton-blockchain.github.io/acton/docs/tolk_standard_library/overview',
+        external: true,
+      },
     ],
   },
   {
     title: 'TVM: TON Virtual Machine',
     description: 'Skim the detailed reference of the smart-contract runtime.',
-    icon: Brain,
+    icon: Fuel,
     links: [
       { title: 'Overview', href: '/tvm/overview' },
       { title: 'Exit codes', href: '/tvm/exit-codes' },
@@ -97,31 +145,13 @@ const paths: Path[] = [
     ],
   },
   {
-    title: 'Nodes',
-    description: 'Run and manage TON blockchain nodes.',
-    icon: Server,
-    links: [
-      { title: 'Nodes overview', href: '/ecosystem/nodes/overview' },
-      { title: 'C++ node setup', href: '/ecosystem/nodes/cpp/setup-mytonctrl' },
-      {
-        title: 'Run a validator node',
-        href: '/ecosystem/nodes/cpp/run-validator',
-      },
-      {
-        title: 'Run a liteserver node',
-        href: '/ecosystem/nodes/cpp/run-liteserver',
-      },
-      { title: 'Run an archive liteserver', href: '/ecosystem/nodes/cpp/run-archive-liteserver' },
-    ],
-  },
-  {
     title: 'Blockchain foundations',
     description: 'Learn all the ins and outs of the TON blockchain.',
     icon: BrickWall,
     links: [
+      { title: 'Overview', href: '/foundations/overview' },
       { title: 'Addresses', href: '/foundations/addresses/overview' },
       { title: 'Transaction fees', href: '/foundations/fees' },
-      { title: 'Limits', href: '/foundations/limits' },
       { title: 'Config', href: '/foundations/config' },
       { title: 'TL-B', href: '/foundations/tlb/overview' },
     ],
@@ -143,9 +173,15 @@ const support: Support[] = [
     icon: LifeBuoy,
   },
   {
-    title: 'Telegram',
+    title: 'Telegram folder',
     description: 'Add the folder with many developer chats.',
     href: 'https://t.me/addlist/1r5Vcb8eljk5Yzcy',
+    icon: Send,
+  },
+  {
+    title: 'TON Dev chat',
+    description: 'Join the discussion in the main TON development chat on Telegram.',
+    href: 'https://t.me/tondev_eng',
     icon: Send,
   },
 ];
@@ -250,7 +286,7 @@ export default function HomePage() {
             to search the docs. Still stuck? Discuss issues and best practices with other community
             members.
           </p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             {support.map(({ title, description, href, icon: Icon }) => {
               const external = isExternal(href);
               const className =
