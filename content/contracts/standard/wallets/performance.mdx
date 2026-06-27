@@ -6,7 +6,7 @@ full: true
 
 The following benchmarks compare gas consumption and throughput across different wallet versions when sending multiple messages. These measurements help determine the most cost-effective wallet for specific use cases.
 
-The benchmarks measure the gas consumed by the wallet contract itself, including `fwd_fee` and gas costs. The final transaction fee may vary depending on the destination address and message processing requirements. Each benchmark includes theoretical and real-time measurements: theoretically, messages can be sent every 3-5 seconds when a new block appears, but in practice, messages can be sent every 12-14 seconds due to network conditions and block confirmation times.
+The benchmarks measure the gas consumed by the wallet contract itself, including `fwd_fee` and gas costs. The final transaction fee may vary depending on the destination address and message processing requirements. Each benchmark includes theoretical and real-time measurements: theoretically, messages can be sent every 1-3 seconds when a new block appears, but in practice, messages can be sent every 12-14 seconds due to network conditions and block confirmation times.
 
 <Callout type="note">
   The complete benchmark source code and test suite are available in the [`docs-examples` GitHub repository](https://github.com/ton-org/docs-examples/tree/9-wallet-bench/standard/wallets/comparison).
