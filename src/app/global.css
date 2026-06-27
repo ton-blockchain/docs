@@ -72,6 +72,11 @@ html > body[data-scroll-locked] {
   white-space: nowrap;
 } */
 
+/* disable smaller title spans on mobile */
+p > span.style-tab-normal {
+  display: none;
+}
+
 /* use smaller title spans by default */
 #nd-docs-layout > .items-end > a > span.style-tab-normal {
   display: inline-block;
