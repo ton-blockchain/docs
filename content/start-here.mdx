@@ -78,15 +78,11 @@ Over its lifetime, an account changes its [status](/foundations/status) among fo
 
 The _code_ on an active account is a smart contract. The term _contract_ is often used for an account that holds the code.
 
-<div
-  style={{ display: "flex", justifyContent: "center" }}
->
-  <Image
-    src="/images/states.png"
-    darkSrc="/images/states-dark.png"
-    alt="Statuses overview"
-  />
-</div>
+<Image
+  src="/images/states.png"
+  darkSrc="/images/states-dark.png"
+  alt="Statuses overview"
+/>
 
 ### Account addresses
 
@@ -100,15 +96,15 @@ Addresses specify where [messages](/foundations/messages/overview) should be del
 - [incoming external](/foundations/messages/external-in) messages are sent from code outside the blockchain to a contract;
 - [outgoing external](/foundations/messages/external-out) messages are broadcast to the external network; somewhat similar to adding them into the globally available list of all outgoing external messages that ever happened.
 
-Every internal message should have some Gram attached to it so that it can pay for the cost of handling it. External messages cannot have Gram attached to them because they spend some of their time outside the blockchain, and only the blockchain can prove the transfer of Gram is correct.
+Every internal message should have some Gram attached to it so that it can pay for the cost of handling it. External messages cannot have Gram attached to them because they come from or go to "outside" the blockchain, where Gram does not exist.
 
 Incoming external messages come from an external address, and outgoing external messages go to an external address.
 
-The _state_ of the account changes only when it handles messages. Messages also change the account's balance. Usually, to have a state and a balance, and to handle messages, the account must be `active`.
-
 ## `StateInit`
 
-A message might also be a [deploy message](/foundations/messages/deploy) if it has a `StateInit` structure attached with its initial code and data. When such a message is sent, the hash of `StateInit` must match the destination address. If it does, the code and data are stored in the account at that address, and the account becomes active. Both the code and data stored in the account may change in the future, but its address will remain the same as when it was originally deployed.
+The _state_ of the account changes only when it handles messages. Messages also change the account's balance. An account is `active` when it has a state and a balance.
+
+A message might also be a [deploy message](/foundations/messages/deploy) if it has a `StateInit` structure attached with its initial code and data. When such a message is sent to a destination address [derived](/foundations/addresses/derive) from the `StateInit` hash, the code and data are stored in the account at that address, and the account becomes active. Both the code and data stored in the account may change in the future, but its address will remain the same as when it was originally deployed.
 
 ## Transactions
 
@@ -138,7 +134,7 @@ The most common reason a code is executed is when some account has received a me
 
 ### Asynchronous execution
 
-When some interaction with the blockchain involves multiple contracts, their code is not executed in the same block. Contracts have to exchange messages with each other, and two such concurrent traces may interleave their messages. This fact is usually referred to as "_asynchronous_ message handling." This feature of TON allows a limit to be placed on the maximum complexity of atomic computation and aids its scalability, but it is important to keep it in mind because it might create [race conditions](/contracts/techniques/security#race-condition-of-messages).
+When some interaction with the blockchain involves multiple contracts, their code may not be executed in the same block. Contracts have to exchange messages with each other, and two such concurrent traces may interleave their messages. This fact is usually referred to as "_asynchronous_ message handling." This feature of TON allows a limit to be placed on the maximum complexity of atomic computation and aids its scalability, but it is important to keep it in mind because it might create [race conditions](/contracts/techniques/security#race-condition-of-messages).
 
 ## Languages
 
@@ -171,7 +167,7 @@ Private and public keys are generated in a program or service outside the blockc
 
 Before the code of the wallet can be deployed on an account with an incoming external message, some other account has to transfer Gram to the wallet account. As external messages cannot have any Gram attached to them, if no funds are in the account when it handles an external message, it cannot pay for the message that deploys a wallet. The transfer of Gram to a wallet account usually comes from an exchange or another user. In testnet, there is [a bot](/onboarding/wallet-apps/get-coins) that sends test coins to an account for free.
 
-Usually, a transfer message is sent without an internal message in its payload and only instructs the wallet to transfer some Gram to a destination address. This is the reason this type of smart contract is called a wallet.
+Usually, a transfer message is sent without an additional payload and only instructs the wallet to transfer some Gram to a destination address. This is the reason this type of smart contract is called a wallet.
 
 An internal message might be a request to some other contract or even a deploy message that deploys code on other accounts. In this way, a wallet acts as a proxy between a user (or an external service) and the rest of the blockchain.
 
@@ -197,8 +193,8 @@ An [_explorer_](/onboarding/explorers/overview) is a type of web app that displa
 
 To interact with wallets, Jettons, and other contracts, data has to be sent through an ADNL or HTTP API into the network. There are several ways to connect:
 
-- directly call the API, or
-- use [an SDK](/applications/sdks) that simplifies working with an API by wrapping its methods in a more user-friendly interface; the most popular TypeScript SDK for this is `@ton/ton`.
+- directly call the [API](/api/overview), or
+- use [an SDK](/applications/sdks) that simplifies working with an API by wrapping its methods in a more user-friendly interface; the most popular TypeScript SDK for this is [`@ton/ton`](https://github.com/ton-org/ton).
 
 ## TON Connect
 
@@ -213,7 +209,7 @@ For example, Telegram apps use TON Connect to access a wallet that is integrated
 
 All data on TON is stored as trees of [cells](/foundations/serialization/cells): the state of contracts, their code, and messages. Each cell stores up to 1023 bits of data and can have up to 4 _refs_ to other cells. Each cell has a hash computed from its bits and refs. Because the hash of a cell that directly or indirectly references itself would require knowing the same hash, creating cyclic data structures is impossible.
 
-Standard serialization of such a data structure into a single binary string is the [bag of cells](/foundations/serialization/boc) (_BoC_). Compilers of smart-contract programming languages produce a BoC with code. When there is a need to store cells in a file or send them over the network, they are usually serialized into a BoC.
+Standard serialization of such a data structure into a single binary string is the [bag of cells](/foundations/serialization/boc) (_BoC_). When cells need to be stored in a file or sent over the network, they are commonly serialized into a BoC. Smart contract code is also compiled into BoC files.
 
 ### Binary representation
 

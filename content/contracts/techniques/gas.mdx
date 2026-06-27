@@ -71,7 +71,7 @@ B,Remaining value on B,70
 
 ### Receiver requirements
 
-Receiver contracts must verify that the attached Gram is sufficient to cover fees for all contracts in the subsequent trace. If an entry contract accepts an external message, it must guarantee that the message will not later fail due to insufficient attached Gram. "Accept" doesn't mean the call to `accept_message()`, but semantic acceptance, i.e., no throw and no asset returns.
+Receiver contracts must verify that the attached Gram is sufficient to cover fees for all contracts in the subsequent trace. If an entry contract accepts an external message, it must guarantee that the message will not later fail due to insufficient attached Gram. "Accept" doesn't mean the call to `acceptExternalMessage()`, but semantic acceptance, i.e., no throw and no asset returns.
 
 The reason for this requirement is that reverting the contract system state is usually not possible, because the Gram is already spent.
 
