@@ -1,134 +1,56 @@
 ---
 title: "Blockchain foundations overview"
 sidebarTitle: "Overview"
+description: "Core TON concepts, data formats, transaction mechanics, network internals, and reference materials"
 ---
 
-Comprehensive descriptions of foundational TON topics.
+## Data and serialization
 
-<Cards>
-  <Card
-    title="TL-B: Type Language - Binary"
-    href="/foundations/tlb/overview"
-  >
-    How TON data structures are defined and serialized.
-  </Card>
+TON stores data as graphs of cells and serializes those graphs for messages, blocks, account state, proofs, and storage.
 
-  <Card
-    title="Cells"
-    href="/foundations/serialization/cells"
-  >
-    Basic storage units used by TVM, persistent storage, and smart contract code.
-  </Card>
+- [TL-B](/foundations/tlb/overview): how TON data structures are defined and serialized.
+- [Cells](/foundations/serialization/cells): basic storage units used by TVM, persistent storage, and smart contract code.
+- [Library references](/foundations/serialization/library): cells that point to published library cells by hash.
+- [Merkle proofs](/foundations/serialization/merkle): exotic cells that prove selected data belongs to a larger cell tree.
+- [Merkle updates](/foundations/serialization/merkle-update): exotic cells that describe a verified transition between two cell trees.
+- [Pruned branches](/foundations/serialization/pruned): compact replacements for deleted subtrees.
+- [Bag of Cells](/foundations/serialization/boc): the standard format for transferring or storing cell graphs.
 
-  <Card
-    title="Addresses"
-    href="/foundations/addresses/overview"
-  >
-    Addresses identify accounts and let smart contracts exchange messages.
-  </Card>
+Read about using Merkle cells for the verification of selected blockchain data in smart contracts and off-chain software: [Proofs overview](/foundations/proofs/overview).
 
-  <Card
-    title="Messages and transactions"
-    href="/foundations/messages/overview"
-  >
-    Contract execution triggers and records of the resulting account state changes.
-  </Card>
+## Accounts and transactions
 
-  <Card
-    title="Actions"
-    href="/foundations/actions/overview"
-  >
-    Smart contracts queue actions to be performed during the action phase.
-  </Card>
+What happens to accounts before, during, and after transaction execution.
 
-  <Card
-    title="Consensus"
-    href="/foundations/consensus/catchain-overview"
-  >
-    How validators exchange dependent messages and reach consensus.
-  </Card>
+- [Addresses](/foundations/addresses/overview): how accounts are identified and how smart contracts exchange messages.
+- [Messages and transactions](/foundations/messages/overview): contract execution triggers and records of the resulting account state changes.
+- [Actions](/foundations/actions/overview): how smart contracts queue operations to be performed during the action phase.
+- [Account status](/foundations/status): whether an account can store balance, hold code, or process transactions.
+- [Execution phases](/foundations/phases): the storage, credit, compute, action, and bounce phases that can make up a transaction.
+- [Transaction fees](/foundations/fees): storage, compute, import, forward, and action costs during transaction processing.
+- [Traces](/foundations/traces): causally related messages and transactions grouped into one operation flow.
 
-  <Card
-    title="Account status"
-    href="/foundations/status"
-  >
-    Whether an account can store balance, hold code, or process transactions.
-  </Card>
+## Network and configuration
 
-  <Card
-    title="Execution phases"
-    href="/foundations/phases"
-  >
-    Each transaction consists of up to five execution phases.
-  </Card>
+How TON scales, enforces limits, and stores network parameters.
 
-  <Card
-    title="Transaction fees"
-    href="/foundations/fees"
-  >
-    Storage, compute, import, forward, and action costs during transaction processing.
-  </Card>
+- [Blockchain sharding](/foundations/shards): how workchains split into shardchains that process account activity in parallel.
+- [Blockchain limits](/foundations/limits): maximum sizes, depths, gas values, and other network constraints.
+- [Blockchain configuration](/foundations/config): values that influence validator behavior, fees, capabilities, and system contracts.
+- [Web3 services](/foundations/web3/overview): TON Network, TON Storage, TON Proxy, TON DNS, and TON Sites.
+- [System contracts](/foundations/system): contracts that manage validator elections and blockchain configuration.
+- [Precompiled contracts](/foundations/precompiled): contracts with native implementations in validator nodes.
 
-  <Card
-    title="Traces"
-    href="/foundations/traces"
-  >
-    Group causally related messages and transactions into one operation flow.
-  </Card>
+## Consensus
 
-  <Card
-    title="Blockchain sharding"
-    href="/foundations/shards"
-  >
-    Workchains split into shardchains that process account activity in parallel.
-  </Card>
+How validators exchange dependent messages and prepare data for consensus: [Catchain consensus](/foundations/consensus/catchain-overview).
 
-  <Card
-    title="Blockchain limits"
-    href="/foundations/limits"
-  >
-    Network limits define maximum sizes, depths, gas values, and other constraints.
-  </Card>
+## Whitepapers
 
-  <Card
-    title="Blockchain configuration"
-    href="/foundations/config"
-  >
-    Values that influence validator behavior, fees, capabilities, etc.
-  </Card>
+Original and new TON whitepapers:
 
-  <Card
-    title="Web3 services"
-    href="/foundations/web3/overview"
-  >
-    TON Network, TON Storage, TON Proxy, TON DNS, and TON Payments.
-  </Card>
-
-  <Card
-    title="Merkle proofs"
-    href="/foundations/proofs/overview"
-  >
-    Verification of selected blockchain data in smart contracts and off-chain software.
-  </Card>
-
-  <Card
-    title="System contracts"
-    href="/foundations/system"
-  >
-    Contracts that manage validator elections and blockchain configuration.
-  </Card>
-
-  <Card
-    title="Precompiled contracts"
-    href="/foundations/precompiled"
-  >
-    Contracts with a native implementation in the validator node.
-  </Card>
-
-  <Card
-    title="Whitepapers"
-    href="/foundations/whitepapers/overview"
-  >
-    Original and new TON whitepapers.
-  </Card>
-</Cards>
+- [Overview](/foundations/whitepapers/overview)
+- [The Open Network (TON)](/foundations/whitepapers/ton)
+- [TON Virtual Machine (TON)](/foundations/whitepapers/tvm)
+- [TON Blockchain](/foundations/whitepapers/tblkch)
+- [Catchain consensus (legacy)](/foundations/whitepapers/catchain) — previous version of the consensus mechanism on TON
