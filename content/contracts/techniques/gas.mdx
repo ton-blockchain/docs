@@ -302,6 +302,10 @@ The order of phases [depends](/foundations/phases) on the `bounce` flag of an in
 
 It is impossible to know in advance what the storage fee due will be on the contract, so a threshold must be selected depending on the network configuration. It is a good practice to use [`freeze_due_limit`](/foundations/config#param-20-and-21-gas-prices) as the threshold. Otherwise, the contract likely is already frozen and a transaction chain is likely to fail anyway.
 
+<Callout type="tip">
+  Use [TON Unfreezer](https://unfreezer.ton.org/) to revive frozen contracts.
+</Callout>
+
 This pattern can be generalized to both bounceable and unbounceable messages with `contract.getStorageDuePayment()`, which returns [`storage_fees_due`](/foundations/phases#storage-phase).
 
 This approach affects code of internal contracts.
