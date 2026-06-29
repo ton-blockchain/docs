@@ -8,7 +8,7 @@ export const docsRoute = `/`;
 export const docsImageRoute = `/og`;
 export const docsContentRoute = `/llms`;
 export const gitConfig = {
-  user: process.env.NEXT_GIT_USER ?? 'ton-org',
+  user: process.env.NEXT_GIT_USER ?? 'ton-blockchain',
   repo: process.env.NEXT_GIT_REPO ?? 'docs',
   branch: process.env.NEXT_GIT_BRANCH ?? 'main',
 };
