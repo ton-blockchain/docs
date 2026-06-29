@@ -23,7 +23,7 @@ A single `AppKit` instance holds configured **networks** (mainnet, testnet, and 
 
 ## Configuration notes
 
-Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Get started → Add wallet connectors](/applications/appkit/get-started/connectors) for the constructor walkthrough.
+Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Manual setup → Add wallet connectors](/applications/appkit/get-started/connectors) for the constructor walkthrough.
 
 <Callout>
   If `networks` is omitted entirely, AppKit constructs a **mainnet-only** `ApiClientToncenter` with no API key. Fine for quick prototyping; expect rate limits on real workloads. Testnet apps must declare `networks` explicitly.
