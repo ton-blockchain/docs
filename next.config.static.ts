@@ -58,7 +58,7 @@ const config: NextConfig = {
           : 'unknown',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
     NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
-    NEXT_GIT_USER: gitRepoMatch?.at(1) ?? 'ton-org',
+    NEXT_GIT_USER: gitRepoMatch?.at(1) ?? 'ton-blockchain',
     NEXT_GIT_REPO: gitRepoMatch?.at(2) ?? 'docs',
     NEXT_GIT_BRANCH: 'main',
   },
