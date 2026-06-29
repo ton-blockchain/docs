@@ -680,7 +680,7 @@ protocol concepts to their code counterparts:
 | Slot                                                    | `CandidateId::slot` (`types.h`); per-slot state in `ConsensusState::slots_` (`simplex/state.h`)                                               |
 | $L$                                                     | `slots_per_leader_window` in `NewConsensusConfig::Simplex`                                                                                    |
 | Leader rotation                                         | `SimplexCollatorSchedule::expected_collator_for`: $\lfloor s/L \rfloor \bmod n$ (`simplex/bus.cpp`)                                           |
-| Candidate                                               | `struct Candidate` (`types.h`): id, parent, block data, leader signature                                                                      |
+| Candidate                                               | `struct Candidate` (`types.h`): ID, parent, block data, leader signature                                                                      |
 | $\mathsf{Notar}$/$\mathsf{Skip}$/$\mathsf{Final}$ votes | `NotarizeVote`, `SkipVote`, `FinalizeVote` (`simplex/votes.h`)                                                                                |
 | Certificates                                            | `Certificate<T>` template (`simplex/certificate.h`); aliases `NotarCert`, `SkipCert`, `FinalCert`                                             |
 | Frontier $F_v$                                          | `PoolImpl::now_` (`simplex/pool.cpp`): smallest slot not yet notarized or skipped                                                             |
