@@ -1,7 +1,12 @@
 ---
-title: "Catchain overview"
+title: "Catchain 1.0 overview"
 sidebarTitle: "Overview"
+tag: "legacy"
 ---
+
+<Callout type="note">
+  This page describes the legacy Catchain 1.0 consensus protocol. For the modern consensus version, read the whitepaper: [Catchain 2.0: Simplex Consensus in TON](/foundations/whitepapers/simplex).
+</Callout>
 
 Catchain is a communication protocol between actors. It does not execute the consensus algorithm itself but prepares the data required for the decision-making of a higher-level component: [Block Consensus Protocol (BCP)](/foundations/whitepapers/catchain#3-block-consensus-protocol). The main purpose of the protocol is to allow validators to send messages that explicitly depend on other messages, possibly produced by different actors. Dependencies are encoded in such a way that a node receiving a message can download the referenced messages and verify their validity.
 
@@ -29,7 +34,7 @@ At the logical level, the protocol provides causality preservation when sending 
 The protocol implements a [CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type) over the set of messages known to each node and achieves [eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency). As a synchronization mechanism, it uses the idea similar to [vector clock](https://en.wikipedia.org/wiki/Vector_clock) with modifications that preserve eventual consistency even when some nodes are Byzantine.
 
 <Callout type="note">
-  Catchain 1.0 works over ADNL protocol to maintain message integrity, at-least-once delivery guarantees, and message authenticity.
+  Catchain 1.0 works over the ADNL protocol to maintain message integrity, at-least-once delivery guarantees, and message authenticity.
 </Callout>
 
 ## Choosing neighbor nodes
