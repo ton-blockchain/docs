@@ -100,7 +100,7 @@ jobs:
 
   deploy:
     name: "Docs deploy"
-    if: github.event_name != 'pull_request' && (github.ref_name == 'pages' || github.ref_name == 'main') && github.repository == 'ton-org/docs'
+    if: github.event_name != 'pull_request' && (github.ref_name == 'pages' || github.ref_name == 'main') && github.repository == 'ton-blockchain/docs'
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-deploy
