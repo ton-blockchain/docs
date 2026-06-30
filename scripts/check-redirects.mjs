@@ -142,7 +142,7 @@ const checkExist = (config) => {
   const pathIsSpecial = (path) => {
     // Links
     if (path.startsWith('http')) {
-      if (path.includes('github.com/ton-org/docs/issues')) {
+      if (path.includes('github.com/ton-blockchain/docs/issues')) {
         specialDestinationsExist.issues = true;
       } else if (
         path.startsWith('https://github.com/') ||
