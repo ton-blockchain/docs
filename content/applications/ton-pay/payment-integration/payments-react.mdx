@@ -3,7 +3,7 @@ title: "How to send payments using TON Pay React hook"
 sidebarTitle: "Send payments React"
 ---
 
-<Callout type="note">
+<Callout type="caution">
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
@@ -183,7 +183,8 @@ app.post("/api/create-payment", async (req, res) => {
       reference,
       bodyBase64Hash,
       amount,
-      asset: "GRAMGRAMGRAMGRAM      status: "pending",
+      asset: "TON",
+      status: "pending",
       senderAddr,
     });
 

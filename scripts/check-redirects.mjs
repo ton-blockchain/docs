@@ -92,15 +92,17 @@ const checkUnique = (config) => {
       ),
     );
   }
-  const noExplicitPermanent = redirects.filter((it) => it.permanent === undefined || typeof it.permanent !== 'boolean');
+  const noExplicitPermanent = redirects.filter(
+    (it) => it.permanent === undefined || typeof it.permanent !== 'boolean',
+  );
   if (noExplicitPermanent.length !== 0) {
     errors.push(
       composeErrorList(
         'Found sources with unset `permanent` field (neither `true` nor `false`):',
-        noExplicitPermanent.map(it => it.source),
-        'All redirects must set the `permanent` field to a boolean value!'
-      )
-    )
+        noExplicitPermanent.map((it) => it.source),
+        'All redirects must set the `permanent` field to a boolean value!',
+      ),
+    );
   }
   // If there are any errors
   if (errors.length !== 0) {

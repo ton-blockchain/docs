@@ -53,7 +53,7 @@ const paths: Path[] = [
   },
   {
     title: 'Applications',
-    description: 'Everything one needs to build dApps on TON.',
+    description: 'Build dApps, wallets, and payment services on TON.',
     icon: Blocks,
     links: [
       {
@@ -61,7 +61,7 @@ const paths: Path[] = [
         href: '/applications/appkit/overview',
       },
       {
-        title: 'Integrate payments with TON Pay',
+        title: 'Integrate invoice payments with TON Pay',
         href: '/applications/ton-pay/overview',
       },
       {
@@ -69,8 +69,8 @@ const paths: Path[] = [
         href: '/applications/walletkit/overview',
       },
       {
-        title: 'Create tools using SDKs',
-        href: '/applications/sdks',
+        title: 'Process Gram and USDT deposits and withdrawals',
+        href: '/applications/payments/setup',
       },
     ],
   },

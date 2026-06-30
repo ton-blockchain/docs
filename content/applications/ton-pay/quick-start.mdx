@@ -3,7 +3,7 @@ title: "Quick start with TON Pay"
 sidebarTitle: "Quick start"
 ---
 
-<Callout type="note">
+<Callout type="caution">
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
@@ -210,7 +210,7 @@ Before installing and setting up the TON Pay SDK, the application must provide a
     1. Call `getTonPayTransferByReference(reference, options)` with the same `chain` and optional `apiKey` used during transfer creation.
     1. While the SDK returns `status: "pending"`, keep the UI in a loading or "confirming payment" state.
     1. When the status becomes `success`, show the confirmation UI and persist any result fields the application needs, such as `txHash` or `traceId`.
-    1. When the status becomes `error`, show the failure state and capture `errorCode` or `errorMessage` for diagnostics.
+    1. When the status becomes `failed`, show the failure state and capture `errorCode` or `errorMessage` for diagnostics.
 
     In a client-only flow, persist the `reference` after `pay(createMessage)` resolves and returns it. This is enough to resume status checks after a reload during polling, but it does not cover the period while the wallet approval screen is open. To avoid that gap, create the transfer on the server and persist the `reference` before opening the wallet.
 
