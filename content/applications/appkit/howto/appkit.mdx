@@ -3,6 +3,10 @@ title: "How to set up AppKit"
 sidebarTitle: "Set up AppKit"
 ---
 
+<Callout type="note">
+  Starting from scratch? [Quick start](/applications/appkit/get-started/quick-start) scaffolds a working app in one command. Come back to this page to understand how the generated configuration works.
+</Callout>
+
 TON Connect's **AppKit** is an open-source SDK that integrates web2 and web3 applications with TON. It enables wallet connection, authorization, balance tracking, asset transfers, and data signing.
 
 The framework-independent core lives in `@ton/appkit`. React bindings live in `@ton/appkit-react` and wrap the same actions with hooks.
@@ -23,7 +27,7 @@ A single `AppKit` instance holds configured **networks** (mainnet, testnet, and 
 
 ## Configuration notes
 
-Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Manual setup → Add wallet connectors](/applications/appkit/get-started/connectors) for the constructor walkthrough.
+Create the `AppKit` instance once with an `AppKitConfig`. All fields are optional; pass only the configuration your app needs. See [Get started → Add wallet connectors](/applications/appkit/get-started/connectors) for the constructor walkthrough.
 
 <Callout>
   If `networks` is omitted entirely, AppKit constructs a **mainnet-only** `ApiClientToncenter` with no API key. Fine for quick prototyping; expect rate limits on real workloads. Testnet apps must declare `networks` explicitly.
