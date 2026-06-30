@@ -16,23 +16,21 @@ Scaffold a complete AppKit app with one command. The result is a Vite + React + 
 To create a project, run one of the following commands:
 
 <CodeGroup>
+  ```shell npm
+  npm create ton-appkit
+  ```
 
-```shell npm
-npm create ton-appkit
-```
+  ```shell pnpm
+  pnpm create ton-appkit
+  ```
 
-```shell pnpm
-pnpm create ton-appkit
-```
+  ```shell yarn
+  yarn create ton-appkit
+  ```
 
-```shell yarn
-yarn create ton-appkit
-```
-
-```shell bun
-bunx create-ton-appkit
-```
-
+  ```shell bun
+  bunx create-ton-appkit
+  ```
 </CodeGroup>
 
 The CLI asks for the following details:
@@ -52,12 +50,12 @@ You can pass flags to set specific values without going through the prompts:
 npm create ton-appkit project-name -- --app-url https://example.com
 ```
 
-| Flag | Description |
-| --- | --- |
-| `[project-name]` | Directory name. Defaults to `my-ton-app`. |
-| `--template`, `-t` | Template to use. Only `react` is available. |
-| `--app-url` | App URL written into the TonConnect manifest. |
-| `--yes`, `-y` | Accept all defaults without prompts. |
+| Flag               | Description                                   |
+| ------------------ | --------------------------------------------- |
+| `[project-name]`   | Directory name. Defaults to `my-ton-app`.     |
+| `--template`, `-t` | Template to use. Only `react` is available.   |
+| `--app-url`        | App URL written into the TonConnect manifest. |
+| `--yes`, `-y`      | Accept all defaults without prompts.          |
 
 ## 2. Install dependencies
 
@@ -107,7 +105,6 @@ The generated project includes the following:
 <Callout type="note">
   To test wallet connection with a real wallet, deploy the app and update the app URL in `tonconnect-manifest.json` first.
 </Callout>
-
 
 ## Next steps
 
