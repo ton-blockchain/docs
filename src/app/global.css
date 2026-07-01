@@ -252,12 +252,29 @@ p > span.style-tab-normal {
   margin-top: calc(var(--spacing) * 6);
 } */
 
-/* Removing background blur of the ToC popover */
+/* Remove background blur of the mobile header */
+#nd-docs-layout > header#nd-subnav {
+  --blur-sm: 0;
+  --tw-backdrop-blur: initial;
+  backdrop-filter: initial;
+  background-color: var(--color-fd-background);
+  /* does it target even */
+}
+
+/* Remove background blur of the ToC popover */
 #nd-docs-layout > div[data-toc-popover] > header {
   --blur-sm: 0;
   --tw-backdrop-blur: initial;
   backdrop-filter: initial;
   background-color: var(--color-fd-background);
+}
+
+/* Remove background blur of a Radix UI pop up */
+body > div[data-radix-popper-content-wrapper] > div[role='dialog'] {
+  --blur-sm: 0;
+  --tw-backdrop-blur: initial;
+  backdrop-filter: initial;
+  background-color: var(--color-fd-popover);
 }
 
 /* Make ToC fit its contents width */

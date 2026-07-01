@@ -1,0 +1,375 @@
+---
+title: "How to set up invoice Gram and USDT payments with TON Pay"
+sidebarTitle: "Invoices"
+---
+
+<Callout type="caution">
+  This guide implements invoice deposits. For static per-user deposit addresses, use [direct payment processing](/applications/payments/overview) **instead** of TON Pay.
+</Callout>
+
+<Callout type="caution">
+  TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
+</Callout>
+
+Add mainnet invoice-based Gram (`GRAM`) and USDT on TON (`USDT` jetton) deposits and withdrawals to a dApp or service with the smallest TON-specific surface:
+
+- deposits: TON Pay creates a user-signed transfer and sends settlement webhooks;
+- withdrawals: an existing custody, wallet, or payout service signs outbound transfers.
+
+This flow does not require parsing cells, messages, or jetton transfer bodies in the service backend.
+
+<Callout
+  type="danger"
+  title="Funds at risk"
+>
+  Mainnet transfers are irreversible. Validate the same integration on testnet before moving production funds. On mainnet, start with small transfers, settle each transaction hash once, and require manual review for amount, asset, sender, or recipient mismatches.
+</Callout>
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/) 20 or later LTS.
+- A TON Pay merchant API key.
+- A TON Pay webhook secret.
+- A mainnet receiving wallet controlled by the service.
+- A withdrawal signer behind an internal API, custody provider, or [Highload Wallet v3](/contracts/standard/wallets/highload/overview).
+
+## Install the SDK \[step]
+
+```bash
+npm install @ton-pay/api
+```
+
+## Configure assets \[step]
+
+Create one shared asset configuration and reuse it in deposit, webhook, and withdrawal code.
+
+```ts
+export const CHAIN = "mainnet" as const;
+
+export const ASSETS = {
+  GRAM: {
+    code: "GRAM",
+    tonPayAsset: "TON",
+    decimals: 9,
+  },
+  USDT: {
+    code: "USDT",
+    tonPayAsset: "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs",
+    decimals: 6,
+  },
+} as const;
+```
+
+## Add ledger tables \[step]
+
+Use the existing ledger if it already has equivalent fields.
+
+```sql title="Example database tables"
+create table ton_deposits (
+  id text primary key,
+  user_id text not null,
+  asset text not null,
+  amount text not null,
+  sender_addr text not null,
+  recipient_addr text not null,
+  reference text not null unique,
+  body_base64_hash text not null unique,
+  tx_hash text unique,
+  status text not null,
+  created_at timestamptz not null default now(),
+  settled_at timestamptz
+);
+
+create table ton_withdrawals (
+  id text primary key,
+  user_id text not null,
+  asset text not null,
+  amount text not null,
+  recipient_addr text not null,
+  tx_hash text unique,
+  status text not null,
+  created_at timestamptz not null default now(),
+  settled_at timestamptz
+);
+```
+
+## Create deposit invoices \[step]
+
+Expose an authenticated endpoint that creates a TON Pay transfer. The frontend passes the connected wallet address as `senderAddr` and sends `message` through TON Connect.
+
+```ts
+// NOTE: Not runnable — replace db.* calls with the actual database layer
+import { createTonPayTransfer } from "@ton-pay/api";
+import { ASSETS, CHAIN } from "./ton-assets";
+
+// NOTE: Replace with the TON Pay merchant API key
+const TONPAY_API_KEY = "<TONPAY_API_KEY>";
+
+// NOTE: Replace with the receiving wallet on TON mainnet
+const SERVICE_WALLET_ADDR = "<SERVICE_WALLET_ADDR>";
+
+app.post("/api/ton/deposits", requireAuth, async (req, res) => {
+  const { userId } = req.session;
+  const { assetCode, amount, senderAddr } = req.body;
+  const asset = ASSETS[assetCode as keyof typeof ASSETS];
+
+  if (!asset) {
+    return res.status(400).json({ error: "Unsupported asset" });
+  }
+
+  const depositId = crypto.randomUUID();
+  const transfer = await createTonPayTransfer(
+    {
+      amount: Number(amount),
+      asset: asset.tonPayAsset,
+      recipientAddr: SERVICE_WALLET_ADDR,
+      senderAddr,
+      commentToSender: `Deposit ${depositId}`,
+      commentToRecipient: depositId,
+    },
+    {
+      chain: CHAIN,
+      apiKey: TONPAY_API_KEY,
+    }
+  );
+
+  // NOTE: Replace with the actual database layer
+  await db.tonDeposits.insert({
+    id: depositId,
+    userId,
+    asset: asset.code,
+    amount: String(amount),
+    senderAddr,
+    recipientAddr: SERVICE_WALLET_ADDR,
+    reference: transfer.reference,
+    bodyBase64Hash: transfer.bodyBase64Hash,
+    status: "pending",
+  });
+
+  res.json({
+    depositId,
+    reference: transfer.reference,
+    message: transfer.message,
+  });
+});
+```
+
+## Send the deposit from the client \[step]
+
+Use the returned `message` as the only TON-specific object in the client. TON Connect handles wallet selection and signing.
+
+```ts
+// NOTE: Not runnable — adapt `tonConnectUI` to the frontend setup
+async function startTonDeposit(params: {
+  assetCode: "GRAM" | "USDT";
+  amount: string;
+  senderAddr: string;
+}) {
+  const response = await fetch("/api/ton/deposits", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+
+  const { depositId, message } = await response.json();
+
+  await tonConnectUI.sendTransaction({
+    validUntil: Math.floor(Date.now() / 1000) + 300,
+    messages: [message],
+  });
+
+  return depositId;
+}
+```
+
+## Settle deposit webhooks \[step]
+
+Configure TON Pay to call this endpoint after transfer completion. Credit the user ledger only after all checks pass.
+
+```ts
+// NOTE: Not runnable — replace `creditUserOnce` with the actual ledger mutation.
+import { verifySignature, type WebhookPayload } from "@ton-pay/api";
+import { ASSETS } from "./ton-assets";
+
+// NOTE: Replace it with the secret used to verify `X-TonPay-Signature`.
+const TONPAY_WEBHOOK_SECRET = "<TONPAY_WEBHOOK_SECRET>";
+
+app.post(
+  "/webhooks/tonpay",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const signature = req.header("X-TonPay-Signature") ?? "";
+    const rawBody = req.body.toString("utf8");
+
+    if (!verifySignature(rawBody, signature, TONPAY_WEBHOOK_SECRET)) {
+      return res.status(401).json({ error: "Invalid signature" });
+    }
+
+    const payload = JSON.parse(rawBody) as WebhookPayload;
+
+    if (payload.event !== "transfer.completed") {
+      return res.status(200).json({ ignored: true });
+    }
+
+    const transfer = payload.data;
+    const deposit = await db.tonDeposits.findByReference(transfer.reference);
+
+    if (!deposit || transfer.status !== "success") {
+      return res.status(200).json({ ignored: true });
+    }
+
+    const asset = ASSETS[deposit.asset as keyof typeof ASSETS];
+    const sameAsset = transfer.asset === asset.tonPayAsset;
+    const sameAmount = transfer.amount === deposit.amount;
+    const sameSender = transfer.senderAddr === deposit.senderAddr;
+    const sameRecipient = transfer.recipientAddr === deposit.recipientAddr;
+
+    if (!sameAsset || !sameAmount || !sameSender || !sameRecipient) {
+      await db.tonDeposits.markReview(deposit.id, transfer);
+      return res.status(200).json({ review: true });
+    }
+
+    // NOTE: Replace with the actual ledger mutation
+    await db.transaction(async (tx) => {
+      await tx.tonDeposits.settleOnce(deposit.id, transfer.txHash);
+      await tx.ledger.creditUserOnce({
+        userId: deposit.userId,
+        asset: deposit.asset,
+        amount: deposit.amount,
+        externalId: transfer.txHash,
+      });
+    });
+
+    res.status(200).json({ ok: true });
+  }
+);
+```
+
+## Add withdrawal requests \[step]
+
+Keep TON signing outside the web app. The backend validates the request, locks the user balance, then calls a custody adapter.
+
+```ts
+// NOTE: Not runnable —
+//       implement `custody.sendGram` and `custody.sendJetton`
+//       with the selected signer or provider
+import { ASSETS } from "./ton-assets";
+
+// NOTE: Replace with the internal or provider API key for the withdrawal signer
+const CUSTODY_API_KEY = "<CUSTODY_API_KEY>";
+
+app.post("/api/ton/withdrawals", requireAuth, async (req, res) => {
+  const { userId } = req.session;
+  const { assetCode, amount, recipientAddr } = req.body;
+  const asset = ASSETS[assetCode as keyof typeof ASSETS];
+
+  if (!asset) {
+    return res.status(400).json({ error: "Unsupported asset" });
+  }
+
+  const withdrawalId = crypto.randomUUID();
+
+  // NOTE: Replace with the actual ledger mutation
+  await db.transaction(async (tx) => {
+    await tx.ledger.lockUserBalance({
+      userId,
+      asset: asset.code,
+      amount: String(amount),
+      reason: withdrawalId,
+    });
+
+    await tx.tonWithdrawals.insert({
+      id: withdrawalId,
+      userId,
+      asset: asset.code,
+      amount: String(amount),
+      recipientAddr,
+      status: "queued",
+    });
+  });
+
+  res.json({ withdrawalId, status: "queued" });
+});
+```
+
+## Broadcast withdrawals \[step]
+
+Run a worker that reads queued withdrawals and sends them through the custody adapter. For USDT, the adapter must send a jetton transfer from the service wallet and return the transaction hash.
+
+```ts
+// NOTE: Not runnable — implement custody calls with the selected signer or provider
+async function processTonWithdrawal(withdrawal: TonWithdrawal) {
+  const asset = ASSETS[withdrawal.asset as keyof typeof ASSETS];
+
+  const txHash =
+    asset.code === "GRAM"
+      ? await custody.sendGram({
+          apiKey: CUSTODY_API_KEY,
+          to: withdrawal.recipientAddr,
+          amount: withdrawal.amount,
+        })
+      : await custody.sendJetton({
+          apiKey: CUSTODY_API_KEY,
+          jettonMaster: asset.tonPayAsset,
+          to: withdrawal.recipientAddr,
+          amount: withdrawal.amount,
+          forwardTonAmount: "0.000000001",
+        });
+
+  // NOTE: Replace with the actual ledger mutation
+  await db.tonWithdrawals.markBroadcast(withdrawal.id, txHash);
+}
+```
+
+## Reconcile pending deposits \[step]
+
+Use polling as a fallback when a webhook is missed or delayed.
+
+```ts
+// NOTE: Not runnable — reuse the same `settleDeposit` logic from the webhook handler.
+import { getTonPayTransferByReference } from "@ton-pay/api";
+import { CHAIN } from "./ton-assets";
+
+async function reconcileTonPayDeposits() {
+  const pendingDeposits = await db.tonDeposits.findPending();
+
+  for (const deposit of pendingDeposits) {
+    const transfer = await getTonPayTransferByReference(deposit.reference, {
+      chain: CHAIN,
+      apiKey: TONPAY_API_KEY,
+    });
+
+    if (transfer.status === "success") {
+      await settleDeposit(deposit, transfer);
+    }
+  }
+}
+```
+
+## Reconcile daily \[step]
+
+Run a scheduled job that compares records with TON Pay and the custody provider.
+
+1. Query pending TON Pay deposits by `reference`.
+1. Settle successful deposits that missed the webhook.
+1. Move failed or mismatched deposits to manual review.
+1. Query broadcast withdrawals by `txHash`.
+1. Mark finalized withdrawals as `settled`.
+1. Unlock failed withdrawals and move them to manual review.
+
+## Result
+
+The integration has 4 moving parts:
+
+- `POST /api/ton/deposits` creates a TON Pay payment message.
+- `/webhooks/tonpay` settles deposits after TON Pay confirms them.
+- `POST /api/ton/withdrawals` queues and locks withdrawals.
+- A withdrawal worker sends payouts through the custody adapter.
+
+TON-specific logic stays in TON Pay and the custody adapter. The backend stores orders, verifies fields, updates balances, and reconciles transaction hashes.
+
+## See also
+
+- [How to build a transfer in TON Pay](/applications/ton-pay/payment-integration/transfer)
+- [TON Pay webhooks](/applications/ton-pay/webhooks)
+- [Highload wallets](/contracts/standard/wallets/highload/overview)

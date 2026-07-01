@@ -4,7 +4,7 @@ sidebarTitle: "Webhooks"
 tag: "beta"
 ---
 
-<Callout type="note">
+<Callout type="caution">
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
@@ -319,14 +319,15 @@ Every webhook request includes an `X-TonPay-Signature` header containing an HMAC
 ```ts
 import { verifySignature, type WebhookPayload } from "@ton-pay/api";
 
-app.post("/webhook", (req, res) => {
-  const signature = req.headers["x-tonpay-signature"];
+app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
+  const signature = req.headers["x-tonpay-signature"] as string;
+  const rawBody = req.body.toString("utf8");
 
-  if (!verifySignature(req.body, signature, process.env.TONPAY_API_SECRET)) {
+  if (!verifySignature(rawBody, signature, process.env.TONPAY_API_SECRET!)) {
     return res.status(401).json({ error: "Invalid signature" });
   }
 
-  const webhookData: WebhookPayload = req.body;
+  const webhookData: WebhookPayload = JSON.parse(rawBody);
 
   // Process the webhook in application-specific logic.
   res.status(200).json({ received: true });
@@ -420,17 +421,18 @@ Validate fields against the expected transaction data before marking an order as
 ```ts expandable
 import { verifySignature, type WebhookPayload } from "@ton-pay/api";
 
-app.post("/webhooks/tonpay", async (req, res) => {
+app.post("/webhooks/tonpay", express.raw({ type: "application/json" }), async (req, res) => {
   try {
     // 1. Verify signature
     const signature = req.headers["x-tonpay-signature"] as string;
+    const rawBody = req.body.toString("utf8");
 
-    if (!verifySignature(req.body, signature, process.env.TONPAY_API_SECRET!)) {
+    if (!verifySignature(rawBody, signature, process.env.TONPAY_API_SECRET!)) {
       console.error("Invalid webhook signature");
       return res.status(401).json({ error: "Invalid signature" });
     }
 
-    const webhookData: WebhookPayload = req.body;
+    const webhookData: WebhookPayload = JSON.parse(rawBody);
 
     // 2. Verify event type
     if (webhookData.event !== "transfer.completed") {

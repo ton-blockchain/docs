@@ -3,7 +3,7 @@ title: "How to build a transfer in TON Pay"
 sidebarTitle: "Build a transfer"
 ---
 
-<Callout type="note">
+<Callout type="caution">
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
@@ -184,7 +184,7 @@ await createTonPayTransfer(
     senderAddr: "<SENDER_ADDRESS>",       // shortened example; replace with a full wallet address
   },
   {
-    chain: "testnet",
+    chain: "mainnet", // USDTs only exist in mainnet
     apiKey: "<TONPAY_API_KEY>", // optional
   }
 );

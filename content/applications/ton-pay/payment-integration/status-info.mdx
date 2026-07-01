@@ -3,7 +3,7 @@ title: "How to check status and retrieve info with TON Pay"
 sidebarTitle: "Check status and retrieve info"
 ---
 
-<Callout type="note">
+<Callout type="caution">
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
@@ -114,7 +114,7 @@ Use `status` to drive UI state and use `reference`, `bodyBase64Hash`, and `txHas
 
   - `pending` – the transfer is created and awaits confirmation on the blockchain.
   - `success` – the transfer is completed successfully; the trace completes without errors.
-  - `error` – the transfer fails; the trace completes with an error.
+  - `failed` – the transfer fails; the trace completes with an error.
 </ResponseField>
 
 <ResponseField

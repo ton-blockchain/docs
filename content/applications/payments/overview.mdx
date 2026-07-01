@@ -5,9 +5,13 @@ sidebarTitle: "Overview"
 
 Payment processing on TON refers to monitoring and handling blockchain transactions for business applications. While simple use cases can rely entirely on smart contracts, most real-world payment systems require off-chain processing to track deposits, manage user balances, send confirmations, and integrate with existing business logic.
 
+<Callout type="note">
+  See how to set up an example [self-hosted payment processor](/applications/payments/setup) for Gram and USDT (on TON) deposits and withdrawals.
+</Callout>
+
 ## On-chain vs off-chain processing
 
-On-chain processing executes all payment logic within smart contracts. When a user sends Grams or Jettons to a contract, the contract immediately processes the payment and updates state. This works for simple scenarios like direct peer-to-peer transfers or automated market makers, but becomes impractical when you need user accounts, payment history, refunds, or integration with external systems.
+On-chain processing executes all payment logic within smart contracts. When a user sends Grams or Jettons (including USDT on TON mainnet) to a contract, the contract immediately processes the payment and updates state. This works for simple scenarios like direct peer-to-peer transfers or automated market makers, but becomes impractical when you need user accounts, payment history, refunds, or integration with external systems.
 
 Off-chain processing monitors blockchain state changes from outside the network. Your application observes transactions, verifies their validity, updates internal databases, and triggers business logic. Exchanges, merchants, and payment processors use this approach because it provides flexibility to implement complex workflows, maintain user data, and integrate with traditional systems.
 
@@ -34,11 +38,11 @@ Read more about [how Jettons work](/contracts/standard/tokens/jettons/how-it-wor
 
 Three main approaches exist for implementing payment processing on TON:
 
-**Self-built solution**: You run your own service that connects to some TON API or [liteserver](/api/overview), monitors blocks for relevant transactions, and maintains a database of payment events. This requires building infrastructure to fetch blocks, parse transactions, handle reconnections, and manage state. The advantage is complete control over the implementation and no dependency on external services. The disadvantage is significant development and maintenance effort.
+- **Self-built solution**: You run your own service that connects to some TON API or [liteserver](/api/overview), monitors blocks for relevant transactions, and maintains a database of payment events. This requires building infrastructure to fetch blocks, parse transactions, handle reconnections, and manage state. The advantage is complete control over the implementation and no dependency on external services. The disadvantage is significant development and maintenance effort.
 
-**Self-hosted payment processor**: Open-source payment processors like [Bicycle](https://github.com/gobicycle/bicycle) and [Spice harvester](https://github.com/txsociety/spice-harvester) provide ready-to-deploy solutions that handle blockchain monitoring and expose APIs for your application. You deploy the processor on your infrastructure, configure it for your wallet addresses and asset types, and consume its API to track payments. This balances control with reduced development effort, though you still manage the infrastructure.
+- **Self-hosted payment processor**: Open-source payment processors like [Bicycle](/applications/payments/bicycle) and [Spice harvester](https://github.com/txsociety/spice-harvester) provide ready-to-deploy solutions that handle blockchain monitoring and expose APIs for your application. You deploy the processor on your infrastructure, configure it for your wallet addresses and asset types, and consume its API to track payments. This balances control with reduced development effort, though you still manage the infrastructure.
 
-**Third-party payment processor**: External services handle all blockchain interaction and provide simple APIs or webhooks for payment notifications. You integrate their SDK or API, and they manage infrastructure, monitoring, and maintenance. This is fastest to implement but introduces dependency on the service provider and typically involves transaction fees.
+- **Third-party payment processor**: External services handle all blockchain interaction and provide simple APIs or webhooks for payment notifications. You integrate their SDK or API, and they manage infrastructure, monitoring, and maintenance. This is fastest to implement but introduces dependency on the service provider and typically involves transaction fees.
 
 The choice depends on your requirements for control, development resources, and operational complexity. High-volume applications often build custom solutions, while smaller merchants prefer third-party services.
 

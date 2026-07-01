@@ -3,7 +3,7 @@ title: "TON Pay API reference"
 sidebarTitle: "API reference"
 ---
 
-<Callout type="note">
+<Callout type="caution">
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
@@ -119,7 +119,7 @@ type CompletedTonPayTransferInfo = {
 };
 ```
 
-- `status`: `pending`, `success`, or `error`;
+- `status`: `pending`, `success`, or `failed`;
 - `errorCode`: TON Pay error codes in [Check status and retrieve info](/applications/ton-pay/payment-integration/status-info).
 
 ### `APIOptions`
@@ -138,8 +138,8 @@ type APIOptions = {
 
 ```ts
 import { TON, USDT } from "@ton-pay/api";
-// GRAM: the string constant "GRAM" (use for Gram transfers)
-// USDT: mainnet USDT jetton master address
+// TON: native Gram transfer identifier used by TON Pay
+// USDT: mainnet USDt jetton master address
 ```
 
 <Callout
