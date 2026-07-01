@@ -14,7 +14,7 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, extname, dirname } from 'node:path';
 // Common
-import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects } from './common.mjs';
+import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects, isVercelBuild } from './common.mjs';
 
 /**
  * @param {string} path - file path
@@ -136,10 +136,46 @@ const generateStaticRedirects = (dir) => {
 };
 
 /** @param {string} dir */
+const generateSiblingMarkdownFiles = (dir) => {
+  const llms = join(dir, 'llms');
+  if (!existsSync(llms)) return { files: 0 };
+  let files = 0;
+  /** @param {string} cur */
+  const walk = (cur) => {
+    for (const entry of readdirSync(cur, { withFileTypes: true })) {
+      const path = join(cur, entry.name);
+      if (entry.isDirectory()) {
+        walk(path);
+        continue;
+      }
+      if (!entry.isFile() || entry.name !== 'content.md') continue;
+      const route = cur.slice(llms.length).replace(/^\/+/, ''); // or `dirname(path)` in place of `cur`
+      const target = join(dir, `${route}.md`);
+      const html = join(dir, `${route}.html`);
+      if (!existsSync(html)) continue;
+      writeFileWithDirs(target, readFileSync(path, 'utf8'));
+      files += 1;
+    }
+  };
+
+  walk(llms);
+  return { files };
+}
+
+/** @param {string} dir */
 const main = (dir) => {
   const pfx = 'post-build:';
+  if (isVercelBuild) {
+    console.log(pfx, 'skipped — not a static build');
+    process.exit(0);
+  }
+
+  console.log(pfx, 'generating sibling LLM markdown files...');
+  const { files: mdFiles } = generateSiblingMarkdownFiles(dir);
+  console.log(pfx, `${mdFiles} markdown files`);
+
   if (!isGitHubPagesBuild) {
-    console.log(pfx, 'skipped (not a GitHub Pages build)');
+    console.log(pfx, 'skipped GitHub Pages-only steps');
     process.exit(0);
   }
 
