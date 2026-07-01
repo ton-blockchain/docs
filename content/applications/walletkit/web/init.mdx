@@ -59,7 +59,8 @@ To initialize WalletKit with the minimum required setup, take these steps:
      Network
    } from '@ton/walletkit';
    ```
-2. Initialize the kit by creating an instance of the `TonWalletKit` object and passing it the `networks` parameter: a list of networks to operate on. For each network, specify the preferred API provider and its key obtained in [Prerequisites](#prerequisites):
+
+1. Initialize the kit by creating an instance of the `TonWalletKit` object and passing it the `networks` parameter: a list of networks to operate on. For each network, specify the preferred API provider and its key obtained in [Prerequisites](#prerequisites):
 
    ```ts title="TypeScript"
    const kit = new TonWalletKit({
@@ -81,14 +82,14 @@ To initialize WalletKit with the minimum required setup, take these steps:
    ```
 
    <Callout type="note">
-    API providers allow WalletKit to read blockchain data — for example, to fetch account balances and query jettons and NFTs. API keys allow you to access to higher RPS limits.
+     API providers allow WalletKit to read blockchain data — for example, to fetch account balances and query jettons and NFTs. API keys allow you to access to higher RPS limits.
    </Callout>
 
    <Callout type="note">
-    The mainnet is a production network: contracts and funds are real. Use the testnet for experiments, beta tests, and feature previews
+     The mainnet is a production network: contracts and funds are real. Use the testnet for experiments, beta tests, and feature previews
    </Callout>
 
-3. Wait for the initialization to complete:
+1. Wait for the initialization to complete:
 
    ```ts title="TypeScript"
    await kit.waitForReady();
@@ -106,7 +107,7 @@ It's useful to add some of the optional settings right away. Add them to the sam
   import {
     createDeviceInfo
   } from '@ton/walletkit';
-  
+
   const kit = new TonWalletKit({
     // ...other parameters...
     deviceInfo: createDeviceInfo({
@@ -114,6 +115,7 @@ It's useful to add some of the optional settings right away. Add them to the sam
     }),
   });
   ```
+
   <Callout type="note">
     For other settings,  WalletKit will use default values. This includes supported wallet features, the maximum supported TON Connect protocol version, the human-readable name of your wallet, and the current platform ('browser').
   </Callout>
@@ -124,7 +126,7 @@ It's useful to add some of the optional settings right away. Add them to the sam
   import {
     createWalletManifest,
   } from '@ton/walletkit';
-  
+
   const kit = new TonWalletKit({
     // ...other parameters...
     walletManifest: createWalletManifest(),
@@ -197,6 +199,7 @@ await kit.waitForReady();
     // ...later fields...
   });
   ```
+
   Remember to disable this adapter in web environments or provide a dedicated [storage adapter](/applications/walletkit/web/configure#storage) wrapper to switch between environments.
 </Callout>
 

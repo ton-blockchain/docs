@@ -1,5 +1,4 @@
 ---
-id: applications/walletkit/web/init-wallet
 title: "Initialize a TON wallet"
 sidebarTitle: "Initialize a TON wallet"
 description: ""
@@ -74,7 +73,7 @@ You can create a signer from a **private key** — a hex-encoded string or Uint8
   Handle private keys carefully. Use test keys, keep them in a secure keystore, and avoid logs or commits.
 </Callout>
 
-Call the `fromPrivateKey()` method of the `Signer` class, passing the private key as a parameter. In this example, the key is saved in the local storage as the PRIVATE_KEY entry containing a hex-encoded string:
+Call the `fromPrivateKey()` method of the `Signer` class, passing the private key as a parameter. In this example, the key is saved in the local storage as the PRIVATE\_KEY entry containing a hex-encoded string:
 
 ```ts title="TypeScript"
 import {
@@ -99,7 +98,9 @@ Create a `WalletSigner` object with these fields:
 - A signer function that takes bytes and returns an Ed25519 signature as the `Hex` type
 - The corresponding Ed25519 public key as `Hex`
 
-<Callout type="important">
+<Callout
+  type="important"
+>
   The signer function takes an iterable bytes object, such as `array`, `Uint8Array`, or `Buffer`. Then it asynchronously produces an Ed25519-encoded signature of the input as `Hex` — a string containing a hexadecimal value that starts with an explicit `0x` prefix.
 
   The following example uses the `MnemonicToKeyPair()` function to derive a key pair from a [mnemonic](#mnemonic) saved in the local storage. In production, replace this with your actual signing mechanism.
@@ -162,7 +163,7 @@ const walletAdapter = await WalletV5R1Adapter.create(signer, {
 
 <Callout type="tip">
   For `WalletV4R2Adapter`, use these imports:
-    
+
   ```ts title="TypeScript"
   import {
     Network,
@@ -203,7 +204,9 @@ Providing the same wallet adapter to the kit multiple times will return the wall
 Below, you can find complete sample codes for initializing a wallet with different signers:
 
 <Tabs>
-  <Tab value="Mnemonic">
+  <Tab
+    value="Mnemonic"
+  >
     ```ts
     import {
       Signer,
@@ -229,7 +232,10 @@ Below, you can find complete sample codes for initializing a wallet with differe
     const wallet = await kit.addWallet(walletAdapter);
     ```
   </Tab>
-  <Tab value="Private key">
+
+  <Tab
+    value="Private key"
+  >
     ```ts
     import {
       Signer,
@@ -247,12 +253,15 @@ Below, you can find complete sample codes for initializing a wallet with differe
       network: Network.mainnet(),
       client: kit.getApiClient(Network.mainnet()),
     });
-    
+
     // 3. Initialize the wallet
     const wallet = await kit.addWallet(walletAdapter);
     ```
   </Tab>
-  <Tab value="Custom signer">
+
+  <Tab
+    value="Custom signer"
+  >
     ```ts
     import {
       MnemonicToKeyPair,
@@ -278,7 +287,7 @@ Below, you can find complete sample codes for initializing a wallet with differe
 
       publicKey: Uint8ArrayToHex(keyPair.publicKey) as Hex,
     }
-    
+
     // 2. Create a wallet adapter
     const walletAdapter = await WalletV5R1Adapter.create(signer, {
       network: Network.mainnet(),

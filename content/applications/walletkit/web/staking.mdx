@@ -12,11 +12,11 @@ WalletKit exposes the `StakingManager` class as `kit.staking`. It accepts the us
 The staking flow includes these steps:
 
 1. Read the user's staking balance with `getStakedBalance()` or query the jetton balance directly.
-2. If you need to override the default provider, use `setDefaultProvider()`. WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one.
-3. Use `getQuote()` to calculate a quote for a stake/unstake based on the user intent and the current state of the liquidity pool. The intent includes the direction (stake or unstake), the amount, and other parameters.
-4. Use the `buildStakeTransaction()` method to turn the accepted quote into a `TransactionRequest`.
+1. If you need to override the default provider, use `setDefaultProvider()`. WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one.
+1. Use `getQuote()` to calculate a quote for a stake/unstake based on the user intent and the current state of the liquidity pool. The intent includes the direction (stake or unstake), the amount, and other parameters.
+1. Use the `buildStakeTransaction()` method to turn the accepted quote into a `TransactionRequest`.
 
-The protocol shape is provider-specific. This includes the derivative jetton, unstake modes, the settlement timing, and the pool model. 
+The protocol shape is provider-specific. This includes the derivative jetton, unstake modes, the settlement timing, and the pool model.
 
 ## Before you begin
 
@@ -29,7 +29,7 @@ WalletKit ships a bundled provider — **Tonstakers**, but you can configure a c
 ## Methods
 
 | Method                                                        | Description                                            |
-|-------------------------------------------------------------- | ------------------------------------------------------ |
+| ------------------------------------------------------------- | ------------------------------------------------------ |
 | `registerProvider()`, `setDefaultProvider()`, `getProvider()` | Manage the staking provider.                           |
 | `getStakingProviderInfo(network?, providerId?)`               | Read the provider's APY and instant-unstake liquidity. |
 | `getSupportedUnstakeModes(providerId?)`                       | Read unstake modes supported by the provider.          |
@@ -59,7 +59,7 @@ const userAddress = fromWallet.getAddress();
 const userBalance = await kit.staking.getStakedBalance(userAddress, network);
 ```
 
-## Quote a stake or unstake                    
+## Quote a stake or unstake
 
 The `getQuote()` accepts the user intent and returns settlement amounts.
 
@@ -96,7 +96,7 @@ const quote = await kit.staking.getQuote(
 
 ## Build and send the transaction
 
-The `buildStakeTransaction()` method turns an accepted quote into a `TransactionRequest`. 
+The `buildStakeTransaction()` method turns an accepted quote into a `TransactionRequest`.
 
 You can use it for both staking and unstaking: the operation is selected depending on the `direction` parameter from the [quote](#quote-a-stake-or-unstake).
 
