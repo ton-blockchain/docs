@@ -1,0 +1,459 @@
+---
+title: "How to set up a self-hosted payment processor using Bicycle"
+sidebarTitle: "Self-hosted setup"
+---
+
+<Callout type="caution">
+  This guide shows one of the possible ways to set up Gram and USDT (on TON) payments in business applications. For more info and alternative approaches, see the [payment processing overview](/applications/payments/overview).
+</Callout>
+
+[Bicycle](https://github.com/gobicycle/bicycle) is a self-hosted payment processor for TON. It runs next to an exchange, custodial wallet, merchant backend, or payment service and provides a REST API for:
+
+- Reusable per-user deposit addresses
+- Gram deposits and withdrawals
+- Jetton deposits and withdrawals, including USDT on TON
+- Hot-wallet aggregation and optional cold-wallet sweeps
+- Webhooks or RabbitMQ notifications
+
+Use Bicycle to show one deposit address per user and currency, credit deposits automatically, and submit withdrawals through one backend API.
+
+<Callout type="caution">
+  Bicycle controls a hot wallet from `SEED`. Do **not** withdraw manually from this hot wallet outside Bicycle. The processor tracks balances, internal sweeps, and withdrawal state in its database — bypassing it can make the service state inconsistent.
+</Callout>
+
+## Architecture
+
+```mermaid
+graph LR
+  U[User wallet] --> DA[User deposit address]
+  DA --> HW[Bicycle hot wallet]
+  HW --> CW[Cold wallet]
+  HW --> W[User withdrawal wallet]
+  B[Bicycle API] --> DB[(PostgreSQL)]
+  B --> LS[Liteserver]
+  B --> WH[Webhooks or RabbitMQ]
+  DB --> VIS[Grafana or Prometheus]
+```
+
+Bicycle creates deposit addresses from the hot-wallet seed and stores the mapping to an application `user_id`. For Gram, users deposit to a TON wallet address. For USDT, users deposit to a proxy owner address that owns the user's USDT jetton wallet. Bicycle scans the relevant shard blocks, records deposits, sweeps balances to the hot wallet when thresholds are met, and sends withdrawals from the hot wallet.
+
+The application does not need to parse comments, generate wallet contracts, scan blocks, or build jetton transfer messages. The backend calls Bicycle and stores Bicycle IDs in the application ledger.
+
+## Prerequisites
+
+- Linux-based OS with `jq` and `curl` installed
+- [Docker Engine](https://docs.docker.com/engine/install/) 24 or later with Docker Compose v2
+- A 24-word seed phrase for the Bicycle hot wallet
+- Enough Gram on the hot wallet to pay fees and deploy/sweep deposit wallets
+- A cold wallet address for automatic cold-wallet sweeps
+
+<Callout type="caution">
+  Test the full flow on testnet first. Note that `IS_TESTNET=true` only controls address validation inside Bicycle — it does **not** prove that the liteserver is testnet.
+</Callout>
+
+## 1. Clone and build Bicycle
+
+```bash
+git clone https://github.com/gobicycle/bicycle.git
+cd bicycle
+make -f Makefile
+```
+
+The existing Bicycle `docker-compose.yml` can start PostgreSQL, the processor, Grafana, Prometheus, and RabbitMQ. For a minimal production-like setup, start only PostgreSQL and `payment-processor`.
+
+## 2. Choose a liteserver
+
+Bicycle connects to a liteserver over Abstract Datagram Network Layer (ADNL). Either use a [public liteserver with proof verification enabled](#option-a-public-liteserver-with-proofs), or run a [self-hosted liteserver](#option-b-local-liteserver-with-official-docker-image) next to Bicycle.
+
+### Option A: Public liteserver with proofs
+
+Use this path for a short setup. Fetch the current public liteserver list from the network config and extract one endpoint into the Bicycle `.env` file:
+
+```bash
+curl -fsSL https://ton-blockchain.github.io/global.config.json \
+  | jq -r '
+    def ntoa:
+      (if . < 0 then . + 4294967296 else . end) as $ip
+      | [($ip / 16777216 | floor) % 256,
+         ($ip / 65536 | floor) % 256,
+         ($ip / 256 | floor) % 256,
+         $ip % 256]
+      | join(".");
+    .liteservers[0]
+    | "LITESERVER=\(.ip | ntoa):\(.port)\nLITESERVER_KEY='\''\(.id.key)'\''"
+  ' >> .env
+```
+
+Then enable proof checking:
+
+```bash
+cat >> .env <<'EOF'
+PROOF_CHECK_ENABLED=true
+NETWORK_CONFIG_URL=https://ton-blockchain.github.io/global.config.json
+EOF
+```
+
+For testnet, use `https://ton-blockchain.github.io/testnet-global.config.json` and set `IS_TESTNET=true`.
+
+<Callout type="caution">
+  Public liteservers are shared infrastructure. Keep `PROOF_CHECK_ENABLED=true` and set a conservative `LITESERVER_RATE_LIMIT`.
+
+  Consider setting up a [dedicated liteserver](#option-b-local-liteserver-with-official-docker-image) for production payment volume.
+</Callout>
+
+### Option B: Local liteserver with official Docker image
+
+<Callout type="caution">
+  Ensure the server meets the [minimal hardware requirements](/nodes/cpp/run-liteserver#1-1-minimal-hardware-requirements) for running a liteserver node.
+</Callout>
+
+Use this path to run Bicycle and the liteserver on the same host. Put this compose file next to Bicycle's `docker-compose.yml`:
+
+```yaml title="docker-compose.liteserver.yml"
+services:
+  ton-node:
+    image: ghcr.io/ton-blockchain/ton:latest
+    container_name: ton_liteserver
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/ton-work/db:/var/ton-work/db
+    environment:
+      PUBLIC_IP: ${PUBLIC_IP}
+      GLOBAL_CONFIG_URL: https://ton-blockchain.github.io/global.config.json
+      DUMP_URL: https://dump.ton.org/dumps/latest.tar.lz
+      LITESERVER: "true"
+      LITE_PORT: "30003"
+      VALIDATOR_PORT: "30001"
+      QUIC_PORT: "31001"
+      CONSOLE_PORT: "30002"
+      STATE_TTL: "86400"
+      ARCHIVE_TTL: "2592000"
+```
+
+Start it:
+
+```bash
+# One of the ways to check the public IP of the server.
+# If it is known ahead of time, manually specify it here.
+export PUBLIC_IP=$(curl -4 -fsSL ifconfig.me)
+docker compose -f docker-compose.liteserver.yml up -d ton-node
+
+# Follow the logs to check the status.
+docker logs -f ton_liteserver
+```
+
+After `/var/ton-work/db/config.json` is created, append the local liteserver endpoint to Bicycle's `.env`:
+
+```bash
+jq -r '
+  .liteservers[0]
+  | "LITESERVER=host.docker.internal:\(.port)\nLITESERVER_KEY='\''\(.id.key)'\''"
+' /var/ton-work/db/config.json >> .env
+```
+
+Add host access to the `payment-processor` service in Bicycle's compose file when Bicycle uses Docker's bridge network:
+
+```yaml title="docker-compose.yml"
+services:
+  payment-processor:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+```
+
+For node setup, hardware requirements, firewall, sync, and maintenance details, see [Run a liteserver](/nodes/cpp/run-liteserver). The official Docker image uses the same node software. The key settings above are `LITESERVER=true`, `LITE_PORT`, a public `PUBLIC_IP`, and persistent `/var/ton-work/db` storage.
+
+## 3. Configure assets
+
+Create `.env` file in the Bicycle directory:
+
+```bash title=".env"
+# PostgreSQL setup
+POSTGRES_DB=payment_processor
+POSTGRES_USER=payment_processor
+POSTGRES_PASSWORD=<POSTGRES_PASSWORD>
+POSTGRES_READONLY_PASSWORD=<POSTGRES_READONLY_PASSWORD>
+DB_URI=postgres://payment_processor:<POSTGRES_PASSWORD>@payment_processor_db:5432/payment_processor
+
+# Bicycle's REST API port
+API_PORT=8081
+# Bicycle's Bearer token for REST API
+API_TOKEN=<API_TOKEN>
+
+# Seed phrase for the main hot wallet, 12 or 24 word mnemonic compatible with standard TON wallets
+SEED=<SEED_PHRASE>
+
+# TON address of the cold wallet
+COLD_WALLET=<COLD_WALLET_ADDRESS>
+
+# Cutoffs in nanograms format:
+#   hot_wallet_min_balance:hot_wallet_max_balance:min_withdrawal_amount:hot_wallet_residual_balance
+TON_CUTOFFS=1000000000:100000000000:1000000000:95000000000
+
+# List of jettons to be processed by the service; set to USDTs only
+JETTONS=USDT:EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs:100000000000:10000000:95000000000
+
+# USDTs only exist on mainnet!
+IS_TESTNET=false
+
+# Miscellaneous, refer to Bicycle's README.md for details
+DEPOSIT_SIDE_BALANCE=true
+FORWARD_TON_AMOUNT=1
+LITESERVER_RATE_LIMIT=25
+LITESERVER_MAX_RETRIES=10
+LITESERVER_BASE_RETRY_DELAY=100
+ALLOWABLE_LAG=40
+```
+
+Configure the processor container to receive all Bicycle `.env` vars, not only the variables already listed in the upstream compose file:
+
+```yaml title="docker-compose.yml"
+services:
+  payment-processor:
+    env_file:
+      - .env
+```
+
+`TON_CUTOFFS` uses nanograms:
+
+| Position                      | Meaning                                                   |
+| ----------------------------- | --------------------------------------------------------- |
+| `hot_wallet_min_balance`      | Minimum hot-wallet Gram balance required on startup       |
+| `hot_wallet_max_balance`      | Balance that triggers a cold-wallet sweep                 |
+| `minimum_withdrawal_amount`   | Minimum deposit-wallet balance to sweep to the hot wallet |
+| `hot_wallet_residual_balance` | Balance left after a cold-wallet sweep                    |
+
+`JETTONS` uses jetton base units. USDT on TON has 6 decimals, so `1000000` means 1 USDT:
+
+| Position             | Meaning                                                 |
+| -------------------- | ------------------------------------------------------- |
+| `USDT`               | Currency code used in Bicycle API requests              |
+| [`EQCx...sDs`][usdt] | [USDT jetton master address][usdt] on mainnet           |
+| `100000000000`       | Sweep hot-wallet excess above 100,000 USDT              |
+| `10000000`           | Sweep a deposit wallet after it holds more than 10 USDT |
+| `95000000000`        | Leave 95,000 USDT after a cold-wallet sweep             |
+
+<Callout
+  type="danger"
+  title="Verify the jetton master (minter)"
+>
+  Never accept jettons by symbol or metadata alone — only accept an allow-listed master contract address. Verify the USDT jetton master address before mainnet launch.
+
+  USDTs only exist on the mainnet.
+</Callout>
+
+For information about the other environment variables, refer to the Bicycle's `README.md` file.
+
+## 4. Start Bicycle
+
+For a minimal production setup, start only `payment-postgres` (PostgreSQL) and `payment-processor` (Bicycle itself):
+
+```bash
+docker compose up -d payment-postgres
+docker compose up -d payment-processor
+```
+
+<Callout type="note">
+  Optional available services include: `payment-grafana` (Grafana), `payment-prometheus` (Prometheus), and `payment-rabbitmq` (RabbitMQ).
+</Callout>
+
+Check sync:
+
+```bash
+curl -sS http://127.0.0.1:8081/v1/system/sync | jq
+```
+
+Example of an expected response when Bicycle is caught up:
+
+```json
+{
+  "is_synced": true,
+  "last_block_gen_utime": 1719306580
+}
+```
+
+## 5. Create deposit addresses
+
+Create one Gram deposit address for a user:
+
+```bash
+curl -sS http://127.0.0.1:8081/v1/address/new \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"user-1001","currency":"TON"}' | jq
+```
+
+Create one USDT deposit address for the same user:
+
+```bash
+curl -sS http://127.0.0.1:8081/v1/address/new \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"user-1001","currency":"USDT"}' | jq
+```
+
+Store the returned address in the application database and show it to the user. Users do not need to enter comments or invoice IDs.
+
+To list all addresses later:
+
+```bash
+curl -sS "http://127.0.0.1:8081/v1/address/all?user_id=user-1001" \
+  -H "Authorization: Bearer $API_TOKEN" | jq
+```
+
+## 6. Credit deposits
+
+If `DEPOSIT_SIDE_BALANCE=true`, Bicycle credits deposits when it observes income on the deposit address. Query the user's total credited income:
+
+```bash
+curl -sS "http://127.0.0.1:8081/v1/income?user_id=user-1001" \
+  -H "Authorization: Bearer $API_TOKEN" | jq
+```
+
+Fetch deposit history for reconciliation:
+
+```bash
+curl -sS "http://127.0.0.1:8081/v1/deposit/history?user_id=user-1001&currency=USDT&limit=20&offset=0&sort_order=desc" \
+  -H "Authorization: Bearer $API_TOKEN" | jq
+```
+
+Look up a deposit by transaction hash when handling support tickets:
+
+```bash
+curl -sS "http://127.0.0.1:8081/v1/deposit/income?tx_hash=<TX_HASH>" \
+  -H "Authorization: Bearer $API_TOKEN" | jq
+```
+
+## 7. Send manual withdrawals
+
+<Callout type="caution">
+  Bicycle controls a hot wallet from `SEED`. Do **not** withdraw manually from this hot wallet **outside** Bicycle. The processor tracks balances, internal sweeps, and withdrawal state in its database — bypassing it can make the service state inconsistent.
+</Callout>
+
+Use a unique `query_id` per user withdrawal. Bicycle rejects duplicate `(user_id, query_id)` pairs.
+
+Withdraw 1 Gram:
+
+```bash
+# Replace <RECIPIENT_ADDRESS> with desired TON wallet address
+curl -sS http://127.0.0.1:8081/v1/withdrawal/send \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user-1001",
+    "query_id": "wd-ton-000001",
+    "currency": "TON",
+    "amount": 1000000000,
+    "destination": "<RECIPIENT_ADDRESS>",
+    "comment": "withdrawal wd-ton-000001"
+  }' | jq
+```
+
+Withdraw 25 USDT:
+
+```bash
+# Replace <RECIPIENT_ADDRESS> with desired TON wallet address
+curl -sS http://127.0.0.1:8081/v1/withdrawal/send \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user-1001",
+    "query_id": "wd-usdt-000001",
+    "currency": "USDT",
+    "amount": 25000000,
+    "destination": "<RECIPIENT_ADDRESS>",
+    "comment": "withdrawal wd-usdt-000001"
+  }' | jq
+```
+
+Check the withdrawal status:
+
+```bash
+# Replace <WITHDRAWAL_ID> with the `query_id` previously submitted to `/v1/withdrawal/send`
+curl -sS "http://127.0.0.1:8081/v1/withdrawal/status?id=<WITHDRAWAL_ID>" \
+  -H "Authorization: Bearer $API_TOKEN" | jq
+```
+
+Statuses are `pending`, `processing`, `processed`, and `failed`. Treat `processed` as the terminal success state in the application ledger.
+
+## 8. Enable notifications
+
+### Option A: Webhook endpoint
+
+Extend the `.env` file with webhook variables before starting the `payment-processor` service:
+
+```bash
+cat >> .env <<'EOF'
+# When set, Bicycle will send webhooks to the specified endpoint
+WEBHOOK_ENDPOINT=https://payments.example.com/ton/bicycle/webhook
+# Bearer token for the webhook requests — leave unset when unused
+# WEBHOOK_TOKEN=<WEBHOOK_TOKEN>
+EOF
+```
+
+Start or restart the service:
+
+```bash
+docker compose up -d payment-processor
+```
+
+Bicycle sends deposit notifications as JSON:
+
+```json
+{
+  "deposit_address": "<DEPOSIT_ADDRESS>",
+  "time": 1719306580,
+  "amount": "25000000",
+  "source_address": "<SOURCE_ADDRESS>",
+  "comment": "optional comment",
+  "tx_hash": "f9b9e7efd3a38da318a894576499f0b6af5ca2da97ccd15c5f1d291a808a0ebf",
+  "user_id": "user-1001"
+}
+```
+
+The webhook handler should be idempotent by `tx_hash`, verify `user_id` and `deposit_address` against application records, credit the internal ledger once, and return HTTP `200` with an empty body. Bicycle stops after repeated unsuccessful webhook delivery, so monitor processor logs and alerts.
+
+### Option B: RabbitMQ
+
+Extend the `.env` file with RabbitMQ variables and start the `payment-rabbitmq` service before starting the `payment-processor`:
+
+```bash
+cat >> .env <<'EOF'
+# When true, Bicycle will send incoming notiications to the RabbitMQ queue
+QUEUE_ENABLED=true
+
+# URI for client connections to the queue
+QUEUE_URI=amqp://guest:guest@payment_rabbitmq:5672/
+
+# Name of the exchange
+QUEUE_NAME=<QUEUE_NAME>
+EOF
+```
+
+Start or restart the services:
+
+```bash
+docker compose up -d payment-rabbitmq
+docker compose up -d payment-processor
+```
+
+## Operational checklist
+
+- Keep `SEED`, `API_TOKEN`, database credentials, and webhook tokens in a secret manager.
+- Expose Bicycle's API **only** to the application backend, not to the public Internet.
+- Keep enough Gram on the hot wallet for fees, jetton notifications, and deposit sweeps.
+- Keep a separate cold wallet whose seed is **never** loaded into Bicycle.
+- Always use `PROOF_CHECK_ENABLED=true` for public or rented liteservers.
+- Monitor `/v1/system/sync`, `/metrics`, hot-wallet balances, failed withdrawals, and webhook delivery.
+- Reconcile the application ledger with `/v1/deposit/history` and `/v1/withdrawal/status`.
+- Test mistaken-transfer recovery with `/v1/withdrawal/service/ton` and `/v1/withdrawal/service/jetton` before production.
+
+## See also
+
+- [Payment processing overview](/applications/payments/overview)
+- [Gram payments processing](/applications/payments/gram)
+- [Jetton payments processing](/applications/payments/jettons)
+- [Guide for running a liteserver](/nodes/cpp/run-liteserver)
+- [Liteserver proof verification](/foundations/proofs/verifying-liteserver-proofs)
+
+[usdt]: https://tonscan.org/jetton/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
