@@ -44,6 +44,15 @@ const config: NextConfig = {
   },
   serverExternalPackages: ['typescript'],
   redirects: async () => loadDocsRedirects(),
+  rewrites: async () => ({
+    beforeFiles: [
+      {
+        // Map `.md` requests to LLM Markdown sources
+        source: '/:path((?!llms/|og/|api/|_next/).+)\\.md',
+        destination: '/llms/:path/content.md',
+      },
+    ],
+  }),
 };
 
 export default withMDX(config);
