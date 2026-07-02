@@ -1,8 +1,6 @@
 ---
-id: overview/ai/quick-start
 title: "Quick start: Create an agentic wallet"
 sidebarTitle: "Quick start"
-description: ""
 ---
 
 The easiest way to get started with AI on TON is creating an [agentic wallet](/onboarding/ai/wallets).
@@ -14,9 +12,9 @@ This guide explains how to do the following:
 - Manage agentic wallets
 
 <Callout>
-  - Agentic wallets are self-custody wallets designed for autonomous AI agents on TON. They are implemented as [smart contracts](/foundations/glossary#smart-contract).
-  - TON MCP server is a middleware acting as a bridge between an AI model and TON Blockchain.
-  - Skills are instructions on how to launch and use TON MCP independently: no manual configuration is required. This approach works best with agents that support the [skills specification][skills-spec].
+  * Agentic wallets are self-custody wallets designed for autonomous AI agents on TON. They are implemented as [smart contracts](/foundations/glossary#smart-contract).
+  * TON MCP server is a middleware acting as a bridge between an AI model and TON Blockchain.
+  * Skills are instructions on how to launch and use TON MCP independently: no manual configuration is required. This approach works best with agents that support the [skills specification][skills-spec].
 </Callout>
 
 ## Prerequisites
@@ -25,7 +23,7 @@ Before starting, meet the following prerequisites:
 
 - Install an autonomous AI agent such as Claude Code or Codex.
 - Create a wallet on TON — for example, using [wallet.ton.org](/onboarding/wallet-apps/web).
-- Fund the wallet with Gram. The recommended network is __mainnet__.
+- Fund the wallet with Gram. The recommended network is **mainnet**.
 
 Your regular wallet on TON will be the owner of the agentic wallet.
 
@@ -39,8 +37,8 @@ npx skills add ton-connect/kit/packages/mcp
 
 There are two options available:
 
-- Run the command anywhere and select the __Global__ scope during installation.
-- Run it in the agent's folder and select __Project__.
+- Run the command anywhere and select the **Global** scope during installation.
+- Run it in the agent's folder and select **Project**.
 
 <Callout>
   Alternatively, you can [configure the MCP client manually](/onboarding/ai/mcp#configure-the-client-manually). Use this approach when the agent does not support skills or when finer control over server configuration is needed.
@@ -51,12 +49,12 @@ There are two options available:
 To create a first agentic wallet, follow this flow:
 
 1. Ask the agent to `create an agentic wallet`.
-2. The agent will generate private keys and suggest opening the [web dashboard](https://agents.ton.org/).
-3. On the dashboard, connect your regular TON wallet by clicking <kbd>Connect</kbd>.
-4. In the __Initial Gram deposit__ field, set the amount of Gram to deposit from the main wallet.
-5. Deploy the agentic wallet by clicking <kbd>Deploy + First Fund</kbd>. 
-6. Once the deployment is complete, copy the wallet's address from the dashboard.
-7. Provide the address to your AI agent and ask to `import the wallet`.
+1. The agent will generate private keys and suggest opening the [web dashboard](https://agents.ton.org/).
+1. On the dashboard, connect your regular TON wallet by clicking <kbd>Connect</kbd>.
+1. In the **Initial Gram deposit** field, set the amount of Gram to deposit from the main wallet.
+1. Deploy the agentic wallet by clicking <kbd>Deploy + First Fund</kbd>.
+1. Once the deployment is complete, copy the wallet's address from the dashboard.
+1. Provide the address to your AI agent and ask to `import the wallet`.
 
 After importing the wallet, the agent will be able to sign transactions using its operator key.
 
@@ -66,9 +64,9 @@ Note that you can create multiple agentic wallets and [manage them](#manage-wall
 
 There are three ways to fund an agentic wallet:
 
-- During creation: use the __Initial TON deposit__ field on the deployment page.
+- During creation: use the **Initial TON deposit** field on the deployment page.
 - From the [web dashboard](https://agents.ton.org/): click <kbd>Fund</kbd> to transfer Gram, jettons, or NFTs.
-- Directly: use a wallet app like Tonkeeper to transfer assets to the agentic wallet address.
+- Directly: use a wallet app like [wallet.ton.org](/onboarding/wallet-apps/web) to transfer assets to the agentic wallet address.
 
 To check the balance, ask the agent: `What is my agent balance?`
 
