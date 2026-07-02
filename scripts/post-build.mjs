@@ -14,7 +14,14 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, extname, dirname } from 'node:path';
 // Common
-import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects, isVercelBuild } from './common.mjs';
+import {
+  prefix,
+  outDir,
+  isGitHubPagesBuild,
+  getConfig,
+  getRedirects,
+  isVercelBuild,
+} from './common.mjs';
 
 /**
  * @param {string} path - file path
@@ -160,7 +167,7 @@ const generateSiblingMarkdownFiles = (dir) => {
 
   walk(llms);
   return { files };
-}
+};
 
 /** @param {string} dir */
 const main = (dir) => {
