@@ -77,10 +77,10 @@ Nevertheless, because each subsequent version inherits the functionality of the 
 1. Data:
    - `signature`: 512-bit long Ed25519 signature.
    - `msg-seqno`: 32-bit long sequence number.
-   - `(0-4) mode`: up to four 8-bit long integers defining sending mode for each message.
-1. Up to 4 references to cells containing messages.
+   - `(0-4) mode`: 8-bit long unsigned integer defining sending mode for a message.
+1. A single reference to a cell with a message.
 
-As you can see, the main functionality of the wallet is to provide a safe way to communicate with TON Blockchain from the outside world. The `seqno` mechanism protects against replay attacks, and the `Ed25519 signature` provides authorized access to wallet functionality. The payload data consists of up to 4 references to cells and the corresponding number of modes, which will be directly transferred to the `send_raw_message` method.
+As you can see, the main functionality of the wallet is to provide a safe way to communicate with TON Blockchain from the outside world. The `seqno` mechanism protects against replay attacks, and the `Ed25519 signature` provides authorized access to wallet functionality. The payload data consists of a single reference cell and the corresponding mode, which will be directly transferred to the `send_raw_message` method.
 
 <Callout>
   Note that the wallet doesn't provide any validation for internal messages you send through it. It is the programmer's (i.e., the external client's) responsibility to serialize the data according to the internal message layout.
