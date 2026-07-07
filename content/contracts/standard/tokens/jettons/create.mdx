@@ -349,7 +349,7 @@ The dApp opens a jetton UI with:
 
 Acton supports Linux and macOS. On Windows, use [Windows Subsystem for Linux (WSL) and the main guide](#prerequisites) when possible.
 
-Use the following steps **only** when WSL is **not** available. Deployment scripts require Node.js LTS version 22 or later.
+Use the following steps **only** when WSL is **not** available. Build and deployment scripts require Node.js LTS version 22 or later.
 
 <Callout
   type="caution"
@@ -358,7 +358,7 @@ Use the following steps **only** when WSL is **not** available. Deployment scrip
   This path uses the standalone Tolk compiler and a TypeScript deployment script instead of Acton. Run the full flow on TON Testnet before using TON Mainnet. Mainnet transactions spend real Gram and cannot be rolled back.
 </Callout>
 
-### 2. Prepare the project
+### 1. Prepare the project
 
 Open PowerShell and create a working directory:
 
@@ -383,80 +383,58 @@ Copy the jetton contracts into the local project:
 Copy-Item vendor\acton-contracts\jetton-v2.1\contracts\*.tolk contracts\
 ```
 
-Add the `vendor` folder and other sensitive files to `.gitignore`:
+Initialize the TypeScript project:
 
-```ini title=".gitignore"
+```powershell
+npm init -y
+npm install @ton/core @tonconnect/sdk qrcode-terminal
+npm install --save-dev typescript tsx @ton/tolk-js
+```
+
+Create `tsconfig.json`:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+Create `.gitignore`:
+
+```text title=".gitignore"
 /vendor
+/node_modules
 .env
 ```
 
-### 2. Install Tolk
+### 2. Compile the jetton wallet
 
-Download the Windows Tolk compiler `tolk.exe` and Fift interpreter `fift.exe` from the [latest TON release](https://github.com/ton-blockchain/ton/releases/latest), then place them in the `vendor` directory.
-
-Check that PowerShell can run them:
+Compile `JettonWallet.tolk`:
 
 ```powershell
-.\vendor\tolk.exe --version
-.\vendor\fift.exe -V
+npx @ton/tolk-js -o build\JettonWallet.json contracts\JettonWallet.tolk
 ```
 
-Download and unarchive the `smartcont_lib.zip` from the [latest TON release](https://github.com/ton-blockchain/ton/releases/latest) in the `vendor` directory.
-
-Set `TOLK_STDLIB` to the Tolk standard library directory:
+Extract the `codeBoc64` from the JSON artifact and save it separately:
 
 ```powershell
-$env:TOLK_STDLIB = "$PWD\vendor\smartcont\tolk-stdlib"
+$artifact = Get-Content "build\JettonWallet.json" | ConvertFrom-Json
+$artifact.codeBoc64 | Set-Content build\JettonWallet.base64
 ```
 
-Set `FIFTPATH` to the Fift library directory:
-
-```powershell
-$env:FIFTPATH = "$PWD\vendor\smartcont\lib"
-```
-
-### 3. Compile the jetton wallet
-
-Compile `JettonWallet.tolk` into `.fif` first:
-
-```powershell
-.\vendor\tolk.exe `
-  --path-mapping "@contracts=$PWD\contracts" `
-  -o build\JettonWallet.fif `
-  contracts\JettonWallet.tolk
-```
-
-Compile `JettonWallet.fif` into [BoC](/foundations/serialization/boc):
-
-```powershell
-.\vendor\fift.exe build\JettonWallet.fif
-```
-
-Check the produced artifact:
-
-```powershell
-Test-Path build\JettonWallet.compiled.boc
-```
-
-Expected output:
-
-```text
-True
-```
-
-Convert the compiled jetton wallet BoC file to base64:
-
-```powershell
-$walletCodeBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes("build\JettonWallet.compiled.boc"))
-$walletCodeBase64 | Set-Content build\JettonWallet.compiled.boc.base64
-```
-
-### 4. Add the wallet code helper
+### 3. Add the wallet code helper
 
 Create `gen\JettonWallet.code.tolk`:
 
 ```powershell
-$walletCodeBase64 = Get-Content build\JettonWallet.compiled.boc.base64
+$walletCodeBase64 = Get-Content build\JettonWallet.base64
 
 @"
 // Manually generated on Windows.
@@ -481,61 +459,24 @@ import "../gen/JettonWallet.code"
 
 If the file uses a different import path, replace the import that provides `jettonWalletCompiledCode()`.
 
-### 5. Compile the jetton minter
+### 4. Compile the jetton minter
 
-Compile `JettonMinter.tolk` into `.fif` first:
-
-```powershell
-.\vendor\tolk.exe `
-  --path-mapping "@contracts=$PWD\contracts" `
-  -o build\JettonMinter.fif `
-  contracts\JettonMinter.tolk
-```
-
-Compile `JettonMinter.fif` into BoC:
+Compile `JettonMinter.tolk`:
 
 ```powershell
-.\vendor\fift.exe build\JettonMinter.fif
+npx @ton/tolk-js -o build\JettonMinter.json contracts\JettonMinter.tolk
 ```
 
-Check the produced artifact:
+Extract the `codeBoc64` from the JSON artifact and save it separately:
 
 ```powershell
-Test-Path build\JettonMinter.compiled.boc
+$artifact = Get-Content "build\JettonMinter.json" | ConvertFrom-Json
+$artifact.codeBoc64 | Set-Content build\JettonMinter.base64
 ```
 
-Expected output:
+### 5. Create the deployment script
 
-```text
-True
-```
-
-### 6. Create the deployment script
-
-Initialize a TypeScript project:
-
-```powershell
-npm init -y
-npm install @ton/core @tonconnect/sdk qrcode-terminal
-npm install --save-dev typescript tsx
-```
-
-Create `tsconfig.json`:
-
-```json title="tsconfig.json"
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  }
-}
-```
-
-Create `scripts\deploy.ts`. The script uses the headless TON Connect SDK for the wallet session and `qrcode-terminal` to show the connection link directly in PowerShell:
+Create `scripts\deploy.ts` — the script uses the headless TON Connect SDK for the wallet session and `qrcode-terminal` to show the connection link directly in PowerShell:
 
 ```ts title="scripts\deploy.ts"
 import { Address, beginCell, Cell, contractAddress, Dictionary, StateInit, storeStateInit, toNano } from "@ton/core";
@@ -731,7 +672,7 @@ async function main() {
   }
 
   const adminAddress = Address.parse(wallet.account.address);
-  const code = Cell.fromBoc(readFileSync("build/JettonMinter.compiled.boc"))[0];
+  const code = Cell.fromBase64(readFileSync("build/JettonMinter.base64"));
   const data = buildMinterData(adminAddress);
   const stateInit: StateInit = { code, data };
   const minterAddress = contractAddress(0, stateInit);
@@ -781,9 +722,9 @@ main().catch((error) => {
 
 Edit `JETTON_NAME`, `JETTON_SYMBOL`, `JETTON_DESCRIPTION`, `JETTON_IMAGE`, `JETTON_DECIMALS`, and `INITIAL_SUPPLY` before deploying. `INITIAL_SUPPLY` is measured in indivisible jetton units: with `JETTON_DECIMALS = "6"`, `1000000` units equals `1` jetton.
 
-### 7. Deploy and mint from the terminal
+### 6. Deploy and mint from the terminal
 
-Run the deployment script to deploy the jetton in the testnet:
+Run the deployment script to deploy the jetton to the testnet:
 
 ```powershell
 npx tsx scripts\deploy.ts
@@ -794,7 +735,7 @@ Select a testnet wallet in the wallet service, scan the QR code printed in the t
 - a deployment message for the jetton minter;
 - a mint message that sets the `INITIAL_SUPPLY` of jettons and sends them to the connected wallet.
 
-### 8. Verify the result
+### 7. Verify the result
 
 After sending the deployment transaction, open the printed minter address in a testnet explorer like [Testnet Tonscan](https://testnet.tonscan.org).
 
@@ -805,7 +746,7 @@ Then call `get_jetton_data()` for the minter and confirm:
 - `jetton_content` contains the metadata;
 - `jetton_wallet_code` exists.
 
-### 9. Switch to mainnet
+### 8. Switch to mainnet
 
 After the testnet deployment works, change the network value in `scripts\deploy.ts`:
 
