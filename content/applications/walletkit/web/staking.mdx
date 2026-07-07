@@ -24,7 +24,7 @@ You need a connected wallet and a staking provider registered on the WalletKit i
 
 By default, the provider is the first one you registered. To override it for a specific call, pass `providerId` to any method. To change the default globally, use `setDefaultProvider()`. Note that passing an unknown `providerId` throws an error.
 
-WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, and `getSupportedUnstakeModes()`.
+WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, and `getStakingProviderMetadata()`, and `getSupportedNetworks()`.
 
 ## Methods
 
@@ -32,7 +32,7 @@ WalletKit ships a bundled provider — **Tonstakers**, but you can configure a c
 | ------------------------------------------------------------- | ------------------------------------------------------ |
 | `registerProvider()`, `setDefaultProvider()`, `getProvider()` | Manage the staking provider.                           |
 | `getStakingProviderInfo(network?, providerId?)`               | Read the provider's APY and instant-unstake liquidity. |
-| `getSupportedUnstakeModes(providerId?)`                       | Read unstake modes supported by the provider.          |
+| `getStakingProviderMetadata(network?, providerId?)`           | Read the provider's full static metadata.              |
 | `getQuote(params, providerId?)`                               | Calculate a quote for a stake/unstake.                 |
 | `getStakedBalance(userAddress, network?, providerId?)`        | Read the user's staked-token balance (e.g. `tsTON`).   |
 | `buildStakeTransaction(params, providerId?)`                  | Build a `TransactionRequest` from a quote.             |
@@ -79,7 +79,7 @@ For an unstake, swap `direction` to `unstake`.
 If the provider accepts more than one unstake mode, pass `unstakeMode`. For example, Tonstakers supports the following modes: `UnstakeMode.INSTANT`, `UnstakeMode.WHEN_AVAILABLE`, and `UnstakeMode.ROUND_END`.
 
 ```ts title="TypeScript"
-import { UnstakeMode } from '@ton/walletkit/staking/tonstakers';
+import { UnstakeMode } from '@ton/walletkit';
 
 const unstakeMode = UnstakeMode.INSTANT;
 

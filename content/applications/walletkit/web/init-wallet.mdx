@@ -103,7 +103,7 @@ Create a `WalletSigner` object with these fields:
 >
   The signer function takes an iterable bytes object, such as `array`, `Uint8Array`, or `Buffer`. Then it asynchronously produces an Ed25519-encoded signature of the input as `Hex` — a string containing a hexadecimal value that starts with an explicit `0x` prefix.
 
-  The following example uses the `MnemonicToKeyPair()` function to derive a key pair from a [mnemonic](#mnemonic) saved in the local storage. In production, replace this with your actual signing mechanism.
+  The following example uses the `MnemonicToKeyPair()` function to derive a key pair from a [mnemonic](#mnemonic-phrase) saved in the local storage. In production, replace this with your actual signing mechanism.
 </Callout>
 
 ```ts title="TypeScript"
