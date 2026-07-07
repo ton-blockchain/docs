@@ -20,7 +20,6 @@ import {
   isGitHubPagesBuild,
   getConfig,
   getRedirects,
-  isVercelBuild,
 } from './common.mjs';
 
 /**
@@ -172,11 +171,6 @@ const generateSiblingMarkdownFiles = (dir) => {
 /** @param {string} dir */
 const main = (dir) => {
   const pfx = 'post-build:';
-  if (isVercelBuild) {
-    console.log(pfx, 'skipped — not a static build');
-    process.exit(0);
-  }
-
   console.log(pfx, 'generating sibling LLM markdown files...');
   const { files: mdFiles } = generateSiblingMarkdownFiles(dir);
   console.log(pfx, `${mdFiles} markdown files`);
