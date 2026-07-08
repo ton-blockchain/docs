@@ -7,17 +7,20 @@ import {
   Blocks,
   BrickWall,
   CloudLightning,
+  Coins,
   FileCodeCorner,
   Fuel,
+  Image,
   LifeBuoy,
   MessageCircleCode,
   Rocket,
   Send,
   Server,
+  Wallet,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'TON documentation',
+  title: 'TON Docs — developer documentation',
   description:
     'TON is a blockchain platform designed for scalable smart contracts, applications, and payments at consumer scale.',
   metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
@@ -31,6 +34,12 @@ export const metadata: Metadata = {
 
 type QuickLink = { title: string; href: string; external?: boolean | undefined };
 
+type Action = {
+  title: string;
+  href: string;
+  icon: ComponentType<{ className?: string }>;
+};
+
 type Path = {
   title: string;
   description: string;
@@ -38,7 +47,36 @@ type Path = {
   links: QuickLink[];
 };
 
-// Quick links grouped by audience, mirroring the "journeys" on the legacy index page.
+type Support = {
+  title: string;
+  description: string;
+  href: string;
+  icon: ComponentType<{ className?: string }>;
+};
+
+// Quick actions with most importance to newcomers
+const actions: Action[] = [
+  {
+    // title: 'Process Gram and USDT payments',
+    // title: 'Process Gram and USDT deposits and withdrawals',
+    // title: 'Payments in Gram and USDT',
+    title: 'Add Gram and USDT payments',
+    href: '/applications/payments/setup',
+    icon: Wallet,
+  },
+  {
+    title: 'Create a Jetton (FT)',
+    href: '/contracts/standard/tokens/jettons/create',
+    icon: Coins,
+  },
+  // {
+  //   title: 'Create an NFT',
+  //   href: '/contracts/standard/tokens/nft/create',
+  //   icon: Image,
+  // },
+];
+
+// Quick links grouped by audience (section), mirroring the "journeys" on the legacy index page.
 const paths: Path[] = [
   {
     title: 'Onboarding',
@@ -69,8 +107,10 @@ const paths: Path[] = [
         href: '/applications/walletkit/overview',
       },
       {
-        title: 'Process Gram and USDT deposits and withdrawals',
-        href: '/applications/payments/setup',
+        // title: 'Process Gram and USDT deposits and withdrawals',
+        // href: '/applications/payments/setup',
+        title: 'Process payments in business applications',
+        href: '/applications/payments/overview',
       },
     ],
   },
@@ -110,10 +150,14 @@ const paths: Path[] = [
     icon: FileCodeCorner,
     links: [
       { title: 'Overview', href: '/contracts/overview' },
-      { title: 'Acton toolchain', href: '/contracts/acton', external: true },
-      { title: 'JetBrains IDE plugin', href: '/contracts/ide/jetbrains' },
-      { title: 'VS Code extension', href: '/contracts/ide/vscode' },
-      { title: 'Standard contracts', href: '/contracts/standard/overview' },
+      { title: 'Toolchain and IDEs', href: '/contracts/overview#toolchain' },
+      // { title: 'Acton toolchain', href: '/contracts/acton', external: true },
+      // { title: 'IDEs and editor plugins', 'href': '/contracts/overview#ides-and-editor-plugins' },
+      // { title: 'JetBrains IDE plugin', href: '/contracts/ide/jetbrains' },
+      // { title: 'VS Code extension', href: '/contracts/ide/vscode' },
+      { title: 'Wallet contracts', href: '/contracts/standard/overview#wallets' },
+      { title: 'Jettons and NFTs', href: '/contracts/standard/overview#tokens' },
+      { title: 'Advanced techniques', href: '/contracts/overview#techniques' },
     ],
   },
   {
@@ -158,13 +202,6 @@ const paths: Path[] = [
   },
 ];
 
-type Support = {
-  title: string;
-  description: string;
-  href: string;
-  icon: ComponentType<{ className?: string }>;
-};
-
 const support: Support[] = [
   {
     title: 'Get support',
@@ -198,7 +235,7 @@ function QuickLinkRow({ title, href, external }: QuickLink) {
     <Component className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
   );
 
-  if (isExternal(href)) {
+  if (isExternal(href) || external) {
     return (
       <a className={className} href={href} target="_blank" rel="noreferrer">
         <span>{title}</span>
@@ -240,7 +277,7 @@ export default function HomePage() {
           <img src="logo/ton.svg" alt="TON logo" className="hidden h-28 w-auto shrink-0 lg:block" />
           <div className="max-w-2xl">
             <h1 className="text-balance text-4xl font-semibold tracking-tight">
-              TON documentation
+              TON Documentation
             </h1>
             <p className="mt-6 text-pretty text-xl text-fd-muted-foreground">
               TON is a blockchain platform designed for scalable smart contracts, applications, and
@@ -249,9 +286,41 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* choose your path */}
+        {/* quick actions */}
         <section className="mt-4 flex flex-col gap-6">
-          <h2 className="text-balance text-2xl font-semibold tracking-tight">Choose your path</h2>
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">Common actions</h2>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {actions.map(({ title, href, icon: Icon }) => {
+              const className =
+                'group flex min-h-20 items-center gap-3 rounded-2xl border border-fd-border bg-fd-card px-5 py-4 text-left transition-colors hover:border-fd-primary hover:bg-fd-accent dark:hover:bg-fd-background';
+              // 'group flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6 transition-colors hover:border-fd-primary';
+              const inner = (
+                <>
+                  <Icon className="size-5 text-fd-primary" />
+                  <span className="min-w-0 flex-1 text-sm font-semibold leading-snug text-fd-card-foreground">
+                    {title}
+                  </span>
+                  <ArrowRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
+                </>
+              );
+
+              return isExternal(href) ? (
+                <a key={title} className={className} href={href} target="_blank" rel="noreferrer">
+                  {inner}
+                </a>
+              ) : (
+                <Link key={title} className={className} href={href}>
+                  {inner}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* pathfinding */}
+        <section className="mt-12 flex flex-col gap-6">
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">Learning paths</h2>
+          {/* <h2 className="text-balance text-2xl font-semibold tracking-tight">Choose your path</h2> */}
           <div className="grid gap-4 sm:grid-cols-2">
             {paths.map(({ title, description, icon: Icon, links }) => (
               <div
@@ -288,9 +357,8 @@ export default function HomePage() {
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {support.map(({ title, description, href, icon: Icon }) => {
-              const external = isExternal(href);
               const className =
-                'group flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6 transition-colors hover:border-fd-primary';
+                'group flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6 transition-colors hover:border-fd-primary hover:bg-fd-accent dark:hover:bg-fd-background';
               const inner = (
                 <>
                   <div className="flex items-center gap-3">
@@ -301,7 +369,7 @@ export default function HomePage() {
                 </>
               );
 
-              return external ? (
+              return isExternal(href) ? (
                 <a key={title} className={className} href={href} target="_blank" rel="noreferrer">
                   {inner}
                 </a>

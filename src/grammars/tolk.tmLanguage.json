@@ -43,7 +43,7 @@
     },
     {
       "name": "keyword.control",
-      "match": "\\b(do|if|try|else|while|break|throw|catch|return|assert|repeat|continue|asm|builtin|match|lazy)\\b"
+      "match": "\\b(do|if|try|else|while|for|break|throw|catch|return|assert|repeat|continue|asm|builtin|match|lazy)\\b"
     },
     {
       "name": "keyword.operator",
@@ -51,7 +51,7 @@
     },
     {
       "name": "keyword.other",
-      "match": "\\b(import|export|true|false|null|redef|mutate|tolk|as|is|!is|private|readonly|string)\\b"
+      "match": "\\b(import|export|namespace|true|false|null|mutate|tolk|as|is|private|readonly)\\b"
     },
     {
       "name": "keyword.other",
@@ -59,10 +59,10 @@
     },
     {
       "name": "entity.name.type.parameter",
-      "match": "\\b[TU]\\b"
+      "match": "(?<!\\.)\\b[TUKV]\\b"
     },
     {
-      "match": "\\b(val|var)\\s+(?:type|enum|int|map|array|cell|Cell|void|dict|bool|any_address|slice|string|tuple|builder|continuation|never|coins|address|int\\d+|uint\\d+|bits\\d+|bytes\\d+)\\b",
+      "match": "\\b(val|var)\\s+(?:type|enum|int|map|array|cell|Cell|void|dict|bool|any_address|slice|string|tuple|builder|continuation|never|unknown|coins|varint16|varint32|varuint16|varuint32|address|int\\d+|uint\\d+|bits\\d+|bytes\\d+)\\b",
       "captures": {
         "1": {"name": "storage.modifier"}
       }
@@ -73,7 +73,7 @@
     },
     {
       "name": "storage.type",
-      "match": "\\b(type|enum|int|map|array|cell|Cell|void|dict|bool|any_address|slice|string|tuple|builder|continuation|never|coins|int\\d+|uint\\d+|bits\\d+|bytes\\d+)\\b"
+      "match": "(?<!\\.)\\b(type|enum|int|map|array|cell|Cell|void|dict|bool|any_address|slice|string|tuple|builder|continuation|never|unknown|coins|varint16|varint32|varuint16|varuint32|int\\d+|uint\\d+|bits\\d+|bytes\\d+)\\b"
     },
     {
       "name": "storage.type",

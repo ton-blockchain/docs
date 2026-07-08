@@ -99,6 +99,7 @@ export default defineConfig({
         'python',
         'rust',
         'shellscript',
+        'powershell',
         'ts',
         'tsx',
         'yaml',
