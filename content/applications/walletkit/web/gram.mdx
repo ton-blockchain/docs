@@ -4,7 +4,7 @@ sidebarTitle: "Work with Gram"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
+  [Initialize WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/init-wallet), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Callout>
 
 To work with Gram, the wallet service needs to handle [contract balances](#balances) and perform transfers initiated [from dApps](#transfers-from-dapps) and [from within the wallet service itself](#transfers-from-the-wallet-service).
@@ -16,7 +16,7 @@ Blockchain state changes constantly as new blocks are produced. This has implica
 - [Discrete one-off checks](#on-demand-balance-check) have almost no value on their own — the state might change immediately after the query completes, invalidating its results. Thus, such checks are only practical when handling `transaction` requests.
 - [Continuous monitoring](#continuous-balance-monitoring) is useful for UI display, showing the most recent balance to users, but should not be used for transaction confirmations.
 
-Notice that both cases require querying the blockchain data via the API client set during the [WalletKit initialization](/applications/walletkit/web/init#param-networks). Obtain and provide the key from the selected client to access higher requests-per-second limits.
+Notice that both cases require querying the blockchain data via the API client set during the [WalletKit initialization](/applications/walletkit/web/configure#networks-required). Obtain and provide the key from the selected client to access higher requests-per-second limits.
 
 ### On-demand balance check
 
@@ -188,7 +188,7 @@ kit.onTransactionRequest(async (event) => {
 ```
 
 <Callout>
-  Emulation uses the API client configured during [WalletKit initialization](/applications/walletkit/web/init#param-networks).
+  Emulation uses the API client configured during [WalletKit initialization](/applications/walletkit/web/configure#networks-required).
 </Callout>
 
 ### Approve or reject
@@ -268,7 +268,7 @@ That said, the wallet service should not block the UI while waiting for such con
 
 ## Transfers in the wallet service
 
-Transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
+Transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via `handleNewTransaction()` method of WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
 
 This example should be modified according to the wallet service's logic:
 
@@ -316,7 +316,7 @@ async function sendGram(
 ```
 
 <Callout type="caution">
-  To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of the WalletKit, modifying the last part of the previous code snippet:
+  To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of WalletKit, modifying the last part of the previous code snippet:
 
   ```ts title="TypeScript"
   // Instead of calling kit.handleNewTransaction(fromWallet, tx)

@@ -4,7 +4,7 @@ sidebarTitle: "Work with NFTs"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
+  [Initialize WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/init-wallet), handle [connection requests](/applications/walletkit/web/connections) and [transaction requests](/applications/walletkit/web/events) before using examples on this page.
 </Callout>
 
 [NFTs](/contracts/standard/tokens/nft/overview) (non-fungible tokens) are unique digital assets on TON, similar to ERC-721 tokens on Ethereum. Unlike [jettons](/contracts/standard/tokens/jettons/overview), which are fungible and interchangeable, each NFT is unique and represents ownership of a specific item. NFTs consist of a collection contract and individual NFT item contracts for each token.
@@ -197,7 +197,7 @@ As with Gram transfers, the wallet service should not block the UI while waiting
 
 ## Transfers in the wallet service
 
-NFT transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of the WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
+NFT transactions can be created directly from the wallet service (not from dApps) and fed into the regular approval flow via the `handleNewTransaction()` method of WalletKit. It creates a new [transaction request event](/applications/walletkit/web/events#handle-ontransactionrequest), enabling the same UI confirmation-to-transaction flow for both dApp-initiated and wallet-initiated transactions.
 
 <Callout
   type="danger"
@@ -253,7 +253,7 @@ async function sendNft(
 ```
 
 <Callout type="caution">
-  To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of the WalletKit, modifying the last part of the previous code snippet:
+  To avoid triggering the `onTransactionRequest()` handler and send the transaction directly, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of WalletKit, modifying the last part of the previous code snippet:
 
   ```ts title="TypeScript"
   // Instead of calling kit.handleNewTransaction(fromWallet, tx)
