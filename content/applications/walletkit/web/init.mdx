@@ -82,7 +82,7 @@ To initialize WalletKit with the minimum required setup, take these steps:
    ```
 
    <Callout type="note">
-     API providers allow WalletKit to read blockchain data — for example, to fetch account balances and query jettons and NFTs. API keys allow you to access to higher RPS limits.
+     API providers allow WalletKit to read blockchain data — for example, to fetch account balances and query jettons and NFTs. API keys allow you to access higher RPS limits.
    </Callout>
 
    <Callout type="note">
@@ -99,7 +99,7 @@ To initialize WalletKit with the minimum required setup, take these steps:
 
 In the previous step, you initialized WalletKit with the only required parameter: network configuration. There are also optional parameters you can pass on initialization — for a full list, see [Configure parameters](/applications/walletkit/web/configure).
 
-It's useful to add some of the optional settings right away. Add them to the same TonWalletKit call from [Step 2](2-initialize-the-kit):
+It's useful to add some of the optional settings right away. Add them to the same TonWalletKit call from [Step 2](#2-initialize-the-kit):
 
 - `deviceInfo`: Core information and constraints of the wallet. Specify the wallet version:
 
@@ -117,10 +117,10 @@ It's useful to add some of the optional settings right away. Add them to the sam
   ```
 
   <Callout type="note">
-    For other settings,  WalletKit will use default values. This includes supported wallet features, the maximum supported TON Connect protocol version, the human-readable name of your wallet, and the current platform ('browser').
+    For other settings, WalletKit will use default values. This includes supported wallet features, the maximum supported TON Connect protocol version, the human-readable name of your wallet, and the current platform ('browser').
   </Callout>
 
-- `walletManifest`: The TON Connect's wallet manifest. To add it, call `createWalletManifest()`. This function  provides initial defaults, but you may want to specify some custom values, such as the human-readable name of your wallet or its icon image URL.  Learn more: [Manifest](/applications/ton-connect/core-concepts#manifest).
+- `walletManifest`: The TON Connect's wallet manifest. To add it, call `createWalletManifest()`. This function provides initial defaults, but you may want to specify some custom values, such as the human-readable name of your wallet or its icon image URL. Learn more: [Manifest](/applications/ton-connect/core-concepts#manifest).
 
   ```ts title="TypeScript"
   import {

@@ -24,7 +24,7 @@ You need a connected wallet and a staking provider registered on the WalletKit i
 
 By default, the provider is the first one you registered. To override it for a specific call, pass `providerId` to any method. To change the default globally, use `setDefaultProvider()`. Note that passing an unknown `providerId` throws an error.
 
-WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, and `getStakingProviderMetadata()`, and `getSupportedNetworks()`.
+WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, `getStakingProviderMetadata()`, and `getSupportedNetworks()`.
 
 ## Methods
 
