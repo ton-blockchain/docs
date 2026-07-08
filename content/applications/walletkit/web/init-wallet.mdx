@@ -1,7 +1,6 @@
 ---
-title: "Initialize a TON wallet"
+title: "Initialize a TON wallet with WalletKit on the Web platform"
 sidebarTitle: "Initialize a TON wallet"
-description: ""
 ---
 
 <Callout>
@@ -220,7 +219,7 @@ Below, you can find complete sample codes for initializing a wallet with differe
       {
         type: 'ton',
       },
-    ); 
+    );
 
     // 2. Create a wallet adapter
     const walletAdapter = await WalletV5R1Adapter.create(signer, {
@@ -294,7 +293,7 @@ Below, you can find complete sample codes for initializing a wallet with differe
       client: kit.getApiClient(Network.mainnet()),
     });
 
-    // 3. Initialize the wallet 
+    // 3. Initialize the wallet
     const wallet = await kit.addWallet(walletAdapter);
     ```
   </Tab>
