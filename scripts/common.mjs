@@ -36,9 +36,6 @@ export const prefix = '/docs';
 export const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 
-// WARN: Must match next.config.ts check
-export const isVercelBuild = process.env.NEXT_CONFIG === 'vercel';
-
 /** @param src {string} */
 export function ansiRed(src) {
   return `\x1b[31m${src}\x1b[0m`;

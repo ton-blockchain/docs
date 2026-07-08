@@ -14,7 +14,13 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, extname, dirname } from 'node:path';
 // Common
-import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects, isVercelBuild } from './common.mjs';
+import {
+  prefix,
+  outDir,
+  isGitHubPagesBuild,
+  getConfig,
+  getRedirects,
+} from './common.mjs';
 
 /**
  * @param {string} path - file path
@@ -160,16 +166,11 @@ const generateSiblingMarkdownFiles = (dir) => {
 
   walk(llms);
   return { files };
-}
+};
 
 /** @param {string} dir */
 const main = (dir) => {
   const pfx = 'post-build:';
-  if (isVercelBuild) {
-    console.log(pfx, 'skipped — not a static build');
-    process.exit(0);
-  }
-
   console.log(pfx, 'generating sibling LLM markdown files...');
   const { files: mdFiles } = generateSiblingMarkdownFiles(dir);
   console.log(pfx, `${mdFiles} markdown files`);

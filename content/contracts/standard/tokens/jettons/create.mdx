@@ -1,0 +1,767 @@
+---
+title: "How to create a jetton with Acton"
+sidebarTitle: "Create a jetton"
+---
+
+Jettons (Fungible Tokens, FTs) serve as TON's counterpart to Ethereum's ERC-20 tokens, operating as the primary means of creating new currencies. These tokens embody the principle of fungibility, in which each unit has identical value and can be seamlessly exchanged for any other unit of the same token type.
+
+Unlike ERC-20 tokens, jettons use the [contract sharding](/contracts/techniques/contract-sharding) approach and are split into two contracts: a master (minter) contract and a wallet contract. The jetton minter stores key jetton data, such as the owner's address and total supply, while provisioning jetton wallets for each TON wallet holder. Deploying a new jetton means deploying the jetton minter contract.
+
+For example, USDT on TON is implemented as a jetton, and its minter contract address is [`EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`](https://tonscan.org/jetton/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs).
+
+This guide creates a jetton project from the Acton `jetton` template, edits the metadata, deploys the jetton minter, and runs common post-deployment operations.
+
+<Callout type="note">
+  There are web services for deploying and interacting with jettons, such as [TON MINTER](https://minter.ton.org/). There is also a jetton launchpad named after one of the larger celestial bodies in your solar system.
+</Callout>
+
+## Goal
+
+A new jetton (FT) with custom metadata deployed to TON mainnet or testnet.
+
+## Prerequisites
+
+- Linux or macOS environment. On Windows, use [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/windows/wsl/install); otherwise, refer to a [more involved, manual approach](#windows).
+- (optional) To use [web UI](#web-ui), install [Node.js](https://nodejs.org/en/download/) 22 or later LTS.
+- (optional) To instruct AI agents, set up [Acton development skills](https://ton-blockchain.github.io/acton/docs/agent-skills/overview).
+
+For deployment on testnet or mainnet, prepare a funded wallet with 0.5 Gram. The testnet wallet can be created by Acton and funded via the Acton faucet, as shown in the guide below.
+
+## 1. Install Acton toolchain
+
+Use the official installer script:
+
+```bash
+curl -LsSf https://ton.org/acton/install.sh | sh
+```
+
+Open a new shell, then check the installed version:
+
+```bash
+acton --version
+```
+
+Expected versions are 1.1.0 or later.
+
+For alternative installation methods or relevant `$PATH` configuration, see the main [Acton installation page](https://ton-blockchain.github.io/acton/docs/installation).
+
+## 2. Create a new jetton project
+
+<Callout type="note">
+  The following setup assumes CLI-only configuration and usage. To deploy and manage a jetton from a [web UI](#web-ui), provide `--app` when creating the project.
+</Callout>
+
+Run `acton new` with the `jetton` template:
+
+```bash
+acton new my-jetton --template jetton --agents
+```
+
+The command will prompt for the name, description, licensing, and other options. Open the project directory once it is created:
+
+```bash
+cd my-jetton
+```
+
+The most important project files for this guide are:
+
+- `contracts/JettonMinter.tolk` and `contracts/JettonWallet.tolk` — master (minter) and wallet contract sources, respectively. Deploying a jetton means deploying its master (minter) contract, which will be responsible for the subsequent deployment and management of jetton wallets and for tracking jetton balances for each TON wallet holder.
+- `scripts/` — folder with Tolk scripts for deployment, minting, admin transfer, admin claim, and metadata updates.
+- `tests/` — folder with contract tests.
+- `Acton.toml` — project configuration and script aliases.
+
+<Callout type="note">
+  Read more about the project layout in the Acton documentation: [Default project layout](https://ton-blockchain.github.io/acton/docs/projects#default-project-layout).
+</Callout>
+
+## 3. Configure metadata
+
+<Callout type="note">
+  In a [web UI](#web-ui) setup, deployment metadata is entered directly into the dApp.
+</Callout>
+
+Contract's data that stores token-specific values is commonly called _metadata_. For jettons with identical code, metadata is the only differentiating factor — it specifies the jetton's name, symbol ([ticker](/foundations/glossary#ticker)), description, image, and decimal precision.
+
+The metadata values can be written in a `.env` file — Acton reads environment variables from it automatically.
+
+Create `.env` from the example file:
+
+```bash
+cp .env.example .env
+```
+
+Write the target metadata:
+
+```env
+# Name
+JETTON_NAME="My new token"
+
+# Ticker, like USDT
+JETTON_SYMBOL="SAMPLE"
+
+# Description
+JETTON_DESCRIPTION="Sample jetton created with Acton"
+
+# Use an image URL that will remain available after deployment!
+JETTON_IMAGE="https://example.com/sample-jetton.png"
+
+# Decimal precision: Gram uses 9 (nanograms), USDT uses 6 (microUSDT)
+JETTON_DECIMALS="6"
+```
+
+These values will form most of the contract's data during deployment — scripts will ask for any missing values interactively. Wallet services, explorers, and other dApps will use this metadata to display the jetton.
+
+Additionally, there is `JETTON_ADMIN_ADDRESS`, which specifies the TON wallet of the jetton's owner (admin) after deployment. It is a safeguard for critical operations such as minting new jettons, updating metadata, or transferring admin rights to another wallet. `JETTON_ADMIN_ADDRESS` can be supplied either on the CLI when running scripts or appended to `.env` in advance.
+
+<Callout type="tip">
+  One way to keep the image URL available for a long time is to host it on a GitHub Pages site. The tokenomics presentation can also be hosted there.
+</Callout>
+
+### Opt for higher RPS limits
+
+By default, the API is rate-limited to 1 request per second. Obtain a [TON Center API key](/api/get-api-key) to get higher RPS limits for blockchain queries.
+
+Append the keys to the `.env` file:
+
+```env
+# (optional) API key for mainnet
+TONCENTER_MAINNET_API_KEY=...
+
+# (optional) API key for testnet
+TONCENTER_TESTNET_API_KEY=...
+```
+
+Acton loads `.env` variables automatically.
+
+## 4. Build contracts and run tests
+
+Compile the jetton minter and wallet contracts:
+
+```bash
+acton build
+```
+
+Run the generated test suite:
+
+```bash
+acton test
+```
+
+Continue only after all tests pass.
+
+## 5. Deploy the jetton
+
+The `scripts/deploy.tolk` allows deploying the jetton minter contract to a local emulator, testnet, and mainnet. Deploy to TON mainnet only after the local and testnet deployments work as expected.
+
+### Emulator
+
+For deployment to a local emulator, there is a `deploy-emulation` script alias defined in `Acton.toml`:
+
+```bash
+acton run deploy-emulation
+```
+
+Select the `deployer` wallet when prompted. For a first test, use the deployer wallet address as the admin address.
+
+The script prints values similar to these:
+
+```text
+JETTON MINTER_ADDRESS=<JETTON_MINTER_ADDRESS>
+JETTON TOTAL_SUPPLY=0
+JETTON MINTABLE=-1
+JETTON ADMIN_ADDRESS=<JETTON_ADMIN_ADDRESS>
+JETTON METADATA_name=<JETTON_NAME>
+JETTON METADATA_symbol=<JETTON_SYMBOL>
+```
+
+### Testnet
+
+Deployment to testnet requires sending a [message with the contract's code and data attached](/foundations/messages/deploy) from a TON wallet and paying the required fees. Acton's `deploy-testnet` script alias automates this process, yet one must prepare a funded testnet wallet in advance to pay the fees and send the message.
+
+Deploy with an existing wallet using [TON Connect](#ton-connect) or [create a new one with Acton](#new-development-wallet), then [inspect the deployed jetton info](#inspect-the-jetton).
+
+#### TON Connect
+
+If there's an existing TON wallet created in one of the TON wallet services, use TON Connect protocol to supply it during testnet deployment:
+
+```bash
+acton run deploy-testnet --explorer tonscan --tonconnect
+```
+
+Append the printed address of the deployed jetton to the `.env` file:
+
+```bash
+JETTON_MINTER_ADDRESS=...
+```
+
+#### New development wallet
+
+Acton can create a local development wallet and securely store its credentials on the system. The wallet will be deployed to the testnet and later used to send the jetton deployment or subsequent messages:
+
+```bash
+acton wallet new --name deployer --version v5r1 --local --secure=true
+```
+
+Request testnet Gram for the wallet:
+
+```bash
+acton wallet airdrop deployer --net testnet
+```
+
+Check the wallet balance:
+
+```bash
+acton wallet list --balance
+```
+
+Deploy the jetton:
+
+```bash
+acton run deploy-testnet --explorer tonscan
+```
+
+Append the printed address of the deployed jetton to the `.env` file:
+
+```bash
+JETTON_MINTER_ADDRESS=...
+```
+
+#### Inspect the jetton
+
+Read the deployed minter data with the `jetton-info` script alias:
+
+```bash
+acton run jetton-info --fork-net testnet
+```
+
+The expected output includes total supply, admin address, metadata fields, and the owner (admin) jetton wallet address.
+
+Alternatively, enter the `JETTON_MINTER_ADDRESS` value to any of the [TON explorers](/onboarding/explorers/overview), such as [Tonscan for Testnet](https://testnet.tonscan.org/).
+
+#### Mint jettons
+
+After deployment, the total supply of jettons is 0. Mint new ones to the jetton owner address with the `jetton-mint` script alias to set the initial supply:
+
+```bash
+JETTON_MINT_AMOUNT=42000000 \
+  acton run jetton-mint --net testnet --explorer tonscan --tonconnect
+```
+
+<Callout type="note">
+  Remove the `--tonconnect` flag to use the locally set up [development wallet](#new-development-wallet).
+</Callout>
+
+The mint amount is measured in indivisible jetton units based on the specified decimal precision: for `JETTON_DECIMALS="6"`, `1000000` units equals `1` jetton.
+
+By default, the recipient of minted jettons is the jetton owner. Supply `JETTON_MINT_RECIPIENT` to override the address.
+
+### Mainnet
+
+<Callout
+  type="caution"
+  title="Funds at risk"
+>
+  Mainnet deployment, minting, transfers, burns, admin changes, and metadata updates send real transactions and spend real Gram. Successful mainnet transactions cannot be rolled back.
+
+  Deploy to TON mainnet only after the [emulator](#emulator) and [testnet](#testnet) deployments and [follow-up actions](#6-run-follow-up-actions) work as expected.
+</Callout>
+
+Use a funded mainnet wallet through the TON Connect protocol as the deployer. Double-check the admin address, metadata, and network before approving the transaction.
+
+```bash
+acton script scripts/deploy.tolk --net mainnet --explorer tonscan --tonconnect
+```
+
+Mint initial jetton supply to the admin address:
+
+```bash
+JETTON_MINT_AMOUNT=42000000 \
+  acton run jetton-mint --net mainnet --explorer tonscan --tonconnect
+```
+
+## 6. Run follow-up actions
+
+Use the following script aliases to run optional follow-up actions after the initial deployment:
+
+| Name                                 | Description                                               | Environment variables                                                          |
+| ------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `jetton-info`                        | Display minter and wallet info.                           | `JETTON_MINTER_ADDRESS`                                                        |
+| `jetton-mint`                        | Mint jettons to a recipient, increasing the total supply. | `JETTON_MINTER_ADDRESS`, `JETTON_MINT_RECIPIENT`, `JETTON_MINT_AMOUNT`         |
+| `jetton-transfer`                    | Transfer jettons between wallets.                         | `JETTON_MINTER_ADDRESS`, `JETTON_TRANSFER_RECIPIENT`, `JETTON_TRANSFER_AMOUNT` |
+| (irreversible) `jetton-change-admin` | Propose a new minter admin.                               | `JETTON_MINTER_ADDRESS`, `JETTON_NEW_ADMIN_ADDRESS`                            |
+| (dangerous) `jetton-claim-admin`     | Claim pending admin status from the new admin wallet.     | `JETTON_MINTER_ADDRESS`                                                        |
+| (dangerous) `jetton-change-metadata` | Update jetton metadata.                                   | `JETTON_MINTER_ADDRESS` and [metadata variables](#3-configure-metadata)        |
+
+Once the jetton is deployed to mainnet, its metadata is correct, and its supply is capped, it is good practice to revoke ownership, i.e., transfer the admin rights to the so-called [_burn address_ on mainnet](https://tonscan.org/address/UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ). It is one of the requirements for listing on some popular [DEXes](/foundations/glossary#decentralized-exchange-dex).
+
+```bash
+JETTON_NEW_ADMIN_ADDRESS=UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ \
+  acton run jetton-change-admin --net mainnet --explorer tonscan
+```
+
+## Web UI
+
+The same jetton project can be created with the TypeScript dApp:
+
+```bash
+acton new my-jetton-app --template jetton --app
+```
+
+The command will prompt for the name, description, licensing, and other options. Open the project directory once it is created:
+
+```bash
+cd my-jetton-app
+```
+
+The dApp project uses a [different layout](https://ton-blockchain.github.io/acton/docs/projects#dapp-project-layout) from the regular `jetton` template. Additionally, it is tightly coupled with the contracts ABI — when modifying the contracts, remember to update the web UI bindings as well.
+
+Install additional dependencies:
+
+```bash
+npm ci
+```
+
+Build contracts and the UI:
+
+```bash
+npm run build
+```
+
+Start the dApp development server:
+
+```bash
+npm run dev
+```
+
+The dApp opens a jetton UI with:
+
+- network selector for testnet and mainnet;
+- TON Connect wallet button;
+- `Create` view for deploying a jetton and minting initial supply to the connected wallet;
+- `Manage` view for loading a jetton minter address;
+- actions for minting, transferring, burning, changing admin rights, and updating metadata.
+
+<Callout type="caution">
+  Use testnet in the UI first. Switch to mainnet only after checking the connected wallet, network, minter address, and transaction details.
+</Callout>
+
+## Windows
+
+Acton supports Linux and macOS. On Windows, use [Windows Subsystem for Linux (WSL) and the main guide](#prerequisites) when possible.
+
+Use the following steps **only** when WSL is **not** available. Build and deployment scripts require Node.js LTS version 22 or later.
+
+<Callout
+  type="caution"
+  title="Manual Windows path"
+>
+  This path uses the standalone Tolk compiler and a TypeScript deployment script instead of Acton. Run the full flow on TON Testnet before using TON Mainnet. Mainnet transactions spend real Gram and cannot be rolled back.
+</Callout>
+
+### 1. Prepare the project
+
+Open PowerShell and create a working directory:
+
+```powershell
+mkdir jetton-windows
+cd jetton-windows
+mkdir contracts
+mkdir gen
+mkdir build
+mkdir scripts
+```
+
+Clone the Acton contracts repository:
+
+```powershell
+git clone https://github.com/ton-blockchain/acton-contracts.git vendor\acton-contracts
+```
+
+Copy the jetton contracts into the local project:
+
+```powershell
+Copy-Item vendor\acton-contracts\jetton-v2.1\contracts\*.tolk contracts\
+```
+
+Initialize the TypeScript project:
+
+```powershell
+npm init -y
+npm install @ton/core @tonconnect/sdk qrcode-terminal
+npm install --save-dev typescript tsx @ton/tolk-js
+```
+
+Create `tsconfig.json`:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+Create `.gitignore`:
+
+```text title=".gitignore"
+/vendor
+/node_modules
+.env
+```
+
+### 2. Compile the jetton wallet
+
+Compile `JettonWallet.tolk`:
+
+```powershell
+npx @ton/tolk-js -o build\JettonWallet.json contracts\JettonWallet.tolk
+```
+
+Extract the `codeBoc64` from the JSON artifact and save it separately:
+
+```powershell
+$artifact = Get-Content "build\JettonWallet.json" | ConvertFrom-Json
+$artifact.codeBoc64 | Set-Content build\JettonWallet.base64
+```
+
+### 3. Add the wallet code helper
+
+Create `gen\JettonWallet.code.tolk`:
+
+```powershell
+$walletCodeBase64 = Get-Content build\JettonWallet.base64
+
+@"
+// Manually generated on Windows.
+// Provides compiled BoC data for the JettonWallet contract.
+//
+@pure
+fun jettonWalletCompiledCode(): cell asm """
+    "$walletCodeBase64" base64>B B>boc PUSHREF
+"""
+"@ | Set-Content gen\JettonWallet.code.tolk
+```
+
+Open `contracts\JettonMinter.tolk` and replace the generated Acton import with the local helper:
+
+```tolk
+// Replace this line
+import "@gen/JettonWallet.code"
+
+// with this line
+import "../gen/JettonWallet.code"
+```
+
+If the file uses a different import path, replace the import that provides `jettonWalletCompiledCode()`.
+
+### 4. Compile the jetton minter
+
+Compile `JettonMinter.tolk`:
+
+```powershell
+npx @ton/tolk-js -o build\JettonMinter.json contracts\JettonMinter.tolk
+```
+
+Extract the `codeBoc64` from the JSON artifact and save it separately:
+
+```powershell
+$artifact = Get-Content "build\JettonMinter.json" | ConvertFrom-Json
+$artifact.codeBoc64 | Set-Content build\JettonMinter.base64
+```
+
+### 5. Create the deployment script
+
+Create `scripts\deploy.ts` — the script uses the headless TON Connect SDK for the wallet session and `qrcode-terminal` to show the connection link directly in PowerShell:
+
+```ts title="scripts\deploy.ts"
+import { Address, beginCell, Cell, contractAddress, Dictionary, StateInit, storeStateInit, toNano } from "@ton/core";
+import TonConnect from "@tonconnect/sdk";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { createInterface } from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
+
+// Network to deploy the jettons to
+const NETWORK: "testnet" | "mainnet" = "testnet";
+
+// Initial jetton supply: 42 jettons when JETTON_DECIMALS is "6"
+const INITIAL_SUPPLY = 42_000_000n;
+
+// Jetton metadata
+const JETTON_NAME = "Sample Jetton";
+const JETTON_SYMBOL = "SAMPLE";
+const JETTON_DESCRIPTION = "Sample jetton created on Windows";
+const JETTON_IMAGE = "https://example.com/sample-jetton.png";
+const JETTON_DECIMALS = "6";
+
+// --- rest of the script ---
+
+const NETWORK_ID = NETWORK === "mainnet" ? "-239" : "-3";
+const TEST_ONLY = NETWORK === "testnet";
+const MANIFEST_URL = "https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json";
+
+const require = createRequire(import.meta.url);
+const qrcode = require("qrcode-terminal") as {
+  generate(input: string, options?: { small?: boolean }): void;
+};
+
+class MemoryStorage {
+  private readonly data = new Map<string, string>();
+
+  async setItem(key: string, value: string) {
+    this.data.set(key, value);
+  }
+
+  async getItem(key: string) {
+    return this.data.get(key) ?? null;
+  }
+
+  async removeItem(key: string) {
+    this.data.delete(key);
+  }
+}
+
+function snakeData(value: string): Cell {
+  return beginCell()
+    .storeUint(0, 8)
+    .storeStringTail(value)
+    .endCell();
+}
+
+function sha256BigInt(value: string): bigint {
+  return BigInt("0x" + createHash("sha256").update(value).digest("hex"));
+}
+
+function buildOnchainMetadata(): Cell {
+  const entries = [
+    ["name", JETTON_NAME],
+    ["symbol", JETTON_SYMBOL],
+    ["description", JETTON_DESCRIPTION],
+    ["image", JETTON_IMAGE],
+    ["decimals", JETTON_DECIMALS],
+  ];
+
+  const metadata = Dictionary.empty(Dictionary.Keys.BigUint(256), Dictionary.Values.Cell());
+  for (const [key, value] of entries) {
+    metadata.set(sha256BigInt(key), snakeData(value));
+  }
+
+  return beginCell()
+    .storeUint(0, 8)
+    .storeDict(metadata)
+    .endCell();
+}
+
+function buildMinterData(adminAddress: Address): Cell {
+  return beginCell()
+    .storeCoins(0n)
+    .storeAddress(adminAddress)
+    .storeAddress(null)
+    .storeRef(buildOnchainMetadata())
+    .endCell();
+}
+
+function buildTopUpBody(): string {
+  return beginCell()
+    .storeUint(0xd372158c, 32) // TopUpTons
+    .endCell()
+    .toBoc()
+    .toString("base64");
+}
+
+function buildMintBody(adminAddress: Address): string {
+  const forwardPayload = beginCell()
+    .storeUint(0, 32)
+    .storeStringTail("Initial mint")
+    .endCell();
+
+  const internalTransfer = beginCell()
+    .storeUint(0x178d4519, 32) // InternalTransferStep
+    .storeUint(0n, 64)
+    .storeCoins(INITIAL_SUPPLY)
+    .storeAddress(null) // transferInitiator: null when minting
+    .storeAddress(adminAddress) // sendExcessesTo
+    .storeCoins(toNano("0.02"))
+    .storeBit(1) // forwardPayload stored as a reference
+    .storeRef(forwardPayload)
+    .endCell();
+
+  return beginCell()
+    .storeUint(0x642b7d07, 32) // MintNewJettons
+    .storeUint(0n, 64)
+    .storeAddress(adminAddress)
+    .storeCoins(toNano("0.08")) // Gram sent to the admin's jetton wallet
+    .storeRef(internalTransfer)
+    .endCell()
+    .toBoc()
+    .toString("base64");
+}
+
+async function connectWallet(connector: TonConnect) {
+  await connector.restoreConnection();
+  if (connector.wallet) {
+    return connector.wallet;
+  }
+
+  const wallets = (await connector.getWallets())
+    .filter((wallet: any) => wallet.bridgeUrl && wallet.universalLink);
+
+  if (wallets.length === 0) {
+    throw new Error("No TON Connect wallets with bridge support were found.");
+  }
+
+  wallets.slice(0, 10).forEach((wallet: any, index: number) => {
+    console.log(`${index + 1}. ${wallet.name}`);
+  });
+
+  const rl = createInterface({ input, output });
+  const answer = await rl.question("Select wallet [1]: ");
+  rl.close();
+
+  const selectedIndex = Math.min(wallets.length - 1, Math.max(0, Number(answer || "1") - 1));
+  const selected = wallets[selectedIndex] as any;
+  const universalLink = connector.connect({
+    bridgeUrl: selected.bridgeUrl,
+    universalLink: selected.universalLink,
+  });
+
+  console.log(`\nScan this QR code with ${selected.name}, or open the link below:\n`);
+  qrcode.generate(universalLink, { small: true });
+  console.log(`\n${universalLink}\n`);
+
+  return await new Promise<NonNullable<typeof connector.wallet>>((resolve, reject) => {
+    let unsubscribe: (() => void) | undefined;
+    const timeout = setTimeout(() => {
+      unsubscribe?.();
+      reject(new Error("Wallet connection timed out."));
+    }, 180_000);
+
+    unsubscribe = connector.onStatusChange((wallet) => {
+      if (!wallet) {
+        return;
+      }
+      clearTimeout(timeout);
+      unsubscribe?.();
+      resolve(wallet);
+    }, reject);
+  });
+}
+
+async function main() {
+  const connector = new TonConnect({
+    manifestUrl: MANIFEST_URL,
+    storage: new MemoryStorage(),
+  });
+  const wallet = await connectWallet(connector);
+
+  if (wallet.account.chain !== NETWORK_ID) {
+    throw new Error(`Switch the connected wallet to ${NETWORK}.`);
+  }
+
+  const sendFeature = wallet.device.features.find(
+    (feature: any) => typeof feature === "object" && feature.name === "SendTransaction"
+  ) as { maxMessages?: number } | undefined;
+  if (sendFeature?.maxMessages !== undefined && sendFeature.maxMessages < 2) {
+    throw new Error("The connected wallet does not support sending both deploy and mint messages together.");
+  }
+
+  const adminAddress = Address.parse(wallet.account.address);
+  const code = Cell.fromBase64(readFileSync("build/JettonMinter.base64"));
+  const data = buildMinterData(adminAddress);
+  const stateInit: StateInit = { code, data };
+  const minterAddress = contractAddress(0, stateInit);
+
+  const minterDeployAddress = minterAddress.toString({ testOnly: TEST_ONLY, bounceable: false });
+  const minterMintAddress = minterAddress.toString({ testOnly: TEST_ONLY, bounceable: true });
+  const stateInitBoc = beginCell()
+    .store(storeStateInit(stateInit))
+    .endCell()
+    .toBoc()
+    .toString("base64");
+
+  console.log("Network:", NETWORK);
+  console.log("Admin wallet:", adminAddress.toString({ testOnly: TEST_ONLY }));
+  console.log("Jetton minter:", minterAddress.toString({ testOnly: TEST_ONLY }));
+  console.log("Initial supply:", INITIAL_SUPPLY.toString(), "elementary units");
+  console.log("Approve the deploy and mint transaction in the wallet.");
+
+  await connector.sendTransaction({
+    validUntil: Math.floor(Date.now() / 1000) + 600,
+    network: NETWORK_ID,
+    from: wallet.account.address,
+    messages: [
+      {
+        address: minterDeployAddress,
+        amount: toNano("0.05").toString(),
+        stateInit: stateInitBoc,
+        payload: buildTopUpBody(),
+      },
+      {
+        address: minterMintAddress,
+        amount: toNano("0.15").toString(),
+        payload: buildMintBody(adminAddress),
+      },
+    ],
+  });
+
+  console.log("Transaction sent.");
+  console.log("Jetton minter:", minterAddress.toString({ testOnly: TEST_ONLY }));
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+Edit `JETTON_NAME`, `JETTON_SYMBOL`, `JETTON_DESCRIPTION`, `JETTON_IMAGE`, `JETTON_DECIMALS`, and `INITIAL_SUPPLY` before deploying. `INITIAL_SUPPLY` is measured in indivisible jetton units: with `JETTON_DECIMALS = "6"`, `1000000` units equals `1` jetton.
+
+### 6. Deploy and mint from the terminal
+
+Run the deployment script to deploy the jetton to the testnet:
+
+```powershell
+npx tsx scripts\deploy.ts
+```
+
+Select a testnet wallet in the wallet service, scan the QR code printed in the terminal, and approve the transaction. The transaction sends two messages from the connected wallet:
+
+- a deployment message for the jetton minter;
+- a mint message that sets the `INITIAL_SUPPLY` of jettons and sends them to the connected wallet.
+
+### 7. Verify the result
+
+After sending the deployment transaction, open the printed minter address in a testnet explorer like [Testnet Tonscan](https://testnet.tonscan.org).
+
+Then call `get_jetton_data()` for the minter and confirm:
+
+- `total_supply` matches `INITIAL_SUPPLY`;
+- `admin_address` matches the connected TON Connect wallet;
+- `jetton_content` contains the metadata;
+- `jetton_wallet_code` exists.
+
+### 8. Switch to mainnet
+
+After the testnet deployment works, change the network value in `scripts\deploy.ts`:
+
+```ts
+const NETWORK: "testnet" | "mainnet" = "mainnet";
+```
+
+Repeat the deployment steps with a funded mainnet wallet. The connected wallet becomes the jetton admin, so verify it carefully before approving the transactions.
+
+<Callout type="note">
+  For post-deployment actions with the jetton, consider using a web service such as [TON MINTER](https://minter.ton.org/).
+</Callout>
+
+## See also
+
+- [How jettons work](/contracts/standard/tokens/jettons/how-it-works)
+- [Jetton interface: messages and get methods](/contracts/standard/tokens/jettons/api)
+- [Acton documentation](/contracts/acton)
