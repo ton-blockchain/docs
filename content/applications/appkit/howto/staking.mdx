@@ -7,7 +7,7 @@ Quote a stake or unstake, build the transaction, and send it through the connect
 
 ## How it works
 
-The `StakingManager` routes each quote and build call to a single registered staking provider — by default the first one you registered, or the one you pass as `providerId`. `setDefaultProvider` on the manager overrides the default; an unknown `providerId` throws. A quote describes the intent (`direction: 'stake' | 'unstake'`, `amount`, optional `unstakeMode`), and `useBuildStakeTransaction` turns an accepted quote into a `TransactionRequest`.
+The `StakingManager` routes each quote call and each build call to a single registered staking provider — by default the first one you registered, or the one you pass as `providerId`. `setDefaultProvider` on the manager overrides the default; an unknown `providerId` throws. A quote describes the intent (`direction: 'stake' | 'unstake'`, `amount`, optional `unstakeMode`), and `useBuildStakeTransaction` turns an accepted quote into a `TransactionRequest`.
 
 The protocol shape — derivative jetton, unstake modes, settlement timing, pool model — is provider-specific. Tonstakers, the bundled provider, issues `tsTON` and supports `INSTANT`, `WHEN_AVAILABLE`, and `ROUND_END` unstake modes. Read the user's staked-token balance with `useStakedBalance`, or query the jetton balance directly. `apy` and `instantUnstakeAvailable` from `useStakingProviderInfo` are provider-supplied display data, not guarantees of future yield or withdrawal timing.
 

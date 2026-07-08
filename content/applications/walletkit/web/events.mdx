@@ -4,7 +4,7 @@ sidebarTitle: "Handle other events"
 ---
 
 <Callout>
-  [Initialize the WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/wallets) and [handle connection requests](/applications/walletkit/web/connections) before using examples on this page.
+  [Initialize WalletKit](/applications/walletkit/web/init), [set up at least one TON wallet](/applications/walletkit/web/init-wallet), and [handle connection requests](/applications/walletkit/web/connections) before using examples on this page.
 </Callout>
 
 In total, there are five distinct kinds of incoming requests from the TON Connect bridge. They form the corresponding events and their handlers:
@@ -20,12 +20,12 @@ In total, there are five distinct kinds of incoming requests from the TON Connec
 
 ## Handle `onTransactionRequest`
 
-If a dApp is connected to the wallet service, the former can request to initiate a blockchain transaction, which fires the `transaction` request over the bridge. The wallet service then handles it with the `onTransactionRequest` method of the WalletKit.
+If a dApp is connected to the wallet service, the former can request to initiate a blockchain transaction, which fires the `transaction` request over the bridge. The wallet service then handles it with the `onTransactionRequest` method of WalletKit.
 
 On TON, transactions are initiated by sending an external message to the TON wallet contract, which then processes it and sends internal messages as requested. To estimate money flows for planned transactions, WalletKit uses emulation via the configured API client, if supported.
 
 <Callout>
-  The API client in use is determined by the required [`networks` configuration parameter](/applications/walletkit/web/init#param-networks) during [WalletKit initialization](/applications/walletkit/web/init#initialization).
+  The API client in use is determined by the required [`networks` configuration parameter](/applications/walletkit/web/configure#networks-required) during [WalletKit initialization](/applications/walletkit/web/init#initialization).
 </Callout>
 
 ```ts title="TypeScript"
@@ -58,7 +58,7 @@ kit.onTransactionRequest(async (event) => {
 
 ## Handle `onSignDataRequest`
 
-If a dApp is connected to the wallet service, the former can request to sign data with the private key used by the selected TON wallet, which fires the `signData` request over the bridge. The wallet service then handles it with the `onSignDataRequest` method of the WalletKit.
+If a dApp is connected to the wallet service, the former can request to sign data with the private key used by the selected TON wallet, which fires the `signData` request over the bridge. The wallet service then handles it with the `onSignDataRequest` method of WalletKit.
 
 The data to sign can be of several kinds: `text`, `binary`, or a raw [`cell`](/foundations/serialization/cells).
 

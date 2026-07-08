@@ -1,0 +1,135 @@
+---
+title: "Stake and unstake with WalletKit on the Web platform"
+sidebarTitle: "Stake and unstake"
+---
+
+Manage staking and unstaking in a wallet service: read staking balances, calculate quotes, and send stakes through a wallet.
+
+## How it works
+
+WalletKit exposes the `StakingManager` class as `kit.staking`. It accepts the user intent, calculates a stake/unstake quote, and builds a call to the staking provider. Stakes are derivative jettons, such as tsTON.
+
+The staking flow includes these steps:
+
+1. Read the user's staking balance with `getStakedBalance()` or query the jetton balance directly.
+1. If you need to override the default provider, use `setDefaultProvider()`. WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one.
+1. Use `getQuote()` to calculate a quote for a stake/unstake based on the user intent and the current state of the liquidity pool. The intent includes the direction (stake or unstake), the amount, and other parameters.
+1. Use the `buildStakeTransaction()` method to turn the accepted quote into a `TransactionRequest`.
+
+The protocol shape is provider-specific. This includes the derivative jetton, unstake modes, the settlement timing, and the pool model.
+
+## Before you begin
+
+You need a connected wallet and a staking provider registered on the WalletKit instance.
+
+By default, the provider is the first one you registered. To override it for a specific call, pass `providerId` to any method. To change the default globally, use `setDefaultProvider()`. Note that passing an unknown `providerId` throws an error.
+
+WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, `getStakingProviderMetadata()`, and `getSupportedNetworks()`.
+
+## Methods
+
+| Method                                                        | Description                                            |
+| ------------------------------------------------------------- | ------------------------------------------------------ |
+| `registerProvider()`, `setDefaultProvider()`, `getProvider()` | Manage the staking provider.                           |
+| `getStakingProviderInfo(network?, providerId?)`               | Read the provider's APY and instant-unstake liquidity. |
+| `getStakingProviderMetadata(network?, providerId?)`           | Read the provider's full static metadata.              |
+| `getQuote(params, providerId?)`                               | Calculate a quote for a stake/unstake.                 |
+| `getStakedBalance(userAddress, network?, providerId?)`        | Read the user's staked-token balance (e.g. `tsTON`).   |
+| `buildStakeTransaction(params, providerId?)`                  | Build a `TransactionRequest` from a quote.             |
+
+## Read the staking balance
+
+The `getStakedBalance()` method returns `StakingBalance` for a given user address: `{ stakedBalance, rawStakedBalance, instantUnstakeAvailable, rawInstantUnstakeAvailable, providerId }`.
+
+<Callout type="note">
+  The `stakedBalance` value is the user's tsTON amount, and `instantUnstakeAvailable` represents the pool's liquid TON.
+</Callout>
+
+```ts title="TypeScript"
+import { Network } from '@ton/walletkit';
+
+const network = Network.mainnet();
+const fromWallet = kit.getWallet(walletId);
+
+if (!fromWallet) {
+  console.error('No wallet contract found');
+  return;
+}
+const userAddress = fromWallet.getAddress();
+const userBalance = await kit.staking.getStakedBalance(userAddress, network);
+```
+
+## Quote a stake or unstake
+
+The `getQuote()` accepts the user intent and returns settlement amounts.
+
+```ts title="TypeScript"
+const quote = await kit.staking.getQuote(
+    {
+        direction: 'stake',
+        amount: '1000000000',
+        userAddress,
+        network,
+    }
+);
+```
+
+For an unstake, swap `direction` to `unstake`.
+
+If the provider accepts more than one unstake mode, pass `unstakeMode`. For example, Tonstakers supports the following modes: `UnstakeMode.INSTANT`, `UnstakeMode.WHEN_AVAILABLE`, and `UnstakeMode.ROUND_END`.
+
+```ts title="TypeScript"
+import { UnstakeMode } from '@ton/walletkit';
+
+const unstakeMode = UnstakeMode.INSTANT;
+
+const quote = await kit.staking.getQuote(
+    {
+        direction: 'unstake',
+        amount: '1000000000',
+        userAddress,
+        network,
+        unstakeMode,
+    }
+);
+```
+
+## Build and send the transaction
+
+The `buildStakeTransaction()` method turns an accepted quote into a `TransactionRequest`.
+
+You can use it for both staking and unstaking: the operation is selected depending on the `direction` parameter from the [quote](#quote-a-stake-or-unstake).
+
+```ts title="TypeScript"
+const tx = await kit.staking.buildStakeTransaction({
+    quote,
+    userAddress,
+});
+
+await kit.handleNewTransaction(fromWallet, tx);
+```
+
+To send the transaction directly, without triggering the `onTransactionRequest()` handler, use the `sendTransaction()` method of the wallet instead of the `handleNewTransaction()` method of WalletKit:
+
+```ts title="TypeScript"
+await fromWallet.sendTransaction(tx);
+```
+
+<Callout type="warning">
+  Do not use this approach unless it is imperative to complete a transaction without the user's direct consent. Funds at risk: test this approach on the testnet and proceed with utmost caution.
+</Callout>
+
+## After the send
+
+If you used `sendTransaction()` directly, it returns a response with `boc` and `normalizedHash`.
+Pass either value to `getTransactionStatus()` to confirm settlement.
+
+If you used `handleNewTransaction()`, capture `signedBoc` from the return value of `approveTransactionRequest()` and pass it to `getTransactionStatus()` as `boc`. For handler setup, see [Handle `onTransactionRequest`](/applications/walletkit/web/events#handle-ontransactionrequest).
+
+Then call `getStakedBalance()` to see the updated staking balance.
+
+## Tips
+
+- The `apy` and `instantUnstakeAvailable` values returned by `getStakingProviderInfo()` are provider-supplied display data, not guarantees of future yield or withdrawal timing.
+- You can quote by expected output rather than input — for example, "I want to receive exactly 100 TON, how much tsTON do I need to unstake?". To do this, set `isReversed: true` in the quote params. The `amount` then specifies the desired output, and `amountIn` in the returned quote gives the required input.
+- When using Tonstakers unstake modes, keep in mind that `INSTANT` and `WHEN_AVAILABLE` use the spot rate, `ROUND_END` uses the projected rate, and omitting `unstakeMode` defaults to `INSTANT`.
