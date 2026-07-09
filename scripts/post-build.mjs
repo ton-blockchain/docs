@@ -14,13 +14,7 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, extname, dirname } from 'node:path';
 // Common
-import {
-  prefix,
-  outDir,
-  isGitHubPagesBuild,
-  getConfig,
-  getRedirects,
-} from './common.mjs';
+import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects } from './common.mjs';
 
 /**
  * @param {string} path - file path

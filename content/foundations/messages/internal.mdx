@@ -82,6 +82,10 @@ The process of transforming the relaxed version of the structure into the strict
 
 It is possible to simultaneously send both the payload in the `body` field and the `StateInit` in the `init` field to [initialized the contract](/foundations/messages/deploy) and process the payload in the same transaction.
 
+## Comment
+
+Message `body` can contain a [plaintext](/contracts/standard/wallets/interact#comments) or an [encrypted](/contracts/standard/wallets/interact#encrypted-comments) comment.
+
 ## Message value
 
 The message may set `value` field that tells to transfer Gram and extra-currency to the recipient of the message. The actually transferred amount depends on the value of this field and a [send mode](/foundations/messages/modes).
