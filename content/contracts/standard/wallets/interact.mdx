@@ -161,7 +161,10 @@ Wallet apps can attach short human-readable notes — commonly called _comments_
 
 - The first 32 bits of the incoming message body must be the opcode `0x00000000`. This value signals that the rest of the payload should be treated as a comment.
 - The remaining bytes are UTF-8 encoded text. Wallet apps should tolerate invalid or empty strings — many senders emit messages without a comment or with zero-length payloads.
-- When parsing, always inspect the opcode before assuming a text comment. If the opcode differs, fall back to handling other contract-specific payloads.
+
+<Callout type="caution">
+  When parsing, always inspect the opcode before assuming a text or an [encrypted](#encrypted-comments) comment. If the opcode differs, fall back to handling other contract-specific payloads.
+</Callout>
 
 Because comments ride inside ordinary internal messages, the format works identically for:
 
@@ -171,16 +174,16 @@ Because comments ride inside ordinary internal messages, the format works identi
 
 ### Attaching a comment when sending
 
-To include a comment in an outgoing transfer, construct an internal message body that starts with `0x00000000` and append the UTF-8 bytes of the note YOU want to share. Most wallet libraries expose helpers for this, but the underlying steps are:
+To include a comment in an outgoing transfer, construct an internal message body that starts with `0x00000000` and append the UTF-8 bytes of the note to share. Most wallet libraries expose helpers for this, but the underlying steps are:
 
 1. Allocate a cell.
 1. Store the 32-bit zero opcode.
 1. Store the text as a [byte string](/contracts/standard/tokens/metadata#snake-data-encoding) (UTF-8 encoded).
 1. Send the internal message along with the desired Gram, [Jettons](/contracts/standard/tokens/jettons/how-it-works), or [NFT](/contracts/standard/tokens/nft/how-it-works) payload.
 
-Receivers that follow the convention will display the decoded text to the user. Contracts that do not recognize the opcode will simply ignore it or treat the message body as opaque data, so comments are backward-compatible with existing transfers.
+Receivers that follow the convention will display the decoded text to the user. Contracts that do not recognize the opcode will ignore it or treat the message body as opaque data, so comments are backward-compatible with existing transfers.
 
-### Example: Sending a comment with `@ton/core`
+### Example: Composing a comment with `@ton/core`
 
 ```ts
 import { Cell, beginCell } from '@ton/core';
@@ -194,3 +197,335 @@ function createCommentCell(comment: string): Cell {
         .endCell();
 }
 ```
+
+## Encrypted comments
+
+Comments can be encrypted: an _encrypted comment_ is an internal message body that hides the contents of a UTF-8 or binary comment from everyone except the sender and the recipient. On-chain, it is still just a message body cell, but the body starts with the opcode `0x2167da4b` instead of the plaintext comment opcode `0x00000000`.
+
+Use encrypted comments for wallet-to-wallet transfers when the human-readable memo should remain private. Messages with encrypted comments can be sent anywhere regular plaintext comments can.
+
+### Encrypted comment format
+
+Message body layout:
+
+- The first 32 bits of the incoming message body contain the opcode `0x2167da4b`.
+- The rest of the payload contains the encrypted comment stored in the snake cell format. Wallet apps should tolerate invalid or empty strings — many senders emit messages without a comment or with zero-length payloads.
+
+<Callout type="caution">
+  When parsing, always inspect the opcode before assuming a [text](#comments) or encrypted comment. If the opcode differs, fall back to handling other contract-specific payloads.
+</Callout>
+
+Bytes stored:
+
+1. `pub_xor`: 32 bytes of `sender_public_key` XOR `recipient_public_key`.
+1. `msg_key`: first 16 bytes of `HMAC-SHA512(salt, padded_data)`, where `salt` is the sender's [user-friendly and URL-safe address string](/foundations/addresses/formats#user-friendly-format):
+   ```ts
+   address.toString({
+     bounceable: true,
+     testOnly: false,
+     urlSafe: true,
+   })
+   ```
+1. `ciphertext`: up to 976 bytes of `AES-256-CBC(padded_data)` ciphertext.
+
+There, `padded_data` consists of:
+
+1. `prefix`: random 16-31 bytes, with `prefix[0]` containing `prefix` length.
+1. `comment`: up to 960 bytes of the encrypted comment contents, see the [algorithm below](#attaching-an-encrypted-comment-when-sending).
+
+Finally,
+
+- `HMAC-SHA512` is a [HMAC](https://en.wikipedia.org/wiki/HMAC) applied with a 512-bit [SHA-2](https://en.wikipedia.org/wiki/SHA-2) hash.
+- `AES-256-CBC` stands for [AES encryption](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) with a 256-bit key using [Cipher Block Chaining (CBC) mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_block_chaining_\(CBC\)).
+- `sender_public_key` and `sender_private_key` — 32-byte Ed25519 public and private keys of the sender, respectively.
+- `recipient_public_key` — 32-byte Ed25519 public key of the receiver.
+
+### Attaching an encrypted comment when sending
+
+To include an encrypted comment in an outgoing transfer, construct an internal message body that starts with `0x2167da4b`, followed by the encrypted comment composed according to the following algorithm — given `comment`, `sender_private_key`, `sender_public_key`, `recipient_public_key`, and `sender_address`:
+
+1. Convert the plaintext comment to bytes. Maximum length: 960 bytes.
+1. Generate a random prefix so `prefix.length >= 16` and `(prefix.length + comment.length) % 16 == 0`.
+1. Set `prefix[0] = prefix.length`.
+1. Set `padded_data` as byte-string concatenation of `prefix` and `comment` bytes.
+1. Derive `shared_secret` using `sender_private_key` and `recipient_public_key`.
+1. Set `salt` as a bounceable, URL-safe, user-friendly `sender_address` string.
+1. Compute `msg_key` as the first 16 bytes of HMAC-SHA512 of the `salt` and `padded_data`.
+1. Compute `x` as HMAC-SHA512 of the `shared_secret` and `msg_key`.
+1. Use `x[0..32]` as the AES-256-CBC key and `x[32..48]` as the IV.
+1. Obtain `ciphertext` by encrypting `padded_data` with AES-256-CBC and disabled automatic padding.
+1. Store the byte-string concatenation of `sender_public_key XOR recipient_public_key`, `msg_key`, and `ciphertext` after the opcode:
+   - Divide the resulting byte string into segments and store the snake cell chain of cells: `c_1`, `c_2`, …, `c_k`, where `c_1` is the cell root of the body and `k` is the number of the cell.
+   - Each cell, except the last, has a reference to the next cell. The maximum allowed reference depth `k` is 16, and the maximum total string length is 1024 bytes.
+   - The root cell `c_1` contains up to 39 bytes, including the 4-byte tag; all following contain up to 127 bytes.
+
+Contracts that do not recognize the opcode will ignore it or treat the message body as opaque data, so encrypted comments are backward-compatible with existing transfers.
+
+### Example: Composing an encrypted comment with `@ton/core`
+
+This implementation uses `@ton/core` for cells and addresses, `@ton/crypto` for TON wallet keys and hashes, and Node.js `crypto` for AES-256-CBC:
+
+```ts
+import { createCipheriv } from 'node:crypto';
+import { Address, beginCell, Cell } from '@ton/core';
+import {
+  getSecureRandomBytes,
+  keyPairFromSeed,
+  mnemonicToPrivateKey,
+  sha512,
+  hmac_sha512,
+} from '@ton/crypto';
+
+const ENCRYPTED_COMMENT_OP = 0x2167da4b;
+
+export async function createEncryptedCommentBody(args: {
+  /** Sender wallet mnemonic. Defaults to process.env.MNEMONIC */
+  mnemonic?: string;
+
+  /** From whom the message will be sent */
+  senderAddress: Address;
+
+  /**
+   * Public key of the recipient's TON wallet,
+   * obtained via calling the get_public_key() get-method
+   */
+  recipientPublicKey: Buffer;
+
+  /** Plaintext comment or data to encrypt */
+  comment: string | Buffer;
+}): Promise<Cell> {
+  const mnemonic = args.mnemonic ?? process.env.MNEMONIC;
+  if (!mnemonic) {
+    throw new Error('Pass mnemonic or set MNEMONIC in the environment');
+  }
+  if (args.recipientPublicKey.length !== 32) {
+    throw new Error('recipientPublicKey must be 32 bytes');
+  }
+  const keyPair = await mnemonicToPrivateKey(mnemonic.trim().split(/\s+/));
+  // First 32 bytes of the sender_private_key
+  const senderSeed = Buffer.from(
+    // sender_private_key
+    keyPair.secretKey,
+  ).subarray(0, 32);
+  // sender_public_key
+  const senderPublicKey = Buffer.from(keyPairFromSeed(senderSeed).publicKey);
+
+  // 1st step: comment
+  const comment = typeof args.comment === 'string'
+    ? Buffer.from(args.comment, 'utf8')
+    : Buffer.from(args.comment);
+
+  if (comment.length > 960) {
+    throw new Error('Encrypted comment plaintext must be <= 960 bytes');
+  }
+
+  // 2nd-3rd steps: prefix
+  const prefixLength = ((16 + 15 + comment.length) & ~15) - comment.length;
+  const prefix = Buffer.from(await getSecureRandomBytes(prefixLength));
+  prefix[0] = prefixLength;
+
+  // 4th step: padded_data
+  const data = Buffer.concat([prefix, comment]);
+  const salt = Buffer.from(args.senderAddress.toString({
+    bounceable: true,
+    testOnly: false,
+    urlSafe: true,
+  }));
+
+  // 5th step: shared_secret
+  const sharedSecret = await tonEd25519SharedSecret(
+    Buffer.from(args.recipientPublicKey),
+    senderSeed,
+  );
+
+  // 6th-7th steps: msg_key
+  const msgKey = Buffer.from(await hmac_sha512(salt, data)).subarray(0, 16);
+
+  // 8th step: x
+  const x = Buffer.from(await hmac_sha512(sharedSecret, msgKey));
+  // 9th step: key = x[0:32] and iv = x[32:48]
+  const key = x.subarray(0, 32);
+  const iv = x.subarray(32, 48);
+
+  // 10th step: ciphertext
+  const cipher = createCipheriv('aes-256-cbc', key, iv);
+  cipher.setAutoPadding(false);
+  const ciphertext = Buffer.concat([cipher.update(data), cipher.final()]);
+
+  // 11th and final step: byte-string concatenation, then snake cell encoding
+  const encryptedComment = Buffer.concat([
+    xor32(senderPublicKey, Buffer.from(args.recipientPublicKey)),
+    msgKey,
+    ciphertext,
+  ]);
+  return encryptedCommentToCell(encryptedComment);
+}
+
+// --- helper functions ---
+
+function mod(a: bigint): bigint {
+  const P = (1n << 255n) - 19n;
+  const r = a % P;
+  return r >= 0n ? r : r + P;
+}
+
+function modPow(a: bigint, e: bigint): bigint {
+  let x = mod(a);
+  let r = 1n;
+
+  while (e > 0n) {
+    if (e & 1n) {
+      r = mod(r * x);
+    }
+    x = mod(x * x);
+    e >>= 1n;
+  }
+
+  return r;
+}
+
+function inv(a: bigint): bigint {
+  const P = (1n << 255n) - 19n;
+  return modPow(a, P - 2n);
+}
+
+function leToBigInt(bytes: Buffer): bigint {
+  let n = 0n;
+
+  for (let i = bytes.length - 1; i >= 0; i--) {
+    n = (n << 8n) + BigInt(bytes[i]);
+  }
+
+  return n;
+}
+
+function bigIntToLe(n: bigint, size: number): Buffer {
+  const out = Buffer.alloc(size);
+
+  for (let i = 0; i < size; i++) {
+    out[i] = Number(n & 255n);
+    n >>= 8n;
+  }
+
+  return out;
+}
+
+function x25519(scalar: Buffer, uBytes: Buffer): Buffer {
+  const k = Buffer.from(scalar);
+  k[0] &= 248;
+  k[31] &= 127;
+  k[31] |= 64;
+
+  const x1 = leToBigInt(uBytes);
+  let x2 = 1n;
+  let z2 = 0n;
+  let x3 = x1;
+  let z3 = 1n;
+  let swap = 0n;
+  const kNum = leToBigInt(k);
+
+  for (let t = 254; t >= 0; t--) {
+    const kt = (kNum >> BigInt(t)) & 1n;
+    swap ^= kt;
+
+    if (swap) {
+      [x2, x3] = [x3, x2];
+      [z2, z3] = [z3, z2];
+    }
+
+    swap = kt;
+
+    const a = mod(x2 + z2);
+    const aa = mod(a * a);
+    const b = mod(x2 - z2);
+    const bb = mod(b * b);
+    const e = mod(aa - bb);
+    const c = mod(x3 + z3);
+    const d = mod(x3 - z3);
+    const da = mod(d * a);
+    const cb = mod(c * b);
+
+    x3 = mod((da + cb) ** 2n);
+    z3 = mod(x1 * mod((da - cb) ** 2n));
+    x2 = mod(aa * bb);
+    z2 = mod(e * mod(aa + 121665n * e));
+  }
+
+  if (swap) {
+    [x2, x3] = [x3, x2];
+    [z2, z3] = [z3, z2];
+  }
+
+  return bigIntToLe(mod(x2 * inv(z2)), 32);
+}
+
+async function tonEd25519SharedSecret(
+  peerPublicKey: Buffer,
+  privateSeed: Buffer,
+): Promise<Buffer> {
+  if (peerPublicKey.length !== 32) {
+    throw new Error('peerPublicKey must be 32 bytes');
+  }
+  if (privateSeed.length !== 32) {
+    throw new Error('privateSeed must be 32 bytes');
+  }
+
+  const publicY = Buffer.from(peerPublicKey);
+  publicY[31] &= 127;
+
+  const y = leToBigInt(publicY);
+  const u = mod((y + 1n) * inv(1n - y));
+
+  const h = await sha512(privateSeed);
+  const scalar = Buffer.from(h.subarray(0, 32));
+
+  return x25519(scalar, bigIntToLe(u, 32));
+}
+
+function xor32(a: Buffer, b: Buffer): Buffer {
+  if (a.length !== 32 || b.length !== 32) {
+    throw new Error('Expected 32-byte public keys');
+  }
+
+  const out = Buffer.alloc(32);
+  for (let i = 0; i < 32; i++) {
+    out[i] = a[i] ^ b[i];
+  }
+  return out;
+}
+
+function encryptedCommentToCell(encryptedComment: Buffer): Cell {
+  if (encryptedComment.length > 1024) {
+    throw new Error('Encrypted comment is too long');
+  }
+
+  const chunks: Buffer[] = [encryptedComment.subarray(0, 35)];
+  for (let i = 35; i < encryptedComment.length; i += 127) {
+    chunks.push(encryptedComment.subarray(i, i + 127));
+  }
+
+  let ref: Cell | null = null;
+  for (let i = chunks.length - 1; i >= 1; i--) {
+    const builder = beginCell().storeBuffer(chunks[i]);
+    if (ref) {
+      builder.storeRef(ref);
+    }
+    ref = builder.endCell();
+  }
+
+  const root = beginCell()
+    .storeUint(ENCRYPTED_COMMENT_OP, 32)
+    .storeBuffer(chunks[0]);
+
+  if (ref) {
+    root.storeRef(ref);
+  }
+
+  return root.endCell();
+}
+```
+
+References:
+
+- [`encryption.js` in `toncenter/ton-wallet`](https://github.com/toncenter/ton-wallet/blob/be5c434c1ca0694c67661bf2c726d6859c95352f/src/js/util/encryption.js)
+- [`SimpleEncryption.cpp` in `ton-blockchain/ton`](https://github.com/ton-blockchain/ton/blob/f262baeaba892f17b8f612f97b919a2b25e83bf0/tonlib/tonlib/keys/SimpleEncryption.cpp)
