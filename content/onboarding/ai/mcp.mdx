@@ -11,7 +11,7 @@ The latest alpha release is available on [npm][mcp-npm]. Run it locally with:
 npx -y @ton/mcp@alpha
 ```
 
-To set it up, follow the [quick start guide](#quick-start).
+To set it up, see [Installation](#installation).
 
 <Callout type="caution">
   `@ton/mcp` is currently in <Badge size="xs">alpha</Badge>. It is safe for use in mainnet, but APIs, behaviors, and [underlying wallet contracts][wallets] may change between releases. Pin a specific version for production use and check the [changelog][changelog] before upgrading.
@@ -31,100 +31,46 @@ To set it up, follow the [quick start guide](#quick-start).
 - Agentic wallets: create, import, and manage self-custody [agentic wallets][wallets]
 - Multiple transports: standard I/O (default), multi-session HTTP server, and serverless (AWS Lambda, Vercel, or custom integrations)
 
-## Quick start
+## Installation
 
 There are two ways to set up `@ton/mcp`:
 
-<Accordions>
-  <Accordion
-    title="Install skills (recommended)"
-  >
-    Skills give an agent instructions on how to launch and use `@ton/mcp` on its own. No manual MCP client configuration is required. This approach works best with agents that support the [skills specification][skills-spec].
+### Install skills (recommended)
 
-    Run the following command to install the skills for `@ton/mcp`:
+Skills give an agent instructions on how to launch and use `@ton/mcp` on its own. No manual MCP client configuration is required. This approach works best with agents that support the [skills specification][skills-spec].
 
-    ```bash
-    npx skills add ton-connect/kit/packages/mcp
-    ```
+To install the skills for `@ton/mcp`, run the following command:
 
-    After installation, agents can launch and manage `@ton/mcp` on their own. No further configuration is needed. The server starts in [agentic wallets mode](#agentic-wallets-mode) by default.
-  </Accordion>
+```bash
+npx skills add ton-connect/kit/packages/mcp
+```
 
-  <Accordion
-    title="Configure MCP client manually"
-  >
-    Register `@ton/mcp` as a server in Claude Desktop, Cursor, Windsurf, or another MCP client. Use this approach when the agent does not support skills or when finer control over server configuration is needed.
+After installation, agents can launch and manage `@ton/mcp` on their own. No further configuration is needed. The server starts in [agentic wallets mode](#agentic-wallets-mode) by default.
 
-    Add the following block to the MCP client configuration file:
+<Callout type="tip">
+  To quickly get started with agentic wallets, see [Quick start](/onboarding/ai/quick-start).
+</Callout>
 
-    ```json
-    {
-      "mcpServers": {
-        "ton": {
-          "command": "npx",
-          "args": ["-y", "@ton/mcp@alpha"]
-        }
-      }
+### Configure the client manually
+
+Register `@ton/mcp` as a server in Claude Desktop, Cursor, Windsurf, or another MCP client. Use this approach when the agent does not support skills or when finer control over server configuration is needed.
+
+Add the following block to the MCP client configuration file:
+
+```json
+{
+  "mcpServers": {
+    "ton": {
+      "command": "npx",
+      "args": ["-y", "@ton/mcp@alpha"]
     }
-    ```
+  }
+}
+```
 
-    The server starts in [agentic wallets mode](#agentic-wallets-mode) by default. For [single-wallet mode](#single-wallet-mode), add `MNEMONIC` or `PRIVATE_KEY` to the `env` object.
+By default, the server starts in [agentic wallets mode](#agentic-wallets-mode). For the [single-wallet mode](#single-wallet-mode), add `MNEMONIC` or `PRIVATE_KEY` to the `env` object.
 
-    See [environment variables](#environment-variables) for the full list of configuration options.
-  </Accordion>
-</Accordions>
-
-To start using `@ton/mcp` in agentic wallets mode:
-
-<Steps>
-  <Step>
-    ### Create
-
-    To create a first agentic wallet, ask the agent to "create an agentic wallet" and follow the instructions.
-
-    The process goes as follows:
-
-    1. The agent generates private keys for a new wallet and suggests [opening the dashboard](https://agents.ton.org/).
-    1. On the dashboard, the user should connect their regular mainnet or testnet TON wallet: it will be the owner of an agentic wallet.
-    1. Agentic wallet gets deployed from the dashboard.
-    1. User provides the address of the deployed agentic wallet to the agent.
-    1. Agent imports the wallet and can then sign transactions using its operator key.
-
-    The user can revoke access or withdraw funds at any time from the dashboard.
-  </Step>
-
-  <Step>
-    ### Fund
-
-    An agentic wallet is a TON contract. There are three ways to fund it:
-
-    1. During creation: use the "Initial Gram deposit" field on the deployment page.
-    1. From the dashboard: use the <kbd>Fund</kbd> button to transfer Gram, jettons, or NFTs.
-    1. Directly: use a wallet app to transfer assets to the agentic wallet address directly.
-
-    To check the balance, ask the agent: "What is my agent balance?"
-  </Step>
-
-  <Step>
-    ### Use
-
-    Once setup is complete, ask agent to perform desired actions. For example:
-
-    - `Send 1 GRAM to UQB.._WALLET_ADDRESS` - sign and send a transfer from the agentic wallet.
-    - `Swap 5 GRAM for USDT` - get a quote and execute a swap.
-    - `Resolve the contract address of this DNS domain: DOMAIN_NAME.ton` - obtain the wallet address of the domain owner.
-    - `Show my NFTs` - query all NFTs owned by the wallet.
-    - `Check my balance` - current Gram and jetton balances. Do not use this data for any calculations, as it becomes outdated quickly.
-    - `Get my last transactions` - list of several latest events initiated by the wallet.
-    - `Import agentic wallet` - reinstate a wallet previously managed by another agent.
-  </Step>
-
-  <Step>
-    ### Observe and manage
-
-    Web dashboard allows to see all agentic wallets in one place. Monitor transactions, fund and withdraw assets, grant and revoke accesses, rotate operator keys without redeploying the wallets.
-  </Step>
-</Steps>
+See [environment variables](#environment-variables) for the full list of configuration options.
 
 ## Runtime modes
 
@@ -137,7 +83,7 @@ To start using `@ton/mcp` in agentic wallets mode:
 
 [Agentic wallets][wallets] are self-custody wallets designed for autonomous agents. The user retains the owner key, and the agent holds a separate operator key. This split-key design gives agents access to transfers, swaps, and other on-chain operations without exposing the root credentials.
 
-Agentic wallets mode is the **default**. When neither `MNEMONIC` nor `PRIVATE_KEY` is set, the server loads wallets from a local config registry at `~/.config/ton/config.json` or the path in `TON_CONFIG_PATH`.
+The agentic wallets mode is the **default**. When neither `MNEMONIC` nor `PRIVATE_KEY` is set, the server loads wallets from a local config registry at `~/.config/ton/config.json` or the path in `TON_CONFIG_PATH`.
 
 In this mode the server provides additional tools for multi-wallet management, agentic wallet onboarding, operator key rotation, and wallet import. Wallet-scoped tools accept an optional selector parameter: wallet ID, name, or address. When omitted, the current active wallet is used.
 
@@ -151,7 +97,7 @@ TON_CONFIG_PATH=/path/to/config.json npx @ton/mcp@alpha
 
 ### Single-wallet mode
 
-Single-wallet mode starts the server with one in-memory wallet derived from a mnemonic or private key. This mode is useful for one-off tasks or for operating a single known wallet.
+The single-wallet mode starts the server with one in-memory wallet derived from a mnemonic or private key. This mode is useful for one-off tasks or for operating a single known wallet.
 
 Set `MNEMONIC` or `PRIVATE_KEY` as an environment variable to activate this mode:
 
