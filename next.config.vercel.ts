@@ -5,13 +5,13 @@ import type { Redirect } from 'next/dist/lib/load-custom-routes';
 import { createMDX } from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
-const isVercelProd = !['development', 'staging'].includes(process.env.VERCEL_ENV ?? '');
+const isVercelProd = resolveBaseUrl().startsWith('https://docs.ton.org');
 
 type DocsConfig = {
   redirects?: Redirect[];
 };
 
-const resolveBaseUrl = () => {
+function resolveBaseUrl() {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
   if (publicUrl !== undefined && publicUrl !== '') {
     return publicUrl;
@@ -22,15 +22,15 @@ const resolveBaseUrl = () => {
   }
 
   return 'http://localhost:3000';
-};
+}
 
-const loadDocsRedirects = (): Redirect[] => {
+function loadDocsRedirects(): Redirect[] {
   const docsConfig = JSON.parse(
-    readFileSync(new URL('./docs.json', import.meta.url), 'utf8'),
+    readFileSync(new URL('./docs.json', import.meta.url), 'utf8')
   ) as DocsConfig;
 
   return docsConfig.redirects ?? [];
-};
+}
 
 const config: NextConfig = {
   reactStrictMode: true,
