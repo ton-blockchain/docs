@@ -8,8 +8,7 @@ const withMDX = createMDX();
 const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 const isVercelBuild = process.env.VERCEL === '1';
-const isVercelProd =
-  isVercelBuild && !['development', 'staging'].includes(process.env.VERCEL_ENV ?? '');
+const isVercelProd = isVercelBuild && resolveBaseUrl().startsWith('https://docs.ton.org');
 const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
 let gitRepoMatch: RegExpMatchArray | null = null;
 try {
@@ -21,7 +20,7 @@ try {
   gitRepoMatch = gitUrl.match(/(?:github\.com[:/])(.+?)\/(.+?)(?:\.git)?$/);
 } catch {}
 
-const resolveBaseUrl = () => {
+function resolveBaseUrl() {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
   if (publicUrl !== undefined && publicUrl !== '') {
     return publicUrl;
@@ -34,7 +33,7 @@ const resolveBaseUrl = () => {
   return 'http://localhost:3000';
 };
 
-const resolveBasePath = () => {
+function resolveBasePath() {
   if (isGitHubPagesBuild) {
     return `/${gitConfig.repo}`;
   }
