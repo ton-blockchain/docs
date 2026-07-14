@@ -1167,7 +1167,7 @@ Drop-in widget for buying TON-side tokens with a crypto payment from another cha
 
 ```tsx
 // Uses built-in defaults for tokens, payment methods and chain display info.
-// Make sure a crypto-onramp provider (Layerswap / swaps.xyz) is registered on AppKit.
+// Make sure a crypto-onramp provider is registered in AppKit.
 return <CryptoOnrampWidget defaultTokenId="gram" />;
 ```
 
@@ -1758,7 +1758,7 @@ Drop-in swap UI that walks the user through picking the source/target tokens, en
 **Example**
 
 ```tsx
-// Make sure a swap provider (e.g. DeDust / Omniston) is registered on AppKit.
+// Make sure a swap provider is registered in AppKit.
 return <SwapWidget tokens={tokens} defaultFromSymbol="GRAM" defaultToSymbol="USDT" defaultSlippage={100} />;
 ```
 

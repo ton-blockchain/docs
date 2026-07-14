@@ -7,7 +7,7 @@ sidebarTitle: "On-ramp"
   TON Pay uses the previous, now deprecated currency name instead of Gram/GRAM.
 </Callout>
 
-The TON Pay SDK includes a built-in fiat-to-crypto on-ramp powered by [MoonPay](https://www.moonpay.com/). It allows users to top up their wallets with a bank card directly from the payment modal.
+The TON Pay SDK includes a built-in [fiat-to-crypto on-ramp](https://www.moonpay.com/). It allows users to top up their wallets with a bank card directly from the payment modal.
 
 ## How it works
 
@@ -16,7 +16,7 @@ When a user opens the payment modal and the connected wallet balance is insuffic
 1. Balance check. The SDK verifies whether the connected wallet has funds to complete the payment.
 1. Geographic and limit check. The SDK verifies that card purchases are supported in the user's region and retrieves the provider's minimum and maximum purchase limits.
 1. Amount calculation. The SDK computes the required top-up amount, clamped to the provider's minimum.
-1. Widget rendering. The MoonPay purchase widget loads in an iframe. The purchase transfers funds directly to the user's wallet.
+1. Widget rendering. The purchase widget loads in an iframe. The purchase transfers funds directly to the user's wallet.
 1. Balance polling. After the provider reports transaction completion, the SDK polls the wallet balance every 5 seconds.
 1. Auto-pay. Once the wallet balance becomes sufficient, the SDK displays a modal to complete the merchant payment.
 
@@ -50,13 +50,13 @@ The SDK supports the following assets for on-ramp top-ups:
 
 ## Geographic restrictions
 
-Before displaying the card top-up option, the SDK checks the user's geographic eligibility with the MoonPay provider. If card purchases are not supported in the user's country, the option is not displayed.
+Before displaying the card top-up option, the SDK checks the user's geographic eligibility with the on-ramp provider. If card purchases are not supported in the user's country, the option is not displayed.
 
 The SDK performs this check using the user's IP address. If the integration proxies requests or omits the original client IP address, provide the user's IP explicitly using the `userIp` prop.
 
 ## Purchase limits
 
-The SDK retrieves minimum and maximum purchase limits from MoonPay for the target asset. These limits are enforced automatically:
+The SDK retrieves minimum and maximum purchase limits for the target asset. These limits are enforced automatically:
 
 - If the calculated top-up amount is below the minimum, the SDK increases it to `minAmount * 1.05`.
 - The provider determines the maximum purchase amount; this cannot be overridden.
@@ -74,12 +74,12 @@ Limits use the quote currency returned by the provider, e.g., USD, and vary by r
 
 The on-ramp widget communicates through `postMessage`. The SDK handles the following events internally:
 
-| Event                                             | Description                                                                             |
-| :------------------------------------------------ | :-------------------------------------------------------------------------------------- |
-| `TONPAY_IFRAME_LOADED`                            | The on-ramp widget loaded successfully.                                                 |
-| `TONPAY_MOONPAY_EVENT` (`onTransactionCompleted`) | The MoonPay purchase completes successfully. The SDK starts polling the wallet balance. |
-| `TONPAY_MOONPAY_EVENT` (`onTransactionFailed`)    | The MoonPay purchase failed. The user may retry the transaction.                        |
-| `TONPAY_PAYMENT_ERROR`                            | On-ramp widget initialization error; e.g., the link expired.                            |
+| Event                                             | Description                                                                     |
+| :------------------------------------------------ | :------------------------------------------------------------------------------ |
+| `TONPAY_IFRAME_LOADED`                            | The on-ramp widget loaded successfully.                                         |
+| `TONPAY_MOONPAY_EVENT` (`onTransactionCompleted`) | The purchase completes successfully. The SDK starts polling the wallet balance. |
+| `TONPAY_MOONPAY_EVENT` (`onTransactionFailed`)    | The purchase failed. The user may retry the transaction.                        |
+| `TONPAY_PAYMENT_ERROR`                            | On-ramp widget initialization error; e.g., the link expired.                    |
 
 Merchants using `TonPayButton` do not need to handle these events manually.
 
@@ -87,7 +87,7 @@ Merchants using `TonPayButton` do not need to handle these events manually.
   type="note"
   title="Processing times and fees"
 >
-  MoonPay purchases require on-chain confirmation and are not processed immediately. The SDK monitors the transaction status through automatic balance polling.
+  Purchases require on-chain confirmation and are not processed immediately. The SDK monitors the transaction status through automatic balance polling.
 
-  The SDK adds a 5% buffer to top-up amounts to account for MoonPay fees and price fluctuations.
+  The SDK adds a 5% buffer to top-up amounts to account for fees and price fluctuations.
 </Callout>

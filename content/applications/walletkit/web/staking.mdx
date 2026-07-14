@@ -12,7 +12,7 @@ WalletKit exposes the `StakingManager` class as `kit.staking`. It accepts the us
 The staking flow includes these steps:
 
 1. Read the user's staking balance with `getStakedBalance()` or query the jetton balance directly.
-1. If you need to override the default provider, use `setDefaultProvider()`. WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one.
+1. If you need to override the default provider, use `setDefaultProvider()`. WalletKit ships a bundled provider, but you can configure a custom one.
 1. Use `getQuote()` to calculate a quote for a stake/unstake based on the user intent and the current state of the liquidity pool. The intent includes the direction (stake or unstake), the amount, and other parameters.
 1. Use the `buildStakeTransaction()` method to turn the accepted quote into a `TransactionRequest`.
 
@@ -24,7 +24,7 @@ You need a connected wallet and a staking provider registered on the WalletKit i
 
 By default, the provider is the first one you registered. To override it for a specific call, pass `providerId` to any method. To change the default globally, use `setDefaultProvider()`. Note that passing an unknown `providerId` throws an error.
 
-WalletKit ships a bundled provider — **Tonstakers**, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, `getStakingProviderMetadata()`, and `getSupportedNetworks()`.
+WalletKit ships a bundled provider, but you can configure a custom one. Extend the `StakingProvider` class. Implement `getQuote()`, `buildStakeTransaction()`, `getStakedBalance()`, `getStakingProviderInfo()`, `getStakingProviderMetadata()`, and `getSupportedNetworks()`.
 
 ## Methods
 
@@ -76,7 +76,7 @@ const quote = await kit.staking.getQuote(
 
 For an unstake, swap `direction` to `unstake`.
 
-If the provider accepts more than one unstake mode, pass `unstakeMode`. For example, Tonstakers supports the following modes: `UnstakeMode.INSTANT`, `UnstakeMode.WHEN_AVAILABLE`, and `UnstakeMode.ROUND_END`.
+If the provider accepts more than one unstake mode, pass `unstakeMode`. For example, the bundled provider supports the following modes: `UnstakeMode.INSTANT`, `UnstakeMode.WHEN_AVAILABLE`, and `UnstakeMode.ROUND_END`.
 
 ```ts title="TypeScript"
 import { UnstakeMode } from '@ton/walletkit';
@@ -132,4 +132,4 @@ Then call `getStakedBalance()` to see the updated staking balance.
 
 - The `apy` and `instantUnstakeAvailable` values returned by `getStakingProviderInfo()` are provider-supplied display data, not guarantees of future yield or withdrawal timing.
 - You can quote by expected output rather than input — for example, "I want to receive exactly 100 TON, how much tsTON do I need to unstake?". To do this, set `isReversed: true` in the quote params. The `amount` then specifies the desired output, and `amountIn` in the returned quote gives the required input.
-- When using Tonstakers unstake modes, keep in mind that `INSTANT` and `WHEN_AVAILABLE` use the spot rate, `ROUND_END` uses the projected rate, and omitting `unstakeMode` defaults to `INSTANT`.
+- When using unstake modes of the bundled provider, keep in mind that `INSTANT` and `WHEN_AVAILABLE` use the spot rate, `ROUND_END` uses the projected rate, and omitting `unstakeMode` defaults to `INSTANT`.

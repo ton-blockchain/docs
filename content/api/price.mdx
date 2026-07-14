@@ -7,14 +7,9 @@ Each swap operation, whether between a native asset (Gram) and Jetton or between
 
 ## Off-chain API
 
-The most common use case for the price API is to fetch Jetton info on the web2 backend and use aggregated data inside the service. There are several historical Jetton price providers in TON:
+The most common use case for the price API is to fetch Jetton info on the web2 backend and use aggregated data inside the service. There are [several](https://www.coingecko.com/en/api/ton) [historical](https://dyor.io/tonapi) Jetton price providers in TON.
 
-- [CoinGecko](https://www.coingecko.com/en/api/ton)
-- [Dyor.io](https://dyor.io/tonapi)
-
-You can find detailed information about API usage and technical details in the provider docs.
-
-There is no established solution for real-time jetton swap market data; however, one can explore [CoinGecko websocket API](https://docs.coingecko.com/websocket).
+There is no established solution for real-time jetton swap market data; however, one can explore [this websocket API](https://docs.coingecko.com/websocket).
 
 ## On-chain API
 
@@ -24,16 +19,19 @@ Currently, it is not possible to retrieve **historical** jetton prices on-chain 
   Since the TON [execution model is asynchronous](/from-ethereum#execution-model), the jetton price might change between the moment of the response from the price provider and the moment the contract processes the response. Consider this factor in smart contract logic.
 </Callout>
 
-For example, on the [DeDust](https://dedust.io) DEX, it is possible to retrieve pool information on-chain using an internal message with the following [TL-B](/foundations/tlb/overview) schema:
+For example, on a [popular DEX](https://dedust.io), it is possible to retrieve pool information on-chain using an internal message with the following [TL-B](/foundations/tlb/overview) schema:
 
 ```tlb
 provide_pool_state#6e24728d query_id:uint64 include_assets:Bool = InMsgBody;
 
 take_pool_state#bddd4954 query_id:uint64 reserve0:Coins reserve1:Coins total_supply:Coins
                          assets:(Maybe ^[ asset0:Asset asset1:Asset ]) = InMsgBody;
+
+# See:
+# https://hub.dedust.io/contracts/v2/reference/core/pool#operation-provide_pool_stat
 ```
 
-Here is a smart contract snippet in [Tolk](/tolk/overview) illustrating how you can send the 'provide' message:
+Here is a smart contract snippet in [Tolk](/tolk/overview) illustrating how one can send the `provide_pool_state` message:
 
 ```tolk title="Tolk"
 struct (0x6e24728d) ProvideDeDustPool {

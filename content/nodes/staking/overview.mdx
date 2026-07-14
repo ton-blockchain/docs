@@ -23,7 +23,7 @@ The following smart contracts are commonly used in the TON ecosystem:
 >
   The technical minimum stake required to participate in validation is 300,000 GRAM. However, the actual minimum stake is typically higher, approximately 1,000,000 GRAM.
 
-  Validator stakes can be viewed on [tonscan.org/validators](https://tonscan.org/validators). Scroll to the bottom of the list to see the validator with the lowest stake included in the current round.
+  Scroll to the bottom of the [validator stakes list](https://tonscan.org/validators) to see the validator with the lowest stake included in the current round.
 </Callout>
 
 ## Liquid staking
@@ -120,21 +120,8 @@ The following recommendations are mapped onto the Cartesian plane below. The hor
   alt="Recommendations"
 />
 
-## Staking providers
+All validators participating in third-party liquidity pool staking protocols use MyTonCtrl for validation. For validator setup instructions, see:
 
-Third-party staking providers who use a liquidity pool for staking:
-
-|                   Protocol                   | Min deposit |  Liquidity  | Voting |          Withdrawal          | Decentralized validation |
-| :------------------------------------------: | :---------: | :---------: | :----: | :--------------------------: | :----------------------: |
-|     [Tonstakers](https://tonstakers.com)     |    1 GRAM   | Yes (tsTON) |   Yes  | Up to 18h (instant possible) |            Yes           |
-|         [Bemo](https://bemo.finance)         |    1 GRAM   | Yes (bmTON) |   No   |        36-72h cooldown       |            No            |
-|         [Hipo](https://hipo.finance)         |    Varies   |  Yes (hTON) |   No   |  Avg 30h (instant possible)  |            No            |
-| [TON Nominators](https://tonvalidators.org/) | 10,000 GRAM |      No     |   Yes  |           Up to 18h          |            No            |
-
-Tonstakers offers automated compounding and decentralized validation.
-
-All validators participating in these third-party protocols use MyTonCtrl for validation. For validator setup instructions, see:
-
-- [Tonstakers setup](/nodes/cpp/mytonctrl/liquid-staking)
+- [Liquid staking](/nodes/cpp/mytonctrl/liquid-staking)
 - [Nominator pool setup](/nodes/cpp/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode)
 - [Single nominator pool setup](/nodes/cpp/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode)

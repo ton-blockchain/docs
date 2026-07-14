@@ -26,7 +26,7 @@ function resolveBaseUrl() {
 
 function loadDocsRedirects(): Redirect[] {
   const docsConfig = JSON.parse(
-    readFileSync(new URL('./docs.json', import.meta.url), 'utf8')
+    readFileSync(new URL('./docs.json', import.meta.url), 'utf8'),
   ) as DocsConfig;
 
   return docsConfig.redirects ?? [];

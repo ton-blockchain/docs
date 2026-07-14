@@ -748,7 +748,7 @@ type BlueprintTonClient = TonClient4 | TonClient | ContractAdapter | LiteClient;
 
 - `TonClient4` — TON HTTP API v4 client
 - `TonClient` — TON HTTP API v2/v3 client
-- `ContractAdapter` — TON API adapter
+- `ContractAdapter` — Abstract TON API adapter
 - `LiteClient` — Lite client for direct node communication
 
 ### `Explorer`
@@ -758,12 +758,6 @@ Supported blockchain explorer types.
 ```typescript
 type Explorer = 'tonscan' | 'tonviewer' | 'toncx' | 'dton';
 ```
-
-**Supported explorers:**
-
-- `'tonscan'` — [Tonscan](https://tonscan.org) explorer
-- `'toncx'` — [TON.cx](https://ton.cx) explorer
-- `'dton'` — [dTON.io](https://dton.io) explorer (deprecated)
 
 ## Configuration
 

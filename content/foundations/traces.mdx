@@ -32,9 +32,9 @@ As a result, messages in the trace are partially ordered by their [logical time 
   alt="Traces with logical time"
 />
 
-## Traces representation in Tonscan
+## Representation in explorers
 
-In [Tonscan](https://tonscan.org/), traces are visualized as [directed acyclic graphs (DAGs)](https://en.wikipedia.org/wiki/Directed_acyclic_graph), where _transactions are nodes_ and _messages are edges_, showing the full sequence of account state changes.
+In explorers, traces are visualized as [directed acyclic graphs (DAGs)](https://en.wikipedia.org/wiki/Directed_acyclic_graph), where _transactions are nodes_ and _messages are edges_, showing the full sequence of account state changes.
 
 ## Examples
 
@@ -42,21 +42,21 @@ The NFT transfer illustrates a single operation that consists of multiple messag
 
 {/* TODO: To learn how to read traces, follow [this article](/explorers/tonviewer#steps-to-read-a-trace). */}
 
-This trace is started with an external message and can be inspected in [Tonscan](https://tonscan.org/tx/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb#details).
+This trace is started with an external message and [can be inspected](https://tonscan.org/tx/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb#details):
 
-{/* TODO: <Image
+<Image
   src="/images/rpc/nft_transfer_trace_light.png"
   darkSrc="/images/rpc/nft_transfer_trace_dark.png"
   alt="NFT transfer trace"
-  /> */}
+/>
 
-Here is the [example](https://tonscan.org/tx/9effb91e18be732033fe6aa8c39941f26f5e9566848bc487aa7c6bfecdd9d89d#details) of the trace that started with tick-tock transaction.
+Here is the [example](https://tonscan.org/tx/9effb91e18be732033fe6aa8c39941f26f5e9566848bc487aa7c6bfecdd9d89d#details) of the trace that started with tick-tock transaction:
 
-{/* TODO: <Image
+<Image
   src="/images/rpc/tick_tock_initiated_trace_light.png"
   darkSrc="/images/rpc/tick_tock_initiated_trace_dark.png"
   alt="Trace initiated by tick-tock transaction"
-  /> */}
+/>
 
 ## Access using API
 

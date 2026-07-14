@@ -473,15 +473,13 @@ For simplicity, we will use wallet V4 contract with existing client serializatio
 
 ```ts expandable
 import {beginCell, toNano, TonClient, WalletContractV4, internal, fromNano} from "@ton/ton"
-import {getHttpEndpoint} from "@orbs-network/ton-access"
 import {mnemonicToPrivateKey} from "@ton/crypto"
 
 // v4 wallet mnemonic
 const mnemonics = "dog bacon bread ..."
 
-const endpoint = await getHttpEndpoint({network: 'testnet'})
 const client = new TonClient({
-    endpoint: endpoint,
+    endpoint: "https://testnet.toncenter.com/api/v2/jsonRPC",
 })
 const keyPair = await mnemonicToPrivateKey(mnemonics.split(" "))
 const secretKey = keyPair.secretKey

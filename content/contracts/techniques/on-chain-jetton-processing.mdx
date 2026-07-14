@@ -107,10 +107,6 @@ Include the jetton minter address in the contract `Storage` to ensure each insta
 
 Modify `trustedJettonWallet` to store several addresses, to handle several jetton types with a single contract.
 
-<Callout type="tip">
-  [The Bidask Finance DEX](https://bidask.finance/en/) uses manual wallet management.
-</Callout>
-
 ## Automatic wallet discovery
 
 In the first approach, the deploying party chooses addresses of the jetton minter and wallet contracts off-chain. The contract's dependents have to trust that the wallet belongs to the corresponding minter, which is not a problem for an exchange. However, if the deployer is not trustworthy, the first approach is not suitable, and the contract must compute the `trustedJettonWallet` address on-chain.
@@ -215,7 +211,7 @@ fun onInternalMessage(in: InMessage) {
 ```
 
 <Callout type="tip">
-  [The DeDust DEX](https://dedust.io/) uses automatic wallet discovery.
+  Most popular DEXes use automatic wallet discovery.
 </Callout>
 
 ## On-chain get-method emulation
@@ -223,7 +219,7 @@ fun onInternalMessage(in: InMessage) {
 If a jetton contract doesn't implement TEP-89, it is possible to compute the jetton wallet address on-chain by executing the `get_wallet_address` method of the jetton minter. This approach doesn't require any trust in the jetton deployer and works for jettons that don't implement TEP-89.
 
 <Callout type="note">
-  Jettons that do not implement the TEP-89 messages for computing a wallet address on-chain are rare. [TONCO DEX](https://tonco.io/) rejects them, while platforms such as [DeDust](https://dedust.io/) only allow them after a manual approval.
+  Jettons that do not implement the TEP-89 messages for computing a wallet address on-chain are rare. Some DEXes reject them, while other platforms allow them only after manual approval.
 </Callout>
 
 With the state of a jetton minter, the [`RUNVM`](/tvm/instructions#db4fff-runvm) instruction can emulate the execution of the `get_wallet_address` [get-method](/tvm/get-method) to derive the wallet address for any owner.

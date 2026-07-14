@@ -186,7 +186,7 @@ Returns: [`ConnectorFactory`](#connectorfactory) — The same factory, typed as 
 
 #### `createTonConnectConnector`
 
-Build a TonConnect-backed [`Connector`](#connector) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `connectors` or [`addConnector`](#addconnector).
+Build a TON Connect-backed [`Connector`](#connector) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `connectors` or [`addConnector`](#addconnector).
 
 | Parameter                  | Type                                                      | Description                                                                                                                                                                                                 |
 | -------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -352,7 +352,7 @@ Returns: [`CreateCryptoOnrampDepositReturnType`](#createcryptoonrampdepositretur
 
 #### `createLayerswapProvider`
 
-Build a Layerswap-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+Build a [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type                                                  | Description                                                                                                          |
 | --------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -362,7 +362,7 @@ Returns: <code>ProviderFactory\<<a href="#layerswapcryptoonrampprovider">Layersw
 
 #### `createDecentProvider`
 
-Build a Decent-backed [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+Build a [`CryptoOnrampProvider`](#cryptoonrampprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter  | Type                                              | Description                                                                      |
 | ---------- | ------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -1104,7 +1104,7 @@ console.log('Stake Transaction:', txRequest);
 
 #### `createTonstakersProvider`
 
-Build a Tonstakers-backed [`StakingProvider`](#stakingprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+Build a [`StakingProvider`](#stakingprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type                                                    | Description                                                                                                            |
 | --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -1304,7 +1304,7 @@ console.log('Swap Transaction:', transactionResponse);
 
 #### `createDeDustProvider`
 
-Build a DeDust-backed [`SwapProvider`](#swapprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+Build a [`SwapProvider`](#swapprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type                                                    | Description                                                                                                            |
 | --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -1314,7 +1314,7 @@ Returns: <code>(ctx: <a href="#providerfactorycontext">ProviderFactoryContext</a
 
 #### `createOmnistonProvider`
 
-Build an Omniston-backed [`SwapProvider`](#swapprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+Build a [`SwapProvider`](#swapprovider) for AppKit. Pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 | Parameter | Type                                                        | Description                                                                                                                |
 | --------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -1780,25 +1780,25 @@ Constructor: `new CryptoOnrampManager()`
 
 #### `CryptoOnrampProvider`
 
-Abstract base class implemented by crypto on-ramp providers ([Layerswap](https://layerswap.io), [swaps.xyz](https://docs.swaps.xyz), custom integrations). Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
+Abstract base class implemented by crypto on-ramp providers, either built-in or a custom integration. Apps don't use it directly — they consume providers through [`CryptoOnrampManager`](#cryptoonrampmanager) and the `getCryptoOnramp*` / [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) actions.
 
 Constructor: `new CryptoOnrampProvider()`
 
 #### `LayerswapCryptoOnrampProvider`
 
-[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by Layerswap. Prefer the [`createLayerswapProvider`](#createlayerswapprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation. Prefer the [`createLayerswapProvider`](#createlayerswapprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new LayerswapCryptoOnrampProvider(config)`
 
-| Parameter       | Type                                                  | Description                                                                                                                                     |
-| --------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config`        | [`LayerswapProviderConfig`](#layerswapproviderconfig) | Optional [`LayerswapProviderConfig`](#layerswapproviderconfig). Defaults are filled in for any field left undefined.                            |
-| `config.apiKey` | `string`                                              | Optional API key. Forwarded as `X-LS-APIKEY` when provided.                                                                                     |
-| `config.apiUrl` | `string`                                              | Override the base API URL. Defaults to `https://api.layerswap.io/api/v2` (see [Layerswap API V2](https://api.layerswap.io/swagger/index.html)). |
+| Parameter       | Type                                                  | Description                                                                                                                                      |
+| --------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `config`        | [`LayerswapProviderConfig`](#layerswapproviderconfig) | Optional [`LayerswapProviderConfig`](#layerswapproviderconfig). Defaults are filled in for any field left undefined.                             |
+| `config.apiKey` | `string`                                              | Optional API key. Forwarded as `X-LS-APIKEY` when provided.                                                                                      |
+| `config.apiUrl` | `string`                                              | Override the base API URL. Defaults to `https://api.layerswap.io/api/v2` (see [respective API V2](https://api.layerswap.io/swagger/index.html)). |
 
 #### `DecentCryptoOnrampProvider`
 
-[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation backed by Decent (formerly swaps.xyz). Prefer the [`createDecentProvider`](#createswapsxyzprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+[`CryptoOnrampProvider`](#cryptoonrampprovider) implementation. Prefer the [`createDecentProvider`](#createswapsxyzprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new DecentCryptoOnrampProvider(config)`
 
@@ -1874,7 +1874,7 @@ Constructor: `new StakingManager(createFactoryContext)`
 
 #### `StakingProvider`
 
-Abstract base class implemented by staking providers (Tonstakers, custom integrations, …). Apps don't use it directly — they consume providers through [`StakingManager`](#stakingmanager) and the `getStaking*` / `buildStakeTransaction` actions.
+Abstract base class implemented by staking providers, either built-in or a custom integration. Apps don't use it directly — they consume providers through [`StakingManager`](#stakingmanager) and the `getStaking*` / `buildStakeTransaction` actions.
 
 Constructor: `new StakingProvider(providerId)`
 
@@ -1884,7 +1884,7 @@ Constructor: `new StakingProvider(providerId)`
 
 #### `TonStakersStakingProvider`
 
-[`StakingProvider`](#stakingprovider) implementation backed by Tonstakers. The constructor is private — always go through the [`createTonstakersProvider`](#createtonstakersprovider) factory and pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+[`StakingProvider`](#stakingprovider) implementation. The constructor is private — always go through the [`createTonstakersProvider`](#createtonstakersprovider) factory and pass the result to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new TonStakersStakingProvider()`
 
@@ -1892,7 +1892,7 @@ Constructor: `new TonStakersStakingProvider()`
 
 #### `DeDustSwapProvider`
 
-[`SwapProvider`](#swapprovider) implementation backed by DeDust. Prefer the [`createDeDustProvider`](#creatededustprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+[`SwapProvider`](#swapprovider) implementation. Prefer the [`createDeDustProvider`](#creatededustprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new DeDustSwapProvider(config)`
 
@@ -1924,14 +1924,14 @@ kit.registerProvider(
 
 #### `OmnistonSwapProvider`
 
-[`SwapProvider`](#swapprovider) implementation backed by Omniston. Prefer the [`createOmnistonProvider`](#createomnistonprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
+[`SwapProvider`](#swapprovider) implementation. Prefer the [`createOmnistonProvider`](#createomnistonprovider) factory over instantiating this class directly — the factory returns a `ProviderInput` ready to pass to [`AppKitConfig`](#appkitconfig)'s `providers` or [`registerProvider`](#registerprovider).
 
 Constructor: `new OmnistonSwapProvider(config)`
 
 | Parameter                    | Type                                                        | Description                                                                                                                |
 | ---------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `config`                     | [`OmnistonSwapProviderConfig`](#omnistonswapproviderconfig) | Optional [`OmnistonSwapProviderConfig`](#omnistonswapproviderconfig). Defaults are filled in for any field left undefined. |
-| `config.apiUrl`              | `string`                                                    | Optional URL for the Omniston API                                                                                          |
+| `config.apiUrl`              | `string`                                                    | Optional URL for the given API                                                                                             |
 | `config.defaultSlippageBps`  | `number`                                                    | Default slippage tolerance in basis points (1 `bp` = 0.01%)                                                                |
 | `config.quoteTimeoutMs`      | `number`                                                    | Timeout for quote requests in milliseconds                                                                                 |
 | `config.providerId`          | `string`                                                    | Identifier for the provider.                                                                                               |
@@ -1975,7 +1975,7 @@ Constructor: `new SwapManager(createFactoryContext)`
 
 #### `SwapProvider`
 
-Abstract base class implemented by swap providers (DeDust, Omniston, custom integrations). Apps don't use it directly — they consume providers through [`SwapManager`](#swapmanager) and the `getSwap*` / `buildSwapTransaction` actions.
+Abstract base class implemented by swap providers, either built-in or a custom integration. Apps don't use it directly — they consume providers through [`SwapManager`](#swapmanager) and the `getSwap*` / `buildSwapTransaction` actions.
 
 Constructor: `new SwapProvider()`
 
@@ -2706,21 +2706,21 @@ type GetCryptoOnrampStatusReturnType = Promise<CryptoOnrampStatus>;
 
 Configuration accepted by [`createLayerswapProvider`](#createlayerswapprovider).
 
-| Field    | Type     | Description                                                                                                                                    |
-| -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apiKey` | `string` | Optional API key. Forwarded as `X-LS-APIKEY` when provided.                                                                                    |
-| `apiUrl` | `string` | Override the base API URL. Defaults to `https://api.layerswap.io/api/v2` (see [Layerswap API V2](https://api.layerswap.io/swagger/index.html). |
+| Field    | Type     | Description                                                                                                                                     |
+| -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apiKey` | `string` | Optional API key. Forwarded as `X-LS-APIKEY` when provided.                                                                                     |
+| `apiUrl` | `string` | Override the base API URL. Defaults to `https://api.layerswap.io/api/v2` (see [respective API V2](https://api.layerswap.io/swagger/index.html). |
 
 #### `LayerswapQuoteMetadata`
 
-Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)'s `metadata` from Layerswap — carries the swap ID and deposit action that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) reads to build the deposit.
+Provider-specific metadata returned on a [`CryptoOnrampQuote`](#cryptoonrampquote)'s `metadata` — carries the swap ID and deposit action that [`createCryptoOnrampDeposit`](#createcryptoonrampdeposit) reads to build the deposit.
 
-| Field                     | Type     | Description                                                                          |
-| ------------------------- | -------- | ------------------------------------------------------------------------------------ |
-| `swapId`\*                | `string` | Layerswap swap ID created at quote time and reused by `createDeposit` / `getStatus`. |
-| `depositAddress`\*        | `string` | Pre-computed deposit address on the source chain that the user must send funds to.   |
-| `sourceAmountBaseUnits`\* | `string` | Source-chain amount the user must send, in raw base units (e.g., wei).               |
-| `targetAmountBaseUnits`\* | `string` | Target-chain amount the user receives, in raw base units (e.g., nanograms).          |
+| Field                     | Type     | Description                                                                        |
+| ------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `swapId`\*                | `string` | Swap ID created at quote time and reused by `createDeposit` / `getStatus`.         |
+| `depositAddress`\*        | `string` | Pre-computed deposit address on the source chain that the user must send funds to. |
+| `sourceAmountBaseUnits`\* | `string` | Source-chain amount the user must send, in raw base units (e.g., wei).             |
+| `targetAmountBaseUnits`\* | `string` | Target-chain amount the user receives, in raw base units (e.g., nanograms).        |
 
 #### `DecentProviderConfig`
 
@@ -3726,7 +3726,7 @@ Static metadata for a staking provider.
 
 | Field                     | Type                                                     | Description                                                                                                     |
 | ------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `name`\*                  | `string`                                                 | Human-readable provider name (e.g. "Tonstakers")                                                                |
+| `name`\*                  | `string`                                                 | Human-readable provider name                                                                                    |
 | `supportedUnstakeModes`\* | <code><a href="#unstakemodes">UnstakeModes</a>\[]</code> | Supported unstake modes for this provider.                                                                      |
 | `supportsReversedQuote`\* | `boolean`                                                | Whether provider supports reversed quote format (e.g., passing GRAM instead of tsTON for unstake)               |
 | `stakeToken`\*            | [`StakingTokenInfo`](#stakingtokeninfo)                  | Token that the user sends when staking (e.g. GRAM)                                                              |
@@ -3796,12 +3796,12 @@ Display metadata for a staking-pool token — `ticker`, `decimals` and `address`
 
 #### `TonStakersChainConfig`
 
-Per-chain Tonstakers config — optional API key for APY reads and an optional staking-provider metadata override.
+Per-chain config — optional API key for APY reads and an optional staking-provider metadata override.
 
-| Field         | Type                                                                  | Description                                                                                                                                       |
-| ------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tonApiToken` | `string`                                                              | A key used for APY reads. Optional — APY still works without it, but providing one is recommended when you already use the API elsewhere.         |
-| `metadata`    | [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) | Optional [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) applied on top of the built-in Tonstakers metadata for this chain. |
+| Field         | Type                                                                  | Description                                                                                                                               |
+| ------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `tonApiToken` | `string`                                                              | A key used for APY reads. Optional — APY still works without it, but providing one is recommended when you already use the API elsewhere. |
+| `metadata`    | [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) | Optional [`StakingProviderMetadataOverride`](#stakingprovidermetadataoverride) applied on top of the built-in metadata for this chain.    |
 
 #### `TonStakersProviderConfig`
 
@@ -3857,7 +3857,7 @@ type BuildSwapTransactionReturnType = Promise<TransactionRequest>;
 
 #### `DeDustProviderOptions`
 
-DeDust-specific options forwarded through `providerOptions` on [`SwapQuoteParams`](#swapquoteparams) / [`SwapParams`](#swapparams).
+Options forwarded through `providerOptions` on [`SwapQuoteParams`](#swapquoteparams) / [`SwapParams`](#swapparams).
 
 | Field                  | Type       | Description                                                                                                                                                                                                  |
 | ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -3872,7 +3872,7 @@ DeDust-specific options forwarded through `providerOptions` on [`SwapQuoteParams
 
 #### `DeDustQuoteMetadata`
 
-Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` from DeDust — carries the resolved route, fees and `swapData` payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
+Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` — carries the resolved route, fees and `swapData` payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
 
 | Field             | Type                  | Description                                 |
 | ----------------- | --------------------- | ------------------------------------------- |
@@ -3881,7 +3881,7 @@ Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` 
 
 #### `DeDustReferralOptions`
 
-Optional referral metadata attached to DeDust swaps so the provider can attribute them.
+Optional referral metadata attached to swaps so the provider can attribute them.
 
 | Field             | Type     | Description                                 |
 | ----------------- | -------- | ------------------------------------------- |
@@ -3963,7 +3963,7 @@ type GetSwapQuoteReturnType = Promise<SwapQuote>;
 
 #### `OmnistonProviderOptions`
 
-Omniston-specific options forwarded through `providerOptions` on [`SwapQuoteParams`](#swapquoteparams) / [`SwapParams`](#swapparams).
+Options forwarded through `providerOptions` on [`SwapQuoteParams`](#swapquoteparams) / [`SwapParams`](#swapparams).
 
 | Field                 | Type                      | Description                                   |
 | --------------------- | ------------------------- | --------------------------------------------- |
@@ -3974,15 +3974,15 @@ Omniston-specific options forwarded through `providerOptions` on [`SwapQuotePara
 
 #### `OmnistonQuoteMetadata`
 
-Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` from Omniston — carries the resolved route and signed quote payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
+Provider-specific metadata returned on a [`SwapQuote`](#swapquote)'s `metadata` — carries the resolved route and signed quote payload that [`buildSwapTransaction`](#buildswaptransaction) needs.
 
-| Field             | Type    | Description                      |
-| ----------------- | ------- | -------------------------------- |
-| `omnistonQuote`\* | `Quote` | The actual Omniston quote object |
+| Field             | Type    | Description             |
+| ----------------- | ------- | ----------------------- |
+| `omnistonQuote`\* | `Quote` | The actual quote object |
 
 #### `OmnistonReferrerOptions`
 
-Optional referrer metadata attached to Omniston swaps so the provider can attribute them.
+Optional referrer metadata attached to swaps so the provider can attribute them.
 
 | Field                 | Type      | Description                                   |
 | --------------------- | --------- | --------------------------------------------- |
@@ -3996,7 +3996,7 @@ Configuration accepted by [`createOmnistonProvider`](#createomnistonprovider).
 
 | Field                 | Type                           | Description                                                 |
 | --------------------- | ------------------------------ | ----------------------------------------------------------- |
-| `apiUrl`              | `string`                       | Optional URL for the Omniston API                           |
+| `apiUrl`              | `string`                       | Optional URL for the given API                              |
 | `defaultSlippageBps`  | `number`                       | Default slippage tolerance in basis points (1 `bp` = 0.01%) |
 | `quoteTimeoutMs`      | `number`                       | Timeout for quote requests in milliseconds                  |
 | `providerId`          | `string`                       | Identifier for the provider.                                |
