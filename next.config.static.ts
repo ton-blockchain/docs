@@ -31,7 +31,7 @@ function resolveBaseUrl() {
   }
 
   return 'http://localhost:3000';
-};
+}
 
 function resolveBasePath() {
   if (isGitHubPagesBuild) {
@@ -39,7 +39,7 @@ function resolveBasePath() {
   }
 
   return undefined;
-};
+}
 
 const config: NextConfig = {
   output: 'export',

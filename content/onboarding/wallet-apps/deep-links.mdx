@@ -243,7 +243,7 @@ ton://transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=5000000&b
 
 ## Wallet-specific invoices
 
-Use wallet-specific links to create simple jetton and Gram transfers. The syntax is usually similar to `ton://transfer` links, but always check each wallet’s documentation.
+Use specific links for each wallet to initiate jetton and Gram transfers. The format usually resembles `ton://transfer` links, but make sure to consult the documentation for each wallet.
 
 Example: transferring 1 USDT to `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`:
 
@@ -251,55 +251,26 @@ Example: transferring 1 USDT to `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sD
 https://my.tt/transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=1000000&jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
 ```
 
-Find more wallet-specific features in the documentation: [MyTonWallet docs at `help.mytonwallet.io`](https://help.mytonwallet.io/intro/key-features/deeplinks-in-mytonwallet).
-
 ## Explorers links
 
-To generate a transaction link, the service must obtain the account address, logical time (lt), and transaction hash by calling the [`getTransactions`](https://toncenter.com/api/v2/#/transactions/get_transactions_getTransactions_get) method. Using these values, [Tonscan](https://tonscan.org) and [Gram Explorer](https://explorer.toncoin.org/) render the transaction page according to the following formats respectively:
+To generate a transaction link, the service must obtain the account address, logical time (lt), and transaction hash by calling the [`getTransactions`](https://toncenter.com/api/v2/#/transactions/get_transactions_getTransactions_get) method. Using these values, [TON Explorer](https://explorer.toncoin.org/) renders the transaction page.
 
-- [Tonscan links](#tonscan)
-- [Gram Explorer links](#gram-explorer)
-
-### Tonscan
-
-#### Mainnet
-
-```bash title="Tonscan Mainnet link"
-https://tonscan.org/tx/<lt as int>:<hash as base64url>:<account address>
-```
-
-```bash title="Tonscan Mainnet link example"
-https://tonscan.org/tx/63333243000002:rujRhaDI9zx4e_GHLullmsU84RqQsWs4SFangh7_jCk:Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF
-```
-
-#### Testnet
-
-```bash title="Tonscan Testnet link"
-https://testnet.tonscan.org/tx/<lt as int>:<hash as base64url>:<account address>
-```
-
-```bash title="Tonscan Testnet link example"
-https://testnet.tonscan.org/tx/40988257000002:Ye-PrEPt9Aj8wEGqivrsFKwsT2j6r-brGMUKkhaX0vY:kf8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM_BP
-```
-
-### Gram explorer
-
-#### Mainnet
+### Mainnet
 
 ```bash title="Mainnet link"
 https://explorer.toncoin.org/transaction?account=<account address>&lt=<lt as int>&hash=<transaction uppercase hex>
 ```
 
-```bash title="Mainnet link example"
+```bash title="Example"
 https://explorer.toncoin.org/transaction?account=Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF&lt=63333243000002&hash=AEE8D185A0C8F73C787BF1872EE9659AC53CE11A90B16B384856A7821EFF8C29
 ```
 
-#### Testnet
+### Testnet
 
 ```bash title="Testnet link"
 https://test-explorer.toncoin.org/transaction?account=<account address>&lt=<lt as int>&hash=<transaction uppercase hex>
 ```
 
-```bash title="Testnet link example"
+```bash title="Example"
 https://test-explorer.toncoin.org/transaction?account=Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF&lt=40988257000002&hash=61EF8FAC43EDF408FCC041AA8AFAEC14AC2C4F68FAAFE6EB18C50A921697D2F6
 ```

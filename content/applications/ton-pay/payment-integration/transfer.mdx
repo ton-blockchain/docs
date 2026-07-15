@@ -369,7 +369,7 @@ const result = await createTonPayTransfer(
   <Step>
     #### Obtain testnet GRAM
 
-    - Use testnet wallet account: [MyTonWallet](https://mytonwallet.org/) or other TON wallets.
+    - Set up testnet wallet account in [wallet.ton.org](/onboarding/wallet-apps/web) or other TON wallets.
     - [Get testnet GRAM](/onboarding/wallet-apps/get-coins) from a faucet to test transactions.
   </Step>
 
@@ -425,14 +425,12 @@ const { message, reference, bodyBase64Hash } = await createTonPayTransfer(
 
 ### Verify testnet transactions
 
-Verify testnet transactions using testnet block [explorers](/onboarding/explorers/overview):
-
-- [Testnet Tonscan](https://testnet.tonscan.org/)
+Verify testnet transactions using testnet block [explorers](/onboarding/explorers):
 
 ```typescript
 // Replace txHash with the actual transaction hash.
 // After transaction completes:
-console.log(`View on explorer: https://testnet.tonscan.org/tx/${txHash}`);
+console.log(`View in explorer, e.g., https://testnet.tonscan.org/tx/${txHash}`);
 ```
 
 ### Apply testing best practices

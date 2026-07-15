@@ -28,7 +28,7 @@ export const appKit = new AppKit({
 });
 ```
 
-Omniston requires its own SDK package — install it before registering the provider:
+Some providers require their own SDK package — install it before registering the provider:
 
 ```bash
 npm i @ston-fi/omniston-sdk
@@ -36,7 +36,7 @@ npm i @ston-fi/omniston-sdk
 
 ## Add a staking provider
 
-Use `createTonstakersProvider({})` from `@ton/appkit/staking/tonstakers` the same way:
+Use the provider from `@ton/appkit/staking/tonstakers` the same way:
 
 ```ts
 import { AppKit } from '@ton/appkit';

@@ -160,9 +160,8 @@ Supported whitelist destinations include:
 - System Elector address (`-1:3333333333333333333333333333333333333333333333333333333333333333`)
 - System Config address (`-1:5555555555555555555555555555555555555555555555555555555555555555`)
 - Single nominator pool contracts
-- Liquid staking protocol contracts (Tonstakers, Bemo)
+- Liquid staking protocol contracts
 - Standard nominator pool contracts
-- Whales nominator pool contracts
 
 Technically, any address can be added to the whitelist, including regular wallet addresses like wallet-v4. However, adding a wallet address defeats the purpose of vesting, as the owner would be able to withdraw locked funds immediately. Whitelist addresses should only include contracts that support staking operations and cannot be used for direct withdrawals.
 
@@ -184,13 +183,11 @@ The vesting contract can be managed through the [vesting.ton.org](https://vestin
 1. Enter the amount
 1. For staking operations, add the appropriate message body:
 
-   - Empty message for single nominator pools or Bemo
+   - Empty message for single nominator pools
    - Text comment "d" for standard nominator pools (deposit)
    - Text comment "w" for standard nominator pools (withdraw)
-   - Text comment "Stake" for Whales pools
-   - Text comment "Withdraw" for Whales pools
 
-   Select the message format: Text, Base64, or HEX. Use Text for simple text comments, and Base64 or HEX for serialized BoC messages (e.g., Tonstakers deposit operations).
+   Select the message format: Text, Base64, or HEX. Use Text for simple text comments, and Base64 or HEX for serialized BoC messages (e.g., deposit operations).
 1. Review and confirm the transaction
 
 The interface handles message formatting automatically, ensuring compliance with whitelist restrictions.
@@ -308,193 +305,6 @@ For detailed setup instructions, see [MyTonCtrl single nominator pool mode](/nod
   Staking rewards are distributed according to the pool's reward scheme. See [staking reward calculation in nominator pools](/nodes/staking/nominator-pools) for details on how rewards are calculated and split between validators and nominators.
 </Callout>
 
-### Liquid staking: Tonstakers
-
-Stake through the Tonstakers liquid staking protocol.
-
-**Limitations**:
-
-- Recipients can return coins from the pool (exchange tokens back to Gram) during vesting
-- Recipients cannot transfer `tsTON` jettons to others until vesting expires
-- Recipients cannot use `tsTON` jettons in DeFi protocols until vesting expires
-- Voting rights are unavailable during vesting
-
-**Steps**:
-
-1. Request whitelisting of Tonstakers pool: `0:a45b17f28409229b78360e3290420f13e4fe20f90d7e2bf8c4ac6703259e22fa`
-
-1. Send deposit message to the pool from vesting:
-
-   - Destination: pool address above
-   - Amount: desired stake amount
-   - Body: serialized deposit message in HEX format (not a text comment)
-
-   The deposit message uses this scheme with `query_id=0`:
-
-   ```
-   tonstakers_pool_deposit#47d54391 query_id:uint64 = InternalMsgBody;
-   ```
-
-   HEX message body: `b5ee9c7201010101000e00001847d543910000000000000000`
-
-   <Callout
-     type="caution"
-     title="Message format"
-   >
-     This is a serialized BoC message, not a text comment. Do not insert this into the "Comment" field in wallet applications. Use the HEX format option in the vesting interface.
-   </Callout>
-
-   Send this message via the [vesting.ton.org](https://vesting.ton.org/) interface by selecting HEX format.
-
-1. Find the jetton wallet address:
-
-   - Open the deposit transaction in a [block explorer]
-   - Look at the transaction trace and find the newly deployed jetton wallet
-   - Verify that:
-     - The jetton wallet is verified
-     - The "Holder address" equals the vesting contract address
-
-   <Image
-     src="/images/vesting/tstakers_trace.png"
-     alt="Tonstakers deposit trace"
-   />
-
-   <Image
-     src="/images/vesting/tstakers_jwallet.png"
-     alt="Tonstakers jetton wallet"
-   />
-
-1. Request whitelisting of the jetton wallet address. This is required to withdraw the stake later.
-
-1. To withdraw (unstake), send a burn message to the jetton wallet:
-
-   - Destination: jetton wallet address (from step 3)
-   - Amount: gas fee (\~0.5 GRAM)
-   - Body: burn message with operation code `op::jetton_burn` (0x595f07bc)
-
-   <Callout
-     type="caution"
-     title="Withdrawal amount"
-   >
-     Specify the exact amount of `tsTON` to burn. Check the `tsTON` balance in the jetton wallet before creating the burn message.
-   </Callout>
-
-   To build the burn message cell in TypeScript, use the following code:
-
-   ```typescript
-   import { beginCell, Cell, toNano } from '@ton/core';
-
-   // jetton_burn#595f07bc query_id:uint64 jetton_amount:Coins
-   //      forward_payload:(Maybe ^Cell) = InternalMsgBody;
-
-   const jettonAmount = toNano(123); // amount of tsTON to burn
-
-   const burnMessage = beginCell()
-       .storeUint(0x595f07bc, 32) // op::jetton_burn
-       .storeUint(0, 64) // query_id
-       .storeCoins(jettonAmount) // jetton_amount
-       .storeRef(Cell.EMPTY) // forward_payload (empty)
-       .endCell();
-
-   // convert to HEX for vesting.ton.org interface
-   const hexMessage = burnMessage.toBoc().toString('hex');
-   console.log(hexMessage);
-   ```
-
-   Use the HEX output in the vesting interface when sending the burn message.
-
-### Liquid staking: Bemo
-
-[Bemo](https://bemo.finance) is a liquid staking protocol in TON. When staking Gram, the protocol mints `bmTON` tokens that represent the staked position and automatically accumulate rewards.
-
-**Limitations**:
-
-- The vesting contract supports only basic staking through empty messages
-- `bmTON` jettons remain locked in the vesting contract until vesting expires
-- Jettons accumulate staking rewards automatically
-- Staking and unstaking Gram is possible during vesting
-- Transferring `bmTON` to others is not possible until vesting expires
-- Using `bmTON` in DeFi protocols is not possible until vesting expires
-
-**Steps**:
-
-1. Request whitelisting of Bemo v2 Financial contract: `0:92c4664f1ea6b74ed9ce0e031a9fc0843348dfe87a58faea27fcd31e1608caaa` (or `EQCSxGZPHqa3TtnODgMan8CEM0jf6HpY-uon_NMeFgjKqkEY` in user-friendly format)
-
-1. Stake GRAMs by sending an empty message to the Financial contract:
-
-   - Destination: Financial contract address above
-   - Amount: desired stake amount (e.g., 100 GRAM)
-   - Body: empty message (no payload)
-
-   Use the [vesting.ton.org](https://vesting.ton.org/) interface.
-
-1. Find the `bmTON` jetton wallet address:
-
-   - Open the staking transaction in a [block explorer]
-   - Look at the transaction trace and find the newly deployed jetton wallet
-   - Verify that:
-     - It's a `bmTON` jetton wallet (should show "bmTON" and be verified)
-     - The "Holder address" equals the vesting contract address
-
-   <Image
-     src="/images/vesting/bemo_trace.png"
-     alt="Bemo staking trace"
-   />
-
-   <Image
-     src="/images/vesting/bemo_jwallet.png"
-     alt="Bemo jetton wallet"
-   />
-
-1. Request whitelisting of the `bmTON` jetton wallet address. This is required to withdraw the stake later.
-
-1. To withdraw (unstake), send a burn message to the `bmTON` jetton wallet:
-
-   - Destination: `bmTON` jetton wallet address (from step 3)
-   - Amount: \~0.5 GRAM (for gas fees)
-   - Body: burn message with operation code `op::jetton_burn` (0x595f07bc)
-
-   <Callout
-     type="caution"
-     title="Withdrawal amount"
-   >
-     Specify the exact amount of `bmTON` to unstake. Check the `bmTON` balance in the jetton wallet before creating the burn message.
-   </Callout>
-
-   To build the burn message cell in TypeScript, use the following code:
-
-   ```typescript
-   import { beginCell, Cell, toNano } from '@ton/core';
-
-   // jetton_burn#595f07bc query_id:uint64 jetton_amount:Coins
-   //      forward_payload:(Maybe ^Cell) = InternalMsgBody;
-
-   const jettonAmount = toNano(100); // amount of bmTON to burn
-
-   const burnMessage = beginCell()
-       .storeUint(0x595f07bc, 32) // op::jetton_burn
-       .storeUint(0, 64) // query_id
-       .storeCoins(jettonAmount) // jetton_amount
-       .storeRef(Cell.EMPTY) // forward_payload (empty)
-       .endCell();
-
-   // convert to HEX for vesting.ton.org interface
-   const hexMessage = burnMessage.toBoc().toString('hex');
-   console.log(hexMessage);
-   ```
-
-   Use the HEX output in the vesting interface when sending the burn message.
-
-   After burning `bmTON`, GRAM is returned to the vesting contract after a cooldown period. Check the current cooldown on [Bemo documentation](https://docs.bemo.fi).
-
-**Alternative: Bemo v1 (deprecated)**
-
-For Bemo v1, the process is similar:
-
-- Financial contract address: `0:cd872fa7c5816052acdf5332260443faec9aacc8c21cca4d92e7f47034d11892` (`EQDNhy-nxYFgUqzfUzImBEP67JqsyMIcyk2S5_RwNNEYku0k`)
-- It mints `stTON` instead of `bmTON`
-- The rest of the process is the same as Bemo v2
-
 ### Standard nominator pools
 
 Standard nominator pools are the original GRAM staking pools where multiple nominators can pool their stakes together with a validator.
@@ -548,48 +358,6 @@ Standard nominator pools are the original GRAM staking pools where multiple nomi
 - Only "d" and "w" text comments are allowed
 - The vesting contract must be in basechain (workchain 0)
 
-### Whales nominator pools
-
-[Whales nominator pools](https://tonwhales.com/staking) are community-run staking pools with a slightly different interface.
-
-**Requirements**:
-
-- Pool must be in basechain (workchain 0)
-- Vesting contract must be in basechain (workchain 0)
-- Whales pools are typically in the basechain
-
-**Steps**:
-
-1. Request whitelisting of the Whales pool address.
-
-1. Deposit stake by sending text comment "Stake" (capital S, case-sensitive):
-
-   - Destination: Whales pool address
-   - Amount: desired stake amount + deposit fee
-   - Body: text comment "Stake" (capital S, case-sensitive)
-
-   Each pool has different deposit fees and minimum stake amounts. Check the specific pool information before depositing.
-
-1. Withdraw stake by sending text comment "Withdraw" (capital W, case-sensitive):
-
-   - Destination: the same Whales pool address
-   - Amount: withdraw fee (check specific pool information)
-   - Body: text comment "Withdraw" (capital W, case-sensitive)
-
-   Withdrawal is a two-step process:
-
-   - First message creates a withdrawal request
-   - Withdrawal may be immediate
-   - If withdrawal isn't immediate, wait for the pool to process the request (typically within 18 hours or less), then send another "Withdraw" message to complete it
-
-**Limitations**:
-
-- Depositing and withdrawing stake is supported
-- Stake earns validation rewards
-- Deposit and withdraw fees vary by pool
-- Only "Stake" and "Withdraw" text comments are allowed (case-sensitive)
-- The vesting contract must be in basechain (workchain 0)
-
 ## Sending funds back to sender
 
 At any time, even while funds are locked, they can be sent back to the vesting sender address without restrictions. This provides a safety mechanism to return funds if staking is not desired or if issues arise.
@@ -634,4 +402,4 @@ To verify:
 - [Standard wallets documentation](/contracts/standard/wallets/history)
 - [Staking organization scenarios on TON](/nodes/staking/overview)
 
-[block explorer]: /onboarding/explorers/overview
+[block explorer]: /onboarding/explorers

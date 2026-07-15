@@ -5,26 +5,11 @@ sidebarTitle: "Liquid staking"
 
 The [liquid staking contract](https://github.com/ton-blockchain/liquid-staking-contract) enables staking services to issue liquid staking tokens (LSTs) representing an underlying staking position. LSTs can be used in DeFi while the underlying GRAM earns rewards.
 
-## Staking providers
+All validators participating in these protocols use MyTonCtrl for validation. For validator setup instructions, see:
 
-Third-party staking providers who use a liquidity pool for staking:
-
-|                   Protocol                   | Min deposit |  Liquidity  | Voting |          Withdrawal          | Decentralized validation |
-| :------------------------------------------: | :---------: | :---------: | :----: | :--------------------------: | :----------------------: |
-|     [Tonstakers](https://tonstakers.com)     |    1 GRAM   | Yes (tsTON) |   Yes  | Up to 18h (instant possible) |            Yes           |
-|         [Bemo](https://bemo.finance)         |    1 GRAM   | Yes (bmTON) |   No   |        36-72h cooldown       |            No            |
-|         [Hipo](https://hipo.finance)         |    Varies   |  Yes (hTON) |   No   |  Avg 30h (instant possible)  |            No            |
-| [TON Nominators](https://tonvalidators.org/) | 10,000 GRAM |      No     |   Yes  |           Up to 18h          |            No            |
-
-Tonstakers offers automated compounding and decentralized validation.
-
-<Callout type="note">
-  All validators participating in these protocols use MyTonCtrl for validation. For validator setup instructions, see:
-
-  - [Tonstakers setup](/nodes/cpp/mytonctrl/liquid-staking)
-  - [Nominator pool setup](/nodes/cpp/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode)
-  - [Single nominator pool setup](/nodes/cpp/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode)
-</Callout>
+- [Liquid staking setup](/nodes/cpp/mytonctrl/liquid-staking)
+- [Nominator pool setup](/nodes/cpp/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode)
+- [Single nominator pool setup](/nodes/cpp/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode)
 
 ## Combining staking with DeFi
 
@@ -38,8 +23,6 @@ Staking can be combined with various DeFi strategies to maximize returns and unl
 1. DeFi integration
 
    Use liquid staking tokens in lending protocols, DEX liquidity pools, and other DeFi applications to earn multiple yield streams simultaneously.
-
-[Tonstakers Earn](https://tonstakers.com/) provides detailed strategies and examples covering leveraged staking, collateral staking, and DEX liquidity provision.
 
 ### Vesting contracts with staking
 

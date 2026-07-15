@@ -34,7 +34,7 @@ Apart from raw tables, there are decoded tables that allow you to work with high
 - [NFT events](https://dune.com/queries?category=canonical\&namespace=ton\&id=ton.nft_events) — comprehensive source of NFT-related data, including
   sales, transfers, and mints.
 - [DEX trades](https://docs.dune.com/data-catalog/ton/dex_trades) — includes a unified data model for DEX trades. The full list of
-  supported DEXs is available [here](https://github.com/ton-studio/ton-etl/blob/main/datalake/README.md#dex-trades).
+  supported DEXs is available [here](https://github.com/re-doubt/ton-etl/blob/main/datalake/README.md#dex-trades).
 - [DEX pools](https://docs.dune.com/data-catalog/ton/dex_pools) — comes with the full history of DEX pool balances and TVL estimations.
 
 Finally, two tables with off-chain metadata are available:
@@ -133,17 +133,17 @@ The decoding implementation must solve the following tasks:
 - Extracting all swap-related fields: tokens sold and bought, amounts, query IDs, trader, router (if any), and pool.
 - Fetching pool reserves and LP token supply, if applicable.
 
-To add support for a new DEX and decode its activity, you need to prepare a relevant PR on GitHub [to TON-ETL's repo](https://github.com/ton-studio/ton-etl). Use those past PRs as a reference: [BidAsk](https://github.com/ton-studio/ton-etl/pull/186), [CoffeeSwap](https://github.com/ton-studio/ton-etl/pull/171/files), [MemesLab](https://github.com/ton-studio/ton-etl/pull/144).
+To add support for a new DEX and decode its activity, you need to prepare a relevant PR on GitHub [to TON-ETL's repo](https://github.com/re-doubt/ton-etl). Use those past PRs as a reference: [186](https://github.com/re-doubt/ton-etl/pull/186), [171](https://github.com/re-doubt/ton-etl/pull/171), [144](https://github.com/re-doubt/ton-etl/pull/144).
 
 ## Real-time streams
 
-In addition to bulk data export, TON-ETL provides real-time data streaming via Kafka. A [public endpoint](https://github.com/ton-studio/ton-etl/blob/main/datalake/README.md#near-real-time--data-streaming-via-pulic-kafka-topics) is available free of charge for non-profit projects.
+In addition to bulk data export, TON-ETL provides real-time data streaming via Kafka. A [public endpoint](https://github.com/re-doubt/ton-etl/blob/main/datalake/README.md#near-real-time--data-streaming-via-pulic-kafka-topics) is available free of charge for non-profit projects.
 
 For projects that don't meet the non-profit criteria or require an in-house solution, you can deploy the infrastructure yourself by:
 
 1. Running your own [TON node](/nodes/overview)
-1. Launching [ton-etl](https://github.com/re-doubt/ton-etl/blob/main/README.md)
-1. Setting up [ton-index-worker](https://github.com/ton-studio/ton-index-worker)
+1. Launching [TON-ETL](https://github.com/re-doubt/ton-etl/blob/main/README.md)
+1. Setting up [`ton-index-worker`](https://github.com/toncenter/ton-index-worker)
 
 ## TON Labels
 
@@ -155,8 +155,4 @@ You can access the latest labels either directly from [the build branch](https:/
 
 ## Other platforms
 
-- [Chainbase](https://docs.chainbase.com/catalog/Ton/Overview) offers a set of raw and decoded tables with TON data. It allows you to run SQL queries and fetch results via API.
-- [TON Console](https://docs.tonconsole.com/tonconsole/analytics) provides analysts with Analytics Service.
-- [TokenTerminal](https://tokenterminal.com/explorer/projects/the-open-network) comes with high-level metrics across TON Ecosystem.
-- [Artemis](https://app.artemisanalytics.com/project/ton?from=projects) contains key metrics for TON and allows you to build customized charts.
 - [Spice harvester](https://github.com/txsociety/spice-harvester) supports high-load transaction monitoring and asset tracking on TON through a self-hosted API with access to invoice states and metadata.

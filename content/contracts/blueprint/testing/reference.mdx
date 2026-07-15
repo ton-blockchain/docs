@@ -1039,7 +1039,7 @@ const blockchain = await Blockchain.create({
     storage: new RemoteBlockchainStorage(
         wrapTonClient4ForRemote(
             new TonClient4({
-                endpoint: 'https://mainnet-v4.tonhubapi.com'
+                endpoint: 'https://toncenter.com/api/v2/jsonRPC'
             })
         )
     )
