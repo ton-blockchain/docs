@@ -287,8 +287,8 @@ export default function HomePage() {
         </section>
 
         {/* quick actions */}
-        <section className="mt-4 flex flex-col gap-6">
-          <h2 className="text-balance text-2xl font-semibold tracking-tight">Common actions</h2>
+        <section className="flex flex-col gap-6">
+          {/* <h2 className="text-balance text-2xl font-semibold tracking-tight">Common actions</h2> */}
           <div className="grid gap-3 sm:grid-cols-3">
             {actions.map(({ title, href, icon: Icon }) => {
               const className =
