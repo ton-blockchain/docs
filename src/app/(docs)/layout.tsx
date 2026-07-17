@@ -52,7 +52,12 @@ export default function Layout({ children }: { children: ReactNode }) {
           urls: tabUrls.APIs,
         },
         {
-          title: 'Smart contracts',
+          title: (
+            <>
+              <span className="style-tab-normal">Contracts</span>
+              <span className="style-tab-wide">Smart contracts</span>
+            </>
+          ),
           url: '/contracts/overview',
           urls: tabUrls.Contracts,
         },
