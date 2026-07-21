@@ -1,0 +1,28 @@
+---
+title: "Explorers overview"
+sidebarTitle: "Explorers"
+---
+
+Explorers are web tools designed for reading blockchain data, allowing users to look up accounts, transactions, blocks, and smart contracts. They provide a searchable user interface (UI) that indexes on-chain data, making it easy to verify activity and debug issues.
+
+## What explorers show
+
+In TON, explorers typically display account balances, transactions, tokens, contract code and state, as well as links to related blocks and messages.
+
+More precisely, explorers show:
+
+- Balances and assets: Grams, jettons (FTs), and NFTs held by an address
+- Transactions and messages: history, fees, phases, and traces
+- Blocks and validators: block contents, masterchain and shardchain details
+- Smart contracts: code, state, disassembly, and known contract type
+- Analytics: top entities, volumes, gas, fees, and network health
+
+## Indexers
+
+Indexers such as [TON Center API v3](/api/v3/overview) continuously read blocks from nodes, parse messages and transactions, and store them in a database optimized for queries. Explorers rely on these indexers to provide fast search, traces, higher-level events, and historical views beyond what a single node exposes by default.
+
+## Examples
+
+[TON explorer](https://explorer.toncoin.org/) is a low-level developer-oriented explorer that displays transactions and blocks. It works on [mainnet](https://explorer.toncoin.org/) and [testnet](https://test-explorer.toncoin.org).
+
+Discover other [TON explorers](https://duckduckgo.com/?q=ton+explorer).

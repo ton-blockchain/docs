@@ -1,0 +1,115 @@
+---
+title: "Quick start with AppKit"
+sidebarTitle: "Quick start"
+---
+
+Scaffold a complete AppKit app with one command. The result is a Vite + React + TypeScript project with wallet connection, balance, jettons, NFTs, swaps, and staking wired up out of the box.
+
+<Callout type="note">
+  Requires Node.js >= 22.12.0
+</Callout>
+
+## 1. Create a project
+
+### Follow prompts
+
+To create a project, run one of the following commands:
+
+<CodeGroup>
+  ```shell title="npm"
+  npm create ton-appkit
+  ```
+
+  ```shell title="pnpm"
+  pnpm create ton-appkit
+  ```
+
+  ```shell title="yarn"
+  yarn create ton-appkit
+  ```
+
+  ```shell title="bun"
+  bunx create-ton-appkit
+  ```
+</CodeGroup>
+
+The CLI asks for the following details:
+
+- The project name
+- The app URL
+
+<Callout type="note">
+  The app URL is your deployment address, where the [manifest](/applications/ton-connect/core-concepts#manifest) with your app's metadata will be available. You can use a placeholder URL during development and update it before deploying.
+</Callout>
+
+### Pass options with flags
+
+You can pass flags to set specific values without going through the prompts:
+
+```shell
+npm create ton-appkit project-name -- --app-url https://example.com
+```
+
+| Flag               | Description                                   |
+| ------------------ | --------------------------------------------- |
+| `[project-name]`   | Directory name. Defaults to `my-ton-app`.     |
+| `--template`, `-t` | Template to use. Only `react` is available.   |
+| `--app-url`        | App URL written into the TonConnect manifest. |
+| `--yes`, `-y`      | Accept all defaults without prompts.          |
+
+## 2. Install dependencies
+
+Navigate to your project directory and install dependencies:
+
+```shell
+cd project-name
+npm install
+```
+
+## 3. Run the app
+
+To run the app, use this command:
+
+```shell
+npm run dev
+```
+
+To see the running app, open `http://localhost:5173`.
+
+<Image
+  src="/images/appkit/quick-start-template.png"
+  alt="TON AppKit Template running in the browser"
+/>
+
+## 4. Install the AI skill
+
+Optionally, install the AppKit skill for your AI coding assistant:
+
+```bash
+npx skills add ton-org/kit/packages/appkit/skills/ton-appkit
+```
+
+After installation, the assistant gives AppKit-specific answers about hooks, patterns, and common pitfalls.
+
+## Result
+
+The generated project includes the following:
+
+- Wallet connection
+- Balance display
+- Jetton list
+- NFT list
+- Swap UI
+- Staking UI
+
+<Callout type="note">
+  To test wallet connection with a real wallet, deploy the app and update the app URL in `tonconnect-manifest.json` first.
+</Callout>
+
+## Next steps
+
+The generated project is a working reference implementation. From here, go directly to [How-to guides](/applications/appkit/howto/overview) — they cover every AppKit feature with practical code.
+
+The other guides in **Get started** are optional. Read them if you want to understand how each part of the generated project works, or if you need to integrate AppKit into an existing project manually.
+
+You can also look up types and signatures in [Reference](/applications/appkit/reference/reference).

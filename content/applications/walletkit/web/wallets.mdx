@@ -1,0 +1,71 @@
+---
+title: "Manage TON wallets with WalletKit on the Web platform"
+sidebarTitle: "Manage wallets"
+description: ""
+---
+
+<Callout>
+  Before using examples on this page, [initialize WalletKit](/applications/walletkit/web/init) and [initialize a TON wallet](/applications/walletkit/web/init-wallet).
+</Callout>
+
+After initializing a TON wallet or multiple wallets, you can manage them: get, remove, and clear all wallets.
+
+## Get a single wallet
+
+The `getWallet()` method expects a wallet identifier string. Note that the same wallet on different chains must have different identifiers. Compose it via the `createWalletId()` helper function:
+
+```ts title="TypeScript"
+import { createWalletId, Network, type Wallet } from '@ton/walletkit';
+
+// Using the helper function to create a wallet identifier.
+const walletId = createWalletId(
+  Network.mainnet(),
+  walletAdapter.getAddress(),
+);
+const wallet: Wallet | undefined = kit.getWallet(walletId);
+
+if (wallet) {
+  console.log('Wallet address: ', wallet.getAddress());
+}
+```
+
+## Get all wallets
+
+To obtain all added wallets, use the `getWallets()` method of the initialized kit.
+
+```ts title="TypeScript"
+const wallets: Wallet[] = kit.getWallets();
+wallets.forEach(w => console.log('TON wallet address:', w.getAddress()));
+```
+
+## Remove a single wallet
+
+The `kit.removeWallet()` method accepts either a `walletId` or the adapter instance itself. Compose the identifier via the `createWalletId()` helper function or pass the adapter used when adding the wallet:
+
+```ts title="TypeScript"
+import { createWalletId, Network } from '@ton/walletkit';
+
+// Using the helper function to create a wallet identifier.
+const walletId = createWalletId(
+  Network.mainnet(),
+  walletAdapter.getAddress(),
+);
+await kit.removeWallet(walletId);
+
+// Alternatively, pass the adapter directly.
+await kit.removeWallet(walletAdapter);
+```
+
+## Clear all wallets
+
+To remove all previously added wallets from the kit, use the `clearWallets()` method of the initialized kit.
+
+```ts title="TypeScript"
+await kit.clearWallets();
+```
+
+## Next steps
+
+To prepare for working with transactions, follow this guide:
+
+- [Handle connections](/applications/walletkit/web/connections)

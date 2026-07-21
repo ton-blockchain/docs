@@ -1,0 +1,92 @@
+---
+title: TON Center API v2 overview
+sidebarTitle: Overview
+---
+
+The TON Center API v2 provides developer access to the TON blockchain through [REST](https://en.wikipedia.org/wiki/REST) and [JSON-RPC](https://en.wikipedia.org/wiki/JSON-RPC) endpoints. It allows applications to read blockchain data, run smart contract methods, and send transactions.
+
+API v2 serves as the non-indexed access layer.
+
+Applications interact with the TON blockchain by connecting to a TON node. Since nodes communicate through the binary ADNL protocol, an intermediate layer is needed for web-based access. API v2 provides this bridge by using [`tonlib`](https://github.com/ton-blockchain/ton/tree/master/tonlib/tonlib) to query data from liteservers and exposes it through a standard REST interface.
+
+<Callout type="note">
+  Refer to the [Streaming API v2](/api/streaming/overview) page for an API that uses Server-Sent Events (SSE) and exposes WebSocket interfaces.
+</Callout>
+
+## Base URLs
+
+| API        | Mainnet                        | Testnet                                |
+| ---------- | ------------------------------ | -------------------------------------- |
+| API v2 | `https://toncenter.com/api/v2` | `https://testnet.toncenter.com/api/v2` |
+
+## Versioning
+
+API v2 uses semantic versioning in the format `a.b.c` (for example, `2.1.1`):
+
+| Segment | Example | Meaning |
+| ------- | ------- | ------- |
+| Major | `2.x.x` | Fixed at `2` to avoid confusion ("API v2 v3.x.x"). Will not change. |
+| Minor | `2.1.x` | Implementation variant: `0` = Python version, `1` = C++ version. |
+| Patch | `2.1.1` | Bumped with every release on GitHub. |
+
+## Typical use cases
+
+- Query account balances and state
+- Run get-methods on smart contracts
+- Send or broadcast messages
+- Retrieve latest transactions and block information
+
+## Endpoints
+
+{/* BEGIN_AUTO_GENERATED: API_V2_ENDPOINTS */}
+| Category | Method | Description |
+| -------- | ------ | ----------- |
+| **Accounts** | [`GET /getAddressInformation`](/api/v2/accounts/get-address-information) | Get address information |
+| **Accounts** | [`GET /getExtendedAddressInformation`](/api/v2/accounts/get-extended-address-information) | Get extended address information |
+| **Accounts** | [`GET /getWalletInformation`](/api/v2/accounts/get-wallet-information) | Get wallet information |
+| **Accounts** | [`GET /getAddressBalance`](/api/v2/accounts/get-address-balance) | Get address balance |
+| **Accounts** | [`GET /getAddressState`](/api/v2/accounts/get-address-state) | Get address state |
+| **Accounts** | [`GET /getTokenData`](/api/v2/accounts/get-token-data) | Get token data |
+| **Blocks** | [`GET /getMasterchainInfo`](/api/v2/blocks/get-masterchain-info) | Get masterchain info |
+| **Blocks** | [`GET /getMasterchainBlockSignatures`](/api/v2/blocks/get-masterchain-block-signatures) | Get masterchain block signatures |
+| **Blocks** | [`GET /getShardBlockProof`](/api/v2/blocks/get-shard-block-proof) | Get shard block proof |
+| **Blocks** | [`GET /getConsensusBlock`](/api/v2/blocks/get-consensus-block) | Get consensus block |
+| **Blocks** | [`GET /lookupBlock`](/api/v2/blocks/lookup-block) | Lookup block |
+| **Blocks** | [`GET /getShards`](/api/v2/blocks/get-shards) | Get shards |
+| **Blocks** | [`GET /getBlockHeader`](/api/v2/blocks/get-block-header) | Get block header |
+| **Blocks** | [`GET /getOutMsgQueueSize`](/api/v2/blocks/get-outbound-message-queue-size) | Get outbound message queue size |
+| **Transactions** | [`GET /getBlockTransactions`](/api/v2/transactions/get-block-transactions) | Get block transactions |
+| **Transactions** | [`GET /getBlockTransactionsExt`](/api/v2/transactions/get-block-transactions-extended) | Get block transactions (extended) |
+| **Transactions** | [`GET /getTransactions`](/api/v2/transactions/get-transactions) | Get transactions |
+| **Transactions** | [`GET /getTransactionsStd`](/api/v2/transactions/get-transactions-standard) | Get transactions (standard) |
+| **Transactions** | [`GET /tryLocateTx`](/api/v2/transactions/try-locate-transaction) | Try locate transaction |
+| **Transactions** | [`GET /tryLocateResultTx`](/api/v2/transactions/try-locate-result-transaction) | Try locate result transaction |
+| **Transactions** | [`GET /tryLocateSourceTx`](/api/v2/transactions/try-locate-source-transaction) | Try locate source transaction |
+| **Send** | [`POST /sendBoc`](/api/v2/send/send-boc) | Send BoC |
+| **Send** | [`POST /sendBocReturnHash`](/api/v2/send/send-boc-return-hash) | Send BoC (return hash) |
+| **Send** | [`POST /estimateFee`](/api/v2/send/estimate-fee) | Estimate fee |
+| **Run method** | [`POST /runGetMethod`](/api/v2/run-method/run-get-method) | Run get method |
+| **Run method** | [`POST /runGetMethodStd`](/api/v2/run-method/run-get-method-standard) | Run get method (standard) |
+| **Utils** | [`GET /detectAddress`](/api/v2/utils/detect-address) | Detect address |
+| **Utils** | [`GET /detectHash`](/api/v2/utils/detect-hash) | Detect hash |
+| **Utils** | [`GET /packAddress`](/api/v2/utils/pack-address) | Pack address |
+| **Utils** | [`GET /unpackAddress`](/api/v2/utils/unpack-address) | Unpack address |
+| **Configuration** | [`GET /getConfigParam`](/api/v2/configuration/get-config-parameter) | Get config parameter |
+| **Configuration** | [`GET /getConfigAll`](/api/v2/configuration/get-all-config-parameters) | Get all config parameters |
+| **Configuration** | [`GET /getLibraries`](/api/v2/configuration/get-libraries) | Get libraries |
+| **RPC** | [`POST /jsonRPC`](/api/v2/rpc/json-rpc-endpoint) | JSON-RPC endpoint |
+{/* END_AUTO_GENERATED: API_V2_ENDPOINTS */}
+
+## How to access the API
+
+Developers can access API v2 either through hosted infrastructure managed by TON Center or by running a self-hosted instance.
+
+### Managed service
+
+Hosted access uses TON Center’s managed infrastructure instead of running a personal node. This approach enables immediate network access without setup or maintenance.
+
+Requests without an API key are limited to a default rate of 1 request per second. To increase this limit or access private liteservers, generate an [API key](/api/get-api-key) and [choose a plan](/api/rate-limit).
+
+### Self-hosted service
+
+Run a self-hosted TON Center API v2 infrastructure for full control over performance and data retention. See the [API v2](https://github.com/toncenter/ton-http-api-cpp) repository for setup instructions.

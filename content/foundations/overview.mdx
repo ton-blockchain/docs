@@ -1,0 +1,64 @@
+---
+title: "Blockchain foundations overview"
+sidebarTitle: "Overview"
+description: "Core TON concepts, data formats, transaction mechanics, network internals, and reference materials"
+---
+
+## Data and serialization
+
+TON stores data as graphs of cells and serializes those graphs for messages, blocks, account state, proofs, and storage.
+
+- [TL-B](/foundations/tlb/overview): how TON data structures are defined and serialized.
+- [Cells](/foundations/serialization/cells): basic storage units used by TVM, persistent storage, and smart contract code.
+- [Library references](/foundations/serialization/library): cells that point to published library cells by hash.
+- [Merkle proofs](/foundations/serialization/merkle): exotic cells that prove selected data belongs to a larger cell tree.
+- [Merkle updates](/foundations/serialization/merkle-update): exotic cells that describe a verified transition between two cell trees.
+- [Pruned branches](/foundations/serialization/pruned): compact replacements for deleted subtrees.
+- [Bag of Cells](/foundations/serialization/boc): the standard format for transferring or storing cell graphs.
+
+Read about using Merkle cells for the verification of selected blockchain data in smart contracts and off-chain software: [Proofs overview](/foundations/proofs/overview).
+
+## Accounts and transactions
+
+What happens to accounts before, during, and after transaction execution.
+
+- [Addresses](/foundations/addresses/overview): how accounts are identified and how smart contracts exchange messages.
+- [Messages and transactions](/foundations/messages/overview): contract execution triggers and records of the resulting account state changes.
+- [Actions](/foundations/actions/overview): how smart contracts queue operations to be performed during the action phase.
+- [Account status](/foundations/status): whether an account can store balance, hold code, or process transactions.
+- [Execution phases](/foundations/phases): the storage, credit, compute, action, and bounce phases that can make up a transaction.
+- [Transaction fees](/foundations/fees): storage, compute, import, forward, and action costs during transaction processing.
+- [Traces](/foundations/traces): causally related messages and transactions grouped into one operation flow.
+
+## Network and configuration
+
+How TON scales, enforces limits, and stores network parameters.
+
+- [Blockchain sharding](/foundations/shards): how workchains split into shardchains that process account activity in parallel.
+- [Blockchain limits](/foundations/limits): maximum sizes, depths, gas values, and other network constraints.
+- [Blockchain configuration](/foundations/config): values that influence validator behavior, fees, capabilities, and system contracts.
+- [Web3 services](/foundations/web3/overview): TON Network, TON Storage, TON Proxy, TON DNS, and TON Sites.
+- [System contracts](/foundations/system): contracts that manage validator elections and blockchain configuration.
+- [Precompiled contracts](/foundations/precompiled): contracts with native implementations in validator nodes.
+
+## Consensus
+
+How validators propose blocks and vote on them to reach a consensus: [Catchain 2.0: Simplex Consensus in TON](/foundations/whitepapers/simplex).
+
+<Callout type="note">
+  To read about the previous version of the consensus mechanism, see:
+
+  - [Catchain 1.0 consensus](/foundations/consensus/catchain-overview)
+  - [Catchain 1.0 and BCP visualizer](/foundations/consensus/catchain-visualizer)
+</Callout>
+
+## Whitepapers
+
+Original and modern TON whitepapers:
+
+- [Overview](/foundations/whitepapers/overview)
+- [The Open Network (TON)](/foundations/whitepapers/ton)
+- [TON Virtual Machine (TON)](/foundations/whitepapers/tvm)
+- [TON Blockchain](/foundations/whitepapers/tblkch)
+- [Catchain consensus (legacy)](/foundations/whitepapers/catchain) — previous version of the consensus mechanism in TON
+- [Catchain 2.0: Simplex Consensus in TON](/foundations/whitepapers/simplex) — currently employed consensus mechanism

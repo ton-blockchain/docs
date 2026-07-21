@@ -1,0 +1,79 @@
+---
+title: "AppKit overview"
+sidebarTitle: "Overview"
+---
+
+**AppKit** is an open-source SDK for integrating TON into **React** and **JavaScript/TypeScript** decentralized applications and [Telegram Mini Apps](https://core.telegram.org/bots/webapps).
+
+With AppKit, you have a single place to configure networks, wallet connectors, DeFi providers, and React integration around TON wallet operations. It also includes an out-of-the-box UI with sub-second updates.
+
+Use AppKit to do the following:
+
+- Connect a TON wallet
+- Send Gram and [jettons](/contracts/standard/tokens/jettons/overview), work with [NFTs](/contracts/standard/tokens/nft/overview)
+- Request swap, staking, or signing operations
+- Read wallet data and asset balances
+- Get AI coding assistance via the [AppKit skill](/applications/appkit/get-started/get-started#ai-coding-assistance)
+
+<Callout>
+  An application built with AppKit can interact with your own smart contract. To create a contract, use [Acton](https://ton-blockchain.github.io/acton/docs/welcome) and explore primitives, such as [Messages & transactions](/foundations/messages/overview) and others.
+</Callout>
+
+## How it works
+
+This is how AppKit fits into the TON ecosystem:
+
+- AppKit prepares requests, tracks application state, and bridges the application interface to wallets and providers.
+- Wallets sign transactions and data.
+- Backends verify orders, signatures, and business rules.
+
+<Callout type="note">
+  AppKit is the user-facing layer of the connection between applications and wallets. Its wallet-side counterpart is [WalletKit](/applications/walletkit/overview) — an SDK integrating wallet services with TON.
+</Callout>
+
+AppKit builds on top of the following components:
+
+- [TON Connect](/applications/ton-connect/overview): A protocol enabling interaction between applications and wallets
+- [TanStack Query](https://tanstack.com/query/latest) and hooks
+- [TON Center API](/api/overview#toncenter), [TON Center Streaming API v2](/api/streaming/overview)
+- Open interfaces for integrating embedded wallets, on-chain/off-chain on-ramps, and DeFi protocols, such as staking and swaps
+
+<Callout type="note">
+  AppKit integrates with DeFi protocols through [providers](/applications/appkit/get-started/providers).
+</Callout>
+
+## Section overview
+
+| Goal                           | Read                                                                |
+| ------------------------------ | ------------------------------------------------------------------- |
+| Install and start using AppKit | [Get started](/applications/appkit/get-started/get-started)         |
+| Understand the moving parts    | [How-to guides](/applications/appkit/howto/overview)                |
+| Look up functions and types    | [Reference](/applications/appkit/reference/reference)               |
+| Diagnose common issues         | [FAQ and troubleshooting](/applications/appkit/faq-troubleshooting) |
+| Check upgrade notes            | [Changelog](/applications/appkit/changelog)                         |
+
+## Packages
+
+| Package                          | Use                                                             |
+| -------------------------------- | --------------------------------------------------------------- |
+| `@ton/appkit`                    | Core AppKit instance, actions, connectors, providers, and types |
+| `@ton/appkit/queries`            | Query and mutation helpers for data fetching                    |
+| `@ton/appkit-react`              | React provider, hooks, components, and core re-exports          |
+| `@ton/appkit-react/styles.css`   | Default component styles                                        |
+| `@ton/appkit/swap/omniston`      | Swap provider                                                   |
+| `@ton/appkit/swap/dedust`        | Swap provider                                                   |
+| `@ton/appkit/staking/tonstakers` | Staking provider                                                |
+
+## Examples
+
+The [`appkit-minter`](https://github.com/ton-connect/kit/tree/main/apps/appkit-minter) example wires AppKit into a Vite + React application.
+
+This example implements wallet connection, balance and jetton queries, transaction sending, and streaming watches in one place.
+
+[Try it live: `appkit-minter`](https://appkit-minter.vercel.app/).
+
+## Next steps
+
+- To scaffold a working app in one command, run `npm create ton-appkit`. For details, see [Quick start](/applications/appkit/get-started/quick-start).
+- After that, go to [How-to guides](/applications/appkit/howto/overview) for task-level recipes, or explore the other guides in [Get started](/applications/appkit/get-started/get-started) to understand how the generated project works.
+- Look up types and signatures in [Reference](/applications/appkit/reference/reference).
