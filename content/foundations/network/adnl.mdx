@@ -3,9 +3,7 @@ title: "Abstract Datagram Network Layer"
 sidebarTitle: "ADNL"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
-The Abstract Datagram Network Layer (ADNL) is the core networking protocol of the TON network. It is a peer-to-peer, unreliable datagram protocol that operates over both [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol) and [TCP](https://en.wikipedia.org/wiki/Transmission_Control_Protocol).
+The Abstract Datagram Network Layer (_ADNL_) is the core networking protocol of the TON network. It is a peer-to-peer, unreliable datagram protocol that operates over both [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol) and [TCP](https://en.wikipedia.org/wiki/Transmission_Control_Protocol).
 
 Higher-level protocols such as [RLDP](https://old-docs.ton.org/v3/documentation/network/protocols/rldp) and [DHT](https://old-docs.ton.org/v3/documentation/network/protocols/dht/overview) are built on top of ADNL.
 
@@ -21,14 +19,14 @@ address = SHA-256(type_id || public_key)
 
 The `type_id` is a little-endian `uint32` constructor ID that specifies the type of the TL-serialized object. The corresponding private key must be known to receive and decrypt messages sent to a given address. For example, the `type_id` `0x4813b4c6` corresponds to the Ed25519 public key type.
 
-<Aside
+<Callout
   type="note"
   title="Key format conversion"
 >
   To perform [x25519](https://en.wikipedia.org/wiki/Curve25519), the key pair must be generated in x25519 format. The public key is transmitted over the network in Ed25519 format, so conversion from x25519 to Ed25519 is required.
 
   [Conversion example in Kotlin](https://github.com/andreypfau/curve25519-kotlin/blob/f008dbc2c0ebc3ed6ca5d3251ffb7cf48edc91e2/src/commonMain/kotlin/curve25519/MontgomeryPoint.kt#L39)
-</Aside>
+</Callout>
 
 ### Peer identity
 
@@ -54,5 +52,5 @@ See [ADNL UDP](/foundations/network/adnl-udp) for channel establishment, packet 
 
 - [ADNL TCP - liteserver communication](/foundations/network/adnl-tcp)
 - [ADNL UDP - internode communication](/foundations/network/adnl-udp)
-- [ADNL implementation in TON](https://github.com/ton-blockchain/ton/tree/master/adnl)
-- [The Open Network Whitepaper, p. 80](https://ton.org/whitepaper.pdf)
+- [ADNL implementation in TON](https://github.com/ton-blockchain/ton/tree/v2026.06/adnl)
+- [ADNL in The Open Network whitepaper](/foundations/whitepapers/ton/#3-1-abstract-datagram-network-layer)

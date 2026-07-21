@@ -3,8 +3,6 @@ title: "ADNL TCP - liteserver communication"
 sidebarTitle: "ADNL TCP"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 ADNL over TCP is used for communication with liteservers.
 
 ## Packet structure
@@ -177,9 +175,9 @@ With `mode = 4` (only `result`), the response includes:
 
 The stack is parsed according to the [`VmStackValue` TL-B schema](https://github.com/ton-blockchain/ton/blob/ad736c6bc3c06ad54dc6e40d62acbaf5dae41584/crypto/block/block.tlb#L766). Stack elements are stored in reverse order using `vm_stk_cons`, where the first reference points to the rest of the stack and the second contains the current value.
 
-<Aside type="note">
+<Callout type="note">
   Arguments must be passed in reverse order from what appears in the FunC source code. Return values are also in reverse order.
-</Aside>
+</Callout>
 
 ### `getAccountState`
 
@@ -190,7 +188,7 @@ liteServer.accountState id:tonNode.blockIdExt shardblk:tonNode.blockIdExt shard_
   = liteServer.AccountState;
 ```
 
-The `state` field contains a [BoC](/foundations/serialization/cells#bag-of-cells) with the account's [TL-B structure](https://github.com/ton-blockchain/ton/blob/ad736c6bc3c06ad54dc6e40d62acbaf5dae41584/crypto/block/block.tlb#L232):
+The `state` field contains a [BoC](/foundations/serialization/boc) with the account's [TL-B structure](https://github.com/ton-blockchain/ton/blob/ad736c6bc3c06ad54dc6e40d62acbaf5dae41584/crypto/block/block.tlb#L232):
 
 ```tlb
 account_none$0 = Account;
@@ -199,7 +197,7 @@ account$1 addr:MsgAddressInt storage_stat:StorageInfo storage:AccountStorage = A
 
 Parse it by reading prefix bits to determine the variant (`account_none$0` vs `account$1`), then read fields sequentially: address, storage info, and the balance from `AccountStorage > CurrencyCollection > grams:Grams`, which is a `VarUInteger 16`.
 
-For a complete parsing walkthrough, see [TL-B documentation](/languages/tl-b/overview).
+For a complete parsing walkthrough, see [TL-B documentation](/foundations/tlb/overview).
 
 ## Key ID calculation
 
@@ -243,5 +241,5 @@ The shared key is computed from one party's private key and the other party's pu
 
 - [ADNL specification](/foundations/network/adnl)
 - [ADNL UDP](/foundations/network/adnl-udp)
-- [TL-B documentation](/languages/tl-b/overview)
+- [TL-B documentation](/foundations/tlb/overview)
 - [Cell and BoC serialization](/foundations/serialization/cells)
