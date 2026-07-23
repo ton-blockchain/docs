@@ -1,15 +1,13 @@
 ---
-title: "Reliable Large Datagram Protocol"
+title: "Reliable Large Datagram Protocol (RLDP)"
 sidebarTitle: "RLDP"
 ---
 
-import { Aside } from "/snippets/aside.jsx";
-
 The Reliable Large Datagram Protocol (RLDP) operated on top of [ADNL UDP](/foundations/network/adnl-udp) and was designed for transferring large data blocks. It used Forward Error Correction (FEC) instead of acknowledgment packets, enabling more efficient data transfer at the cost of increased traffic.
 
-<Aside type="note">
+<Callout type="note">
   With the introduction of the [sub-second upgrade](/ecosystem/subsecond), blockchain nodes now use [QUIC](https://en.wikipedia.org/wiki/QUIC) instead of RLDP for internal communication.
-</Aside>
+</Callout>
 
 RLDP was used throughout the TON infrastructure: downloading blocks from other nodes, transferring data, and accessing [TON Sites](/foundations/web3/ton-sites) and [TON Storage](/foundations/web3/ton-storage).
 
@@ -161,9 +159,8 @@ At this point, the decoded `rldp.answer` contains an `http.response` with the st
 
 ## See also
 
-- [ADNL specification](/foundations/network/adnl)
+- [ADNL overview](/foundations/network/adnl)
 - [TON Proxy](/foundations/web3/ton-proxy)
 - [TON Sites](/foundations/web3/ton-sites)
-- [RLDP implementation](https://github.com/ton-blockchain/ton/tree/master/rldp)
-- [RLDP v2 implementation](https://github.com/ton-blockchain/ton/tree/master/rldp2)
-- [Original article by Oleg Baranov](https://github.com/xssnick/ton-deep-doc/blob/master/RLDP.md)
+- [RLDP implementation in the TON monorepo](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp)
+- [RLDP v2 implementation in the TON monorepo](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp2)

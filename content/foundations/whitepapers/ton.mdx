@@ -1467,7 +1467,7 @@ The ADNL, being an unreliable (small-size) datagram protocol based on 256-bit ab
 
 A reliable arbitrary-size datagram protocol built upon the ADNL, called RLDP, is used instead of a TCP-like protocol. This reliable datagram protocol can be employed, for instance, to send RPC queries to remote hosts and receive answers from them (cf. [4.1.5](#4-1-5-pure-network-services-ton-sites-and-ton-services)).
 
-### 3.2   TON DHT: Kademlia-like Distributed Hash Table
+### 3.2 TON DHT: Kademlia-like Distributed Hash Table
 
 The *TON Distributed Hash Table (DHT)* plays a crucial role in the networking part of the TON Project, being used to locate other nodes in the network. For example, a client wanting to commit a transaction into a shardchain might want to find a validator or a collator of that shardchain, or at least some node that might relay the client's transaction to a collator. This can be done by looking up a special key in the TON DHT. Another important application of the TON DHT is that it can be used to quickly populate a new node's neighbor table (cf. [3.1.7](#3-1-7-zero-channel-and-the-bootstrap-problem)), simply by looking up a random key, or the new node's address. If a node uses proxying and tunneling for its inbound datagrams, it publishes the tunnel identifier and its entry point (e.g., IP address and UDP port) in the TON DHT; then all nodes wishing to send datagrams to that node will obtain this contact information from the DHT first.
 

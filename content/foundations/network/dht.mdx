@@ -1,9 +1,9 @@
 ---
-title: "Distributed Hash Table"
+title: "Distributed Hash Table (DHT)"
 sidebarTitle: "DHT"
 ---
 
-The TON [Distributed Hash Table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) is a Kademlia-like distributed key-value database used to discover nodes in the network. Any network participant can operate a DHT node, generate keys, and store data.
+The [Distributed Hash Table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) in TON is a Kademlia-like distributed key-value database used to discover nodes in the network. Any network participant can operate a DHT node, generate keys, and store data.
 
 The DHT is used to store IP addresses of [ADNL](/foundations/network/adnl) nodes, torrent holder lists for [TON Storage](/foundations/web3/ton-storage), overlay subnetwork node addresses, and ADNL addresses of TON services and blockchain accounts.
 
@@ -170,9 +170,8 @@ To discover additional nodes in the same shard, use [`overlay.getRandomPeers`](h
 
 ## See also
 
-- [ADNL specification](/foundations/network/adnl)
-- [ADNL UDP](/foundations/network/adnl-udp)
-- [DHT implementation](https://github.com/ton-blockchain/ton/tree/master/dht)
-- [DHT server implementation](https://github.com/ton-blockchain/ton/tree/master/dht-server)
-- [The Open Network Whitepaper, Chapter 3.2](https://ton.org/whitepaper.pdf)
-- [Original article by Oleg Baranov](https://github.com/xssnick/ton-deep-doc/blob/master/DHT.md)
+- [ADNL overview](/foundations/network/adnl)
+- [ADNL over UDP](/foundations/network/adnl-udp)
+- [DHT implementation in the TON monorepo](https://github.com/ton-blockchain/ton/tree/v2026.06/dht)
+- [DHT server implementation in the TON monorepo](https://github.com/ton-blockchain/ton/tree/v2026.06/dht-server)
+- [DHT in The Open Network whitepaper](/foundations/whitepapers/ton/#3-2-ton-dht%3A-kademlia-like-distributed-hash-table)
