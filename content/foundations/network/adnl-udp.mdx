@@ -49,10 +49,10 @@ For example, a `dht.nodes` entry can contain:
 To connect to a node, [lite-client](#interacting-with-ton-nodes):
 
 1. Takes its public `key`, `ip` address, and the `port`.
-2. Decodes the Ed25519 public key from base64 `key`.
-3. Converts the `ip` value to dotted-decimal format. For example, `1091897261` becomes `65.21.7.173`.
-4. Combines the IP address with the port. For example, `65.21.7.173:15813`.
-5. Establishes a UDP connection with the resulting `IP:PORT` address.
+1. Decodes the Ed25519 public key from base64 `key`.
+1. Converts the `ip` value to dotted-decimal format. For example, `1091897261` becomes `65.21.7.173`.
+1. Combines the IP address with the port. For example, `65.21.7.173:15813`.
+1. Establishes a UDP connection with the resulting `IP:PORT` address.
 
 ## Packet contents
 
