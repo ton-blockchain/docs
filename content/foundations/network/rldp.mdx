@@ -3,22 +3,26 @@ title: "Reliable Large Datagram Protocol (RLDP)"
 sidebarTitle: "RLDP"
 ---
 
-The Reliable Large Datagram Protocol (RLDP) operated on top of [ADNL UDP](/foundations/network/adnl-udp) and was designed for transferring large data blocks. It used Forward Error Correction (FEC) instead of acknowledgment packets, enabling more efficient data transfer at the cost of increased traffic.
+The Reliable Large Datagram Protocol (RLDP) runs on top of [ADNL UDP](/foundations/network/adnl-udp) and transfers data that does not fit in one ADNL datagram. It uses Forward Error Correction (FEC) to recover from packet loss. RLDP2 also uses acknowledgment packets, loss detection, pacing, and congestion control.
 
 <Callout type="note">
-  With the introduction of the [sub-second upgrade](/ecosystem/subsecond), blockchain nodes now use [QUIC](https://en.wikipedia.org/wiki/QUIC) instead of RLDP for internal communication.
+  The [sub-second node architecture](/ecosystem/subsecond) uses [QUIC](https://en.wikipedia.org/wiki/QUIC) for internal node communication. In v2026.06, the C++ `rldp-http-proxy` uses RLDP2 for TON Sites.
 </Callout>
 
-RLDP was used throughout the TON infrastructure: downloading blocks from other nodes, transferring data, and accessing [TON Sites](/foundations/web3/ton-sites) and [TON Storage](/foundations/web3/ton-storage).
+RLDP has been used throughout TON infrastructure for downloading blocks from other nodes, transferring data, and accessing [TON Sites](/foundations/web3/ton-sites) and [TON Storage](/foundations/web3/ton-storage).
 
 ## Protocol
 
-RLDP used the following TL structures:
+The [TL](https://core.telegram.org/mtproto/TL) schema retains structures for RLDP and RLDP2:
 
 ```tl
 fec.raptorQ data_size:int symbol_size:int symbols_count:int = fec.Type;
 fec.roundRobin data_size:int symbol_size:int symbols_count:int = fec.Type;
 fec.online data_size:int symbol_size:int symbols_count:int = fec.Type;
+
+rldp2.messagePart transfer_id:int256 fec_type:fec.Type part:int total_size:long seqno:int data:bytes = rldp2.MessagePart;
+rldp2.confirm transfer_id:int256 part:int max_seqno:int received_mask:int received_count:int = rldp2.MessagePart;
+rldp2.complete transfer_id:int256 part:int = rldp2.MessagePart;
 
 rldp.messagePart transfer_id:int256 fec_type:fec.Type part:int total_size:long seqno:int data:bytes = rldp.MessagePart;
 rldp.confirm transfer_id:int256 part:int seqno:int = rldp.MessagePart;
@@ -29,69 +33,79 @@ rldp.query query_id:int256 max_answer_size:long timeout:int data:bytes = rldp.Me
 rldp.answer query_id:int256 data:bytes = rldp.Message;
 ```
 
-All structures were serialized, wrapped in `adnl.message.custom`, and transmitted over [ADNL UDP](/foundations/network/adnl-udp).
+The message-part, confirmation, and completion structures are serialized as custom ADNL messages and transmitted over [ADNL UDP](/foundations/network/adnl-udp). RLDP2 reuses `rldp.message`, `rldp.query`, and `rldp.answer` for the decoded payload.
+
+- `rldp.message` carries a one-way application payload.
+- `rldp.query` carries a request, a `query_id`, a maximum answer size, and a Unix timeout.
+- `rldp.answer` carries the application response and the request's `query_id`. The querying endpoint rejects response data larger than `max_answer_size`.
+
+The C++ RLDP2 connection defaults to a 7,680-byte inbound limit. A caller can configure a larger peer MTU, and `send_query_ex` registers `max_answer_size` as the limit for the answer transfer.
 
 ## Transfer mechanism
 
-1. Generate a random `transfer_id`.
-1. Process the data through the FEC algorithm to produce encoded symbols.
-1. Wrap each symbol in `rldp.messagePart` and send to the peer.
-1. Continue sending until the peer responds with `rldp.complete` or a timeout occurs.
+1. The sender generates a random `transfer_id`.
+1. The sender splits the payload into parts and creates a RaptorQ encoder for each part. The C++ RLDP2 implementation uses parts of up to 2,000,000 bytes and 768-byte symbols.
+1. The sender transmits encoded symbols in `rldp2.messagePart`.
+1. The receiver reports the greatest received sequence number, a receive mask, and a total receive count in `rldp2.confirm`.
+1. The sender uses this feedback to estimate round-trip time, bandwidth, and loss. It paces symbols and adjusts its congestion window with a BBR-style controller.
+1. The sender stops transmitting a part after `rldp2.complete` arrives or the transfer times out.
 
-The receiver collects `rldp.messagePart` messages, and once enough symbols are gathered, concatenates and decodes them via FEC. The result is then deserialized into `rldp.query` or `rldp.answer`, depending on the TL prefix ID.
+The receiver decodes each part after collecting enough independent symbols, concatenates the parts in order, and deserializes the result as `rldp.message`, `rldp.query`, or `rldp.answer`. An answer uses the request's `transfer_id` with every bit inverted.
 
 ## Forward Error Correction
 
-Three FEC algorithms were supported: RoundRobin, Online, and RaptorQ. [RaptorQ](https://www.qualcomm.com/media/documents/files/raptorq-technical-overview.pdf) was the standard choice.
+The TL schema defines RoundRobin, Online, and RaptorQ FEC types. The C++ RLDP2 implementation accepts only [RaptorQ](https://www.qualcomm.com/media/documents/files/raptorq-technical-overview.pdf); its FEC parser rejects the other constructors.
 
 ### RaptorQ
 
-RaptorQ divided data into fixed-size symbols (blocks). These symbols were organized into matrices where discrete mathematical operations produced an effectively unlimited number of encoded symbols from the same source data.
+RaptorQ divides data into fixed-size source symbols. An encoder can derive additional repair symbols from the same source data.
 
-This allowed the receiver to recover lost packets without requesting retransmission, meaning that fewer packets were needed than if raw data segments were resent.
+After receiving enough independent source and repair symbols, the decoder reconstructs the original part without requesting specific lost symbols.
 
-Symbols were transmitted until the peer confirmed that all data had been received and successfully decoded.
+RLDP2 sends an initial set of source and repair symbols, then uses acknowledgments and loss estimates to decide how many additional symbols to send. The receiver sends `rldp2.complete` after decoding a part.
 
-[RaptorQ implementation in Go](https://github.com/xssnick/tonutils-go/tree/46dbf5f820af066ab10c5639a508b4295e5aa0fb/adnl/rldp/raptorq).
+[RaptorQ encoder setup in the C++ RLDP2 implementation](https://github.com/ton-blockchain/ton/blob/v2026.06/rldp2/OutboundTransfer.cpp#L27-L40).
 
 ## RLDP-HTTP
 
-[TON Sites](/foundations/web3/ton-sites) used RLDP (Reverse Lightweight Data Protocol) to wrap HTTP traffic. The host ran a standard HTTP web server with `rldp-http-proxy` alongside it. Incoming requests from the TON network arrived via RLDP, the proxy converted them to HTTP and called the local web server. On the client side, a local proxy, such as [Tonutils Proxy](https://github.com/xssnick/TonUtils-Proxy), converted outgoing HTTP requests into RLDP.
+[TON Sites](/foundations/web3/ton-sites) use HTTP over RLDP. The host runs a standard HTTP web server with `rldp-http-proxy` alongside it. Incoming requests from the TON network arrive through RLDP2, and the proxy forwards them to the local HTTP server. On the client side, a local proxy, such as [Tonutils Proxy](https://github.com/xssnick/TonUtils-Proxy), converts outgoing HTTP requests into RLDP.
 
-HTTP over RLDP used these TL structures:
+HTTP over RLDP uses these TL structures:
 
 ```tl
 http.header name:string value:string = http.Header;
 http.payloadPart data:bytes trailer:(vector http.header) last:Bool = http.PayloadPart;
 http.response http_version:string status_code:int reason:string headers:(vector http.header) no_payload:Bool = http.Response;
+http.proxy.capabilities capabilities:long = http.proxy.Capabilities;
 
 http.request id:int256 method:string url:string http_version:string headers:(vector http.header) = http.Response;
 http.getNextPayloadPart id:int256 seqno:int max_chunk_size:int = http.PayloadPart;
+http.proxy.getCapabilities capabilities:long = http.proxy.Capabilities;
 ```
 
 The request-response flow:
 
-1. Client sends `http.request` via `rldp.query`.
-1. Server checks the `Content-Length` header:
-   - If non-zero, server sends `http.getNextPayloadPart` requests to the client.
-   - Client responds with `http.payloadPart` chunks, incrementing `seqno` until `last` is true.
-1. Server sends `http.response`.
-1. Client checks `Content-Length`:
-   - If non-zero (`no_payload` is false), client sends `http.getNextPayloadPart` requests to the server using the same chunked mechanism.
+1. The client sends `http.request` via `rldp.query`.
+1. If the request has a payload, the server sends `http.getNextPayloadPart` queries to the client.
+   - The client responds with `http.payloadPart` chunks and increments `seqno` until `last` is true.
+1. The server sends `http.response`.
+1. If `no_payload` is false, the client sends `http.getNextPayloadPart` queries to the server using the same chunked mechanism.
 
-## Example: request a TON Site
+The v2026.06 C++ proxy uses bit 0 (value 1) in the `http.proxy.getCapabilities` and `http.proxy.capabilities` exchange to advertise RLDP2 support. It requests payload chunks of up to 2,095,104 bytes and caps larger `max_chunk_size` values at that size.
 
-This example demonstrates requesting `foundation.ton`, assuming the ADNL address has been resolved via DNS and a connection has been established over [ADNL UDP](/foundations/network/adnl-udp).
+## TON Site request example
 
-### Send a GET request
+This example demonstrates requesting `foundation.ton`, assuming the ADNL address has been resolved via DNS and a connection has been established over [ADNL UDP](/foundations/network/adnl-udp). The v2026.06 C++ proxy requires the peer to advertise RLDP2 support.
 
-To accomplish this, complete the following structure:
+### GET request
+
+The client fills the following structure:
 
 ```tl
 http.request id:int256 method:string url:string http_version:string headers:(vector http.header) = http.Response;
 ```
 
-Serialize `http.request`:
+The client serializes `http.request`:
 
 ```text
 e191b161                                                           -- TL ID http.request
@@ -104,58 +118,57 @@ e191b161                                                           -- TL ID http
    0e 666f756e646174696f6e2e746f6e 00                              -- value = "foundation.ton"
 ```
 
-Then, wrap the serialized `http.request` into `rldp.query` and serialize it too:
+The client then wraps the serialized `http.request` in `rldp.query` and serializes it. The following partial snippet shows the field layout. The placeholders represent values that the client supplies before serialization:
 
 ```text
-694d798a                                                              -- TL ID rldp.query
-184c01cb1a1e4dc9322e5cabe8aa2d2a0a4dd82011edaf59eb66f3d4d15b1c5c      -- query_id (random)
-0004040000000000                                                      -- max_answer_size = 257 KiB (263,168 bytes)
-258f9063                                                              -- timeout (unix timestamp)
-34 ...                                                                -- data (serialized http.request)
+694d798a                    -- TL ID rldp.query
+<QUERY_ID>                  -- 32 random bytes
+0040000000000000            -- max_answer_size = 16 KiB (16,384 bytes)
+<TIMEOUT>                   -- future Unix timestamp encoded as a TL int
+<SERIALIZED_HTTP_REQUEST>   -- TL bytes value
 ```
 
-### Encode with RaptorQ
+### RaptorQ encoding
 
-1. Choose a symbol size; typically 768 bytes.
-1. Pad the data to a multiple of the symbol size with zero bytes. For 156 bytes of data, add 612 zero bytes to reach 768.
-1. Create a RaptorQ encoder ([example](https://github.com/xssnick/tonutils-go/blob/46dbf5f820af066ab10c5639a508b4295e5aa0fb/adnl/rldp/raptorq/encoder.go#L15)).
+1. The sender uses the 768-byte symbol size used by the C++ RLDP2 implementation.
+1. For this one-part request, the sender sets `data_size` and `total_size` to the serialized `rldp.query` length. The RaptorQ encoder handles the final short symbol.
+1. The sender creates a [RaptorQ encoder](https://github.com/ton-blockchain/ton/blob/v2026.06/rldp2/OutboundTransfer.cpp#L27-L40).
 
-### Send packets
+### Packet transmission
 
-Send encoded symbols in `rldp.messagePart`:
+The sender transmits encoded symbols in `rldp2.messagePart`:
 
 ```tl
-rldp.messagePart transfer_id:int256 fec_type:fec.Type part:int total_size:long seqno:int data:bytes = rldp.MessagePart;
+rldp2.messagePart transfer_id:int256 fec_type:fec.Type part:int total_size:long seqno:int data:bytes = rldp2.MessagePart;
 ```
 
 - `transfer_id` – random `int256`, same for all parts of this transfer.
-- `fec_type` – `fec.raptorQ` with `data_size = 156`, `symbol_size = 768`, `symbols_count = 1`.
-- `part` – 0 (used for very large transfers that exceed size limits).
-- `total_size` – 156 (actual data size).
+- `fec_type` – `fec.raptorQ` with the part's byte length, `symbol_size = 768`, and the encoder's source-symbol count.
+- `part` – zero-based part index. Start with 0.
+- `total_size` – complete serialized `rldp.query` size across all parts.
 - `seqno` – starts at 0, incremented for each packet.
 - `data` – encoded symbol (768 bytes).
 
-Wrap each in `adnl.message.custom` and send over ADNL UDP. Send symbols in round-robin order, continuing until `rldp.complete` is received. After sending one full round of symbols, slow down to one packet per 10 milliseconds — extra packets serve as FEC recovery data.
+The sender wraps each structure in `adnl.message.custom` and transmits it over ADNL UDP. It processes `rldp2.confirm` feedback and continues according to its loss-recovery and pacing logic until `rldp2.complete` arrives.
 
-[Implementation example](https://github.com/xssnick/tonutils-go/blob/be3411cf412f23e6889bf0b648904306a15936e7/adnl/rldp/rldp.go#L249).
+### Response processing
 
-### Process the response
+The response arrives as `rldp2.messagePart` messages inside `adnl.message.custom`. Its `transfer_id` is the request transfer ID with all 256 bits inverted.
 
-The response arrives as `rldp.messagePart` messages inside `adnl.message.custom`. The `transfer_id` is the original transfer ID with each byte XORed with `0xFF`.
+1. The receiver extracts FEC parameters (`data_size`, `symbol_size`, `symbols_count`) from the first received message.
+1. The receiver initializes a RaptorQ decoder.
+1. The receiver feeds each received symbol and its `seqno` into the decoder.
+1. The receiver sends `rldp2.confirm` as symbols arrive.
+1. The receiver attempts decoding when the decoder reports that enough symbols are available. On success, it sends `rldp2.complete` for that part.
 
-1. Extract FEC parameters (`data_size`, `symbol_size`, `symbols_count`) from the first received message.
-1. Initialize a RaptorQ decoder; [example](https://github.com/xssnick/tonutils-go/blob/be3411cf412f23e6889bf0b648904306a15936e7/adnl/rldp/rldp.go#L137).
-1. Feed received symbols with their `seqno` into the decoder.
-1. Once `symbols_count` symbols are collected, attempt decoding. On success, send `rldp.complete`; [example](https://github.com/xssnick/tonutils-go/blob/be3411cf412f23e6889bf0b648904306a15936e7/adnl/rldp/rldp.go#L168).
-
-At this point, the decoded `rldp.answer` contains an `http.response` with the status code and headers - but not necessarily the body.
+At this point, the decoded `rldp.answer` contains an `http.response` with the status code and headers, but not necessarily the body.
 
 - If `no_payload` is `true`, the response has no body and the request is complete.
-- If `no_payload` is `false`, fetch the body separately:
+- If `no_payload` is `false`, the client fetches the body separately:
 
-  1. Send an `http.getNextPayloadPart` request with incrementing `seqno` and `max_chunk_size` of 128 KiB (131,072 bytes);
-  1. Wrap each request in a new `rldp.query` transfer;
-  1. Repeat the request until the returned `http.payloadPart` has `last` set to `true`.
+  1. The client sends an `http.getNextPayloadPart` request with incrementing `seqno`. The C++ proxy requests at most 2,095,104 bytes per chunk.
+  1. The client wraps each request in a new `rldp.query` transfer.
+  1. The client repeats the request until the returned `http.payloadPart` has `last` set to `true`.
 
 ## See also
 

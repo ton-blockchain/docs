@@ -17,7 +17,7 @@ An ADNL address is derived as:
 address = SHA-256(type_id || public_key)
 ```
 
-The hash input is the complete boxed TL serialization of the public key, and the `type_id` is a `uint32` constructor ID serialized in little-endian order. For example, the Ed25519 public-key constructor has numeric ID `0x4813b4c6`, so its wire bytes are `c6 b4 13 48` followed by the 32-byte public key. The corresponding private key must be known to receive and decrypt messages sent to a given address.
+The hash input is the complete boxed [TL](https://core.telegram.org/mtproto/TL) serialization of the public key, and the `type_id` is a `uint32` constructor ID serialized in little-endian order. For example, the Ed25519 public-key constructor has numeric ID `0x4813b4c6`, so its wire bytes are `c6 b4 13 48` followed by the 32-byte public key. The corresponding private key must be known to receive and decrypt messages sent to a given address.
 
 <Callout
   type="note"
