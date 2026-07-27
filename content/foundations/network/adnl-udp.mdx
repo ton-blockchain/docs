@@ -3,7 +3,7 @@ title: "ADNL over UDP: internode communication"
 sidebarTitle: "ADNL UDP"
 ---
 
-ADNL over UDP is the protocol used by TON nodes to communicate with each other. It serves as the foundation for higher-level protocols such as the [distributed hash table (DHT)](https://github.com/ton-blockchain/ton/tree/v2026.06/dht) and [Reliable Large Datagram Protocol (RLDP)](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp2).
+ADNL over UDP is the protocol used by TON nodes to communicate with each other. It serves as the foundation for higher-level protocols such as the [distributed hash table (DHT)](/foundations/network/dht) and [Reliable Large Datagram Protocol (RLDP)](/foundations/network/rldp).
 
 Unlike [ADNL over TCP](/foundations/network/adnl-tcp), the UDP implementation uses channels for ongoing communication and establishes the connection when the first data exchange occurs. Initial packets use public-key encryption and identity signatures, while established channels use directional symmetric keys.
 

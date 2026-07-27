@@ -56,27 +56,27 @@ To look up a value, a client [connects to any DHT node via ADNL UDP](/foundation
 The client constructs the DHT key using:
 
 ```tl
-dht.key id:int256 name:bytes idx:int = dht.Key
+dht.key id:int256 name:bytes idx:int = dht.Key;
 ```
 
 - `id` – the ADNL address or other identifier being searched.
 - `name` – the key type as a byte string. For example, `"address"` for ADNL address lookups, `"nodes"` for shard node lookups.
-- `idx` – `0` when there is only one key. The reference implementation accepts values from 0 through 15.
+- `idx` – `0` when there is only one key. Accepted values are 0 through 15.
 
 The `name` must contain 1 through 127 bytes. The client serializes this structure and computes its SHA-256 hash. The result is the key ID.
 
 ### Query
 
 ```tl
-dht.findValue key:int256 k:int = dht.ValueResult
+dht.findValue key:int256 k:int = dht.ValueResult;
 ```
 
 - `key` – the key ID from the previous step.
-- `k` – the maximum number of nearby nodes to return when the value is absent. The reference implementation caps it at 10.
+- `k` – the maximum number of nearby nodes to return when the value is absent, capped at 10.
 
 The response is either [`dht.valueNotFound`](#dhtvaluenotfound) or [`dht.valueFound`](#dhtvaluefound).
 
-### dht.valueNotFound
+#### `dht.valueNotFound`
 
 The response includes a list of nodes that are close to the requested key:
 
@@ -97,7 +97,7 @@ For each node:
 
 The client queries unvisited candidates in ascending XOR-distance order. The reference implementation defaults to three concurrent queries through the configurable `a` parameter. The client stops when it finds a valid value or exhausts the nearest candidates.
 
-### dht.valueFound
+#### `dht.valueFound`
 
 The response includes the value itself, complete key information, and, depending on the value type, optionally a signature.
 
@@ -145,11 +145,13 @@ overlay.node.toSign id:adnl.id.short overlay:int256 version:int = overlay.node.T
 
 The client sets `id` to `adnl.id.short`, the key ID hash of the original `id` field, and verifies the signature.
 
-The reference client accepts the value only when at least one node has `version > current Unix time - 600`.
+The reference client accepts the value only when at least one node has `version > current UNIX time - 600`.
 
 ### Value use
 
-Once verification succeeds and the `ttl` has not expired, the client extracts `value:bytes`. The `ttl` is a Unix timestamp; the reference implementation rejects stored values more than 3,660 seconds into the future. For ADNL address lookups, `value` contains an `adnl.addressList` with IP addresses and ports. The client uses the `id:PublicKey` from the key description as the server key when connecting.
+Once verification succeeds and the `ttl` has not expired, the client extracts `value:bytes`. The `ttl` is a UNIX timestamp, with values more than 3,660 seconds into the future rejected. For ADNL address lookups, `value` contains an `adnl.addressList` with IP addresses and ports.
+
+The client uses the `id:PublicKey` from the key description as the server key when connecting.
 
 ## Blockchain node discovery
 
@@ -173,7 +175,7 @@ The DHT is also used to discover nodes storing blockchain data for specific work
 
 The result uses `dht.updateRule.overlayNodes`. After validation, the returned public keys identify nodes with blockchain data. The client hashes these keys to get ADNL addresses, then looks up each address in the DHT to obtain connection details.
 
-To discover additional nodes in the same shard, the client sends [`overlay.getRandomPeers`](https://github.com/ton-blockchain/ton/blob/ad736c6bc3c06ad54dc6e40d62acbaf5dae41584/tl/generate/scheme/ton_api.tl#L237).
+To discover additional nodes in the same shard, the client sends [`overlay.getRandomPeers`](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/ton_api.tl#L257).
 
 ## See also
 

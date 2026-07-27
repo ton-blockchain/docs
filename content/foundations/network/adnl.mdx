@@ -5,7 +5,7 @@ sidebarTitle: "ADNL"
 
 The Abstract Datagram Network Layer (ADNL) is the core networking protocol of the TON network. It is a peer-to-peer, unreliable datagram protocol that operates over both [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol) and [TCP](https://en.wikipedia.org/wiki/Transmission_Control_Protocol).
 
-Higher-level protocols such as [Reliable Large Datagram Protocol (RLDP)](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp2) and the [distributed hash table (DHT)](https://github.com/ton-blockchain/ton/tree/v2026.06/dht) are built on top of ADNL.
+Higher-level protocols such as [Reliable Large Datagram Protocol (RLDP)](/foundations/network/rldp) and the [distributed hash table (DHT)](/foundations/network/dht) are built on top of ADNL.
 
 ## ADNL address
 
@@ -45,7 +45,7 @@ ADNL over UDP is used by TON nodes to communicate with each other. Communication
 
 UDP packets sent outside a channel are encrypted to the destination identity and signed by the source identity. After channel establishment, peers use directional symmetric keys and omit the per-packet signature.
 
-Sequence numbers suppress duplicate and old packets, while acknowledgments report the highest accepted sequence number. ADNL does not retransmit missing datagrams. Protocols that require reliable or larger transfers use a higher-level protocol such as [RLDP](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp2).
+Sequence numbers suppress duplicate and old packets, while acknowledgments report the highest accepted sequence number. ADNL does not retransmit missing datagrams. Protocols that require reliable or larger transfers use a higher-level protocol such as [RLDP](/foundations/network/rldp).
 
 See [ADNL UDP](/foundations/network/adnl-udp) for channel establishment, packet structure, and message types.
 
