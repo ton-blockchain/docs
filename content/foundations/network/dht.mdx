@@ -1,0 +1,186 @@
+---
+title: "Distributed Hash Table (DHT)"
+sidebarTitle: "DHT"
+---
+
+The [Distributed Hash Table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) in TON is a [Kademlia](https://en.wikipedia.org/wiki/Kademlia)-like distributed key-value database used to discover nodes in the network. Any network participant can operate a DHT node, generate keys, and store data.
+
+The DHT is used to store IP addresses of [ADNL](/foundations/network/adnl) nodes, torrent holder lists for [TON Storage](/foundations/web3/ton-storage), overlay subnetwork node addresses, and ADNL addresses of TON services and blockchain accounts.
+
+## Keys and values
+
+Keys are 256-bit integers, typically derived from the [SHA-256](https://en.wikipedia.org/wiki/SHA-2) of a [TL](https://core.telegram.org/mtproto/TL)-serialized object. Values are byte strings limited to 768 bytes, whose meaning is determined by the key's pre-image.
+
+For an ADNL address lookup, `dht.key.id` contains the ADNL short ID, `name` is `"address"`, and the value contains a serialized `adnl.addressList`.
+
+## DHT nodes
+
+Each DHT node has a 256-bit address equal to the short ID of its ADNL public key. This address should remain relatively stable. If it changes too frequently, other nodes cannot locate the keys that the node stores.
+
+The value of key `K` is stored on the `n` nearest nodes to `K`. The number of such nodes defaults to `n = 10`, and configuration values above 10 are rejected. This redundancy allows lookups to continue when some nodes are offline.
+
+## Kademlia distance
+
+Distance between a key and a node is computed via 256-bit [XOR](https://en.wikipedia.org/wiki/Exclusive_or):
+
+```text
+distance(key, node) = key XOR node_address
+```
+
+This distance is purely computational and unrelated to geographic location. A smaller XOR result means the node is "closer" to the key.
+
+## Routing table
+
+Each DHT node maintains a Kademlia routing table of 256 buckets numbered 0 to 255. Bucket `i` contains nodes whose IDs share the first `i` bits with the local node ID and differ at the next bit. As such, bucket 0 contains the farthest prefix class, while bucket 255 contains the nearest.
+
+Each bucket stores up to `n` active nodes and `n` backup candidates. Stored information includes DHT addresses, IP addresses, UDP ports, and availability data such as the last ping time.
+
+When a query discovers a new node, it is placed in the appropriate bucket as a candidate. Unresponsive active nodes are eventually replaced by the candidates, keeping the routing table populated.
+
+## Key-value update rules
+
+Update behavior depends on `dht.keyDescription.update_rule`:
+
+- `dht.updateRule.signature`: the key owner signs the value. A node replaces the stored value only when the new `ttl` is greater.
+- `dht.updateRule.overlayNodes`: the key description uses `pub.overlay`, and the value is an `overlay.nodes` list. A node merges lists by ADNL ID and retains the entry with the greater `version`.
+- `dht.updateRule.anybody`: the key description uses neither `pub.ed25519` nor `pub.overlay`. The value has no signature, and a node replaces the stored bytes and `ttl` without comparing versions.
+
+All three rules enforce the 768-byte value limit. When an overlay-list merge exceeds this limit, the reference implementation removes randomly selected entries until the serialized list fits.
+
+## Value lookup by key
+
+To look up a value, a client [connects to any DHT node via ADNL UDP](/foundations/network/adnl-udp) and sends a `dht.findValue` query.
+
+### Key ID construction
+
+The client constructs the DHT key using:
+
+```tl
+dht.key id:int256 name:bytes idx:int = dht.Key;
+```
+
+- `id` – the ADNL address or other identifier being searched.
+- `name` – the key type as a byte string. For example, `"address"` for ADNL address lookups, `"nodes"` for shard node lookups.
+- `idx` – `0` when there is only one key. Accepted values are 0 through 15.
+
+The `name` must contain 1 through 127 bytes. The client serializes this structure and computes its SHA-256 hash. The result is the key ID.
+
+### Query
+
+```tl
+dht.findValue key:int256 k:int = dht.ValueResult;
+```
+
+- `key` – the key ID from the previous step.
+- `k` – the maximum number of nearby nodes to return when the value is absent, capped at 10.
+
+The response is either [`dht.valueNotFound`](#dhtvaluenotfound) or [`dht.valueFound`](#dhtvaluefound).
+
+#### `dht.valueNotFound`
+
+The response includes a list of nodes that are close to the requested key:
+
+```tl
+dht.node id:PublicKey addr_list:adnl.addressList version:int signature:bytes = dht.Node;
+dht.nodes nodes:(vector dht.node) = dht.Nodes;
+dht.valueNotFound nodes:dht.nodes = dht.ValueResult;
+```
+
+For each node:
+
+1. The client parses and verifies the signature against the `id` public key:
+   - A 64-byte field is an Ed25519 signature over the serialized `dht.node` with an empty `signature`.
+   - A 68-byte field contains a four-byte network ID followed by the 64-byte signature. If the client also has a network ID, it rejects a different value. The client then verifies the signature over the serialized node with only the four-byte network ID in `signature`.
+1. The client rejects a node whose `addr_list` is empty or contains a non-public address.
+1. The client connects via [ADNL UDP](/foundations/network/adnl-udp) using the address from `addr_list` and the `id` as the server key.
+1. The client computes the XOR distance between the node's [key ID](/foundations/network/adnl-tcp#key-id-calculation) and the target key.
+
+The client queries unvisited candidates in ascending XOR-distance order. The reference implementation defaults to three concurrent queries through the configurable `a` parameter. The client stops when it finds a valid value or exhausts the nearest candidates.
+
+#### `dht.valueFound`
+
+The response includes the value itself, complete key information, and, depending on the value type, optionally a signature.
+
+```tl
+dht.keyDescription key:dht.key id:PublicKey update_rule:dht.UpdateRule signature:bytes = dht.KeyDescription;
+dht.value key:dht.keyDescription value:bytes ttl:int signature:bytes = dht.Value;
+dht.valueFound value:dht.Value = dht.ValueResult;
+```
+
+The `key:dht.keyDescription` provides full key metadata:
+
+- `key:dht.key` – must hash to the searched key ID.
+- `id:PublicKey` – the record owner's public key. Its short ID must equal `key.id`.
+- `update_rule:dht.UpdateRule` – determines who can modify this record:
+
+  | Rule                          | Description                                                                         |
+  | ----------------------------- | ----------------------------------------------------------------------------------- |
+  | `dht.updateRule.signature`    | Only the private key owner can update; both key and value signatures are verified.  |
+  | `dht.updateRule.overlayNodes` | Valid entries from the same overlay are merged. The outer value signature is empty. |
+  | `dht.updateRule.anybody`      | Anyone can update the value. The value signature must be empty.                     |
+
+#### Signature-based value verification
+
+For `dht.updateRule.signature`, which is used in ADNL address lookups:
+
+1. The client sets the `signature` field of `dht.keyDescription` to empty bytes, serializes the description, and verifies the saved signature against the `id` public key.
+1. The client restores the key signature, sets the `signature` field of `dht.value` to empty bytes, serializes the value, and verifies the saved value signature.
+
+[Signature verification in the C++ implementation](https://github.com/ton-blockchain/ton/blob/v2026.06/dht/dht-types.cpp#L123-L234).
+
+#### Overlay node value verification
+
+For `dht.updateRule.overlayNodes`, the value contains:
+
+```tl
+overlay.node id:PublicKey overlay:int256 version:int signature:bytes = overlay.Node;
+overlay.nodes nodes:(vector overlay.node) = overlay.Nodes;
+```
+
+For each node, the client verifies the `signature` by serializing:
+
+```tl
+overlay.node.toSign id:adnl.id.short overlay:int256 version:int = overlay.node.ToSign;
+```
+
+The client sets `id` to `adnl.id.short`, the key ID hash of the original `id` field, and verifies the signature.
+
+The reference client accepts the value only when at least one node has `version > current UNIX time - 600`.
+
+### Value use
+
+Once verification succeeds and the `ttl` has not expired, the client extracts `value:bytes`. The `ttl` is a UNIX timestamp, with values more than 3,660 seconds into the future rejected. For ADNL address lookups, `value` contains an `adnl.addressList` with IP addresses and ports.
+
+The client uses the `id:PublicKey` from the key description as the server key when connecting.
+
+## Blockchain node discovery
+
+The DHT is also used to discover nodes storing blockchain data for specific workchains and shards.
+
+### Overlay key construction
+
+1. The client fills in the TL structure:
+
+   ```tl
+   tonNode.shardPublicOverlayId workchain:int shard:long zero_state_file_hash:int256 = tonNode.ShardPublicOverlayId;
+   ```
+
+   For the masterchain: `workchain = -1`, `shard = -9223372036854775808` (`0x8000000000000000`). The `zero_state_file_hash` comes from the `validator > zero_state` section of the global config.
+
+1. The client serializes and hashes the structure to get the overlay ID.
+
+1. The client wraps the overlay ID in `pub.overlay name:bytes = PublicKey`, serializes it, and hashes it to get the overlay public-key hash.
+
+1. The client constructs `dht.key` with the overlay public-key hash as `id`, `"nodes"` as `name`, and `0` as `idx`. It hashes this structure to obtain the key ID for `dht.findValue`.
+
+The result uses `dht.updateRule.overlayNodes`. After validation, the returned public keys identify nodes with blockchain data. The client hashes these keys to get ADNL addresses, then looks up each address in the DHT to obtain connection details.
+
+To discover additional nodes in the same shard, the client sends [`overlay.getRandomPeers`](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/ton_api.tl#L257).
+
+## See also
+
+- [ADNL overview](/foundations/network/adnl)
+- [ADNL over UDP](/foundations/network/adnl-udp)
+- [DHT implementation in the TON monorepo](https://github.com/ton-blockchain/ton/tree/v2026.06/dht)
+- [DHT server implementation in the TON monorepo](https://github.com/ton-blockchain/ton/tree/v2026.06/dht-server)
+- [DHT in The Open Network whitepaper](/foundations/whitepapers/ton/#3-2-ton-dht%3A-kademlia-like-distributed-hash-table)

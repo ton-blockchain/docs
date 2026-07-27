@@ -1,11 +1,11 @@
 ---
-title: "Abstract Datagram Network Layer"
+title: "Abstract Datagram Network Layer (ADNL) overview"
 sidebarTitle: "ADNL"
 ---
 
 The Abstract Datagram Network Layer (ADNL) is the core networking protocol of the TON network. It is a peer-to-peer, unreliable datagram protocol that operates over both [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol) and [TCP](https://en.wikipedia.org/wiki/Transmission_Control_Protocol).
 
-Higher-level protocols such as [Reliable Large Datagram Protocol (RLDP)](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp2) and the [distributed hash table (DHT)](https://github.com/ton-blockchain/ton/tree/v2026.06/dht) are built on top of ADNL.
+Higher-level protocols such as [Reliable Large Datagram Protocol (RLDP)](/foundations/network/rldp) and the [distributed hash table (DHT)](/foundations/network/dht) are built on top of ADNL.
 
 ## ADNL address
 
@@ -17,7 +17,7 @@ An ADNL address is derived as:
 address = SHA-256(type_id || public_key)
 ```
 
-The hash input is the complete boxed TL serialization of the public key, and the `type_id` is a `uint32` constructor ID serialized in little-endian order. For example, the Ed25519 public-key constructor has numeric ID `0x4813b4c6`, so its wire bytes are `c6 b4 13 48` followed by the 32-byte public key. The corresponding private key must be known to receive and decrypt messages sent to a given address.
+The hash input is the complete boxed [TL](https://core.telegram.org/mtproto/TL) serialization of the public key, and the `type_id` is a `uint32` constructor ID serialized in little-endian order. For example, the Ed25519 public-key constructor has numeric ID `0x4813b4c6`, so its wire bytes are `c6 b4 13 48` followed by the 32-byte public key. The corresponding private key must be known to receive and decrypt messages sent to a given address.
 
 <Callout
   type="note"
@@ -45,7 +45,7 @@ ADNL over UDP is used by TON nodes to communicate with each other. Communication
 
 UDP packets sent outside a channel are encrypted to the destination identity and signed by the source identity. After channel establishment, peers use directional symmetric keys and omit the per-packet signature.
 
-Sequence numbers suppress duplicate and old packets, while acknowledgments report the highest accepted sequence number. ADNL does not retransmit missing datagrams. Protocols that require reliable or larger transfers use a higher-level protocol such as [RLDP](https://github.com/ton-blockchain/ton/tree/v2026.06/rldp2).
+Sequence numbers suppress duplicate and old packets, while acknowledgments report the highest accepted sequence number. ADNL does not retransmit missing datagrams. Protocols that require reliable or larger transfers use a higher-level protocol such as [RLDP](/foundations/network/rldp).
 
 See [ADNL UDP](/foundations/network/adnl-udp) for channel establishment, packet structure, and message types.
 
