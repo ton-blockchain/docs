@@ -611,12 +611,11 @@ $ ton-node start --ledger /home/bob/ledger --network mainnet  # includes prompt,
 ### 10.2 Partial snippets
 
 - Partial snippets (focused excerpts) **MAY** be used when teaching a narrow concept, even if not runnable alone. (Why: small, targeted examples clarify one idea without setup noise.)
-- Partial snippets **MUST** be labeled clearly above the block: “Not runnable”. (Why: prevents readers from attempting to execute incomplete code.)
+- Partial snippets **MUST** be labeled clearly in the comment on the first line of the block: “// Not runnable: brief how to make it runnable”. (Why: prevents readers from attempting to execute incomplete code. In the explanation, be concise and try to keep it below 100 characters)
 - Partial snippets **SHOULD** link to a full runnable example or reference entry showing complete context. (Why: gives readers a path to working code.)
 
-Not runnable
-
 ```rust
+// Not runnable: replace EQC_REPLACE_WITH_ADDRESS with a real address.
 let to = Address::from_str("EQC_REPLACE_WITH_ADDRESS").unwrap();
 let amount = Coins::from_nano(1_000_000_000);
 let body = build_transfer_body(to, amount);

@@ -19,7 +19,7 @@ During wallet connection, the client receives a `TonProofItemReplySuccess` objec
 type TonProofItemReplySuccess = {
   name: 'ton_proof';
   proof: {
-    timestamp: number;     // 64-bit Unix epoch time of the signing operation (seconds)
+    timestamp: number;     // Unix epoch time of the signing operation in seconds
     domain: {
       lengthBytes: number; // AppDomain length
       value: string;       // App domain name (URL part, without encoding)
@@ -30,11 +30,14 @@ type TonProofItemReplySuccess = {
 };
 ```
 
+The SDK exposes `timestamp` as a number, while the TON Connect specification defines its wire value as a decimal string. Backend validation should accept both representations and normalize the value before verification.
+
 ## Request a proof
 
 Generate an unpredictable, single-use payload on the backend. Associate it with the login attempt and give it a short expiration time. Then pass the payload to `setConnectRequestParameters` before opening the wallet modal:
 
 ```ts
+// Not runnable: initialize tonConnectUI and provide the API endpoint.
 const payload = await fetch('/api/ton-proof/payload', {
   method: 'POST',
 }).then((response) => response.text());
@@ -50,6 +53,7 @@ Keep the payload short. The SDK allows at most 128 UTF-8 bytes for the domain, 1
 Read the proof from the wallet status callback and send it to the backend together with `wallet.account`. A wallet that does not support `ton_proof` returns a connect-item error instead of a `proof` field, so handle both variants:
 
 ```ts
+// Not runnable: initialize tonConnectUI and provide the API endpoint.
 tonConnectUI.onStatusChange(async (wallet) => {
   const tonProof = wallet?.connectItems?.tonProof;
   if (!wallet || !tonProof || !('proof' in tonProof)) {
@@ -127,7 +131,7 @@ After extracting the public key, verify:
 1. The domain equals the expected dApp domain and `lengthBytes` equals its UTF-8 byte length.
 1. The timestamp is within a short acceptance window, including a bound on future clock skew.
 1. The payload belongs to this login attempt, has not expired, and is consumed atomically so it cannot be reused.
-1. The connected network matches the network your application accepts. The `ton_proof` signature does not bind the network.
+1. The connected network matches a network accepted by the application. The `ton_proof` signature does not bind the network.
 
 <Callout>
   Public-key extraction is wallet-version-specific. Identify the wallet by its code hash and parse the matching data layout; see [`tryExtractPublicKey`](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) for an implementation covering standard wallet versions.
@@ -138,6 +142,7 @@ After extracting the public key, verify:
 From the [`demo-dapp-with-wallet`](https://github.com/ton-connect/demo-dapp-with-wallet) `TonProofDemo` component:
 
 ```tsx expandable
+// Not runnable: copy the linked app and install its dependencies.
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactJson from 'react-json-view';
 import { TonProofDemoApi } from '../../TonProofDemoApi';
@@ -230,6 +235,7 @@ From [`demo-dapp-with-react-ui`](https://github.com/ton-connect/demo-dapp-with-r
 ### Proof request schema
 
 ```ts
+// Not runnable: add this file to the linked server and install its dependencies.
 import { CHAIN } from '@tonconnect/ui-react';
 import zod from 'zod';
 
@@ -238,7 +244,7 @@ export const CheckProofRequest = zod.object({
   network: zod.enum([CHAIN.MAINNET, CHAIN.TESTNET]),
   public_key: zod.string(),
   proof: zod.object({
-    timestamp: zod.number(),
+    timestamp: zod.coerce.number().int().nonnegative(),
     domain: zod.object({
       lengthBytes: zod.number(),
       value: zod.string(),
@@ -256,6 +262,7 @@ export type CheckProofRequestDto = zod.infer<typeof CheckProofRequest>;
 ### Proof verification service
 
 ```ts expandable
+// Not runnable: add the referenced DTO and wallet parsing helpers.
 import { getSecureRandomBytes, sha256 } from '@ton/crypto';
 import { Address, Cell, contractAddress, loadStateInit } from '@ton/ton';
 import { Buffer } from 'buffer';
@@ -387,6 +394,7 @@ export class TonProofService {
 
 <CodeGroup>
   ```ts title="Check proof" icon="globe"
+  // Not runnable: add the linked server's services, utilities, and DTO.
   import { sha256 } from '@ton/crypto';
   import { HttpResponseResolver } from 'msw';
   import { CheckProofRequest } from '../dto/check-proof-request-dto';
@@ -433,6 +441,7 @@ export class TonProofService {
   ```
 
   ```ts title="Generate payload" icon="globe"
+  // Not runnable: add the linked server's services and utilities.
   import { sha256 } from '@ton/crypto';
   import { HttpResponseResolver } from 'msw';
   import { TonProofService } from '../services/ton-proof-service';
