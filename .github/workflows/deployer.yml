@@ -1,0 +1,120 @@
+name: 🚀 Deployer
+
+env:
+  HUSKY: 0
+  NODE_VERSION: 22
+
+on:
+  push:
+    branches:
+      - main
+      - pages
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions: { }
+
+jobs:
+  build:
+    name: "Docs build"
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build
+      cancel-in-progress: true
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Restore build cache
+        id: next-cache-restore
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: &build-docs-next-cache-paths |
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-next-cache-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/*.md', '**/*.mdx', 'next.config.*', 'docs.json') }}
+          restore-keys: ${{ runner.os }}-next-cache-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}-
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          npm ci
+
+      - name: Build docs
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          GITHUB_PAGES: ${{ github.event_name != 'pull_request' && 'true' || '' }}
+          ALLOW_NET: true
+        run: |
+          npm run build
+          # See some file contents
+          nlines=50
+          target='out/llms.txt'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "$target" && echo
+          } || echo "$target not found"
+          #
+          target='out/llms-full.txt'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "$target" && echo
+          } || echo "$target not found"
+          #
+          target='out/llms/foundations/tlb/overview/content.md'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "$target" && echo
+          } || echo "$target not found"
+          #
+          target='out/404.html'
+          test -f "$target" && {
+            echo -e "\nFirst $nlines lines of $target"
+            head -$nlines "$target" && echo
+          } || echo "$target not found"
+
+      - name: Save build cache
+        id: next-cache-save
+        if: steps.next-cache-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: *build-docs-next-cache-paths
+          key: ${{ steps.next-cache-restore.outputs.cache-primary-key }}
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: out
+
+  deploy:
+    name: "Docs deploy"
+    if: github.event_name != 'pull_request' && (github.ref_name == 'pages' || github.ref_name == 'main') && github.repository == 'ton-blockchain/docs'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-deploy
+      cancel-in-progress: false
+    needs: [ build ]
+    permissions:
+      # To deploy to Pages
+      pages: write
+      # To verify the deployment originates from an appropriate source
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}

@@ -1,0 +1,928 @@
+---
+title: "`@tonconnect/ui` reference"
+sidebarTitle: "UI reference"
+---
+
+`@tonconnect/ui` is the framework-agnostic UI kit on top of [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk). It ships a styled connect button, a wallets modal, and notification flows that match the TON Connect protocol so dApps without a framework can integrate without designing their own modals.
+
+If you use React, see [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react). For protocol semantics, see the [TON Connect spec](https://github.com/ton-blockchain/ton-connect).
+
+## Installation
+
+Install from npm:
+
+```bash
+npm i @tonconnect/ui
+```
+
+Or include the bundle via CDN. The package is exposed on `window.TON_CONNECT_UI`:
+
+```html
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+```
+
+For a pinned version, replace `@latest` with the desired version.
+
+> Generated from `@tonconnect/ui` v3.0.0-beta.2.
+
+## `TonConnectUI`
+
+UI-aware TON Connect connector. Wraps a [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) instance from
+`@tonconnect/sdk` and adds the wallet-selection modal, the
+"connect-wallet" button, notification toasts, and a `uiOptions` setter
+for runtime theming.
+
+In a React app prefer `<TonConnectUIProvider>` from
+`@tonconnect/ui-react`, which manages a singleton [`TonConnectUI`](#tonconnectui) for you.
+
+### Constructor
+
+```ts
+new TonConnectUI(options?: TonConnectUiCreateOptions)
+```
+
+| Parameter | Type                        | Description |
+| --------- | --------------------------- | ----------- |
+| `options` | `TonConnectUiCreateOptions` | _Optional_. |
+
+### Instance properties
+
+| Property                   | Type                                                                     | Description                                                                                                                                                                                                                                                                                          |
+| -------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `walletsRequiredFeatures`  | `RequiredFeatures \| undefined`                                          | Wallet features the dApp requires. Wallets that do not advertise them are hidden from the picker and rejected at connect time. Set via the constructor or the `uiOptions` setter. See [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures).                            |
+| `walletsPreferredFeatures` | `RequiredFeatures \| undefined`                                          | Wallet features the dApp prefers. Non-matching wallets stay selectable but are sorted to the bottom of the picker; unlike `TonConnectUI.walletsRequiredFeatures`, the match is not enforced at connect time. See [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures). |
+| `connector`                | [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) | TonConnect instance.                                                                                                                                                                                                                                                                                 |
+| `modal`                    | `WalletsModal`                                                           | Manages the modal window state.                                                                                                                                                                                                                                                                      |
+| `connectionRestored`       | `Promise<boolean>`                                                       | Promise that resolves after the connection restoring process ends (it fires after [`onStatusChange`](#onstatuschange), so you can read actual wallet and session information once it resolves). The resolved value `true`/`false` indicates whether the session was restored successfully.           |
+| `connected`                | `boolean`                                                                | Current connection status.                                                                                                                                                                                                                                                                           |
+| `account`                  | `Account \| null`                                                        | Current connected account or null.                                                                                                                                                                                                                                                                   |
+| `wallet`                   | `Wallet \| Wallet & WalletInfoWithOpenMethod \| null`                    | Current connected wallet app and its info, or `null` when not connected.                                                                                                                                                                                                                             |
+| `uiOptions`                | `TonConnectUiOptions`                                                    | Set and apply new UI options. Object with partial options should be passed. Passed options will be merged with current options. _(write-only)_                                                                                                                                                       |
+| `modalState`               | `WalletsModalState`                                                      | Returns current modal window state.                                                                                                                                                                                                                                                                  |
+| `singleWalletModalState`   | `SingleWalletModalState`                                                 | _Experimental_. Returns current single wallet modal window state.                                                                                                                                                                                                                                    |
+
+### `setConnectRequestParameters()`
+
+Use it to customize ConnectRequest and add `tonProof` payload.
+You can call it multiple times to set an updated tonProof payload if the previous one is outdated.
+If `connectRequestParameters.state === 'loading'`, a loader appears instead of the QR code in the wallets modal.
+If `connectRequestParameters.state` was changed to 'ready' or it's value has been changed, QR will be re-rendered.
+
+```ts
+setConnectRequestParameters(
+    connectRequestParameters: Loadable<ConnectAdditionalRequest> | undefined | null
+): void;
+```
+
+| Parameter                  | Type                                                      | Description |
+| -------------------------- | --------------------------------------------------------- | ----------- |
+| `connectRequestParameters` | `Loadable<ConnectAdditionalRequest> \| undefined \| null` | —           |
+
+### `setConnectionNetwork()`
+
+Set desired network for the connection. Can only be set before connecting.
+If wallet connects with a different chain, the SDK will throw an error and abort connection.
+
+```ts
+setConnectionNetwork(network?: ChainId): void;
+```
+
+| Parameter | Type                                                                  | Description                                                                                                                                                                            |
+| --------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `network` | [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid) | _Optional_. Desired network ID (e.g., `-239`, `-3`, or a custom ID). Pass `undefined` to allow any network. See [`ChainId`](/applications/ton-connect/api-reference/protocol#chainid). |
+
+### `getWallets()`
+
+Returns available wallets list.
+
+```ts
+getWallets(): Promise<WalletInfo[]>;
+```
+
+Returns `Promise<WalletInfo[]>`. Array of [`WalletInfo`](/applications/ton-connect/api-reference/sdk#walletinfo), merged from the registry and any injected wallets.
+
+### `onStatusChange()`
+
+Subscribe to connection status change.
+
+```ts
+onStatusChange(
+    callback: (wallet: ConnectedWallet | null) => void,
+    errorsHandler?: (err: TonConnectError) => void
+): () => void;
+```
+
+| Parameter       | Type                                        | Description |
+| --------------- | ------------------------------------------- | ----------- |
+| `callback`      | `(wallet: ConnectedWallet \| null) => void` | —           |
+| `errorsHandler` | `(err: TonConnectError) => void`            | _Optional_. |
+
+Returns `() => void`. Function which has to be called to unsubscribe.
+
+### `openModal()`
+
+Opens the modal window, returns a promise that resolves after the modal window is opened.
+
+```ts
+openModal(options?: { traceId?: string }): Promise<void>;
+```
+
+| Parameter | Type                   | Description |
+| --------- | ---------------------- | ----------- |
+| `options` | `{ traceId?: string }` | _Optional_. |
+
+Returns `Promise<void>`.
+
+### `closeModal()`
+
+Closes the modal window.
+
+```ts
+closeModal(reason?: WalletsModalCloseReason): void;
+```
+
+| Parameter | Type                      | Description                                                                                                |
+| --------- | ------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `reason`  | `WalletsModalCloseReason` | _Optional_. Optional [`WalletsModalCloseReason`](#walletsmodalclosereason) forwarded to state subscribers. |
+
+### `onModalStateChange()`
+
+Subscribe to the modal window state changes.
+
+```ts
+onModalStateChange(onChange: (state: WalletsModalState) => void): () => void;
+```
+
+| Parameter  | Type                                 | Description                                                                              |
+| ---------- | ------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `onChange` | `(state: WalletsModalState) => void` | Callback invoked with the new [`WalletsModalState`](#walletsmodalstate) on every change. |
+
+Returns `() => void`. Function which has to be called to unsubscribe.
+
+### `openSingleWalletModal()`
+
+_Experimental_ — this API may change or be removed in a future release.
+
+Opens the single wallet modal window, returns a promise that resolves after the modal window is opened.
+
+```ts
+openSingleWalletModal(wallet: string): Promise<void>;
+```
+
+| Parameter | Type     | Description |
+| --------- | -------- | ----------- |
+| `wallet`  | `string` | —           |
+
+Returns `Promise<void>`.
+
+### `closeSingleWalletModal()`
+
+_Experimental_ — this API may change or be removed in a future release.
+
+Close the single wallet modal window.
+
+```ts
+closeSingleWalletModal(closeReason?: WalletsModalCloseReason): void;
+```
+
+| Parameter     | Type                      | Description |
+| ------------- | ------------------------- | ----------- |
+| `closeReason` | `WalletsModalCloseReason` | _Optional_. |
+
+### `onSingleWalletModalStateChange()`
+
+_Experimental_ — this API may change or be removed in a future release.
+
+Subscribe to the single wallet modal window state changes, returns a function which has to be called to unsubscribe.
+
+```ts
+onSingleWalletModalStateChange(onChange: (state: SingleWalletModalState) => void): () => void;
+```
+
+| Parameter  | Type                                      | Description |
+| ---------- | ----------------------------------------- | ----------- |
+| `onChange` | `(state: SingleWalletModalState) => void` | —           |
+
+Returns `() => void`.
+
+### `connectWallet()`
+
+_Deprecated_ — Use `tonConnectUI.openModal()` instead. Will be removed in the next major version.
+Opens the modal window and handles a wallet connection.
+
+```ts
+connectWallet(options?: { traceId?: string }): Promise<ConnectedWallet>;
+```
+
+| Parameter | Type                   | Description |
+| --------- | ---------------------- | ----------- |
+| `options` | `{ traceId?: string }` | _Optional_. |
+
+Returns `Promise<ConnectedWallet>`. Connected wallet.
+
+**Throws:** [`TonConnectUIError`](#tonconnectuierror) — if connection was aborted.
+
+### `disconnect()`
+
+Disconnect the wallet and clear `localStorage`.
+
+```ts
+disconnect(options?: { traceId?: string }): Promise<void>;
+```
+
+| Parameter | Type                   | Description |
+| --------- | ---------------------- | ----------- |
+| `options` | `{ traceId?: string }` | _Optional_. |
+
+Returns `Promise<void>`.
+
+### `sendTransaction()`
+
+Opens the modal window and handles the transaction sending.
+
+Pass `options.enableEmbeddedRequest: true` to allow the request to ride along with the
+connect URL on mobile, eliminating a round-trip. With that flag, the result is always the
+embedded shape:
+
+- `{ hasResponse: true, response }` — the transaction was signed, either folded into connect
+  by an embedded-request-capable wallet, or via the normal bridge flow.
+- `{ hasResponse: false, connectResult: { dispatched } }` — the wallet connected but did not
+  return a signed transaction. The dApp must decide how to recover:
+  - `dispatched: false` — the request never reached the wallet.
+  - `dispatched: true` — **the request was delivered to the wallet inside the connect
+    URL.** The wallet may have already signed and submitted it; you just didn't get the
+    response. **Do not retry silently.** Surface an explicit retry button to the user, and
+    ideally check on-chain state (e.g. the user's transaction history for the destination,
+    queryId and amount) before re-submitting to avoid a duplicate transaction.
+
+Without the flag the method throws if the wallet is not connected and returns the plain
+[`SendTransactionResponse`](/applications/ton-connect/api-reference/sdk#sendtransactionresponse) otherwise.
+
+```ts
+sendTransaction(
+    tx: SendTransactionRequest,
+    options?: ActionOptions
+): Promise<OptionalTraceable<SendTransactionResponse>>;
+```
+
+| Parameter | Type                                                                                           | Description                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tx`      | [`SendTransactionRequest`](/applications/ton-connect/api-reference/sdk#sendtransactionrequest) | Transaction to send.                                                                                                                            |
+| `options` | `ActionOptions`                                                                                | _Optional_. Modal and notifications behavior settings; set `enableEmbeddedRequest: true` to opt into the connect-and-send flow described above. |
+
+Returns `Promise<OptionalTraceable<SendTransactionResponse>>`.
+
+### `signData()`
+
+Signs the data and returns the signature.
+
+Pass `options.enableEmbeddedRequest: true` to allow the request to ride along with the
+connect URL on mobile, eliminating a round-trip. With that flag, the result is always the
+embedded shape:
+
+- `{ hasResponse: true, response }` — the data was signed, either folded into connect by an
+  embedded-request-capable wallet, or via the normal bridge flow.
+- `{ hasResponse: false, connectResult: { dispatched } }` — the wallet connected but did not
+  return a signature. Recovery is the dApp's responsibility:
+  - `dispatched: false` — the request never reached the wallet.
+  - `dispatched: true` — **the request was delivered to the wallet inside the connect
+    URL.** The wallet may have already signed it; you just didn't get the response back.
+    **Do not retry silently.** Surface an explicit retry button to the user, and, where it
+    makes sense, verify that you don't already have the signature you need before
+    re-submitting.
+
+Without the flag the method throws if the wallet is not connected and returns the plain
+[`SignDataResponse`](/applications/ton-connect/api-reference/sdk#signdataresponse) otherwise.
+
+```ts
+signData(
+    data: SignDataPayload,
+    options?: ActionOptions
+): Promise<OptionalTraceable<SignDataResponse>>;
+```
+
+| Parameter | Type                                                                                  | Description                                                                                                                                     |
+| --------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data`    | [`SignDataPayload`](/applications/ton-connect/api-reference/protocol#signdatapayload) | Data to sign.                                                                                                                                   |
+| `options` | `ActionOptions`                                                                       | _Optional_. Modal and notifications behavior settings; set `enableEmbeddedRequest: true` to opt into the connect-and-sign flow described above. |
+
+Returns `Promise<OptionalTraceable<SignDataResponse>>`.
+
+### `signMessage()`
+
+Signs a message built from a transaction request and returns the signed internal message BoC.
+
+Pass `options.enableEmbeddedRequest: true` to allow the request to ride along with the
+connect URL on mobile, eliminating a round-trip. With that flag, the result is always the
+embedded shape:
+
+- `{ hasResponse: true, response }` — the message was signed, either folded into connect by
+  an embedded-request-capable wallet, or via the normal bridge flow.
+- `{ hasResponse: false, connectResult: { dispatched } }` — the wallet connected but did not
+  return a signed message. Recovery is the dApp's responsibility:
+  - `dispatched: false` — the request never reached the wallet. Calling `signMessage(msg)`
+    again (over the bridge) is safe.
+  - `dispatched: true` — **the request was delivered to the wallet inside the connect
+    URL.** The wallet may have already signed (and, for gasless flows, even submitted) it;
+    you just didn't get the BoC back. **Do not retry silently.** Surface an explicit retry
+    button to the user, and for transfer-style payloads check on-chain (the destination
+    and amount in recent transaction history) before re-submitting to avoid a double
+    send.
+
+Without the flag the method throws if the wallet is not connected and returns the plain
+[`SignMessageResponse`](/applications/ton-connect/api-reference/sdk#signmessageresponse) otherwise.
+
+```ts
+signMessage(
+    message: SignMessageRequest,
+    options?: ActionOptions
+): Promise<OptionalTraceable<SignMessageResponse>>;
+```
+
+| Parameter | Type                                                                                   | Description                                                                                                                                     |
+| --------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `message` | [`SignMessageRequest`](/applications/ton-connect/api-reference/sdk#signmessagerequest) | Transaction-like request describing the internal message to sign.                                                                               |
+| `options` | `ActionOptions`                                                                        | _Optional_. Modal and notifications behavior settings; set `enableEmbeddedRequest: true` to opt into the connect-and-sign flow described above. |
+
+Returns `Promise<OptionalTraceable<SignMessageResponse>>`.
+
+### Static methods
+
+| Method                      | Description                                                                                                                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TonConnectUI.getWallets()` | Fetch the wallets-list registry without instantiating a [`TonConnectUI`](#tonconnectui). Equivalent to the instance method but usable in code that runs before the connector exists. |
+
+## Types
+
+### `ActionConfiguration`
+
+Modal / notification behavior for action calls
+(`sendTransaction`, [`signData`](#signdata), [`signMessage`](#signmessage)) and the return strategy
+applied to outgoing deep links.
+
+Pass on `TonConnectUiOptions.actionsConfiguration` (applies to every
+action) or on the per-call options of a single action.
+
+```ts
+interface ActionConfiguration {
+    modals?: 'all' | ('before' | 'success' | 'error')[];
+    notifications?: 'all' | ('before' | 'success' | 'error')[];
+    returnStrategy?: ReturnStrategy;
+    twaReturnUrl?: `${string}://${string}`;
+    skipRedirectToWallet?: 'ios' | 'always' | 'never';
+}
+```
+
+| Field                  | Type                                            | Description                                                                                                                                                                                                                                                               |
+| ---------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modals`               | `'all' \| ('before' \| 'success' \| 'error')[]` | _Optional_. Which lifecycle stages render a modal. `'all'` is shorthand for `['before', 'success', 'error']`. The "before" modal shows when the user is sent to the wallet; "success" / "error" render after the wallet replies. Defaults to `['before']`.                |
+| `notifications`        | `'all' \| ('before' \| 'success' \| 'error')[]` | _Optional_. Which lifecycle stages emit a toast notification. `'all'` is shorthand for `['before', 'success', 'error']`. Defaults to `'all'`.                                                                                                                             |
+| `returnStrategy`       | `ReturnStrategy`                                | _Optional_. Where the wallet should send the user after they approve or decline. See [`ReturnStrategy`](#returnstrategy) — `'back'` returns to the originating app, `'none'` does nothing, a custom `protocol://...` opens that URL. Defaults to `'back'`.                |
+| `twaReturnUrl`         | `${string}://${string}`                         | _Optional_. Return target used when the dApp is itself a TWA and the connected wallet is also a TWA. The native back jump does not work across TWAs, so the dApp must pass an explicit link to come back to. Falls back to `returnStrategy` when the wallet is not a TMA. |
+| `skipRedirectToWallet` | `'ios' \| 'always' \| 'never'`                  | _Optional_. _Deprecated_ — The SDK now detects the right behavior automatically for TWA-TWA connections; setting this has no effect.                                                                                                                                      |
+
+### `TonConnectUiOptionsWithManifest`
+
+Construct a fresh [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) connector internally from `manifestUrl`.
+The most common form for browser dApps.
+
+```ts
+interface TonConnectUiOptionsWithManifest {
+    manifestUrl?: string;
+    restoreConnection?: boolean;
+    widgetRootId?: string;
+    eventDispatcher?: EventDispatcher<RequestVersionEvent | ResponseVersionEvent | ConnectionStartedEvent | ConnectionCompletedEvent | ConnectionErrorEvent | ConnectionRestoringStartedEvent | ConnectionRestoringCompletedEvent | ConnectionRestoringErrorEvent | DisconnectionEvent | TransactionSentForSignatureEvent | TransactionSignedEvent | TransactionSigningFailedEvent | DataSentForSignatureEvent | DataSignedEvent | DataSigningFailedEvent | WalletModalOpenedEvent | SelectedWalletEvent>;
+    uiPreferences?: UIPreferences;
+    buttonRootId?: string | null;
+    language?: Locales;
+    walletsListConfiguration?: WalletsListConfiguration;
+    walletsRequiredFeatures?: RequiredFeatures;
+    walletsPreferredFeatures?: RequiredFeatures;
+    actionsConfiguration?: ActionConfiguration;
+    enableAndroidBackHandler?: boolean;
+    analytics?: AnalyticsSettings;
+}
+```
+
+| Field                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `manifestUrl`              | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | _Optional_. HTTPS URL of the dApp's [`tonconnect-manifest.json`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/manifest.md). Required unless a `connector` is supplied instead; omitting both throws a [`TonConnectUIError`](#tonconnectuierror).  |
+| `restoreConnection`        | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Attempt to restore the previous session from storage on mount. Set to `false` for flows that prefer an explicit connect step. Defaults to `true`.                                                                                                     |
+| `widgetRootId`             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | _Optional_. HTML element ID under which the SDK attaches its modal root. When omitted, the SDK creates `div#tc-widget-root` at the end of `<body>` and uses it. Defaults to `tc-widget-root`.                                                                     |
+| `eventDispatcher`          | `EventDispatcher<RequestVersionEvent \| ResponseVersionEvent \| ConnectionStartedEvent \| ConnectionCompletedEvent \| ConnectionErrorEvent \| ConnectionRestoringStartedEvent \| ConnectionRestoringCompletedEvent \| ConnectionRestoringErrorEvent \| DisconnectionEvent \| TransactionSentForSignatureEvent \| TransactionSignedEvent \| TransactionSigningFailedEvent \| DataSentForSignatureEvent \| DataSignedEvent \| DataSigningFailedEvent \| WalletModalOpenedEvent \| SelectedWalletEvent>` | _Optional_. Custom event dispatcher for both SDK- and UI-layer user-action events. Defaults to `window.dispatchEvent` (`BrowserEventDispatcher`).                                                                                                                 |
+| `uiPreferences`            | `UIPreferences`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | _Optional_. Visual configuration — theme, border radius, color overrides.                                                                                                                                                                                         |
+| `buttonRootId`             | `string \| null`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | _Optional_. HTML element ID under which the <kbd>Connect Wallet</kbd> button mounts. With `null` (default), the button is not rendered. Use this when the dApp triggers the modal from a custom control via `tonConnectUI.openModal()`. Defaults to `null`.       |
+| `language`                 | `Locales`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Language for the strings shown inside SDK-rendered UI. Defaults to `'en'`.                                                                                                                                                                            |
+| `walletsListConfiguration` | `WalletsListConfiguration`                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | _Optional_. Wallets-list overrides — include extra wallets, reorder existing ones. See [`WalletsListConfiguration`](#walletslistconfiguration).                                                                                                                   |
+| `walletsRequiredFeatures`  | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                                                                                                                                                                                                                                                                                                                                                                                                                    | _Optional_. Hide wallets that don't advertise the listed features. Non-matching entries are greyed out below the separator on the "All wallets" screen and rejected at connect time with `WalletMissingRequiredFeaturesError`.                                    |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                                                                                                                                                                                                                                                                                                                                                                                                                    | _Optional_. Soft preference filter — non-matching wallets are still clickable but sorted below the separator. Same shape as `walletsRequiredFeatures`; the SDK does NOT enforce the match at connect time, so the dApp must handle missing features itself.       |
+| `actionsConfiguration`     | `ActionConfiguration`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | _Optional_. Modal / notification behavior and the return strategy for action deep links (`sendTransaction`, [`signData`](#signdata), [`signMessage`](#signmessage)). See [`ActionConfiguration`](#actionconfiguration).                                           |
+| `enableAndroidBackHandler` | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Close modals and notifications when the Android system back button is pressed. Disable when the dApp manages browser history manually. Defaults to `true`.                                                                                            |
+| `analytics`                | [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings)                                                                                                                                                                                                                                                                                                                                                                                                                  | _Optional_. Analytics configuration forwarded to the underlying [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) instance. See [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings) from `@tonconnect/sdk`. |
+
+### `TonConnectUiOptionsWithConnector`
+
+Reuse an externally-built [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect). Useful when the dApp drives
+`@tonconnect/sdk` directly and only wants the UI layer on top, or when
+server-side rendering supplies the connector through a custom factory.
+
+```ts
+interface TonConnectUiOptionsWithConnector {
+    connector?: ITonConnect;
+    restoreConnection?: boolean;
+    widgetRootId?: string;
+    eventDispatcher?: EventDispatcher<RequestVersionEvent | ResponseVersionEvent | ConnectionStartedEvent | ConnectionCompletedEvent | ConnectionErrorEvent | ConnectionRestoringStartedEvent | ConnectionRestoringCompletedEvent | ConnectionRestoringErrorEvent | DisconnectionEvent | TransactionSentForSignatureEvent | TransactionSignedEvent | TransactionSigningFailedEvent | DataSentForSignatureEvent | DataSignedEvent | DataSigningFailedEvent | WalletModalOpenedEvent | SelectedWalletEvent>;
+    uiPreferences?: UIPreferences;
+    buttonRootId?: string | null;
+    language?: Locales;
+    walletsListConfiguration?: WalletsListConfiguration;
+    walletsRequiredFeatures?: RequiredFeatures;
+    walletsPreferredFeatures?: RequiredFeatures;
+    actionsConfiguration?: ActionConfiguration;
+    enableAndroidBackHandler?: boolean;
+    analytics?: AnalyticsSettings;
+}
+```
+
+| Field                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `connector`                | [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect)                                                                                                                                                                                                                                                                                                                                                                                                                              | _Optional_. Pre-built [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) instance. The UI does not create its own connector; option fields like `manifestUrl` are ignored.                                                                  |
+| `restoreConnection`        | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Attempt to restore the previous session from storage on mount. Set to `false` for flows that prefer an explicit connect step. Defaults to `true`.                                                                                                     |
+| `widgetRootId`             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | _Optional_. HTML element ID under which the SDK attaches its modal root. When omitted, the SDK creates `div#tc-widget-root` at the end of `<body>` and uses it. Defaults to `tc-widget-root`.                                                                     |
+| `eventDispatcher`          | `EventDispatcher<RequestVersionEvent \| ResponseVersionEvent \| ConnectionStartedEvent \| ConnectionCompletedEvent \| ConnectionErrorEvent \| ConnectionRestoringStartedEvent \| ConnectionRestoringCompletedEvent \| ConnectionRestoringErrorEvent \| DisconnectionEvent \| TransactionSentForSignatureEvent \| TransactionSignedEvent \| TransactionSigningFailedEvent \| DataSentForSignatureEvent \| DataSignedEvent \| DataSigningFailedEvent \| WalletModalOpenedEvent \| SelectedWalletEvent>` | _Optional_. Custom event dispatcher for both SDK- and UI-layer user-action events. Defaults to `window.dispatchEvent` (`BrowserEventDispatcher`).                                                                                                                 |
+| `uiPreferences`            | `UIPreferences`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | _Optional_. Visual configuration — theme, border radius, color overrides.                                                                                                                                                                                         |
+| `buttonRootId`             | `string \| null`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | _Optional_. HTML element ID under which the <kbd>Connect Wallet</kbd> button mounts. With `null` (default), the button is not rendered. Use this when the dApp triggers the modal from a custom control via `tonConnectUI.openModal()`. Defaults to `null`.       |
+| `language`                 | `Locales`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Language for the strings shown inside SDK-rendered UI. Defaults to `'en'`.                                                                                                                                                                            |
+| `walletsListConfiguration` | `WalletsListConfiguration`                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | _Optional_. Wallets-list overrides — include extra wallets, reorder existing ones. See [`WalletsListConfiguration`](#walletslistconfiguration).                                                                                                                   |
+| `walletsRequiredFeatures`  | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                                                                                                                                                                                                                                                                                                                                                                                                                    | _Optional_. Hide wallets that don't advertise the listed features. Non-matching entries are greyed out below the separator on the "All wallets" screen and rejected at connect time with `WalletMissingRequiredFeaturesError`.                                    |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                                                                                                                                                                                                                                                                                                                                                                                                                    | _Optional_. Soft preference filter — non-matching wallets are still clickable but sorted below the separator. Same shape as `walletsRequiredFeatures`; the SDK does NOT enforce the match at connect time, so the dApp must handle missing features itself.       |
+| `actionsConfiguration`     | `ActionConfiguration`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | _Optional_. Modal / notification behavior and the return strategy for action deep links (`sendTransaction`, [`signData`](#signdata), [`signMessage`](#signmessage)). See [`ActionConfiguration`](#actionconfiguration).                                           |
+| `enableAndroidBackHandler` | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Close modals and notifications when the Android system back button is pressed. Disable when the dApp manages browser history manually. Defaults to `true`.                                                                                            |
+| `analytics`                | [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings)                                                                                                                                                                                                                                                                                                                                                                                                                  | _Optional_. Analytics configuration forwarded to the underlying [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) instance. See [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings) from `@tonconnect/sdk`. |
+
+### `TonConnectUiCreateOptionsBase`
+
+Common UI-only fields applied on top of either constructor shape.
+
+```ts
+interface TonConnectUiCreateOptionsBase {
+    restoreConnection?: boolean;
+    widgetRootId?: string;
+    eventDispatcher?: EventDispatcher<RequestVersionEvent | ResponseVersionEvent | ConnectionStartedEvent | ConnectionCompletedEvent | ConnectionErrorEvent | ConnectionRestoringStartedEvent | ConnectionRestoringCompletedEvent | ConnectionRestoringErrorEvent | DisconnectionEvent | TransactionSentForSignatureEvent | TransactionSignedEvent | TransactionSigningFailedEvent | DataSentForSignatureEvent | DataSignedEvent | DataSigningFailedEvent | WalletModalOpenedEvent | SelectedWalletEvent>;
+    uiPreferences?: UIPreferences;
+    buttonRootId?: string | null;
+    language?: Locales;
+    walletsListConfiguration?: WalletsListConfiguration;
+    walletsRequiredFeatures?: RequiredFeatures;
+    walletsPreferredFeatures?: RequiredFeatures;
+    actionsConfiguration?: ActionConfiguration;
+    enableAndroidBackHandler?: boolean;
+    analytics?: AnalyticsSettings;
+}
+```
+
+| Field                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `restoreConnection`        | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Attempt to restore the previous session from storage on mount. Set to `false` for flows that prefer an explicit connect step. Defaults to `true`.                                                                                                     |
+| `widgetRootId`             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | _Optional_. HTML element ID under which the SDK attaches its modal root. When omitted, the SDK creates `div#tc-widget-root` at the end of `<body>` and uses it. Defaults to `'tc-widget-root'`.                                                                   |
+| `eventDispatcher`          | `EventDispatcher<RequestVersionEvent \| ResponseVersionEvent \| ConnectionStartedEvent \| ConnectionCompletedEvent \| ConnectionErrorEvent \| ConnectionRestoringStartedEvent \| ConnectionRestoringCompletedEvent \| ConnectionRestoringErrorEvent \| DisconnectionEvent \| TransactionSentForSignatureEvent \| TransactionSignedEvent \| TransactionSigningFailedEvent \| DataSentForSignatureEvent \| DataSignedEvent \| DataSigningFailedEvent \| WalletModalOpenedEvent \| SelectedWalletEvent>` | _Optional_. Custom event dispatcher for both SDK- and UI-layer user-action events. Defaults to `window.dispatchEvent` (`BrowserEventDispatcher`).                                                                                                                 |
+| `uiPreferences`            | `UIPreferences`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | _Optional_. Visual configuration — theme, border radius, color overrides.                                                                                                                                                                                         |
+| `buttonRootId`             | `string \| null`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | _Optional_. HTML element ID under which the "Connect Wallet" button mounts. With `null` (default) the button is not rendered — use this when the dApp triggers the modal from a custom control via `tonConnectUI.openModal()`. Defaults to `null`.                |
+| `language`                 | `Locales`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Language for the strings shown inside SDK-rendered UI. Defaults to `'en'`.                                                                                                                                                                            |
+| `walletsListConfiguration` | `WalletsListConfiguration`                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | _Optional_. Wallets-list overrides — include extra wallets, reorder existing ones. See [`WalletsListConfiguration`](#walletslistconfiguration).                                                                                                                   |
+| `walletsRequiredFeatures`  | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                                                                                                                                                                                                                                                                                                                                                                                                                    | _Optional_. Hide wallets that don't advertise the listed features. Non-matching entries are greyed out below the separator on the "All wallets" screen and rejected at connect time with `WalletMissingRequiredFeaturesError`.                                    |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                                                                                                                                                                                                                                                                                                                                                                                                                    | _Optional_. Soft preference filter — non-matching wallets are still clickable but sorted below the separator. Same shape as `walletsRequiredFeatures`; the SDK does NOT enforce the match at connect time, so the dApp must handle missing features itself.       |
+| `actionsConfiguration`     | `ActionConfiguration`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | _Optional_. Modal / notification behavior and the return strategy for action deep links (`sendTransaction`, [`signData`](#signdata), [`signMessage`](#signmessage)). See [`ActionConfiguration`](#actionconfiguration).                                           |
+| `enableAndroidBackHandler` | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | _Optional_. Close modals and notifications when the Android system back button is pressed. Disable when the dApp manages browser history manually. Defaults to `true`.                                                                                            |
+| `analytics`                | [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings)                                                                                                                                                                                                                                                                                                                                                                                                                  | _Optional_. Analytics configuration forwarded to the underlying [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) instance. See [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings) from `@tonconnect/sdk`. |
+
+### `TonConnectUiOptions`
+
+Runtime-tunable UI options. Pass on the constructor, or assign through
+`tonConnectUI.uiOptions = { ... }` to update them later — the setter
+merges the patch with the previous value and re-renders.
+
+```ts
+interface TonConnectUiOptions {
+    uiPreferences?: UIPreferences;
+    buttonRootId?: string | null;
+    language?: Locales;
+    walletsListConfiguration?: WalletsListConfiguration;
+    walletsRequiredFeatures?: RequiredFeatures;
+    walletsPreferredFeatures?: RequiredFeatures;
+    actionsConfiguration?: ActionConfiguration;
+    enableAndroidBackHandler?: boolean;
+    analytics?: AnalyticsSettings;
+}
+```
+
+| Field                      | Type                                                                                 | Description                                                                                                                                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uiPreferences`            | `UIPreferences`                                                                      | _Optional_. Visual configuration — theme, border radius, color overrides.                                                                                                                                                                                         |
+| `buttonRootId`             | `string \| null`                                                                     | _Optional_. HTML element ID under which the "Connect Wallet" button mounts. With `null` (default) the button is not rendered — use this when the dApp triggers the modal from a custom control via `tonConnectUI.openModal()`. Defaults to `null`.                |
+| `language`                 | `Locales`                                                                            | _Optional_. Language for the strings shown inside SDK-rendered UI. Defaults to `'en'`.                                                                                                                                                                            |
+| `walletsListConfiguration` | `WalletsListConfiguration`                                                           | _Optional_. Wallets-list overrides — include extra wallets, reorder existing ones. See [`WalletsListConfiguration`](#walletslistconfiguration).                                                                                                                   |
+| `walletsRequiredFeatures`  | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)   | _Optional_. Hide wallets that don't advertise the listed features. Non-matching entries are greyed out below the separator on the "All wallets" screen and rejected at connect time with `WalletMissingRequiredFeaturesError`.                                    |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)   | _Optional_. Soft preference filter — non-matching wallets are still clickable but sorted below the separator. Same shape as `walletsRequiredFeatures`; the SDK does NOT enforce the match at connect time, so the dApp must handle missing features itself.       |
+| `actionsConfiguration`     | `ActionConfiguration`                                                                | _Optional_. Modal / notification behavior and the return strategy for action deep links (`sendTransaction`, [`signData`](#signdata), [`signMessage`](#signmessage)). See [`ActionConfiguration`](#actionconfiguration).                                           |
+| `enableAndroidBackHandler` | `boolean`                                                                            | _Optional_. Close modals and notifications when the Android system back button is pressed. Disable when the dApp manages browser history manually. Defaults to `true`.                                                                                            |
+| `analytics`                | [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings) | _Optional_. Analytics configuration forwarded to the underlying [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) instance. See [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings) from `@tonconnect/sdk`. |
+
+### `UIPreferences`
+
+Visual configuration for SDK-rendered components — theme, border radius,
+custom palette per theme. Pass on `TonConnectUiOptions.uiPreferences`
+(constructor or `uiOptions` setter).
+
+```ts
+interface UIPreferences {
+    theme?: Theme;
+    borderRadius?: BorderRadius;
+    colorsSet?: Partial<Record<THEME, PartialColorsSet>>;
+}
+```
+
+| Field          | Type                                       | Description                                                                                                                                                                                     |
+| -------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `theme`        | `Theme`                                    | _Optional_. Theme used for SDK UI elements. See [`Theme`](#theme) — pass `THEME.LIGHT` / `THEME.DARK` for a fixed theme or `'SYSTEM'` to follow `prefers-color-scheme`. Defaults to `'SYSTEM'`. |
+| `borderRadius` | `BorderRadius`                             | _Optional_. Border radius preset applied to buttons, modal corners and tiles. See [`BorderRadius`](#borderradius). Defaults to `'m'`.                                                           |
+| `colorsSet`    | `Partial<Record<THEME, PartialColorsSet>>` | _Optional_. Per-theme palette overrides. Each entry is a deep-partial of [`ColorsSet`](#colorsset); missing values fall back to the built-in palette.                                           |
+
+### `WalletsModal`
+
+Imperative handle on the connect-wallet modal. Available as
+`tonConnectUI.modal`. Prefer the convenience methods on [`TonConnectUI`](#tonconnectui)
+(`openModal()`, [`closeModal()`](#closemodal), [`onModalStateChange()`](#onmodalstatechange)) — this interface
+is exposed for advanced cases that need direct access to the modal state.
+
+```ts
+interface WalletsModal {
+    open: (options?: { traceId?: string }) => void;
+    close: (reason?: WalletsModalCloseReason) => void;
+    onStateChange: (callback: (state: WalletsModalState) => void) => () => void;
+    state: WalletsModalState;
+}
+```
+
+| Field           | Type                                                           | Description                                                                                             |
+| --------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `open`          | `(options?: { traceId?: string }) => void`                     | Open the modal.                                                                                         |
+| `close`         | `(reason?: WalletsModalCloseReason) => void`                   | Close the modal. The optional `reason` is forwarded to subscribers via `WalletModalClosed.closeReason`. |
+| `onStateChange` | `(callback: (state: WalletsModalState) => void) => () => void` | Subscribe to modal state changes. Returns an unsubscribe function.                                      |
+| `state`         | `WalletsModalState`                                            | Current modal state — snapshot, not reactive.                                                           |
+
+### `Theme`
+
+Theme identifier accepted by `UIPreferences.theme`. Either one of the
+built-in [`THEME`](#theme-1) values, or `'SYSTEM'` to follow the user's OS
+preference via `prefers-color-scheme` (default).
+
+```ts
+type Theme = THEME | 'SYSTEM';
+```
+
+### `BorderRadius`
+
+Border-radius preset applied to SDK UI elements.
+
+- `'m'` — medium rounding (default).
+- `'s'` — small rounding.
+- `'none'` — square corners.
+
+```ts
+type BorderRadius = 'm' | 's' | 'none';
+```
+
+### `ColorsSet`
+
+Full palette for one theme — every named slot. Pass as a per-theme entry
+in `UIPreferences.colorsSet`. The [`PartialColorsSet`](#partialcolorsset) variant is the
+deep-partial form; missing values fall back to the built-in palette.
+
+Color values are any CSS color expression (`#29CC6A`, `rgb(...)`, ...).
+
+```ts
+type ColorsSet = {
+    constant: { black: Color; white: Color };
+    connectButton: { background: Color; foreground: Color };
+    accent: Color;
+    telegramButton: Color;
+    icon: { primary: Color; secondary: Color; tertiary: Color; success: Color; error: Color };
+    background: { primary: Color; secondary: Color; segment: Color; tint: Color; qr: Color };
+    text: { primary: Color; secondary: Color };
+};
+```
+
+### `PartialColorsSet`
+
+Deep-partial of [`ColorsSet`](#colorsset) — every slot is optional.
+
+```ts
+type PartialColorsSet = {
+    constant?: { black?: Color; white?: Color };
+    connectButton?: { background?: Color; foreground?: Color };
+    accent?: Color;
+    telegramButton?: Color;
+    icon?: { primary?: Color; secondary?: Color; tertiary?: Color; success?: Color; error?: Color };
+    background?: { primary?: Color; secondary?: Color; segment?: Color; tint?: Color; qr?: Color };
+    text?: { primary?: Color; secondary?: Color };
+};
+```
+
+### `WalletOpenMethod`
+
+How the dApp ended up connecting to the wallet. Set on
+`WalletInfoRemoteWithOpenMethod.openMethod` for remote wallets.
+
+- `'qrcode'` — user scanned the connect QR code.
+- `'universal-link'` — user tapped a universal link (mobile flow).
+- `'custom-deeplink'` — user tapped a wallet-specific deep link.
+
+```ts
+type WalletOpenMethod = 'qrcode' | 'universal-link' | 'custom-deeplink';
+```
+
+### `WalletInfoWithOpenMethod`
+
+Wallets-list info for the connected wallet — the registry (or custom) entry
+plus, for remote wallets, the [`WalletOpenMethod`](#walletopenmethod) the user picked. It is
+merged with the runtime [`Wallet`](/applications/ton-connect/api-reference/sdk#wallet) from `@tonconnect/sdk` to form
+[`ConnectedWallet`](#connectedwallet), the shape `tonConnectUI.wallet` resolves to.
+
+Used by UI components that want to render wallet branding next to the
+connected account.
+
+```ts
+type WalletInfoWithOpenMethod =
+    | WalletInfoInjectable
+    | WalletInfoRemoteWithOpenMethod
+    | WalletInfoWalletConnect
+    | (WalletInfoInjectable & WalletInfoRemoteWithOpenMethod);
+```
+
+### `WalletInfoRemoteWithOpenMethod`
+
+Remote wallet info enriched with the [`WalletOpenMethod`](#walletopenmethod) the user took.
+
+```ts
+type WalletInfoRemoteWithOpenMethod = WalletInfoRemote & { openMethod?: WalletOpenMethod };
+```
+
+### `WalletInfoWalletConnect`
+
+Pseudo-wallet entry used to surface the WalletConnect bridge inside the
+picker. WalletConnect itself is a multi-wallet transport — the visible
+"wallet" is a placeholder with a fixed `appName`.
+
+```ts
+type WalletInfoWalletConnect = WalletInfoBase & { type: 'wallet-connect' };
+```
+
+### `ConnectedWallet`
+
+[`Wallet`](/applications/ton-connect/api-reference/sdk#wallet) merged with the wallets-list entry. The shape
+`tonConnectUI.wallet` resolves to once a wallet is connected; `null` while
+disconnected.
+
+```ts
+type ConnectedWallet = Wallet & WalletInfoWithOpenMethod;
+```
+
+### `EmbeddedTResponse`
+
+Discriminated envelope returned by `TonConnectUI.sendTransaction` /
+[`signData`](#signdata) / [`signMessage`](#signmessage) when `enableEmbeddedRequest: true` is set on
+the call. Without the flag the methods return the raw method response.
+
+Branch on `hasResponse`:
+
+- `hasResponse: true` — the wallet signed the request. `response` carries
+  the regular method-specific result.
+- `hasResponse: false` — the wallet completed the connect step but did
+  not return a signed result.
+
+### `dispatched` semantics
+
+- `dispatched: false` — the SDK did **not** put the request into the
+  connect URL. The wallet never saw it.
+- `dispatched: true` — the SDK **did** fold the request into the connect
+  URL, but no signed result came back. The wallet may have already
+  prompted the user (and potentially submitted the transaction). **Do
+  not retry silently.** Surface a retry button and, where possible,
+  verify on-chain or in your backend that the action hasn't already
+  landed before re-prompting.
+
+```ts
+type EmbeddedTResponse<TResponse> =
+    | { response: TResponse; hasResponse: true }
+    | { connectResult: { dispatched: boolean }; hasResponse: false };
+```
+
+### `EmbeddedSendTransactionResponse`
+
+```ts
+type EmbeddedSendTransactionResponse = EmbeddedTResponse<SendTransactionResponse>;
+```
+
+### `EmbeddedSignDataResponse`
+
+```ts
+type EmbeddedSignDataResponse = EmbeddedTResponse<SignDataResponse>;
+```
+
+### `EmbeddedSignMessageResponse`
+
+```ts
+type EmbeddedSignMessageResponse = EmbeddedTResponse<SignMessageResponse>;
+```
+
+### `Color`
+
+```ts
+type Color = Property.Color;
+```
+
+### `Loadable`
+
+```ts
+type Loadable<T> = LoadableLoading | LoadableReady<T>;
+```
+
+### `LoadableLoading`
+
+```ts
+type LoadableLoading = { state: 'loading' };
+```
+
+### `LoadableReady`
+
+```ts
+type LoadableReady<T> = { state: 'ready'; value: T };
+```
+
+### `Locales`
+
+Locales supported by SDK-rendered strings. Pass on
+`TonConnectUiOptions.language` to override the system default.
+
+Currently `'en'` (English) and `'ru'` (Russian).
+
+```ts
+type Locales = 'en' | 'ru';
+```
+
+### `ReturnStrategy`
+
+Where the wallet sends the user after they approve or decline a deep-link
+request. Carried as the `ret` query parameter on the wallet's universal /
+deep link.
+
+- `'back'` (default) — return to the originating app (browser, native
+  host, etc.).
+- `'none'` — wallet does not redirect; the user stays in the wallet.
+- `` `${string}://${string}` `` — open the given URL. dApps should not
+  pass their own webpage URL when running as a webpage; use this form for
+  native-app callbacks or TMA `t.me/...` links.
+
+```ts
+type ReturnStrategy = 'back' | 'none' | `${string}://${string}`;
+```
+
+### `TonConnectUiCreateOptions`
+
+Constructor options for `new TonConnectUI(...)`. Either pass a
+`manifestUrl` and let [`TonConnectUI`](#tonconnectui) create the underlying connector for
+you, or hand in an existing [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) instance via `connector`.
+
+Both shapes extend [`TonConnectUiCreateOptionsBase`](#tonconnectuicreateoptionsbase) (and therefore
+[`TonConnectUiOptions`](#tonconnectuioptions)), so the UI-level options — theme, language,
+wallet filters, analytics — are the same regardless of which form you
+pick.
+
+```ts
+type TonConnectUiCreateOptions = TonConnectUiOptionsWithConnector | TonConnectUiOptionsWithManifest;
+```
+
+### `UIWallet`
+
+Shape accepted by `WalletsListConfiguration.includeWallets` to add custom
+wallets to the picker.
+
+Build a [`UIWallet`](#uiwallet) when the wallet your dApp targets is not yet listed in
+the canonical wallets registry.
+
+```ts
+type UIWallet = Omit<WalletInfoInjectable, 'injected' | 'embedded'> | WalletInfoRemote;
+```
+
+### `WalletsListConfiguration`
+
+Overrides for the wallets list shown inside the connect modal — add
+custom wallets, alter ordering, etc.
+
+```ts
+type WalletsListConfiguration = { includeWallets?: UIWallet[] };
+```
+
+### `WalletModalOpened`
+
+Modal is open. When the modal was opened via the
+embedded-request flow, `embeddedRequest` carries the queued
+[`sendTransaction`](#sendtransaction) / [`signData`](#signdata) / [`signMessage`](#signmessage) the SDK will fold into
+the connect URL.
+
+```ts
+type WalletModalOpened = { status: 'opened'; closeReason: null; embeddedRequest?: Consumable<EmbeddedRequest> | null };
+```
+
+### `WalletModalClosed`
+
+Modal is closed. `closeReason` is populated when the close was driven by the user.
+
+```ts
+type WalletModalClosed = { status: 'closed'; closeReason: WalletsModalCloseReason | null };
+```
+
+### `WalletsModalState`
+
+Discriminated union of all modal states, wrapped in [`OptionalTraceable`](/applications/ton-connect/api-reference/sdk#optionaltraceable)
+so consumers can correlate state events with the analytics trace ID.
+
+```ts
+type WalletsModalState = OptionalTraceable<WalletModalOpened | WalletModalClosed | ChooseSupportedFeatureWalletsModal>;
+```
+
+### `WalletsModalCloseReason`
+
+Why the modal closed.
+
+- `'action-cancelled'` — user dismissed without picking a wallet (default
+  for programmatic `close()`).
+- `'wallet-selected'` — user picked a wallet and connect flow took over.
+
+```ts
+type WalletsModalCloseReason = 'action-cancelled' | 'wallet-selected';
+```
+
+### `UserActionEvent`
+
+User action events.
+
+```ts
+type UserActionEvent =
+    | VersionEvent
+    | ConnectionEvent
+    | ConnectionRestoringEvent
+    | DisconnectionEvent
+    | TransactionSigningEvent
+    | DataSigningEvent
+    | WalletModalOpenedEvent
+    | SelectedWalletEvent;
+```
+
+### `THEME`
+
+Two built-in palettes for SDK-rendered UI.
+
+```ts
+enum THEME {
+    DARK = 'DARK',
+    LIGHT = 'LIGHT',
+}
+```
+
+## Errors
+
+Every error from this package extends [`TonConnectUIError`](#tonconnectuierror), which itself extends [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror). Use `err instanceof TonConnectUIError` to catch errors from this package; use `err instanceof TonConnectError` to catch anything raised by the TonConnect stack.
+
+### `TonConnectUIError`
+
+UI-layer precondition failure thrown by [`TonConnectUI`](#tonconnectui) — e.g. calling
+[`sendTransaction()`](#sendtransaction) while no wallet is connected, or when the configured
+`buttonRootId` element is not present in the document.
+
+Extends [`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) so a single `catch (e instanceof TonConnectError)`
+branch covers both SDK-level and UI-level failures:
+
+```ts
+try {
+    await tonConnectUI.signMessage(req);
+} catch (e) {
+    if (e instanceof TonConnectUIError) {
+        // UI precondition (no wallet connected, etc.)
+    }
+}
+```
+
+```ts
+class TonConnectUIError extends TonConnectError {
+    constructor(message?: string, options?: ErrorOptions);
+}
+```
+
+## Related pages
+
+- [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk) — connector core that this UI wraps.
+- [`@tonconnect/ui-react`](/applications/ton-connect/api-reference/ui-react) — React bindings.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types.
+- [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.

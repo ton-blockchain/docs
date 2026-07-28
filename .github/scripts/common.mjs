@@ -11,12 +11,13 @@ export async function hidePriorCommentsWithPrefix({
       owner: context.repo.owner,
       repo: context.repo.repo,
       issue_number: context.issue.number,
-    })
+    }),
   );
   await exec.exec('sleep 0.5s');
   for (const comment of comments.data) {
     const commentData = await withRetry(() =>
-      github.graphql(`
+      github.graphql(
+        `
         query($nodeId: ID!) {
           node(id: $nodeId) {
             ... on IssueComment {
@@ -24,18 +25,20 @@ export async function hidePriorCommentsWithPrefix({
             }
           }
         }
-      `, { nodeId: comment.node_id })
+      `,
+        { nodeId: comment.node_id },
+      ),
     );
     await exec.exec('sleep 0.5s');
     const isHidden = commentData?.node?.isMinimized;
-    if (isHidden) { continue; }
-    if (
-      comment.user.login === user &&
-      comment.body.startsWith(prefix)
-    ) {
+    if (isHidden) {
+      continue;
+    }
+    if (comment.user.login === user && comment.body.startsWith(prefix)) {
       console.log('Comment node_id:', comment.node_id);
       const commentStatus = await withRetry(() =>
-        github.graphql(`
+        github.graphql(
+          `
           mutation($subjectId: ID!, $classifier: ReportedContentClassifiers!) {
             minimizeComment(input: {
               subjectId: $subjectId,
@@ -47,10 +50,12 @@ export async function hidePriorCommentsWithPrefix({
               }
             }
           }
-        `, {
-          subjectId: comment.node_id,
-          classifier: resolved ? 'RESOLVED' : 'OUTDATED',
-        })
+        `,
+          {
+            subjectId: comment.node_id,
+            classifier: resolved ? 'RESOLVED' : 'OUTDATED',
+          },
+        ),
       );
       await exec.exec('sleep 0.5s');
       console.log(commentStatus);
@@ -70,7 +75,7 @@ export async function createComment({
       repo: context.repo.repo,
       issue_number: context.issue.number,
       body: body,
-    })
+    }),
   );
   await exec.exec('sleep 0.2s');
 }

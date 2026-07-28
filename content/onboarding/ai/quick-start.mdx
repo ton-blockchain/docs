@@ -1,0 +1,95 @@
+---
+title: "Quick start with agentic wallets"
+sidebarTitle: "Quick start"
+---
+
+The easiest way to get started with AI on TON is to create an [agentic wallet](/onboarding/ai/wallets) using [`@ton/mcp`](/onboarding/ai/mcp), an MCP server that acts as a safe bridge between AI models and TON blockchain operations. Agentic wallets are self-custody wallet contracts designed for autonomous AI agents on TON.
+
+This guide explains how to do the following:
+
+- Install [skills](https://agentskills.io/specification) for [`@ton/mcp`](/onboarding/ai/mcp)
+- Prompt an AI agent to create an agentic wallet on TON
+- Manage agentic wallets
+
+## Prerequisites
+
+- An autonomous AI agent such as Claude Code or Codex.
+- A funded mainnet TON wallet. It will be the owner of the agentic wallet. For example, use [wallet.ton.org](/onboarding/wallet-apps/web).
+
+## 1. Install skills
+
+To install skills for `@ton/mcp`, run the following command:
+
+```bash
+npx skills add ton-connect/kit/packages/mcp
+```
+
+There are two options available:
+
+- Run the command anywhere and select the **Global** scope during installation.
+- Run it in the agent's folder and select **Project**.
+
+<Callout>
+  Alternatively, you can [configure the MCP client manually](/onboarding/ai/mcp#configure-the-client-manually). Use this approach when the agent does not support skills or when finer control over server configuration is needed.
+</Callout>
+
+## 2. Create an agentic wallet
+
+To create the first agentic wallet, follow this flow:
+
+1. Ask the agent to `create an agentic wallet`.
+1. The agent will generate private keys and suggest opening the [web dashboard](https://agents.ton.org/).
+1. On the dashboard, connect your TON wallet by clicking <kbd>Connect</kbd>.
+1. In the <kbd>Initial Gram deposit</kbd> field, enter the amount of Gram to deposit from the main wallet.
+1. Deploy the agentic wallet by clicking <kbd>Deploy + First Fund</kbd>.
+1. Once the deployment is complete, copy the wallet's address from the dashboard.
+1. Provide the address to your AI agent and ask it to `import the wallet`.
+
+After importing the wallet, the agent will be able to sign transactions using its operator key.
+
+Note that you can create multiple agentic wallets and [manage them](#5-manage-wallets) from the dashboard.
+
+## 3. Fund the wallet
+
+There are three ways to fund an agentic wallet:
+
+- During creation: use the <kbd>Initial Gram deposit</kbd> field on the deployment page.
+- From the [web dashboard](https://agents.ton.org/): click <kbd>Fund</kbd> to transfer Gram, jettons, or NFTs.
+- Directly: use a wallet app like [wallet.ton.org](/onboarding/wallet-apps/web) to transfer assets to the agentic wallet address.
+
+To check the balance, ask the agent: `What is my agent balance?`
+
+## 4. Use the wallet with AI
+
+Once setup is complete, you can ask the AI agent to manage assets and wallets:
+
+- Get wallet balances
+- Send Gram and jettons
+- Swap assets, manage NFTs, buy and sell Backed's xStocks
+- Create and import more agentic wallets
+- List wallets and switch between them
+- Rotate operator keys
+
+For example, use prompts like this:
+
+- `Send 1 Gram to UQB.._WALLET_ADDRESS` — Sign and send a transfer from the agentic wallet.
+- `Swap 5 Gram for USDT` — Get a quote and execute a swap.
+- `Resolve the contract address of this DNS domain: DOMAIN_NAME.ton` — Obtain the wallet address of the domain owner.
+- `Show my NFTs` — Query all NFTs owned by the wallet.
+- `Check my balance` — Get current Gram and jetton balances. Do not use this data for any calculations, as it becomes outdated quickly.
+- `Get my last transactions` — List the most recent events initiated by the wallet.
+- `Import agentic wallet` — Reinstate a wallet previously managed by another agent.
+
+## 5. Manage wallets
+
+You can see all agentic wallets and manage them from the [web dashboard](https://agents.ton.org/):
+
+- Monitor transactions
+- Fund and withdraw funds
+- Grant and revoke access
+- Rotate operator keys without redeploying the wallets
+
+## Next steps
+
+- Learn more about the [`@ton/mcp`](/onboarding/ai/mcp) server and ways to use it.
+- Learn more about [Agentic wallets](/onboarding/ai/wallets).

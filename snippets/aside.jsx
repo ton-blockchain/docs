@@ -10,13 +10,13 @@
  *   children: any
  * }} props
  */
-export const Aside = ({ type = "note", title = "", icon = "", iconType = "regular", children }) => {
-  const asideVariants = ["note", "tip", "caution", "danger"];
+export const Aside = ({ type = 'note', title = '', icon = '', iconType = 'regular', children }) => {
+  const asideVariants = ['note', 'tip', 'caution', 'danger'];
   const asideComponents = {
     note: {
-      outerStyle: "border-sky-500/20 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/10",
-      innerStyle: "text-sky-900 dark:text-sky-200",
-      calloutType: "note",
+      outerStyle: 'border-sky-500/20 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/10',
+      innerStyle: 'text-sky-900 dark:text-sky-200',
+      calloutType: 'note',
       icon: (
         <svg
           width="14"
@@ -36,9 +36,10 @@ export const Aside = ({ type = "note", title = "", icon = "", iconType = "regula
       ),
     },
     tip: {
-      outerStyle: "border-emerald-500/20 bg-emerald-50/50 dark:border-emerald-500/30 dark:bg-emerald-500/10",
-      innerStyle: "text-emerald-900 dark:text-emerald-200",
-      calloutType: "tip",
+      outerStyle:
+        'border-emerald-500/20 bg-emerald-50/50 dark:border-emerald-500/30 dark:bg-emerald-500/10',
+      innerStyle: 'text-emerald-900 dark:text-emerald-200',
+      calloutType: 'tip',
       icon: (
         <svg
           width="11"
@@ -54,9 +55,10 @@ export const Aside = ({ type = "note", title = "", icon = "", iconType = "regula
       ),
     },
     caution: {
-      outerStyle: "border-amber-500/20 bg-amber-50/50 dark:border-amber-500/30 dark:bg-amber-500/10",
-      innerStyle: "text-amber-900 dark:text-amber-200",
-      calloutType: "warning",
+      outerStyle:
+        'border-amber-500/20 bg-amber-50/50 dark:border-amber-500/30 dark:bg-amber-500/10',
+      innerStyle: 'text-amber-900 dark:text-amber-200',
+      calloutType: 'warning',
       icon: (
         <svg
           className="flex-none w-5 h-5 text-amber-400 dark:text-amber-300/80"
@@ -75,9 +77,9 @@ export const Aside = ({ type = "note", title = "", icon = "", iconType = "regula
       ),
     },
     danger: {
-      outerStyle: "border-red-500/20 bg-red-50/50 dark:border-red-500/30 dark:bg-red-500/10",
-      innerStyle: "text-red-900 dark:text-red-200",
-      calloutType: "danger",
+      outerStyle: 'border-red-500/20 bg-red-50/50 dark:border-red-500/30 dark:bg-red-500/10',
+      innerStyle: 'text-red-900 dark:text-red-200',
+      calloutType: 'danger',
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -95,11 +97,11 @@ export const Aside = ({ type = "note", title = "", icon = "", iconType = "regula
   let gotInvalidVariant = false;
   if (!asideVariants.includes(type)) {
     gotInvalidVariant = true;
-    variant = "danger";
+    variant = 'danger';
   }
-  const iconVariants = ["regular", "solid", "light", "thin", "sharp-solid", "duotone", "brands"];
+  const iconVariants = ['regular', 'solid', 'light', 'thin', 'sharp-solid', 'duotone', 'brands'];
   if (!iconVariants.includes(iconType)) {
-    iconType = "regular";
+    iconType = 'regular';
   }
 
   return (
@@ -110,7 +112,11 @@ export const Aside = ({ type = "note", title = "", icon = "", iconType = "regula
       >
         <div className="mt-0.5 w-4" data-component-part="callout-icon">
           {/* @ts-ignore */}
-          {icon === "" ? asideComponents[variant].icon : <Icon icon={icon} iconType={iconType} size={14} />}
+          {icon === '' ? (
+            asideComponents[variant].icon
+          ) : (
+            <Icon icon={icon} iconType={iconType} size={14} />
+          )}
         </div>
         <div
           className={`text-sm prose min-w-0 w-full ${asideComponents[variant].innerStyle}`}
@@ -126,7 +132,7 @@ export const Aside = ({ type = "note", title = "", icon = "", iconType = "regula
               {type}
               <br />
               <span className="font-bold">Expected one of: </span>
-              {asideVariants.join(", ")}
+              {asideVariants.join(', ')}
             </p>
           ) : (
             <>

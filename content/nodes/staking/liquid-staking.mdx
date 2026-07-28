@@ -1,0 +1,41 @@
+---
+title: "Liquid staking contracts"
+sidebarTitle: "Liquid staking"
+---
+
+The [liquid staking contract](https://github.com/ton-blockchain/liquid-staking-contract) enables staking services to issue liquid staking tokens (LSTs) representing an underlying staking position. LSTs can be used in DeFi while the underlying GRAM earns rewards.
+
+All validators participating in these protocols use MyTonCtrl for validation. For validator setup instructions, see:
+
+- [Liquid staking setup](/nodes/cpp/mytonctrl/liquid-staking)
+- [Nominator pool setup](/nodes/cpp/mytonctrl/pools#nominator-pool-operations-nominator-pool-mode)
+- [Single nominator pool setup](/nodes/cpp/mytonctrl/pools#single-nominator-pool-operations-single-nominator-mode)
+
+## Combining staking with DeFi
+
+Staking can be combined with various DeFi strategies to maximize returns and unlock additional value from staked assets.
+
+### Liquid staking strategies
+
+1. Re-staking liquid tokens
+
+   After staking GRAM and receiving liquid tokens such as tsTON, stake these tokens again to earn additional yields. This creates a compounding effect where staking rewards are earned on both the original stake and the liquid token rewards.
+1. DeFi integration
+
+   Use liquid staking tokens in lending protocols, DEX liquidity pools, and other DeFi applications to earn multiple yield streams simultaneously.
+
+### Vesting contracts with staking
+
+Locked token purchases:
+
+Tokens acquired through vesting contracts remain locked but can be staked to participate in validation and earn rewards during the lock period.
+This approach allows holders to generate rewards from locked assets throughout the vesting period.
+
+Vesting contracts support multiple [staking options](/contracts/standard/vesting#staking-options).
+
+## See also
+
+- [MyTonCtrl validator guide](/nodes/cpp/mytonctrl/validator)
+- [MyTonCtrl nominator pools](/nodes/cpp/mytonctrl/pools)
+- [Vesting contracts](/contracts/standard/vesting)
+- [Catchain consensus](https://docs.ton.org/catchain.pdf)

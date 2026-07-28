@@ -1,0 +1,211 @@
+---
+title: "Get started with WalletKit on the Web platform"
+sidebarTitle: "Get started"
+---
+
+This guide explains how to get started with WalletKit on the Web platform:
+
+- Install WalletKit
+- Initialize it
+- Configure basic parameters
+
+You can find a full example code in the [Example code section](#example-code).
+
+Alternatively, explore the complete demo wallet with WalletKit integration:
+
+<Columns cols={2}>
+  <Card
+    title="Demo wallet, deployed"
+    icon="link"
+    arrow="true"
+    horizontal="true"
+    href="https://walletkit-demo-wallet.vercel.app"
+  />
+
+  <Card
+    title="Demo wallet, GitHub"
+    icon="github"
+    arrow="true"
+    horizontal="true"
+    href="https://github.com/ton-connect/kit/tree/main/apps/demo-wallet"
+  />
+</Columns>
+
+## Prerequisites
+
+For reading blockchain data, WalletKit uses API providers. If you need to access higher RPS limits, obtain API keys from your preferred provider.
+
+For example, you can use the official provider, TON Center: [Get your TON Center API key](https://docs.ton.org/applications/api/toncenter/get-api-key).
+
+It's recommended to get API keys for both TON networks: **mainnet** and **testnet**.
+
+## 1. Install WalletKit
+
+Install WalletKit in your web project:
+
+```shell
+npm i @ton/walletkit
+```
+
+## 2. Initialize the kit
+
+To initialize WalletKit with the minimum required setup, take these steps:
+
+1. Import the main class `TonWalletKit` and the `Network` object for the mandatory network configuration:
+
+   ```ts title="TypeScript"
+   import {
+     TonWalletKit,
+     Network
+   } from '@ton/walletkit';
+   ```
+
+1. Initialize the kit by creating an instance of the `TonWalletKit` object and passing it the `networks` parameter: a list of networks to operate on. For each network, specify the preferred API provider and its key obtained in [Prerequisites](#prerequisites):
+
+   ```ts title="TypeScript"
+   const kit = new TonWalletKit({
+     networks: {
+       [Network.mainnet().chainId]: {
+         apiClient: {
+           url: 'https://toncenter.com',
+           key: '<MAINNET_API_KEY>',
+         },
+       },
+       [Network.testnet().chainId]: {
+         apiClient: {
+           url: 'https://testnet.toncenter.com',
+           key: '<TESTNET_API_KEY>',
+         },
+       },
+     },
+   });
+   ```
+
+   <Callout type="note">
+     API providers allow WalletKit to read blockchain data — for example, to fetch account balances and query jettons and NFTs. API keys allow you to access higher RPS limits.
+   </Callout>
+
+   <Callout type="note">
+     The mainnet is a production network: contracts and funds are real. Use the testnet for experiments, beta tests, and feature previews
+   </Callout>
+
+1. Wait for the initialization to complete:
+
+   ```ts title="TypeScript"
+   await kit.waitForReady();
+   ```
+
+## 3. Add parameters
+
+In the previous step, you initialized WalletKit with the only required parameter: network configuration. There are also optional parameters you can pass on initialization — for a full list, see [Configure parameters](/applications/walletkit/web/configure).
+
+It's useful to add some of the optional settings right away. Add them to the same TonWalletKit call from [Step 2](#2-initialize-the-kit):
+
+- `deviceInfo`: Core information and constraints of the wallet. Specify the wallet version:
+
+  ```ts title="TypeScript"
+  import {
+    createDeviceInfo
+  } from '@ton/walletkit';
+
+  const kit = new TonWalletKit({
+    // ...other parameters...
+    deviceInfo: createDeviceInfo({
+      appVersion: '0.0.1',
+    }),
+  });
+  ```
+
+  <Callout type="note">
+    For other settings, WalletKit will use default values. This includes supported wallet features, the maximum supported TON Connect protocol version, the human-readable name of your wallet, and the current platform ('browser').
+  </Callout>
+
+- `walletManifest`: The TON Connect's wallet manifest. To add it, call `createWalletManifest()`. This function provides initial defaults, but you may want to specify some custom values, such as the human-readable name of your wallet or its icon image URL. Learn more: [Manifest](/applications/ton-connect/core-concepts#manifest).
+
+  ```ts title="TypeScript"
+  import {
+    createWalletManifest,
+  } from '@ton/walletkit';
+
+  const kit = new TonWalletKit({
+    // ...other parameters...
+    walletManifest: createWalletManifest(),
+  });
+  ```
+
+- `bridge`: TON Connect's bridge settings. This is the main bridge for communication with dApps, capable of handling significant load. To self-host, see [TON Connect bridge on GitHub](https://github.com/ton-connect/bridge).
+
+  ```ts title="TypeScript" 
+  const kit = new TonWalletKit({
+    // ...other parameters...
+    bridge: {
+      bridgeUrl: 'https://connect.ton.org/bridge',
+    },
+  });
+  ```
+
+## Example code
+
+Here is the full example code for initializing WalletKit with the minimum functional setup:
+
+```ts title="TypeScript"
+import {
+  TonWalletKit,
+  Network, 
+  createDeviceInfo,
+  createWalletManifest,
+} from '@ton/walletkit';
+
+const kit = new TonWalletKit({
+  networks: {
+    [Network.mainnet().chainId]: {
+      apiClient: {
+        url: 'https://toncenter.com',
+        key: '<MAINNET_API_KEY>',
+      },
+    },
+    [Network.testnet().chainId]: {
+      apiClient: {
+        url: 'https://testnet.toncenter.com',
+        key: '<TESTNET_API_KEY>',
+      },
+    },
+  },
+
+  deviceInfo: createDeviceInfo({
+    appVersion: '0.0.1',
+  }),
+
+  walletManifest: createWalletManifest(),
+
+  bridge: {
+    bridgeUrl: 'https://connect.ton.org/bridge',
+  },
+});
+
+await kit.waitForReady();
+```
+
+<Callout
+  type="caution"
+  title="Web only!"
+>
+  The given example must be invoked in **browser environments only**. To run it locally with Node.js or other JS runtimes, set `storage.allowMemory` to `true`. It enables a built-in storage adapter for non-browser environments that do not have `localStorage` available.
+
+  ```ts
+  const kit = new TonWalletKit({
+    // ...prior fields...
+    storage: { allowMemory: true },
+    // ...later fields...
+  });
+  ```
+
+  Remember to disable this adapter in web environments or provide a dedicated [storage adapter](/applications/walletkit/web/configure#storage) wrapper to switch between environments.
+</Callout>
+
+## Next steps
+
+After initializing WalletKit, you can do the following:
+
+- [Configure more parameters](/applications/walletkit/web/configure): This guide covers all available parameters.
+- [Initialize a wallet](/applications/walletkit/web/init-wallet): This step is required for working with transactions.

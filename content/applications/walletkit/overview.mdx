@@ -1,0 +1,83 @@
+---
+title: "WalletKit overview"
+sidebarTitle: "Overview"
+---
+
+## Section overview
+
+| Goal                                                     | Read                                                    |
+| -------------------------------------------------------- | ------------------------------------------------------- |
+| Use WalletKit to integrate a wallet on the Web           | [Web](/applications/walletkit/web/init)                 |
+| Use WalletKit to integrate a wallet on iOS               | [iOS](/applications/walletkit/ios/installation)         |
+| Use WalletKit to integrate a wallet on Android           | [Android](/applications/walletkit/android/installation) |
+| Dive into the QA flow and manual TON Connect integration | [Deep dive](/applications/walletkit/deep/overview)      |
+
+## What WalletKit is
+
+**WalletKit** is an open-source SDK for custodial and non-custodial wallet services that need to integrate with the TON ecosystem. Supported platforms include **Web**, **mobile (Android and iOS)**, and **browser extensions**.
+
+With WalletKit, custodial and non-custodial wallet providers gain full control over key management, signing, and access. It's designed for both small wallet services and large cross-chain systems.
+
+## Features
+
+WalletKit provides the following features:
+
+- **TON Connect**: Built-in support for [TON Connect](/applications/ton-connect/overview) — a standard TON wallet connection protocol
+- **Wallet management**: Support for multiple TON wallets at once, with persistent storage and optional use of custom signers
+- **Asset support**: Gram, [jettons](/contracts/standard/tokens/jettons/overview) (including USDT), [NFTs](/contracts/standard/tokens/nft/overview) with metadata
+- **Action previews**: Transaction emulation with money flow analysis
+- **Advanced flows**: Gasless and one-click interactions through TON Connect features such as Sign Message and Embedded Requests
+
+<Callout type="note">
+  WalletKit is the wallet-side counterpart to [AppKit](/applications/appkit/overview) — an SDK for integrating TON into dApps.
+</Callout>
+
+## Packages
+
+| Package                             | Use                                                           |
+| ----------------------------------- | ------------------------------------------------------------- |
+| `@ton/walletkit`                    | Core wallet primitives: key management, accounts, TON Connect |
+| `@ton/walletkit/bridge `            | JS Bridge injector for in-app browsers                        |
+| `@ton/walletkit/swap/omniston`      | Swap integration                                              |
+| `@ton/walletkit/swap/dedust`        | Swap integration                                              |
+| `@ton/walletkit/staking/tonstakers` | Staking integration                                           |
+
+## Examples
+
+Explore the complete demo wallets on GitHub:
+
+- [Web (JS) demo](https://github.com/ton-connect/kit/tree/main/apps/demo-wallet) + [live deployment](https://walletkit-demo-wallet.vercel.app)
+- [iOS demo](https://github.com/ton-org/kit-ios/tree/main/Demo/TONWalletApp)
+- [Android demo](https://github.com/ton-org/kit-android/tree/main/AndroidDemo)
+
+## Get started
+
+You can integrate your custodial wallet with TON or partially build a basic wallet from scratch.
+
+To get started, select your framework and follow usage recipes in the respective sections:
+
+<Columns cols={3}>
+  <Card
+    title="Web"
+    href="/applications/walletkit/web/init"
+  />
+
+  <Card
+    title="Android"
+    href="/applications/walletkit/android/installation"
+  />
+
+  <Card
+    title="iOS"
+    href="/applications/walletkit/ios/installation"
+  />
+</Columns>
+
+## See also
+
+To implement custom wallet logic, you may need to explore in-depth topics:
+
+- [Deep dive: QA and manual integration](/applications/walletkit/deep/overview)
+- [TON Connect](/applications/ton-connect/overview)
+- [Standard contracts](/contracts/standard/overview)
+- [Messages & transactions](/foundations/messages/overview) and other primitives

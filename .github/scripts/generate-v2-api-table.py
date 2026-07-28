@@ -6,10 +6,10 @@ from collections import defaultdict
 # Define which specs to process and where to inject tables
 SPECS = [
     {
-        "spec_path": "ecosystem/api/toncenter/v2.json",
-        "mdx_path": "ecosystem/api/toncenter/v2/overview.mdx",
+        "spec_path": "content/api/v2.json",
+        "mdx_path": "content/api/v2/overview.mdx",
         "marker": "API_V2_ENDPOINTS",
-        "link_base": "/ecosystem/api/toncenter/v2",
+        "link_base": "/api/v2",
         # 'exclude_tags': ['rpc'],
         # 'include_jsonrpc': False,
     },
@@ -144,13 +144,15 @@ def add_jsonrpc_endpoints(spec: dict, endpoints: list) -> None:
     for rpc_path in ["/api/v2/jsonRPC", "/api/v3/jsonRPC"]:
         if rpc_path in paths:
             jsonrpc = paths[rpc_path].get("post", {})
-            endpoints.append({
-                "path": rpc_path,
-                "method": "POST",
-                "tag": "JSON-RPC",
-                "summary": jsonrpc.get("summary", "JSON-RPC endpoint"),
-                "operationId": jsonrpc.get("operationId", "jsonRPC_post"),
-            })
+            endpoints.append(
+                {
+                    "path": rpc_path,
+                    "method": "POST",
+                    "tag": "JSON-RPC",
+                    "summary": jsonrpc.get("summary", "JSON-RPC endpoint"),
+                    "operationId": jsonrpc.get("operationId", "jsonRPC_post"),
+                }
+            )
 
 
 def process_spec(config: dict, repo_root: Path) -> str:

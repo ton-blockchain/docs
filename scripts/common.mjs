@@ -1,6 +1,7 @@
 // Node.js
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 // Remark
 import { remark } from 'remark';
@@ -24,6 +25,16 @@ import { visitParents } from 'unist-util-visit-parents';
  * Custom
  * @typedef {{ok: true} | {ok: false; error: string}} CheckResult
  */
+
+// WARN: Must match Next.js build output folder
+export const outDir = 'out';
+
+// WARN: Must match gitConfig.repo in src/lib/shared.ts
+export const prefix = '/docs';
+
+// WARN: Must match next.config.static.ts isGitHubPagesBuild
+export const isGitHubPagesBuild =
+  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 
 /** @param src {string} */
 export function ansiRed(src) {
@@ -116,7 +127,49 @@ export function composeSuccess(msg) {
 
 /** @param src {string} */
 export function prefixWithSlash(src) {
-  return '/' + src.replace(/^\/+/, '');
+  return '/content/' + src.replace(/^\/*(?:content\/+)?/, '');
+}
+
+/**
+ * Synchronously runs a single command (no pipes!) and returns its exit code.
+ * NOTE: Consider making it into a template literal handler.
+ *
+ * @param command {string}
+ * @param [opts] {Options}
+ *
+ * @typedef Options
+ * @property [timeout] {number} seconds, defaults to 60 * 10, i.e., 10 minutes
+ * @property [quiet] {boolean} only log errors, defaults to true
+ * @property [silent] {boolean} log nothing, defaults to false
+ *
+ * @returns {{
+ *   ok: true,
+ *   code: number,
+ *   out: string,
+ *   lines: (string | null)[]
+ * } | {
+ *   ok: false,
+ *   code: number | null,
+ *   error: string | Error
+ * }}
+ */
+export function $(command, opts = { timeout: 60 * 10, quiet: true, silent: false }) {
+  const spaced = command.split(' ');
+  const result = spawnSync(spaced[0], spaced.slice(1), {
+    encoding: 'utf8',
+    timeout: 1_000 * (opts.timeout ?? 60 * 10),
+  });
+  if (result.status != 0) {
+    const errMsg = result.error ?? result.stdout + '\n' + result.stderr;
+    if (!opts.silent) console.log(errMsg);
+    return {
+      ok: false,
+      code: result.status,
+      error: errMsg,
+    };
+  }
+  if (!opts.quiet && !opts.silent) console.log(result.stdout);
+  return { ok: true, code: result.status, out: result.stdout, lines: result.output };
 }
 
 /**
@@ -155,11 +208,13 @@ export function hasStub(parser, filepath) {
  * Recursively finds files with a target extension `ext` starting from a given directory `dir`.
  * Ignores common and extension-specific irrelevant files — see the code for details.
  *
+ * TODO: actually check meta.json files for coverage of real paths.
+ *
  * @param [ext='mdx'] {string} extension of the file without a leading dot; defaults to mdx
  * @param [dir='.'] {string} directory to start with, defaults to `.` (present directory, assuming the root of the repo)
  * @returns {string[]} file paths relative to `dir` or an empty array if there is none, `dir` does not exist or `ext` is empty
  */
-export function findUnignoredFiles(ext = 'mdx', dir = '.') {
+export function findUnignoredFiles(ext = 'mdx', dir = './content') {
   if (ext === '' || !existsSync(dir) || !statSync(dir).isDirectory()) {
     return [];
   }
@@ -170,9 +225,16 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
    */
   const commonIgnoreMap = Object.freeze({
     files: ['LICENSE-code', 'LICENSE-docs', 'package-lock.json'].map((it) => join(dir, it)),
-    dirs: ['.git', '.github', '.idea', '.vscode', '__MACOSX', 'node_modules', '__pycache__', 'stats'].map((it) =>
-      join(dir, it),
-    ),
+    dirs: [
+      '.git',
+      '.github',
+      '.idea',
+      '.vscode',
+      '__MACOSX',
+      'node_modules',
+      '__pycache__',
+      'stats',
+    ].map((it) => join(dir, it)),
   });
 
   /**
@@ -184,14 +246,20 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
       files: ['index.mdx', 'contribute/style-guide-extended.mdx'].map((it) => join(dir, it)),
       dirs: [
         // Snippets and page parts
-        'snippets',
-        'scripts',
-        'resources',
-        // Pages covered in OpenAPI specs rather than in docs.json
-        'ecosystem/api/toncenter/v2',
-        'ecosystem/api/toncenter/v3',
-        'ecosystem/api/toncenter/smc-index',
-      ].map((it) => join(dir, it)),
+        ...['snippets', 'scripts', 'public'].map((it) => join(dir, it)),
+        // Pages covered in OpenAPI specs rather than in meta.json files
+        ...['api/v2', 'api/v3']
+          .map((it) => join(dir, it))
+          .flatMap((dirWithOverview) =>
+            existsSync(dirWithOverview)
+              ? readdirSync(dirWithOverview, { withFileTypes: true })
+                  .filter((it) => it.isDirectory())
+                  .map((it) => join(dirWithOverview, it.name))
+              : [],
+          ),
+        // Does not have an overview:
+        join(dir, 'api/smc-index'),
+      ],
     },
   });
 
@@ -201,19 +269,21 @@ export function findUnignoredFiles(ext = 'mdx', dir = '.') {
   /** @param subDir {string} */
   const recurse = (subDir) => {
     // Collects files and dirs one level deep, excluding common ignore targets
-    const intermediates = readdirSync(subDir, { withFileTypes: true, encoding: 'utf8', recursive: false }).filter(
-      (it) => {
-        const relPath = join(it.parentPath, it.name);
-        if (it.isFile()) {
-          return commonIgnoreMap.files.includes(relPath) === false;
-        }
-        if (it.isDirectory()) {
-          return commonIgnoreMap.dirs.includes(relPath) === false;
-        }
-        // Otherwise
-        return false;
-      },
-    );
+    const intermediates = readdirSync(subDir, {
+      withFileTypes: true,
+      encoding: 'utf8',
+      recursive: false,
+    }).filter((it) => {
+      const relPath = join(it.parentPath, it.name);
+      if (it.isFile()) {
+        return commonIgnoreMap.files.includes(relPath) === false;
+      }
+      if (it.isDirectory()) {
+        return commonIgnoreMap.dirs.includes(relPath) === false;
+      }
+      // Otherwise
+      return false;
+    });
     // Processes collected items and filters out extension-specific ignore targets,
     // recursively descending in directories and pushing files into `results` array
     // if they match the target `ext` and are not ignored.
@@ -253,14 +323,25 @@ export function getConfig() {
 }
 
 /**
- * Get navigation links from the docs.json configuration.
- * Notice that each link is prefixed by a single slash /
- * regardless if it was present originally.
+ * Write docs.json-representing object into docs.json file.
  *
+ * @param {Readonly<DocsConfig>} config
+ */
+export function writeConfig(config) {
+  const docsJsonUrl = new URL('../docs.json', import.meta.url);
+  writeFileSync(docsJsonUrl, JSON.stringify(config, null, 2) + '\n', 'utf8');
+}
+
+/**
+ * Get navigation links from the docs.json configuration.
+ * Notice that each link is prefixed by 'content' and a single slash /,
+ * regardless if the latter was present originally.
+ *
+ * @deprecated use `getNavLinks()` instead.
  * @param config {DocsConfig}
  * @returns {string[]}
  */
-export function getNavLinks(config) {
+export function getNavLinksFromFile(config) {
   /** @type {string[]} */
   const links = [];
   /** @param page {any} */
@@ -286,15 +367,25 @@ export function getNavLinks(config) {
 }
 
 /**
- * Get navigation links from the docs.json configuration as a Set.
- * Notice that each link is prefixed by a single slash /
- * regardless if it was present originally.
+ * Get navigation links from the `content/` directory
+ * Notice that each link is prefixed by a single slash /,
+ * whether it was present originally or not.
  *
- * @param config {DocsConfig}
+ * @returns {string[]}
+ */
+export function getNavLinks() {
+  return findUnignoredFiles('mdx').map((it) => prefixWithSlash(it.replace(/\.mdx$/i, '')));
+}
+
+/**
+ * Get navigation links from the meta.json files and content/ folder as a Set.
+ * Notice that each link is prefixed by 'content' and a single slash /,
+ * regardless if the latter was present originally.
+ *
  * @returns {ReadonlySet<string>}
  */
-export function getNavLinksSet(config) {
-  return Object.freeze(new Set(getNavLinks(config)));
+export function getNavLinksSet() {
+  return Object.freeze(new Set(getNavLinks()));
 }
 
 /**

@@ -1,0 +1,314 @@
+---
+title: "ADNL over TCP: liteserver communication"
+sidebarTitle: "ADNL TCP"
+---
+
+ADNL over TCP is used for communication with liteservers. A fixed-size handshake initializes a stateful encrypted stream; subsequent frames contain keepalive frames, authentication messages, or `adnl.message.query` and `adnl.message.answer` objects.
+
+## Required connection data
+
+A client obtains the liteserver IP address, TCP port, and Ed25519 public key from a trusted configuration such as the [`liteservers` section of the global configuration](https://ton-blockchain.github.io/global.config.json). The `ip` field stores an unsigned 32-bit IPv4 value, and `id.key` stores the base64-encoded public key.
+
+The server's 256-bit ADNL short ID is the SHA-256 hash of the boxed [TL](https://core.telegram.org/mtproto/TL) serialization of its public key.
+
+## TCP frame structure
+
+After the handshake, each encrypted frame has this plaintext structure:
+
+| Field      |              Size | Description                                  |
+| ---------- | ----------------: | -------------------------------------------- |
+| `size`     |      4 bytes (LE) | Total frame size, excluding this field       |
+| `nonce`    |          32 bytes | Random prefix bytes against checksum attacks |
+| `payload`  | `size - 64` bytes | TL object data or empty keepalive            |
+| `checksum` |          32 bytes | SHA-256 of `nonce \|\| payload`              |
+
+The `size` field and frame body are encrypted with the connection's continuing AES-CTR state, where the `size` is between 64 and 16,777,216 bytes, inclusive. A frame with `size = 64` has an empty payload that acts as a transport [keepalive message](https://en.wikipedia.org/wiki/Keepalive).
+
+The receiver decrypts the frame, independently computes SHA-256 over `nonce || payload`, and closes the connection on a mismatch.
+
+## Transport handshake
+
+The client generates 160 cryptographically random bytes called `aes_params`, used for both send (client → server) and receive (server → client) directions. Each direction uses a 32-byte key and a 16-byte nonce.
+
+The `aes_params` is serialized as follows:
+
+| Field      |     Size | Client use                    | Server use                    |
+| ---------- | -------: | ----------------------------- | ----------------------------- |
+| `rx_key`   | 32 bytes | Receive key                   | Send key                      |
+| `tx_key`   | 32 bytes | Send key                      | Receive key                   |
+| `rx_nonce` | 16 bytes | Receive initialization vector | Send initialization vector    |
+| `tx_nonce` | 16 bytes | Send initialization vector    | Receive initialization vector |
+| `padding`  | 64 bytes | Random padding                | Random padding                |
+
+All 160 bytes must be unpredictable because they are used to establish the connection's cipher state.
+
+The client encrypts `aes_params` to the server identity with TON's Ed25519 envelope encryption. The encryptor generates a fresh ephemeral Ed25519 key pair, derives an X25519 shared secret from the ephemeral private key and server public key, and encrypts `aes_params` with AES-256-CTR.
+
+The 256-byte unencrypted handshake envelope has this layout:
+
+| Field                        |      Size | Description                             |
+| ---------------------------- | --------: | --------------------------------------- |
+| Server ADNL short ID         |  32 bytes | Selects the server identity private key |
+| Ephemeral Ed25519 public key |  32 bytes | Generated for this handshake            |
+| `SHA-256(aes_params)`        |  32 bytes | Verifies the decrypted parameters       |
+| Encrypted `aes_params`       | 160 bytes | AES-CTR ciphertext                      |
+
+The server selects the destination identity from the first field, decrypts the remaining 224 bytes, verifies the hash, and initializes its directional ciphers. It then sends an encrypted empty frame. Receipt of that frame confirms that the server decrypted `aes_params` and initialized the matching cipher state.
+
+<Callout type="note">
+  Implementation in the TON monorepo:
+
+  - [Outbound handshake](https://github.com/ton-blockchain/ton/blob/v2026.06/adnl/adnl-ext-client.cpp#L121-L160)
+  - [Ed25519 envelope encryption](https://github.com/ton-blockchain/ton/blob/v2026.06/keys/encryptor.cpp#L31-L110)
+</Callout>
+
+## Handshake encryption
+
+Let `secret` be the 32-byte X25519 shared secret, and let `hash` be the result of applying SHA-256 to `aes_params`. The envelope cipher is then derived as follows:
+
+```text
+key = secret[0..16] || hash[16..32]
+iv = hash[0..4] || secret[20..32]
+```
+
+The ranges use a zero-based, end-exclusive convention. AES-CTR uses the resulting 32-byte key and 16-byte initialization vector.
+
+## Client identity authentication
+
+Transport-key establishment authenticates the server to a client that already trusts the configured server public key. The blockchain then authenticates the client's independently generated Ed25519 identity through the encrypted stream:
+
+```tl
+tcp.authentificate nonce:bytes = tcp.Message;
+tcp.authentificationNonce nonce:bytes = tcp.Message;
+tcp.authentificationComplete key:PublicKey signature:bytes = tcp.Message;
+```
+
+The identifiers preserve the spelling used by the TL schema.
+
+The authentication exchange is:
+
+1. The client sends `tcp.authentificate` with a nonempty client nonce.
+1. The server appends 256 random bytes internally and returns those bytes in `tcp.authentificationNonce`.
+1. The client signs `client_nonce || server_nonce` with its Ed25519 identity private key.
+1. The client sends its public key and signature in `tcp.authentificationComplete`.
+1. The server accepts the client identity only after verifying the signature over both nonces.
+
+## Keepalive and timeout behavior
+
+TON uses traffic-driven timers rather than a fixed 5-second ping interval:
+
+- A client sends one [`tcp.ping`](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/ton_api.tl#L35) after 10 seconds without inbound traffic.
+- A client closes the connection after 20 seconds without inbound traffic.
+- A server closes the connection after 60 seconds without inbound traffic.
+- A valid [`tcp.pong`](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/ton_api.tl#L23) or any other received frame resets the applicable timer.
+
+The numeric constructor ID (schema ID) of `tcp.ping` is `0x4d082b9a`. Its little-endian wire bytes are `9a 2b 08 4d`.
+
+```tl
+tcp.ping random_id:long = tcp.Pong;
+```
+
+The `tcp.pong` has the identical schema and returns the same `random_id`:
+
+```tl
+tcp.pong random_id:long = tcp.Pong;
+```
+
+Example ADNL ping frame:
+
+| Field          |     Size | Value                           |
+| -------------- | -------: | ------------------------------- |
+| `size`         |  4 bytes | 76 (`64 + 4 + 8`)               |
+| `nonce`        | 32 bytes | Random                          |
+| Constructor ID |  4 bytes | `9a2b084d`                      |
+| `random_id`    |  8 bytes | Random `uint64`                 |
+| `checksum`     | 32 bytes | SHA-256 of `nonce \|\| payload` |
+
+## Security properties
+
+- The trusted server public key binds the handshake to the expected server identity.
+- The ephemeral key and random `aes_params` produce new transport keys for each connection.
+- The 64-byte padding field in `aes_params` is unused by the current cipher initialization but remains random and encrypted.
+- Client authentication signs both nonces, binding the proof to the current encrypted connection.
+- The post-handshake construction uses AES-CTR with an encrypted random prefix and a SHA-256 checksum without a separate authentication key. It is protocol-specific and is not an authenticated-encryption scheme such as AES-GCM.
+- Cipher state is continuous across frame boundaries. Reusing keys and initialization vectors or resetting counters breaks confidentiality.
+
+## Liteserver query envelopes
+
+A liteserver request uses 2 nested TL functions:
+
+```tl
+// ADNL query
+adnl.message.query query_id:int256 query:bytes = adnl.Message;
+
+// Liteserver method query
+liteServer.query data:bytes = Object;
+```
+
+There, `query_id` is a random 256-bit value used to correlate the answer with the outstanding query request.
+
+The liteserver method is serialized inside `liteServer.query.data`. The boxed `liteServer.query` is then serialized inside `adnl.message.query.query` bytes.
+
+| Constructor           | Numeric ID   | Little-endian wire bytes |
+| --------------------- | ------------ | ------------------------ |
+| `adnl.message.query`  | `0xb48bf97a` | `7a f9 8b b4`            |
+| `adnl.message.answer` | `0x0fac8416` | `16 84 ac 0f`            |
+| `liteServer.query`    | `0x798c06df` | `df 06 8c 79`            |
+
+### Masterchain information, `getMasterchainInfo`
+
+The masterchain block is required as an input for many subsequent requests.
+
+```tl
+liteServer.getMasterchainInfo = liteServer.MasterchainInfo;
+
+liteServer.masterchainInfo
+  last:tonNode.blockIdExt
+  state_root_hash:int256
+  init:tonNode.zeroStateIdExt
+    = liteServer.MasterchainInfo;
+```
+
+The request constructor's numeric ID is `0x89b5e62e`, whose wire bytes are `2e e6 b5 89`. The response constructor's numeric ID is `0x85832881`, whose wire bytes are `81 28 83 85`.
+
+The following frame illustrates nested TL `bytes` values. Each `bytes` value contains its own length prefix and padding to a 4-byte boundary:
+
+```text
+74000000                                                             -> frame size: 116 bytes
+5fb13e11977cb5cff0fbf7f23f674d734cb7c4bf01322c5e6b928c5d8ea09cfd     -> random prefix
+  7af98bb4                                                           -> adnl.message.query wire bytes
+  77c1545b96fa136b8e01cc08338bec47e8a43215492dda6d4d7e286382bb00c4   -> query_id
+    0c                                                             -> query length: 12 bytes
+    df068c79                                                       -> liteServer.query wire bytes
+      04                                                         -> data length: 4 bytes
+      2ee6b589                                                   -> getMasterchainInfo wire bytes
+      000000                                                     -> data padding
+    000000                                                       -> query padding
+ac2253594c86bd308ed631d57a63db4ab21279e9382e416128b58ee95897e164     -> SHA-256
+```
+
+The response is wrapped in `adnl.message.answer` and contains `liteServer.masterchainInfo` with `last:tonNode.blockIdExt`, `state_root_hash:int256`, and `init:tonNode.zeroStateIdExt`.
+
+Example response:
+
+```text
+20010000                                                                  -> frame size: 288 bytes
+5558b3227092e39782bd4ff9ef74bee875ab2b0661cf17efdfcd4da4e53e78e6          -> random prefix
+  1684ac0f                                                                -> adnl.message.answer wire bytes
+  77c1545b96fa136b8e01cc08338bec47e8a43215492dda6d4d7e286382bb00c4        -> query_id
+    b8                                                                    -> answer length: 184 bytes
+    81288385                                                              -> liteServer.masterchainInfo wire bytes
+        ffffffff                                                          -> workchain
+        0000000000000080                                                  -> shard
+        27405801                                                          -> seqno
+        e585a47bd5978f6a4fb2b56aa2082ec9deac33aaae19e78241b97522e1fb43d4  -> root_hash
+        876851b60521311853f59c002d46b0bd80054af4bce340787a00bd04e0123517  -> file_hash
+      8b4d3b38b06bb484015faf9821c3ba1c609a25b74f30e1e585b8c8e820ef0976    -> state_root_hash
+        ffffffff                                                          -> workchain
+        17a3a92992aabea785a7a090985a265cd31f323d849da51239737e321fb05569  -> root_hash
+        5e994fcf4d425c0a6ce6a792594b7173205f740a39cd56f537defd28b48a0f6e  -> file_hash
+    000000                                                                -> answer padding
+520c46d1ea4daccdf27ae21750ff4982d59a30672b3ce8674195e8a23e270d21          -> SHA-256
+```
+
+### Run a get method, `runSmcMethod`
+
+Calls a get method of a smart contract:
+
+```tl
+liteServer.runSmcMethod
+  mode:#
+  id:tonNode.blockIdExt
+  account:liteServer.accountId
+  method_id:long
+  params:bytes
+    = liteServer.RunMethodResult;
+```
+
+| Field       | Type                                                                                                             | Meaning                                                                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mode`      | `uint32`                                                                                                         | Response-field bitmask                                                                                                                                  |
+| `id`        | [`tonNode.blockIdExt`](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/lite_api.tl#L19)   | Reference masterchain block from `getMasterchainInfo`                                                                                                   |
+| `account`   | [`liteServer.accountId`](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/lite_api.tl#L27) | Workchain and 256-bit account ID (address)                                                                                                              |
+| `method_id` | `long`                                                                                                           | [CRC-16-XMODEM](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) of the method name, with bitwise AND with `0xffff` and bitwise OR with `0x10000` |
+| `params`    | `bytes`                                                                                                          | TVM stack serialized as a [BoC](/foundations/serialization/boc)                                                                                         |
+
+When `mode` has the bit 2 set to `1`, the response includes the `result` field, which is a [BoC](/foundations/serialization/boc)-serialized stack with returned values.
+
+With `mode = 4`, the response includes both `exit_code` and `result`. [Exit codes](/tvm/exit-codes) `0` and `1` represent successful TVM termination.
+
+The `params` and `result` stacks use this TL-B representation:
+
+```tlb
+vm_stack#_ depth:(## 24) stack:(VmStackList depth) = VmStack;
+vm_stk_cons#_ {n:#} rest:^(VmStackList n) tos:VmStackValue = VmStackList (n + 1);
+vm_stk_nil#_ = VmStackList 0;
+```
+
+Stack elements are stored in reverse order: each `vm_stk_cons` stores the rest of the stack by reference and the current top-of-stack value inline.
+
+<Callout type="note">
+  When constructing the serialized stack manually, elements must appear in reverse order from their Tolk parameter list because the last argument is at the top of the stack. Return values should follow the same reverse-order stack representation.
+</Callout>
+
+<Callout type="note">
+  Get method query [implementation in `tonutils-go`](https://github.com/xssnick/tonutils-go/blob/749603ab237d058cac5be4c42d36a52064db8b58/ton/runmethod.go#L51-L53).
+</Callout>
+
+### Account state, `getAccountState`
+
+Obtains the state of the account:
+
+```tl
+liteServer.getAccountState
+  id:tonNode.blockIdExt
+  account:liteServer.accountId
+    = liteServer.AccountState;
+
+liteServer.accountState
+  id:tonNode.blockIdExt
+  shardblk:tonNode.blockIdExt
+  shard_proof:bytes
+  proof:bytes
+  state:bytes
+    = liteServer.AccountState;
+```
+
+In the response, the `state` field contains a [bag of cells](/foundations/serialization/boc) whose root follows the `Account` TL-B schema:
+
+```tlb
+account_none$0 = Account;
+account$1 addr:MsgAddressInt storage_stat:StorageInfo storage:AccountStorage = Account;
+```
+
+Read the prefix bit to distinguish `account_none$0` from `account$1`. For `account$1`, read the address, storage information, and `AccountStorage` fields sequentially. The balance is stored in `AccountStorage.balance`, whose `grams:Grams` field is a `VarUInteger 16`.
+
+The response also includes shard and account proofs. A client that relies on trustless results must verify those proofs against a trusted masterchain block instead of accepting `state` alone. The [liteserver-proof verification guide](/foundations/proofs/verifying-liteserver-proofs) describes that process.
+
+## Key ID calculation
+
+The key ID is the SHA-256 hash of the boxed TL serialization of the public key. For Ed25519 keys:
+
+```tl
+pub.ed25519 key:int256 = PublicKey;
+```
+
+The numeric constructor ID is `0x4813b4c6`, whose wire bytes are `c6 b4 13 48`. The key ID is therefore `SHA-256([0xc6, 0xb4, 0x13, 0x48] || public_key)`.
+
+Other key schemas are:
+
+```tl
+pub.aes key:int256 = PublicKey; // ID: 2dbcadd4
+pub.overlay name:bytes = PublicKey; // ID: 34ba45cb
+pub.unenc data:bytes = PublicKey; // ID: b61f450a
+pk.aes key:int256 = PrivateKey; // ID: a5e85137
+```
+
+Their constructor wire bytes are `d4adbc2d`, `cb45ba34`, `0a451fb6`, and `3751e8a5`, respectively. These byte sequences are the little-endian encodings of the numeric constructor IDs, **not** the numeric IDs themselves.
+
+## See also
+
+- [Implementation of ADNL over TCP](https://github.com/ton-blockchain/ton/tree/v2026.06/adnl)
+- [Liteserver TL schema](https://github.com/ton-blockchain/ton/blob/v2026.06/tl/generate/scheme/lite_api.tl)
+- [ADNL overview](/foundations/network/adnl)
+- [ADNL over UDP](/foundations/network/adnl-udp)

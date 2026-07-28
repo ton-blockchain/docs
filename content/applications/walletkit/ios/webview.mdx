@@ -1,0 +1,23 @@
+---
+title: "How to inject WalletKit into WebView on the iOS platform"
+sidebarTitle: "Inject into WebView"
+---
+
+<Callout type="tip">
+  Initialize WalletKit before injecting it into WebView. See the [initialization guide](/applications/walletkit/ios/init) for details.
+</Callout>
+
+Injecting WalletKit into WebView allows integrating the wallet service with a dApp running in a native WebView and handling its events.
+
+To do so, obtain the dApp injection bridge key — it is the name under which the dApp injects itself in the `window` object.
+
+```swift
+import TONWalletKit
+import WebKit
+
+let webView = WKWebView()
+try webView.inject(walletKit: walletKit, key: /* dApp bridge key */)
+webView.load(URLRequest(url: /* dApp URL */))
+```
+
+After the injection is complete, handle dApp events from a [custom events handler](/applications/walletkit/android/events).

@@ -1,0 +1,298 @@
+---
+title: "`@tonconnect/ui-react` reference"
+sidebarTitle: "React UI reference"
+---
+
+`@tonconnect/ui-react` is the React binding for [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui). It exposes a `<TonConnectUIProvider>` for app-wide setup, a `<TonConnectButton>` component, and hooks (`useTonConnectUI`, `useTonAddress`, `useTonWallet`) so React dApps can integrate TON Connect without touching the imperative UI API.
+
+If your app does not use React, use [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) directly. For server-side use, see [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk).
+
+## Installation
+
+Install from npm:
+
+```bash
+npm i @tonconnect/ui-react
+```
+
+`@tonconnect/ui-react` is a client-only package — under Next.js, mark the wrapping component with `"use client"` or import the provider with `dynamic(..., { ssr: false })`.
+
+> Generated from `@tonconnect/ui-react` v3.0.0-beta.2.
+
+## Types
+
+### `TonConnectButtonProps`
+
+Props for [`TonConnectButton`](#tonconnectbutton).
+
+```ts
+interface TonConnectButtonProps {
+    className?: string;
+    style?: CSSProperties;
+}
+```
+
+| Field       | Type            | Description                                                                                |
+| ----------- | --------------- | ------------------------------------------------------------------------------------------ |
+| `className` | `string`        | _Optional_. Extra class name applied to the button container.                              |
+| `style`     | `CSSProperties` | _Optional_. Inline styles merged with the button container's `width: fit-content` default. |
+
+### `TonConnectUIProviderPropsWithManifest`
+
+Pass a `manifestUrl` and let the provider build a [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui) from
+the merged UI options.
+
+```ts
+interface TonConnectUIProviderPropsWithManifest {
+    manifestUrl: string;
+}
+```
+
+| Field         | Type     | Description                                                                                                                                                                                                                                          |
+| ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `manifestUrl` | `string` | HTTPS URL of the dApp's [`tonconnect-manifest.json`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/manifest.md). The provider builds the [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui) connector from it. |
+
+### `TonConnectUIProviderPropsWithConnector`
+
+Pass a pre-built [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) (typically from `@tonconnect/sdk`) — the
+provider wraps it in a [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui). Useful when the dApp drives the
+underlying SDK directly and only wants the React UI on top.
+
+```ts
+interface TonConnectUIProviderPropsWithConnector {
+    connector: ITonConnect;
+}
+```
+
+| Field       | Type                                                                     | Description                                                                                                                       |
+| ----------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `connector` | [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) | Existing [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) instance. The provider will not create its own. |
+
+### `TonConnectUIProviderPropsBase`
+
+Common UI options accepted in addition to the constructor selector
+(`manifestUrl` / `connector`). All optional; mirror the fields on
+[`TonConnectUiOptions`](/applications/ton-connect/api-reference/ui#tonconnectuioptions) from `@tonconnect/ui`.
+
+```ts
+interface TonConnectUIProviderPropsBase {
+    restoreConnection: boolean;
+    language: Locales;
+    widgetRootId: string;
+    uiPreferences?: UIPreferences;
+    walletsListConfiguration?: WalletsListConfiguration;
+    walletsRequiredFeatures?: RequiredFeatures;
+    walletsPreferredFeatures?: RequiredFeatures;
+    actionsConfiguration?: ActionConfiguration;
+    enableAndroidBackHandler?: boolean;
+    analytics?: AnalyticsSettings;
+}
+```
+
+| Field                      | Type                                                                                              | Description                                                                                                                                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `restoreConnection`        | `boolean`                                                                                         | Attempt to restore the previous session from storage on mount. Set to `false` for flows that prefer an explicit connect step. Defaults to `true`.                                                                                                                 |
+| `language`                 | [`Locales`](/applications/ton-connect/api-reference/ui#locales)                                   | Language for SDK-rendered strings. Defaults to `'en'`.                                                                                                                                                                                                            |
+| `widgetRootId`             | `string`                                                                                          | HTML element ID under which the modal root is attached. Defaults to `tc-widget-root` (created at the end of `<body>`).                                                                                                                                            |
+| `uiPreferences`            | [`UIPreferences`](/applications/ton-connect/api-reference/ui#uipreferences)                       | _Optional_. Visual configuration — theme, border radius, color overrides.                                                                                                                                                                                         |
+| `walletsListConfiguration` | [`WalletsListConfiguration`](/applications/ton-connect/api-reference/ui#walletslistconfiguration) | _Optional_. Wallets-list overrides — include extra wallets, reorder existing ones.                                                                                                                                                                                |
+| `walletsRequiredFeatures`  | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                | _Optional_. Hide wallets from the picker that don't advertise the listed features. Non-matching entries are greyed out below the separator and rejected at connect time with `WalletMissingRequiredFeaturesError`.                                                |
+| `walletsPreferredFeatures` | [`RequiredFeatures`](/applications/ton-connect/api-reference/sdk#requiredfeatures)                | _Optional_. Soft preference filter — non-matching wallets remain clickable but sorted below the separator. The SDK does NOT enforce the match at connect time.                                                                                                    |
+| `actionsConfiguration`     | [`ActionConfiguration`](/applications/ton-connect/api-reference/ui#actionconfiguration)           | _Optional_. Modal / notification behavior and the return strategy for action deep links. See [`ActionConfiguration`](/applications/ton-connect/api-reference/ui#actionconfiguration).                                                                             |
+| `enableAndroidBackHandler` | `boolean`                                                                                         | _Optional_. Close modals and notifications when the Android back button is pressed. Disable when the dApp manages browser history manually. Defaults to `true`.                                                                                                   |
+| `analytics`                | [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings)              | _Optional_. Analytics configuration forwarded to the underlying [`TonConnect`](/applications/ton-connect/api-reference/sdk#tonconnect) instance. See [`AnalyticsSettings`](/applications/ton-connect/api-reference/sdk#analyticssettings) from `@tonconnect/sdk`. |
+
+### `TonConnectUIProviderProps`
+
+Props for `<TonConnectUIProvider>`. Pick one of three shapes:
+
+- [`TonConnectUIProviderPropsWithManifest`](#tonconnectuiproviderpropswithmanifest) — most common: pass a
+  `manifestUrl`, the provider builds a [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui) for you.
+- [`TonConnectUIProviderPropsWithConnector`](#tonconnectuiproviderpropswithconnector) — pass a pre-built
+  [`ITonConnect`](/applications/ton-connect/api-reference/sdk#itonconnect) (from `@tonconnect/sdk`); the provider wraps it in UI.
+- `TonConnectUIProviderPropsWithInstance` — pass an externally
+  constructed [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui).
+
+The manifest / connector variants accept the same UI-level options as the
+vanilla [`TonConnectUiOptions`](/applications/ton-connect/api-reference/ui#tonconnectuioptions) (theme, language, wallet filters,
+analytics).
+
+```ts
+type TonConnectUIProviderProps =
+    & { children: ReactNode }
+    & (Partial<TonConnectUIProviderPropsBase & (TonConnectUIProviderPropsWithManifest | TonConnectUIProviderPropsWithConnector)> | TonConnectUIProviderPropsWithInstance);
+```
+
+## Components
+
+### `TonConnectButton()`
+
+```ts
+function TonConnectButton(props: TonConnectButtonProps): ReactNode;
+```
+
+| Parameter | Type                    | Description |
+| --------- | ----------------------- | ----------- |
+| `props`   | `TonConnectButtonProps` | —           |
+
+Returns `ReactNode`.
+
+### `TonConnectUIProvider()`
+
+```ts
+function TonConnectUIProvider(props: TonConnectUIProviderProps): ReactNode;
+```
+
+| Parameter | Type                        | Description |
+| --------- | --------------------------- | ----------- |
+| `props`   | `TonConnectUIProviderProps` | —           |
+
+Returns `ReactNode`.
+
+## Hooks
+
+### `useIsConnectionRestored()`
+
+Indicates current status of the connection restoring process.
+
+```ts
+function useIsConnectionRestored(): boolean;
+```
+
+Returns `boolean`.
+
+### `useTonAddress()`
+
+Reactive accessor for the connected account's TON address. Returns an
+empty string while disconnected.
+
+```ts
+function useTonAddress(userFriendly: boolean = true): string;
+```
+
+| Parameter      | Type      | Description                                                                                                                                                                                            |
+| -------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `userFriendly` | `boolean` | _Optional_. — `true` (default) returns the non-bounceable base64url user-friendly form (`UQ…` on mainnet, `0Q…` on testnet). Pass `false` to get the raw `<workchain>:<hex>` form. Defaults to `true`. |
+
+Returns `string`.
+
+**Example:**
+
+```tsx
+const address = useTonAddress();      // user-friendly
+const rawAddress = useTonAddress(false);
+```
+
+### `useTonConnectModal()`
+
+Reactive wrapper around `tonConnectUI.modal`. Returns `{ state, open,
+close }` — `state` mirrors [`WalletsModalState`](/applications/ton-connect/api-reference/ui#walletsmodalstate) and re-renders on every
+modal lifecycle event; `open` / `close` are convenience bindings.
+
+Must be called inside a `<TonConnectUIProvider>`. Use this hook when the
+dApp wants its own "Connect" UI separate from `<TonConnectButton />`.
+
+```ts
+function useTonConnectModal(): Omit<WalletsModal, 'onStateChange'>;
+```
+
+Returns `Omit<WalletsModal, 'onStateChange'>`.
+
+**Example:**
+
+```tsx
+const { state, open, close } = useTonConnectModal();
+
+return (
+    <>
+        <div>Modal status: {state?.status}</div>
+        <button onClick={open}>Open modal</button>
+        <button onClick={close}>Close modal</button>
+    </>
+);
+```
+
+### `useTonConnectUI()`
+
+Returns a tuple of:
+
+- the singleton [`TonConnectUI`](/applications/ton-connect/api-reference/ui#tonconnectui) instance — call every method (`connectWallet`,
+  `sendTransaction`, `signData`, `signMessage`, modal helpers) on it;
+- a `setOptions(options)` callback that merges the partial
+  [`TonConnectUiOptions`](/applications/ton-connect/api-reference/ui#tonconnectuioptions) into the live instance via its `uiOptions`
+  setter, triggering an immediate re-render.
+
+Must be called inside a `<TonConnectUIProvider>`. On the server side,
+the hook returns a no-op pair — call sites can render shells
+without crashing, but the real wiring only kicks in once the component
+hydrates in the browser.
+
+```ts
+function useTonConnectUI(): [TonConnectUI, (options: TonConnectUiOptions) => void];
+```
+
+Returns `[TonConnectUI, (options: TonConnectUiOptions) => void]`.
+
+**Example:**
+
+```tsx
+const [tonConnectUI, setOptions] = useTonConnectUI();
+
+await tonConnectUI.sendTransaction(tx, { traceId });
+setOptions({ language: 'ru' });
+```
+
+### `useTonWallet()`
+
+Reactive accessor for the currently connected wallet. Returns `null`
+while disconnected and refreshes on every `onStatusChange` event.
+
+The shape mirrors `tonConnectUI.wallet` — [`Wallet`](/applications/ton-connect/api-reference/sdk#wallet) (from `@tonconnect/sdk`)
+merged with the picker entry for the wallet (icon, name, open method).
+
+Must be called inside a `<TonConnectUIProvider>`.
+
+```ts
+function useTonWallet(): Wallet | Wallet & WalletInfoWithOpenMethod | null;
+```
+
+Returns `Wallet | Wallet & WalletInfoWithOpenMethod | null`.
+
+**Example:**
+
+```tsx
+const wallet = useTonWallet();
+
+if (!wallet) return <ConnectButton />;
+return <span>{wallet.device.appName} · {wallet.account.address}</span>;
+```
+
+## Errors
+
+Every error from this package extends [`TonConnectUIReactError`](#tonconnectuireacterror), which itself extends [`TonConnectUIError`](/applications/ton-connect/api-reference/ui#tonconnectuierror). Use `err instanceof TonConnectUIReactError` to catch errors from this package; use `err instanceof TonConnectUIError` to catch anything raised by the TonConnect stack.
+
+### `TonConnectUIReactError`
+
+Base class for every error thrown by `@tonconnect/ui-react`. Extends
+[`TonConnectUIError`](/applications/ton-connect/api-reference/ui#tonconnectuierror) from `@tonconnect/ui`, which itself extends
+[`TonConnectError`](/applications/ton-connect/api-reference/sdk#tonconnecterror) from `@tonconnect/sdk` — a single
+`catch (e instanceof TonConnectError)` branch covers them all.
+
+```ts
+class TonConnectUIReactError extends TonConnectUIError {
+    constructor(message?: string, options?: ErrorOptions);
+}
+```
+
+### Error catalogue
+
+| Class                           | Thrown when                                                                                                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TonConnectProviderNotSetError` | Thrown when a hook from `@tonconnect/ui-react` (or `<TonConnectButton />`) is used outside the subtree rendered by `<TonConnectUIProvider>`. Add the provider near the top of your React tree. |
+
+## Related pages
+
+- [`@tonconnect/ui`](/applications/ton-connect/api-reference/ui) — framework-agnostic UI wrapped by these bindings.
+- [`@tonconnect/sdk`](/applications/ton-connect/api-reference/sdk) — connector core under the UI.
+- [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) — wire-format types.
+- [TON Connect spec](https://github.com/ton-blockchain/ton-connect) — normative protocol material.
