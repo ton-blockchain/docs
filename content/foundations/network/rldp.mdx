@@ -4,7 +4,7 @@ sidebarTitle: "RLDP"
 ---
 
 <Callout type="note">
-  With the introduction of the [sub-second upgrade](/ecosystem/subsecond), blockchain nodes now use [QUIC](https://en.wikipedia.org/wiki/QUIC) instead of RLDP for internal node communication.
+  With the introduction of the [sub-second upgrade](/subsecond), blockchain nodes now use [QUIC](https://en.wikipedia.org/wiki/QUIC) instead of RLDP for internal node communication.
 </Callout>
 
 The Reliable Large Datagram Protocol (RLDP) runs on top of [ADNL UDP](/foundations/network/adnl-udp) and transfers data that does not fit in one ADNL datagram. It uses [Forward Error Correction (FEC)](https://en.wikipedia.org/wiki/Error_correction_code) to recover from packet loss. Its newer version, RLDP2, also uses acknowledgment packets, loss detection, pacing, and congestion control.
