@@ -1,0 +1,55 @@
+---
+title: "Extra currencies"
+---
+
+TON supports up to $2^{32}$ _extra currencies_ besides its native currency — Gram. They are protocol-level fungible assets stored alongside [Gram](/foundations/glossary#gram) in account balances. Extra currencies can be similarly attached to internal messages, but they cannot be used to pay [transfer fees](#transfers-and-fees) in place of Gram.
+
+Unlike [jettons](/contracts/standard/tokens/jettons/overview), extra currencies cannot have custom behavior — they can only be stored and transferred. Furthermore, [minting of new extra currencies](#minting) is controlled by the masterchain [config](/foundations/config).
+
+<Callout
+  type="note"
+  title="Mainnet status"
+>
+  There are no active extra currencies on the mainnet — use jettons to create new fungible tokens.
+</Callout>
+
+## Representation
+
+The [`block.tlb` schema](/foundations/tlb/overview) defines an extra-currency collection as a dictionary, which is then kept in the `CurrencyCollection` structure next to the Gram balance:
+
+```tlb
+extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32))
+                 = ExtraCurrencyCollection;
+currencies$_ grams:Grams other:ExtraCurrencyCollection
+           = CurrencyCollection;
+```
+
+Each 32-bit dictionary key is a currency ID. Each value is a positive integer of at most 248 bits — zero balances are omitted.
+
+## Transfers and fees
+
+A contract reads its remaining `CurrencyCollection` balance through [TVM](/tvm/overview) and specifies extra-currency amounts in an outbound internal message. The action phase subtracts each amount from the account balance. An insufficient balance produces [action result code 38](/tvm/exit-codes#38-not-enough-extra-currencies).
+
+Extra currencies cannot pay storage, computation, or message-forwarding fees. These fees remain denominated in Gram.
+
+<Callout type="note">
+  Since [global TVM version 10](/foundations/config#param-8-network-version), [send modes 64 and 128](/foundations/messages/modes#behavior) change only the Gram component of a message. They do not add extra currencies from the incoming message or account balance.
+</Callout>
+
+<Callout type="note">
+  Incoming and outgoing _external_ messages cannot carry any currencies.
+</Callout>
+
+## Minting
+
+Extra-currency minting is controlled by the masterchain configuration:
+
+- [Parameter 7](/foundations/config#param-7-extra-currency-mint-targets) stores target amounts by currency ID.
+- [Parameter 2](/foundations/config#param-2-ton-minting-address) identifies the minter account. [Parameter 0](/foundations/config#param-0-config-address) is the fallback when parameter 2 is absent.
+- [Parameter 6](/foundations/config#param-6-extra-currency-minting-prices) stores two Gram price fields intended for minting governance. The collator does not use them to calculate the minted amount.
+
+For each parameter 7 entry, a masterchain collator subtracts the previous masterchain state's global balance from the configured target. A positive difference for a nonzero currency ID is minted in that masterchain block. An equal or lower target mints nothing — lowering the target does not burn currency.
+
+When the difference is positive, the block contains a special internal message from the zero masterchain address to the minter account. Its `CurrencyCollection` carries the minted extra currencies, and its body is empty. Validators recompute the difference and reject a block whose minted value or special message does not match the configuration.
+
+Changing a mint target requires a [configuration update](/foundations/config#changing-configuration-parameters). A contract cannot create extra currency through a TVM instruction.

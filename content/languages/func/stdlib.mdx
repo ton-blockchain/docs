@@ -279,7 +279,7 @@ Retrieves the smart contract’s internal address as a Slice containing `MsgAddr
 Returns the smart contract's balance as a `tuple`:
 
 - `int`: The remaining balance in nanograms.
-- `cell`: A dictionary (with 32-bit keys) containing balances of extra currencies.
+- `cell`: A dictionary (with 32-bit keys) containing [extra-currency balances](/foundations/extra-currencies#representation).
 
 Since this is retrieved during the compute phase, the balance reflects the incoming message `value`, with `storage_fee` and `import_fee` already subtracted.
 
