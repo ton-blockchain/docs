@@ -1,0 +1,67 @@
+---
+title: "`ACCEPT` and gas credit"
+---
+
+The [`ACCEPT`](/tvm/instructions#f800-accept) instruction changes the gas available to the [TVM](/tvm/overview). For an incoming external message, this change also makes the contract pay for computation and allows the message to produce a transaction.
+
+`ACCEPT` does **not** validate a message, guarantee successful execution, or commit contract state.
+
+<Callout type="note">
+  Tolk exposes the `ACCEPT` instruction as the `acceptExternalMessage()` function from the [`@stdlib/gas-payments` module](/tolk/features/standard-library#modules-requiring-explicit-imports).
+</Callout>
+
+<Callout
+  type="danger"
+  title="Contract balance at risk"
+>
+  Calling `ACCEPT` before authentication allows invalid external messages to charge the contract balance on testnet and mainnet. Check authentication and replay fields before `ACCEPT`, and test all failure paths on testnet before deployment.
+</Callout>
+
+## External message flow
+
+As described in [`GasLimits`](/tvm/gas#gaslimits-structure), an incoming external message starts with gas credit because it cannot carry Gram. This credit lets the contract inspect the message before agreeing to pay for its execution.
+
+Process an external message in this order:
+
+1. Verify its signature or other authentication data.
+1. Reject expired or replayed messages.
+1. Call `ACCEPT` or `SETGASLIMIT`.
+1. Update and commit replay state before operations that can fail.
+
+If execution ends before acceptance, TON records no transaction and discards state changes and actions. After acceptance, the contract pays for all compute gas, including gas spent from the initial credit.
+
+<Callout type="note">
+  See the [external-message security guidance](/contracts/techniques/security#unconditional-accepting-of-external-messages) for Tolk examples.
+</Callout>
+
+## `ACCEPT` and `SETGASLIMIT`
+
+`ACCEPT` makes the maximum available gas payable by the contract. [`SETGASLIMIT`](/tvm/instructions#f801-setgaslimit) accepts the message with a lower limit when its argument is below that maximum.
+
+`SETGASLIMIT` throws an out-of-gas exception before changing the limit if execution has already consumed more gas than the requested limit. The [`GasLimits` reference](/tvm/gas#gaslimits-structure) defines the exact updates made by both instructions.
+
+<Callout type="note">
+  Tolk exposes the `SETGASLIMIT` instruction as the `setGasLimit(limit)` function from the [`@stdlib/gas-payments` module](/tolk/features/standard-library#modules-requiring-explicit-imports).
+</Callout>
+
+## Failures after acceptance
+
+Acceptance creates fee liability but does not guarantee success:
+
+| Possible outcomes after successful `ACCEPT`                                | Compute gas | State and actions                                 |
+| -------------------------------------------------------------------------- | ----------- | ------------------------------------------------- |
+| Compute phase succeeds as well                                             | Charged     | Final data and actions enter the action phase     |
+| Compute phase fails without `COMMIT`                                       | Charged     | Discarded                                         |
+| [`COMMIT`](/tvm/instructions#f80f-commit) precedes a later compute failure | Charged     | Committed data and actions enter the action phase |
+
+Commit the replay-state update before later operations and actions that are allowed to fail. In Tolk, [`commitContractDataAndActions()`](/tolk/features/standard-library#commitContractDataAndActions) snapshots persistent data and the current action list.
+
+Without a committed replay-state update, validators can deliver the same valid external message again. Each attempt that reaches `ACCEPT` can charge the contract.
+
+The [execution phases](/foundations/phases) determine whether state changes and actions take effect. Incoming external messages cannot bounce because they have no on-chain sender — there is no one to receive the bounced message.
+
+## Internal messages
+
+An [internal message](/foundations/messages/internal) starts without gas credit and does not require explicit acceptance. `ACCEPT` raises its gas limit to the maximum available to the contract, which can spend balance held before the message arrived. `SETGASLIMIT` can apply a lower limit.
+
+Neither `ACCEPT` nor `SETGASLIMIT` changes the [bounce behavior](/foundations/messages/internal#bounces) of internal messages.

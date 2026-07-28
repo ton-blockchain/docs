@@ -477,10 +477,10 @@ Converts a `slice s` into a basic continuation `c`, where `c.code = s`, an empty
 
 This function sets the current gas limit `gl` to its maximum possible value `gm` and resets the gas credit `gc` to zero.
 At the same time, it deducts the previous gas credit `gc` from the remaining gas reserve `gr`.
-Simply put, the smart contract agrees to purchase gas to complete the transaction.
+The smart contract agrees to purchase gas to complete the transaction.
 This function is required when processing external messages that do not carry any value and do not provide gas.
 
-{/* NOTE: Accept message effects. */}
+See the [`ACCEPT` instruction](/tvm/accept) page for more details.
 
 #### `set_gas_limit`
 
@@ -491,9 +491,7 @@ This function is required when processing external messages that do not carry an
 This function sets the gas limit `gl` to the smaller of two values: the provided `limit` or the maximum allowed gas `gm`.
 It also resets the gas credit `gc` to zero. If the contract already uses more gas than this new limit `gl`, including the current instruction, an out-of-gas exception is triggered before the new limit is applied.
 
-Remember that if the `limit` is `2^63 − 1` or higher, calling `set_gas_limit` works the same as calling `accept_message`.
-
-{/* NOTE: Accept message effects. */}
+If the `limit` is `2^63 − 1` or higher, calling `set_gas_limit` works the same as calling [`accept_message`](#accept_message).
 
 #### `commit`
 
