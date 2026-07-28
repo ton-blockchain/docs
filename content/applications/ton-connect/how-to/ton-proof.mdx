@@ -1,18 +1,15 @@
 ---
-title: "Signed-in user verification"
-sidebarTitle: "Verify users (ton_proof)"
+title: "How to verify signed-in users with `ton_proof`"
+sidebarTitle: "Verify users"
 ---
-
-import { Aside } from '/snippets/aside.jsx';
-import { Image } from '/snippets/image.jsx';
 
 `ton_proof` lets a backend verify that a user actually owns the wallet they connected. The client signs a payload with the wallet's private key; the server checks the signature.
 
 ## Verification flow
 
 <Image
-  src="/resources/images/ton-connect/ton_proof_scheme.svg"
-  darkSrc="/resources/images/ton-connect/ton_proof_scheme-dark.svg"
+  src="/resources/images/ton-connect/ton-proof-scheme.svg"
+  darkSrc="/resources/images/ton-connect/ton-proof-scheme-dark.svg"
   alt="TON Proof verification flow: client requests payload, signs with wallet, and sends proof to backend"
 />
 
@@ -91,9 +88,9 @@ After extracting the public key, verify:
 1. It matches the `publicKey` field in `TonAddressItemReply`.
 1. `contractAddress(workchain, walletStateInit)` equals the user's address.
 
-<Aside>
+<Callout>
   The helper used to extract a public key from `stateInit` in the examples below is simplified. Replace it with version-aware parsing after determining the wallet type via code hash.
-</Aside>
+</Callout>
 
 ## React example
 
