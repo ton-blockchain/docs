@@ -23,7 +23,7 @@ Or include the bundle via CDN. The package is exposed on `window.TON_CONNECT_UI`
 
 For a pinned version, replace `@latest` with the desired version.
 
-> Generated from `@tonconnect/ui` v3.0.0-beta.2.
+> Generated from `@tonconnect/ui` v3.0.0.
 
 ## `TonConnectUI`
 
@@ -261,8 +261,11 @@ Without the flag the method throws if the wallet is not connected and returns th
 ```ts
 sendTransaction(
     tx: SendTransactionRequest,
-    options?: ActionOptions
-): Promise<OptionalTraceable<SendTransactionResponse>>;
+    options?: ActionOptions | EmbeddedActionOptions
+): Promise<
+    | OptionalTraceable<SendTransactionResponse>
+    | OptionalTraceable<EmbeddedSendTransactionResponse>
+>;
 ```
 
 | Parameter | Type                                                                                           | Description                                                                                                                                     |
@@ -270,7 +273,8 @@ sendTransaction(
 | `tx`      | [`SendTransactionRequest`](/applications/ton-connect/api-reference/sdk#sendtransactionrequest) | Transaction to send.                                                                                                                            |
 | `options` | `ActionOptions`                                                                                | _Optional_. Modal and notifications behavior settings; set `enableEmbeddedRequest: true` to opt into the connect-and-send flow described above. |
 
-Returns `Promise<OptionalTraceable<SendTransactionResponse>>`.
+Returns the normal response, or `EmbeddedSendTransactionResponse` when
+`enableEmbeddedRequest` is `true`.
 
 ### `signData()`
 
@@ -297,8 +301,11 @@ Without the flag the method throws if the wallet is not connected and returns th
 ```ts
 signData(
     data: SignDataPayload,
-    options?: ActionOptions
-): Promise<OptionalTraceable<SignDataResponse>>;
+    options?: ActionOptions | EmbeddedActionOptions
+): Promise<
+    | OptionalTraceable<SignDataResponse>
+    | OptionalTraceable<EmbeddedSignDataResponse>
+>;
 ```
 
 | Parameter | Type                                                                                  | Description                                                                                                                                     |
@@ -306,7 +313,8 @@ signData(
 | `data`    | [`SignDataPayload`](/applications/ton-connect/api-reference/protocol#signdatapayload) | Data to sign.                                                                                                                                   |
 | `options` | `ActionOptions`                                                                       | _Optional_. Modal and notifications behavior settings; set `enableEmbeddedRequest: true` to opt into the connect-and-sign flow described above. |
 
-Returns `Promise<OptionalTraceable<SignDataResponse>>`.
+Returns the normal response, or `EmbeddedSignDataResponse` when
+`enableEmbeddedRequest` is `true`.
 
 ### `signMessage()`
 
@@ -335,8 +343,11 @@ Without the flag the method throws if the wallet is not connected and returns th
 ```ts
 signMessage(
     message: SignMessageRequest,
-    options?: ActionOptions
-): Promise<OptionalTraceable<SignMessageResponse>>;
+    options?: ActionOptions | EmbeddedActionOptions
+): Promise<
+    | OptionalTraceable<SignMessageResponse>
+    | OptionalTraceable<EmbeddedSignMessageResponse>
+>;
 ```
 
 | Parameter | Type                                                                                   | Description                                                                                                                                     |
@@ -344,7 +355,8 @@ signMessage(
 | `message` | [`SignMessageRequest`](/applications/ton-connect/api-reference/sdk#signmessagerequest) | Transaction-like request describing the internal message to sign.                                                                               |
 | `options` | `ActionOptions`                                                                        | _Optional_. Modal and notifications behavior settings; set `enableEmbeddedRequest: true` to opt into the connect-and-sign flow described above. |
 
-Returns `Promise<OptionalTraceable<SignMessageResponse>>`.
+Returns the normal response, or `EmbeddedSignMessageResponse` when
+`enableEmbeddedRequest` is `true`.
 
 ### Static methods
 

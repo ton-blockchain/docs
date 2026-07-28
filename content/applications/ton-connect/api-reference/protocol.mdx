@@ -17,7 +17,7 @@ npm i @tonconnect/protocol
 
 There is no CDN bundle for this package — it is intended for wallet and SDK implementers building on top of the protocol.
 
-> Generated from `@tonconnect/protocol` v3.0.0-beta.2.
+> Generated from `@tonconnect/protocol` v3.0.0.
 
 ## `SessionCrypto`
 
@@ -403,7 +403,7 @@ Structured item: native GRAM transfer.
 
 ```ts
 interface WireTonItem {
-    t: 'gram';
+    t: 'ton';
     a: string;
     am: string;
     p?: string;
@@ -414,7 +414,7 @@ interface WireTonItem {
 
 | Field | Type                      | Description                                    |
 | ----- | ------------------------- | ---------------------------------------------- |
-| `t`   | `'gram'`                  | Item type discriminator                        |
+| `t`   | `'ton'`                   | Item type discriminator                        |
 | `a`   | `string`                  | Destination address                            |
 | `am`  | `string`                  | Amount in nanograms (decimal string)           |
 | `p`   | `string`                  | _Optional_. Optional one-cell BoC body, base64 |
@@ -489,7 +489,7 @@ Native GRAM transfer in RPC wire form.
 
 ```ts
 interface RpcTonItem {
-    type: 'gram';
+    type: 'ton';
     address: string;
     amount: string;
     payload?: string;
@@ -500,7 +500,7 @@ interface RpcTonItem {
 
 | Field            | Type                      | Description                                                                 |
 | ---------------- | ------------------------- | --------------------------------------------------------------------------- |
-| `type`           | `'gram'`                  | Item discriminator.                                                         |
+| `type`           | `'ton'`                   | Item discriminator.                                                         |
 | `address`        | `string`                  | Destination address in TEP-2 user-friendly format.                          |
 | `amount`         | `string`                  | Nanograms to send, as a decimal string.                                     |
 | `payload`        | `string`                  | _Optional_. Optional one-cell BoC body, base64-encoded.                     |
@@ -948,7 +948,7 @@ native GRAM, [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/00
 [TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md) NFT.
 
 ```ts
-type StructuredItemType = 'gram' | 'jetton' | 'nft';
+type StructuredItemType = 'ton' | 'jetton' | 'nft';
 ```
 
 ### `SendTransactionFeature`

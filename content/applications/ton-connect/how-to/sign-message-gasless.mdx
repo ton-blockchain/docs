@@ -202,15 +202,14 @@ async function retry<T>(
 
 `signMessage` rejects synchronously in several cases before anything reaches the wallet:
 
-- **No wallet connected.** `tonConnectUi.signMessage` throws `TonConnectUIError('Connect wallet to sign a message.')`. Either gate the call on `tonConnectUi.connected` (or `tonConnectUi.wallet`), or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal. When the payload uses structured [`items`](/applications/ton-connect/how-to/send-transaction#structured-items), the SDK can fold it into the connect URL as an [embedded request](/applications/ton-connect/how-to/embedded-request) so a compliant wallet handles connect and sign in one tap. The SDK's [`OneClickPay` demo](https://github.com/ton-connect/sdk/blob/main/apps/demo-dapp-with-react-ui/src/pages/OneClickPay/oneClickGaslessFlow.ts) shows the complete one-tap gasless flow end to end.
+- **No wallet connected.** `tonConnectUi.signMessage` throws `TonConnectUIError('Connect wallet to sign a message.')`. Either gate the call on `tonConnectUi.connected` (or `tonConnectUi.wallet`), or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal. When the payload uses structured [`items`](/applications/ton-connect/how-to/send-transaction#structured-items), the SDK can fold it into the connect URL as an [embedded request](/applications/ton-connect/how-to/embedded-request) so a compliant wallet handles connect and sign in one tap. The SDK's [gasless USDT demo](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/features/transactions/components/transfer-usdt) shows the flow end to end.
 - **Wallet does not advertise the `SignMessage` feature.** The connector throws `TonConnectError` with `code: METHOD_NOT_SUPPORTED` before serializing the request.
 - **Request validation fails** (missing fields, malformed payload, mismatched network). The connector throws `TonConnectError` with a validation message.
 
 `TonConnectUIError` extends `TonConnectError`, so a single catch covers both:
 
 ```ts
-import { TonConnectUI } from '@tonconnect/ui';
-import { TonConnectError, TonConnectUIError } from '@tonconnect/ui';
+import { TonConnectError, TonConnectUI, TonConnectUIError } from '@tonconnect/ui';
 
 try {
     const result = await tonConnectUi.signMessage(request);

@@ -12,7 +12,7 @@ Connecting a wallet is the first step in any TON Connect flow. The dApp presents
 ```tsx
 import { TonConnectButton, TonConnectUIProvider } from '@tonconnect/ui-react';
 
-<TonConnectUIProvider manifestUrl="https://example.com/tonconnect-manifest.json">
+ <TonConnectUIProvider manifestUrl="https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json">
   <TonConnectButton />
   <App />
 </TonConnectUIProvider>
@@ -83,7 +83,9 @@ For flows where the user has already chosen a wallet:
 ```ts
 import { TonConnectUI } from '@tonconnect/ui';
 
-const tc = new TonConnectUI({ manifestUrl: '...' });
+const tc = new TonConnectUI({
+    manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
+});
 
 const universalLink = tc.connector.connect({
     universalLink: 'https://connect.mytonwallet.org',
@@ -104,7 +106,7 @@ The connect call accepts an optional `traceId` (UUIDv7 by default) that the SDK 
 await tonConnectUi.openModal({ traceId: '019a2a92-a884-7cfc-b1bc-caab18644b6f' });
 ```
 
-The same option is accepted by `tonConnectUi.disconnect`, `sendTransaction`, `signMessage`, and `signData`. The result of each action exposes `traceId` for logging.
+The same option is accepted by `tonConnectUi.disconnect`, `sendTransaction`, `signMessage`, and `signData`. The signing-action results expose `traceId`; `disconnect` returns `void`.
 
 ## Authenticate with `ton_proof`
 
@@ -135,7 +137,7 @@ Vanilla (`@tonconnect/ui`) uses the same API:
 import { TonConnectUI } from '@tonconnect/ui';
 
 const tonConnectUi = new TonConnectUI({
-    manifestUrl: 'https://example.com/tonconnect-manifest.json',
+    manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
 });
 
 tonConnectUi.setConnectRequestParameters({ state: 'loading' });
@@ -176,8 +178,11 @@ The backend reconstructs the signed message bytes and checks the Ed25519 signatu
 ```text
 message = "ton-proof-item-v2/" ++ Address ++ AppDomain ++ Timestamp ++ Payload
 hash    = sha256(0xffff ++ "ton-connect" ++ sha256(message))
-verify  Ed25519(signature, hash, publicKey)
+domain  = signatureDomain(network)
+verify  = domainSignVerify({ data: hash, signature, publicKey, domain })
 ```
+
+`domainSignVerify()` performs Ed25519 verification with the signature domain for the selected network.
 
 Field encodings are defined in the [`ton_proof` signature specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#address-proof-signature-ton_proof). The verifier should:
 
@@ -194,8 +199,14 @@ On success, issue a session token. The token's `sub` is the wallet address; the 
 
 ```ts
 import { createHash } from 'node:crypto';
-import nacl from 'tweetnacl';
-import { Address, Cell, contractAddress, loadStateInit } from '@ton/ton';
+import {
+    Address,
+    Cell,
+    contractAddress,
+    domainSignVerify,
+    loadStateInit,
+    type SignatureDomain,
+} from '@ton/ton';
 import { tryExtractPublicKey } from './wallet-public-key'; // from sign-data guide
 
 const PROOF_MAX_AGE_SEC = 15 * 60;
@@ -209,18 +220,27 @@ interface TonProofPayload {
 
 interface VerifyTonProofInput {
     address: string;           // user-friendly wallet address
+    network: string;           // '-239', '-3', or another accepted global ID
     walletStateInit: string;   // base64 BoC from the connect event
     proof: TonProofPayload;
     expectedDomain: string;    // your dApp host, e.g. "example.com"
+    expectedPayload: string;   // unused nonce issued for this session
+    expectedNetwork: string;
 }
 
 function sha256(buf: Buffer): Buffer {
     return createHash('sha256').update(buf).digest();
 }
 
+function signatureDomain(network: string): SignatureDomain {
+    return network === '-239' || network === '-3'
+        ? { type: 'empty' }
+        : { type: 'l2', globalId: Number(network) };
+}
+
 function buildTonProofDigest(address: Address, proof: TonProofPayload): Buffer {
     const wc = Buffer.alloc(4);
-    wc.writeUInt32BE(address.workChain, 0);
+    wc.writeInt32BE(address.workChain, 0);
 
     const domainBytes = Buffer.from(proof.domain.value, 'utf8');
     if (proof.domain.lengthBytes !== domainBytes.length) {
@@ -254,9 +274,19 @@ export async function verifyTonProof(
     input: VerifyTonProofInput,
     getWalletPublicKey: (address: string) => Promise<Buffer | null>,
 ): Promise<boolean> {
-    const { address, walletStateInit, proof, expectedDomain } = input;
+    const {
+        address,
+        network,
+        walletStateInit,
+        proof,
+        expectedDomain,
+        expectedPayload,
+        expectedNetwork,
+    } = input;
 
     if (proof.domain.value !== expectedDomain) throw new Error('wrong domain');
+    if (proof.payload !== expectedPayload) throw new Error('wrong payload');
+    if (network !== expectedNetwork) throw new Error('wrong network');
 
     const now = Math.floor(Date.now() / 1000);
     if (Math.abs(now - proof.timestamp) > PROOF_MAX_AGE_SEC) {
@@ -275,11 +305,12 @@ export async function verifyTonProof(
 
     const digest = buildTonProofDigest(wantedAddress, proof);
     const sig = Buffer.from(proof.signature, 'base64');
-    const ok = nacl.sign.detached.verify(
-        new Uint8Array(digest),
-        new Uint8Array(sig),
-        new Uint8Array(publicKey),
-    );
+    const ok = domainSignVerify({
+        data: digest,
+        signature: sig,
+        publicKey,
+        domain: signatureDomain(network),
+    });
     if (!ok) throw new Error('bad signature');
 
     return true;

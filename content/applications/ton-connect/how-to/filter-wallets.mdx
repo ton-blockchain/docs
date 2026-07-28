@@ -11,11 +11,11 @@ sidebarTitle: "Filter wallets"
 import { TonConnectUI } from '@tonconnect/ui';
 
 const tonConnectUi = new TonConnectUI({
-    manifestUrl: 'https://example.com/tonconnect-manifest.json',
+    manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
     walletsRequiredFeatures: {
         sendTransaction: {
             minMessages: 1,
-            itemTypes: ['gram', 'jetton']
+            itemTypes: ['ton', 'jetton']
         },
         signData: {
             types: ['text', 'binary', 'cell']
@@ -40,7 +40,7 @@ function App() {
             walletsRequiredFeatures={{
                 sendTransaction: {
                     minMessages: 1,
-                    itemTypes: ['gram', 'jetton']
+                    itemTypes: ['ton', 'jetton']
                 },
                 signData: {
                     types: ['text', 'binary', 'cell']
@@ -94,7 +94,7 @@ type RequiredFeatures = {
     sendTransaction?: {
         minMessages?: number;             // wallet's maxMessages must be ≥ this
         extraCurrencyRequired?: boolean;  // wallet must set extraCurrencySupported
-        itemTypes?: ('gram' | 'jetton' | 'nft')[];
+        itemTypes?: ('ton' | 'jetton' | 'nft')[];
     };
     signData?: {
         types: ('text' | 'binary' | 'cell')[]; // every requested type must be supported
@@ -102,7 +102,7 @@ type RequiredFeatures = {
     signMessage?: {
         minMessages?: number;
         extraCurrencyRequired?: boolean;
-        itemTypes?: ('gram' | 'jetton' | 'nft')[];
+        itemTypes?: ('ton' | 'jetton' | 'nft')[];
     };
     embeddedRequest?: {};                 // wallet must expose EmbeddedRequest
 };

@@ -23,7 +23,7 @@ Or include the bundle via CDN. The package is exposed on `window.TonConnectSDK`:
 
 For a pinned version, replace `@latest` with the desired version.
 
-> Generated from `@tonconnect/sdk` v4.0.0-beta.2.
+> Generated from `@tonconnect/sdk` v4.0.0.
 
 ## `TonConnect`
 
@@ -616,7 +616,7 @@ Native GRAM transfer.
 
 ```ts
 interface TonItem {
-    type: 'gram';
+    type: 'ton';
     address: string;
     amount: string;
     payload?: string;
@@ -627,7 +627,7 @@ interface TonItem {
 
 | Field           | Type                      | Description                                                                                                                                                                                 |
 | --------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`          | `'gram'`                  | —                                                                                                                                                                                           |
+| `type`          | `'ton'`                   | —                                                                                                                                                                                           |
 | `address`       | `string`                  | Destination address in [TEP-2](https://github.com/ton-blockchain/TEPs/blob/master/text/0002-address.md) user-friendly base64url form. The bounceable flag is taken from the address itself. |
 | `amount`        | `string`                  | Nanograms to send, as a decimal string (e.g. `"5000000"` for 0.005 Gram).                                                                                                                   |
 | `payload`       | `string`                  | _Optional_. Optional one-cell BoC body, base64-encoded. Omit for a plain transfer.                                                                                                          |
