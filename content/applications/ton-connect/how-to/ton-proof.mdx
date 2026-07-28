@@ -1,9 +1,9 @@
 ---
-title: "How to verify signed-in users with `ton_proof`"
-sidebarTitle: "Verify users"
+title: "How to authenticate users with `ton_proof`"
+sidebarTitle: "Authenticate users"
 ---
 
-`ton_proof` lets a backend verify that a user actually owns the wallet they connected. The client signs a payload with the wallet's private key; the server checks the signature.
+`ton_proof` lets a backend verify that a user controls the wallet account they connected. The wallet signs an application-provided payload with the account's private key; the backend checks the signature and issues a session token.
 
 ## Verification flow
 
@@ -13,7 +13,7 @@ sidebarTitle: "Verify users"
   alt="TON Proof verification flow: client requests payload, signs with wallet, and sends proof to backend"
 />
 
-After wallet connection, the client receives a `TonProofItemReplySuccess` object and sends it to the backend:
+During wallet connection, the client receives a `TonProofItemReplySuccess` object and sends it to the backend:
 
 ```typescript
 type TonProofItemReplySuccess = {
@@ -28,6 +28,43 @@ type TonProofItemReplySuccess = {
     payload: string;       // payload from the request
   };
 };
+```
+
+## Request a proof
+
+Generate an unpredictable, single-use payload on the backend. Associate it with the login attempt and give it a short expiration time. Then pass the payload to `setConnectRequestParameters` before opening the wallet modal:
+
+```ts
+const payload = await fetch('/api/ton-proof/payload', {
+  method: 'POST',
+}).then((response) => response.text());
+
+tonConnectUI.setConnectRequestParameters({
+  state: 'ready',
+  value: { tonProof: payload },
+});
+```
+
+Keep the payload short. The SDK allows at most 128 UTF-8 bytes for the domain, 128 UTF-8 bytes for the payload, and 222 bytes for both combined.
+
+Read the proof from the wallet status callback and send it to the backend together with `wallet.account`. A wallet that does not support `ton_proof` returns a connect-item error instead of a `proof` field, so handle both variants:
+
+```ts
+tonConnectUI.onStatusChange(async (wallet) => {
+  const tonProof = wallet?.connectItems?.tonProof;
+  if (!wallet || !tonProof || !('proof' in tonProof)) {
+    return;
+  }
+
+  await fetch('/api/ton-proof/verify', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      account: wallet.account,
+      proof: tonProof.proof,
+    }),
+  });
+});
 ```
 
 ## Verify the signature
@@ -46,10 +83,10 @@ message = utf8_encode("ton-proof-item-v2/") ++
           Payload
 ```
 
-- **Address** — the user's wallet address: `workchain` (32-bit big-endian) + `hash` (256-bit big-endian).
-- **AppDomain** — the app domain prefixed with its length. `lengthBytes` is a 32-bit little-endian integer.
+- **Address** — the user's wallet address: `workchain` (32-bit signed, big-endian) + `hash` (256-bit unsigned, big-endian).
+- **AppDomain** — `lengthBytes` (32-bit unsigned, little-endian) + the UTF-8-encoded app domain. Verify that `lengthBytes` equals the encoded domain's byte length.
 - **Timestamp** — 64-bit little-endian Unix epoch time in seconds.
-- **Payload** — a unique string, often a nonce, to prevent replay attacks.
+- **Payload** — the exact UTF-8-encoded payload from the request. Use a backend-issued, single-use value to prevent replay attacks.
 
 ### Signature verification
 
@@ -87,9 +124,13 @@ After extracting the public key, verify:
 
 1. It matches the `publicKey` field in `TonAddressItemReply`.
 1. `contractAddress(workchain, walletStateInit)` equals the user's address.
+1. The domain equals the expected dApp domain and `lengthBytes` equals its UTF-8 byte length.
+1. The timestamp is within a short acceptance window, including a bound on future clock skew.
+1. The payload belongs to this login attempt, has not expired, and is consumed atomically so it cannot be reused.
+1. The connected network matches the network your application accepts. The `ton_proof` signature does not bind the network.
 
 <Callout>
-  The helper used to extract a public key from `stateInit` in the examples below is simplified. Replace it with version-aware parsing after determining the wallet type via code hash.
+  Public-key extraction is wallet-version-specific. Identify the wallet by its code hash and parse the matching data layout; see [`tryExtractPublicKey`](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) for an implementation covering standard wallet versions.
 </Callout>
 
 ## React example
@@ -239,7 +280,7 @@ export class TonProofService {
 
   /**
    * Verify the ton_proof payload.
-   * Reference: https://github.com/ton-blockchain/ton-connect/blob/main/requests-responses.md#address-proof-signature-ton_proof
+   * Reference: https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#address-proof-signature-ton_proof
    */
   public async checkProof(
     payload: CheckProofRequestDto,
@@ -276,8 +317,13 @@ export class TonProofService {
         return false;
       }
 
+      const domainBytes = Buffer.from(payload.proof.domain.value, 'utf8');
+      if (payload.proof.domain.lengthBytes !== domainBytes.length) {
+        return false;
+      }
+
       const now = Math.floor(Date.now() / 1000);
-      if (now - validAuthTime > payload.proof.timestamp) {
+      if (Math.abs(now - payload.proof.timestamp) > validAuthTime) {
         return false;
       }
 
@@ -309,9 +355,9 @@ export class TonProofService {
         wc,
         message.address,
         dl,
-        Buffer.from(message.domain.value),
+        domainBytes,
         ts,
-        Buffer.from(message.payload),
+        Buffer.from(message.payload, 'utf8'),
       ]);
 
       const msgHash = Buffer.from(await sha256(msg));
@@ -334,6 +380,10 @@ export class TonProofService {
 ```
 
 ### API endpoints
+
+<Callout type="warning">
+  The demo below verifies the payload token's signature and expiration, but that alone does not make it single-use. In production, store a nonce identifier on the backend and consume it atomically during `checkProof`; reject every later request that uses the same identifier.
+</Callout>
 
 <CodeGroup>
   ```ts title="Check proof" icon="globe"
