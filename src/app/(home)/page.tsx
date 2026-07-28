@@ -99,13 +99,17 @@ const paths: Path[] = [
         href: '/applications/appkit/overview',
       },
       {
-        title: 'Integrate invoice payments with TON Pay',
-        href: '/applications/ton-pay/overview',
-      },
-      {
         title: 'Make wallet services with WalletKit',
         href: '/applications/walletkit/overview',
       },
+      {
+        title: 'Create tools using SDKs',
+        href: '/applications/sdks',
+      },
+      // {
+      //   title: 'Integrate invoice payments with TON Pay',
+      //   href: '/applications/ton-pay/overview',
+      // },
       {
         // title: 'Process Gram and USDT deposits and withdrawals',
         // href: '/applications/payments/setup',
