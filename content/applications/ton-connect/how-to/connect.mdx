@@ -106,7 +106,11 @@ The connect call accepts an optional `traceId` (UUIDv7 by default) that the SDK 
 await tonConnectUi.openModal({ traceId: '019a2a92-a884-7cfc-b1bc-caab18644b6f' });
 ```
 
-The same option is accepted by `tonConnectUi.disconnect`, `sendTransaction`, `signMessage`, and `signData`. The signing-action results expose `traceId`; `disconnect` returns `void`.
+The same option is accepted by `tonConnectUi.disconnect`, `sendTransaction`, `signMessage`, and `signData`.
+
+<Callout type="note">
+  The signing-action results expose `traceId`, while `disconnect` returns `void`.
+</Callout>
 
 ## Authenticate with `ton_proof`
 
@@ -182,9 +186,13 @@ domain  = signatureDomain(network)
 verify  = domainSignVerify({ data: hash, signature, publicKey, domain })
 ```
 
-`domainSignVerify()` performs Ed25519 verification with the signature domain for the selected network.
+The `domainSignVerify()` function performs Ed25519 verification with the signature domain for the selected network.
 
-Field encodings are defined in the [`ton_proof` signature specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#address-proof-signature-ton_proof). The verifier should:
+<Callout type="note">
+  Field encodings are defined in the [`ton_proof` signature specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/connect.md#address-proof-signature-ton_proof).
+</Callout>
+
+The verifier should:
 
 1. Check that the address derived from `walletStateInit` matches the reported account address — this binds the stateInit to the wallet whose proof you are verifying.
 1. Resolve the wallet's public key. First call [`tryExtractPublicKey`](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) from the sign-data guide on the stateInit; if it returns `null` (unknown contract), fall back to the on-chain `get_public_key` getter. The wallet-reported `publicKey` is not trusted — the address-bound stateInit is the authoritative source.
