@@ -31,6 +31,10 @@ Additionally, the resulting `mode` can have the following optional flags added:
 |      `+16` | `SEND_MODE_BOUNCE_ON_ACTION_FAIL` | Bounce the transaction in case of any errors during the action phase.                                                                                             |
 |      `+32` | `SEND_MODE_DESTROY`               | The current account (contract) will be destroyed if its resulting balance is zero. This flag has effect only if mode 128, `SEND_MODE_CARRY_ALL_BALANCE`, is used. |
 
+<Callout type="note">
+  Since [global version 10](/foundations/config#param-8-network-version), [modes 64 and 128 affect only Gram](/foundations/extra-currencies#transfers-and-fees). They do not add extra currencies from the incoming message or account balance.
+</Callout>
+
 ## Behavior
 
 Notation:

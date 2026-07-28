@@ -120,15 +120,15 @@ This parameter is the address of the root DNS contract of the TON network.
 
 [Parameter #4 on mainnet](https://tonscan.org/config#4)
 
-## Param 6: extra currency fee
+## Param 6: extra currency minting prices
 
-This parameter is responsible for minting fees for new currencies.
+This parameter stores the `mint_new_price` and `mint_add_price` values in Gram for extra-currency minting governance. The collator's [minting calculation](/foundations/extra-currencies#minting) does not use these values.
 
 [Parameter #6 on mainnet](https://tonscan.org/config#6)
 
 ## Param 7: extra currency volume
 
-This parameter stores the volume of each extra currency in circulation. The data is organized as a dictionary (also referred to as a **hashmap**). The structure uses the format `currency_id -> amount`, where the amount is represented as a `VarUInteger 32`, which is an integer ranging from `0` to `2^248-1`.
+This parameter stores target amounts for [extra-currency minting](/foundations/extra-currencies#minting). It maps each 32-bit currency ID to a `VarUInteger 32` amount. A masterchain block mints the positive difference between a target and the previous global balance — lowering a target does not burn currency.
 
 [Parameter #7 on mainnet](https://tonscan.org/config#7)
 
