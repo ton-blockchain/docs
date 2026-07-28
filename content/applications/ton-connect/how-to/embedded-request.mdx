@@ -5,13 +5,13 @@ sidebarTitle: "Use embedded requests"
 
 An _embedded request_ packs an action — `sendTransaction`, `signMessage` or `signData` — into the wallet's connect URL via the `e` query parameter. A compatible wallet bundles the connect approval and the action into one screen and returns the signed result with the connect response, saving the second round-trip.
 
-This optimization applies to mobile deep links and universal links. Desktop QR scans and the in-wallet JS bridge fall back to the standard two-step flow automatically.
+This optimization applies to HTTP-bridge connection URLs, whether opened as a mobile link or scanned as a QR code. Injected JS bridges and WalletConnect do not carry the `e` URL parameter.
 
 ## How it works
 
 1. The dApp calls `sendTransaction`, `signMessage` or `signData` with `enableEmbeddedRequest: true`.
 1. The SDK opens the wallet selection modal.
-1. If the user picks a wallet that advertises the `EmbeddedRequest` feature, the SDK encodes the request as `e=base64url(JSON.stringify(WireEmbeddedRequest))` on that wallet's universal link.
+1. If the user picks a wallet whose registry entry advertises the `EmbeddedRequest` feature, the SDK encodes the request as `e=base64url(JSON.stringify(WireEmbeddedRequest))` on that wallet's connection URL.
 1. The user taps the link. The wallet opens with both the connect request and the embedded action.
 1. The wallet returns the signed result inside the connect event. The SDK resolves the action promise with `{ hasResponse: true, response }`.
 
@@ -49,6 +49,8 @@ type EmbeddedTResponse<TResponse> =
 ```
 
 The envelope is the same shape regardless of whether the wallet was already connected when you called the method. When the wallet is connected, the SDK runs the normal bridge flow and wraps the result in `{ hasResponse: true, response }` — so the dApp keeps one linear code path.
+
+The UI method also adds its optional `traceId` correlation field to the result.
 
 ### Behavior matrix
 
@@ -104,8 +106,8 @@ The SDK embeds the request only when all four conditions hold:
 
 1. The wallet is not yet connected.
 1. `enableEmbeddedRequest: true` is set on the call.
-1. The user picks a wallet whose `DeviceInfo.features` lists `EmbeddedRequest`.
-1. The encoded URL fits within the SDK's URL length budget.
+1. The selected wallet's registry `features` list includes `EmbeddedRequest`.
+1. The encoded URL is at most 1024 characters.
 
 If any condition fails, the SDK opens the wallet without `e` and either returns `{ hasResponse: false, connectResult: { dispatched: false } }` (when the flag is set) or throws `TonConnectUIError` (when it is not).
 
@@ -115,12 +117,12 @@ To hide wallets that do not advertise `EmbeddedRequest` from the modal, set `wal
 
 ```ts
 const tonConnectUi = new TonConnectUI({
-    manifestUrl: 'https://example.com/tonconnect-manifest.json',
+    manifestUrl: 'https://tonconnect-sdk-demo-dapp.vercel.app/tonconnect-manifest.json',
     walletsRequiredFeatures: { embeddedRequest: {} },
 });
 ```
 
-Without that filter, embedded is a soft capability — the SDK falls back to the bridge flow transparently.
+Without that filter, a wallet that lacks the feature remains selectable. If the dApp was not connected, the SDK connects without `e` and returns `{ hasResponse: false, connectResult: { dispatched: false } }`; it does not send the action automatically.
 
 ## When not to use embedded requests
 

@@ -8,16 +8,25 @@ sidebarTitle: "Send a transaction"
 ## Request shape
 
 ```ts
-interface SendTransactionRequest {
+interface SendTransactionRequestBase {
     validUntil: number;          // unix seconds; reject if older
     network?: string;            // NETWORK_ID; '-239' mainnet, '-3' testnet, any other valid TON global_id allowed
     from?: string;               // optional sender address; restricts which account signs
-    messages?: RawMessage[];     // raw mode (mutually exclusive with `items`)
-    items?: StructuredItem[];    // structured mode (mutually exclusive with `messages`)
 }
+
+type SendTransactionRequest =
+    | SendTransactionRequestBase & { messages: RawMessage[]; items?: never }
+    | SendTransactionRequestBase & { items: StructuredItem[]; messages?: never };
 ```
 
 `network` should be set explicitly. If the dApp's network and the wallet's network differ, the wallet refuses the request.
+
+<Callout
+  type="danger"
+  title="Funds at risk"
+>
+  Mainnet transfers are irreversible. Replace every sample address and amount, then test with equivalent testnet assets before using mainnet.
+</Callout>
 
 ## Raw `messages[]`
 
@@ -29,15 +38,20 @@ Plain GRAM transfers omit `payload` or use an empty body.
 
 ### GRAM transfer (with comment)
 
-Raw `messages` (no payload for a simple transfer):
+Raw message with a comment payload:
 
 ```ts
-import { comment } from '@ton/ton'
+// Not runnable: replace truncated addresses with full TEP-2 addresses.
+import { comment } from '@ton/ton';
 
 await tonConnectUi.sendTransaction({
     validUntil: Math.floor(Date.now() / 1000) + 600,
     network: '-239',
-    messages: [{ address: 'EQD4oN...wz7A', amount: '5000000', payload: comment('Hello, world!') }],
+    messages: [{
+        address: 'EQD4oN...wz7A',
+        amount: '5000000',
+        payload: comment('Hello, world!').toBoc().toString('base64'),
+    }],
 });
 ```
 
@@ -55,6 +69,7 @@ const tonConnectUi = new TonConnectUI({
 });
 
 const JETTON_MASTER = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
+const JETTON_DECIMALS = 6;
 const RECIPIENT = 'Ef8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAU';
 
 const account = tonConnectUi.account;
@@ -78,8 +93,9 @@ async function resolveJettonWalletAddress(master: string, owner: string): Promis
     return walletAddress.toString({ urlSafe: true, bounceable: true });
 }
 
-const jettonAmount = toNano('1');
-const forwardTonAmount = 1n; // 1 nanogram
+const jettonAmount = 10n ** BigInt(JETTON_DECIMALS);
+// Forward 1 nanogram to the recipient.
+const forwardGramAmount = 1n;
 
 const userJettonWallet = await resolveJettonWalletAddress(JETTON_MASTER, SENDER);
 
@@ -90,7 +106,7 @@ const transferBody = beginCell()
     .storeAddress(Address.parse(RECIPIENT))
     .storeAddress(Address.parse(SENDER)) // response_destination
     .storeBit(0) // custom_payload: none
-    .storeCoins(forwardTonAmount)
+    .storeCoins(forwardGramAmount)
     .storeBit(0) // forward_payload: inline empty
     .endCell()
     .toBoc()
@@ -114,6 +130,7 @@ await tonConnectUi.sendTransaction({
 For NFTs you send to the **NFT item** contract with [TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md) `transfer#5fcc3d14`. Build the body as a base64 BoC and attach it as `payload`:
 
 ```ts
+// Not runnable: replace sample addresses with valid wallet and NFT item addresses.
 import { Address, beginCell, toNano } from '@ton/core';
 
 const nftItem = Address.parse('EQAcoW...qD8qM3T'); // NFT item contract, full friendly address
@@ -149,13 +166,13 @@ await tonConnectUi.sendTransaction({
 
 Structured items describe **what** to do — send GRAM, transfer a jetton, transfer an NFT. The wallet resolves jetton wallet addresses, builds transfer cells, and estimates gas. Use this path only when you know the target wallet advertises support (see [Choosing items vs messages](#choosing-items-vs-messages) and [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)).
 
-Three item types: `gram`, `jetton`, `nft`.
+Three item types: `ton`, `jetton`, `nft`.
 
-### `gram` — transfer GRAM
+### `ton` — transfer GRAM
 
 ```ts
 interface TonItem {
-    type: 'gram';
+    type: 'ton';
     address: string;       // destination, friendly format
     amount: string;        // nanogram as decimal string
     payload?: string;      // optional one-cell BoC, base64
@@ -167,6 +184,7 @@ interface TonItem {
 Same GRAM-with-comment transfer as the raw version above, expressed as a structured item:
 
 ```ts
+// Not runnable: replace truncated addresses with full TEP-2 addresses.
 import { comment } from '@ton/ton';
 
 await tonConnectUi.sendTransaction({
@@ -174,10 +192,10 @@ await tonConnectUi.sendTransaction({
     network: '-239',
     items: [
         {
-            type: 'gram',
+            type: 'ton',
             address: 'EQD4oN...wz7A', // recipient, full TEP-2 friendly address
             amount: '5000000',
-            payload: comment('Hello, world!'),
+            payload: comment('Hello, world!').toBoc().toString('base64'),
         },
     ],
 });
@@ -201,6 +219,7 @@ interface JettonItem {
 ```
 
 ```ts
+// Not runnable: replace truncated addresses with full contract addresses.
 await tonConnectUi.sendTransaction({
     validUntil: Math.floor(Date.now() / 1000) + 600,
     network: '-239',
@@ -232,6 +251,7 @@ interface NftItem {
 ```
 
 ```ts
+// Not runnable: replace truncated addresses with full contract addresses.
 await tonConnectUi.sendTransaction({
     validUntil: Math.floor(Date.now() / 1000) + 600,
     network: '-239',
@@ -248,11 +268,12 @@ await tonConnectUi.sendTransaction({
 ### Mixing types in one transaction
 
 ```ts
+// Not runnable: replace the placeholder address with a full TEP-2 address.
 await tonConnectUi.sendTransaction({
     validUntil: Math.floor(Date.now() / 1000) + 600,
     network: '-239',
     items: [
-        { type: 'gram', address: '...', amount: '5000000' },
+        { type: 'ton', address: '...', amount: '5000000' },
         {
             type: 'jetton',
             master: 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs',

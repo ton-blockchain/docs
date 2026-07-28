@@ -6028,7 +6028,7 @@
           },
           "balance": {
             "$ref": "#/components/schemas/Int256",
-            "description": "The account balance in nanograms (the smallest unit of GRAM). 1 GRAM = 1,000,000,000 nanograms (10^9), so divide by 10^9 to get the human-readable GRAM amount. Refer to the [units and decimals guide](/ecosystem/wallet-apps/deep-links#read-more) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/standard/tokens/jettons/overview) for details on how Jetton decimals work."
+            "description": "The account balance in nanograms (the smallest unit of GRAM). 1 GRAM = 1,000,000,000 nanograms (10^9), so divide by 10^9 to get the human-readable GRAM amount. Refer to the [units and decimals guide](/onboarding/wallet-apps/deep-links#jetton-transfer) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/contracts/standard/tokens/jettons/overview) for details on how Jetton decimals work."
           },
           "extra_currencies": {
             "type": "array",
@@ -6103,7 +6103,7 @@
           },
           "balance": {
             "$ref": "#/components/schemas/Int256",
-            "description": "The account balance in nanograms (the smallest unit of GRAM). 1 GRAM = 1,000,000,000 nanograms (10^9), so divide by 10^9 to get the human-readable GRAM amount. Refer to the [units and decimals guide](/ecosystem/wallet-apps/deep-links#read-more) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/standard/tokens/jettons/overview) for details on how Jetton decimals work."
+            "description": "The account balance in nanograms (the smallest unit of GRAM). 1 GRAM = 1,000,000,000 nanograms (10^9), so divide by 10^9 to get the human-readable GRAM amount. Refer to the [units and decimals guide](/onboarding/wallet-apps/deep-links#jetton-transfer) for more context. If this field appears on a Jetton wallet, the balance is in the token's base units. Divide by 10^decimals, where `decimals` is defined by the Jetton master contract. Refer to the [Jetton overview](/contracts/standard/tokens/jettons/overview) for details on how Jetton decimals work."
           },
           "extra_currencies": {
             "type": "array",
@@ -6199,7 +6199,7 @@
           },
           "wallet_id": {
             "type": "integer",
-            "description": "Subwallet ID for v3+ wallets. Allows creating multiple wallets from one key. The default value is `0x29a9a317` (698983191) on both mainnet and testnet, derived from the first 4 bytes of the TON mainnet initial state hash. Note: v5 wallets use a different scheme with network-specific values to prevent cross-network transaction replay. Refer to the [wallet interaction guide](/standard/wallets/interact) for full details."
+            "description": "Subwallet ID for v3+ wallets. Allows creating multiple wallets from one key. The default value is `0x29a9a317` (698983191) on both mainnet and testnet, derived from the first 4 bytes of the TON mainnet initial state hash. Note: v5 wallets use a different scheme with network-specific values to prevent cross-network transaction replay. Refer to the [wallet interaction guide](/contracts/standard/wallets/interact) for full details."
           },
           "is_signature_allowed": {
             "type": "boolean",

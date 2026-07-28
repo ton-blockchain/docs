@@ -37,7 +37,7 @@ Causes:
 - The user's network blocks the bridge domain.
 - The wallet never reconnected its SSE channel after moving to the background.
 
-**Action.** The SDK already retries: it reconnects the SSE channel with a fixed 2-second delay and repeats every `POST /message` every 5 seconds. The resend loop runs indefinitely unless the dApp passes an explicit `attempts` count or an `AbortSignal` to the request — set one if you need a give-up policy. Surface a _Connection problem_ state in the UI and offer to reconnect. Each wallet entry in [`wallets-v2.json`](https://github.com/ton-connect/wallets-list) lists at most one SSE bridge URL — there is no fallback inside the entry, so a permanently broken bridge has to be fixed by the wallet provider.
+**Action.** The SDK already retries: it reconnects the SSE channel with a fixed 2-second delay and repeats every `POST /message` every 5 seconds. Public action methods accept an `AbortSignal`; abort it when your give-up policy is reached. Surface a _Connection problem_ state in the UI and offer to reconnect. Each wallet entry in [`wallets-v2.json`](https://github.com/ton-connect/wallets-list) lists at most one SSE bridge URL — there is no fallback inside the entry, so a permanently broken bridge has to be fixed by the wallet provider.
 
 ### `USER_REJECTS_ERROR` — code 300
 
@@ -51,7 +51,7 @@ The wallet rejected the payload as malformed. Surfaces on every RPC method and i
 
 - An address in raw format (`0:abc…`) where the wallet expects [TEP-2 friendly](https://github.com/ton-blockchain/TEPs/blob/master/text/0002-address.md) (base64url with the bounceable flag).
 - Both `messages` and `items` present in `sendTransaction` or `signMessage` — the payload must contain one or the other, never both ([RPC specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/rpc.md)).
-- An entry in `items` whose `type` is not in the wallet's advertised `Feature.itemTypes` (`'gram'`, `'jetton'`, `'nft'`).
+- An entry in `items` whose `type` is not in the wallet's advertised `Feature.itemTypes` (`'ton'`, `'jetton'`, `'nft'`).
 - `valid_until` already in the past at the moment the wallet receives the request.
 - `network` does not match the network currently selected in the wallet.
 
@@ -93,7 +93,7 @@ A wallet-side fallback when no other code applies — internal exception, accoun
 
 ### Correlating logs with `traceId`
 
-Every `sendTransaction`, `signMessage`, `signData`, and `disconnect` call attaches a `traceId` (UUID, UUIDv7 by default) to the bridge request, the connect URL, and the wallet's reply. The same value comes back on `result.traceId`. Log it alongside your analytics and include it when reporting issues — the wallet, bridge, and dApp share one ID per user-visible operation, which is what makes a server-side log search tractable.
+Connect, action, and disconnect operations use a `traceId` (UUID, UUIDv7 by default) for correlation. Connect places it in the URL; actions and disconnect place it on the corresponding bridge request. Results from `sendTransaction`, `signMessage`, and `signData` expose `result.traceId`; `disconnect` returns `void`. Log the ID alongside your analytics and include it when reporting issues.
 
 ## Manifest 404 and CORS
 

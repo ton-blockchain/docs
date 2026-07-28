@@ -120,12 +120,18 @@ You can pass a `className` or `style` prop:
 ### 5. Read connection state
 
 ```tsx
-import { useTonAddress, useTonWallet } from '@tonconnect/ui-react';
+import {
+    useIsConnectionRestored,
+    useTonAddress,
+    useTonWallet,
+} from '@tonconnect/ui-react';
 
 function Status() {
     const address = useTonAddress();
     const wallet = useTonWallet();
+    const restored = useIsConnectionRestored();
 
+    if (!restored) return <span>Restoring…</span>;
     if (!wallet) return <span>Not connected</span>;
     return <span>Connected as {address}</span>;
 }
@@ -277,7 +283,7 @@ export default MyApp;
 
 ### SSR pitfalls
 
-- **Local storage.** TON Connect persists the session in `localStorage`. Code that reads the wallet state during SSR will see "not connected" until hydration. Render the wallet-dependent UI inside a client component so the hooks run after hydration, or return a skeleton while `useTonWallet()` is still `null`.
+- **Local storage.** TON Connect persists the session in `localStorage`. Code that reads wallet state during SSR cannot know whether a session will restore. Render wallet-dependent UI in a client component and use `useIsConnectionRestored()` to distinguish "restoring" from "disconnected."
 - **Browser-only APIs.** Anything from `@tonconnect/ui-react` that touches `window`, modals, or storage must run in a client component or be lazy-loaded with `ssr: false`.
 
 The hooks, button, and transaction-sending API are identical to plain React — see [Build a dApp with React](#build-a-dapp-with-react) for the rest.

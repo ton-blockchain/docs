@@ -83,7 +83,7 @@ The **JS bridge** is injected by the wallet as `window.<key>.tonconnect` when th
 
 The SDK picks the JS bridge when available, otherwise falls back to the HTTP bridge. A wallet may list both.
 
-Bridge endpoints and the `BridgeMessage` envelope accept an optional `trace_id` (UUID, UUIDv7 recommended) for analytics correlation. Tracing-aware bridges echo it back to the recipient, so the dApp, bridge, and wallet share one ID per user-visible operation. The SDK auto-generates a `traceId` per call and exposes it on every response — use it as the correlation key in your own logs.
+Bridge endpoints and the `BridgeMessage` envelope accept an optional `trace_id` (UUID, UUIDv7 recommended) for analytics correlation. Tracing-aware bridges echo it back to the recipient, so the dApp, bridge, and wallet share one ID per user-visible operation. The SDK auto-generates a `traceId`; signing-action results expose it, while connect and disconnect use it only for correlation.
 
 Spec reference: [Bridge specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md).
 
@@ -120,7 +120,7 @@ The dApp persists its keypair, the wallet's `client_id`, the bridge URL, and the
 
 - **Restored.** Both sides reconnect to their bridge queues and the SDK continues. The wallet sees no new connect prompt.
 - **Revoked.** The wallet has dropped the session. The SDK returns `UNKNOWN_APP_ERROR` (code `100`) and clears local state.
-- **Bridge unreachable.** The SDK retries with backoff; the connection stays in a "restoring" state until the bridge responds.
+- **Bridge unreachable.** The SDK retries at a fixed interval; the connection stays in a "restoring" state until the bridge responds.
 
 A session is not bound to a single browser tab — reloads and cross-tab sharing work as long as storage persists.
 
@@ -166,7 +166,7 @@ A TON Connect connection starts with a deep link from the dApp to the wallet —
 | `e`        | no       | Embedded RPC request, base64-URL JSON. Requires `EmbeddedRequest` feature.                                                                                                                                           |
 | `trace_id` | no       | UUID (UUIDv7 recommended) for end-to-end analytics correlation across dApp, bridge, and wallet. Echoed by tracing-aware bridges in the `BridgeMessage` envelope, and reused by tracing-aware wallets on their reply. |
 
-The `e` parameter packs an RPC request into the connect URL so the wallet handles connection and action in a single tap. Wallets that support this advertise `EmbeddedRequest` in their feature list; wallets that do not silently ignore `e` and the SDK falls back to the two-step flow. See [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request).
+The `e` parameter packs an RPC request into the connect URL so the wallet handles connection and action in a single tap. The UI SDK attaches it only for wallets that advertise `EmbeddedRequest`. If no embedded response arrives, the SDK reports that outcome and the dApp decides whether retrying is safe. See [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request).
 
 Spec reference: [Deep links specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/deeplinks.md).
 

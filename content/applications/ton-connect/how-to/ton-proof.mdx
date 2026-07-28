@@ -94,7 +94,7 @@ message = utf8_encode("ton-proof-item-v2/") ++
 
 ### Signature verification
 
-The signature is an Ed25519 signature over `sha256(0xffff ++ utf8_encode("ton-connect") ++ sha256(message))`:
+The signing digest is `sha256(0xffff ++ utf8_encode("ton-connect") ++ sha256(message))`:
 
 ```text
 signature = Ed25519Sign(
@@ -103,7 +103,7 @@ signature = Ed25519Sign(
 )
 ```
 
-The backend hashes the message, prepends `0xffff ++ "ton-connect"`, hashes again, and verifies with the user's public key.
+The backend hashes the message, prepends `0xffff ++ "ton-connect"`, hashes again, and verifies with the user's public key. Mainnet and testnet use the empty signature domain. Other global IDs use the corresponding L2 signature domain.
 
 ## Obtain the public key
 
@@ -139,7 +139,7 @@ After extracting the public key, verify:
 
 ## React example
 
-From the [`demo-dapp-with-wallet`](https://github.com/ton-connect/demo-dapp-with-wallet) `TonProofDemo` component:
+Adapted from the [SDK demo frontend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src):
 
 ```tsx expandable
 // Not runnable: copy the linked app and install its dependencies.
@@ -230,18 +230,17 @@ export const TonProofDemo = () => {
 
 ## Backend example
 
-From [`demo-dapp-with-react-ui`](https://github.com/ton-connect/demo-dapp-with-react-ui/tree/master/src/server):
+Adapted from the [SDK demo backend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/server).
 
 ### Proof request schema
 
 ```ts
 // Not runnable: add this file to the linked server and install its dependencies.
-import { CHAIN } from '@tonconnect/ui-react';
 import zod from 'zod';
 
 export const CheckProofRequest = zod.object({
   address: zod.string(),
-  network: zod.enum([CHAIN.MAINNET, CHAIN.TESTNET]),
+  network: zod.string().regex(/^-?\d+$/),
   public_key: zod.string(),
   proof: zod.object({
     timestamp: zod.coerce.number().int().nonnegative(),
@@ -264,9 +263,15 @@ export type CheckProofRequestDto = zod.infer<typeof CheckProofRequest>;
 ```ts expandable
 // Not runnable: add the referenced DTO and wallet parsing helpers.
 import { getSecureRandomBytes, sha256 } from '@ton/crypto';
-import { Address, Cell, contractAddress, loadStateInit } from '@ton/ton';
+import {
+  Address,
+  Cell,
+  contractAddress,
+  domainSignVerify,
+  loadStateInit,
+  type SignatureDomain,
+} from '@ton/ton';
 import { Buffer } from 'buffer';
-import { sign } from 'tweetnacl';
 import { CheckProofRequestDto } from '../dto/check-proof-request-dto';
 import { tryParsePublicKey } from '../wrappers/wallets-data';
 
@@ -278,6 +283,12 @@ const allowedDomains = [
   'localhost:5173',
 ];
 const validAuthTime = 15 * 60; // 15 minutes
+
+function signatureDomain(network: string): SignatureDomain {
+  return network === '-239' || network === '-3'
+    ? { type: 'empty' }
+    : { type: 'l2', globalId: Number(network) };
+}
 
 export class TonProofService {
   /** Generate random bytes for the payload. */
@@ -378,7 +389,12 @@ export class TonProofService {
 
       const result = Buffer.from(await sha256(fullMsg));
 
-      return sign.detached.verify(result, message.signature, publicKey);
+      return domainSignVerify({
+        data: result,
+        signature: message.signature,
+        publicKey,
+        domain: signatureDomain(payload.network),
+      });
     } catch (e) {
       return false;
     }
@@ -473,6 +489,13 @@ export class TonProofService {
 
 ## Verification examples in other languages
 
+<Callout
+  type="caution"
+  title="Community examples"
+>
+  The following examples were created by the community — they may be out of date or unsuitable for production. Proceed with caution. Always test thoroughly on testnet before using real funds.
+</Callout>
+
 - [Go demo app](https://github.com/ton-connect/demo-dapp-backend)
 - [Rust demo app](https://github.com/liketurbo/demo-dapp-backend-rs)
 - [JS demo app](https://github.com/liketurbo/demo-dapp-backend-js)
@@ -482,6 +505,6 @@ export class TonProofService {
 
 ## See also
 
-- [TON Connect overview](/ecosystem/ton-connect/overview)
-- [dApp integration](/ecosystem/ton-connect/dapp)
-- [Backend example repository](https://github.com/ton-connect/demo-dapp-with-react-ui/tree/master/src/server)
+- [TON Connect overview](/applications/ton-connect/overview)
+- [dApp integration](/applications/ton-connect/get-started)
+- [SDK demo backend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/server)
