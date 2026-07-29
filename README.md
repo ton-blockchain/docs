@@ -1,5 +1,5 @@
-# TON Docs
-
+# TON Docs fua17
+# my siinkoo
 Next.js app running [Fumadocs](https://www.fumadocs.dev/docs) documentation framework, with [Static Export](https://nextjs.org/docs/app/guides/static-exports) configured.
 
 All documentation pages are kept in the `content/` folder.
@@ -61,7 +61,7 @@ See more: [CSpell docs on custom dictionaries](https://cspell.org/docs/dictionar
 
 To check formatting of **all** files, run:
 
-```shell
+```she
 npm run check:fmt
 ```
 
