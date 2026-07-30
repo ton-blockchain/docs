@@ -106,13 +106,7 @@ const paths: Path[] = [
         title: 'Create tools using SDKs',
         href: '/applications/sdks',
       },
-      // {
-      //   title: 'Integrate invoice payments with TON Pay',
-      //   href: '/applications/ton-pay/overview',
-      // },
       {
-        // title: 'Process Gram and USDT deposits and withdrawals',
-        // href: '/applications/payments/setup',
         title: 'Process payments in business applications',
         href: '/applications/payments/overview',
       },
