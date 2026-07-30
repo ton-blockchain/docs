@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "coverage_percent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "fully_covered",
+        "needs_changes",
+        "redirect_change_only"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recommended_destination": {
+      "type": "string"
+    },
+    "report_body": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "coverage_percent",
+    "result",
+    "summary",
+    "recommended_destination",
+    "report_body"
+  ]
+}
