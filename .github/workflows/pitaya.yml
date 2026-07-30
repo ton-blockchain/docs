@@ -17,28 +17,28 @@ permissions:
   issues: write
 
 jobs:
-  fork-pr-note:
-    if: github.event_name == 'pull_request_target' && github.event.action == 'opened' && github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
-    steps:
-      - name: Comment external PR use /review
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          API="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
-          BODY=$(cat <<'TXT'
-          Skipping AI review because this PR is from a fork. A maintainer can start the review by commenting /review in this PR.
-          TXT
-          )
-          jq -n --arg body "$BODY" '{body:$body}' > payload.json
-          curl -sS -X POST "$API" \
-            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -H "Content-Type: application/json" \
-            -d @payload.json >/dev/null
+  # fork-pr-note:
+  #   if: github.event_name == 'pull_request_target' && github.event.action == 'opened' && github.event.pull_request.head.repo.full_name != github.repository
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Comment external PR use /review
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #       run: |
+  #         set -euo pipefail
+  #         PR_NUMBER="${{ github.event.pull_request.number }}"
+  #         API="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
+  #         BODY=$(cat <<'TXT'
+  #         Skipping AI review because this PR is from a fork. A maintainer can start the review by commenting /review in this PR.
+  #         TXT
+  #         )
+  #         jq -n --arg body "$BODY" '{body:$body}' > payload.json
+  #         curl -sS -X POST "$API" \
+  #           -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  #           -H "Accept: application/vnd.github+json" \
+  #           -H "X-GitHub-Api-Version: 2022-11-28" \
+  #           -H "Content-Type: application/json" \
+  #           -d @payload.json >/dev/null
 
   pr-review:
     concurrency:
