@@ -4,12 +4,13 @@ on:
   # NOTE: Disabled automatic runs entirely.
   # pull_request:
   #   types: [opened, ready_for_review]
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created]
-  pull_request_target:
-    types: [opened]
+  # issue_comment:
+  #   types: [created]
+  # pull_request_review_comment:
+  #   types: [created]
+  # pull_request_target:
+  #   types: [opened]
+  workflow_dispatch:
 
 permissions:
   contents: read
