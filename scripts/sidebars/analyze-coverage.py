@@ -5,6 +5,7 @@ import asyncio
 import hashlib
 import json
 import os
+import re
 import signal
 import sqlite3
 from datetime import datetime, timezone
@@ -135,6 +136,48 @@ def relative_path(root, path):
     return path.relative_to(root).as_posix() if path else None
 
 
+def load_sidebar_sources(root):
+    path = root / "scripts/sidebars/sidebars.js"
+    text = path.read_text(encoding="utf-8")
+    sources = list(
+        dict.fromkeys(
+            f"/{match.lstrip('/')}"
+            for match in re.findall(r"['\"`](/?v3/[^'\"`]+)['\"`]", text)
+        )
+    )
+    if not sources:
+        raise RuntimeError("scripts/sidebars/sidebars.js contains no /v3/ routes")
+    return sources
+
+
+def load_coverage_redirects(root):
+    config = json.loads((root / "docs.json").read_text(encoding="utf-8"))
+    redirects = config.get("redirects", [])
+    by_source = {}
+    duplicate_sources = set()
+    for position, item in enumerate(redirects):
+        source = item["source"]
+        if source in by_source:
+            duplicate_sources.add(source)
+        by_source[source] = (position, item)
+    if duplicate_sources:
+        duplicates = ", ".join(sorted(duplicate_sources))
+        raise RuntimeError(f"docs.json contains duplicate redirect sources: {duplicates}")
+
+    sidebar_sources = load_sidebar_sources(root)
+    missing = [source for source in sidebar_sources if source not in by_source]
+    if missing:
+        raise RuntimeError(
+            "docs.json has no redirect mapping for old sidebar routes: "
+            + ", ".join(missing)
+        )
+    coverage_redirects = [by_source[source] for source in sidebar_sources]
+    configured_sources = {
+        item["source"] for item in redirects if item["source"].startswith("/v3/")
+    }
+    return coverage_redirects, configured_sources
+
+
 def fingerprint(root, source, destination, source_file, destination_file):
     inputs = [
         ANALYZER_VERSION.encode(),
@@ -154,12 +197,12 @@ def fingerprint(root, source, destination, source_file, destination_file):
 
 
 def initial_state(source, kind, source_file):
+    if source in AUTO_TVM_ROUTES:
+        return "fully_covered", 100.0, "The aggregate TVM instruction page is excluded and covered."
     if not source_file:
         return "source_missing", None, "No matching old .md or .mdx file exists."
     if source.startswith("/v3/guidelines/ton-connect/"):
         return "fully_covered", 100.0, "TON Connect-focused pages are pre-assessed as covered."
-    if source in AUTO_TVM_ROUTES:
-        return "fully_covered", 100.0, "The aggregate TVM instruction page is excluded and covered."
     if kind == "external":
         return "fully_covered", 100.0, "External non-GitHub destinations are pre-assessed as covered."
     return "pending", None, None
@@ -228,19 +271,13 @@ def remove_report(root, report_file):
 
 def prepare(root, database):
     log("prepare_start", database=relative_path(root, database))
-    config = json.loads((root / "docs.json").read_text(encoding="utf-8"))
-    redirects = [
-        item for item in config.get("redirects", []) if item["source"].startswith("/v3/")
-    ]
-    sources = [item["source"] for item in redirects]
-    if len(sources) != len(set(sources)):
-        raise RuntimeError("docs.json contains duplicate /v3/ redirect sources")
+    redirects, configured_sources = load_coverage_redirects(root)
+    sources = [item["source"] for _, item in redirects]
 
     connection = connect_database(database)
-    seen = set()
     timestamp = now()
 
-    for position, item in enumerate(redirects):
+    for position, item in redirects:
         source = item["source"]
         destination = item["destination"]
         kind = destination_kind(destination)
@@ -298,7 +335,11 @@ def prepare(root, database):
                 existing["status"] == "report_created" and report_exists
             )
             reset = existing["status"] == "removed" or (
-                not successful and existing["fingerprint"] != content_fingerprint
+                not successful
+                and (
+                    existing["fingerprint"] != content_fingerprint
+                    or existing["status"] != state
+                )
             )
             if existing["status"] == "report_created" and not report_exists:
                 reset = True
@@ -355,13 +396,11 @@ def prepare(root, database):
                     source,
                 ),
             )
-        seen.add(source)
-
     stale_rows = connection.execute(
         "SELECT source_route, report_file FROM mappings WHERE status != 'removed'"
     ).fetchall()
     for row in stale_rows:
-        if row["source_route"] not in seen:
+        if row["source_route"] not in configured_sources:
             remove_report(root, row["report_file"])
             connection.execute(
                 """
@@ -373,35 +412,51 @@ def prepare(root, database):
             )
 
     connection.commit()
-    recover_checkpoints(root, connection)
+    recover_checkpoints(root, connection, set(sources))
     log("prepare_done", mappings=len(redirects))
-    print_status(connection)
+    print_status(connection, sources)
     connection.close()
+    return sources
 
 
-def print_status(connection):
+def source_filter(sources):
+    if sources is None:
+        return "", []
+    placeholders = ", ".join("?" for _ in sources)
+    return f"source_route IN ({placeholders})", list(sources)
+
+
+def print_status(connection, sources=None):
+    condition, values = source_filter(sources)
+    where = f"WHERE {condition}" if condition else ""
     rows = connection.execute(
-        """
+        f"""
         SELECT status, COUNT(*) AS count
         FROM mappings
+        {where}
         GROUP BY status
         ORDER BY status
-        """
+        """,
+        values,
     ).fetchall()
     counts = {row["status"]: row["count"] for row in rows}
     counts["total"] = sum(
         row["count"] for row in rows if row["status"] != "removed"
     )
+    condition_suffix = f"AND {condition}" if condition else ""
     counts["inputs_changed"] = connection.execute(
-        """
+        f"""
         SELECT COUNT(*)
         FROM mappings
         WHERE status IN ('fully_covered', 'report_created')
           AND analyzed_fingerprint IS NOT fingerprint
-        """
+          {condition_suffix}
+        """,
+        values,
     ).fetchone()[0]
     counts["warnings"] = connection.execute(
-        "SELECT COUNT(*) FROM mappings WHERE last_error IS NOT NULL"
+        f"SELECT COUNT(*) FROM mappings WHERE last_error IS NOT NULL {condition_suffix}",
+        values,
     ).fetchone()[0]
     log("status", **counts)
 
@@ -603,13 +658,20 @@ def persist_result(root, connection, row, result, checkpoint):
     return coverage, disposition, report_file
 
 
-def recover_checkpoints(root, connection):
+def recover_checkpoints(root, connection, sources=None):
     directory = root / ".ctx/analysis/.checkpoints"
     if not directory.is_dir():
         return
     for checkpoint in sorted(directory.glob("*.json")):
         try:
             payload = json.loads(checkpoint.read_text(encoding="utf-8"))
+            if sources is not None and payload["source_route"] not in sources:
+                log(
+                    "checkpoint_skipped",
+                    source=payload["source_route"],
+                    reason="outside_sidebar_inventory",
+                )
+                continue
             row = connection.execute(
                 "SELECT * FROM mappings WHERE source_route = ?",
                 (payload["source_route"],),
@@ -848,11 +910,16 @@ async def analyze_rows(root, connection, rows, model, timeout_seconds, jobs):
 
 
 def run(root, database, args):
-    prepare(root, database)
+    sources = prepare(root, database)
     connection = connect_database(database)
+    source_condition, source_values = source_filter(sources)
     recovered = connection.execute(
-        "UPDATE mappings SET status = 'pending', updated_at = ? WHERE status = 'analyzing'",
-        (now(),),
+        f"""
+        UPDATE mappings
+        SET status = 'pending', updated_at = ?
+        WHERE status = 'analyzing' AND {source_condition}
+        """,
+        [now(), *source_values],
     ).rowcount
     connection.commit()
     if recovered:
@@ -868,9 +935,10 @@ def run(root, database, args):
     query = f"""
         SELECT *
         FROM mappings
-        WHERE ({" OR ".join(conditions)})
+        WHERE {source_condition}
+          AND ({" OR ".join(conditions)})
     """
-    values = []
+    values = list(source_values)
     if args.source:
         query += " AND source_route = ?"
         values.append(args.source)
@@ -916,22 +984,27 @@ def run(root, database, args):
         failed=progress["failed"],
         cancelled=progress["cancelled"],
     )
-    print_status(connection)
+    print_status(connection, sources)
     connection.close()
 
 
-def show_status(database):
+def show_status(root, database):
     if not database.is_file():
         raise RuntimeError("analysis database does not exist; run prepare first")
+    redirects, _ = load_coverage_redirects(root)
+    sources = [item["source"] for _, item in redirects]
+    condition, values = source_filter(sources)
     connection = connect_database(database)
-    print_status(connection)
+    print_status(connection, sources)
     warnings = connection.execute(
-        """
+        f"""
         SELECT source_route, status, last_error
         FROM mappings
         WHERE last_error IS NOT NULL
+          AND {condition}
         ORDER BY position
-        """
+        """,
+        values,
     ).fetchall()
     for row in warnings:
         log(
@@ -1000,7 +1073,7 @@ def main():
     if args.command == "prepare":
         prepare(root, database)
     elif args.command == "status":
-        show_status(database)
+        show_status(root, database)
     else:
         run(root, database, args)
 
