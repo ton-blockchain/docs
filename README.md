@@ -83,7 +83,7 @@ See the [`snippets/` directory](./snippets) and the corresponding docs in [`cont
 
 ## Publishing changes
 
-The [GitHub Pages](https://docs.github.com/en/pages) deployment is set up — changes are deployed to production automatically after pushing to the default branch (`main`).
+Changes are deployed to [production](https://docs.ton.org) automatically after pushing to the default branch (`main`).
 
 ## Need help?
 

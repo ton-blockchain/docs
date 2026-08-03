@@ -95,16 +95,16 @@ const paths: Path[] = [
     icon: Blocks,
     links: [
       {
-        title: 'Build applications with AppKit',
-        href: '/applications/appkit/overview',
+        title: 'Overview',
+        href: '/applications/overview',
       },
       {
         title: 'Make wallet services with WalletKit',
         href: '/applications/walletkit/overview',
       },
       {
-        title: 'Create tools using SDKs',
-        href: '/applications/sdks',
+        title: 'Integrate with TON Connect',
+        href: '/applications/ton-connect/overview',
       },
       {
         title: 'Process payments in business applications',

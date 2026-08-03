@@ -123,7 +123,7 @@ For projects building on TON:
 
 - Streaming API: [TON Center](#ton-center-streaming-api-v2).
 - Data layer: [TON Center API v3](/api/v3/overview).
-- SDK: [AppKit][appkit] for balances, tokens, NFTs, and contract interactions.
+- SDK: [WalletKit][walletkit] for balances, tokens, NFTs, and contract interactions.
 - Finality: wait for `"finalized"` in critical flows.
 
 ### Public liteserver
@@ -233,16 +233,6 @@ Example subscription (send flow):
 - Send a `ping` every 15 seconds to keep the connection alive.
 - SSE connections receive automatic server-side keepalive (`: keepalive`) every 15 seconds; no client action required.
 
-### AppKit for app developers
-
-[AppKit][appkit] provides ready-to-use components for frontend applications. It handles out of the box:
-
-- GRAM balance for any address;
-- Jetton balances and metadata;
-- NFT holdings;
-- Contract state reads;
-- Transaction sending, including jetton transfers.
-
 ## Test on testnet
 
 Testnet runs at sub-second block generation speed. Use it for testing projects before shipping production changes on mainnet.
@@ -287,11 +277,11 @@ Perform the following tests to validate UX and wallet behavior.
 - [UX approaches for sub-second finality, Telegraph](https://telegra.ph/New-Approaches-to-Blockchain-User-Experience-08-02)
 - [TON Center Streaming API v2][streaming]
 - [API overview and public endpoints](/api/overview)
-- [AppKit documentation][appkit]
+- [WalletKit documentation][walletkit]
 
 ## Get support
 
 Use the [sub-second finality support chat](https://t.me/subsecond_upgrade) for questions about this upgrade.
 
-[appkit]: /applications/appkit/overview
+[walletkit]: /applications/walletkit/overview
 [streaming]: /api/streaming/overview
