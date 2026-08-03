@@ -103,7 +103,7 @@ const paths: Path[] = [
         href: '/applications/walletkit/overview',
       },
       {
-        title: 'Integrate with TON Connect',
+        title: 'Integrate dApps and wallets with TON Connect',
         href: '/applications/ton-connect/overview',
       },
       {
