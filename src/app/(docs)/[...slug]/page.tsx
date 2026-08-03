@@ -15,8 +15,6 @@ const localSkippedPagePaths = new Set([
   'foundations/whitepapers/tvm.mdx',
   'languages/fift/whitepaper.mdx',
   'tvm/instructions.mdx',
-  'applications/appkit/reference/appkit.mdx',
-  'applications/appkit/reference/appkit-react.mdx',
 ]);
 
 function shouldSkipLocalPage(path: string) {
