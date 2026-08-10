@@ -23,7 +23,6 @@ import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import stringWidth from 'string-width';
 import { visitParents } from 'unist-util-visit-parents';
-import { withBasePath } from './src/lib/shared';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
