@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "acton",
+      "type": "skill-md",
+      "description": "Acton CLI workflow for TON smart contract development in Tolk: install/update, project bootstrap, Acton.toml configuration, build/compile/wrapper generation, tests with coverage/gas/fuzz/mutation/UI, scripts and deployment, wallets, verification, RPC inspection, libraries, lint/format/hooks, LSP/completions, and troubleshooting.",
+      "url": "https://raw.githubusercontent.com/ton-blockchain/skills/main/acton/SKILL.md",
+      "digest": "sha256:55aa99d0eaa1e59cc37e23481ca3df79e1abdb26b2f17d103ec60817baee00ad"
+    },
+    {
+      "name": "tolk",
+      "type": "skill-md",
+      "description": "Write, review, debug, and test idiomatic Tolk smart contracts for The Open Network (TON). Use when building or modifying .tolk contracts, designing TON storage/message/getter schemas, implementing internal/external/bounced message flows, using cells, TL-B-compatible serialization, typed maps, Jettons, NFTs, wallets, vesting, multisig, DNS, or choosing Tolk tooling and tests.",
+      "url": "https://raw.githubusercontent.com/ton-blockchain/skills/main/tolk/SKILL.md",
+      "digest": "sha256:eb1f1c875bbc8edefd2d4f108874912651859f424ec23e6b9807600077905386"
+    },
+    {
+      "name": "func2tolk",
+      "type": "skill-md",
+      "description": "Port TON smart contracts from FunC (.fc/.func) to modern Tolk (.tolk) with Acton: use acton func2tolk when helpful, then refactor storage/messages/opcodes into typed structs and serialization, implement Acton-style entrypoints, generate wrappers, migrate JS/TS tests to native Tolk tests, and use acton build/test/script/verify/disasm to preserve TL-B compatibility and behavior. Use when asked to convert, port, or modernize FunC contracts into idiomatic Tolk.",
+      "url": "https://raw.githubusercontent.com/ton-blockchain/skills/main/func2tolk/SKILL.md",
+      "digest": "sha256:fece20bcada729e334b8fba54114f14d283671d0aa393fc38e36fa8b1910b81c"
+    },
+    {
+      "name": "ton-blockchain",
+      "type": "skill-md",
+      "description": "Use when working with The Open Network (TON) blockchain, or when the user mentions TON-ecosystem terms the agent may not recognize—such as Tact, FunC, Tolk, Fift, TL-B, TVM, cells, BoC, Jettons, NFTs, SBTs, TEPs, TON Connect, workchains, shardchains, liteservers, or other blockchain concepts.",
+      "url": "https://raw.githubusercontent.com/ton-blockchain/skills/main/ton-blockchain/SKILL.md",
+      "digest": "sha256:182c436fa000d206a870592ef32c7755cb9eba7f011f70cbde86b953a3f244cb"
+    }
+  ]
+}
