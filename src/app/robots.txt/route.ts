@@ -8,12 +8,13 @@ export function GET() {
     process.env.NEXT_BUILD_TYPE ?? '',
   );
   const accessRule = isTestDomain ? 'Disallow: /' : 'Allow: /';
+  const contentSignal = `Content-Signal: ai-train=no, search=${isTestDomain ? 'no' : 'yes'}, ai-input=no`;
 
   return new Response(
     `${[
       `User-agent: *`,
       accessRule,
-      `Content-Signal: ai-train=no, search=${isTestDomain ? 'no' : 'yes'}, ai-input=no`,
+      contentSignal,
       '',
       `Sitemap: ${withBaseUrl('/sitemap.xml')}`,
     ].join('\n')}\n`,
