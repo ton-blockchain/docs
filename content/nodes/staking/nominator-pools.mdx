@@ -70,13 +70,14 @@ sidebarTitle: "Nominator pools"
 
 ## Reward calculation
 
-Reward data can be obtained using the [TON Center nominator pools API](https://toncenter.com/api/smc-index/):
+Reward data can be obtained using the [TON Center API v3](/api/v3/overview):
 
-- [getPoolBookings](/api/smc-index/get-pool-bookings-method) – get all the bookings, including debits and credits, in a specified pool.
-- [getNominatorBookings](/api/smc-index/get-nominator-bookings-method) – get nominator bookings, including debits and credits, in a specified pool.
-- [getNominatorEarnings](/api/smc-index/get-nominator-earnings-method) – get nominator income in a specified pool, including stake amounts on each time point.
-- [getNominator](/api/smc-index/get-nominator-method) – get the nominator's balances across all pools in which the nominator participates.
-- [getPool](/api/smc-index/get-pool-method) – get pool data, including all nominators.
+- [Nominator pool events](/api/v3/staking/get-nominator-events-from-nominator-pools) – get deposits, withdrawals, rewards, and balance changes in a specified pool.
+- [Nominator rewards](/api/v3/staking/get-nominator-rewards-from-a-nominator-pool) – get a nominator's rewards and stake amounts in a specified pool.
+- [Nominator positions](/api/v3/staking/get-nominator-positions-in-nominator-pools) – get a nominator's balances across all pools in which the nominator participates.
+- [Nominator pool](/api/v3/staking/get-nominator-pool) – get pool data, including active nominators.
+- [Validator accounting events](/api/v3/staking/get-validator-accounting-events-from-nominator-pools) – get validator deposits, withdrawals, rewards, and penalties for nominator pools.
+- [Validator rewards](/api/v3/staking/get-validator-rewards-from-a-nominator-pool) – get validator rewards from a specified nominator pool.
 
 ## Validator setup
 

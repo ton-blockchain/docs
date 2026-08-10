@@ -44,5 +44,4 @@ Follow the [MyTonCtrl single nominator pools guide](/nodes/cpp/mytonctrl/pools#s
 - Separate APIs are typically unnecessary, as the validator and the nominator are usually the same entity. This is the original design assumption.
 - If validation and staking are managed by different parties, rewards, penalties, and fees must be calculated explicitly.
   - Penalties should be attributed to the validator, as they result from operational or hardware issues.
-- TON Center does not provide a dedicated API for single nominator pools.
-  - This is similar to the limitations described for the [nominator pools API](/api/smc-index/get-nominator-bookings-method).
+- TON Center API v3 provides standard [nominator-pool endpoints](/api/v3/staking/get-nominator-pool), but does not provide a dedicated single-nominator endpoint.
