@@ -4,6 +4,8 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
+import { asyncapi } from '@/lib/asyncapi';
+import { AsyncAPIPage } from '@/components/asyncapi-page';
 import { getMDXComponents } from '@/components/mdx';
 import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
 import { ScrollTop } from '@/components/ui/scroll-top';
@@ -103,7 +105,7 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
     >
       <DocsTitle>{renderInlineCode(page.data.title)}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      {page.data._openapi || page.slugs.includes('whitepapers') ? (
+      {page.data._openapi || page.data._asyncapi || page.slugs.includes('whitepapers') ? (
         <></>
       ) : (
         <div className="flex flex-row flex-wrap gap-2 items-center border-b pb-6">
@@ -119,6 +121,9 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
           components={getMDXComponents({
             // this allows linking to other pages with relative file paths
             a: createRelativeLink(source, page),
+            AsyncAPIPage: async (props) => (
+              <AsyncAPIPage {...await asyncapi.preloadAsyncAPIPage(page)} {...props} />
+            ),
           })}
         />
       </DocsBody>

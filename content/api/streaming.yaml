@@ -1,0 +1,384 @@
+asyncapi: 3.0.0
+info:
+  title: TON Center Streaming API
+  version: "2"
+  description: |
+    The TON Center Streaming API delivers real-time updates from the TON Blockchain over WebSocket.
+    The server emits the notifications defined here. Subscription commands appear in the
+    [WebSocket reference](/api/streaming/wss).
+defaultContentType: application/json
+servers:
+  mainnet:
+    host: toncenter.com
+    pathname: /api/streaming/v2/ws
+    protocol: wss
+    description: WebSocket endpoint for mainnet.
+    security:
+      - $ref: "#/components/securitySchemes/apiKeyHeader"
+      - $ref: "#/components/securitySchemes/apiKeyQuery"
+  testnet:
+    host: testnet.toncenter.com
+    pathname: /api/streaming/v2/ws
+    protocol: wss
+    description: WebSocket endpoint for testnet.
+    security:
+      - $ref: "#/components/securitySchemes/apiKeyHeader"
+      - $ref: "#/components/securitySchemes/apiKeyQuery"
+
+channels:
+  websocket:
+    address: /api/streaming/v2/ws
+    title: WebSocket events
+    description: The channel carries event notifications from the TON Center Streaming API.
+    servers:
+      - $ref: "#/servers/mainnet"
+      - $ref: "#/servers/testnet"
+    messages:
+      transactions:
+        $ref: "#/components/messages/transactions"
+      actions:
+        $ref: "#/components/messages/actions"
+      trace:
+        $ref: "#/components/messages/trace"
+      account_state_change:
+        $ref: "#/components/messages/account_state_change"
+      jettons_change:
+        $ref: "#/components/messages/jettons_change"
+      trace_invalidated:
+        $ref: "#/components/messages/trace_invalidated"
+
+operations:
+  receiveWebSocketEvents:
+    action: receive
+    channel:
+      $ref: "#/channels/websocket"
+    title: WebSocket events
+    summary: Receive event notifications from a WebSocket subscription.
+    description: |
+      The server emits a notification for each matching event. It may emit multiple notifications for a trace as finality advances. The server emits account-state and jetton updates only at `confirmed` or `finalized` finality. A `trace_invalidated` notification invalidates previously emitted trace, transaction, and action data at `pending` or `confirmed` finality.
+    messages:
+      - $ref: "#/components/messages/transactions"
+      - $ref: "#/components/messages/actions"
+      - $ref: "#/components/messages/trace"
+      - $ref: "#/components/messages/account_state_change"
+      - $ref: "#/components/messages/jettons_change"
+      - $ref: "#/components/messages/trace_invalidated"
+
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: httpApiKey
+      name: X-API-Key
+      in: header
+      description: Send the API key in the `X-API-Key` header. See [API authentication](/api/v3/authentication).
+    apiKeyQuery:
+      type: httpApiKey
+      name: api_key
+      in: query
+      description: Send the API key in the `api_key` query parameter. See [API authentication](/api/v3/authentication).
+
+  messages:
+    transactions:
+      name: transactions
+      summary: Transactions notification.
+      description: |
+        The notification contains transactions grouped by trace. The server may emit multiple
+        notifications for a trace as finality advances. Use `trace_external_hash_norm` to identify
+        the trace.
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/TransactionsNotification"
+      examples:
+        - name: pending
+          summary: Pending transactions notification.
+          payload:
+            type: transactions
+            finality: pending
+            trace_external_hash_norm: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            transactions:
+              - hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+    actions:
+      name: actions
+      summary: Actions notification.
+      description: |
+        The notification contains classified actions grouped by trace. The server may emit multiple
+        notifications for a trace as action classification or finality advances. Use
+        `trace_external_hash_norm` to identify the trace.
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/ActionsNotification"
+      examples:
+        - name: confirmed
+          summary: Confirmed actions notification.
+          payload:
+            type: actions
+            finality: confirmed
+            trace_external_hash_norm: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            actions:
+              - action_id: 11111111-1111-4111-8111-111111111111
+                type: ton_transfer
+
+    trace:
+      name: trace
+      summary: Trace notification.
+      description: |
+        The notification contains the complete trace tree and a map of all transactions in the trace.
+        The server does not filter this event by account address. Use `trace_external_hash_norm` to
+        identify the trace.
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/TraceNotification"
+      examples:
+        - name: confirmed
+          summary: Confirmed trace notification.
+          payload:
+            type: trace
+            finality: confirmed
+            trace_external_hash_norm: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            trace:
+              tx_hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+              children: []
+            transactions:
+              bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:
+                hash: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+            actions: []
+
+    account_state_change:
+      name: account_state_change
+      summary: Account state change notification.
+      description: |
+        The notification contains the state of a subscribed account after a matching transaction.
+        The server emits this event only at `confirmed` or `finalized` finality. The state omits
+        the full code and data bags of cells (BoCs).
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/AccountStateChangeNotification"
+      examples:
+        - name: finalized
+          summary: Finalized account state change notification.
+          payload:
+            type: account_state_change
+            finality: finalized
+            account: "0:0000000000000000000000000000000000000000000000000000000000000001"
+            state:
+              hash: AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=
+              balance: "1000000000"
+              account_status: active
+              data_hash: AgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICE=
+              code_hash: AwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISI=
+
+    jettons_change:
+      name: jettons_change
+      summary: Jetton wallet change notification.
+      description: |
+        The notification contains jetton wallet data after a matching transaction. The server
+        emits this event for a transaction on a jetton wallet when the subscribed address is the
+        jetton wallet address or its owner's TON wallet address. The server emits this event only
+        at `confirmed` or `finalized` finality.
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/JettonsChangeNotification"
+      examples:
+        - name: finalized
+          summary: Finalized jetton wallet change notification.
+          payload:
+            type: jettons_change
+            finality: finalized
+            jetton:
+              address: "0:0000000000000000000000000000000000000000000000000000000000000002"
+              balance: "42000000000"
+              owner: "0:0000000000000000000000000000000000000000000000000000000000000003"
+              jetton: "0:b113a994b5024a16719f69139328eb759596c38a25f59028b146fecdc3621dfe"
+              last_transaction_lt: "1234567890"
+
+    trace_invalidated:
+      name: trace_invalidated
+      summary: Trace invalidation notification.
+      description: |
+        The notification indicates that previously emitted trace, transaction, and action data at
+        `pending` or `confirmed` finality is no longer valid. The server does not emit this
+        notification for a finalized trace.
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/TraceInvalidatedNotification"
+      examples:
+        - name: invalidated
+          summary: Invalidated trace notification.
+          payload:
+            type: trace_invalidated
+            trace_external_hash_norm: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+  schemas:
+    TraceFinality:
+      type: string
+      enum:
+        - pending
+        - confirmed
+        - finalized
+      description: "Finality for trace-based notifications: `pending`, `confirmed`, or `finalized`."
+
+    StateFinality:
+      type: string
+      enum:
+        - confirmed
+        - finalized
+      description: "Finality for account-state and jetton wallet notifications: `confirmed` or `finalized`."
+
+    TransactionsNotification:
+      type: object
+      required:
+        - type
+        - finality
+        - trace_external_hash_norm
+        - transactions
+      properties:
+        type:
+          type: string
+          const: transactions
+        finality:
+          $ref: "#/components/schemas/TraceFinality"
+        trace_external_hash_norm:
+          type: string
+          description: Normalized external message hash that identifies the trace.
+        transactions:
+          type: array
+          items:
+            $ref: "./v3.yaml#/components/schemas/Transaction"
+        address_book:
+          $ref: "./v3.yaml#/components/schemas/AddressBook"
+        metadata:
+          $ref: "./v3.yaml#/components/schemas/Metadata"
+
+    ActionsNotification:
+      type: object
+      required:
+        - type
+        - finality
+        - trace_external_hash_norm
+        - actions
+      properties:
+        type:
+          type: string
+          const: actions
+        finality:
+          $ref: "#/components/schemas/TraceFinality"
+        trace_external_hash_norm:
+          type: string
+          description: Normalized external message hash that identifies the trace.
+        actions:
+          type: array
+          items:
+            $ref: "./v3.yaml#/components/schemas/Action"
+        address_book:
+          $ref: "./v3.yaml#/components/schemas/AddressBook"
+        metadata:
+          $ref: "./v3.yaml#/components/schemas/Metadata"
+
+    TraceNotification:
+      type: object
+      required:
+        - type
+        - finality
+        - trace_external_hash_norm
+        - trace
+        - transactions
+      properties:
+        type:
+          type: string
+          const: trace
+        finality:
+          $ref: "#/components/schemas/TraceFinality"
+        trace_external_hash_norm:
+          type: string
+          description: Normalized external message hash that identifies the trace.
+        trace:
+          $ref: "./v3.yaml#/components/schemas/TraceNode"
+        transactions:
+          type: object
+          additionalProperties:
+            $ref: "./v3.yaml#/components/schemas/Transaction"
+        actions:
+          type: array
+          items:
+            $ref: "./v3.yaml#/components/schemas/Action"
+        address_book:
+          $ref: "./v3.yaml#/components/schemas/AddressBook"
+        metadata:
+          $ref: "./v3.yaml#/components/schemas/Metadata"
+
+    AccountStateChangeNotification:
+      type: object
+      required:
+        - type
+        - finality
+        - account
+        - state
+      properties:
+        type:
+          type: string
+          const: account_state_change
+        finality:
+          $ref: "#/components/schemas/StateFinality"
+        account:
+          type: string
+          description: Raw account address.
+        state:
+          $ref: "#/components/schemas/AccountStateChange"
+
+    AccountStateChange:
+      type: object
+      required:
+        - hash
+        - balance
+        - account_status
+        - data_hash
+        - code_hash
+      properties:
+        hash:
+          type: string
+          description: Account-state hash encoded as Base64.
+        balance:
+          type: string
+          description: Account balance in nanograms.
+        account_status:
+          type: string
+          description: Account status.
+        data_hash:
+          type: string
+          description: Account-data hash encoded as Base64.
+        code_hash:
+          type: string
+          description: Account-code hash encoded as Base64.
+
+    JettonsChangeNotification:
+      type: object
+      required:
+        - type
+        - finality
+        - jetton
+      properties:
+        type:
+          type: string
+          const: jettons_change
+        finality:
+          $ref: "#/components/schemas/StateFinality"
+        jetton:
+          $ref: "./v3.yaml#/components/schemas/JettonWallet"
+        address_book:
+          $ref: "./v3.yaml#/components/schemas/AddressBook"
+        metadata:
+          $ref: "./v3.yaml#/components/schemas/Metadata"
+
+    TraceInvalidatedNotification:
+      type: object
+      required:
+        - type
+        - trace_external_hash_norm
+      properties:
+        type:
+          type: string
+          const: trace_invalidated
+        trace_external_hash_norm:
+          type: string
+          description: Normalized external message hash for the invalidated trace.

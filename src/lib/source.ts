@@ -2,6 +2,7 @@ import { createElement, Fragment, type ComponentType, type SVGProps } from 'reac
 import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { openapiPlugin } from 'fumadocs-openapi/server';
+import { asyncapiPlugin } from '@fumadocs/asyncapi/server';
 import { icons } from 'lucide-react';
 import {
   docsContentRoute,
@@ -58,8 +59,8 @@ export const source = loader({
               node.name.slice(1, -1),
             );
           }
-          // Apply the tag from the page frontmatter if the openapi field is unset
-          if (file.data.tag && !file.data._openapi) {
+          // Apply the tag from the page frontmatter if the API fields are unset
+          if (file.data.tag && !file.data._openapi && !file.data._asyncapi) {
             node.name = createElement(
               Fragment,
               null,
@@ -75,8 +76,8 @@ export const source = loader({
               ),
             );
           }
-          // Apply the white-space: nowrap for the <span> with the OpenAPI tag that follows the text
-          if (file.data._openapi) {
+          // Apply the white-space: nowrap for the <span> with the API tag that follows the text
+          if (file.data._openapi || file.data._asyncapi) {
             node.name = createElement(
               'span',
               { className: 'style-subsequent-openapi-tag' },
@@ -112,7 +113,7 @@ export const source = loader({
       },
     ],
   },
-  plugins: [openapiPlugin()],
+  plugins: [openapiPlugin(), asyncapiPlugin()],
 });
 
 export type Page = (typeof source)['$inferPage'];

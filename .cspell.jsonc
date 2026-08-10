@@ -90,7 +90,7 @@
     },
     {
       "filename": "**/api/**/*.{json,yml,yaml}",
-      "ignoreWords": ["multisigs", "smc", "Uninited", "vset_id"],
+      "ignoreWords": ["multisigs", "smc", "toncenter", "Uninited", "vset_id", "wss"],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary
@@ -205,5 +205,6 @@
     "/^export[ \\t].+?(?=\\r?\\n\\r?\\n)/gms", // export ...
     "(?<!\\\\)\\{(?:[^{}]|\\{(?:[^{}]|\\{[^{}]*\\})*\\})*\\}", // jsx expressions in {}
     "^_?openapi: .+$", // part of the frontmatter on OpenAPI-generated MDX pages
+    "^_?asyncapi:.*$", // part of the frontmatter on AsyncAPI-generated MDX pages
   ],
 }
