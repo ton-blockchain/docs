@@ -57,21 +57,5 @@ const genV3 = async () =>
     name: (path) => commonNameTransform(path.info.title),
   });
 
-const genSmcIndex = async () =>
-  await generateFiles({
-    ...commonConfig,
-    input: createOpenAPI({
-      // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
-      input: () => ({
-        'smc-index': path.resolve('./content/api/smc-index.json'),
-      }),
-    }),
-    output: path.resolve('./content/api/smc-index'),
-    per: 'operation',
-    groupBy: 'none',
-    name: (path) => commonNameTransform(path.info.title),
-  });
-
 await genV2();
 await genV3();
-await genSmcIndex();

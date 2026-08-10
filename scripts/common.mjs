@@ -257,8 +257,6 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
                   .map((it) => join(dirWithOverview, it.name))
               : [],
           ),
-        // Does not have an overview:
-        join(dir, 'api/smc-index'),
       ],
     },
   });

@@ -1,1725 +1,1896 @@
 openapi: 3.0.0
 info:
   title: TON Index (Go)
-  description: TON Index collects data from a full node to PostgreSQL database and provides convenient API to an indexed blockchain.
-  version: 1.2.4-rc
+  description: TON Index collects data from a full node, stores it in a PostgreSQL database, and provides an API for the indexed data.
+  version: 1.2.6
   contact: {}
 servers:
-- url: https://toncenter.com
-- url: https://testnet.toncenter.com
+  - url: https://toncenter.com
+  - url: https://testnet.toncenter.com
 paths:
   /api/v3/accountStates:
     get:
-      security: []
-      description: Query account states
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query account states that match the specified filters.
       tags:
-      - Accounts
-      summary: Get Account States
+        - Accounts
+      summary: Get account states
       operationId: api_v3_get_account_states
       parameters:
-      - name: address
-        in: query
-        description: List of addresses in any form. Maximum 1000 addresses allowed.
-        required: true
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: include_boc
-        in: query
-        description: 'Include code and data BOCs. Default: true'
-        schema:
-          type: boolean
-          default: true
+        - name: address
+          in: query
+          description: "List of addresses in any form. Maximum: 1000 addresses."
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: include_boc
+          in: query
+          description: "Include code and data BoCs. Defaults to `true`."
+          schema:
+            type: boolean
+            default: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountStatesResponse'
-        '400':
+                $ref: "#/components/schemas/AccountStatesResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/actions:
     get:
-      security: []
-      description: Get actions by specified filter.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query actions that match the specified filters.
       tags:
-      - Actions and traces
-      summary: Get Actions
+        - Actions and traces
+      summary: Get actions
       operationId: api_v3_get_actions
       parameters:
-      - name: account
-        in: query
-        description: List of account addresses to get actions. Can be sent in hex, base64 or base64url form.
-        schema:
-          type: string
-      - name: tx_hash
-        in: query
-        description: Find actions by transaction hash.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: account
+          in: query
+          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          schema:
             type: string
-      - name: msg_hash
-        in: query
-        description: Find actions by message hash.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: tx_hash
+          in: query
+          description: Find actions by transaction hash.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: msg_hash
+          in: query
+          description: Find actions by message hash.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: action_id
+          in: query
+          description: Find actions by `action_id`.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: trace_id
+          in: query
+          description: Find actions by `trace_id`.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: mc_seqno
+          in: query
+          description: Query actions for traces completed in the masterchain block with the specified sequence number.
+          schema:
+            type: integer
+            format: int32
+        - name: start_utime
+          in: query
+          description: Query actions for traces with `trace_end_utime >= start_utime`.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query actions for traces with `trace_end_utime <= end_utime`.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query actions for traces with `trace_end_lt >= start_lt`.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query actions for traces with `trace_end_lt <= end_lt`.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: action_type
+          in: query
+          description: Filter actions by type.
+          explode: true
+          schema:
+            type: array
+            items:
+              enum:
+                - call_contract
+                - contract_deploy
+                - ton_transfer
+                - auction_bid
+                - change_dns
+                - dex_deposit_liquidity
+                - dex_withdraw_liquidity
+                - delete_dns
+                - renew_dns
+                - election_deposit
+                - election_recover
+                - jetton_burn
+                - jetton_swap
+                - jetton_transfer
+                - jetton_mint
+                - nft_mint
+                - tick_tock
+                - stake_deposit
+                - stake_withdrawal
+                - stake_withdrawal_request
+                - subscribe
+                - unsubscribe
+              type: string
+        - name: exclude_action_type
+          in: query
+          description: Exclude the specified action types.
+          explode: true
+          schema:
+            type: array
+            items:
+              enum:
+                - call_contract
+                - contract_deploy
+                - ton_transfer
+                - auction_bid
+                - change_dns
+                - dex_deposit_liquidity
+                - dex_withdraw_liquidity
+                - delete_dns
+                - renew_dns
+                - election_deposit
+                - election_recover
+                - jetton_burn
+                - jetton_swap
+                - jetton_transfer
+                - jetton_mint
+                - nft_mint
+                - tick_tock
+                - stake_deposit
+                - stake_withdrawal
+                - stake_withdrawal_request
+                - subscribe
+                - unsubscribe
+              type: string
+        - name: supported_action_types
+          in: query
+          description: List supported action types.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: include_accounts
+          in: query
+          description: Include the `accounts` array for each action in the response.
+          schema:
+            type: boolean
+            default: false
+        - name: include_transactions
+          in: query
+          description: Include the `transactions_full` array with detailed transaction data for each action in the response.
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort actions by `lt`.
+          schema:
             type: string
-      - name: action_id
-        in: query
-        description: Find actions by the action_id.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: trace_id
-        in: query
-        description: Find actions by the trace_id.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: mc_seqno
-        in: query
-        description: Query actions of traces which was completed in masterchain block with given seqno
-        schema:
-          type: integer
-          format: int32
-      - name: start_utime
-        in: query
-        description: Query actions for traces with `trace_end_utime >= start_utime`.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query actions for traces with `trace_end_utime <= end_utime`.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query actions for traces with `trace_end_lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query actions for traces with `trace_end_lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: action_type
-        in: query
-        description: Include action types.
-        explode: true
-        schema:
-          type: array
-          items:
+            default: desc
             enum:
-            - call_contract
-            - contract_deploy
-            - ton_transfer
-            - auction_bid
-            - change_dns
-            - dex_deposit_liquidity
-            - dex_withdraw_liquidity
-            - delete_dns
-            - renew_dns
-            - election_deposit
-            - election_recover
-            - jetton_burn
-            - jetton_swap
-            - jetton_transfer
-            - jetton_mint
-            - nft_mint
-            - tick_tock
-            - stake_deposit
-            - stake_withdrawal
-            - stake_withdrawal_request
-            - subscribe
-            - unsubscribe
-            type: string
-      - name: exclude_action_type
-        in: query
-        description: Exclude action types.
-        explode: true
-        schema:
-          type: array
-          items:
-            enum:
-            - call_contract
-            - contract_deploy
-            - ton_transfer
-            - auction_bid
-            - change_dns
-            - dex_deposit_liquidity
-            - dex_withdraw_liquidity
-            - delete_dns
-            - renew_dns
-            - election_deposit
-            - election_recover
-            - jetton_burn
-            - jetton_swap
-            - jetton_transfer
-            - jetton_mint
-            - nft_mint
-            - tick_tock
-            - stake_deposit
-            - stake_withdrawal
-            - stake_withdrawal_request
-            - subscribe
-            - unsubscribe
-            type: string
-      - name: supported_action_types
-        in: query
-        description: Supported action types
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: include_accounts
-        in: query
-        description: Include accounts array for each action in response.
-        schema:
-          type: boolean
-          default: false
-      - name: include_transactions
-        in: query
-        description: Include `transactions_full` array with detailed transaction data for each action in response.
-        schema:
-          type: boolean
-          default: false
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort actions by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActionsResponse'
-        '400':
+                $ref: "#/components/schemas/ActionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/addressBook:
     get:
-      security: []
-      description: Query address book
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query the address book for the specified addresses.
       tags:
-      - Accounts
-      summary: Address Book
+        - Accounts
+      summary: Address book
       operationId: api_v3_get_address_book
       parameters:
-      - name: address
-        in: query
-        description: 'List of addresses in any form to get address book. Max: 1024.'
-        required: true
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
+        - name: address
+          in: query
+          description: "List of addresses in any form to include in the address book. Maximum: 1024 addresses."
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddressBook'
-        '400':
+                $ref: "#/components/schemas/GenericAddressBook"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/addressInformation:
     get:
-      security: []
-      description: Get smart contract information.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Get smart contract information for the specified account.
       tags:
-      - API v2
-      summary: Get Address Information
+        - API v2
+      summary: Get address information
       operationId: api_v3_get_v2_addressInformation
       parameters:
-      - name: address
-        in: query
-        description: Account address in any form.
-        required: true
-        schema:
-          type: string
-      - name: use_v2
-        in: query
-        description: Use method from api/v2. Not recommended
-        schema:
-          type: boolean
-          default: true
+        - name: address
+          in: query
+          description: Account address in any form.
+          required: true
+          schema:
+            type: string
+        - name: use_v2
+          in: query
+          description: Use the API v2 method. This option is not recommended.
+          schema:
+            type: boolean
+            default: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V2AddressInformation'
-        '400':
+                $ref: "#/components/schemas/V2AddressInformation"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/adjacentTransactions:
     get:
-      security: []
-      description: Get parent and/or children for specified transaction.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Get the parent transaction, child transactions, or both for the specified transaction.
       tags:
-      - Blockchain Data
-      summary: Get Adjacent Transactions
+        - Blockchain data
+      summary: Get adjacent transactions
       operationId: api_v3_get_adjacent_transactions
       parameters:
-      - name: hash
-        in: query
-        description: Transaction hash.
-        schema:
-          type: string
-      - name: direction
-        in: query
-        description: Direction of message.
-        schema:
-          type: string
-          enum:
-          - in
-          - out
+        - name: hash
+          in: query
+          description: Transaction hash.
+          schema:
+            type: string
+        - name: direction
+          in: query
+          description: Direction of the message relative to the transaction.
+          schema:
+            type: string
+            enum:
+              - in
+              - out
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/blocks:
     get:
-      security: []
-      description: Returns blocks by specified filters.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return blocks that match the specified filters.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get blocks
       operationId: api_v3_get_blocks
       parameters:
-      - name: workchain
-        in: query
-        description: Block workchain.
-        schema:
-          type: integer
-          format: int32
-      - name: shard
-        in: query
-        description: 'Block shard id. Must be sent with *workchain*. Example: `8000000000000000`.'
-        schema:
-          type: string
-      - name: seqno
-        in: query
-        description: Block block seqno. Must be sent with *workchain* and *shard*.
-        schema:
-          type: integer
-          format: int32
-      - name: root_hash
-        in: query
-        description: Block root hash.
-        schema:
-          type: string
-      - name: file_hash
-        in: query
-        description: Block file hash.
-        schema:
-          type: string
-      - name: mc_seqno
-        in: query
-        description: Masterchain block seqno
-        schema:
-          type: integer
-          format: int32
-      - name: start_utime
-        in: query
-        description: Query blocks with generation UTC timestamp **after** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query blocks with generation UTC timestamp **before** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query blocks with `lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query blocks with `lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort results by UTC timestamp.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+        - name: workchain
+          in: query
+          description: Workchain of the block.
+          schema:
+            type: integer
+            format: int32
+        - name: shard
+          in: query
+          description: "Shard ID of the block. Provide this parameter with `workchain`. Example: `8000000000000000`."
+          schema:
+            type: string
+        - name: seqno
+          in: query
+          description: "Sequence number of the block. Provide this parameter with `workchain` and `shard`."
+          schema:
+            type: integer
+            format: int32
+        - name: root_hash
+          in: query
+          description: Root hash of the block.
+          schema:
+            type: string
+        - name: file_hash
+          in: query
+          description: File hash of the block.
+          schema:
+            type: string
+        - name: mc_seqno
+          in: query
+          description: Masterchain block sequence number.
+          schema:
+            type: integer
+            format: int32
+        - name: start_utime
+          in: query
+          description: Query blocks with a generation timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query blocks with a generation timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query blocks where `lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query blocks where `lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort blocks by generation timestamp.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BlocksResponse'
-        '400':
+                $ref: "#/components/schemas/BlocksResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/decode:
     get:
-      security: []
-      description: Decode opcodes and message bodies. Opcodes can be in hex (with or without 0x prefix) or decimal format.
-        Bodies should be in base64 or hex format.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: >-
+        Decode opcodes and message bodies. Opcodes can be in hexadecimal (with or without the `0x` prefix) or decimal
+        format. Bodies can be in base64 or hexadecimal format.
       tags:
-      - Utils
-      summary: Decode Opcodes and Bodies (GET)
+        - Utils
+      summary: Decode opcodes and bodies (GET)
       operationId: api_v3_get_decode
       parameters:
-      - name: opcodes
-        in: query
-        description: List of opcodes to decode (hex or decimal)
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: bodies
-        in: query
-        description: List of message bodies to decode (base64 or hex)
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
+        - name: opcodes
+          in: query
+          description: List of opcodes to decode in hexadecimal or decimal format.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: bodies
+          in: query
+          description: List of message bodies to decode in base64 or hexadecimal format.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DecodeResponse'
-        '400':
+                $ref: "#/components/schemas/DecodeResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
     post:
-      security: []
-      description: Decode opcodes and message bodies. Opcodes can be in hex (with or without 0x prefix) or decimal format.
-        Bodies should be in base64 or hex format. Use POST method for long parameters that may be truncated in GET requests.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: >-
+        Decode opcodes and message bodies. Opcodes can be in hexadecimal (with or without the `0x` prefix) or decimal
+        format. Bodies can be in base64 or hexadecimal format. Use POST for long parameters that may be truncated in
+        GET requests.
       tags:
-      - Utils
-      summary: Decode Opcodes and Bodies (POST)
+        - Utils
+      summary: Decode opcodes and bodies (POST)
       operationId: api_v3_post_decode
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DecodeRequest'
+              $ref: "#/components/schemas/DecodeRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DecodeResponse'
-        '400':
+                $ref: "#/components/schemas/DecodeResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/dns/records:
     get:
-      security: []
-      description: Query DNS records by specified filters. Currently .ton and .t.me DNS are supported.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query DNS records matching the specified filters. Supports `.ton` and `.t.me` records.
       tags:
-      - Dns
-      summary: Get DNS Records
+        - DNS
+      summary: Get DNS records
       operationId: api_v3_get_dns_records
       parameters:
-      - name: wallet
-        in: query
-        description: Wallet address in any form. DNS records that contain this address in wallet category will be returned.
-        schema:
-          type: string
-      - name: domain
-        in: query
-        description: Domain name to search for. DNS records with this exact domain name will be returned.
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 100
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: wallet
+          in: query
+          description: Wallet address in any form. Returns DNS records in the wallet category that contain this address.
+          schema:
+            type: string
+        - name: domain
+          in: query
+          description: Domain name to search for. Returns DNS records with this exact domain name.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DNSRecordsResponse'
-        '400':
+                $ref: "#/components/schemas/DNSRecordsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
+  /api/v3/dns/activeAuctions:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: >-
+        Returns DNS auctions where the address is the current leading bidder.
+        Use `bidding` for open auctions and `won` for ended but unclaimed
+        auctions. Claimed auctions are no longer returned. Ordering for
+        `bidding` and `all` can change as auctions update. Use larger limits
+        when paginating. Set `include_nft_items` to include NFT details.
+        NFT and collection metadata is returned separately.
+      tags:
+        - DNS
+      summary: Get DNS auctions by bidder
+      operationId: api_v3_get_dns_active_auctions
+      parameters:
+        - name: bidder
+          in: query
+          description: Address of the current leading bidder.
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: Filter by auction state.
+          schema:
+            type: string
+            default: all
+            enum:
+              - all
+              - won
+              - bidding
+        - name: include_nft_items
+          in: query
+          description: Include NFT item details.
+          schema:
+            type: boolean
+            default: false
+        - name: after
+          in: query
+          description: Opaque pagination cursor from `next_cursor` of the previous page. Returns rows strictly after it and is preferred over `offset`.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Rows to skip. Do not combine this parameter with `after`.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DNSAuctionsResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestError"
   /api/v3/estimateFee:
     post:
-      security: []
-      description: Estimate fees required for query processing. Fields body, init-code and init-data accepted in serialized
-        format (b64-encoded).
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description:
+        Estimate the fees required to process the query. The `body`, `init_code`, and `init_data` fields accept
+        serialized, base64-encoded values.
       tags:
-      - API v2
-      summary: Estimate Fee
+        - API v2
+      summary: Estimate fee
       operationId: api_v3_post_v2_estimate_fee
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/V2EstimateFeeRequest'
+              $ref: "#/components/schemas/V2EstimateFeeRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V2EstimateFeeResult'
-        '400':
+                $ref: "#/components/schemas/V2EstimateFeeResult"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/jetton/burns:
     get:
-      security: []
-      description: Get Jetton burns by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query jetton burns that match the specified filters.
       tags:
-      - Jettons
-      summary: Get Jetton Burns
+        - Jettons
+      summary: Get jetton burns
       operationId: api_v3_get_jetton_burns
       parameters:
-      - name: address
-        in: query
-        description: Address of jetton wallet owner in any form. Max 1000
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: address
+          in: query
+          description: "Address of the jetton wallet owner in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: jetton_wallet
+          in: query
+          description: "Jetton wallet address in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: jetton_master
+          in: query
+          description: Jetton master address in any form.
+          schema:
             type: string
-      - name: jetton_wallet
-        in: query
-        description: 'Jetton wallet address in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: start_utime
+          in: query
+          description: Query transactions with a generation timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query transactions with a generation timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query transactions where `lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query transactions where `lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort transactions by `lt`.
+          schema:
             type: string
-      - name: jetton_master
-        in: query
-        description: Jetton master address in any form.
-        schema:
-          type: string
-      - name: start_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **after** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **before** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query transactions with `lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query transactions with `lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort transactions by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JettonBurnsResponse'
-        '400':
+                $ref: "#/components/schemas/JettonBurnsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/jetton/masters:
     get:
-      security: []
-      description: Get Jetton masters by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query jetton masters that match the specified filters.
       tags:
-      - Jettons
-      summary: Get Jetton Masters
+        - Jettons
+      summary: Get jetton masters
       operationId: api_v3_get_jetton_masters
       parameters:
-      - name: address
-        in: query
-        description: 'Jetton Master address in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: admin_address
-        in: query
-        description: 'Address of Jetton Master''s admin in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: address
+          in: query
+          description: "Jetton master address in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: admin_address
+          in: query
+          description: "Address of the jetton master's administrator in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JettonMastersResponse'
-        '400':
+                $ref: "#/components/schemas/JettonMastersResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/jetton/transfers:
     get:
-      security: []
-      description: Get Jetton transfers by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query jetton transfers that match the specified filters.
       tags:
-      - Jettons
-      summary: Get Jetton Transfers
+        - Jettons
+      summary: Get jetton transfers
       operationId: api_v3_get_jetton_transfers
       parameters:
-      - name: owner_address
-        in: query
-        description: Address of jetton wallet owner in any form. Max 1000
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: owner_address
+          in: query
+          description: "Address of the jetton wallet owner in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: jetton_wallet
+          in: query
+          description: "Jetton wallet address in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: jetton_master
+          in: query
+          description: Jetton master address in any form.
+          schema:
             type: string
-      - name: jetton_wallet
-        in: query
-        description: 'Jetton wallet address in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: direction
+          in: query
+          description: Direction of the transfer. Applies only when `owner_address` is provided.
+          schema:
             type: string
-      - name: jetton_master
-        in: query
-        description: Jetton master address in any form.
-        schema:
-          type: string
-      - name: direction
-        in: query
-        description: Direction of transfer. *Note:* applied only with owner_address.
-        schema:
-          type: string
-          enum:
-          - in
-          - out
-      - name: start_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **after** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **before** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query transactions with `lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query transactions with `lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort transactions by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+            enum:
+              - in
+              - out
+        - name: start_utime
+          in: query
+          description: Query transactions with a generation timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query transactions with a generation timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query transactions where `lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query transactions where `lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort transactions by `lt`.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JettonTransfersResponse'
-        '400':
+                $ref: "#/components/schemas/JettonTransfersResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/jetton/wallets:
     get:
-      security: []
-      description: Get Jetton wallets by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query jetton wallets that match the specified filters.
       tags:
-      - Jettons
-      summary: Get Jetton Wallets
+        - Jettons
+      summary: Get jetton wallets
       operationId: api_v3_get_jetton_wallets
       parameters:
-      - name: address
-        in: query
-        description: 'Jetton wallet address in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: address
+          in: query
+          description: "Jetton wallet address in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: owner_address
+          in: query
+          description: "Address of the jetton wallet owner in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: jetton_address
+          in: query
+          description: Jetton master address in any form.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: exclude_zero_balance
+          in: query
+          description: Exclude jetton wallets with a zero balance.
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort jetton wallets by balance. Results may be inconsistent while paginating with `limit` and `offset`.
+          schema:
             type: string
-      - name: owner_address
-        in: query
-        description: 'Address of Jetton wallet''s owner in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: jetton_address
-        in: query
-        description: Jetton Master in any form.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: exclude_zero_balance
-        in: query
-        description: Exclude jetton wallets with 0 balance.
-        schema:
-          type: boolean
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort jetton wallets by balance. **Warning:** results may be inconsistent during the read with limit and
-          offset.
-        schema:
-          type: string
-          enum:
-          - asc
-          - desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JettonWalletsResponse'
-        '400':
+                $ref: "#/components/schemas/JettonWalletsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/masterchainBlockShardState:
     get:
-      security: []
-      description: Get masterchain block shard state. Same as /api/v2/shards.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Get the shard state for a masterchain block. This endpoint is equivalent to `/api/v2/shards`.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get masterchain block shard state
       operationId: api_v3_get_masterchainBlockShardState
       parameters:
-      - name: seqno
-        in: query
-        description: Masterchain block seqno.
-        required: true
-        schema:
-          type: integer
-          format: int32
+        - name: seqno
+          in: query
+          description: Masterchain block sequence number.
+          required: true
+          schema:
+            type: integer
+            format: int32
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/masterchainBlockShards:
     get:
-      security: []
-      description: Returns all workchain blocks, that appeared after previous masterchain block.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return all workchain blocks that appeared after the previous masterchain block.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get masterchain block shards
       operationId: api_v3_get_masterchainBlockShards
       parameters:
-      - name: seqno
-        in: query
-        description: Masterchain block seqno.
-        required: true
-        schema:
-          type: integer
-          format: int32
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: seqno
+          in: query
+          description: Masterchain block sequence number.
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/masterchainInfo:
     get:
-      security: []
-      description: Get first and last indexed block
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return the first and last indexed blocks.
       tags:
-      - Blockchain Data
-      summary: Get Masterchain Info
+        - Blockchain data
+      summary: Get masterchain info
       operationId: api_v3_get_masterchain_info
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MasterchainInfo'
-        '400':
+                $ref: "#/components/schemas/MasterchainInfo"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/message:
     post:
-      security: []
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
       description: Send an external message to the TON network.
       tags:
-      - API v2
-      summary: Send Message
+        - API v2
+      summary: Send message
       operationId: api_v3_post_v2_message
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/V2SendMessageRequest'
+              $ref: "#/components/schemas/V2SendMessageRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V2SendMessageResult'
-        '400':
+                $ref: "#/components/schemas/V2SendMessageResult"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/messages:
     get:
-      security: []
-      description: Get messages by specified filters.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query messages that match the specified filters.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get messages
       operationId: api_v3_get_messages
       parameters:
-      - name: msg_hash
-        in: query
-        description: Message hash. Acceptable in hex, base64 and base64url forms.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: msg_hash
+          in: query
+          description: Message hash in hex, base64, or base64url form.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: body_hash
+          in: query
+          description: Hash of message body.
+          schema:
             type: string
-      - name: body_hash
-        in: query
-        description: Hash of message body.
-        schema:
-          type: string
-      - name: source
-        in: query
-        description: The source account address. Can be sent in hex, base64 or base64url form. Use value `null` to get external
-          messages.
-        schema:
-          type: string
-      - name: destination
-        in: query
-        description: The destination account address. Can be sent in hex, base64 or base64url form. Use value `null` to get
-          log messages.
-        schema:
-          type: string
-      - name: opcode
-        in: query
-        description: Opcode of message in hex or signed 32-bit decimal form.
-        schema:
-          type: string
-      - name: start_utime
-        in: query
-        description: Query messages with `created_at >= start_utime`.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query messages with `created_at >= start_utime`.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query messages with `created_lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query messages with `created_lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: direction
-        in: query
-        description: Direction of message.
-        schema:
-          type: string
-          enum:
-          - in
-          - out
-      - name: exclude_externals
-        in: query
-        description: Exclude external messages.
-        schema:
-          type: boolean
-      - name: only_externals
-        in: query
-        description: Return only external messages.
-        schema:
-          type: boolean
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort transactions by lt. If set to `desc`, you better set `start_lt = 1` to get latest messages.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+        - name: source
+          in: query
+          description:
+            Source account address in hex, base64, or base64url form. Set this parameter to `null` to return external
+            messages.
+          schema:
+            type: string
+        - name: destination
+          in: query
+          description:
+            Destination account address in hex, base64, or base64url form. Set this parameter to `null` to return log
+            messages.
+          schema:
+            type: string
+        - name: opcode
+          in: query
+          description: Opcode of message in hex or signed 32-bit decimal form.
+          schema:
+            type: string
+        - name: start_utime
+          in: query
+          description: Query messages where `created_at` is at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query messages where `created_at` is at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query messages where `created_lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query messages where `created_lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: direction
+          in: query
+          description: Direction of the message.
+          schema:
+            type: string
+            enum:
+              - in
+              - out
+        - name: exclude_externals
+          in: query
+          description: Exclude external messages.
+          schema:
+            type: boolean
+        - name: only_externals
+          in: query
+          description: Return only external messages.
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort messages by `lt`. To return the latest messages with `sort=desc`, set `start_lt` to `1`.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessagesResponse'
-        '400':
+                $ref: "#/components/schemas/MessagesResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/metadata:
     get:
-      security: []
-      description: Query address metadata
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query metadata for the specified addresses.
       tags:
-      - Accounts
+        - Accounts
       summary: Metadata
       operationId: api_v3_get_metadata
       parameters:
-      - name: address
-        in: query
-        description: 'List of addresses in any form to get address metadata. Max: 1024.'
-        required: true
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
+        - name: address
+          in: query
+          description: "List of addresses in any form to include in the metadata response. Maximum: 1024 addresses."
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Metadata'
-        '400':
+                $ref: "#/components/schemas/Metadata"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/multisig/orders:
     get:
-      security: []
-      description: Get multisig orders by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query multisig orders that match the specified filters.
       tags:
-      - Multisig
-      summary: Get Multisig Orders
+        - Multisig
+      summary: Get multisig orders
       operationId: api_v3_get_multisig_orders
       parameters:
-      - name: address
-        in: query
-        description: 'Order address in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: address
+          in: query
+          description: "Order address in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: multisig_address
+          in: query
+          description: "Address of the corresponding multisig wallet in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: parse_actions
+          in: query
+          description: Parse order actions.
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1024
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort orders by `last_transaction_lt`.
+          schema:
             type: string
-      - name: multisig_address
-        in: query
-        description: 'Address of corresponding multisig. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: parse_actions
-        in: query
-        description: Parser order actions
-        schema:
-          type: boolean
-          default: false
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1024
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort orders by last_transaction_lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MultisigOrderResponse'
-        '400':
+                $ref: "#/components/schemas/MultisigOrderResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/multisig/wallets:
     get:
-      security: []
-      description: Get multisig contracts by specified filters with associated orders
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query multisig contracts that match the specified filters, optionally including their orders.
       tags:
-      - Multisig
-      summary: Get Multisig Wallets
+        - Multisig
+      summary: Get multisig wallets
       operationId: api_v3_get_multisig_wallets
       parameters:
-      - name: address
-        in: query
-        description: 'Multisig contract address in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: address
+          in: query
+          description: "Multisig contract address in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: wallet_address
+          in: query
+          description: "Address of a signer or proposer wallet in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1024
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort multisigs by `last_transaction_lt`.
+          schema:
             type: string
-      - name: wallet_address
-        in: query
-        description: 'Address of signer or proposer wallet in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1024
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort multisigs by last_transaction_lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
-      - name: include_orders
-        in: query
-        description: Gather multisig orders
-        schema:
-          type: boolean
-          default: true
+            default: desc
+            enum:
+              - asc
+              - desc
+        - name: include_orders
+          in: query
+          description: Include multisig orders.
+          schema:
+            type: boolean
+            default: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MultisigResponse'
-        '400':
+                $ref: "#/components/schemas/MultisigResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/nft/collections:
     get:
-      security: []
-      description: Get NFT collections by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query NFT collections that match the specified filters.
       tags:
-      - NFTs
+        - NFTs
       summary: Get NFT collections
       operationId: api_v3_get_nft_collections
       parameters:
-      - name: collection_address
-        in: query
-        description: 'Collection address in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: owner_address
-        in: query
-        description: 'Address of collection owner in any form. Max: 1024.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: collection_address
+          in: query
+          description: "Collection address in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: owner_address
+          in: query
+          description: "Address of the collection owner in any form. Maximum: 1024 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NFTCollectionsResponse'
-        '400':
+                $ref: "#/components/schemas/NFTCollectionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/nft/items:
     get:
-      security: []
-      description: Get NFT items by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query NFT items that match the specified filters.
       tags:
-      - NFTs
+        - NFTs
       summary: Get NFT items
       operationId: api_v3_get_nft_items
       parameters:
-      - name: address
-        in: query
-        description: 'NFT item address in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: owner_address
-        in: query
-        description: 'Address of NFT item owner in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: collection_address
-        in: query
-        description: Collection address in any form.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: index
-        in: query
-        description: 'Index of item for given collection. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: include_on_sale
-        in: query
-        description: Include nft on sales and auctions. Used only when owner_address is passed
-        schema:
-          type: boolean
-          default: false
-      - name: sort_by_last_transaction_lt
-        in: query
-        description: Sort NFT items by last transaction lt descending. **Warning:** results may be inconsistent during pagination
-          with limit and offset.
-        schema:
-          type: boolean
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: address
+          in: query
+          description: "NFT item address in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: owner_address
+          in: query
+          description: "Address of the NFT item owner in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: collection_address
+          in: query
+          description: Collection address in any form.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: index
+          in: query
+          description: "Item index for the specified collection. Maximum: 1000 indexes."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: include_on_sale
+          in: query
+          description: Include NFT items listed in sales or auctions. Applies only when `owner_address` is provided.
+          schema:
+            type: boolean
+            default: false
+        - name: sort_by_last_transaction_lt
+          in: query
+          description:
+            Sort NFT items by `last_transaction_lt` in descending order. Results may be inconsistent while paginating
+            with `limit` and `offset`.
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NFTItemsResponse'
-        '400':
+                $ref: "#/components/schemas/NFTItemsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
+  /api/v3/nft/sales:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query GetGems NFT sales and auctions by sale or auction contract address.
+      tags:
+        - NFTs
+      summary: Get NFT sales and auctions
+      operationId: api_v3_get_nft_sales
+      parameters:
+        - name: address
+          in: query
+          description: "Sale or auction contract address in any form. Maximum: 1000 addresses."
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NFTSalesResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestError"
   /api/v3/nft/transfers:
     get:
-      security: []
-      description: Get transfers of NFT items by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query NFT transfers that match the specified filters.
       tags:
-      - NFTs
-      summary: Get NFT Transfers
+        - NFTs
+      summary: Get NFT transfers
       operationId: api_v3_get_nft_transfers
       parameters:
-      - name: owner_address
-        in: query
-        description: Address of NFT owner in any form. Max 1000
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: owner_address
+          in: query
+          description: "Address of the NFT owner in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: item_address
+          in: query
+          description: "Address of the NFT item in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: collection_address
+          in: query
+          description: Collection address in any form.
+          schema:
             type: string
-      - name: item_address
-        in: query
-        description: 'Address of NFT item in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: direction
+          in: query
+          description: Direction of the transfer.
+          schema:
             type: string
-      - name: collection_address
-        in: query
-        description: Collection address in any form.
-        schema:
-          type: string
-      - name: direction
-        in: query
-        description: Direction of transfer.
-        schema:
-          type: string
-          enum:
-          - in
-          - out
-      - name: start_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **after** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **before** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query transactions with `lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query transactions with `lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort transactions by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+            enum:
+              - in
+              - out
+        - name: start_utime
+          in: query
+          description: Query transactions with a generation timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query transactions with a generation timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query transactions where `lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query transactions where `lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort transactions by `lt`.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NFTTransfersResponse'
-        '400':
+                $ref: "#/components/schemas/NFTTransfersResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/pendingActions:
     get:
-      security: []
-      description: Get actions by specified filter.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query pending actions that match the specified filters.
       tags:
-      - Actions and traces
-      summary: Get Pending Actions
+        - Actions and traces
+      summary: Get pending actions
       operationId: api_v3_get_pending_actions
       parameters:
-      - name: account
-        in: query
-        description: List of account addresses to get actions. Can be sent in hex, base64 or base64url form.
-        schema:
-          type: string
-      - name: ext_msg_hash
-        in: query
-        description: Find actions by trace external hash
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: account
+          in: query
+          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          schema:
             type: string
-      - name: supported_action_types
-        in: query
-        description: Supported action types
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: include_transactions
-        in: query
-        description: Include `transactions_full` array with detailed transaction data for each action in response.
-        schema:
-          type: boolean
-          default: false
+        - name: ext_msg_hash
+          in: query
+          description: Find actions by the external trace hash.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: supported_action_types
+          in: query
+          description: List supported action types.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: include_transactions
+          in: query
+          description: Include the `transactions_full` array with detailed transaction data for each action in the response.
+          schema:
+            type: boolean
+            default: false
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActionsResponse'
-        '400':
+                $ref: "#/components/schemas/ActionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/pendingTraces:
     get:
-      security: []
-      description: Get traces by specified filter.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query pending traces that match the specified filters.
       tags:
-      - Actions and traces
-      summary: Get Pending Traces
+        - Actions and traces
+      summary: Get pending traces
       operationId: api_v3_get_pending_traces
       parameters:
-      - name: account
-        in: query
-        description: List of account addresses to get transactions. Can be sent in hex, base64 or base64url form.
-        schema:
-          type: string
-      - name: ext_msg_hash
-        in: query
-        description: Find trace by external hash
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: account
+          in: query
+          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          schema:
             type: string
+        - name: ext_msg_hash
+          in: query
+          description: Find traces by external hash.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TracesResponse'
-        '400':
+                $ref: "#/components/schemas/TracesResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/pendingTransactions:
     get:
-      security: []
-      description: Get pending transactions by specified filter.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query pending transactions that match the specified filters.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get pending transactions
       operationId: api_v3_get_pending_transactions
       parameters:
-      - name: account
-        in: query
-        description: List of account addresses to get transactions. Can be sent in hex, base64 or base64url form.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: trace_id
-        in: query
-        description: Find transactions by trace id.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
+        - name: account
+          in: query
+          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: trace_id
+          in: query
+          description: Find transactions by trace ID.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/runGetMethod:
     post:
-      security: []
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
       description: |-
-        Run get method of smart contract. Stack supports only `num`, `cell` and `slice` types:
+        Run a get method for a smart contract. The stack supports only `num`, `cell`, and `slice` types:
         ```
         [
         {
@@ -1728,596 +1899,1283 @@ paths:
         },
         {
         "type": "cell",
-        "value": "te6..." // base64 encoded boc with cell
+        "value": "te6..." // base64-encoded BoC with cell
         },
         {
         "type": "slice",
-        "value": "te6..." // base64 encoded boc with slice
+        "value": "te6..." // base64-encoded BoC with slice
         }
         ]
         ```
       tags:
-      - API v2
-      summary: Run Get-Method
+        - API v2
+      summary: Run get method
       operationId: api_v3_post_v2_rungetmethod
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/V2RunGetMethodRequest'
+              $ref: "#/components/schemas/V2RunGetMethodRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V2RunGetMethodRequest'
-        '400':
+                $ref: "#/components/schemas/V2RunGetMethodRequest"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
+  /api/v3/staking/nominatorPools/pool:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return details about the specified nominator pool.
+      tags:
+        - Staking
+      summary: Get nominator pool
+      operationId: getNominatorPool
+      parameters:
+        - name: pool
+          in: query
+          description: Pool address in any form.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NominatorPoolInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/staking/nominatorPools/nominator:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return the nominator's positions in all nominator pools.
+      tags:
+        - Staking
+      summary: Get nominator positions in nominator pools
+      operationId: getNominatorPoolNominator
+      parameters:
+        - name: nominator
+          in: query
+          description: Nominator address in any form.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NominatorPoolsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/staking/nominatorPools/nominatorEvents:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return events for the specified nominator pool, optionally filtered by nominator and time range.
+      tags:
+        - Staking
+      summary: Get nominator events from nominator pools
+      operationId: getNominatorPoolNominatorEvents
+      parameters:
+        - name: pool
+          in: query
+          description: Pool address in any form.
+          required: true
+          schema:
+            type: string
+        - name: nominator
+          in: query
+          description: Nominator address in any form.
+          schema:
+            type: string
+        - name: start_utime
+          in: query
+          description: Query events with a timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query events with a timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NominatorPoolEventsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/staking/nominatorPools/nominatorRewards:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return rewards for the specified nominator in the specified nominator pool.
+      tags:
+        - Staking
+      summary: Get nominator rewards from a nominator pool
+      operationId: getNominatorPoolNominatorRewards
+      parameters:
+        - name: nominator
+          in: query
+          description: Nominator address in any form.
+          required: true
+          schema:
+            type: string
+        - name: pool
+          in: query
+          description: Pool address in any form.
+          required: true
+          schema:
+            type: string
+        - name: start_utime
+          in: query
+          description: Query rewards with a timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query rewards with a timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NominatorRewardsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/staking/nominatorPools/validatorEvents:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return validator accounting events from nominator pools, optionally filtered by validator, pool, event type, and time range.
+      tags:
+        - Staking
+      summary: Get validator accounting events from nominator pools
+      operationId: getNominatorPoolValidatorEvents
+      parameters:
+        - name: validator
+          in: query
+          description: Validator address in any form.
+          schema:
+            type: string
+        - name: pool
+          in: query
+          description: Pool address in any form.
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: "Filter by event type: `reward`, `penalty`, `deposit`, or `withdrawal`."
+          schema:
+            type: string
+        - name: start_utime
+          in: query
+          description: Query events with a timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query events with a timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NominatorPoolValidatorEventsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/staking/nominatorPools/validatorRewards:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return validator rewards from the specified nominator pool.
+      tags:
+        - Staking
+      summary: Get validator rewards from a nominator pool
+      operationId: getNominatorPoolValidatorRewards
+      parameters:
+        - name: validator
+          in: query
+          description: Validator address in any form.
+          required: true
+          schema:
+            type: string
+        - name: pool
+          in: query
+          description: Pool address in any form.
+          required: true
+          schema:
+            type: string
+        - name: start_utime
+          in: query
+          description: Query rewards with a timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query rewards with a timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NominatorPoolValidatorRewardsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/validators/events:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return validator stake acceptance, rejection, and recovery events.
+      tags:
+        - Validators
+      summary: Get validator stake and recover events
+      operationId: getValidatorEvents
+      parameters:
+        - name: stake_holder_address
+          in: query
+          description: Stakeholder address in any form.
+          schema:
+            type: string
+        - name: adnl_address
+          in: query
+          description: ADNL address in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: validator_pubkey
+          in: query
+          description: Validator public key in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: "Filter by event type: `stake_accepted`, `stake_rejected`, or `stake_recovered`."
+          schema:
+            type: string
+            enum:
+              - stake_accepted
+              - stake_rejected
+              - stake_recovered
+        - name: start_utime
+          in: query
+          description: Query events with a timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query events with a timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidatorEventsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/validators/elections:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return validator elections, optionally including matching participants.
+      tags:
+        - Validators
+      summary: Get validator elections
+      operationId: getValidatorElections
+      parameters:
+        - name: election_id
+          in: query
+          description: Election ID.
+          schema:
+            type: integer
+        - name: stake_holder_address
+          in: query
+          description: Stakeholder address in any form.
+          schema:
+            type: string
+        - name: adnl_address
+          in: query
+          description: ADNL address in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: validator_pubkey
+          in: query
+          description: Validator public key in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: return_participants
+          in: query
+          description: >-
+            Return election participants. If `stake_holder_address`, `adnl_address`, or `validator_pubkey` is
+            specified, return only matching participants.
+          schema:
+            type: boolean
+            default: false
+        - name: finished
+          in: query
+          description: Filter by the `finished` flag.
+          schema:
+            type: boolean
+        - name: start_utime
+          in: query
+          description: >-
+            Query elections with `election_id` at or after the specified value. This parameter filters `election_id`,
+            not `elect_close`.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: >-
+            Query elections with `election_id` at or before the specified value. This parameter filters `election_id`,
+            not `elect_close`.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. At most 100 when `return_participants` is `true`.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidatorElectionsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/validators/cycles:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: >-
+        `min_stake` and `max_stake` are the true stake bounds for selected validators.
+        `min_stake_limit` and `max_stake_limit` are the config17 election limits.
+        When the response includes validators, `max_factor` is the participant's raw declared factor (65536 = 1.0).
+        The effective factor used to derive `stake` is the smaller of `max_factor` and `max_stake_factor`.
+      tags:
+        - Validators
+      summary: Get validator cycles
+      operationId: getValidatorCycles
+      parameters:
+        - name: cycle_start
+          in: query
+          description: Validator cycle start time.
+          schema:
+            type: integer
+        - name: election_id
+          in: query
+          description: Elector election ID that produced the cycle.
+          schema:
+            type: integer
+        - name: stake_holder_address
+          in: query
+          description: Stakeholder address in any form.
+          schema:
+            type: string
+        - name: adnl_address
+          in: query
+          description: ADNL address in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: validator_pubkey
+          in: query
+          description: Validator public key in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: return_validators
+          in: query
+          description: >-
+            Return validators in the set. If `stake_holder_address`, `adnl_address`, or `validator_pubkey` is
+            specified, return only matching validators.
+          schema:
+            type: boolean
+            default: false
+        - name: start_utime
+          in: query
+          description: Query cycles with `cycle_start` at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query cycles with `cycle_start` at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. At most 100 when `return_validators` is `true`.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidatorCyclesResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+  /api/v3/validators/complaints:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return validator complaints that match the specified filters.
+      tags:
+        - Validators
+      summary: Get validator complaints
+      operationId: getValidatorComplaints
+      parameters:
+        - name: cycle_start
+          in: query
+          description: Validator cycle start time.
+          schema:
+            type: integer
+        - name: election_id
+          in: query
+          description: Elector election ID.
+          schema:
+            type: integer
+        - name: stake_holder_address
+          in: query
+          description: Stakeholder address in any form.
+          schema:
+            type: string
+        - name: adnl_address
+          in: query
+          description: ADNL address in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: validator_pubkey
+          in: query
+          description: Validator public key in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: start_utime
+          in: query
+          description: Query complaints with `created_at` at or after the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query complaints with `created_at` at or before the specified timestamp.
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidatorComplaintsResponse"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
   /api/v3/topAccountsByBalance:
     get:
-      security: []
-      description: Get list of accounts sorted descending by balance.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return accounts sorted by balance in descending order.
       tags:
-      - Stats
-      summary: Get Top Accounts By Balance
+        - Stats
+      summary: Get top accounts by balance
       operationId: api_v3_get_top_accounts_by_balance
       parameters:
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AccountBalance'
-        '400':
+                  $ref: "#/components/schemas/AccountBalance"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/traces:
     get:
-      security: []
-      description: Get traces by specified filter.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query traces that match the specified filters.
       tags:
-      - Actions and traces
-      summary: Get Traces
+        - Actions and traces
+      summary: Get traces
       operationId: api_v3_get_traces
       parameters:
-      - name: account
-        in: query
-        description: List of account addresses to get transactions. Can be sent in hex, base64 or base64url form.
-        schema:
-          type: string
-      - name: trace_id
-        in: query
-        description: Find trace by trace id.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: account
+          in: query
+          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          schema:
             type: string
-      - name: tx_hash
-        in: query
-        description: Find trace by transaction hash.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: trace_id
+          in: query
+          description: Find traces by trace ID.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: tx_hash
+          in: query
+          description: Find traces by transaction hash.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: msg_hash
+          in: query
+          description: Find traces by message hash.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: mc_seqno
+          in: query
+          description: Query traces completed in the masterchain block with the specified sequence number.
+          schema:
+            type: integer
+            format: int32
+        - name: start_utime
+          in: query
+          description: Query traces finished at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query traces finished at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query traces where `end_lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query traces where `end_lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: include_actions
+          in: query
+          description: Include trace actions.
+          schema:
+            type: boolean
+            default: false
+        - name: supported_action_types
+          in: query
+          description: List supported action types.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort traces by `lt`.
+          schema:
             type: string
-      - name: msg_hash
-        in: query
-        description: Find trace by message hash.
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: mc_seqno
-        in: query
-        description: Query traces that was completed in masterchain block with given seqno
-        schema:
-          type: integer
-          format: int32
-      - name: start_utime
-        in: query
-        description: Query traces, which was finished **after** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query traces, which was finished **before** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query traces with `end_lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query traces with `end_lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: include_actions
-        in: query
-        description: Include trace actions.
-        schema:
-          type: boolean
-          default: false
-      - name: supported_action_types
-        in: query
-        description: Supported action types
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort traces by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TracesResponse'
-        '400':
+                $ref: "#/components/schemas/TracesResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/transactions:
     get:
-      security: []
-      description: Get transactions by specified filter.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query transactions that match the specified filters.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get transactions
       operationId: api_v3_get_transactions
       parameters:
-      - name: workchain
-        in: query
-        description: Block workchain.
-        schema:
-          type: integer
-          format: int32
-      - name: shard
-        in: query
-        description: 'Block shard id. Must be sent with *workchain*. Example: `8000000000000000`.'
-        schema:
-          type: string
-      - name: seqno
-        in: query
-        description: Block block seqno. Must be sent with *workchain* and *shard*.
-        schema:
-          type: integer
-          format: int32
-      - name: mc_seqno
-        in: query
-        description: Masterchain block seqno.
-        schema:
-          type: integer
-          format: int32
-      - name: account
-        in: query
-        description: List of account addresses to get transactions. Can be sent in hex, base64 or base64url form.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: workchain
+          in: query
+          description: Workchain of the block.
+          schema:
+            type: integer
+            format: int32
+        - name: shard
+          in: query
+          description: "Block shard ID. Provide this parameter with `workchain`. Example: `8000000000000000`."
+          schema:
             type: string
-      - name: exclude_account
-        in: query
-        description: Exclude transactions on specified account addresses.
-        explode: true
-        schema:
-          type: array
-          items:
+        - name: seqno
+          in: query
+          description: "Sequence number of the block. Provide this parameter with `workchain` and `shard`."
+          schema:
+            type: integer
+            format: int32
+        - name: mc_seqno
+          in: query
+          description: Masterchain block sequence number.
+          schema:
+            type: integer
+            format: int32
+        - name: account
+          in: query
+          description: List of account addresses for the transactions. Provide addresses in hex, base64, or base64url form.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: exclude_account
+          in: query
+          description: Exclude transactions for the specified account addresses.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: hash
+          in: query
+          description: Transaction hash.
+          schema:
             type: string
-      - name: hash
-        in: query
-        description: Transaction hash.
-        schema:
-          type: string
-      - name: lt
-        in: query
-        description: Transaction lt.
-        schema:
-          type: integer
-          format: int64
-      - name: start_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **after** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: end_utime
-        in: query
-        description: Query transactions with generation UTC timestamp **before** given timestamp.
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - name: start_lt
-        in: query
-        description: Query transactions with `lt >= start_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: end_lt
-        in: query
-        description: Query transactions with `lt <= end_lt`.
-        schema:
-          type: integer
-          format: int64
-          minimum: 0
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort transactions by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+        - name: lt
+          in: query
+          description: Transaction `lt`.
+          schema:
+            type: integer
+            format: int64
+        - name: start_utime
+          in: query
+          description: Query transactions with a generation timestamp at or after the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: end_utime
+          in: query
+          description: Query transactions with a generation timestamp at or before the specified timestamp.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: start_lt
+          in: query
+          description: Query transactions where `lt` is at or above the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: end_lt
+          in: query
+          description: Query transactions where `lt` is at or below the specified value.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort transactions by `lt`.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/transactionsByMasterchainBlock:
     get:
-      security: []
-      description: Returns transactions from masterchain block and from all shards.
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Return transactions from the specified masterchain block and all its shards.
       tags:
-      - Blockchain Data
-      summary: Get transactions by Masterchain block
+        - Blockchain data
+      summary: Get transactions by masterchain block
       operationId: api_v3_get_transactions_by_masterchain_block
       parameters:
-      - name: seqno
-        in: query
-        description: Masterchain block seqno.
-        required: true
-        schema:
-          type: integer
-          format: int32
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - name: sort
-        in: query
-        description: Sort transactions by lt.
-        schema:
-          type: string
-          default: desc
-          enum:
-          - asc
-          - desc
+        - name: seqno
+          in: query
+          description: Masterchain block sequence number.
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort transactions by `lt`.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/transactionsByMessage:
     get:
-      security: []
-      description: Get transactions whose inbound/outbound message has the specified hash. \
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Get transactions whose inbound or outbound message has the specified hash.
       tags:
-      - Blockchain Data
+        - Blockchain data
       summary: Get transactions by message
       operationId: api_v3_get_transactions_by_message
       parameters:
-      - name: msg_hash
-        in: query
-        description: Message hash. Acceptable in hex, base64 and base64url forms.
-        schema:
-          type: string
-      - name: body_hash
-        in: query
-        description: Hash of message body.
-        schema:
-          type: string
-      - name: opcode
-        in: query
-        description: Opcode of message in hex or signed 32-bit decimal form.
-        schema:
-          type: string
-      - name: direction
-        in: query
-        description: Direction of message.
-        schema:
-          type: string
-          enum:
-          - in
-          - out
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: msg_hash
+          in: query
+          description: Message hash in hex, base64, or base64url form.
+          schema:
+            type: string
+        - name: body_hash
+          in: query
+          description: Hash of message body.
+          schema:
+            type: string
+        - name: opcode
+          in: query
+          description: Opcode of message in hex or signed 32-bit decimal form.
+          schema:
+            type: string
+        - name: direction
+          in: query
+          description: Direction of the message.
+          schema:
+            type: string
+            enum:
+              - in
+              - out
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionsResponse'
-        '400':
+                $ref: "#/components/schemas/TransactionsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/vesting:
     get:
-      security: []
-      description: Get vesting contracts by specified filters
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query vesting contracts that match the specified filters.
       tags:
-      - Vesting
-      summary: Get Vesting Contracts
+        - Vesting
+      summary: Get vesting contracts
       operationId: api_v3_get_vesting_contracts
       parameters:
-      - name: contract_address
-        in: query
-        description: 'Vesting contract address in any form. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: wallet_address
-        in: query
-        description: 'Wallet address to filter by owner or sender. Max: 1000.'
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      - name: check_whitelist
-        in: query
-        description: Check if wallet address is in whitelist.
-        schema:
-          type: boolean
-          default: false
-      - name: limit
-        in: query
-        description: Limit number of queried rows. Use with *offset* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 10
-          minimum: 1
-          maximum: 1000
-      - name: offset
-        in: query
-        description: Skip first N rows. Use with *limit* to batch read.
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
+        - name: contract_address
+          in: query
+          description: "Vesting contract address in any form. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: wallet_address
+          in: query
+          description: "Wallet address to filter by owner or sender. Maximum: 1000 addresses."
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: check_whitelist
+          in: query
+          description: Check whether the wallet address is on the whitelist.
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: Limit the number of rows to return. Use with `offset` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Skip the first N rows. Use with `limit` to batch requests.
+          schema:
+            type: integer
+            format: int32
+            default: 0
+            minimum: 0
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VestingContractsResponse'
-        '400':
+                $ref: "#/components/schemas/VestingContractsResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/walletInformation:
     get:
-      security: []
-      description: 'Get wallet smart contract information. The following wallets are supported: `v1r1`, `v1r2`, `v1r3`, `v2r1`,
-        `v2r2`, `v3r1`, `v3r2`, `v4r1`, `v4r2`, `v5beta`, `v5r1`. In case the account is not a wallet error code 409 is returned.'
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: >-
+        Get wallet smart contract information. Supports the following wallet versions: `v1r1`, `v1r2`, `v1r3`, `v2r1`,
+        `v2r2`, `v3r1`, `v3r2`, `v4r1`, `v4r2`, `v5beta`, and `v5r1`. If the account is not a wallet, returns error code
+        `409`.
       tags:
-      - API v2
-      summary: Get Wallet Information
+        - API v2
+      summary: Get wallet information
       operationId: api_v3_get_wallet_information
       parameters:
-      - name: address
-        in: query
-        description: Account address in any form.
-        required: true
-        schema:
-          type: string
-      - name: use_v2
-        in: query
-        description: Use method from api/v2. Not recommended
-        schema:
-          type: boolean
-          default: true
+        - name: address
+          in: query
+          description: Account address in any form.
+          required: true
+          schema:
+            type: string
+        - name: use_v2
+          in: query
+          description: Use the API v2 method. This option is not recommended.
+          schema:
+            type: boolean
+            default: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/V2WalletInformation'
-        '400':
+                $ref: "#/components/schemas/V2WalletInformation"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
   /api/v3/walletStates:
     get:
-      security: []
-      description: Query wallet information
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Query wallet information for the specified addresses.
       tags:
-      - Accounts
-      summary: Get Wallet States
+        - Accounts
+      summary: Get wallet states
       operationId: api_v3_get_wallet_states
       parameters:
-      - name: address
-        in: query
-        description: List of addresses in any form. Maximum 1000 addresses allowed.
-        required: true
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
+        - name: address
+          in: query
+          description: "List of addresses in any form. Maximum: 1000 addresses."
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WalletStatesResponse'
-        '400':
+                $ref: "#/components/schemas/WalletStatesResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestError'
+                $ref: "#/components/schemas/RequestError"
 tags:
-- name: Accounts
-  description: Information about accounts
-- name: Actions and traces
-  description: High-level actions and execution traces
-- name: Blockchain Data
-  description: Blocks, transactions and messages
-- name: Jettons
-  description: Jetton masters, wallets, transfers and burns
-- name: NFTs
-  description: NFT collections, items and transfers
-- name: Dns
-  description: DNS records
-- name: Multisig
-  description: Multisig wallets and orders
-- name: Stats
-  description: Aggregated blockchain statistics
-- name: Vesting
-  description: Vesting contracts
-- name: Utils
-  description: Some useful methods
-- name: API v2
-  description: Endpoints proxied from API v2
+  - name: Accounts
+    description: Information about accounts.
+  - name: Actions and traces
+    description: High-level actions and execution traces.
+  - name: Blockchain data
+    description: Blocks, transactions, and messages.
+  - name: Jettons
+    description: Jetton masters, wallets, transfers, and burns.
+  - name: NFTs
+    description: NFT collections, items, and transfers.
+  - name: DNS
+    description: DNS records.
+  - name: Staking
+    description: Nominator-pool staking and rewards.
+  - name: Validators
+    description: Validator events, elections, cycles, and complaints.
+  - name: Multisig
+    description: Multisig wallets and orders.
+  - name: Stats
+    description: Aggregated blockchain statistics.
+  - name: Vesting
+    description: Vesting contracts.
+  - name: Utils
+    description: Utility methods.
+  - name: API v2
+    description: Endpoints proxied from API v2.
 components:
   schemas:
     AccountBalance:
@@ -2385,20 +3243,22 @@ components:
           type: string
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         status:
           type: string
+        suspended:
+          type: boolean
     AccountStatesResponse:
       type: object
       properties:
         accounts:
           type: array
           items:
-            $ref: '#/components/schemas/AccountStateFull'
+            $ref: "#/components/schemas/AccountStateFull"
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
     Action:
       type: object
       properties:
@@ -2411,19 +3271,21 @@ components:
         details: {}
         end_lt:
           type: string
-          example: '0'
+          example: "0"
         end_utime:
           type: integer
+        finality:
+          $ref: "#/components/schemas/FinalityState"
         start_lt:
           type: string
-          example: '0'
+          example: "0"
         start_utime:
           type: integer
         success:
           type: boolean
         trace_end_lt:
           type: string
-          example: '0'
+          example: "0"
         trace_end_utime:
           type: integer
         trace_external_hash:
@@ -2441,7 +3303,7 @@ components:
         transactions_full:
           type: array
           items:
-            $ref: '#/components/schemas/Transaction'
+            $ref: "#/components/schemas/Transaction"
         type:
           type: string
     ActionPhase:
@@ -2468,13 +3330,13 @@ components:
         tot_actions:
           type: integer
         tot_msg_size:
-          $ref: '#/components/schemas/MsgSize'
+          $ref: "#/components/schemas/MsgSize"
         total_action_fees:
           type: string
-          example: '0'
+          example: "0"
         total_fwd_fees:
           type: string
-          example: '0'
+          example: "0"
         valid:
           type: boolean
     ActionsResponse:
@@ -2483,15 +3345,15 @@ components:
         actions:
           type: array
           items:
-            $ref: '#/components/schemas/Action'
+            $ref: "#/components/schemas/Action"
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
     AddressBook:
       type: object
       additionalProperties:
-        $ref: '#/components/schemas/AddressBookRow'
+        $ref: "#/components/schemas/AddressBookRow"
     AddressBookRow:
       type: object
       properties:
@@ -2503,6 +3365,10 @@ components:
             type: string
         user_friendly:
           type: string
+    GenericAddressBook:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/AddressBookRow"
     AddressMetadata:
       type: object
       properties:
@@ -2511,7 +3377,7 @@ components:
         token_info:
           type: array
           items:
-            $ref: '#/components/schemas/TokenInfo'
+            $ref: "#/components/schemas/TokenInfo"
     Block:
       type: object
       properties:
@@ -2525,7 +3391,7 @@ components:
           type: string
         end_lt:
           type: string
-          example: '0'
+          example: "0"
         file_hash:
           type: string
         flags:
@@ -2534,7 +3400,7 @@ components:
           type: integer
         gen_utime:
           type: string
-          example: '0'
+          example: "0"
         global_id:
           type: integer
         key_block:
@@ -2542,13 +3408,13 @@ components:
         master_ref_seqno:
           type: integer
         masterchain_block_ref:
-          $ref: '#/components/schemas/BlockId'
+          $ref: "#/components/schemas/BlockId"
         min_ref_mc_seqno:
           type: integer
         prev_blocks:
           type: array
           items:
-            $ref: '#/components/schemas/BlockId'
+            $ref: "#/components/schemas/BlockId"
         prev_key_block_seqno:
           type: integer
         rand_seed:
@@ -2559,10 +3425,10 @@ components:
           type: integer
         shard:
           type: string
-          example: '0'
+          example: "0"
         start_lt:
           type: string
-          example: '0'
+          example: "0"
         tx_count:
           type: integer
         validator_list_hash_short:
@@ -2586,7 +3452,7 @@ components:
           type: integer
         shard:
           type: string
-          example: '0'
+          example: "0"
         workchain:
           type: integer
     BlocksResponse:
@@ -2595,21 +3461,21 @@ components:
         blocks:
           type: array
           items:
-            $ref: '#/components/schemas/Block'
+            $ref: "#/components/schemas/Block"
     BouncePhase:
       type: object
       properties:
         fwd_fees:
           type: string
-          example: '0'
+          example: "0"
         msg_fees:
           type: string
-          example: '0'
+          example: "0"
         msg_size:
-          $ref: '#/components/schemas/MsgSize'
+          $ref: "#/components/schemas/MsgSize"
         req_fwd_fees:
           type: string
-          example: '0'
+          example: "0"
         type:
           type: string
     ComputePhase:
@@ -2623,16 +3489,16 @@ components:
           type: integer
         gas_credit:
           type: string
-          example: '0'
+          example: "0"
         gas_fees:
           type: string
-          example: '0'
+          example: "0"
         gas_limit:
           type: string
-          example: '0'
+          example: "0"
         gas_used:
           type: string
-          example: '0'
+          example: "0"
         mode:
           type: integer
         msg_state_used:
@@ -2654,14 +3520,14 @@ components:
       properties:
         credit:
           type: string
-          example: '0'
+          example: "0"
         credit_extra_currencies:
           type: object
           additionalProperties:
             type: string
         due_fees_collected:
           type: string
-          example: '0'
+          example: "0"
     DNSRecord:
       type: object
       properties:
@@ -2679,15 +3545,49 @@ components:
           type: string
         nft_item_owner:
           type: string
+    DNSAuction:
+      type: object
+      properties:
+        auction_end_time:
+          type: string
+          example: "0"
+        domain:
+          type: string
+        finished:
+          type: boolean
+        last_fill_up_time:
+          type: string
+          example: "0"
+        max_bid_address:
+          type: string
+        max_bid_amount:
+          type: string
+        nft_item:
+          $ref: "#/components/schemas/NFTItem"
+        nft_item_address:
+          type: string
     DNSRecordsResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         records:
           type: array
           items:
-            $ref: '#/components/schemas/DNSRecord'
+            $ref: "#/components/schemas/DNSRecord"
+    DNSAuctionsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        auctions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DNSAuction"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        next_cursor:
+          type: string
     DecodeRequest:
       type: object
       properties:
@@ -2719,9 +3619,7 @@ components:
         custom_payload:
           type: string
         decoded_custom_payload:
-          type: array
-          items:
-            type: integer
+          type: object
         jetton_master:
           type: string
         jetton_wallet:
@@ -2740,20 +3638,20 @@ components:
           type: string
         transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         transaction_now:
           type: integer
     JettonBurnsResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         jetton_burns:
           type: array
           items:
-            $ref: '#/components/schemas/JettonBurn'
+            $ref: "#/components/schemas/JettonBurn"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
     JettonMaster:
       type: object
       properties:
@@ -2772,7 +3670,7 @@ components:
           type: string
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         mintable:
           type: boolean
         total_supply:
@@ -2781,13 +3679,13 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         jetton_masters:
           type: array
           items:
-            $ref: '#/components/schemas/JettonMaster'
+            $ref: "#/components/schemas/JettonMaster"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
     JettonTransfer:
       type: object
       properties:
@@ -2796,13 +3694,9 @@ components:
         custom_payload:
           type: string
         decoded_custom_payload:
-          type: array
-          items:
-            type: integer
+          type: object
         decoded_forward_payload:
-          type: array
-          items:
-            type: integer
+          type: object
         destination:
           type: string
         forward_payload:
@@ -2827,20 +3721,20 @@ components:
           type: string
         transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         transaction_now:
           type: integer
     JettonTransfersResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         jetton_transfers:
           type: array
           items:
-            $ref: '#/components/schemas/JettonTransfer'
+            $ref: "#/components/schemas/JettonTransfer"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
     JettonWallet:
       type: object
       properties:
@@ -2856,9 +3750,9 @@ components:
           type: string
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         mintless_info:
-          $ref: '#/components/schemas/JettonWalletMintlessInfo'
+          $ref: "#/components/schemas/JettonWalletMintlessInfo"
         owner:
           type: string
     JettonWalletMintlessInfo:
@@ -2878,20 +3772,20 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         jetton_wallets:
           type: array
           items:
-            $ref: '#/components/schemas/JettonWallet'
+            $ref: "#/components/schemas/JettonWallet"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
     MasterchainInfo:
       type: object
       properties:
         first:
-          $ref: '#/components/schemas/Block'
+          $ref: "#/components/schemas/Block"
         last:
-          $ref: '#/components/schemas/Block'
+          $ref: "#/components/schemas/Block"
     Message:
       type: object
       properties:
@@ -2901,10 +3795,10 @@ components:
           type: boolean
         created_at:
           type: string
-          example: '0'
+          example: "0"
         created_lt:
           type: string
-          example: '0'
+          example: "0"
         decoded_opcode:
           type: string
         destination:
@@ -2913,7 +3807,7 @@ components:
           type: string
         fwd_fee:
           type: string
-          example: '0'
+          example: "0"
         hash:
           type: string
         hash_norm:
@@ -2922,16 +3816,16 @@ components:
           type: boolean
         ihr_fee:
           type: string
-          example: '0'
+          example: "0"
         import_fee:
           type: string
-          example: '0'
+          example: "0"
         in_msg_tx_hash:
           type: string
         init_state:
-          $ref: '#/components/schemas/MessageContent'
+          $ref: "#/components/schemas/MessageContent"
         message_content:
-          $ref: '#/components/schemas/MessageContent'
+          $ref: "#/components/schemas/MessageContent"
         opcode:
           type: integer
         out_msg_tx_hash:
@@ -2940,7 +3834,7 @@ components:
           type: string
         value:
           type: string
-          example: '0'
+          example: "0"
         value_extra_currencies:
           type: object
           additionalProperties:
@@ -2958,26 +3852,529 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         messages:
           type: array
           items:
-            $ref: '#/components/schemas/Message'
+            $ref: "#/components/schemas/Message"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
+    ActiveNominatorInfo:
+      type: object
+      properties:
+        address:
+          type: string
+        balance:
+          type: string
+        pending_balance:
+          type: string
+    NominatorPoolEvent:
+      type: object
+      properties:
+        amount:
+          type: string
+        balance_after:
+          type: string
+        balance_before:
+          type: string
+        balance_delta:
+          type: string
+        nominator_address:
+          type: string
+        pending_balance_after:
+          type: string
+        pending_balance_before:
+          type: string
+        pending_balance_delta:
+          type: string
+        pool_address:
+          type: string
+        tx_hash:
+          type: string
+        tx_lt:
+          type: string
+          example: "0"
+        type:
+          type: string
+          description: "Event type: `reward`, `deposit`, `withdrawal`, `pending_deposit_activation`, or `withdrawal_request`."
+          enum:
+            - reward
+            - deposit
+            - withdrawal
+            - pending_deposit_activation
+            - withdrawal_request
+        utime:
+          type: integer
+          format: int32
+        withdraw_request_after:
+          type: boolean
+        withdraw_request_before:
+          type: boolean
+    NominatorPoolEventsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        end_utime:
+          type: integer
+          format: int32
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/NominatorPoolEvent"
+        start_utime:
+          type: integer
+          format: int32
+    NominatorPoolInfo:
+      type: object
+      properties:
+        active_nominators:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActiveNominatorInfo"
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        max_nominators_count:
+          type: integer
+          format: int32
+        min_nominator_stake:
+          type: string
+        min_validator_stake:
+          type: string
+        nominators_count:
+          type: integer
+          format: int32
+        stake_amount_sent:
+          type: string
+        state:
+          type: integer
+          format: int32
+        validator_address:
+          type: string
+        validator_amount:
+          type: string
+        validator_reward_share:
+          type: integer
+          format: int32
+    NominatorPoolPosition:
+      type: object
+      properties:
+        balance:
+          type: string
+        pending_balance:
+          type: string
+        pool_address:
+          type: string
+    NominatorPoolsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        nominator_pools:
+          type: array
+          items:
+            $ref: "#/components/schemas/NominatorPoolPosition"
+    NominatorPoolValidatorEvent:
+      type: object
+      properties:
+        amount:
+          type: string
+        balance_after:
+          type: string
+        balance_before:
+          type: string
+        balance_delta:
+          type: string
+        cycle_start:
+          type: integer
+          format: int32
+        pool_address:
+          type: string
+        query_id:
+          type: string
+        tx_hash:
+          type: string
+        tx_lt:
+          type: string
+          example: "0"
+        type:
+          type: string
+          description: "Event type: `reward`, `penalty`, `deposit`, or `withdrawal`."
+          enum:
+            - reward
+            - penalty
+            - deposit
+            - withdrawal
+        utime:
+          type: integer
+          format: int32
+        validator_address:
+          type: string
+        validator_reward_share:
+          type: integer
+          format: int32
+    NominatorPoolValidatorEventsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        end_utime:
+          type: integer
+          format: int32
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/NominatorPoolValidatorEvent"
+        start_utime:
+          type: integer
+          format: int32
+    NominatorPoolValidatorReward:
+      type: object
+      properties:
+        balance_before:
+          type: string
+        cycle_start:
+          type: integer
+          format: int32
+        query_id:
+          type: string
+        reward:
+          type: string
+        tx_hash:
+          type: string
+        tx_lt:
+          type: string
+          example: "0"
+        utime:
+          type: integer
+          format: int32
+    NominatorPoolValidatorRewardsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        end_utime:
+          type: integer
+          format: int32
+        rewards:
+          type: array
+          items:
+            $ref: "#/components/schemas/NominatorPoolValidatorReward"
+        start_utime:
+          type: integer
+          format: int32
+        total_on_page:
+          type: string
+    NominatorReward:
+      type: object
+      properties:
+        reward:
+          type: string
+        stake_before:
+          type: string
+        tx_hash:
+          type: string
+        tx_lt:
+          type: string
+          example: "0"
+        utime:
+          type: integer
+          format: int32
+    NominatorRewardsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        end_utime:
+          type: integer
+          format: int32
+        rewards:
+          type: array
+          items:
+            $ref: "#/components/schemas/NominatorReward"
+        start_utime:
+          type: integer
+          format: int32
+        total_on_page:
+          type: string
+    ValidatorEvent:
+      type: object
+      properties:
+        adnl_addr:
+          type: string
+        amount:
+          type: string
+        election_id:
+          type: integer
+          format: int32
+        query_id:
+          type: string
+        reason:
+          type: integer
+          format: int32
+        stake_holder_address:
+          type: string
+        tx_hash:
+          type: string
+        tx_lt:
+          type: string
+          example: "0"
+        type:
+          type: string
+          description: "Event type: `stake_accepted`, `stake_rejected`, or `stake_recovered`."
+          enum:
+            - stake_accepted
+            - stake_rejected
+            - stake_recovered
+        utime:
+          type: integer
+          format: int32
+        validator_pubkey:
+          type: string
+    ValidatorEventsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        end_utime:
+          type: integer
+          format: int32
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorEvent"
+        start_utime:
+          type: integer
+          format: int32
+    ValidatorElectionParticipant:
+      type: object
+      properties:
+        adnl_addr:
+          type: string
+        max_factor:
+          type: integer
+          format: int32
+        stake:
+          type: string
+        stake_holder_address:
+          type: string
+        validator_index:
+          type: integer
+          format: int32
+        validator_pubkey:
+          type: string
+    ValidatorElection:
+      type: object
+      properties:
+        election_id:
+          type: integer
+          format: int32
+        elect_close:
+          type: integer
+          format: int32
+        failed:
+          type: boolean
+        finished:
+          type: boolean
+        min_stake:
+          type: string
+        participants:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorElectionParticipant"
+        total_participants:
+          type: integer
+          format: int32
+        total_stake:
+          type: string
+    ValidatorElectionsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        elections:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorElection"
+    ValidatorCycleValidator:
+      type: object
+      properties:
+        adnl_addr:
+          type: string
+        complaints:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorComplaint"
+        max_factor:
+          type: integer
+          format: int32
+          description: |-
+            `max_factor` is the participant's raw declared maximum stake factor (65536 = 1.0), not the effective factor.
+            The elector caps it at the cycle's `max_stake_factor` when computing `stake`. Use the smaller of
+            `max_factor` and `max_stake_factor` as the effective factor.
+        stake:
+          type: string
+        stake_holder_address:
+          type: string
+        validator_index:
+          type: integer
+          format: int32
+        validator_pubkey:
+          type: string
+        weight:
+          type: string
+    ValidatorCycle:
+      type: object
+      properties:
+        cycle_end:
+          type: integer
+          format: int32
+        cycle_start:
+          type: integer
+          format: int32
+        election_id:
+          type: integer
+          format: int32
+        elections_end_before:
+          type: integer
+          format: int32
+        elections_start_before:
+          type: integer
+          format: int32
+        main:
+          type: integer
+          format: int32
+        max_main_validators:
+          type: integer
+          format: int32
+        max_stake:
+          type: string
+        max_stake_factor:
+          type: integer
+          format: int32
+        max_stake_limit:
+          type: string
+        max_validators:
+          type: integer
+          format: int32
+        min_stake:
+          type: string
+        min_stake_limit:
+          type: string
+        min_total_stake:
+          type: string
+        min_validators:
+          type: integer
+          format: int32
+        stake_held_for:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+        total_stake:
+          type: string
+        total_weight:
+          type: string
+        validators:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorCycleValidator"
+        validators_elected_for:
+          type: integer
+          format: int32
+    ValidatorCyclesResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        cycles:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorCycle"
+    ValidatorComplaintVote:
+      type: object
+      properties:
+        adnl_addr:
+          type: string
+        validator_index:
+          type: integer
+          format: int32
+        validator_pubkey:
+          type: string
+        weight:
+          type: string
+    ValidatorComplaint:
+      type: object
+      properties:
+        adnl_addr:
+          type: string
+        approved_percent:
+          type: number
+        complaint_hash:
+          type: string
+          example: PJI18TRG8OZhVPZNN7epvMb25yZivlGQvVj9LC8omOg=
+        created_at:
+          type: integer
+          format: int32
+        cycle_start:
+          type: integer
+          format: int32
+        description_boc:
+          type: string
+        election_id:
+          type: integer
+          format: int32
+        is_passed:
+          type: boolean
+        paid:
+          type: string
+        reward_address:
+          type: string
+        severity:
+          type: integer
+          format: int32
+        stake_holder_address:
+          type: string
+        suggested_fine:
+          type: string
+        suggested_fine_part:
+          type: integer
+          format: int32
+        validator_pubkey:
+          type: string
+        voted_validators:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorComplaintVote"
+        vset_id:
+          type: string
+          example: REenLSr+rc8TCU/oc7Hcwburz3bMdA+DJzGA1PAHSes=
+        weight_remaining:
+          type: string
+          example: "0"
+    ValidatorComplaintsResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        complaints:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatorComplaint"
     Metadata:
       type: object
       additionalProperties:
-        $ref: '#/components/schemas/AddressMetadata'
+        $ref: "#/components/schemas/AddressMetadata"
     MsgSize:
       type: object
       properties:
         bits:
           type: string
-          example: '0'
+          example: "0"
         cells:
           type: string
-          example: '0'
+          example: "0"
     Multisig:
       type: object
       properties:
@@ -2989,13 +4386,13 @@ components:
           type: string
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         next_order_seqno:
           type: string
         orders:
           type: array
           items:
-            $ref: '#/components/schemas/MultisigOrder'
+            $ref: "#/components/schemas/MultisigOrder"
         proposers:
           type: array
           items:
@@ -3012,7 +4409,7 @@ components:
         actions:
           type: array
           items:
-            $ref: '#/components/schemas/OrderAction'
+            $ref: "#/components/schemas/OrderAction"
         address:
           type: string
         approvals_mask:
@@ -3027,7 +4424,7 @@ components:
           type: integer
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         multisig_address:
           type: string
         order_boc:
@@ -3046,20 +4443,20 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         orders:
           type: array
           items:
-            $ref: '#/components/schemas/MultisigOrder'
+            $ref: "#/components/schemas/MultisigOrder"
     MultisigResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         multisigs:
           type: array
           items:
-            $ref: '#/components/schemas/Multisig'
+            $ref: "#/components/schemas/Multisig"
     NFTCollection:
       type: object
       properties:
@@ -3074,7 +4471,7 @@ components:
           type: string
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         next_item_index:
           type: string
         owner_address:
@@ -3083,13 +4480,13 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
         nft_collections:
           type: array
           items:
-            $ref: '#/components/schemas/NFTCollection'
+            $ref: "#/components/schemas/NFTCollection"
     NFTItem:
       type: object
       properties:
@@ -3100,7 +4497,7 @@ components:
         code_hash:
           type: string
         collection:
-          $ref: '#/components/schemas/NFTCollection'
+          $ref: "#/components/schemas/NFTCollection"
         collection_address:
           type: string
         content:
@@ -3114,7 +4511,7 @@ components:
           type: boolean
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         on_sale:
           type: boolean
         owner_address:
@@ -3127,26 +4524,58 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
         nft_items:
           type: array
           items:
-            $ref: '#/components/schemas/NFTItem'
+            $ref: "#/components/schemas/NFTItem"
+    NFTSale:
+      type: object
+      properties:
+        address:
+          type: string
+        code_hash:
+          type: string
+        created_at:
+          type: integer
+        data_hash:
+          type: string
+        details: {}
+        last_transaction_lt:
+          type: string
+          example: "0"
+        marketplace_address:
+          type: string
+        nft_address:
+          type: string
+        nft_item:
+          $ref: "#/components/schemas/NFTItem"
+        nft_owner_address:
+          type: string
+        type:
+          type: string
+    NFTSalesResponse:
+      type: object
+      properties:
+        address_book:
+          $ref: "#/components/schemas/AddressBook"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        nft_sales:
+          type: array
+          items:
+            $ref: "#/components/schemas/NFTSale"
     NFTTransfer:
       type: object
       properties:
         custom_payload:
           type: string
         decoded_custom_payload:
-          type: array
-          items:
-            type: integer
+          type: object
         decoded_forward_payload:
-          type: array
-          items:
-            type: integer
+          type: object
         forward_amount:
           type: string
         forward_payload:
@@ -3171,20 +4600,20 @@ components:
           type: string
         transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         transaction_now:
           type: integer
     NFTTransfersResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
         nft_transfers:
           type: array
           items:
-            $ref: '#/components/schemas/NFTTransfer'
+            $ref: "#/components/schemas/NFTTransfer"
     RequestError:
       type: object
       properties:
@@ -3192,6 +4621,23 @@ components:
           type: integer
         error:
           type: string
+    IndexError:
+      type: object
+      properties:
+        error:
+          type: string
+    FinalityState:
+      type: integer
+      format: int32
+      description: "Finality state values: `pending` = 0, `confirmed` = 1, and `finalized` = 2."
+      enum:
+        - 0
+        - 1
+        - 2
+      x-enum-varnames:
+        - FinalityStatePending
+        - FinalityStateConfirmed
+        - FinalityStateFinalized
     SplitInfo:
       type: object
       properties:
@@ -3210,10 +4656,10 @@ components:
           type: string
         storage_fees_collected:
           type: string
-          example: '0'
+          example: "0"
         storage_fees_due:
           type: string
-          example: '0'
+          example: "0"
     TokenInfo:
       type: object
       properties:
@@ -3224,6 +4670,10 @@ components:
           additionalProperties: true
         image:
           type: string
+        is_nsfw:
+          type: boolean
+        is_scam:
+          type: boolean
         name:
           type: string
         nft_index:
@@ -3240,10 +4690,10 @@ components:
         actions:
           type: array
           items:
-            $ref: '#/components/schemas/Action'
+            $ref: "#/components/schemas/Action"
         end_lt:
           type: string
-          example: '0'
+          example: "0"
         end_utime:
           type: integer
         external_hash:
@@ -3252,23 +4702,25 @@ components:
           type: boolean
         mc_seqno_end:
           type: string
+          example: "0"
         mc_seqno_start:
           type: string
+          example: "0"
         start_lt:
           type: string
-          example: '0'
+          example: "0"
         start_utime:
           type: integer
         trace:
-          $ref: '#/components/schemas/TraceNode'
+          $ref: "#/components/schemas/TraceNode"
         trace_id:
           type: string
         trace_info:
-          $ref: '#/components/schemas/TraceMeta'
+          $ref: "#/components/schemas/TraceMeta"
         transactions:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Transaction'
+            $ref: "#/components/schemas/Transaction"
         transactions_order:
           type: array
           items:
@@ -3294,50 +4746,52 @@ components:
         children:
           type: array
           items:
-            $ref: '#/components/schemas/TraceNode'
+            $ref: "#/components/schemas/TraceNode"
         in_msg:
-          $ref: '#/components/schemas/Message'
+          $ref: "#/components/schemas/Message"
         in_msg_hash:
           type: string
         transaction:
-          $ref: '#/components/schemas/Transaction'
+          $ref: "#/components/schemas/Transaction"
         tx_hash:
           type: string
     TracesResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
         traces:
           type: array
           items:
-            $ref: '#/components/schemas/Trace'
+            $ref: "#/components/schemas/Trace"
     Transaction:
       type: object
       properties:
         account:
           type: string
         account_state_after:
-          $ref: '#/components/schemas/AccountState'
+          $ref: "#/components/schemas/AccountState"
         account_state_before:
-          $ref: '#/components/schemas/AccountState'
+          $ref: "#/components/schemas/AccountState"
         block_ref:
-          $ref: '#/components/schemas/BlockId'
+          $ref: "#/components/schemas/BlockId"
         description:
-          $ref: '#/components/schemas/TransactionDescr'
+          $ref: "#/components/schemas/TransactionDescr"
         emulated:
           type: boolean
         end_status:
           type: string
+        finality:
+          $ref: "#/components/schemas/FinalityState"
         hash:
           type: string
         in_msg:
-          $ref: '#/components/schemas/Message'
+          $ref: "#/components/schemas/Message"
         lt:
           type: string
-          example: '0'
+          example: "0"
         mc_block_seqno:
           type: integer
         now:
@@ -3347,15 +4801,15 @@ components:
         out_msgs:
           type: array
           items:
-            $ref: '#/components/schemas/Message'
+            $ref: "#/components/schemas/Message"
         prev_trans_hash:
           type: string
         prev_trans_lt:
           type: string
-          example: '0'
+          example: "0"
         total_fees:
           type: string
-          example: '0'
+          example: "0"
         total_fees_extra_currencies:
           type: object
           additionalProperties:
@@ -3370,15 +4824,15 @@ components:
         aborted:
           type: boolean
         action:
-          $ref: '#/components/schemas/ActionPhase'
+          $ref: "#/components/schemas/ActionPhase"
         bounce:
-          $ref: '#/components/schemas/BouncePhase'
+          $ref: "#/components/schemas/BouncePhase"
         compute_ph:
-          $ref: '#/components/schemas/ComputePhase'
+          $ref: "#/components/schemas/ComputePhase"
         credit_first:
           type: boolean
         credit_ph:
-          $ref: '#/components/schemas/CreditPhase'
+          $ref: "#/components/schemas/CreditPhase"
         destroyed:
           type: boolean
         installed:
@@ -3386,20 +4840,20 @@ components:
         is_tock:
           type: boolean
         split_info:
-          $ref: '#/components/schemas/SplitInfo'
+          $ref: "#/components/schemas/SplitInfo"
         storage_ph:
-          $ref: '#/components/schemas/StoragePhase'
+          $ref: "#/components/schemas/StoragePhase"
         type:
           type: string
     TransactionsResponse:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         transactions:
           type: array
           items:
-            $ref: '#/components/schemas/Transaction'
+            $ref: "#/components/schemas/Transaction"
     V2AddressInformation:
       type: object
       properties:
@@ -3417,6 +4871,8 @@ components:
           type: string
         status:
           type: string
+        suspended:
+          type: boolean
     V2EstimateFeeRequest:
       type: object
       properties:
@@ -3436,9 +4892,9 @@ components:
         destination_fees:
           type: array
           items:
-            $ref: '#/components/schemas/V2EstimatedFee'
+            $ref: "#/components/schemas/V2EstimatedFee"
         source_fees:
-          $ref: '#/components/schemas/V2EstimatedFee'
+          $ref: "#/components/schemas/V2EstimatedFee"
     V2EstimatedFee:
       type: object
       properties:
@@ -3460,7 +4916,7 @@ components:
         stack:
           type: array
           items:
-            $ref: '#/components/schemas/V2StackEntity'
+            $ref: "#/components/schemas/V2StackEntity"
     V2SendMessageRequest:
       type: object
       properties:
@@ -3492,6 +4948,8 @@ components:
           type: integer
         status:
           type: string
+        suspended:
+          type: boolean
         wallet_id:
           type: integer
         wallet_type:
@@ -3500,11 +4958,11 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         vesting_contracts:
           type: array
           items:
-            $ref: '#/components/schemas/VestingInfo'
+            $ref: "#/components/schemas/VestingInfo"
     WalletState:
       type: object
       properties:
@@ -3526,11 +4984,13 @@ components:
           type: string
         last_transaction_lt:
           type: string
-          example: '0'
+          example: "0"
         seqno:
           type: integer
         status:
           type: string
+        suspended:
+          type: boolean
         wallet_id:
           type: integer
         wallet_type:
@@ -3539,13 +4999,13 @@ components:
       type: object
       properties:
         address_book:
-          $ref: '#/components/schemas/AddressBook'
+          $ref: "#/components/schemas/AddressBook"
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: "#/components/schemas/Metadata"
         wallets:
           type: array
           items:
-            $ref: '#/components/schemas/WalletState'
+            $ref: "#/components/schemas/WalletState"
     OrderAction:
       type: object
       properties:
@@ -3592,9 +5052,11 @@ components:
   securitySchemes:
     APIKeyHeader:
       type: apiKey
-      name: X-Api-Key
+      name: X-API-Key
       in: header
+      description: "API key header of the form `X-API-Key: <token>`, where `<token>` is the API key. Requests without a key are limited to 1 RPS. Refer to the [authentication guide](/api/v3/authentication) for details."
     APIKeyQuery:
       type: apiKey
       name: api_key
       in: query
+      description: API key query parameter of the form `?api_key=<token>`, where `<token>` is the API key. Equivalent to the header method. Refer to the [authentication guide](/api/v3/authentication) for details.

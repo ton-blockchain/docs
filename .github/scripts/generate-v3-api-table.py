@@ -23,6 +23,8 @@ TAG_ORDER = [
     'jettons',
     'nfts',
     'dns',
+    'staking',
+    'validators',
     'multisig',
     'vesting',
     'stats',
