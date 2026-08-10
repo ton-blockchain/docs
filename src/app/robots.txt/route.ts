@@ -13,7 +13,7 @@ export function GET() {
     `${[
       `User-agent: *`,
       accessRule,
-      'Content-Signal: ai-train=no, search=yes, ai-input=no',
+      `Content-Signal: ai-train=no, search=${isTestDomain ? 'no' : 'yes'}, ai-input=no`,
       '',
       `Sitemap: ${withBaseUrl('/sitemap.xml')}`,
     ].join('\n')}\n`,
