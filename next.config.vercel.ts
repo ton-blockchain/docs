@@ -44,6 +44,19 @@ const config: NextConfig = {
   },
   serverExternalPackages: ['typescript'],
   redirects: async () => loadDocsRedirects(),
+  headers: async () => [
+    {
+      source: '/',
+      headers: [
+        {
+          // https://www.rfc-editor.org/info/rfc8288/
+          // https://www.rfc-editor.org/info/rfc9727/#section-3
+          key: 'Link',
+          value: '</api/overview>; rel="service-doc", </llms.txt>; rel="describedby"',
+        },
+      ],
+    },
+  ],
   rewrites: async () => ({
     beforeFiles: [
       {
