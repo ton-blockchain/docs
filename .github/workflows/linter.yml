@@ -180,25 +180,25 @@ jobs:
 
       # Navigation
 
-      - name: Check uniqueness of navigation paths in docs.json
+      - name: Check uniqueness of navigation paths
         if: ${{ !cancelled() }}
         run: npm run check:navigation -- unique
 
-      - name: Check existence of navigation .mdx pages in docs.json
+      - name: Check existence of navigation .mdx pages
         if: ${{ !cancelled() }}
         run: npm run check:navigation -- exist
 
-      - name: Check coverage of .mdx pages by docs.json
+      - name: Check coverage of .mdx pages by meta.json files
         if: ${{ !cancelled() }}
         run: npm run check:navigation -- cover
 
       # Redirects
 
-      - name: Check uniqueness of redirect sources in docs.json
+      - name: Check uniqueness of redirect sources in vercel.json
         if: ${{ !cancelled() }}
         run: npm run check:redirects -- unique
 
-      - name: Check existence of redirect destinations in docs.json
+      - name: Check existence of redirect destinations in vercel.json
         if: ${{ !cancelled() }}
         run: npm run check:redirects -- exist
 
@@ -206,6 +206,6 @@ jobs:
         if: ${{ !cancelled() }}
         run: npm run check:redirects -- previous
 
-      - name: Check redirects against the upstream docs.json structure
+      - name: Check redirects against the upstream docs structure
         if: ${{ !cancelled() }}
         run: npm run check:redirects -- upstream

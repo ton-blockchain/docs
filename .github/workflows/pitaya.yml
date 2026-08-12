@@ -204,10 +204,10 @@ jobs:
         run: |
           set -euo pipefail
           # Compare PR head against BASE_REF and look for docs changes
-          CHANGED=$(git diff --name-only "$BASE_REF"...pr_head | grep -E '(\.(md|mdx)$|^docs\.json$)' || true)
+          CHANGED=$(git diff --name-only "$BASE_REF"...pr_head | grep -E '(\.(md|mdx)$|^(vercel|meta)\.json$)' || true)
           if [ -z "$CHANGED" ]; then
             echo "DOCS_CHANGED=false" >> $GITHUB_ENV
-            echo "No docs (.md, .mdx, docs.json) changes detected; skipping AI review." >&2
+            echo "No docs (.md, .mdx, vercel.json, meta.json) changes detected; skipping AI review." >&2
           else
             echo "DOCS_CHANGED=true" >> $GITHUB_ENV
             echo "$CHANGED" | sed 's/^/- /' >&2
@@ -221,7 +221,7 @@ jobs:
           set -euo pipefail
           API="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
           BODY=$(cat <<'TXT'
-          Skipping AI review because no docs changes in md, mdx, or docs.json
+          Skipping AI review because no docs changes in md, mdx, vercel.json, or meta.json
           TXT
           )
           jq -n --arg body "$BODY" '{body:$body}' > payload.json

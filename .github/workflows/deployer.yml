@@ -43,7 +43,7 @@ jobs:
         with:
           path: &build-docs-next-cache-paths |
             ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-next-cache-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/*.md', '**/*.mdx', 'next.config.*', 'docs.json') }}
+          key: ${{ runner.os }}-next-cache-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/*.md', '**/*.mdx', 'next.config.*', 'vercel.json') }}
           restore-keys: ${{ runner.os }}-next-cache-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}-
 
       - name: Install dependencies
