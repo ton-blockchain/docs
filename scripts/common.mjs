@@ -8,8 +8,8 @@ import { remark } from 'remark';
 import { visitParents } from 'unist-util-visit-parents';
 
 /**
- * Mintlify
- * @typedef {import('../node_modules/@mintlify/validation').DocsConfig} DocsConfig
+ * Vercel
+ * @typedef {import('@vercel/config/v1').VercelConfig} DocsConfig
  */
 
 /**
@@ -312,26 +312,26 @@ export function findUnignoredFiles(ext = 'mdx', dir = './content') {
 }
 
 /**
- * Get docs.json contents as an object.
+ * Get vercel.json contents as an object.
  *
  * @returns {Readonly<DocsConfig>}
  */
 export function getConfig() {
-  return Object.freeze(JSON.parse(readFileSync('./docs.json', 'utf8')));
+  return Object.freeze(JSON.parse(readFileSync('./vercel.json', 'utf8')));
 }
 
 /**
- * Write docs.json-representing object into docs.json file.
+ * Write vercel.json-representing object into vercel.json file.
  *
  * @param {Readonly<DocsConfig>} config
  */
 export function writeConfig(config) {
-  const docsJsonUrl = new URL('../docs.json', import.meta.url);
+  const docsJsonUrl = new URL('../vercel.json', import.meta.url);
   writeFileSync(docsJsonUrl, JSON.stringify(config, null, 2) + '\n', 'utf8');
 }
 
 /**
- * Get navigation links from the docs.json configuration.
+ * Get navigation links from the vercel.json configuration.
  * Notice that each link is prefixed by 'content' and a single slash /,
  * regardless if the latter was present originally.
  *
@@ -387,7 +387,7 @@ export function getNavLinksSet() {
 }
 
 /**
- * Get redirect objects from the docs.json configuration.
+ * Get redirect objects from the vercel.json configuration.
  *
  * @typedef {{
  *   source: string;
@@ -405,7 +405,7 @@ export function getRedirects(config) {
 }
 
 /**
- * Get redirect objects from the docs.json configuration as a Set.
+ * Get redirect objects from the vercel.json configuration as a Set.
  *
  * @param config {DocsConfig}
  * @returns {ReadonlySet<Redirect>}

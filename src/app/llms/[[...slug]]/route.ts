@@ -2,6 +2,7 @@ import { getLLMText, getPageMarkdownUrl, getIndexablePages, source } from '@/lib
 import { withBaseUrl } from '@/lib/shared';
 import { notFound, redirect } from 'next/navigation';
 
+export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function GET(_req: Request, { params }: RouteContext<'/llms/[[...slug]]'>) {

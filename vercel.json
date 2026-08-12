@@ -1,92 +1,22 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
-  "name": "TON Docs",
-  "logo": {
-    "light": "/resources/logo/light.svg",
-    "dark": "/resources/logo/dark.svg"
-  },
-  "favicon": "/favicon.png",
-  "colors": {
-    "primary": "#0098EA",
-    "light": "#F7F9FB",
-    "dark": "#1E2337"
-  },
-  "fonts": {
-    "family": "Inter"
-  },
-  "appearance": {
-    "default": "system",
-    "strict": false
-  },
-  "thumbnails": {
-    "appearance": "dark",
-    "background": "/resources/logo/og-image-bg.svg"
-  },
-  "integrations": {
-    "ga4": {
-      "measurementId": "G-S6KJE2LF00"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</api/overview>; rel=\"service-doc\", </llms.txt>; rel=\"describedby\""
+        }
+      ]
     }
-  },
-  "styling": {
-    "eyebrows": "breadcrumbs",
-    "codeblocks": {
-      "theme": {
-        "light": "github-light-default",
-        "dark": "dark-plus"
-      },
-      "languages": {
-        "custom": [
-          "/resources/grammars/tolk.tmLanguage.json",
-          "/resources/grammars/tlb.tmLanguage.json",
-          "/resources/grammars/fift.tmLanguage.json",
-          "/resources/grammars/tasm.tmLanguage.json",
-          "/resources/grammars/func.tmLanguage.json"
-        ]
-      }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!llms/|og/|api/|_next/).+)\\.md",
+      "destination": "/llms/$1/content.md"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "chatgpt",
-      "claude",
-      "grok",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
-  },
-  "navbar": {
-    "primary": {
-      "type": "button",
-      "label": "Docs for LLMs: llms.txt",
-      "href": "https://docs.ton.org/llms.txt"
-    }
-  },
-  "navigation": {
-    "pages": []
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/ton-blockchain",
-      "x": "https://twitter.com/ton_blockchain",
-      "telegram": "https://t.me/addlist/1r5Vcb8eljk5Yzcy"
-    }
-  },
-  "errors": {
-    "404": {
-      "redirect": false,
-      "title": "Page not found",
-      "description": "Maybe you were looking for one of these pages below?"
-    }
-  },
-  "seo": {
-    "metatags": {
-      "canonical": "https://docs.ton.org"
-    }
-  },
+  ],
   "redirects": [
     {
       "source": "/api/smc-index/get-nominator-bookings-method",

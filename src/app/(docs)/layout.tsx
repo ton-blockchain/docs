@@ -5,6 +5,8 @@ import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
 // import { SidebarSingleOpen } from '@/components/ui/sidebar-so';
 
+export const dynamic = 'force-static';
+
 const pagePaths = source.getPages().map((it) => it.path.replace(/^\/*/, '/').replace(/\.mdx$/, ''));
 const tabUrls: Record<string, Set<string>> = {
   Onboarding: new Set(

@@ -1,6 +1,7 @@
 import { source, processLLMLinks } from '@/lib/source';
 import { llms } from 'fumadocs-core/source';
 
+export const dynamic = 'force-static';
 export const revalidate = false;
 
 export function GET() {

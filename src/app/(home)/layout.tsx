@@ -3,6 +3,8 @@ import { HomeLayout } from 'fumadocs-ui/layouts/home';
 import { gitConfig } from '@/lib/shared';
 import { ThemeLogo, Telegram, XTwitter } from '@/components/ui/logo';
 
+export const dynamic = 'force-static';
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <HomeLayout

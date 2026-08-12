@@ -182,7 +182,7 @@ def find_repo_root() -> Path:
     current = Path(__file__).resolve().parent
 
     for parent in [current] + list(current.parents):
-        if (parent / 'docs.json').exists():
+        if (parent / 'package.json').exists():
             return parent
 
     return current.parent

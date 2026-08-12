@@ -1,15 +1,9 @@
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
-import type { Redirect } from 'next/dist/lib/load-custom-routes';
 import { createMDX } from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
 const isVercelProd = resolveBaseUrl().startsWith('https://docs.ton.org');
-
-type DocsConfig = {
-  redirects?: Redirect[];
-};
 
 function resolveBaseUrl() {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -24,14 +18,6 @@ function resolveBaseUrl() {
   return 'http://localhost:3000';
 }
 
-function loadDocsRedirects(): Redirect[] {
-  const docsConfig = JSON.parse(
-    readFileSync(new URL('./docs.json', import.meta.url), 'utf8'),
-  ) as DocsConfig;
-
-  return docsConfig.redirects ?? [];
-}
-
 const config: NextConfig = {
   reactStrictMode: true,
   env: {
@@ -43,29 +29,6 @@ const config: NextConfig = {
     root: fileURLToPath(new URL('.', import.meta.url)),
   },
   serverExternalPackages: ['typescript'],
-  redirects: async () => loadDocsRedirects(),
-  headers: async () => [
-    {
-      source: '/',
-      headers: [
-        {
-          // https://www.rfc-editor.org/info/rfc8288/
-          // https://www.rfc-editor.org/info/rfc9727/#section-3
-          key: 'Link',
-          value: '</api/overview>; rel="service-doc", </llms.txt>; rel="describedby"',
-        },
-      ],
-    },
-  ],
-  rewrites: async () => ({
-    beforeFiles: [
-      {
-        // Map `.md` requests to LLM Markdown sources
-        source: '/:path((?!llms/|og/|api/|_next/).+)\\.md',
-        destination: '/llms/:path/content.md',
-      },
-    ],
-  }),
 };
 
 export default withMDX(config);

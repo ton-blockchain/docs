@@ -4,6 +4,7 @@ import { getPageImage, source } from '@/lib/source';
 import { generate, getImageResponseOptions } from '@/lib/og';
 import { withBaseUrl } from '@/lib/shared';
 
+export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function GET(_req: Request, { params }: RouteContext<'/og/[...slug]'>) {
