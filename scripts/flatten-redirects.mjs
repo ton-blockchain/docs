@@ -13,7 +13,7 @@
 import { composeSuccess, getConfig, writeConfig, getRedirects } from './common.mjs';
 
 /**
- * Flatten source → destination routes in all redirect chains in docs.json
+ * Flatten source → destination routes in all redirect chains in vercel.json
  */
 const flattenRedirects = () => {
   const config = getConfig();
@@ -66,7 +66,7 @@ const flattenRedirects = () => {
 };
 
 const main = () => {
-  console.log('🏁 Flattening redirects in docs.json...');
+  console.log('🏁 Flattening redirects in vercel.json...');
   flattenRedirects();
 };
 

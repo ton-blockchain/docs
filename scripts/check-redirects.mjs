@@ -47,7 +47,7 @@ import {
  * Check that all sources in the redirects array are unique,
  * don't point to themselves, and don't override the existing structure paths
  *
- * @param config {Readonly<DocsConfig>} Local docs.json configuration
+ * @param config {Readonly<DocsConfig>} Local vercel.json configuration
  * @return {CheckResult}
  */
 const checkUnique = (config) => {
@@ -63,7 +63,7 @@ const checkUnique = (config) => {
       composeErrorList(
         'Found duplicate sources in the redirects array:',
         duplicates,
-        'Redirect sources in docs.json must be unique!',
+        'Redirect sources in vercel.json must be unique!',
       ),
     );
   }
@@ -77,7 +77,7 @@ const checkUnique = (config) => {
       composeErrorList(
         'Found sources that lead to themselves, i.e., circular references:',
         loops,
-        'Redirect sources in docs.json must not self-reference in destinations!',
+        'Redirect sources in vercel.json must not self-reference in destinations!',
       ),
     );
   }
@@ -86,9 +86,9 @@ const checkUnique = (config) => {
   if (navOverrides.length !== 0) {
     errors.push(
       composeErrorList(
-        'Found sources that override pages in the docs.json structure:',
+        'Found sources that override pages in the vercel.json structure:',
         navOverrides,
-        'Redirect sources in docs.json must not replace existing paths!',
+        'Redirect sources in vercel.json must not replace existing paths!',
       ),
     );
   }
@@ -118,7 +118,7 @@ const checkUnique = (config) => {
 /**
  * Check that all destinations in the redirects array point to existing files
  *
- * @param config {Readonly<DocsConfig>} Local docs.json configuration
+ * @param config {Readonly<DocsConfig>} Local vercel.json configuration
  * @return {CheckResult}
  */
 const checkExist = (config) => {
@@ -310,7 +310,7 @@ const checkExist = (config) => {
           }
           return it.slice(0, -1).join('\n  → ') + '\n  → ' + it.slice(-1).join('');
         }),
-        'Some redirect destinations in docs.json do not exist or are unreachable!',
+        'Some redirect destinations in vercel.json do not exist or are unreachable!',
       ),
     };
   }
@@ -322,7 +322,7 @@ const checkExist = (config) => {
  * Check redirects against the previous TON Documentation URLs.
  * Ensures that old routes point to new files or even anchors.
  *
- * @param config {Readonly<DocsConfig>} Parsed docs.json configuration
+ * @param config {Readonly<DocsConfig>} Parsed vercel.json configuration
  * @return {Promise<CheckResult>}
  */
 const checkPrevious = async (config) => {
@@ -397,7 +397,7 @@ const checkPrevious = async (config) => {
       error: composeErrorList(
         'Missing pages or redirects for the following URLs:',
         missingSources,
-        'Some URLS in the previous TON Documentation do not have corresponding pages or redirect sources in the local docs.json!',
+        'Some URLS in the previous TON Documentation do not have corresponding pages or redirect sources in vercel.json!',
       ),
     };
   }
@@ -412,7 +412,7 @@ const checkPrevious = async (config) => {
  * provide necessary redirects in case local links
  * deviated from the links on the main branch.
  *
- * @param localConfig {Readonly<DocsConfig>} Local docs.json configuration
+ * @param localConfig {Readonly<DocsConfig>} Local vercel.json configuration
  * @return {Promise<CheckResult>}
  */
 const checkUpstream = async (localConfig) => {
@@ -467,7 +467,7 @@ const checkUpstream = async (localConfig) => {
         'Missing pages or redirects for the following upstream URLs:',
         missingSources,
         [
-          'Local docs.json does not have corresponding pages or redirect sources for some URLs in the upstream meta.json and content/ structure!',
+          'Local vercel.json does not have corresponding pages or redirect sources for some URLs in the upstream meta.json and content/ structure!',
           `${ansiYellow('How to fix:')} if you did not rename, move, or delete any pages in meta.json files or content/ directory, merge the latest main branch into your branch. Otherwise, add necessary redirects pointing to existing pages.`,
         ].join('\n'),
       ),
@@ -512,12 +512,12 @@ const main = async () => {
   };
 
   if (shouldRunAll || argUnique) {
-    console.log('🏁 Checking the uniqueness of redirect sources in docs.json...');
+    console.log('🏁 Checking the uniqueness of redirect sources in vercel.json...');
     handleCheckResult(checkUnique(config), 'All sources are unique.');
   }
 
   if (shouldRunAll || argExist) {
-    console.log('🏁 Checking the existence of redirect destinations in docs.json...');
+    console.log('🏁 Checking the existence of redirect destinations in vercel.json...');
     handleCheckResult(checkExist(config), 'All non-TODO, local destinations exist.');
   }
 
