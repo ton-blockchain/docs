@@ -29,28 +29,6 @@ const config: NextConfig = {
     root: fileURLToPath(new URL('.', import.meta.url)),
   },
   serverExternalPackages: ['typescript'],
-  headers: async () => [
-    {
-      source: '/',
-      headers: [
-        {
-          // https://www.rfc-editor.org/info/rfc8288/
-          // https://www.rfc-editor.org/info/rfc9727/#section-3
-          key: 'Link',
-          value: '</api/overview>; rel="service-doc", </llms.txt>; rel="describedby"',
-        },
-      ],
-    },
-  ],
-  rewrites: async () => ({
-    beforeFiles: [
-      {
-        // Map `.md` requests to LLM Markdown sources
-        source: '/:path((?!llms/|og/|api/|_next/).+)\\.md',
-        destination: '/llms/:path/content.md',
-      },
-    ],
-  }),
 };
 
 export default withMDX(config);

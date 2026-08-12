@@ -1,5 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</api/overview>; rel=\"service-doc\", </llms.txt>; rel=\"describedby\""
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "^/(?!llms/|og/|api/|_next/)(.+)\\.md$",
+      "destination": "/llms/$1/content.md"
+    }
+  ],
   "redirects": [
     {
       "source": "/api/smc-index/get-nominator-bookings-method",
