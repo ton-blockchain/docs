@@ -5,6 +5,8 @@ import { getQuickJumpPages } from '@/lib/source';
 import './global.css';
 import 'katex/dist/katex.css';
 
+export const dynamic = 'force-static';
+
 const inter = Inter({
   subsets: ['latin'],
 });

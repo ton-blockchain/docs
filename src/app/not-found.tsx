@@ -4,6 +4,8 @@ import { source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
 
+export const dynamic = 'force-static';
+
 export default function NotFound() {
   return (
     <DocsLayout

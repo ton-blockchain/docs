@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getIndexablePages } from '@/lib/source';
 import { withBaseUrl } from '@/lib/shared';
 
+export const dynamic = 'force-static';
 export const revalidate = false;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

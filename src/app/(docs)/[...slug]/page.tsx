@@ -8,6 +8,8 @@ import { getMDXComponents } from '@/components/mdx';
 import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
 import { ScrollTop } from '@/components/ui/scroll-top';
 
+export const dynamic = 'force-static';
+
 const localSkippedPagePaths = new Set([
   'foundations/whitepapers/catchain.mdx',
   'foundations/whitepapers/tblkch.mdx',
