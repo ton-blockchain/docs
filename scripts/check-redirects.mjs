@@ -175,6 +175,10 @@ const checkExist = (config) => {
       specialDestinationsExist.eolWildcards = true;
       return true;
     }
+    // Auto-generated LLMs index
+    if (path === '/llms.txt') {
+      return true;
+    }
     // Otherwise
     return false;
   };
