@@ -9,6 +9,8 @@ import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
 import { ScrollTop } from '@/components/ui/scroll-top';
 
 export const dynamic = 'force-static';
+export const dynamicParams = false;
+export const revalidate = false;
 
 const localSkippedPagePaths = new Set([
   'foundations/whitepapers/catchain.mdx',
