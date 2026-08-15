@@ -103,12 +103,11 @@ export default defineConfig({
         'ts',
         'tsx',
         'yaml',
-        ...['fift', 'func', 'tlb', 'tolk', 'tasm'].map((name) =>
+        ...['fift', 'func', 'tlb', 'tolk', 'tasm', 'mytonctrl'].map((name) =>
           JSON.parse(readFileSync(`./src/grammars/${name}.tmLanguage.json`, 'utf8')),
         ),
       ],
       langAlias: {
-        mytonctrl: 'shellscript',
         tact: 'text',
         asm: 'tasm',
         md: 'mdx',

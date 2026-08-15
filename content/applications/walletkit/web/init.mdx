@@ -35,7 +35,7 @@ Alternatively, explore the complete demo wallet with WalletKit integration:
 
 For reading blockchain data, WalletKit uses API providers. If you need to access higher RPS limits, obtain API keys from your preferred provider.
 
-For example, you can use the official provider, TON Center: [Get your TON Center API key](https://docs.ton.org/applications/api/toncenter/get-api-key).
+For example, you can use the official provider, TON Center: [Get your TON Center API key](/api/get-api-key).
 
 It's recommended to get API keys for both TON networks: **mainnet** and **testnet**.
 
@@ -135,7 +135,7 @@ It's useful to add some of the optional settings right away. Add them to the sam
 
 - `bridge`: TON Connect's bridge settings. This is the main bridge for communication with dApps, capable of handling significant load. To self-host, see [TON Connect bridge on GitHub](https://github.com/ton-connect/bridge).
 
-  ```ts title="TypeScript" 
+  ```ts title="TypeScript"
   const kit = new TonWalletKit({
     // ...other parameters...
     bridge: {
@@ -151,7 +151,7 @@ Here is the full example code for initializing WalletKit with the minimum functi
 ```ts title="TypeScript"
 import {
   TonWalletKit,
-  Network, 
+  Network,
   createDeviceInfo,
   createWalletManifest,
 } from '@ton/walletkit';

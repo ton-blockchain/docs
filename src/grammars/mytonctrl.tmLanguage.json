@@ -1,0 +1,442 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "mytonctrl",
+  "displayName": "MyTonCtrl",
+  "scopeName": "source.mytonctrl",
+  "patterns": [
+    {
+      "include": "#installerInput"
+    },
+    {
+      "include": "#mytonctrlInput"
+    },
+    {
+      "include": "#promptFallback"
+    },
+    {
+      "include": "#logs"
+    },
+    {
+      "include": "#sectionHeading"
+    },
+    {
+      "include": "#tableHeading"
+    },
+    {
+      "include": "#resultLine"
+    },
+    {
+      "include": "#states"
+    },
+    {
+      "include": "#bareCommand"
+    },
+    {
+      "include": "#fieldLabel"
+    },
+    {
+      "include": "#values"
+    }
+  ],
+  "repository": {
+    "installerInput": {
+      "begin": "^(?:\\s*(MyTonCtrl>)\\s+(installer)\\s+|\\s*((?:MyTonInstaller|Installer)>)\\s+)(clcf|clear|drvcf|enable|exit|help|history|plsc|print_ls_proxy_config|set_node_argument|status|ton_storage_list)(?=\\s|$)",
+      "beginCaptures": {
+        "1": {
+          "name": "markup.inserted.prompt.mytonctrl"
+        },
+        "2": {
+          "name": "entity.name.function.command.mytonctrl"
+        },
+        "3": {
+          "name": "markup.deleted.prompt.installer.mytonctrl"
+        },
+        "4": {
+          "name": "entity.name.function.command.installer.mytonctrl"
+        }
+      },
+      "end": "$",
+      "name": "meta.command.installer.mytonctrl",
+      "patterns": [
+        {
+          "include": "#inputValues"
+        }
+      ]
+    },
+    "mytonctrlInput": {
+      "begin": "^(\\s*)(MyTonCtrl>)(\\s+)(about|activate_pool|activate_single_pool|add_collator|add_controller|add_custom_overlay|add_validator_to_collation_wl|aw|benchmark|bl|calculate_annual_controller_percentage|check_ef|check_liquid_pool|cl|clear|controller_update_validator_set|controllers_list|create_backup|create_controllers|db|delete_collator|delete_custom_overlay|delete_pool|delete_validator_from_collation_wl|deposit_to_controller|deposit_to_pool|disable_alert|disable_collation_wl|disable_mode|download_archive_blocks|dw|el|enable_alert|enable_mode|ew|exit|get|get_controller_data|get_pool_data|help|history|import_pool|installer|iw|list_alerts|list_custom_overlays|mg|mgtp|nb|new_pool|new_single_pool|nw|od|ol|pools_list|print_collation_config|print_collation_whitelist|print_collators|print_local_collators|reload_global_config|remove_btc_teleport|reset_collators|restore_backup|set|set_collation_config|set_quic_port|setup_alert_bot|setup_collator|status|status_modes|status_settings|stop_and_withdraw_controller|stop_collator|stop_controller|swv|test_alert|test_calculate_loan_amount|update|update_collation_config|update_controllers|update_validator_set|upgrade|vah|vas|vc|ve|vl|vo|withdraw_from_controller|withdraw_from_pool|withdraw_from_single_pool|wl)(?=\\s|$)",
+      "beginCaptures": {
+        "2": {
+          "name": "markup.inserted.prompt.mytonctrl"
+        },
+        "4": {
+          "name": "entity.name.function.command.mytonctrl"
+        }
+      },
+      "end": "$",
+      "name": "meta.command.mytonctrl",
+      "patterns": [
+        {
+          "include": "#inputValues"
+        }
+      ]
+    },
+    "promptFallback": {
+      "patterns": [
+        {
+          "begin": "^(\\s*)(MyTonCtrl>)(?=\\s|$)",
+          "beginCaptures": {
+            "2": {
+              "name": "markup.inserted.prompt.mytonctrl"
+            }
+          },
+          "end": "$",
+          "name": "meta.command.unknown.mytonctrl",
+          "patterns": [
+            {
+              "include": "#inputValues"
+            }
+          ]
+        },
+        {
+          "begin": "^(\\s*)((?:MyTonInstaller|Installer)>)(?=\\s|$)",
+          "beginCaptures": {
+            "2": {
+              "name": "markup.deleted.prompt.installer.mytonctrl"
+            }
+          },
+          "end": "$",
+          "name": "meta.command.unknown.installer.mytonctrl",
+          "patterns": [
+            {
+              "include": "#inputValues"
+            }
+          ]
+        }
+      ]
+    },
+    "bareCommand": {
+      "begin": "^(\\s*)(about|activate_pool|activate_single_pool|add_collator|add_controller|add_custom_overlay|add_validator_to_collation_wl|aw|benchmark|bl|calculate_annual_controller_percentage|check_ef|check_liquid_pool|cl|clcf|clear|controller_update_validator_set|controllers_list|create_backup|create_controllers|db|delete_collator|delete_custom_overlay|delete_pool|delete_validator_from_collation_wl|deposit_to_controller|deposit_to_pool|disable_alert|disable_collation_wl|disable_mode|download_archive_blocks|drvcf|dw|el|enable|enable_alert|enable_mode|ew|exit|get|get_controller_data|get_pool_data|help|history|import_pool|installer|iw|list_alerts|list_custom_overlays|mg|mgtp|nb|new_pool|new_single_pool|nw|od|ol|plsc|pools_list|print_collation_config|print_collation_whitelist|print_collators|print_local_collators|print_ls_proxy_config|reload_global_config|remove_btc_teleport|reset_collators|restore_backup|set|set_collation_config|set_node_argument|set_quic_port|setup_alert_bot|setup_collator|status|status_modes|status_settings|stop_and_withdraw_controller|stop_collator|stop_controller|swv|test_alert|test_calculate_loan_amount|ton_storage_list|update|update_collation_config|update_controllers|update_validator_set|upgrade|vah|vas|vc|ve|vl|vo|withdraw_from_controller|withdraw_from_pool|withdraw_from_single_pool|wl)(?=\\s|$)",
+      "beginCaptures": {
+        "2": {
+          "name": "entity.name.function.command.mytonctrl"
+        }
+      },
+      "end": "$",
+      "name": "meta.command.reference.mytonctrl",
+      "patterns": [
+        {
+          "include": "#inputValues"
+        }
+      ]
+    },
+    "inputValues": {
+      "patterns": [
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "include": "#optionalArguments"
+        },
+        {
+          "match": "(?<!\\S)--[A-Za-z0-9][A-Za-z0-9_-]*|(?<!\\S)-[A-Za-z](?=\\s|$)",
+          "name": "constant.other.option.mytonctrl"
+        },
+        {
+          "match": "\\|",
+          "name": "keyword.operator.alternative.mytonctrl"
+        },
+        {
+          "match": "\\.\\.\\.",
+          "name": "punctuation.definition.ellipsis.mytonctrl"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "placeholder": {
+      "begin": "<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.placeholder.begin.mytonctrl"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.placeholder.end.mytonctrl"
+        }
+      },
+      "name": "variable.parameter.placeholder.mytonctrl",
+      "patterns": [
+        {
+          "match": "\\|",
+          "name": "keyword.operator.alternative.mytonctrl"
+        }
+      ]
+    },
+    "optionalArguments": {
+      "begin": "\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.optional.begin.mytonctrl"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.optional.end.mytonctrl"
+        }
+      },
+      "name": "meta.optional-arguments.mytonctrl",
+      "patterns": [
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "match": "--[A-Za-z0-9][A-Za-z0-9_-]*|-[A-Za-z](?=\\s|$|\\])",
+          "name": "constant.other.option.mytonctrl"
+        },
+        {
+          "match": "\\|",
+          "name": "keyword.operator.alternative.mytonctrl"
+        },
+        {
+          "match": "\\.\\.\\.",
+          "name": "punctuation.definition.ellipsis.mytonctrl"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "logs": {
+      "patterns": [
+        {
+          "match": "^(\\[debug\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.debug.log-level.mytonctrl"
+            },
+            "3": {
+              "name": "constant.numeric.timestamp.mytonctrl"
+            },
+            "5": {
+              "name": "constant.language.timezone.mytonctrl"
+            },
+            "7": {
+              "name": "markup.inserted.thread.mytonctrl"
+            }
+          },
+          "name": "meta.log.debug.mytonctrl"
+        },
+        {
+          "match": "^(\\[info\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
+          "captures": {
+            "1": {
+              "name": "keyword.other.info.log-level.mytonctrl"
+            },
+            "3": {
+              "name": "constant.numeric.timestamp.mytonctrl"
+            },
+            "5": {
+              "name": "constant.language.timezone.mytonctrl"
+            },
+            "7": {
+              "name": "markup.inserted.thread.mytonctrl"
+            }
+          },
+          "name": "meta.log.info.mytonctrl"
+        },
+        {
+          "match": "^(\\[warning\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.warning.log-level.mytonctrl"
+            },
+            "3": {
+              "name": "constant.numeric.timestamp.mytonctrl"
+            },
+            "5": {
+              "name": "constant.language.timezone.mytonctrl"
+            },
+            "7": {
+              "name": "markup.inserted.thread.mytonctrl"
+            }
+          },
+          "name": "meta.log.warning.mytonctrl"
+        },
+        {
+          "match": "^(\\[error\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
+          "captures": {
+            "1": {
+              "name": "markup.deleted.error.log-level.mytonctrl"
+            },
+            "3": {
+              "name": "constant.numeric.timestamp.mytonctrl"
+            },
+            "5": {
+              "name": "constant.language.timezone.mytonctrl"
+            },
+            "7": {
+              "name": "markup.deleted.thread.mytonctrl"
+            }
+          },
+          "name": "meta.log.error.mytonctrl"
+        }
+      ]
+    },
+    "sectionHeading": {
+      "match": "^(\\s*)(===\\[)(\\s*)(.+?)(\\s*)(\\]===)(\\s*)$",
+      "captures": {
+        "2": {
+          "name": "punctuation.definition.heading.begin.mytonctrl"
+        },
+        "4": {
+          "name": "entity.name.section.mytonctrl"
+        },
+        "6": {
+          "name": "punctuation.definition.heading.end.mytonctrl"
+        }
+      },
+      "name": "markup.heading.mytonctrl"
+    },
+    "tableHeading": {
+      "match": "^\\s*Name\\s+Status\\s+Balance\\s+(?:Ver\\s+Wch|Version)\\s+Address\\s*$",
+      "name": "keyword.control.table-heading.mytonctrl"
+    },
+    "resultLine": {
+      "match": "^(\\s*)([A-Za-z_][A-Za-z0-9_]*)(\\s+-\\s+)(OK)(\\s*)$",
+      "captures": {
+        "2": {
+          "name": "support.function.result.mytonctrl"
+        },
+        "4": {
+          "name": "markup.inserted.success.mytonctrl"
+        }
+      },
+      "name": "meta.result.success.mytonctrl"
+    },
+    "fieldLabel": {
+      "match": "^(\\s*)([^:\\n]+?)(:)(?=\\s|$)",
+      "captures": {
+        "2": {
+          "name": "entity.other.attribute-name.mytonctrl"
+        },
+        "3": {
+          "name": "punctuation.separator.key-value.mytonctrl"
+        }
+      }
+    },
+    "states": {
+      "patterns": [
+        {
+          "match": "(?i:\\b(?:OK|success|working|active|enabled)\\b)",
+          "name": "markup.inserted.success.mytonctrl"
+        },
+        {
+          "match": "(?i:\\b(?:not\\s+working|bad\\s+args|unknown\\s+command|error|failed|failure|disabled)\\b)",
+          "name": "markup.deleted.failure.mytonctrl"
+        },
+        {
+          "match": "(?i:\\b(?:warning|empty|collecting\\s+data)\\b)",
+          "name": "markup.changed.state.mytonctrl"
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        {
+          "include": "#strings"
+        },
+        {
+          "match": "\\.\\.\\.",
+          "name": "punctuation.definition.ellipsis.mytonctrl"
+        },
+        {
+          "match": "https?://[^\\s\\]>)]+",
+          "name": "markup.underline.link.url.mytonctrl"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_-])[A-Za-z0-9_-]{3,8}\\.\\.\\.(?:[a-zA-Z ]+\\.\\.\\.)?[A-Za-z0-9_-]{3,8}(?![A-Za-z0-9_-])",
+          "name": "constant.other.address.short.mytonctrl"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_-])(?:EQ|UQ|Ef|Uf|kQ|0Q|kf|0f)[A-Za-z0-9_-]{46}(?![A-Za-z0-9_-])",
+          "name": "constant.other.address.ton.mytonctrl"
+        },
+        {
+          "match": "(?<![A-Za-z0-9])@?[A-Fa-f0-9]{64}(?![A-Za-z0-9])",
+          "name": "constant.other.address.adnl.mytonctrl"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_-])(?:-1|0):[A-Fa-f0-9]{64}(?![A-Za-z0-9_-])",
+          "name": "constant.other.address.raw.mytonctrl"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_])(?:(?:~|\\.{1,2})?/)[A-Za-z0-9._~+@%=-]+(?:/[A-Za-z0-9._~+@%=-]+)*",
+          "name": "string.unquoted.path.mytonctrl"
+        },
+        {
+          "match": "\\b(?:true|false|null|None|n/a)\\b",
+          "name": "constant.language.mytonctrl"
+        },
+        {
+          "match": "\\b(?:VALIDATOR|LITESERVER|COLLATOR|ARCHIVE)\\b",
+          "name": "constant.language.mode.mytonctrl"
+        },
+        {
+          "match": "(?<![\\w.])-?\\d+(?:\\.\\d+)?(?:%|\\s*(?:GB|Gb|MB|Mbit/s|seconds?|secs?|minutes?|days?|blocks?))?",
+          "name": "constant.numeric.mytonctrl"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.mytonctrl"
+            }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.mytonctrl"
+            }
+          },
+          "name": "string.quoted.double.mytonctrl",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.mytonctrl"
+            }
+          ]
+        },
+        {
+          "begin": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.mytonctrl"
+            }
+          },
+          "end": "'",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.mytonctrl"
+            }
+          },
+          "name": "string.quoted.single.mytonctrl"
+        }
+      ]
+    }
+  }
+}

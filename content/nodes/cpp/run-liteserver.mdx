@@ -267,7 +267,7 @@ mytonctrl
 
 At the `MyTonCtrl>` prompt, run:
 
-```text
+```mytonctrl
 MyTonCtrl> status
 ```
 
@@ -331,13 +331,13 @@ mytonctrl
 
 At the `MyTonCtrl>` prompt, update MyTonCtrl to the tip of the `master` branch:
 
-```text
+```mytonctrl
 MyTonCtrl> update master
 ```
 
 The console exits when `update` finishes. Reopen it with `mytonctrl` and upgrade the TON node binaries to the tip of the `master` branch:
 
-```text
+```mytonctrl
 MyTonCtrl> upgrade master
 ```
 
@@ -355,7 +355,7 @@ mytonctrl
 
 At the `MyTonCtrl>` prompt, run:
 
-```text
+```mytonctrl
 MyTonCtrl> installer set_node_argument --verbosity 3
 ```
 
@@ -367,7 +367,7 @@ tail -f /var/ton-work/log*
 
 Set verbosity back to `1` after checking logs to avoid excessive disk I/O overhead. At the `MyTonCtrl>` prompt, run:
 
-```text
+```mytonctrl
 MyTonCtrl> installer set_node_argument --verbosity 1
 ```
 
@@ -391,7 +391,7 @@ To verify disk and system performance, run the built-in `mytonctrl` benchmark:
 
    At the `MyTonCtrl>` prompt, run:
 
-   ```text
+   ```mytonctrl
    MyTonCtrl> benchmark
    ```
 

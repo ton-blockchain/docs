@@ -335,26 +335,54 @@ Run the validator installation. Installation takes approximately 20 minutes:
 
 ### 2.3 Verify status results
 
-Launch MyTonCtrl with the command `mytonctrl`. Then, check synchronization using the `status` command:
-
-```sh
-mytonctrl
-MyTonCtrl> status
-```
-
-Verify that the correct modes are enabled:
+Launch MyTonCtrl with the `mytonctrl` command:
 
 ```bash
+mytonctrl
+```
+
+Verify that the correct modes are enabled using the `status_modes` command:
+
+```mytonctrl noCopy
 MyTonCtrl> status_modes
 ```
 
 Expected output should show `validator` and `single-nominator` as enabled, with all other modes disabled.
 
-<Image
-  src="/images/nodes/run-validator/run-validator-2.png"
-  darkSrc="/images/nodes/run-validator/run-validator-2.png"
-  alt="MyTonCtrl status results"
-/>
+Then, check synchronization using the `status` command:
+
+```mytonctrl {23} noCopy title="Status results"
+MyTonCtrl> status
+[debug]   14.11.2025, 07:44:08.719 (UTC) <MainThread> start GetValidatorStatus function
+[warning] 14.11.2025, 07:44:08.727 (UTC) <MainThread> GetValidatorStatus warning: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'
+[debug]   14.11.2025, 07:44:08.727 (UTC) <MainThread> start GetValidatorWallet function
+[debug]   14.11.2025, 07:44:08.727 (UTC) <MainThread> start GetLocalWallet function
+[debug]   14.11.2025, 07:44:08.728 (UTC) <MainThread> start GetWalletFromFile function
+[debug]   14.11.2025, 07:44:08.729 (UTC) <MainThread> start WalletVersion2Wallet function
+[debug]   14.11.2025, 07:44:08.729 (UTC) <MainThread> start GetDbSize function
+===[ Node status ]===
+Node mode: VALIDATOR
+Validator index: n/a
+ADNL address of local validator: BB3...B28
+Public ADNL address of node: 0AE2...EA4
+Local validator wallet address: Ef_...7no
+Local validator wallet balance:
+Load average[16]: 1.24, 2.16, 3.64
+Network load average (Mbit/s): 2.63, 2.63, 2.63
+Memory load: ram:[12.43 Gb, 10.3%], swap:[0.01 Gb, 0.1%]
+Disks load average (MB/s): nvme0n1:[0.0, 0.0%], nvme1n1:[0.61, 0.64%]
+Mytoncore status: working, 13 minutes
+Local validator status: working, 13 minutes
+BTC Teleport status: not working, n/a
+Local validator initial sync status: downloading masterchain state 53961035
+Local validator last state serialization: None blocks ago
+Collated blocks since validation round started (success/error): collecting data.../wait for the next validation round
+Validated blocks since validation round started (success/error): collecting data.../wait for the next validation round
+Local validator database size: 0.0 Gb, 2.8%
+Version mytonctrl: 87823a0 (master)
+Version validator: f58297f (master)
+Version BTC Teleport: n/a (n/a)
+```
 
 <Callout type="tip">
   Initially, the status shows "Local validator initial sync status: downloading blockchain state x", which indicates that the node has started synchronization.
@@ -401,11 +429,32 @@ Then make sure with `sudo ufw status`.
 
 Wait until the node is fully synchronized, which takes approximately 3 hours (depending on the network connection). During this process, `Local validator initial sync status` shows the current synchronization phase. Once the displayed value drops below 20, the initial synchronization is complete and `Local validator out of sync` should show ≤ 3 seconds.
 
-<Image
-  src="/images/nodes/run-validator/run-validator-8.png"
-  darkSrc="/images/nodes/run-validator/run-validator-8.png"
-  alt="Verify node synchronization in status"
-/>
+```mytonctrl {15} noCopy title="Verify node synchronization in status"
+===[ Node status ]===
+Node mode: VALIDATOR
+Validator index: -1
+ADNL address of local validator: BB3...B28
+Public ADNL address of node: 0AE...EA4
+Local validator wallet address: Ef_...7no
+Local validator wallet balance: 0
+Load average[16]: 2.07, 2.03, 2.05
+Network load average (Mbit/s): 30.11, 28.39, 26.73
+Memory load: ram:[17.12 Gb, 13.6%], swap:[8.59 Gb, 100.0%]
+Disks load average (MB/s): nvme0n1:[0.0, 0.0%], nvme1n1:[42.53, 87.86%]
+Mytoncore status: working, 3 days
+Local validator status: working, 3 days
+BTC Teleport status: not working, n/a
+Local validator out of sync: 7
+Masterchain out of sync: 7 sec
+Shardchain out of sync: 0 blocks
+Local validator last state serialization: 16982 blocks ago
+Collated blocks since validation round started (success/error): 0/0
+Validated blocks since validation round started (success/error): 0/0
+Local validator database size: 124.79 Gb, 15.1%
+Version mytonctrl: 87823a0 (master)
+Version validator: f58297f (master)
+Version BTC Teleport: n/a (n/a)
+```
 
 <Callout type="tip">
   Set up [alert bot](/nodes/cpp/integrating-with-prometheus) to receive a notification when the node is synchronized.
@@ -417,17 +466,18 @@ When installing, MyTonCtrl automatically creates a validator wallet. Top up and 
 
 ### 3.1 Get validator wallet address
 
-```sh
+Find the wallet named `validator_wallet_001` and its address with the `wl` (wallet list) command:
+
+```mytonctrl noCopy title="Validator wallet list"
 MyTonCtrl> wl
+[debug] 14.11.2025, 10:32:28.446 (UTC) <MainThread> start GetWalletsNameList function
+[debug] 14.11.2025, 10:32:28.446 (UTC) <MainThread> start GetLocalWallet function
+[debug] 14.11.2025, 10:32:28.446 (UTC) <MainThread> start GetWalletFromFile function
+[debug] 14.11.2025, 10:32:28.448 (UTC) <MainThread> start WalletVersion2Wallet function
+[debug] 14.11.2025, 10:32:28.449 (UTC) <MainThread> start GetValidatorStatus function
+Name                  Status  Balance  Ver  Wch  Address
+validator_wallet_001  empty   0        v1   -1   Uf_wQb5wzuEsGS1wnJvttmPIREsYVeAAIZyaZiSgO9GiX-Qt
 ```
-
-Find the wallet named `validator_wallet_001` and its address.
-
-<Image
-  src="/images/nodes/run-validator/run-validator-7.png"
-  darkSrc="/images/nodes/run-validator/run-validator-7.png"
-  alt="Print validator wallet list"
-/>
 
 ### 3.2 Back-up validator wallet secret key
 
@@ -435,17 +485,17 @@ Find the wallet named `validator_wallet_001` and its address.
   This private key is required to restore access to the funds stored in the validator wallet. It is not involved in managing rewards or staking.
 </Callout>
 
-Make a backup of the validator wallet secret key:
+Make a backup of the validator wallet secret key with the `ew` command:
 
-```sh
+```mytonctrl noCopy title="Validator wallet backup"
 MyTonCtrl> ew validator_wallet_001
+[debug] 18.11.2025, 09:32:10.995 (UTC) <MainThread> start GetLocalWallet function
+[debug] 18.11.2025, 09:32:10.995 (UTC) <MainThread> start GetWalletFromFile function
+[debug] 18.11.2025, 09:32:10.997 (UTC) <MainThread> start WalletVersion2Wallet function
+Wallet name: validator_wallet_001
+Address: Ef_wQ...7no
+Secret key: XGd...ao=
 ```
-
-<Image
-  src="/images/nodes/run-validator/run-validator-11.png"
-  darkSrc="/images/nodes/run-validator/run-validator-11.png"
-  alt="Back-up validator wallet"
-/>
 
 <Callout type="tip">
   Import this secret key with [`iw`](/nodes/cpp/mytonctrl/wallet#iw) command.
@@ -455,11 +505,11 @@ MyTonCtrl> ew validator_wallet_001
 
 Explore validator wallet by address with a [blockchain explorer](/onboarding/explorers).
 
-{/* TODO: <Image
+<Image
   src="/images/nodes/run-validator/run-validator-6.png"
   darkSrc="/images/nodes/run-validator/run-validator-6.png"
   alt="Explore validator wallet"
-  /> */}
+/>
 
 ### 3.4 Credit validator wallet
 
@@ -480,29 +530,43 @@ Credit the validator wallet. Ensure that at least 200 GRAM per month is availabl
 
 ### 3.5 Activate the wallet
 
-Activate (deploy on-chain) validator wallet, run:
+Activate (deploy on-chain) validator wallet with the `aw` (activate wallet) command:
 
-```sh
+```mytonctrl noCopy title="Activated validator wallet"
 MyTonCtrl> aw validator_wallet_001
+[debug] 18.11.2025, 09:50:01.606 (UTC) <MainThread> start GetLocalWallet function
+[debug] 18.11.2025, 09:50:01.606 (UTC) <MainThread> start GetWalletFromFile function
+[debug] 18.11.2025, 09:50:01.608 (UTC) <MainThread> start WalletVersion2Wallet function
+[debug] 18.11.2025, 09:50:01.608 (UTC) <MainThread> start ActivateWallet function
+[debug] 18.11.2025, 09:50:01.608 (UTC) <MainThread> start GetValidatorStatus function
+[debug] 18.11.2025, 09:50:01.628 (UTC) <MainThread> start SendFile function: /home/validator-1/.local/share/mytoncore/wallets/validator_wallet_001-query.boc
+[debug] 18.11.2025, 09:50:01.628 (UTC) <MainThread> start GetSeqno function
+[debug] 18.11.2025, 09:50:02.061 (UTC) <MainThread> Start send_boc_toncenter function: /home/validator-1/.local/share/mytoncore/wallets/validator_wallet_001-query.boc
+[info]  18.11.2025, 09:50:02.200 (UTC) <MainThread> Sent boc to toncenter
+[debug] 18.11.2025, 09:50:02.200 (UTC) <MainThread> start WaitTransaction function
+[debug] 18.11.2025, 09:50:05.203 (UTC) <MainThread> start GetSeqno function
+[debug] 18.11.2025, 09:50:05.214 (UTC) <MainThread> GetSeqno: seqno is 1
+[info]  18.11.2025, 09:50:05.214 (UTC) <MainThread> WaitTransaction success
+ActivateWallet - OK
 ```
 
+That also reflects in the explorer — the status will be displayed as `Active`.
+
 <Image
-  src="/images/nodes/run-validator/run-validator-12.png"
-  darkSrc="/images/nodes/run-validator/run-validator-12.png"
-  alt="Activate validator wallet command result"
-/>
-
-That also reflects in the explorer; the status will be displayed as `Active`.
-
-{/* TODO: <Image
   src="/images/nodes/run-validator/run-validator-14.png"
   darkSrc="/images/nodes/run-validator/run-validator-14.png"
-  alt="Validator wallet in explorer"
-  /> */}
+  alt="Activated validator wallet"
+/>
 
 ### 3.6 Create a pool
 
-Create a [single nominator pool](https://docs.ton.org/v3/documentation/smart-contracts/contracts-specs/single-nominator-pool) for secure stake management. As the `owner-address`, specify the beneficiary wallet address that will stake the owner's funds and receive rewards.
+The `new_single_pool` command creates a new [single nominator pool](/nodes/staking/single-nominator):
+
+```mytonctrl noCopy
+MyTonCtrl> new_single_pool <pool-name> <owner-address>
+```
+
+The `pool-name` can be arbitrary, while the specified `owner-address` should be the beneficiary wallet address that will stake the owner's funds and receive rewards.
 
 <Callout
   type="danger"
@@ -511,79 +575,97 @@ Create a [single nominator pool](https://docs.ton.org/v3/documentation/smart-con
   Use a cold wallet (e.g., Ledger) for the `owner-address` and store its seed phrase securely to keep funds safe. If access to the owner's wallet is lost, access to stake and rewards funds cannot be recovered.
 </Callout>
 
-```bash
-MyTonCtrl> new_single_pool <pool-name> <owner-address>
+```mytonctrl noCopy title="Creating a new pool"
+MyTonCtrl> new_single_pool validator-1-pool UQC...entire address here...j3A
+[debug] 18.11.2025, 10:22:53.140 (UTC) <MainThread> start create_single_pool function
+[debug] 18.11.2025, 10:22:53.141 (UTC) <MainThread> start DownloadContract function
+[debug] 18.11.2025, 10:22:53.591 (UTC) <MainThread> start GetValidatorWallet function
+[debug] 18.11.2025, 10:22:53.591 (UTC) <MainThread> start GetLocalWallet function
+[debug] 18.11.2025, 10:22:53.591 (UTC) <MainThread> start GetWalletFromFile function
+[debug] 18.11.2025, 10:22:53.592 (UTC) <MainThread> start WalletVersion2Wallet function
+[debug] 18.11.2025, 10:22:53.612 (UTC) <MainThread> start GetPools function
+[debug] 18.11.2025, 10:22:53.612 (UTC) <MainThread> start GetPoolsNameList function
+[debug] 18.11.2025, 10:22:53.612 (UTC) <MainThread> start GetLocalPool function
+[debug] 18.11.2025, 10:22:53.614 (UTC) <MainThread> start GetLocalPool function
+new_single_pool - OK
 ```
 
-<Image
-  src="/images/nodes/run-validator/run-validator-15.png"
-  darkSrc="/images/nodes/run-validator/run-validator-15.png"
-  alt="Create a single pool"
-/>
+<Callout type="note">
+  If a single-nominator pool under already exists, import it with the `import_pool` command:
 
-<Accordions>
-  <Accordion
-    title="If a single nominator pool already exists..."
-  >
-    If a single-nominator pool is already created, import it with:
-
-    ```bash
-    MyTonCtrl> import_pool <pool-name> <pool-addr>
-    ```
-  </Accordion>
-</Accordions>
+  ```mytonctrl noCopy
+  MyTonCtrl> import_pool <pool-name> <pool-addr>
+  ```
+</Callout>
 
 ### 3.7 Print pool list
 
-Explore pool addresses using `pools_list` command:
+Explore pool addresses using the `pools_list` command:
 
-```bash
+```mytonctrl noCopy title="Pools list"
 MyTonCtrl> pools_list
+[debug] 18.11.2025, 10:33:43.934 (UTC) <MainThread> start GetPools function
+[debug] 18.11.2025, 10:33:43.935 (UTC) <MainThread> start GetPoolsNameList function
+[debug] 18.11.2025, 10:33:43.935 (UTC) <MainThread> start GetLocalPool function
+[debug] 18.11.2025, 10:33:43.937 (UTC) <MainThread> start GetValidatorStatus function
+[debug] 18.11.2025, 10:33:43.954 (UTC) <MainThread> start GetVersionFromCodeHash function
+Name              Status  Balance  Version  Address
+validator-1-pool  empty   0        None     Uf_...PLx
 ```
 
-<Image
-  src="/images/nodes/run-validator/run-validator-16.png"
-  darkSrc="/images/nodes/run-validator/run-validator-16.png"
-  alt="Pool list result"
-/>
-
-At the moment, the pool hasn't been deployed yet, and Explorer will display this as `Nonexist` status
+At the moment, the pool hasn't been deployed yet, and the blockchain explorer will display this as `Nonexist` status
 
 <Image
   src="/images/nodes/run-validator/run-validator-17.png"
   darkSrc="/images/nodes/run-validator/run-validator-17.png"
-  alt="Nonexist pool"
+  alt="Pool in the nonexist state"
 />
 
 ### 3.8 Activate pool
 
-Activate the single pool nominator contract:
+Activate the single-nominator pool contract with the `activate_single_pool` command:
 
-```bash
-MyTonCtrl> activate_single_pool <pool-name>
+```mytonctrl noCopy title="Pool activation"
+MyTonCtrl> activate_single_pool validator-1-pool
+[debug] 18.11.2025, 10:40:02.732 (UTC) <MainThread> start GetLocalPool function
+[debug] 18.11.2025, 10:40:02.733 (UTC) <MainThread> start GetValidatorWallet function
+[debug] 18.11.2025, 10:40:02.733 (UTC) <MainThread> start GetLocalWallet function
+[debug] 18.11.2025, 10:40:02.733 (UTC) <MainThread> start GetWalletFromFile function
+[debug] 18.11.2025, 10:40:02.735 (UTC) <MainThread> start WalletVersion2Wallet function
+[debug] 18.11.2025, 10:40:02.736 (UTC) <MainThread> start GetValidatorStatus function
+[debug] 18.11.2025, 10:40:02.757 (UTC) <MainThread> start SignBocWithWallet function
+[debug] 18.11.2025, 10:40:02.777 (UTC) <MainThread> start GetSeqno function
+[debug] 18.11.2025, 10:40:02.785 (UTC) <MainThread> GetSeqno: seqno is 1
+[debug] 18.11.2025, 10:40:02.801 (UTC) <MainThread> start SendFile function: /tmp/mytoncore/validator_wallet_001_wallet-query.boc
+[debug] 18.11.2025, 10:40:02.801 (UTC) <MainThread> start GetSeqno function
+[debug] 18.11.2025, 10:40:02.812 (UTC) <MainThread> GetSeqno: seqno is 1
+[debug] 18.11.2025, 10:40:02.839 (UTC) <MainThread> Start send_boc_toncenter function: /tmp/mytoncore/validator_wallet_001_wallet-query.boc
+[info]  18.11.2025, 10:40:02.977 (UTC) <MainThread> Sent boc to toncenter
+[debug] 18.11.2025, 10:40:02.978 (UTC) <MainThread> start WaitTransaction function
+[debug] 18.11.2025, 10:40:05.981 (UTC) <MainThread> start GetSeqno function
+[debug] 18.11.2025, 10:40:05.991 (UTC) <MainThread> GetSeqno: seqno is 1
+[debug] 18.11.2025, 10:40:08.993 (UTC) <MainThread> start GetSeqno function
+[debug] 18.11.2025, 10:40:09.005 (UTC) <MainThread> GetSeqno: seqno is 2
+[info]  18.11.2025, 10:40:09.005 (UTC) <MainThread> WaitTransaction success
+activate_single_pool - OK
 ```
-
-<Image
-  src="/images/nodes/run-validator/run-validator-18.png"
-  darkSrc="/images/nodes/run-validator/run-validator-18.png"
-  alt="Activate the pool result"
-/>
 
 ### 3.9 Verify activated pool
 
-Make sure the pool becomes activated with `pools_list`:
+Make sure the pool becomes activated with the `pools_list` command:
 
-```bash
+```mytonctrl noCopy title="Pools list"
 MyTonCtrl> pools_list
+[debug] 18.11.2025, 10:41:28.888 (UTC) <MainThread> start GetPools function
+[debug] 18.11.2025, 10:41:28.888 (UTC) <MainThread> start GetPoolsNameList function
+[debug] 18.11.2025, 10:41:28.888 (UTC) <MainThread> start GetLocalPool function
+[debug] 18.11.2025, 10:41:28.890 (UTC) <MainThread> start GetValidatorStatus function
+[debug] 18.11.2025, 10:41:28.913 (UTC) <MainThread> start GetVersionFromCodeHash function
+Name              Status  Balance  Version   Address
+validator-1-pool  active  0.99389  spool_r2  Ef_...K80
 ```
 
-<Image
-  src="/images/nodes/run-validator/run-validator-19.png"
-  darkSrc="/images/nodes/run-validator/run-validator-19.png"
-  alt="Pool list"
-/>
-
-[Blockchain explorer](/onboarding/explorers) should also display the now-deployed contract with `Active` status.
+The [blockchain explorer](/onboarding/explorers) should also display the now-deployed contract with `Active` status.
 
 <Image
   src="/images/nodes/run-validator/run-validator-20.png"
@@ -673,13 +755,18 @@ Send a withdrawal request, a message with `w` comment from `owner` wallet to the
   </Accordion>
 </Accordions>
 
-Once the deposit is restored (except 1 GRAM reserve on the single nominator pool) to the owner's wallet, that means validator are set securely and ready for real stake:
+Once the deposit is restored to the owner's wallet, except for a 1 GRAM reserve on the single nominator pool, the validator is set securely and ready for real stake operations:
 
-<Image
-  src="/images/nodes/run-validator/run-validator-23.png"
-  darkSrc="/images/nodes/run-validator/run-validator-23.png"
-  alt="Pool list"
-/>
+```mytonctrl noCopy title="Pools list"
+MyTonCtrl> pools_list
+[debug] 18.11.2025, 11:15:57.272 (UTC) <MainThread> start GetPools function
+[debug] 18.11.2025, 11:15:57.272 (UTC) <MainThread> start GetPoolsNameList function
+[debug] 18.11.2025, 11:15:57.272 (UTC) <MainThread> start GetLocalPool function
+[debug] 18.11.2025, 11:15:57.274 (UTC) <MainThread> start GetValidatorStatus function
+[debug] 18.11.2025, 11:15:57.295 (UTC) <MainThread> start GetVersionFromCodeHash function
+Name              Status  Balance  Version   Address
+validator-1-pool  active  1.0      spool_r2  Ef_...K80
+```
 
 ## Step 4: Set optimal stake for validator
 
@@ -813,9 +900,9 @@ Make sure pair stakes are appropriately circulated, then focus on monitoring val
 
 Keep at least 600 GRAM on the validator hot wallet. This should be enough to cover operational fees for approximately 3 months.
 
-To check the current balance:
+To check the current balance, run `wl`:
 
-```bash
+```mytonctrl noCopy
 MyTonCtrl> wl
 ```
 
@@ -823,7 +910,7 @@ MyTonCtrl> wl
 
 Before sending funds to the pool:
 
-- Verify that the pool address is correct and uses the **bounceable** format.
+- Verify that the pool address is correct and uses the [**bounceable** format](/foundations/addresses/formats#flag-definitions).
 - Confirm that the pool smart contract is still active and not frozen. A pool can become frozen if the entire balance is consumed by storage fees between creation and funding.
 - Follow the [test deposit and withdrawal procedure](#3-10-test-deposit-to-pool) before depositing the full stake.
 
@@ -831,13 +918,13 @@ Before sending funds to the pool:
   By default, MyTonCtrl splits the pool balance 50/50 between odd and even validation cycles. Ensure the total stake is sufficient to participate in both cycles: `balance > min_stake * 2`.
 </Callout>
 
-If the pool does not pick up the deposit automatically, push it manually:
+If the pool does not pick up the deposit automatically, push it manually with the `mg` command:
 
-```bash
+```mytonctrl noCopy
 MyTonCtrl> mg validator_wallet_001 <POOL_ADDRESS> 5
 ```
 
-`<POOL_ADDRESS>` — the bounceable address of the single nominator pool.
+There, `<POOL_ADDRESS>` is the bounceable address of the single nominator pool.
 
 ### 5.3 Withdraw funds from the pool
 
@@ -860,9 +947,9 @@ Back up the following paths to an encrypted, off-site location:
   Store backups in an encrypted format in a secure location. Loss of these files means loss of access to the validator and staked funds.
 </Callout>
 
-Alternatively, use the built-in MyTonCtrl backup:
+Alternatively, use the built-in backup command `create_backup`:
 
-```bash
+```mytonctrl noCopy
 MyTonCtrl> create_backup
 ```
 
@@ -893,9 +980,9 @@ Set up dashboards to monitor validators using the APIs provided below.
 
 **Workflow**
 
-1. Check ADNL address of the validator:
+1. Check ADNL address of the validator using `status`:
 
-   ```bash
+   ```mytonctrl noCopy
    MyTonCtrl> status
    ```
 
@@ -917,9 +1004,9 @@ Stay vigilant on updates, monitor health status, and efficiency stability with d
 
 ## Verify
 
-After completing the setup, confirm the validator is operating correctly:
+After completing the setup, confirm the validator is operating correctly using `status`:
 
-```bash
+```mytonctrl noCopy
 MyTonCtrl> status
 ```
 
