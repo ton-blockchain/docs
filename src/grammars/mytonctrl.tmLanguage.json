@@ -23,6 +23,9 @@
       "include": "#tableHeading"
     },
     {
+      "include": "#tableRow"
+    },
+    {
       "include": "#resultLine"
     },
     {
@@ -51,41 +54,22 @@
         "1": {
           "name": "markup.inserted.prompt.mytonctrl"
         },
-        "2": {
-          "name": "entity.name.function.command.mytonctrl"
-        },
         "3": {
           "name": "markup.deleted.prompt.installer.mytonctrl"
-        },
-        "4": {
-          "name": "entity.name.function.command.installer.mytonctrl"
         }
       },
       "end": "$",
-      "name": "meta.command.installer.mytonctrl",
-      "patterns": [
-        {
-          "include": "#inputValues"
-        }
-      ]
+      "name": "meta.command.installer.mytonctrl"
     },
     "mytonctrlInput": {
       "begin": "^(\\s*)(MyTonCtrl>)(\\s+)(about|activate_pool|activate_single_pool|add_collator|add_controller|add_custom_overlay|add_validator_to_collation_wl|aw|benchmark|bl|calculate_annual_controller_percentage|check_ef|check_liquid_pool|cl|clear|controller_update_validator_set|controllers_list|create_backup|create_controllers|db|delete_collator|delete_custom_overlay|delete_pool|delete_validator_from_collation_wl|deposit_to_controller|deposit_to_pool|disable_alert|disable_collation_wl|disable_mode|download_archive_blocks|dw|el|enable_alert|enable_mode|ew|exit|get|get_controller_data|get_pool_data|help|history|import_pool|installer|iw|list_alerts|list_custom_overlays|mg|mgtp|nb|new_pool|new_single_pool|nw|od|ol|pools_list|print_collation_config|print_collation_whitelist|print_collators|print_local_collators|reload_global_config|remove_btc_teleport|reset_collators|restore_backup|set|set_collation_config|set_quic_port|setup_alert_bot|setup_collator|status|status_modes|status_settings|stop_and_withdraw_controller|stop_collator|stop_controller|swv|test_alert|test_calculate_loan_amount|update|update_collation_config|update_controllers|update_validator_set|upgrade|vah|vas|vc|ve|vl|vo|withdraw_from_controller|withdraw_from_pool|withdraw_from_single_pool|wl)(?=\\s|$)",
       "beginCaptures": {
         "2": {
           "name": "markup.inserted.prompt.mytonctrl"
-        },
-        "4": {
-          "name": "entity.name.function.command.mytonctrl"
         }
       },
       "end": "$",
-      "name": "meta.command.mytonctrl",
-      "patterns": [
-        {
-          "include": "#inputValues"
-        }
-      ]
+      "name": "meta.command.mytonctrl"
     },
     "promptFallback": {
       "patterns": [
@@ -97,12 +81,7 @@
             }
           },
           "end": "$",
-          "name": "meta.command.unknown.mytonctrl",
-          "patterns": [
-            {
-              "include": "#inputValues"
-            }
-          ]
+          "name": "meta.command.unknown.mytonctrl"
         },
         {
           "begin": "^(\\s*)((?:MyTonInstaller|Installer)>)(?=\\s|$)",
@@ -112,12 +91,7 @@
             }
           },
           "end": "$",
-          "name": "meta.command.unknown.installer.mytonctrl",
-          "patterns": [
-            {
-              "include": "#inputValues"
-            }
-          ]
+          "name": "meta.command.unknown.installer.mytonctrl"
         }
       ]
     },
@@ -264,12 +238,12 @@
       "match": "^\\s*Name\\s+Status\\s+Balance\\s+(?:Ver\\s+Wch|Version)\\s+Address\\s*$",
       "name": "keyword.control.table-heading.mytonctrl"
     },
+    "tableRow": {
+      "match": "^\\s*\\S+(?:\\s{2,}\\S+){4,}\\s*$"
+    },
     "resultLine": {
       "match": "^(\\s*)([A-Za-z_][A-Za-z0-9_]*)(\\s+-\\s+)(OK)(\\s*)$",
       "captures": {
-        "2": {
-          "name": "support.function.result.mytonctrl"
-        },
         "4": {
           "name": "markup.inserted.success.mytonctrl"
         }
