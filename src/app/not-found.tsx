@@ -5,6 +5,7 @@ import { gitConfig } from '@/lib/shared';
 import { ThemeLogo } from '@/components/ui/logo';
 
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 export default function NotFound() {
   return (

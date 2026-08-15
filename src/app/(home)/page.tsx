@@ -10,7 +10,6 @@ import {
   Coins,
   FileCodeCorner,
   Fuel,
-  Image,
   LifeBuoy,
   MessageCircleCode,
   Rocket,
@@ -20,6 +19,7 @@ import {
 } from 'lucide-react';
 
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title: 'TON Docs — developer documentation',

@@ -3,6 +3,7 @@ import { withBaseUrl } from '@/lib/shared';
 import { notFound, redirect } from 'next/navigation';
 
 export const dynamic = 'force-static';
+export const dynamicParams = false;
 export const revalidate = false;
 
 export async function GET(_req: Request, { params }: RouteContext<'/llms/[[...slug]]'>) {
