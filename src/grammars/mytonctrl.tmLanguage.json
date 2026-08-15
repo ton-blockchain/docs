@@ -325,15 +325,8 @@
       "name": "meta.result.success.mytonctrl"
     },
     "fieldLabel": {
-      "match": "^(\\s*)([^:\\n]+?)(:)(?=\\s|$)",
-      "captures": {
-        "2": {
-          "name": "entity.other.attribute-name.mytonctrl"
-        },
-        "3": {
-          "name": "punctuation.separator.key-value.mytonctrl"
-        }
-      }
+      "begin": "^\\s*[^:\\n]+?:(?=\\s|$)",
+      "end": "$"
     },
     "states": {
       "patterns": [
