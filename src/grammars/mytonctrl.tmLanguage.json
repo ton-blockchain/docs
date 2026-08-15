@@ -26,13 +26,13 @@
       "include": "#resultLine"
     },
     {
-      "include": "#states"
-    },
-    {
       "include": "#bareCommand"
     },
     {
       "include": "#fieldLabel"
+    },
+    {
+      "include": "#states"
     },
     {
       "include": "#values"
@@ -325,8 +325,7 @@
       "name": "meta.result.success.mytonctrl"
     },
     "fieldLabel": {
-      "match": "^\\s*[^:\\n]+?:(?=\\s|$)",
-      "name": "text.plain.mytonctrl"
+      "match": "^\\s*[^:\\n]+?:(?=\\s|$)"
     },
     "states": {
       "patterns": [
