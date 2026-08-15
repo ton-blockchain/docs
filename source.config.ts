@@ -21,8 +21,15 @@ import {
 } from '@shikijs/transformers';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import type { LanguageInput } from 'shiki';
 import stringWidth from 'string-width';
 import { visitParents } from 'unist-util-visit-parents';
+import fiftGrammar from './src/grammars/fift.tmLanguage.json';
+import funcGrammar from './src/grammars/func.tmLanguage.json';
+import mytonctrlGrammar from './src/grammars/mytonctrl.tmLanguage.json';
+import tasmGrammar from './src/grammars/tasm.tmLanguage.json';
+import tlbGrammar from './src/grammars/tlb.tmLanguage.json';
+import tolkGrammar from './src/grammars/tolk.tmLanguage.json';
 import { withBasePath } from './src/lib/shared';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
@@ -103,9 +110,14 @@ export default defineConfig({
         'ts',
         'tsx',
         'yaml',
-        ...['fift', 'func', 'tlb', 'tolk', 'tasm', 'mytonctrl'].map((name) =>
-          JSON.parse(readFileSync(`./src/grammars/${name}.tmLanguage.json`, 'utf8')),
-        ),
+        ...([
+          fiftGrammar,
+          funcGrammar,
+          tlbGrammar,
+          tolkGrammar,
+          tasmGrammar,
+          mytonctrlGrammar,
+        ] as unknown as LanguageInput[]),
       ],
       langAlias: {
         tact: 'text',
