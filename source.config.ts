@@ -30,7 +30,6 @@ import mytonctrlGrammar from './src/grammars/mytonctrl.tmLanguage.json';
 import tasmGrammar from './src/grammars/tasm.tmLanguage.json';
 import tlbGrammar from './src/grammars/tlb.tmLanguage.json';
 import tolkGrammar from './src/grammars/tolk.tmLanguage.json';
-import { withBasePath } from './src/lib/shared';
 
 /** See: https://fumadocs.dev/docs/mdx/collections */
 export const docs = defineDocs({
