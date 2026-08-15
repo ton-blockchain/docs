@@ -691,18 +691,25 @@ The [blockchain explorer](/onboarding/explorers) should also display the now-dep
   Ensure precise handling of operations, carefully verifying the addresses for `single_nominator_pool`, `owner_address`, and `validator_wallet`. Any incorrect deposit processing may result in the permanent and unrecoverable loss of funds.
 </Callout>
 
-Test deposit to stake workflow. Any user can deposit to the pool via a standard direct GRAM transfer. Credit decent sum around 10 GRAM:
+Any user can deposit to the pool via a standard direct GRAM transfer. Credit a decent sum of around 10 GRAM:
 
-<Image
-  src="/images/nodes/run-validator/run-validator-21.png"
-  darkSrc="/images/nodes/run-validator/run-validator-21.png"
-  alt="Test deposit 1"
-/>
+```mytonctrl noCopy title="Pools list"
+MyTonCtrl> pools_list
+[debug] 18.11.2025, 10:57:34.006 (UTC) <MainThread> start GetPools function
+[debug] 18.11.2025, 10:57:34.006 (UTC) <MainThread> start GetPoolsNameList function
+[debug] 18.11.2025, 10:57:34.006 (UTC) <MainThread> start GetLocalPool function
+[debug] 18.11.2025, 10:57:34.008 (UTC) <MainThread> start GetValidatorStatus function
+[debug] 18.11.2025, 10:57:34.030 (UTC) <MainThread> start GetVersionFromCodeHash function
+Name              Status  Balance       Version   Address
+validator-1-pool  active  10.987599552  spool_r2  Ef_...K80
+```
+
+In the explorer:
 
 <Image
   src="/images/nodes/run-validator/run-validator-22.png"
   darkSrc="/images/nodes/run-validator/run-validator-22.png"
-  alt="Test deposit 2"
+  alt="Test deposit in explorer"
 />
 
 ### 3.11 Test withdrawal from pool
