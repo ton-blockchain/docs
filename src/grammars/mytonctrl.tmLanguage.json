@@ -29,6 +29,12 @@
       "include": "#bareCommand"
     },
     {
+      "include": "#validatorIndex"
+    },
+    {
+      "include": "#plainStatusLine"
+    },
+    {
       "include": "#fieldLabel"
     },
     {
@@ -218,80 +224,26 @@
       ]
     },
     "logs": {
-      "patterns": [
-        {
-          "match": "^(\\[debug\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
-          "captures": {
-            "1": {
-              "name": "keyword.control.debug.log-level.mytonctrl"
-            },
-            "3": {
-              "name": "constant.numeric.timestamp.mytonctrl"
-            },
-            "5": {
-              "name": "constant.language.timezone.mytonctrl"
-            },
-            "7": {
-              "name": "markup.inserted.thread.mytonctrl"
-            }
-          },
-          "name": "meta.log.debug.mytonctrl"
+      "begin": "^(?:(\\[debug\\])|(\\[info\\])|(\\[warning\\])|(\\[error\\]))(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.debug.log-level.mytonctrl"
         },
-        {
-          "match": "^(\\[info\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
-          "captures": {
-            "1": {
-              "name": "keyword.other.info.log-level.mytonctrl"
-            },
-            "3": {
-              "name": "constant.numeric.timestamp.mytonctrl"
-            },
-            "5": {
-              "name": "constant.language.timezone.mytonctrl"
-            },
-            "7": {
-              "name": "markup.inserted.thread.mytonctrl"
-            }
-          },
-          "name": "meta.log.info.mytonctrl"
+        "2": {
+          "name": "keyword.other.info.log-level.mytonctrl"
         },
-        {
-          "match": "^(\\[warning\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
-          "captures": {
-            "1": {
-              "name": "entity.name.function.warning.log-level.mytonctrl"
-            },
-            "3": {
-              "name": "constant.numeric.timestamp.mytonctrl"
-            },
-            "5": {
-              "name": "constant.language.timezone.mytonctrl"
-            },
-            "7": {
-              "name": "markup.inserted.thread.mytonctrl"
-            }
-          },
-          "name": "meta.log.warning.mytonctrl"
+        "3": {
+          "name": "entity.name.function.warning.log-level.mytonctrl"
         },
-        {
-          "match": "^(\\[error\\])(\\s+)(\\d{2}\\.\\d{2}\\.\\d{4},\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})(\\s+)(\\(UTC\\))(\\s+)(<[^>]+>)",
-          "captures": {
-            "1": {
-              "name": "markup.deleted.error.log-level.mytonctrl"
-            },
-            "3": {
-              "name": "constant.numeric.timestamp.mytonctrl"
-            },
-            "5": {
-              "name": "constant.language.timezone.mytonctrl"
-            },
-            "7": {
-              "name": "markup.deleted.thread.mytonctrl"
-            }
-          },
-          "name": "meta.log.error.mytonctrl"
+        "4": {
+          "name": "markup.deleted.error.log-level.mytonctrl"
+        },
+        "10": {
+          "name": "markup.inserted.thread.mytonctrl"
         }
-      ]
+      },
+      "end": "$",
+      "name": "meta.log.mytonctrl"
     },
     "sectionHeading": {
       "match": "^(\\s*)(===\\[)(\\s*)(.+?)(\\s*)(\\]===)(\\s*)$",
@@ -324,6 +276,17 @@
       },
       "name": "meta.result.success.mytonctrl"
     },
+    "validatorIndex": {
+      "match": "^(\\s*Validator index:\\s*)(-1)(\\s*)$",
+      "captures": {
+        "2": {
+          "name": "markup.deleted.failure.mytonctrl"
+        }
+      }
+    },
+    "plainStatusLine": {
+      "match": "^\\s*(?:Local validator initial sync status|Local validator last state serialization|(?:Collated|Validated) blocks since validation round started \\(success/error\\)):\\s*.*$"
+    },
     "fieldLabel": {
       "match": "^\\s*[^:\\n]+?:(?=\\s|$)"
     },
@@ -338,7 +301,7 @@
           "name": "markup.deleted.failure.mytonctrl"
         },
         {
-          "match": "(?i:\\b(?:warning|empty|collecting\\s+data)\\b)",
+          "match": "(?i:\\bwarning\\b)",
           "name": "markup.changed.state.mytonctrl"
         }
       ]
@@ -373,16 +336,16 @@
           "name": "constant.other.address.raw.mytonctrl"
         },
         {
-          "match": "(?<![A-Za-z0-9_])(?:(?:~|\\.{1,2})?/)[A-Za-z0-9._~+@%=-]+(?:/[A-Za-z0-9._~+@%=-]+)*",
+          "match": "(?<!\\S)(?:(?:~|\\.{1,2})?/)[A-Za-z0-9._~+@%=-]+(?:/[A-Za-z0-9._~+@%=-]+)*",
           "name": "string.unquoted.path.mytonctrl"
         },
         {
-          "match": "\\b(?:true|false|null|None|n/a)\\b",
+          "match": "\\b(?:true|false|null)\\b",
           "name": "constant.language.mytonctrl"
         },
         {
-          "match": "\\b(?:VALIDATOR|LITESERVER|COLLATOR|ARCHIVE)\\b",
-          "name": "constant.language.mode.mytonctrl"
+          "match": "(?<![A-Fa-f0-9])(?=[A-Fa-f0-9]{7,40}(?![A-Fa-f0-9]))[A-Fa-f0-9]*[A-Fa-f][A-Fa-f0-9]*",
+          "name": "entity.name.function.version.mytonctrl"
         },
         {
           "match": "(?<![\\w.])-?\\d+(?:\\.\\d+)?(?:%|\\s*(?:GB|Gb|MB|Mbit/s|seconds?|secs?|minutes?|days?|blocks?))?",
