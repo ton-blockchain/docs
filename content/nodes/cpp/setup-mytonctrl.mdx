@@ -69,7 +69,9 @@ After installation, launch MyTonCtrl console via `mytonctrl` command and check t
 
 ```bash
 mytonctrl
+```
 
+```mytonctrl
 MyTonCtrl> status
 ```
 
@@ -99,7 +101,7 @@ For validator nodes:
 
 If the node was not installed with `liteserver` mode enabled, activate it via `enable_mode liteserver`:
 
-```bash
+```mytonctrl
 MyTonCtrl> enable_mode liteserver
 MyTonCtrl> status_modes
 ```
@@ -108,13 +110,13 @@ MyTonCtrl> status_modes
 
 Print the local liteserver configuration — its IP, port, and public key:
 
-```bash
+```mytonctrl
 MyTonCtrl> installer plsc
 ```
 
 Create a new network config:
 
-```bash
+```mytonctrl
 MyTonCtrl> installer clcf
 ```
 
@@ -158,12 +160,22 @@ Track progress in MyTonCtrl logs and wait for `status` → `Local validator out 
 
 ### Troubleshooting imports
 
-Increase verbosity temporarily to review archive import logs, then revert:
+At the MyTonCtrl prompt, increase verbosity temporarily:
+
+```mytonctrl
+MyTonCtrl> installer set_node_argument --verbosity 3
+```
+
+Review the archive import logs from a separate terminal:
 
 ```bash
-MyTonCtrl> installer set_node_argument --verbosity 3
 tail -f /var/ton-work/log*
 # ...review output...
+```
+
+Then return to the MyTonCtrl prompt and restore the default verbosity:
+
+```mytonctrl
 MyTonCtrl> installer set_node_argument --verbosity 1
 ```
 
