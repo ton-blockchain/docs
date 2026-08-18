@@ -35,7 +35,7 @@ where the fields are:
 - `special`: was meant to register a smart contract for tick-tock events; now is deprecated.
 - `code`: the initial code of the contract.
 - `data`: the initial data of the contract.
-- `library`: the initial library of the contract.
+- `library`: the account's initial library dictionary. Since [global TVM version 15](/foundations/config#param-8-network-version), this field must be empty when deploying a new account. Otherwise, deployment would fail unless the [contract is special](/foundations/config#param-31-fee-exempt-contracts).
 - `fixed_prefix_length`: number of most significant address bits that may differ between the deploy message destination and the address derived from `StateInit`; the remaining bits must match.
 
 ## Deploying to specific shard

@@ -654,6 +654,10 @@ IDs from `0` through `14` are recognized and supported. On the mainnet, only IDs
 
 This parameter represents the configuration of smart contract addresses from which no fees are charged for either gas or storage, and where **tick-tock** transactions can be created. The list usually includes governance contracts. The parameter is presented as a binary tree structure — a tree (HashMap 256), where the keys are a 256-bit representation of the address. Only addresses in the masterchain can be present in this list.
 
+Validators classify an account as special when it resides in the masterchain and its address appears in this parameter. The [configuration smart contract](#param-0-config-address) and the [elector smart contract](#param-1-elector-address) are also special, even when their addresses do not appear in parameter `31`.
+
+Every basechain account and every other masterchain account is non-special (regular). Only special accounts receive the protocol privileges associated with this classification, including permission to change public libraries.
+
 [Parameter #31 on mainnet](https://tonscan.org/config#31)
 
 ## Param 32, 34, and 36: validator lists

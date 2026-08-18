@@ -23,12 +23,15 @@ The library allows extending the deduplication mechanism on-chain, enabling the 
   You can think of a library cell as a const weak C++ pointer: a small cell that references a larger one, which may include many references. The referenced cell must exist and be registered publicly, i.e., “published”.
 </Callout>
 
+### Limited availability
+
+Since global TVM version 15, mainnet and testnet networks reject change-library actions from regular accounts in every workchain, including the masterchain (`-1`) and basechain (`0`). Only [special masterchain accounts](/foundations/config#param-31-fee-exempt-contracts), such as the ones hosting [elector](https://actonscan.com/config?network=mainnet#config-parameter-1) and [config](https://actonscan.com/config?network=mainnet#config-parameter-0) smart contracts, can add or remove public libraries.
+
+However, operations such as obtaining library metadata or performing a top-up are allowed for existing libraries.
+
 ### Low-level details
 
-They always have level 0.
-
-They store a tag equal to 2 in the first 8 bits.
-Then 256 bits follow, which are the representation hash of the referenced cell.
+Library cells always have level 0. They store a tag equal to 2 in the first 8 bits. Then 256 bits follow, which are the representation hash of the referenced cell.
 
 When a library cell is stored in account storage, the account pays storage for this cell equal to the cost of 1 cell and 256 + 8 bits.
 
@@ -42,17 +45,13 @@ Creating libraries that reference a cell whose tree contains other library cells
 
 When a contract tries to load a library cell, the library is looked up in its library environment.
 
-The library environment of a smart contract is a hashmap mapping 256-bit cell (representation) hashes to the corresponding cells themselves. When an external cell reference is accessed during the execution of a smart contract, the referenced cell is looked up in the library environment, and the external cell reference is transparently replaced by the cell found. The library environment for an invocation of a smart contract is computed as follows:
+The library environment maps 256-bit representation hashes to their cells. When TVM accesses a library reference, it looks up the hash and transparently replaces the reference with the matching cell.
 
-1. The global library environment for the workchain in question is taken from the current state of the Masterchain.
+At global TVM version 15 or later, a smart contract's library environment contains only the global public libraries recorded in the masterchain state. TVM does not add libraries from the account's `StateInit.library` dictionary or the inbound message's `StateInit.library` dictionary. A library reference resolves only when its hash exists in the global public library environment.
 
-1. Next, it is augmented by the local library environment of the smart contract, stored in the library field of the smart contract’s state. Only 256-bit keys equal to the hashes of the corresponding value cells are taken into account. If a key is present in both the global and local library environments, the local environment takes precedence while merging the two library environments.
+### Public library storage
 
-1. Finally, the message library stored in the library field of the init field of the inbound message is similarly taken into account. Note, however, that if the account is frozen or uninitialized, the library field of the message is part of the suggested state of the account and is used instead of the local library environment in the previous step. The message library has lower precedence than both the local and the global library environments.
-
-### Hosting a library cell
-
-Libraries are hosted in the states of accounts. More specifically, they reside in the `library` field in the account.
+Public libraries are registered through special masterchain accounts and stored in the account's `library` field.
 
 ```tlb
 _ fixed_prefix_length:(Maybe (## 5)) special:(Maybe TickTock)
@@ -62,10 +61,12 @@ _ fixed_prefix_length:(Maybe (## 5)) special:(Maybe TickTock)
 simple_lib$_ public:Bool root:^Cell = SimpleLib;
 ```
 
-One can see the `public` flag in SimpleLib.
-This flag allows making a library cell private (accessible only from the account hosting it), even if the account hosting it resides in the Masterchain.
+The `public` field remains part of the serialized `SimpleLib` structure:
 
-Also, if the account hosting the library becomes frozen, the library becomes inaccessible. So it is crucial to keep in mind that storage costs in the Masterchain are much higher than in the Basechain and to carefully control the balance of the account that hosts the library.
+- `public = 1` identifies a public library. Only a [special masterchain account](/foundations/config#param-31-fee-exempt-contracts) can add or remove this entry.
+- `public = 0` identifies a private library. The action phase rejects attempts to add one, and TVM does not include existing private entries in the library environment.
+
+A public library remains available while at least one active publisher account keeps it registered. Maintaining enough Gram on publisher accounts prevents storage debt from freezing them.
 
 ### Other articles
 

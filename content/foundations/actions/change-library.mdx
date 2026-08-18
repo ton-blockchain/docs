@@ -2,35 +2,44 @@
 title: "Change library"
 ---
 
-Change a library is one of the actions that a smart contract can perform during the [action phase](/foundations/phases#action-phase). It adds libraries to or removes them from the collection of libraries of this smart contract. It can be appended to an [out action list](https://github.com/ton-blockchain/ton/blob/5c0349110bb03dd3a241689f2ab334ae1a554ffb/crypto/block/block.tlb#L411) by:
+A smart contract can request a change to an account's library collection during the [action phase](/foundations/phases#action-phase) via the change-library action. Any of these instructions can append the change-library action to an [out action list](https://github.com/ton-blockchain/ton/blob/5c0349110bb03dd3a241689f2ab334ae1a554ffb/crypto/block/block.tlb#L411):
 
-- The [`SETLIBCODE`](/tvm/instructions#fb06-setlibcode) instruction.
-- The [`CHANGELIB`](/tvm/instructions#fb07-changelib) instruction.
-- The [`POPCTR`](/tvm/instructions#ed5i-popctr) instruction.
+- [`SETLIBCODE`](/tvm/instructions#fb06-setlibcode)
+- [`CHANGELIB`](/tvm/instructions#fb07-changelib)
+- [`POPCTR`](/tvm/instructions#ed5i-popctr)
 
-The change library action consists of
+The change-library action contains:
 
-- a 7-bit bitmask `mode` specifying the way of changing the library;
-- a ref to a cell containing the new library code or the hash of this code as an unsigned 256-bit integer.
+- a 7-bit `mode` bitmask specifying the way of changing the library;
+- a `LibRef` value containing either a cell reference to the library code or its hash as an unsigned 256-bit integer.
 
 ## Modes
 
-The `mode` can have the following values that can be combined together:
+The `mode` bitmask supports the following values, with `BounceOnFail` allowed to be combined with any other value:
 
-| Mode value | Convenient name     | Description                                                                                                                                                                                                                              |
-| ---------: | :------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|        `0` | `RemoveLibrary`     | Default mode. Removes library if it was in the collection. Otherwise, action does nothing.                                                                                                                                               |
-|       `+1` | `AddPrivateLibrary` | A library is added as a private library.                                                                                                                                                                                                 |
-|       `+2` | `AddPublicLibrary`  | A library is added as a public library and becomes available to all smart contracts in all workchains if the current smart contract resides in the masterchain. If current contract is in other workchain, works as `AddPrivateLibrary`. |
-|      `+16` | `BounceOnFail`      | Bounces the transaction if the action fails.                                                                                                                                                                                             |
+| Value | Name                | Description                                                                            |
+| ----: | :------------------ | -------------------------------------------------------------------------------------- |
+|   `0` | `RemoveLibrary`     | Default mode. Removes a public library if it exists, otherwise does nothing.           |
+|  `+1` | `AddPrivateLibrary` | Sets the library status as private. Cannot be combined with `AddPublicLibrary` (`+2`). |
+|  `+2` | `AddPublicLibrary`  | Sets the library status as public. Cannot be combined with `AddPrivateLibrary` (`+1`). |
+| `+16` | `BounceOnFail`      | Bounces the transaction if the action fails.                                           |
 
-The other values of `mode` are invalid and lead to an error. Simultaneous usage of the `AddPrivateLibrary` and `AddPublicLibrary` modes also leads to an error. If the library was present in the collection before, its public/private status is changed according to the `mode`.
+Other mode values and their combinations are invalid. Using both `AddPrivateLibrary` (`+1`) and `AddPublicLibrary` (`+2`) modes at the same time is also invalid and leads to an error.
+
+<Callout
+  type="caution"
+  title="Limited availability"
+>
+  Since global TVM version 15, the action phase returns [exit code `46`](/tvm/exit-codes#46-library-change-action-is-prohibited) on mainnet and testnet when any account uses mode `AddPrivateLibrary` (`+1`) or when a regular account requests any library change. Only [special masterchain accounts](/foundations/config#param-31-fee-exempt-contracts) can use base mode `0` or `+2` to remove or add public libraries.
+
+  The [libraries reference page](/foundations/serialization/library#limited-availability) explains how this restriction affects their use.
+</Callout>
 
 ## Serialization
 
 ```tlb
 libref_hash$0 lib_hash:bits256 = LibRef;
 libref_ref$1 library:^Cell = LibRef;
-action_change_library#26fa1dd4 mode:(## 7)
-    libref:LibRef = OutAction;
+action_change_library#26fa1dd4
+    mode:(## 7) libref:LibRef = OutAction;
 ```
