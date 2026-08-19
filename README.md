@@ -85,6 +85,10 @@ See the [`snippets/` directory](./snippets) and the corresponding docs in [`cont
 
 Changes are deployed to [production](https://docs.ton.org) automatically after pushing to the default branch (`main`).
 
+### Cloudflare Pages
+
+For a static Cloudflare Pages deployment, use `npm run build:cloudflare` as the build command and `out` as the output directory. The build writes `out/_redirects` from the redirect rules in `vercel.json`; set `NEXT_PUBLIC_SITE_URL` in the Pages environment when the public URL differs from `https://docs.ton.org`.
+
 ## Need help?
 
 ### Troubleshooting

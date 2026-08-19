@@ -8,8 +8,9 @@ const withMDX = createMDX();
 const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
 const isVercelBuild = process.env.VERCEL === '1';
+const isCloudflarePagesBuild = process.env.CF_PAGES === '1';
 const isVercelProd = isVercelBuild && resolveBaseUrl().startsWith('https://docs.ton.org');
-const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild;
+const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild && !isCloudflarePagesBuild;
 let gitRepoMatch: RegExpMatchArray | null = null;
 try {
   const gitUrl = execSync('git config --get remote.origin.url', {
@@ -28,6 +29,10 @@ function resolveBaseUrl() {
 
   if (isGitHubPagesBuild) {
     return ghPagesUrl;
+  }
+
+  if (isCloudflarePagesBuild) {
+    return process.env.CF_PAGES_URL ?? 'https://docs.ton.org';
   }
 
   return 'http://localhost:3000';
@@ -54,7 +59,9 @@ const config: NextConfig = {
           : 'vercel-dev'
         : isGitHubPagesBuild
           ? 'github'
-          : 'unknown',
+          : isCloudflarePagesBuild
+            ? 'cloudflare'
+            : 'unknown',
     NEXT_PUBLIC_BASE_URL: resolveBaseUrl(),
     NEXT_PUBLIC_BASE_PATH: resolveBasePath() ?? '',
     NEXT_GIT_USER: gitRepoMatch?.at(1) ?? 'ton-blockchain',

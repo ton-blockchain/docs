@@ -14,7 +14,14 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, extname, dirname } from 'node:path';
 // Common
-import { prefix, outDir, isGitHubPagesBuild, getConfig, getRedirects } from './common.mjs';
+import {
+  prefix,
+  outDir,
+  isGitHubPagesBuild,
+  isCloudflarePagesBuild,
+  getConfig,
+  getRedirects,
+} from './common.mjs';
 
 /**
  * @param {string} path - file path
@@ -136,6 +143,20 @@ const generateStaticRedirects = (dir) => {
 };
 
 /** @param {string} dir */
+const generateCloudflareRedirects = (dir) => {
+  const redirects = getRedirects(getConfig()).map((redirect) => {
+    const { source, destination, permanent } = redirect;
+    if (/\s/.test(source) || /\s/.test(destination)) {
+      throw new Error(`Cloudflare redirect contains whitespace: ${source} → ${destination}`);
+    }
+    return `${source} ${destination} ${permanent === false ? 307 : 301}`;
+  });
+
+  writeFileWithDirs(join(dir, '_redirects'), `${redirects.join('\n')}\n`);
+  return { redirects: redirects.length };
+};
+
+/** @param {string} dir */
 const generateSiblingMarkdownFiles = (dir) => {
   const llms = join(dir, 'llms');
   if (!existsSync(llms)) return { files: 0 };
@@ -168,6 +189,17 @@ const main = (dir) => {
   console.log(pfx, 'generating sibling LLM markdown files...');
   const { files: mdFiles } = generateSiblingMarkdownFiles(dir);
   console.log(pfx, `${mdFiles} markdown files`);
+
+  if (isCloudflarePagesBuild) {
+    if (!existsSync(dir) || !statSync(dir).isDirectory()) {
+      console.log(pfx, `skipped — ${dir}/ directory not found`);
+      process.exit(1);
+    }
+
+    console.log(pfx, 'generating Cloudflare Pages _redirects...');
+    const { redirects } = generateCloudflareRedirects(dir);
+    console.log(pfx, `${redirects} redirects`);
+  }
 
   if (!isGitHubPagesBuild) {
     console.log(pfx, 'skipped GitHub Pages-only steps');
