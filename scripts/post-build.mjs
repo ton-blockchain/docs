@@ -151,7 +151,7 @@ const generateStaticRedirects = (dir) => {
 };
 
 /** @param {string} dir */
-const generateCloudflareRedirects = (dir) => {
+const generateCloudflareRedirects = (dir, markdownRoutes = []) => {
   const redirects = getRedirects(getConfig()).map((redirect) => {
     const { source, destination, permanent } = redirect;
     if (/\s/.test(source) || /\s/.test(destination)) {
@@ -159,9 +159,17 @@ const generateCloudflareRedirects = (dir) => {
     }
     return `${source} ${destination} ${permanent === false ? 307 : 301}`;
   });
+  const markdownRewrites = markdownRoutes
+    .filter((route) => !/^(?:llms|og|api|_next)(?:\/|$)/.test(route))
+    .map((route) => `/${route}.md /llms/${route}/content.md 200`);
+  const lines = [...redirects, ...markdownRewrites];
 
-  writeFileWithDirs(join(dir, '_redirects'), `${redirects.join('\n')}\n`);
-  return { redirects: redirects.length };
+  if (lines.length > 2000) {
+    throw new Error(`Cloudflare _redirects has ${lines.length} static rules; the limit is 2000`);
+  }
+
+  writeFileWithDirs(join(dir, '_redirects'), `${lines.join('\n')}\n`);
+  return { redirects: redirects.length, rewrites: markdownRewrites.length };
 };
 
 /** @param {string} dir */
@@ -255,8 +263,9 @@ const generateCloudflareSearchIndex = (dir) => {
 /** @param {string} dir */
 const generateSiblingMarkdownFiles = (dir) => {
   const llms = join(dir, 'llms');
-  if (!existsSync(llms)) return { files: 0 };
+  if (!existsSync(llms)) return { files: 0, routes: [] };
   let files = 0;
+  const routes = [];
   /** @param {string} cur */
   const walk = (cur) => {
     for (const entry of readdirSync(cur, { withFileTypes: true })) {
@@ -272,18 +281,19 @@ const generateSiblingMarkdownFiles = (dir) => {
       if (!existsSync(html)) continue;
       writeFileWithDirs(target, readFileSync(path, 'utf8'));
       files += 1;
+      routes.push(route);
     }
   };
 
   walk(llms);
-  return { files };
+  return { files, routes };
 };
 
 /** @param {string} dir */
 const main = (dir) => {
   const pfx = 'post-build:';
   console.log(pfx, 'generating sibling LLM markdown files...');
-  const { files: mdFiles } = generateSiblingMarkdownFiles(dir);
+  const { files: mdFiles, routes: markdownRoutes } = generateSiblingMarkdownFiles(dir);
   console.log(pfx, `${mdFiles} markdown files`);
 
   if (isCloudflarePagesBuild) {
@@ -293,8 +303,8 @@ const main = (dir) => {
     }
 
     console.log(pfx, 'generating Cloudflare Pages _redirects...');
-    const { redirects } = generateCloudflareRedirects(dir);
-    console.log(pfx, `${redirects} redirects`);
+    const { redirects, rewrites } = generateCloudflareRedirects(dir, markdownRoutes);
+    console.log(pfx, `${redirects} redirects, ${rewrites} markdown rewrites`);
 
     console.log(pfx, 'limiting Cloudflare Pages Functions to /api/search...');
     generateCloudflareRoutes(dir);
