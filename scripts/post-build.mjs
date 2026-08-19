@@ -11,7 +11,15 @@
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 // Node.js
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { join, extname, dirname } from 'node:path';
 // Common
 import {
@@ -157,6 +165,94 @@ const generateCloudflareRedirects = (dir) => {
 };
 
 /** @param {string} dir */
+const generateCloudflareRoutes = (dir) => {
+  const routes = {
+    version: 1,
+    include: ['/api/search', '/api/search/*'],
+    exclude: [],
+  };
+
+  writeFileWithDirs(join(dir, '_routes.json'), `${JSON.stringify(routes, null, 2)}\n`);
+};
+
+const cloudflareSearchShards = [...'abcdefghijklmnopqrstuvwxyz', 'digits', 'other'];
+
+/** @param {string} term */
+const getCloudflareSearchShard = (term) => {
+  const first = term[0] ?? '';
+  if (/^[a-z]$/.test(first)) return first;
+  if (/^[0-9]$/.test(first)) return 'digits';
+  return 'other';
+};
+
+/** @param {string} value */
+const getSearchTokens = (value) =>
+  [
+    ...new Set(
+      value
+        .normalize('NFKC')
+        .toLocaleLowerCase()
+        .match(/[\p{L}\p{N}]+/gu) ?? [],
+    ),
+  ].filter((token) => token.length > 1);
+
+/** @param {string} dir */
+const generateCloudflareSearchIndex = (dir) => {
+  const sourcePath = join(dir, 'search-index');
+  if (!existsSync(sourcePath)) {
+    throw new Error(`Cloudflare search index source is missing: ${sourcePath}`);
+  }
+
+  const source = JSON.parse(readFileSync(sourcePath, 'utf8'));
+  /** @type {Record<string, { id: string; url: string; title: string; description?: string; excerpt?: string }>} */
+  const documents = Object.create(null);
+  /** @type {Map<string, { version: number; terms: Record<string, string[]> }>} */
+  const shards = new Map(
+    cloudflareSearchShards.map((shard) => [shard, { version: 1, terms: Object.create(null) }]),
+  );
+
+  for (const document of source.documents ?? []) {
+    const text = String(document.text ?? '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    documents[document.id] = {
+      id: document.id,
+      url: document.url,
+      title: document.title,
+      ...(document.description ? { description: document.description } : {}),
+      ...(text ? { excerpt: text.slice(0, 240) } : {}),
+    };
+
+    const searchableText = [document.title, document.description, document.text]
+      .filter(Boolean)
+      .join(' ');
+    for (const token of getSearchTokens(searchableText)) {
+      const shard = shards.get(getCloudflareSearchShard(token));
+      if (!shard) continue;
+      const posting = shard.terms[token] ?? [];
+      posting.push(document.id);
+      shard.terms[token] = posting;
+    }
+  }
+
+  // Next's static route creates this temporary, full-text JSON file. Replace it
+  // with the small catalog plus token shards consumed by the Pages Function.
+  unlinkSync(sourcePath);
+  writeFileWithDirs(
+    join(dir, 'search-index', 'documents'),
+    `${JSON.stringify({ version: 1, documents })}\n`,
+  );
+  for (const [shardName, shard] of shards) {
+    writeFileWithDirs(join(dir, 'search-index', shardName), `${JSON.stringify(shard)}\n`);
+  }
+
+  return {
+    documents: Object.keys(documents).length,
+    shards: shards.size,
+  };
+};
+
+/** @param {string} dir */
 const generateSiblingMarkdownFiles = (dir) => {
   const llms = join(dir, 'llms');
   if (!existsSync(llms)) return { files: 0 };
@@ -199,6 +295,13 @@ const main = (dir) => {
     console.log(pfx, 'generating Cloudflare Pages _redirects...');
     const { redirects } = generateCloudflareRedirects(dir);
     console.log(pfx, `${redirects} redirects`);
+
+    console.log(pfx, 'limiting Cloudflare Pages Functions to /api/search...');
+    generateCloudflareRoutes(dir);
+
+    console.log(pfx, 'compacting Cloudflare search index into token shards...');
+    const searchIndex = generateCloudflareSearchIndex(dir);
+    console.log(pfx, `${searchIndex.documents} documents, ${searchIndex.shards} shards`);
   }
 
   if (!isGitHubPagesBuild) {

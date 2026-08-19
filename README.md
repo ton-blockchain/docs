@@ -89,6 +89,8 @@ Changes are deployed to [production](https://docs.ton.org) automatically after p
 
 For a static Cloudflare Pages deployment, use `npm run build:cloudflare` as the build command and `out` as the output directory. The build writes `out/_redirects` from the redirect rules in `vercel.json`; set `NEXT_PUBLIC_SITE_URL` in the Pages environment when the public URL differs from `https://docs.ton.org`.
 
+The Cloudflare build also enables search through the Pages Function in `functions/api/search.js`. The build creates a compact search catalog under `out/search-index`; no D1 or R2 binding is required. `out/_routes.json` limits Function invocations to `/api/search`, so the documentation pages remain static asset requests.
+
 ## Need help?
 
 ### Troubleshooting
