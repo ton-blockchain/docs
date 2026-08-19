@@ -157,7 +157,7 @@ const generateCloudflareRedirects = (dir, markdownRoutes = []) => {
     if (/\s/.test(source) || /\s/.test(destination)) {
       throw new Error(`Cloudflare redirect contains whitespace: ${source} → ${destination}`);
     }
-    return `${source} ${destination} ${permanent === false ? 307 : 301}`;
+    return `${source} ${destination} ${permanent === false ? 307 : 308}`;
   });
   const markdownRewrites = markdownRoutes
     .filter((route) => !/^(?:llms|og|api|_next)(?:\/|$)/.test(route))
@@ -170,6 +170,34 @@ const generateCloudflareRedirects = (dir, markdownRoutes = []) => {
 
   writeFileWithDirs(join(dir, '_redirects'), `${lines.join('\n')}\n`);
   return { redirects: redirects.length, rewrites: markdownRewrites.length };
+};
+
+/** @param {string} dir */
+const generateCloudflareHeaders = (dir) => {
+  const headerRules = getConfig().headers ?? [];
+  const lines = [];
+  let headers = 0;
+
+  for (const rule of headerRules) {
+    const { source, headers: ruleHeaders } = rule;
+    if (!source || /[\r\n]/.test(source)) {
+      throw new Error(`Cloudflare header contains an invalid source: ${source}`);
+    }
+
+    lines.push(source);
+    for (const header of ruleHeaders ?? []) {
+      const { key, value } = header;
+      if (!key || value === undefined || /[\r\n]/.test(String(value))) {
+        throw new Error(`Cloudflare header contains an invalid definition for ${source}`);
+      }
+      lines.push(`  ${key}: ${value}`);
+      headers += 1;
+    }
+    lines.push('');
+  }
+
+  writeFileWithDirs(join(dir, '_headers'), `${lines.join('\n').trimEnd()}\n`);
+  return { rules: headerRules.length, headers };
 };
 
 /** @param {string} dir */
@@ -305,6 +333,10 @@ const main = (dir) => {
     console.log(pfx, 'generating Cloudflare Pages _redirects...');
     const { redirects, rewrites } = generateCloudflareRedirects(dir, markdownRoutes);
     console.log(pfx, `${redirects} redirects, ${rewrites} markdown rewrites`);
+
+    console.log(pfx, 'generating Cloudflare Pages _headers...');
+    const headers = generateCloudflareHeaders(dir);
+    console.log(pfx, `${headers.rules} header rules, ${headers.headers} headers`);
 
     console.log(pfx, 'limiting Cloudflare Pages Functions to /api/search...');
     generateCloudflareRoutes(dir);
