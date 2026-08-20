@@ -28,6 +28,9 @@ const config: NextConfig = {
   turbopack: {
     root: fileURLToPath(new URL('.', import.meta.url)),
   },
+  experimental: {
+    useTypeScriptCli: true,
+  },
   serverExternalPackages: ['typescript'],
 };
 

@@ -4,7 +4,6 @@ import { type HTMLAttributes, useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { buttonVariants } from '../ui/button';
-import { useTranslations } from 'fumadocs-ui/contexts/i18n';
 
 type BannerVariant = 'rainbow' | 'normal';
 
@@ -43,7 +42,6 @@ export function Banner({
    */
   changeLayout?: boolean;
 }) {
-  const t = useTranslations();
   const [open, setOpen] = useState(true);
   const globalKey = id ? `nd-banner-${encodeBase32(id)}` : null;
 
@@ -98,7 +96,7 @@ export function Banner({
       {id ? (
         <button
           type="button"
-          aria-label={t.bannerClose}
+          aria-label="Close banner"
           onClick={onClose}
           className={cn(
             buttonVariants({

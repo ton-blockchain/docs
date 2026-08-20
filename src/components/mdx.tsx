@@ -1,6 +1,6 @@
 import type { MDXComponents } from 'mdx/types';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
-import { APIPage } from '@/components/api-page';
+import { APIPage, OpenAPIPage } from '@/components/api-page';
 import { ImageZoom } from '@/components/mdx/image-zoom';
 import { Mermaid } from '@/components/mdx/mermaid';
 import { File, Files, Folder } from '@/components/mdx/files';
@@ -27,6 +27,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     img: (props) => <ImageZoom {...(props as any)} />,
     // See: https://www.fumadocs.dev/docs/integrations/openapi/api-page
     APIPage,
+    OpenAPIPage,
     // See: https://www.fumadocs.dev/docs/markdown/mermaid
     Mermaid,
     // See: https://www.fumadocs.dev/docs/ui/components/files

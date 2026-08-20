@@ -1,24 +1,14 @@
 import { source, getSearchablePages } from '@/lib/source';
-import { flexsearchFromSource } from 'fumadocs-core/search/flexsearch';
+// See: https://www.zbsearch.dev/
+import { createFromSource } from 'fumadocs-core/search/server';
+import { pluginPT15 } from '@zbsearch/plugin-pt15';
 
 const searchSource: typeof source = {
   ...source,
   getPages: getSearchablePages,
 };
-
-// https://www.fumadocs.dev/docs/headless/search/flexsearch#static-export
-const searchAPI = flexsearchFromSource(searchSource, {
-  // async buildIndex(page) {
-  //   return {
-  //     title: page.data.title,
-  //     description: page.data.description,
-  //     url: page.url,
-  //     id: page.url,
-  //     structuredData: await page.data.structuredData(),
-  //     breadcrumbs: page.slugs.slice(0, -1),
-  //     // tag: undefined,
-  //   };
-  // }
+const searchAPI = createFromSource(searchSource, {
+  plugins: [pluginPT15()]
 });
 
 export const revalidate = false;
