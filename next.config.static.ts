@@ -67,8 +67,9 @@ const config: NextConfig = {
   },
   images: { unoptimized: true },
   serverExternalPackages: ['typescript'],
-  ...(isLocalBuild && {
-    experimental: {
+  experimental: {
+    useTypeScriptCli: true,
+    ...(isLocalBuild && {
       // workerThreads: false,
       // --webpack --disable-source-maps --no-server-fast-refresh
       cpus: 3,
@@ -79,7 +80,9 @@ const config: NextConfig = {
       serverSourceMaps: false,
       preloadEntriesOnStart: false,
       memoryBasedWorkersCount: true,
-    },
+    }),
+  },
+  ...(isLocalBuild && {
     // These source maps do not affect local builds much:
     // productionBrowserSourceMaps: false,
     // enablePrerenderSourceMaps: false,
