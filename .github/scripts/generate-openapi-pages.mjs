@@ -32,9 +32,9 @@ const genV2 = async () =>
     ...commonConfig,
     input: createOpenAPI({
       // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
-      input: () => ({
+      input: {
         v2: path.resolve('./content/api/v2.json'),
-      }),
+      },
     }),
     output: path.resolve('./content/api/v2'),
     per: 'operation',
@@ -47,9 +47,9 @@ const genV3 = async () =>
     ...commonConfig,
     input: createOpenAPI({
       // NOTE: Key here must match the one used in .github/scripts/generate-openapi-pages.mjs
-      input: () => ({
+      input: {
         v3: path.resolve('./content/api/v3.yaml'),
-      }),
+      },
     }),
     output: path.resolve('./content/api/v3'),
     per: 'operation',

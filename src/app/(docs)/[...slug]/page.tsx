@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import type { GeneratedPageProps } from 'fumadocs-openapi';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
+import { openapi } from '@/lib/openapi';
 import { gitConfig } from '@/lib/shared';
+import OpenAPIPageClient from '@/components/api-page.client';
 import { getMDXComponents } from '@/components/mdx';
 import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
 import { ScrollTop } from '@/components/ui/scroll-top';
@@ -82,6 +85,11 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
 
   const { body: MDX, toc } = await page.data.load();
   const markdownUrl = getPageMarkdownUrl(page).url;
+  const preloadedOpenAPIPage = page.data._openapi
+    ? async (props: GeneratedPageProps) => (
+        <OpenAPIPageClient {...await openapi.preloadOpenAPIPage(page)} {...props} />
+      )
+    : undefined;
 
   return (
     <DocsPage
@@ -123,6 +131,12 @@ export default async function Page(props: PageProps<'/[...slug]'>) {
           components={getMDXComponents({
             // this allows linking to other pages with relative file paths
             a: createRelativeLink(source, page),
+            ...(page.data._openapi
+              ? {
+                  APIPage: preloadedOpenAPIPage,
+                  OpenAPIPage: preloadedOpenAPIPage,
+                }
+              : {}),
           })}
         />
       </DocsBody>
