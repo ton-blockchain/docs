@@ -8,6 +8,9 @@ const searchSource: typeof source = {
 
 // https://www.fumadocs.dev/docs/headless/search/flexsearch#static-export
 const searchAPI = flexsearchFromSource(searchSource, {
+  document: {
+    encoder: 'LatinSoundex',
+  },
   // async buildIndex(page) {
   //   return {
   //     title: page.data.title,
