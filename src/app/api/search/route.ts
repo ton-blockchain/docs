@@ -10,7 +10,7 @@ const searchSource: typeof source = {
 const searchAPI = flexsearchFromSource(searchSource, {
   document: {
     encoder: 'LatinSoundex',
-    tokenize: 'bidirectional',
+    tokenize: 'full',
   },
   // async buildIndex(page) {
   //   return {
