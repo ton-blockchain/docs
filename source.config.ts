@@ -136,18 +136,6 @@ export default defineConfig({
         transformerNotationWordHighlight({ matchAlgorithm: 'v3' }),
         transformerNotationDiff({ matchAlgorithm: 'v3' }),
         transformerNotationFocus({ matchAlgorithm: 'v3' }),
-        {
-          name: 'Disable copying with a noCopy attribute',
-          pre(pre) {
-            const raw = this.options?.meta?.__raw;
-            if (!raw) return pre;
-            const { attributes } = parseCodeBlockAttributes(raw, ['noCopy']);
-            if ('noCopy' in attributes) {
-              pre.properties.allowCopy = '';
-            }
-            return pre;
-          },
-        },
       ],
     },
     remarkPlugins: (v) => [
