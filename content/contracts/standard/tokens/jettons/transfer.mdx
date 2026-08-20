@@ -18,9 +18,9 @@ To attach a comment, the message has to encode it in `forward_payload` field, an
 
 Format of `forward_payload` for comments and other kinds of attached data can be found in [the API section](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#forward_payload-format). If `forward_ton_amount` is `0`, `forward_payload` doesn't have to comply with the schema.
 
-A single manual transfer can be done with a web service (for example, [Minter](https://minter.ton.org/)).
+A single manual transfer can be done with a web service — for example, [TON Minter](https://minter.ton.org/).
 
-A programmatic transfer is usually done with an SDK (for example, [`assets-sdk`](https://github.com/ton-community/assets-sdk)) that handles low-level message serialization details. The provided example uses TON Center API that might [require a key](/api/get-api-key). Also you'll need a mnemonic of a wallet that will pay for the transfer.
+A programmatic transfer is usually done with an SDK that handles low-level message serialization details, like [`assets-sdk`](https://github.com/ton-community/assets-sdk). The provided example uses TON Center API that might [require a key](/api/get-api-key). Also, you'll need a mnemonic of a wallet that will pay for the transfer.
 
 <Callout
   type="danger"
