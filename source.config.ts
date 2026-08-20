@@ -8,7 +8,6 @@ import {
   remarkGfm,
   remarkSteps,
 } from 'fumadocs-core/mdx-plugins';
-import { parseCodeBlockAttributes } from 'fumadocs-core/mdx-plugins/codeblock-utils';
 import { z } from 'zod';
 import {
   transformerMetaHighlight,
@@ -245,12 +244,9 @@ export default defineConfig({
   // See: https://github.com/fuma-nama/fumapress/tree/dev/packages/core/src/plugins
   // The following plugins are unavailable in Fumadocs directly
   plugins: [
-    // flexsearchPlugin(), // NOTE: consider using it over Orama
-    // llmsPlugin(), // NOTE: using it
     // takumiPlugin(), // NOTE: consider using it over Next.js's OG generation iff there's some reason to do so
     // imagePlugin({ formats: ["image/webp", "image/png"] }), // NOTE: optimize images in each PR in its CI
     // linkValidationPlugin(), // NOTE: it is very shallow and we require much more checks
-    // sitemapPlugin(), // NOTE: will be added manually
     // mcpPlugin(), // NOTE: llms.txt + skill files are better, because MCP are not always picked up from the context
   ],
 });

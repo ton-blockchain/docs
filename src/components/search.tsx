@@ -20,7 +20,6 @@ import {
 } from 'fumadocs-ui/components/dialog/search';
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { fetchClient } from 'fumadocs-core/search/client/fetch';
-// import { flexsearchStaticClient } from 'fumadocs-core/search/client/flexsearch-static';
 import { staticClient } from 'fumadocs-core/search/client/orama-static';
 
 export interface QuickJumpPage {
@@ -37,11 +36,6 @@ export default function DefaultSearchDialog({
   const client =
     process.env.NEXT_CONFIG === 'vercel'
       ? fetchClient()
-      // : flexsearchStaticClient({
-      //     locale,
-      //     from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
-      //     // tag,
-      //   });
       : staticClient({
           from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
           // tag,
