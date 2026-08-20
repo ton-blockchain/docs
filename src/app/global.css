@@ -177,14 +177,14 @@ p > span.style-tab-normal {
   /* } */
 
   /* tab bar matching the full (no ToC) page contents width */
-  #nd-docs-layout:has(> article#nd-page[data-full='true']) > .items-end {
+  #nd-docs-layout:has(article#nd-page[data-full='true']) > .items-end {
     max-width: calc(1168px - var(--fd-page-inline-padding) * 2);
     /* max-width: 1168px; */
     justify-content: space-between;
   }
 
   /* switch to wider title spans by when there is no ToC */
-  #nd-docs-layout:has(> article#nd-page[data-full='true'])
+  #nd-docs-layout:has(article#nd-page[data-full='true'])
     > .items-end
     > a
     > span.style-tab-normal {
@@ -192,7 +192,7 @@ p > span.style-tab-normal {
   }
 
   /* switch to wider title spans by when there is no ToC */
-  #nd-docs-layout:has(> article#nd-page[data-full='true']) > .items-end > a > span.style-tab-wide {
+  #nd-docs-layout:has(article#nd-page[data-full='true']) > .items-end > a > span.style-tab-wide {
     display: inline-block;
   }
 
