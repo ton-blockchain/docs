@@ -8,7 +8,7 @@ const searchSource: typeof source = {
   getPages: getSearchablePages,
 };
 const searchAPI = createFromSource(searchSource, {
-  plugins: [pluginPT15()]
+  plugins: [pluginPT15()],
 });
 
 export const revalidate = false;

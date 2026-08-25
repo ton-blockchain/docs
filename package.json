@@ -7,6 +7,7 @@
     "start:vercel": "NEXT_CONFIG=vercel next start",
     "build": "node scripts/pre-build.mjs && cross-env NODE_OPTIONS=--max_old_space_size=4096 next build && node scripts/post-build.mjs",
     "build:vercel": "node scripts/pre-build.mjs && NEXT_CONFIG=vercel next build",
+    "build:cloudflare": "cross-env CF_PAGES=1 npm run build",
     "build:serve": "serve out",
     "check:types": "fumadocs-mdx && next typegen && tsc --noEmit",
     "check:openapi": "echo 'TODO: REPLACE mint openapi-check WITH NEW OpenAPI CHECKS'",
