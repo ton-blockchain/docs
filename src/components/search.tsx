@@ -21,6 +21,7 @@ import {
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { fetchClient } from 'fumadocs-core/search/client/fetch';
 import { staticClient } from 'fumadocs-core/search/client/orama-static';
+import { cfStaticClient } from '@/lib/cf-search';
 
 export interface QuickJumpPage {
   title: string;
@@ -33,13 +34,16 @@ export default function DefaultSearchDialog({
   ...props
 }: SharedProps & { quickJumpPages: QuickJumpPage[] }) {
   // const [tag] = useState<string | undefined>();
+  const from = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`;
   const client =
     process.env.NEXT_CONFIG === 'vercel'
       ? fetchClient()
-      : staticClient({
-          from: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/search`,
-          // tag,
-        });
+      : process.env.NEXT_BUILD_TYPE === 'cloudflare'
+        ? cfStaticClient({ from })
+        : staticClient({
+            from,
+            // tag,
+          });
   const { search, setSearch, query } = useDocsSearch({ client });
   const router = useRouter();
   const quickJumpAction = useMemo<SearchItemType | undefined>(() => {

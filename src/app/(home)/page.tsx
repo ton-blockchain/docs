@@ -245,7 +245,7 @@ function QuickLinkRow({ title, href, external }: QuickLink) {
   }
 
   return (
-    <Link className={className} href={href}>
+    <Link className={className} href={href} prefetch={false}>
       <span>{title}</span>
       {arrow}
     </Link>
@@ -309,7 +309,7 @@ export default function HomePage() {
                   {inner}
                 </a>
               ) : (
-                <Link key={title} className={className} href={href}>
+                <Link key={title} className={className} href={href} prefetch={false}>
                   {inner}
                 </Link>
               );
@@ -374,7 +374,7 @@ export default function HomePage() {
                   {inner}
                 </a>
               ) : (
-                <Link key={title} className={className} href={href}>
+                <Link key={title} className={className} href={href} prefetch={false}>
                   {inner}
                 </Link>
               );

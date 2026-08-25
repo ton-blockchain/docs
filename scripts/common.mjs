@@ -26,15 +26,24 @@ import { visitParents } from 'unist-util-visit-parents';
  * @typedef {{ok: true} | {ok: false; error: string}} CheckResult
  */
 
-// WARN: Must match Next.js build output folder
+// WARN: Must match Next.js static build output folder
 export const outDir = 'out';
 
 // WARN: Must match gitConfig.repo in src/lib/shared.ts
 export const prefix = '/docs';
 
+// WARN: Must match next.config.static.ts isVercelBuild
+export const isVercelBuild = process.env.VERCEL === '1';
+
 // WARN: Must match next.config.static.ts isGitHubPagesBuild
 export const isGitHubPagesBuild =
   process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
+
+// WARN: Must match next.config.static.ts isCloudflarePagesBuild
+export const isCloudflarePagesBuild = process.env.CF_PAGES === '1';
+
+// WARN: Must match next.config.static.ts isLocalBuild
+export const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild && !isCloudflarePagesBuild;
 
 /** @param src {string} */
 export function ansiRed(src) {
