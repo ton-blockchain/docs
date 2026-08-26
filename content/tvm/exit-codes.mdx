@@ -48,6 +48,7 @@ The following table lists exit codes with their origin (where they can occur) an
 | [41](#41-library-reference-is-null)                       | [Action phase][a]                   | Library reference is null during library change action.                                                |
 | [42](#42-library-change-action-error)                     | [Action phase][a]                   | Library change action error.                                                                           |
 | [43](#43-library-limits-exceeded)                         | [Action phase][a]                   | Exceeded the maximum number of cells in the library or the maximum depth of the Merkle tree.           |
+| [46](#46-library-change-action-is-prohibited)             | [Action phase][a]                   | Library change action is prohibited.                                                                   |
 | [50](#50-account-state-size-exceeded-limits)              | [Action phase][a]                   | Account state size exceeded limits.                                                                    |
 
 {/* NOTE: Some might depend on a phase; in such cases, the table entry might be:
@@ -561,6 +562,10 @@ If there's an error during an attempt at a library change action, an error with 
 ### 43: Library limits exceeded
 
 If the maximum number of cells in the library is exceeded or the maximum depth of the Merkle tree is exceeded, an error with exit code 43 is thrown: `Library limits exceeded`.
+
+### 46: Library change action is prohibited
+
+The action phase returns exit code `46` when a change-library action attempts to add a private library or when a regular account attempts any library change, including deployment of new libraries. Only [special masterchain accounts](/foundations/config#param-31-fee-exempt-contracts) can add or remove public libraries.
 
 ### 50: Account state size exceeded limits
 
