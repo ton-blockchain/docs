@@ -11,13 +11,9 @@ TON features a complex configuration comprising many technical parameters, some 
 
 ## Prerequisites
 
-The parameter values in the [current configuration](https://tonscan.org/config), and the method of writing them into [cells](/foundations/serialization/boc) are outlined in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in [TL-B](/foundations/tlb/overview) format.
+The explorer shows the active [mainnet configuration](https://actonscan.com/config?network=mainnet) and [testnet configuration](https://actonscan.com/config?network=testnet). Filter by signed parameter index to inspect decoded fields and the raw cell hex bytes.
 
-<Callout>
-  Configuration values are TL-B typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc).
-</Callout>
-
-All parameters are in place, and you won't get lost. For your convenience, please use the right sidebar for quick navigation.
+Configuration values are [TL-B](/foundations/tlb/overview)-typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc). Non-negative parameters and their serialization are defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb).
 
 ### Overview
 
@@ -43,7 +39,7 @@ It is important to note that all configuration parameters are readily accessible
 
 The values of configuration parameters are not arbitrary. Specifically, if the configuration parameter index `i` is non-negative, then its value must correspond to a valid value of the TL-B type `ConfigParam i`. Validators enforce this restriction and do not accept changes to configuration parameters with non-negative indices unless the values are valid for the corresponding TL-B type.
 
-The structure of these parameters is defined in the source file [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/block/block.tlb), where `ConfigParam i` is specified for different values of `i`. For example:
+The structure of these parameters is defined in [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L623-L865), where `ConfigParam i` is specified for different values of `i`. For example:
 
 ```tlb
 _ config_addr:bits256 = ConfigParam 0;
@@ -54,7 +50,9 @@ capabilities#c4 version:uint32 capabilities:uint64 = GlobalVersion;
 _ GlobalVersion = ConfigParam 8;  // all zero if absent
 ```
 
-The configuration parameter `#8` includes a `Cell` that has no references and contains exactly 104 data bits. The first eight bits are allocated for `11000100` (`0xc4`), followed by 32 bits that represent the currently enabled "global version". This is followed by a 64-bit integer with flags that correspond to the currently enabled capabilities. A more detailed description of all configuration parameters will be provided in an appendix to the TON blockchain documentation. In the meantime, you can review the TL-B scheme in [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/05bea13375448a401d8e07c6132b7f709f5e3a32/crypto/block/block.tlb) to see how different parameters are utilized in the validator sources.
+The configuration parameter `#8` includes a `Cell` that has no references and contains exactly 104 data bits. The first eight bits are allocated for `11000100` (`0xc4`), followed by 32 bits that represent the enabled global TVM version. This is followed by a 64-bit integer with flags that correspond to the enabled capabilities.
+
+The [`block.tlb` definitions](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L623-L865) provide the canonical TL-B schemas for all non-negative parameters.
 
 Unlike configuration parameters with non-negative indices, those with negative indices can hold arbitrary values. Validators do not enforce any restrictions on these values. As a result, they can be used to store essential information, such as the Unix time when specific smart contracts are set to begin operating. This information is not critical for block generation but is necessary for some fundamental smart contracts.
 
@@ -76,7 +74,7 @@ All changes to configuration parameters are executed by the configuration smart 
 
 - **Configuration proposals**: This method involves creating "configuration proposals" that validators vote on. Generally, a configuration proposal must gather votes from more than 3/4 (75%) of all validators by weight, and this requires approval in multiple rounds (i.e., several consecutive sets of validators must confirm the proposed parameter change). This serves as the distributed governance mechanism for the TON blockchain Mainnet.
 
-## Param 0: config address
+## Param 0: config address \[#0]
 
 This parameter is the address of a special smart contract that stores the blockchain's configuration. The configuration is stored in the contract to simplify its loading and modification during validator voting.
 
@@ -84,25 +82,25 @@ This parameter is the address of a special smart contract that stores the blockc
   In the configuration parameter, only the hash portion of the address is recorded, as the contract always resides in the masterchain (workchain -1). Therefore, the full address of the contract will be written as `-1:<value of the configuration parameter>`.
 </Callout>
 
-[Parameter #0 on mainnet](https://tonscan.org/config#0)
+[Parameter #0 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-0)
 
-## Param 1: elector address
+## Param 1: elector address \[#1]
 
 This parameter is the address of the [elector smart contract](/foundations/system), responsible for appointing validators, distributing rewards, and voting on changes to blockchain parameters.
 
-[Parameter #1 on mainnet](https://tonscan.org/config#1)
+[Parameter #1 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-1)
 
-## Param 2: TON minting address
+## Param 2: GRAM minting address \[#2]
 
-This parameter represents the address of the system, on behalf of which new Gram are minted and sent as rewards for validating the blockchain.
+This parameter is the address of the masterchain smart contract that controls GRAM minting.
 
 <Callout>
-  If parameter 2 is missing, parameter 0 is used instead — newly minted Gram come from the configuration smart contract.
+  If this parameter is missing, [parameter 0](#0) is used instead — newly minted GRAM then comes from the configuration smart contract.
 </Callout>
 
-[Parameter #2 on mainnet](https://tonscan.org/config#2)
+[Parameter #2 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-2)
 
-## Param 3: fee collector address
+## Param 3: fee collector address \[#3]
 
 This parameter is the address of the transaction fee collector.
 
@@ -110,9 +108,9 @@ This parameter is the address of the transaction fee collector.
   If this parameter is missing (for the time being), transaction fees are directed to the elector smart contract (parameter 1).
 </Callout>
 
-[Parameter #3 on mainnet](https://tonscan.org/config#3)
+[Parameter #3 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-3)
 
-## Param 4: root DNS address
+## Param 4: root DNS address \[#4]
 
 This parameter is the address of the root DNS contract of the TON network.
 
@@ -122,21 +120,31 @@ This parameter is the address of the root DNS contract of the TON network.
   This contract is not responsible for selling **.ton** domains.
 </Callout>
 
-[Parameter #4 on mainnet](https://tonscan.org/config#4)
+[Parameter #4 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-4)
 
-## Param 6: extra currency minting prices
+## Param 5: burning configuration \[#5]
+
+This parameter controls two independent mechanisms for removing Gram from circulation:
+
+- `fee_burn_num` and `fee_burn_denom`: These fields define the fraction of Gram-denominated transaction and message import fees to burn. A masterchain block applies the fraction to its fees and imported shardchain fees after subtracting [shard block rewards](#14). The result rounds down to whole nanograms, and the remainder enters the validator fee balance. The numerator cannot exceed the denominator, and the denominator must be at least `1`.
+
+- `blackhole_addr`: The masterchain burn address (account ID) — each inbound message to this address burns its remaining Gram value instead of crediting it to the account. This mechanism does not burn the account's existing balance or [extra currencies](#7).
+
+[Parameter #5 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-5)
+
+## Param 6: extra currency minting prices \[#6]
 
 This parameter stores the `mint_new_price` and `mint_add_price` values in Gram for extra-currency minting governance. The collator's [minting calculation](/foundations/extra-currencies#minting) does not use these values.
 
-[Parameter #6 on mainnet](https://tonscan.org/config#6)
+[Parameter #6 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-6)
 
-## Param 7: extra currency volume
+## Param 7: extra currency volume \[#7]
 
 This parameter stores target amounts for [extra-currency minting](/foundations/extra-currencies#minting). It maps each 32-bit currency ID to a `VarUInteger 32` amount. A masterchain block mints the positive difference between a target and the previous global balance — lowering a target does not burn currency.
 
-[Parameter #7 on mainnet](https://tonscan.org/config#7)
+[Parameter #7 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-7)
 
-## Param 8: network version
+## Param 8: network version \[#8]
 
 This parameter indicates the network version and additional capabilities supported by the validators.
 
@@ -150,21 +158,21 @@ This parameter indicates the network version and additional capabilities support
 
 Thus, when updating the network, validators will vote to change parameter 8. This way, the TON Blockchain network can be updated without downtime.
 
-[Parameter #8 on mainnet](https://tonscan.org/config#8)
+[Parameter #8 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-8)
 
-## Param 9: mandatory params
+## Param 9: mandatory params \[#9]
 
 This parameter contains a list (binary tree) of mandatory parameters. It ensures that certain configuration parameters are always present and cannot be removed by a proposal to change the configuration until parameter 9 changes.
 
-[Parameter #9 on mainnet](https://tonscan.org/config#9)
+[Parameter #9 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-9)
 
-## Param 10: critical params
+## Param 10: critical params \[#10]
 
 This parameter represents a list (binary tree) of critical TON parameters whose change significantly affects the network, so more voting rounds are held.
 
-[Parameter #10 on mainnet](https://tonscan.org/config#10)
+[Parameter #10 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-10)
 
-## Param 11: config params
+## Param 11: config params \[#11]
 
 This parameter indicates under what conditions proposals to change the TON configuration are accepted.
 
@@ -180,9 +188,9 @@ This parameter indicates under what conditions proposals to change the TON confi
 
 - `bit_price` and `cell_price` indicate the price of storing one bit or one cell of the proposal
 
-[Parameter #11 on mainnet](https://tonscan.org/config#11)
+[Parameter #11 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-11)
 
-## Param 12: Workchain config
+## Param 12: workchain config \[#12]
 
 This parameter represents the configuration of a workchain in the TON Blockchain. workchains are designed as independent blockchains that can operate in parallel, allowing TON to scale and process a large number of transactions and smart contracts.
 
@@ -190,9 +198,9 @@ This parameter represents the configuration of a workchain in the TON Blockchain
 
 - `enabled_since`: A UNIX timestamp of the moment this workchain was enabled.
 
-- `actual_min_split`: The minimum depth of the split (sharding) of this workchain, supported by validators.
+- `monitor_min_split`: The minimum depth of the split of this workchain at which deeper shards are grouped for node monitoring, overlays, and archive distribution. It does not control shard splitting itself.
 
-- `min_split`: The minimum depth of the split of this workchain, set by the configuration.
+- `min_split`: The minimum depth of the split of this workchain, set by the configuration, which must be greater than or equal to `monitor_min_split`. Unlike `monitor_min_split`, `min_split` affects shard splits and merges — shards shallower than `min_split` must split, and shards at or below it cannot merge.
 
 - `max_split`: The maximum depth of the split of this workchain.
 
@@ -208,23 +216,27 @@ This parameter represents the configuration of a workchain in the TON Blockchain
 
 - `version`: Version of the workchain.
 
-- `format`: The format of the workchain, which includes `vm_version` and `vm_mode` - the virtual machine used there.
+- `format`: The workchain address and virtual machine format, including `vm_version` and `vm_mode` values.
 
-[Parameter #12 on mainnet](https://tonscan.org/config#12)
+- `split_merge_timings`: The preparation delay, active interval, minimum interval, and maximum delay for shard split and merge operations.
 
-## Param 13: complaint cost
+- `persistent_state_split_depth`: The shard split depth used when creating and downloading persistent state files.
 
-This parameter defines the cost of filing complaints about the incorrect operation of validators in the [elector smart contract](/foundations/system).
+[Parameter #12 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-12)
 
-[Parameter #13 on mainnet](https://tonscan.org/config#13)
+## Param 13: complaint cost \[#13]
 
-## Param 14: block reward
+This parameter defines the cost of filing complaints about the incorrect operation of validators in the [elector smart contract](/foundations/system#elector).
 
-This parameter indicates the reward for creating a block in the TON Blockchain. Values are in nanograms; therefore, the reward for block creation in the masterchain is 1.7 Gram, while in the basechain, it is 1.0 Gram. In the event of a workchain split, the block reward is also divided: if there are two shardchains within the workchain, then the reward for each shard block will be 0.5 Gram.
+[Parameter #13 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-13)
 
-[Parameter #14 on mainnet](https://tonscan.org/config#14)
+## Param 14: block reward \[#14]
 
-## Param 15: elections timing
+This parameter controls the Gram rewards for producing blocks. The `masterchain_block_fee` is applied to each masterchain block, while the `basechain_block_fee` applies to a workchain. If there is a split in the workchain, the `basechain_block_fee` is distributed among its shard blocks based on their depth.
+
+[Parameter #14 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-14)
+
+## Param 15: elections timing \[#15]
 
 This parameter contains the duration of different stages of elections and validators' work in the TON Blockchain.
 
@@ -318,9 +330,9 @@ hold_end = hold_start + constants['stake_held_for'] = 160009600 + 900 = 16001050
 
 Therefore, at this time, the length of one round of one parity is `160010500 - 160000000 = 10500 seconds = 175 minutes = 2.91666... hours`
 
-[Parameter #15 on mainnet](https://tonscan.org/config#15)
+[Parameter #15 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-15)
 
-## Param 16: validators limits
+## Param 16: validators limits \[#16]
 
 This parameter represents the limits on the number of validators in the TON Blockchain. It is directly used by the elector smart contract.
 
@@ -340,9 +352,9 @@ This parameter represents the limits on the number of validators in the TON Bloc
 
 - The minimum number of validators must be no less than 1.
 
-[Parameter #16 on mainnet](https://tonscan.org/config#16)
+[Parameter #16 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-16)
 
-## Param 17: stake limits
+## Param 17: stake limits \[#17]
 
 This parameter represents the stake parameters configuration in the TON Blockchain. In many blockchain systems, especially those using the Proof-of-Stake or Delegated Proof-of-Stake consensus algorithm, cryptocurrency owners native to the network can "stake" their tokens to become validators and earn rewards.
 
@@ -356,13 +368,9 @@ This parameter represents the stake parameters configuration in the TON Blockcha
 
 - `max_stake_factor`: This parameter is a multiplier indicating how many times the maximum effective stake (pledge) can exceed the minimum stake sent by any other validator.
 
-<Callout>
-  Each value in the arguments is determined by the `uint32` data type.
-</Callout>
+[Parameter #17 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-17)
 
-[Parameter #17 on mainnet](https://tonscan.org/config#17)
-
-## Param 18: storage prices
+## Param 18: storage prices \[#18]
 
 This parameter represents the configuration for determining the prices for data storage on the TON Blockchain. This serves as a measure to prevent spam and encourages network maintenance.
 
@@ -380,9 +388,15 @@ This parameter represents the configuration for determining the prices for data 
   The rest accept values in the `uint64` data type.
 </Callout>
 
-[Parameter #18 on mainnet](https://tonscan.org/config#18)
+[Parameter #18 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-18)
 
-## Param 20 and 21: gas prices
+## Param 19: global ID \[#19]
+
+This parameter stores the network identifier. Blocks and shard states carry the same `global_id`, and validators reject data whose identifier does not match the configured network. Smart contracts can read it with the [`GLOBALID` TVM instruction](/tvm/instructions/f835-globalid).
+
+[Parameter #19 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-19)
+
+## Param 20 and 21: gas prices \[#20-and-21]
 
 These parameters define the cost of computations in the TON network. The complexity of any computation is estimated in gas units.
 
@@ -406,11 +420,11 @@ Note: Param 20 defines gas settings for the masterchain; Param 21 defines gas se
   You can find more about `gas_credit` and other parameters in the section of external messages [here](/foundations/messages/external-in#accepting-message).
 </Callout>
 
-[Parameter #20 on mainnet](https://tonscan.org/config#20) | [Parameter #21 on mainnet](https://tonscan.org/config#21)
+[Parameter #20 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-20) | [Parameter #21 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-21)
 
-## Param 22 and 23: block limits
+## Param 22 and 23: block limits \[#22-and-23]
 
-These parameters set limits on the block, upon reaching which the block is finalized and the callback of the remaining messages (if any) is carried over to the next block.
+Parameter 22 applies to masterchain blocks, while parameter 23 applies to workchain blocks. They classify block load and limit block bytes, gas, time deltas, collated data, and imported message queue proofs.
 
 ### Configuration parameters
 
@@ -426,13 +440,17 @@ These parameters set limits on the block, upon reaching which the block is final
 
 - `lt_delta`: This section sets the limits on the difference in logical time between the first and last transaction. Logical time is a concept used in the TON Blockchain for ordering events. The limits on underload, soft and hard limits work the same as for size in bytes and gas.
 
-<Callout>
+- `collated_data`: The underload, soft, and hard size limits for serialized collated data. Older parameter values omit this field and use the `bytes` limits instead.
+
+- `imported_msg_queue`: The maximum byte size and message count for an imported message queue proof.
+
+<Callout type="note">
   If a shard has insufficient load and there is an intention to merge with a neighboring shard, the `soft_limit` indicates a threshold. When this threshold is exceeded, internal messages will stop being processed, while external messages will still be handled. External messages will continue to be processed until the total reaches a limit that is equal to half the sum of the `soft_limit` and `hard_limit`, or `(soft_limit + hard_limit) / 2`.
 </Callout>
 
-[Parameter #22 on mainnet](https://tonscan.org/config#22) | [Parameter #23 on mainnet](https://tonscan.org/config#23)
+[Parameter #22 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-22) | [Parameter #23 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-23)
 
-## Param 24 and 25: message price
+## Param 24 and 25: message price \[#24-and-25]
 
 Parameter 24 represents the configuration for the cost of sending messages in the masterchain of the TON Blockchain.
 
@@ -456,9 +474,9 @@ Parameter 25 represents the configuration for the cost of sending messages in al
 
 - `next_frac`: This parameter defines the fraction of the remaining amount that will be used for subsequent transitions along the message route.
 
-[Parameter #24 on mainnet](https://tonscan.org/config#24) | [Parameter #25 on mainnet](https://tonscan.org/config#25)
+[Parameter #24 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-24) | [Parameter #25 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-25)
 
-## Param 28: catchain config
+## Param 28: catchain config \[#28]
 
 This parameter provides the configuration for the `Catchain` protocol in the TON Blockchain. `Catchain` is the lowest-level consensus protocol used in the TON to achieve agreement among validators.
 
@@ -476,14 +494,14 @@ This parameter provides the configuration for the `Catchain` protocol in the TON
 
 - `shard_validators_num`: The number of validators in each shardchain validation group.
 
-[Parameter #28 on mainnet](https://tonscan.org/config#28)
+[Parameter #28 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-28)
 
-## Param 29: consensus config
+## Param 29: consensus config \[#29]
 
 This parameter provides the configuration for the consensus protocol above `Catchain` ([Param 28](#param-28-catchain-config)) in the TON Blockchain. The consensus protocol is a crucial component of a blockchain network: it ensures that all nodes agree on the state of the distributed ledger.
 
-<Callout>
-  `ConfigParam 29` has evolved through several updates. The latest constructor, `consensus_config_v4#d9`, is defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782). It extends `consensus_config_v3#d8` with a new `use_quic:Bool` field, taking one bit from `flags`, which shrinks from 7 to 6 bits. It also adds `catchain_max_blocks_coeff:uint32` field at the end.
+<Callout type="note">
+  `ConfigParam 29` uses the `consensus_config_v4#d9` constructor defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L762-L788). It extends `consensus_config_v3#d8` with a `use_quic:Bool` field, taking 1 bit from `flags`, which shrinks from 7 to 6 bits. It also adds `catchain_max_blocks_coeff:uint32` at the end.
 </Callout>
 
 ### Configuration parameters
@@ -512,17 +530,17 @@ This parameter provides the configuration for the consensus protocol above `Catc
 
 - `proto_version`: The protocol version.
 
-- `catchain_max_blocks_coeff`: The coefficient limiting the rate of block generation in `Catchain`, [description](https://github.com/ton-blockchain/ton/blob/master/doc/catchain-dos.md).
+- `catchain_max_blocks_coeff`: The coefficient that limits the Catchain block generation rate, as described in [Catchain DoS protection](https://github.com/ton-blockchain/ton/blob/v2026.08/doc/catchain-dos.md).
 
 <Callout type="note">
-  For up-to-date values, see [Parameter #29 on mainnet](https://tonscan.org/config#29).
+  For on-chain values, see [Parameter #29 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-29).
 </Callout>
 
 ### On-chain schema
 
 `ConfigParam 29` is a tagged union: validators must accept all of its constructors, including legacy ones. This ensures that older serialized configurations continue to be valid while newer on-chain values are written using the latest tag.
 
-The current set defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782) is:
+The constructors defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L762-L788) are:
 
 ```tlb
 consensus_config#d6 round_candidates:# { round_candidates >= 1 }
@@ -559,9 +577,9 @@ _ ConsensusConfig = ConfigParam 29;
   The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
 </Callout>
 
-[Parameter #29 on mainnet](https://tonscan.org/config#29)
+[Parameter #29 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-29)
 
-## Param 30: consensus extension
+## Param 30: consensus extension \[#30]
 
 <Callout type="note">
   - [TON v2026.03](https://github.com/ton-blockchain/ton/releases/tag/v2026.03): `ConfigParam 30` introduced on testnet.
@@ -570,7 +588,7 @@ _ ConsensusConfig = ConfigParam 29;
 
 This parameter configures [Catchain 2.0](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) — the Simplex-based consensus protocol that succeeds the original Catchain. The settings are optional and can be supplied independently for each chain. Block-size limits are not duplicated here: the node continues to read `max_block_bytes` and `max_collated_bytes` from [`ConfigParam 29`](/foundations/config#param-29-consensus-config).
 
-The `crypto/block/block.tlb` [defines](https://github.com/ton-blockchain/ton/blob/v2026.04/crypto/block/block.tlb#L782) the following schema:
+[`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L790-L800) defines the following schema:
 
 ```tlb
 simplex_config#21 flags:(## 7)
@@ -581,7 +599,8 @@ simplex_config#21 flags:(## 7)
   max_leader_window_desync:uint32
   = NewConsensusConfig;
 
-simplex_config_v2#22 flags:(## 7)
+simplex_config_v2#22 flags:(## 5)
+  protocol_version:(## 2)
   use_quic:Bool
   slots_per_leader_window:uint32
   noncritical_params:(HashmapE 8 uint32)
@@ -595,7 +614,7 @@ new_consensus_config_all#10
 _ NewConsensusConfigAll = ConfigParam 30;
 ```
 
-The `simplex_config_v2#22` constructor moves noncritical configuration parameters into a sparse dictionary. There are two optional refs in `new_consensus_config_all#10`. If a ref is absent, then the pre-2.0 Catchain config is active for the corresponding class of chains:
+The `simplex_config_v2#22` constructor moves noncritical configuration parameters into a sparse dictionary. There are 2 optional references in `new_consensus_config_all#10`. If a reference is absent, the pre-2.0 Catchain configuration remains active for the corresponding class of chains:
 
 | Field   | Type                        | Meaning                                                 |
 | ------- | --------------------------- | ------------------------------------------------------- |
@@ -605,13 +624,14 @@ The `simplex_config_v2#22` constructor moves noncritical configuration parameter
 The `NewConsensusConfig` has two constructors:
 
 - `simplex_config#21` is the legacy fixed-layout format; scheduled for removal.
-- `simplex_config_v2#22` is the current extensible format, which supports arbitrary `noncritical_params` without changes to the `block.tlb` layout.
+- `simplex_config_v2#22` is the modern extensible format, which supports arbitrary `noncritical_params` without changes to the `block.tlb` layout.
 
 ### Configuration parameters of `simplex_config_v2`
 
-- `flags`: A general field that can be used to set various binary parameters.
-- `use_quic`: Whether the QUIC transport is used instead of RLDP2. Set to `true` on mainnet.
-- `slots_per_leader_window`: Number of consecutive slots assigned to one leader. Set to `4` on mainnet.
+- `flags`: A reserved 5-bit field for miscellaneous binary parameters.
+- `protocol_version`: Selects protocol behaviors within the Simplex implementation.
+- `use_quic`: Whether the protocol uses QUIC instead of RLDP2.
+- `slots_per_leader_window`: The number of consecutive slots assigned to 1 leader.
 - `noncritical_params`: A `HashmapE 8 uint32` map from parameter IDs to raw 32-bit values.
 
 Inherited from [Param 29](/foundations/config#param-29-consensus-config):
@@ -628,7 +648,7 @@ The `noncritical_params` dictionary contains adjustable timing and DoS-protectio
 - Duration-like parameters store milliseconds directly.
 - Floating-point parameters store `float32` bits according to the [IEEE-754](https://en.wikipedia.org/wiki/IEEE_754) standard in a `uint32` value. The loader then reinterprets these bits as a floating-point numeric value.
 
-IDs from `0` through `14` are recognized and supported. On the mainnet, only IDs `0`, `1`, and `13` are explicitly set. All other IDs are normally absent and use defaults.
+IDs from `0` through `16` are recognized and supported. Missing IDs use the defaults shown below — the explorer shows which [IDs are present on-chain](https://actonscan.com/config?network=mainnet#config-parameter-30).
 
 | ID   | Name                                   | Stored as                  | Default                  | Meaning                                                                                                    |
 | ---- | -------------------------------------- | -------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
@@ -647,10 +667,12 @@ IDs from `0` through `14` are recognized and supported. On the mainnet, only IDs
 | `12` | `candidate_resolve_rate_limit`         | `uint32`                   | `10`                     | Per-peer rate limit for candidate resolution requests.                                                     |
 | `13` | `min_block_interval`                   | `uint32` milliseconds      | `0 ms`                   | Minimum interval between parent block time and the next locally generated block.                           |
 | `14` | `no_empty_blocks_on_error_timeout`     | `uint32` milliseconds      | `15,000 ms`              | How long empty-block fallback is allowed after the last finalized block when collation fails or times out. |
+| `15` | `certificate_gossip_neighbors`         | `uint32`                   | `20`                     | Number of randomly selected peers that receive each obtained consensus certificate.                        |
+| `16` | `standstill_min_egress_bytes_per_s`    | `uint32`                   | `131,072` (`1 << 17`)    | Minimum egress rate used when rebroadcasting consensus data during standstill recovery.                    |
 
-[Parameter #30 on mainnet](https://tonscan.org/config#30)
+[Parameter #30 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-30)
 
-## Param 31: fee-exempt contracts
+## Param 31: fee-exempt contracts \[#31]
 
 This parameter represents the configuration of smart contract addresses from which no fees are charged for either gas or storage, and where **tick-tock** transactions can be created. The list usually includes governance contracts. The parameter is presented as a binary tree structure — a tree (HashMap 256), where the keys are a 256-bit representation of the address. Only addresses in the masterchain can be present in this list.
 
@@ -658,15 +680,13 @@ Validators classify an account as special when it resides in the masterchain and
 
 Every basechain account and every other masterchain account is non-special (regular). Only special accounts receive the protocol privileges associated with this classification, including permission to change public libraries.
 
-[Parameter #31 on mainnet](https://tonscan.org/config#31)
+[Parameter #31 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-31)
 
-## Param 32, 34, and 36: validator lists
+## Param 32, 34, and 36: validator lists \[#32-and-34-and-36]
 
-Lists of validators from the previous (32), current (34), and next (36) rounds. Parameter 36 is set from the end of the elections until the start of the round.
+These parameters store validator sets from the previous (`32`), current (`34`), and next (`36`) election rounds. Parameter 36 is set from the end of an election until the start of its round — it is not available at other times.
 
 ### Configuration parameters
-
-- `cur_validators`: This is the current list of validators. Validators are typically responsible for verifying transactions in a blockchain network.
 
 - `utime_since` and `utime_until`: These parameters provide the time period during which these validators are active.
 
@@ -674,11 +694,23 @@ Lists of validators from the previous (32), current (34), and next (36) rounds. 
 
 - `total_weight`: This adds up the weights of the validators.
 
-- `list`: A list of validators in the tree format `id->validator-data`: `validator_addr`, `public_key`, `weight`, `adnl_addr`: These parameters provide details about each validator - their 256-bit addresses in the masterchain, public key, weight, ADNL address (the address used at the network level of the TON).
+- `list`: A dictionary keyed by validator index. Each value contains the validator's public key, weight, and optional [ADNL](/foundations/network/adnl) address.
 
-[Parameter #32 on mainnet](https://tonscan.org/config#32) | [Parameter #34 on mainnet](https://tonscan.org/config#34) | [Parameter #36 on mainnet](https://tonscan.org/config#36)
+[Parameter #32 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-32) | [Parameter #34 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-34) | [Parameter #36 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-36)
 
-## Param 40: misbehavior punishment
+## Param 33, 35, and 37: temporary validator lists \[#33-and-35-and-37]
+
+These parameters are the temporary counterparts of parameters [32, 34, and 36](#32-and-34-and-36). They use the same validator sets schema for the previous (`33`), current (`35`), and next (`37`) election rounds.
+
+[Parameter #33 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-33) | [Parameter #35 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-35) | [Parameter #37 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-37)
+
+## Param 39: temporary validator keys \[#39]
+
+This parameter maps permanent validator key hashes to signed temporary-key certificates. Each certificate records an ADNL address, temporary public key, sequence number, expiration time, and validator signature.
+
+[Parameter #39 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-39)
+
+## Param 40: misbehavior punishment \[#40]
 
 This parameter defines the structure of the configuration for punishment for improper behavior (non-validation). In the absence of the parameter, the default fine size is 101 Gram.
 
@@ -702,55 +734,49 @@ It contains several fields:
 
 - `medium_interval`, `medium_flat_mult`, `medium_proportional_mult`: Similarly, they define a "medium" period of time and multipliers for flat and proportional fines for improper behavior.
 
-[Parameter #40 on mainnet](https://tonscan.org/config#40)
+[Parameter #40 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-40)
 
-## Param 43: account and message limits
+## Param 43: account and message limits \[#43]
 
-This parameter relates to the size limits and other features of accounts and messages.
+This parameter imposes [various limits](/foundations/limits) on account state, messages, public libraries, and TVM data. New fields are added over time — fields absent from an older on-chain constructor tag use node defaults.
 
 ### Configuration parameters
 
 - `max_msg_bits`: Maximum message size in bits.
 
-- `max_msg_cells`: Maximum number of cells (a form of storage unit) a message can occupy.
+- `max_msg_cells`: Maximum number of cells a message can occupy.
 
 - `max_library_cells`: Maximum number of cells that can be used for library cells.
 
-- `max_vm_data_depth`: Maximum cell depth in messages and account state.
+- `max_vm_data_depth`: Maximum [cell depth](#standard-cell-representation-and-its-hash) in messages and account state.
 
-- `max_ext_msg_size`: Maximum external message size in bits.
+- `max_ext_msg_size`: Maximum serialized external message size in bytes.
 
-- `max_ext_msg_depth`: Maximum external message depth. This could refer to the depth of the data structure within the message.
+- `max_ext_msg_depth`: Maximum cell depth of an external message.
 
-- `max_acc_state_cells`: Maximum number of cells that an account state can occupy.
+- `max_acc_state_cells` and `max_mc_acc_state_cells`: Maximum number of cells in an account state outside and inside the masterchain, respectively.
 
-- `max_acc_state_bits`: Maximum account state size in bits.
+- `max_acc_public_libraries`: Maximum number of public libraries in an account state.
 
-If absent, the default parameters are taken:
+- `defer_out_queue_size_limit`: Outbound queue size threshold used to defer message processing during collation.
 
-- `max_size` = 65535
+- `max_msg_extra_currencies`: Maximum number of nonzero extra currencies in a message.
 
-- `max_depth` = 512
+- `max_acc_fixed_prefix_length`: Maximum fixed address-prefix length accepted for an account.
 
-- `max_msg_bits` = 1 \<\< 21
+- `acc_state_cells_for_storage_dict`: Account-state cell threshold for storing its hash in storage statistics.
 
-- `max_msg_cells` = 1 \<\< 13
+- `max_transaction_library_loads`: Optional maximum number of public-library loads during 1 transaction. An absent value leaves the number unlimited.
 
-- `max_library_cells` = 1000
+- `max_total_msg_bits` and `max_total_msg_cells`: Maximum aggregate size of messages created during 1 transaction.
 
-- `max_vm_data_depth` = 512
-
-- `max_acc_state_cells` = 1 \<\< 16
-
-- `max_acc_state_bits` = (1 \<\< 16) \* 1023
-
-<Callout>
-  You can view more details about the standard parameters [here](https://github.com/ton-blockchain/ton/blob/fc9542f5e223140fcca833c189f77b1a5ae2e184/crypto/block/mc-config.h#L379) in the source code.
+<Callout type="note">
+  [`SizeLimitsConfig`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/mc-config.h#L394-L417) sets default values for missing fields. For detailed limits, refer to the [blockchain limits page](/foundations/limits).
 </Callout>
 
-[Parameter #43 on mainnet](https://tonscan.org/config#43)
+[Parameter #43 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-43)
 
-## Param 44: suspended addresses
+## Param 44: suspended addresses \[#44]
 
 This parameter defines the list of suspended addresses, which cannot be initialized until `suspended_until`. It only applies to yet uninitiated accounts. This is a measure for stabilizing the tokenomics (limiting early miners). If not set, there are no limitations. Each address is represented as an end node in this tree, and the tree-like structure allows efficient checking of whether an address is in the list.
 
@@ -758,9 +784,9 @@ This parameter defines the list of suspended addresses, which cannot be initiali
   The stabilization of the tokenomics is further described in the [official report](https://t.me/tonblockchain/178) of the `@tonblockchain` Telegram channel.
 </Callout>
 
-[Parameter #44 on mainnet](https://tonscan.org/config#44)
+[Parameter #44 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-44)
 
-## Param 45: precompiled contracts
+## Param 45: precompiled contracts \[#45]
 
 The list of precompiled contracts is stored in the masterchain config:
 
@@ -772,16 +798,26 @@ _ PrecompiledContractsConfig = ConfigParam 45;
 
 More details about precompiled contracts are on [this page](/foundations/precompiled).
 
-[Parameter #45 on mainnet](https://tonscan.org/config#45)
+[Parameter #45 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-45)
 
-## Param 71 - 73: outbound bridges
+## Param 46: validator registry \[#46]
+
+This parameter configures the validator registry that assigns collators to validators.
+
+- `contract_address`: The masterchain address of the registry smart contract. The contract must also be listed as fundamental in parameter 31.
+
+- `max_collators_per_validator`: The maximum number of collator entries that a node reads for 1 validator.
+
+- `new_code_hash`: An optional replacement code hash recorded for a registry upgrade.
+
+[Parameter #46 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-46)
+
+## Param 71 - 73: outbound bridges \[#71-and-72-and-73]
 
 This parameter pertains to bridges for wrapping Gram in other networks:
 
 - ETH-TON **(71)**
-
 - BNB-TON **(72)**
-
 - Polygon-TON **(73)**
 
 ### Configuration parameters
@@ -794,16 +830,14 @@ This parameter pertains to bridges for wrapping Gram in other networks:
 
 - `external_chain_address`: This is the bridge contract address in the corresponding external blockchain.
 
-[Parameter #71 on mainnet](https://tonscan.org/config#71) | [Parameter #72 on mainnet](https://tonscan.org/config#72) | [Parameter #73 on mainnet](https://tonscan.org/config#73)
+[Parameter #71 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-71) | [Parameter #72 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-72) | [Parameter #73 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-73)
 
-## Param 79, 81, and 82: inbound bridges
+## Param 79, 81, and 82: inbound bridges \[#79-and-81-and-82]
 
 This parameter relates to bridges for wrapping tokens from other networks into tokens on the TON network:
 
 - ETH-TON **(79)**
-
 - BNB-TON **(81)**
-
 - Polygon-TON **(82)**
 
 ### Configuration parameters
@@ -818,20 +852,48 @@ This parameter relates to bridges for wrapping tokens from other networks into t
 
 - `external_chain_address`: The bridge contract address in another blockchain.
 
-[Parameter #79 on mainnet](https://tonscan.org/config#79) | [Parameter #81 on mainnet](https://tonscan.org/config#81) | [Parameter #82 on mainnet](https://tonscan.org/config#82)
+[Parameter #79 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-79) | [Parameter #81 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-81) | [Parameter #82 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-82)
 
 ## Negative parameters
 
-Validators enforce TL-B validity only for configuration parameters with non-negative indices. Values with negative indices are **not** validated against a specific `ConfigParam i` type.
+Validators enforce TL-B validity only for configuration parameters with non-negative indices. Values with negative indices are **not** validated against a specific `ConfigParam i` type. These values are also referred to as _extension slots_.
 
-## Next steps
+Extension slots are implementation-specific, and their meaning comes from the contracts that read them rather than from `block.tlb`.
 
-After thoroughly reviewing this article, it is highly recommended that you dedicate time to a more in-depth study of the following documents:
+The following table lists known named extension slots. Not every slot appears on every network or at every block. Inspect active slots in the [mainnet configuration](https://actonscan.com/config?network=mainnet) or [testnet configuration](https://actonscan.com/config?network=testnet).
 
-- The original descriptions are present, but they may be limited, in the documents:
-  - [The Open Network Whitepaper](/foundations/whitepapers/ton)
-  - [Telegram Open Network Blockchain](/foundations/whitepapers/tblkch)
+| Index                   | Purpose                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `-10000`                | Testnet slot controlled by a TON Config Parameter Ownership non-fungible token (NFT).                          |
+| `-1337`                 | Testnet scratch slot for configuration proposals and voting.                                                   |
+| `-1306` through `-1299` | Testnet proposal slots containing parameter 16-shaped validator limits with maximum counts from 31 through 38. |
+| `-1025`                 | Second owner-controlled custom configuration slot.                                                             |
+| `-1024`                 | First owner-controlled custom configuration slot.                                                              |
+| `-1003`                 | Additional public keys that authorize configuration contract actions.                                          |
+| `-1002`                 | Disables signed external votes for configuration proposals when present.                                       |
+| `-1001`                 | Code used to upgrade the elector smart contract.                                                               |
+| `-1000`                 | Code used to upgrade the configuration smart contract.                                                         |
+| `-999`                  | Master public key that authorizes configuration contract actions.                                              |
+| `-236`                  | Testnet faucet contract for the ECHIDNA extra currency.                                                        |
+| `-137`                  | Testnet scratch slot for signed configuration updates.                                                         |
+| `-133`                  | Testnet governance slot containing a parameter 16-shaped value with `max_validators` set to `0`.               |
+| `-90`                   | Validator participation settings for BTC Teleport governance.                                                  |
+| `-80`                   | Testnet TON DNS domain denylist.                                                                               |
+| `-79`                   | Legacy fallback configuration for Ethereum jetton bridge contracts.                                            |
+| `-72`                   | Legacy fallback configuration for BNB Smart Chain bridge contracts.                                            |
+| `-71`                   | Legacy fallback configuration for Ethereum bridge contracts.                                                   |
+| `-41`                   | Legacy full-collated-data flag and configured collator list.                                                   |
+| `-13`                   | Default activation timestamp for legacy restricted wallet contracts.                                           |
+| `-1`                    | Address of the testnet NFT collection that represents ownership of configuration slots.                        |
 
-- Source code:
-  - [`mc-config.h`](https://github.com/ton-blockchain/ton/blob/fc9542f5e223140fcca833c189f77b1a5ae2e184/crypto/block/mc-config.h)
-  - [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb)
+## Reference
+
+Source code:
+
+- [`mc-config.h`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/mc-config.h)
+- [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb)
+
+Original descriptions, which may be limited or outdated with respect to source code:
+
+- [The Open Network Whitepaper](/foundations/whitepapers/ton)
+- [Telegram Open Network Blockchain](/foundations/whitepapers/tblkch)
