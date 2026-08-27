@@ -33,7 +33,7 @@ A contract reads its remaining `CurrencyCollection` balance through [TVM](/tvm/o
 Extra currencies cannot pay storage, computation, or message-forwarding fees. These fees remain denominated in Gram.
 
 <Callout type="note">
-  Since [global TVM version 10](/foundations/config#param-8-network-version), [send modes 64 and 128](/foundations/messages/modes#behavior) change only the Gram component of a message. They do not add extra currencies from the incoming message or account balance.
+  Since [global TVM version](/foundations/config#8) 10, [send modes 64 and 128](/foundations/messages/modes#behavior) change only the Gram component of a message. They do not add extra currencies from the incoming message or account balance.
 </Callout>
 
 <Callout type="note">
@@ -44,9 +44,9 @@ Extra currencies cannot pay storage, computation, or message-forwarding fees. Th
 
 Extra-currency minting is controlled by the masterchain configuration:
 
-- [Parameter 7](/foundations/config#param-7-extra-currency-mint-targets) stores target amounts by currency ID.
-- [Parameter 2](/foundations/config#param-2-ton-minting-address) identifies the minter account. [Parameter 0](/foundations/config#param-0-config-address) is the fallback when parameter 2 is absent.
-- [Parameter 6](/foundations/config#param-6-extra-currency-minting-prices) stores two Gram price fields intended for minting governance. The collator does not use them to calculate the minted amount.
+- [Parameter 7](/foundations/config#7) stores target amounts by currency ID.
+- [Parameter 2](/foundations/config#2) identifies the minter account. [Parameter 0](/foundations/config#0) is the fallback when parameter 2 is absent.
+- [Parameter 6](/foundations/config#6) stores two Gram price fields intended for minting governance. The collator does not use them to calculate the minted amount.
 
 For each parameter 7 entry, a masterchain collator subtracts the previous masterchain state's global balance from the configured target. A positive difference for a nonzero currency ID is minted in that masterchain block. An equal or lower target mints nothing — lowering the target does not burn currency.
 

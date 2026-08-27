@@ -30,7 +30,7 @@ Other mode values and their combinations are invalid. Using both `AddPrivateLibr
   type="caution"
   title="Limited availability"
 >
-  Since global TVM version 15, the action phase returns [exit code `46`](/tvm/exit-codes#46-library-change-action-is-prohibited) on mainnet and testnet when any account uses mode `AddPrivateLibrary` (`+1`) or when a regular account requests any library change. Only [special masterchain accounts](/foundations/config#param-31-fee-exempt-contracts) can use base mode `0` or `+2` to remove or add public libraries.
+  Since global TVM version 15, the action phase returns [exit code `46`](/tvm/exit-codes#46-library-change-action-is-prohibited) on mainnet and testnet when any account uses mode `AddPrivateLibrary` (`+1`) or when a regular account requests any library change. Only [special masterchain accounts](/foundations/config#31) can use base mode `0` or `+2` to remove or add public libraries.
 
   The [libraries reference page](/foundations/serialization/library#limited-availability) explains how this restriction affects their use.
 </Callout>

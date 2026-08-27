@@ -565,11 +565,11 @@ If the maximum number of cells in the library is exceeded or the maximum depth o
 
 ### 46: Library change action is prohibited
 
-The action phase returns exit code `46` when a change-library action attempts to add a private library or when a regular account attempts any library change, including deployment of new libraries. Only [special masterchain accounts](/foundations/config#param-31-fee-exempt-contracts) can add or remove public libraries.
+The action phase returns exit code `46` when a change-library action attempts to add a private library or when a regular account attempts any library change, including deployment of new libraries. Only [special masterchain accounts](/foundations/config#31) can add or remove public libraries.
 
 ### 50: Account state size exceeded limits
 
-If the account state (contract storage, essentially) exceeds any of the limits specified in [config param 43 of TON Blockchain](/foundations/config#param-43-account-and-message-limits) by the end of the [action phase](#action-phase), an error with exit code 50 is thrown: `Account state size exceeded limits`.
+If the account state (contract storage, essentially) exceeds any of the limits specified in the [blockchain config param 43](/foundations/config#43) by the end of the [action phase](#action-phase), an error with exit code 50 is thrown: `Account state size exceeded limits`.
 
 If the configuration is absent, the default values are:
 

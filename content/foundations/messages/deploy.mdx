@@ -35,7 +35,7 @@ where the fields are:
 - `special`: was meant to register a smart contract for tick-tock events; now is deprecated.
 - `code`: the initial code of the contract.
 - `data`: the initial data of the contract.
-- `library`: the account's initial library dictionary. Since [global TVM version 15](/foundations/config#param-8-network-version), this field must be empty when deploying a new account. Otherwise, deployment would fail unless the [contract is special](/foundations/config#param-31-fee-exempt-contracts).
+- `library`: the account's initial library dictionary. Since [global TVM version](/foundations/config#8) 15, this field must be empty when deploying a new account. Otherwise, deployment would fail unless the [contract is special](/foundations/config#31).
 - `fixed_prefix_length`: number of most significant address bits that may differ between the deploy message destination and the address derived from `StateInit`; the remaining bits must match.
 
 ## Deploying to specific shard
@@ -73,4 +73,4 @@ To put `S` into the same shard as `D`, set `fixed_prefix_length` to 8 and send t
 
 ### Limits
 
-The largest value for `fixed_prefix_length` is set in the blockchain config ([param 43](/foundations/config#param-43-account-and-message-limits)), and at the moment is `8`, i.e. discrepancy in only eight bits of address can be ignored.
+The largest value for `fixed_prefix_length` is set in the [blockchain config param 43](/foundations/config#43), and as of writing this, it is `8`, i.e., a discrepancy in only eight bits of the address can be ignored.
