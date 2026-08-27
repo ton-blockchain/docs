@@ -8,13 +8,6 @@ full: true
   The [notation](#notation) section below explains how the table encodes TVM instruction opcodes and immediate arguments in binary.
 </Callout>
 
-<Callout
-  type="caution"
-  title="Library actions are restricted"
->
-  The [change-library action reference](/foundations/actions/change-library) describes the restrictions on `SETLIBCODE` and `CHANGELIB` instructions.
-</Callout>
-
 <TvmInstructionTable />
 
 ## Notation
@@ -34,6 +27,13 @@ The `s[i]` notation refers to the `i`-th stack slot counting from the top, and t
 ### Bracket formulas
 
 The `[32(c+1)] PLDUZ` notation means a value for `c` should be chosen, the calculation performed, and the result substituted. For example, with `c = 2`, the instruction is written as `96 PLDUZ` in Fift. The value `96` is the actual number of bits to read, while the bitstream stores only the value for `c`, and the TVM performs the calculation on its own.
+
+<Callout
+  type="caution"
+  title="Library actions are restricted"
+>
+  The [change-library action reference](/foundations/actions/change-library) describes the restrictions on `SETLIBCODE` and `CHANGELIB` instructions.
+</Callout>
 
 {/* STATIC_START tvm_instructions */}
 <div hidden>
