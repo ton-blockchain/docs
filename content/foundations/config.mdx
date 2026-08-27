@@ -586,7 +586,7 @@ _ ConsensusConfig = ConfigParam 29;
   - [TON v2026.04](https://github.com/ton-blockchain/ton/releases/tag/v2026.04): `ConfigParam 30` enabled on mainnet.
 </Callout>
 
-This parameter configures [Catchain 2.0](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) — the Simplex-based consensus protocol that succeeds the original Catchain. The settings are optional and can be supplied independently for each chain. Block-size limits are not duplicated here: the node continues to read `max_block_bytes` and `max_collated_bytes` from [`ConfigParam 29`](/foundations/config#param-29-consensus-config).
+This parameter configures [Catchain 2.0](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) — the Simplex-based consensus protocol that succeeds the original Catchain. The settings are optional and can be supplied independently for each chain. Block-size limits are not duplicated here: the node continues to read `max_block_bytes` and `max_collated_bytes` from [`ConfigParam 29`](/foundations/config#29).
 
 [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L790-L800) defines the following schema:
 
@@ -634,7 +634,7 @@ The `NewConsensusConfig` has two constructors:
 - `slots_per_leader_window`: The number of consecutive slots assigned to 1 leader.
 - `noncritical_params`: A `HashmapE 8 uint32` map from parameter IDs to raw 32-bit values.
 
-Inherited from [Param 29](/foundations/config#param-29-consensus-config):
+Inherited from [Param 29](/foundations/config#29):
 
 - `max_block_bytes` — maximum block size.
 - `max_collated_bytes` — maximum size of serialized block correctness proofs.

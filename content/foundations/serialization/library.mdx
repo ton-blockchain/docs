@@ -25,7 +25,7 @@ The library allows extending the deduplication mechanism on-chain, enabling the 
 
 ### Limited availability
 
-Since global TVM version 15, mainnet and testnet networks reject change-library actions from regular accounts in every workchain, including the masterchain (`-1`) and basechain (`0`). Only [special masterchain accounts](/foundations/config#param-31-fee-exempt-contracts), such as the ones hosting [elector](https://actonscan.com/config?network=mainnet#config-parameter-1) and [config](https://actonscan.com/config?network=mainnet#config-parameter-0) smart contracts, can add or remove public libraries.
+Since global TVM version 15, mainnet and testnet networks reject change-library actions from regular accounts in every workchain, including the masterchain (`-1`) and basechain (`0`). Only [special masterchain accounts](/foundations/config#31), such as the ones hosting [elector](https://actonscan.com/config?network=mainnet#config-parameter-1) and [config](https://actonscan.com/config?network=mainnet#config-parameter-0) smart contracts, can add or remove public libraries.
 
 However, operations such as obtaining library metadata or performing a top-up are allowed for existing libraries.
 
@@ -63,7 +63,7 @@ simple_lib$_ public:Bool root:^Cell = SimpleLib;
 
 The `public` field remains part of the serialized `SimpleLib` structure:
 
-- `public = 1` identifies a public library. Only a [special masterchain account](/foundations/config#param-31-fee-exempt-contracts) can add or remove this entry.
+- `public = 1` identifies a public library. Only a [special masterchain account](/foundations/config#31) can add or remove this entry.
 - `public = 0` identifies a private library. The action phase rejects attempts to add one, and TVM does not include existing private entries in the library environment.
 
 A public library remains available while at least one active publisher account keeps it registered. Maintaining enough Gram on publisher accounts prevents storage debt from freezing them.
