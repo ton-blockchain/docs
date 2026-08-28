@@ -5,6 +5,8 @@ description: "Distributed file storage for the TON Blockchain using torrent-like
 
 TON Storage is a distributed file storage system on the TON Network. Files are shared using a torrent-like protocol, with optional on-chain smart contracts for paid storage guarantees. The TON Blockchain uses TON Storage to distribute archive copies of blocks and state snapshots.
 
+The [storage provider guide](#run-a-storage-provider) below explains how to deploy, configure, and operate a TON Storage provider.
+
 ## Bags
 
 Files are organized into _bags_, each identified by a unique 256-bit `BagID` (the hash of the torrent info cell). A bag can contain a single file or a directory.
@@ -20,8 +22,16 @@ Nodes that store a bag register in the TON DHT under a key derived from the `Bag
 `storage-daemon` is the official implementation, distributed as part of the TON software suite. To start:
 
 ```bash
-storage-daemon -v 3 -C global.config.json -I <ip>:3333 -p 5555 -D storage-db
+storage-daemon -v 3 -C global.config.json -I <IP>:3333 -p 5555 -D storage-db
 ```
+
+There,
+
+- `-v` - log verbosity, where `3` = INFO
+- `-C` - path to the global network config
+- `-I` - ADNL listen IP and port, where `<IP>` is the public or reachable address of the host
+- `-p` - TCP port for the console interface
+- `-D` - path to the daemon database — CLI keys are generated inside the `cli-keys/` subdirectory on first start
 
 ### Manage bags
 
@@ -54,7 +64,7 @@ A storage provider is a node that stores bags for a fee, backed by an on-chain s
 - Smart contract: deployed on the TON Blockchain, stores the Merkle tree hash of each bag, issues proof challenges, and manages client payments.
 - `storage-daemon`: runs on the provider's machine, downloads bags, serves data to peers, and submits storage proofs to the contract.
 
-### Provider workflow
+Provider workflow:
 
 1. The provider deploys a main smart contract and shares its address with clients.
 1. A client creates a bag and sends a storage request to the provider contract.
@@ -79,3 +89,226 @@ See [TON DNS](/foundations/web3/ton-dns#dns-record-types) for all record types.
 
 - NFT metadata: NFT collections can reference off-chain media and metadata stored as bags, using the `BagID` as a stable content identifier. Individual files within a bag are addressed using the `tonstorage://<BagID>/path` URI scheme.
 - [Static TON Sites](/foundations/web3/ton-sites): a bag containing HTML and static assets can be served as a TON Site by combining TON Storage, [TON DNS](/foundations/web3/ton-dns), and [TON Proxy](/foundations/web3/ton-proxy).
+
+## Run a storage provider
+
+Run the `storage-daemon` in provider mode, deploy its main contract, and manage paid storage contracts.
+
+<Callout
+  type="danger"
+  title="Funds and provider data at risk"
+>
+  Provider commands deploy contracts, transfer funds, close storage contracts, and may delete local bag files. Test the complete workflow on testnet first. Mainnet transactions and contract closures cannot be rolled back.
+
+  Keep independent backups of required files, verify every address and network, and use a small initialization transfer.
+</Callout>
+
+### Prerequisites
+
+- `storage-daemon` and `storage-daemon-cli` from the same [TON release](https://github.com/ton-blockchain/ton/releases/tag/v2026.08)
+- A global configuration file for the target network: [mainnet](https://ton-blockchain.github.io/global.config.json) or [testnet](https://ton-blockchain.github.io/testnet-global.config.json)
+- A funded wallet on the target network
+- A public IP address and reachable [ADNL](/foundations/network/adnl) port
+
+### Start provider mode
+
+1. Start the `storage-daemon` with `-P`:
+
+   ```bash
+   storage-daemon -v 3 -P \
+     -C <GLOBAL_CONFIG_PATH> \
+     -I <PUBLIC_IP>:<ADNL_PORT> \
+     -p <CONTROL_PORT> \
+     -D <STORAGE_DB_DIR> \
+   ```
+
+   There,
+
+   - `<GLOBAL_CONFIG_PATH>` is the target network's global configuration file.
+   - `<PUBLIC_IP>` and `<ADNL_PORT>` identify the public ADNL endpoint.
+   - `<CONTROL_PORT>` is the local CLI control port.
+   - `<STORAGE_DB_DIR>` is the daemon's persistent data directory.
+
+   On its first launch, the daemon creates CLI keys under `<STORAGE_DB_DIR>/cli-keys`.
+
+1. Connect `storage-daemon-cli` to the control interface:
+
+   ```bash
+   storage-daemon-cli \
+     -I 127.0.0.1:<CONTROL_PORT> \
+     -k <STORAGE_DB_DIR>/cli-keys/client \
+     -p <STORAGE_DB_DIR>/cli-keys/server.pub
+   ```
+
+### Deploy the provider contract
+
+Run the deployment command inside `storage-daemon-cli`:
+
+```bash
+deploy-provider
+```
+
+<Callout
+  type="danger"
+  title="Initialization transfer"
+>
+  Use testnet for the first deployment. The command prints an address that requires a non-bounceable initialization message containing 1 GRAM. Verify the network and address before sending funds. A transfer to the wrong network or address cannot be recovered.
+</Callout>
+
+Do not attach a large balance to the initialization message. Verify the deployed provider:
+
+```bash
+get-provider-info
+```
+
+Fund the deployed provider contract separately to cover later transaction fees. Increase the balance only after verifying the deployment.
+
+### Configure capacity
+
+Set the maximum number and total size of managed storage contracts:
+
+```bash
+set-provider-config \
+  --max-contracts <MAX_CONTRACTS> \
+  --max-total-size <MAX_TOTAL_SIZE_BYTES>
+```
+
+There,
+
+- `<MAX_CONTRACTS>` is the maximum number of concurrent storage contracts.
+- `<MAX_TOTAL_SIZE_BYTES>` is the maximum combined bag size in bytes.
+
+### Configure contract terms
+
+Keep new requests disabled while configuring the on-chain terms:
+
+```bash
+set-provider-params --accept 0 \
+  --rate <RATE_NANOGRAM_PER_MB_DAY> \
+  --max-span <MAX_PROOF_SPAN_SECONDS> \
+  --min-file-size <MIN_BAG_SIZE_BYTES> \
+  --max-file-size <MAX_BAG_SIZE_BYTES>
+```
+
+There,
+
+- `<RATE_NANOGRAM_PER_MB_DAY>` is the price per megabyte per day in nanograms.
+- `<MAX_PROOF_SPAN_SECONDS>` is the maximum interval between storage proofs.
+- `<MIN_BAG_SIZE_BYTES>` and `<MAX_BAG_SIZE_BYTES>` define the accepted bag-size range.
+
+Omitted flags retain their prior values. Wait for each on-chain update and verify it with `get-provider-info` before submitting another update.
+
+Enable requests after verifying every parameter:
+
+```bash
+set-provider-params --accept 1
+```
+
+The daemon then downloads accepted bags, distributes them to peers, and submits storage proofs.
+
+### Request storage from a provider
+
+1. Inspect a provider's on-chain terms by its contract address:
+
+   ```bash
+   get-provider-params <PROVIDER_ADDRESS>
+   ```
+
+   The result states whether the provider accepts contracts, its bag-size limits, its rate, and its maximum proof interval.
+
+1. Create a bag with the [storage daemon bag commands](/foundations/web3/ton-storage#manage-bags), record its `BagID`, and generate a request body:
+
+   ```bash
+   new-contract-message <BAG_ID> \
+     <MESSAGE_BODY_PATH> \
+     --query-id <QUERY_ID> \
+     --provider <PROVIDER_ADDRESS>
+   ```
+
+   There,
+
+   - `<BAG_ID>` is the bag's 256-bit identifier.
+   - `<MESSAGE_BODY_PATH>` receives the internal message body, not a complete message.
+   - `<QUERY_ID>` is an integer from `0` through `2^64 - 1`.
+
+   Large bags can take longer to process. Review the rate and proof interval printed by the command before sending the body. The provider contract rejects the request if its parameters change before processing.
+
+1. Send the generated body in a bounceable internal message to the provider contract. A successful deployment returns [`0xbf7bd0c1`](https://github.com/ton-blockchain/ton/blob/v2026.08/storage/storage-daemon/smartcont/constants.fc#L4) with the original query ID. After the provider downloads the bag and activates the contract, it returns [`0xd4caedcd`](https://github.com/ton-blockchain/ton/blob/v2026.08/storage/storage-daemon/smartcont/constants.fc#L5).
+
+### Monitor the client balance
+
+The storage contract deducts provider earnings from the client balance according to the configured rate. The initial balance comes from the storage request message. Any wallet can top up the storage contract with a transfer.
+
+Call [`get_storage_contract_data`](https://github.com/ton-blockchain/ton/blob/v2026.08/storage/storage-daemon/smartcont/storage-contract.fc#L222) to inspect the contract. Its second return value, `balance`, is the unpaid client balance.
+
+A storage contract can close when:
+
+- The provider declines it before activation.
+- Its client balance reaches `0`.
+- The provider closes it.
+- The client sends [`0x79f937ea`](https://github.com/ton-blockchain/ton/blob/v2026.08/storage/storage-daemon/smartcont/constants.fc#L3) with any 64-bit query ID from the client's wallet.
+
+### Operate active contracts
+
+List active contracts and their balances:
+
+```bash
+get-provider-info --contracts --balances
+```
+
+`Client$` is the unpaid client balance. The difference between `Contract$` and `Client$` is available provider earnings.
+
+Withdraw earnings from one per-bag storage contract managed by the provider:
+
+```bash
+withdraw <STORAGE_CONTRACT_ADDRESS>
+```
+
+Withdraw from every contract with at least 1 GRAM available:
+
+```bash
+withdraw-all
+```
+
+### Close a storage contract
+
+<Callout
+  type="caution"
+  title="Local bag files may be deleted"
+>
+  Closing a contract may delete its local bag files when no other active contract uses the bag. Keep an independent copy before closing the contract. The on-chain closure cannot be rolled back.
+</Callout>
+
+Close one provider-managed contract:
+
+```bash
+close-contract <STORAGE_CONTRACT_ADDRESS>
+```
+
+Closing transfers available provider earnings to the main provider contract.
+
+### Transfer provider funds
+
+<Callout
+  type="danger"
+  title="Provider funds at risk"
+>
+  Test transfers with a small amount on testnet. Verify the destination, amount, and network before sending. Mainnet transfers cannot be rolled back.
+</Callout>
+
+Transfer nanograms from the main provider contract:
+
+```bash
+send-coins <DESTINATION_ADDRESS> <AMOUNT_NANOGRAM>
+send-coins <DESTINATION_ADDRESS> <AMOUNT_NANOGRAM> --message "<MESSAGE>"
+```
+
+There,
+
+- `<DESTINATION_ADDRESS>` is the receiving account.
+- `<AMOUNT_NANOGRAM>` is the transferred amount in nanograms.
+- `<MESSAGE>` is an optional text message.
+
+### Protect provider data
+
+The `list` command shows all bags managed by the daemon. Do not remove these bags or use the provider daemon to manage unrelated bags. Keep independent copies of data that must remain available after a storage contract closes.
