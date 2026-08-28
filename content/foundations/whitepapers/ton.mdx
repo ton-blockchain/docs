@@ -12,15 +12,11 @@ description: "Whitepaper by Dr. Nikolai Durov"
 
 The aim of this text is to provide a first description of the Telegram Open Network (TON) and related blockchain, peer-to-peer, distributed storage and service hosting technologies. To reduce the size of this document to reasonable proportions, we focus mainly on the unique and defining features of the TON platform that are important for it to achieve its stated goals.
 
----
-
 ## Introduction
 
 The *Telegram Open Network (TON)* is a fast, secure and scalable blockchain and network project, capable of handling millions of transactions per second if necessary, and both user-friendly and service provider-friendly. We aim for it to be able to host all reasonable applications currently proposed and conceived. One might think about TON as a huge distributed supercomputer, or rather a huge "superserver", intended to host and provide a variety of services.
 
 This text is not intended to be the ultimate reference with respect to all implementation details. Some particulars are likely to change during the development and testing phases.
-
----
 
 ## 1  Brief Description of TON Components
 
@@ -45,8 +41,6 @@ The *Telegram Open Network (TON)* is a combination of the following components:
 - TON will allow easy integration with third-party messaging and social networking applications, thus making blockchain technologies and distributed services finally available and [accessible](#4-3-24-ton-www) to ordinary users, rather than just to a handful of early cryptocurrency adopters. We will provide an example of such an integration in another of our projects, the [Telegram Messenger](#4-3-19-a-light-wallet-and-ton-entity-explorer-can-be-built-into-telegram-messenger-clients).
 
 While the TON Blockchain is the core of the TON project, and the other components might be considered as playing a supportive role for the blockchain, they turn out to have useful and interesting functionality by themselves. Combined, they allow the platform to host more versatile applications than it would be possible by just using the TON Blockchain (cf. [2.9.13](#2-9-13-is-it-possible-to-“upload-facebook-into-a-blockchain”) and [4.1](#4-1-ton-service-implementation-strategies)).
-
----
 
 ## 2  TON Blockchain
 
@@ -240,8 +234,6 @@ Several high-level languages can be designed for TVM, in addition to the "TVM as
 
 An important feature of the TON Blockchain is that many of its parameters are *configurable*. This means that they are part of the masterchain state, and can be changed by certain special proposal/vote/result transactions in the masterchain, without any need for hard forks. Changing such parameters will require collecting two-thirds of validator votes and more than half of the votes of all other participants who would care to take part in the voting process in favor of the proposal.
 
----
-
 ### 2.2  Generalities on Blockchains
 
 #### 2.2.1. General blockchain definition
@@ -350,8 +342,6 @@ Final remark: in order to make the probability statement of ([8](#2-2-9-hash-ass
 #### 2.2.10. Hash used for the TON Blockchain
 
 We are using the 256-bit SHA-256 hash for the TON Blockchain for the time being. If it turns out to be weaker than expected, it can be replaced by another hash function in the future. The choice of the hash function is a [configurable parameter](#2-1-21-configurable-parameters) of the protocol, so it can be changed without hard forks.
-
----
 
 ### 2.3   Blockchain State, Accounts and Hashmaps
 
@@ -588,8 +578,6 @@ We also need to keep somewhere, either in the account state or in some other acc
 - The collection of (hashes of) recently [delivered messages](#2-4-23-preventing-double-delivery-of-messages)
 
 Not all of these are really required for every account; for example, smart-contract code is needed only for smart contracts, but not for "simple" accounts. Furthermore, while any account must have a non-zero balance in the principal currency (e.g., Grams for the masterchain and shardchains of the basic workchain), it may have balances of zero in other currencies. In order to avoid keeping unused data, a sum-product type (depending on the workchain) is defined (during the workchain's creation), which uses different tag bytes (e.g., [TL constructors](#2-2-5-tl,-or-the-type-language)) to distinguish between different "constructors" used. Ultimately, the account state is itself kept as a collection of cells of the TVM persistent storage.
-
----
 
 ### 2.4  Messages Between Shardchains
 
@@ -849,8 +837,6 @@ In the "bag of cells" approach used by the blocks of TON blockchains, there is n
 
 However, the root cell might not contain all the data usually expected from such a header. Essentially, one wants the header to contain some of the fields defined in the *Block* datatype. Normally, these fields will be contained in several cells, including the root. These are the cells that together constitute a "Merkle proof" for the values of the fields in question. One might insist that a block contain these "header cells" in the very beginning, before any other cells. Then one would need to download only the first several bytes of a block serialization in order to obtain all of the "header cells", and to learn all of the expected fields.
 
----
-
 ### 2.6   Creating and Validating New Blocks
 
 The TON Blockchain ultimately consists of shardchain and masterchain blocks. These blocks must be created, validated and propagated through the network to all parties concerned, in order for the system to function smoothly and correctly.
@@ -1058,8 +1044,6 @@ An important consequence of the Proof-of-Stake approach used by the TON Blockcha
 
 Indeed, because the most recent shardchain block hashes are included in the masterchain blocks, a full node can easily provide a Merkle proof that a given shardchain block is valid starting from a known hash of a masterchain block. Next, the light node needs to know only the very first block of the masterchain (where the very first set of validators is announced), which (or at least the hash of which) might be built-in into the client software, and only one masterchain block approximately every month afterwards, where newly-elected validator sets are announced, because this block will have been signed by the previous set of validators. Starting from that, it can obtain the several most recent masterchain blocks, or at least their headers and validator signatures, and use them as a base for checking Merkle proofs provided by full nodes.
 
----
-
 ### 2.7   Splitting and Merging Shardchains
 
 One of the most characteristic and unique features of the TON Blockchain is its ability to automatically split a shardchain in two when the load becomes too high, and merge them back if the [load subsides](#2-1-10-dynamic-splitting-and-merging-of-shardchains;-cf-2-7). We must discuss it in some detail because of its uniqueness and its importance to the scalability of the whole project.
@@ -1123,8 +1107,6 @@ If they reach consensus on the necessity and readiness of merging, "merge prepar
 #### 2.7.9. Performing merge operations
 
 After that, when the validators from the union of the two original task groups are ready to become validators for the merged shardchain (this might involve a state transfer from the sibling shardchain and a state merge operation), they commit a "merge commit" flag in the headers of blocks of their shardchain (this event is propagated to the next masterchain blocks), and stop creating new blocks in separate shardchains (once the merge commit flag appears, creating blocks in separate shardchains is forbidden). Instead, a merged shardchain block is created (by the union of the two original task groups), referring to both of its "preceding blocks" in its "header". This is reflected in the next masterchain block, which will contain the hash of the newly created block of the merged shardchain. After that, the merged task group continues creating blocks in the merged shardchain.
-
----
 
 ### 2.8  Classification of Blockchain Projects
 
@@ -1294,8 +1276,6 @@ Our conclusion is that the genome of a project is very hard to change once it ha
 Therefore, if one wants to build a scalable blockchain system, one must choose its genome carefully from the very beginning. If the system is meant to support some additional specific functionality in the future not known at the time of its deployment, it should support "heterogeneous" workchains (having potentially different rules) from the start. For the system to be truly scalable, it must support sharding from the very beginning; sharding makes sense only if the system is [tightly-coupled](#2-8-14-interaction-between-blockchains%3A-loosely-coupled-and-tightly-coupled-systems), so this in turn implies the existence of a masterchain, a fast system of inter-blockchain messaging, usage of BFT PoS, and so on.
 
 When one takes into account all these implications, most of the design choices made for the TON Blockchain project appear natural, and almost the only ones possible.
-
----
 
 ### 2.9  Comparison to Other Blockchain Projects
 
@@ -1585,8 +1565,6 @@ To this end, the 256-bit abstract address is simply looked up as a key in the DH
 
 Notice that in order to make an abstract address "public" (reachable from any nodes in the network), its owner must either use it as a semi-permanent DHT address, or publish (in the DHT key equal to the abstract address under consideration) an input tunnel description with another of its public abstract addresses (e.g., the semi-permanent address) as the tunnel's entry point. Another option would be to simply publish its IP address and UDP port.
 
----
-
 ### 3.3  Overlay Networks and Multicasting Messages
 
 In a multi-blockchain system like the TON Blockchain, even full nodes would normally be interested in obtaining updates (i.e., new blocks) only about some shardchains. To this end, a special overlay (sub)network must be built inside the TON Network, on top of the [ADNL protocol](#3-1-abstract-datagram-network-layer), one for each shardchain.
@@ -1698,8 +1676,6 @@ This mechanism does not totally supplant the general mechanism described in [3.3
 #### 3.3.17. Overlay networks within overlay networks
 
 Another interesting case arises in the implementation of *TON Payments* (a [lightning network](#5-2-payment-channel-network%2C-or-“lightning-network”) for instant off-chain value transfers). In this case, first an overlay network containing all transit nodes of the "lightning network" is constructed. However, some of these nodes have established payment channels in the blockchain; they must always be neighbors in this overlay network, in addition to any "random" neighbors selected by the general overlay network algorithms described in [3.3.6](#3-3-6-locating-one-member-of-the-overlay-network), [3.3.7](#3-3-7-locating-more-members-of-the-overlay-network-creating-links) and [3.3.8](#3-3-8-maintaining-the-neighbor-list). These "permanent links" to the neighbors with established payment channels are used to run specific lightning network protocols, thus effectively creating an overlay subnetwork (not necessarily connected, if things go awry) inside the encompassing (almost always connected) overlay network.
-
----
 
 ## 4  TON Services and Applications
 
@@ -1950,8 +1926,6 @@ All of the above will lead to the creation of a whole web of cross-referencing e
 
 This "TON WWW" of on-chain and off-chain services has some advantages over its conventional counterpart. For example, payments are inherently integrated in the system. User identity can be always presented to the services (by means of automatically generated signatures on the transactions and RPC requests generated), or hidden at will. Services would not need to check and re-check user credentials; these credentials can be published in the blockchain once and for all. User network anonymity can be easily preserved by means of TON Proxy, and all services will be effectively unblockable. Micropayments are also possible and easy, because ton-browsers can be integrated with the TON Payments system.
 
----
-
 ## 5  TON Payments
 
 The last component of the TON Project we will briefly discuss in this text is *TON Payments*, the platform for (micro)payment channels and "lightning network" value transfers. It would enable "instant" payments, without the need to commit all transactions into the blockchain, pay the associated transaction fees (e.g., for the gas consumed), and wait five seconds until the block containing the transactions in question is confirmed.
@@ -2118,8 +2092,6 @@ The [TON Network](#3-ton-networking), covers the networking demands of the propo
 
 The TON infrastructure allows for specialized light client wallet and "ton-browser" desktop and smartphone applications that enable a [browser-like experience](#4-3-24-ton-www) for the end user, making cryptocurrency payments and interaction with smart contracts and other services on the TON Platform accessible to the mass user. Such a light client can be integrated into the [Telegram Messenger client](#4-3-19-a-light-wallet-and-ton-entity-explorer-can-be-built-into-telegram-messenger-clients), thus eventually bringing a wealth of blockchain-based applications to hundreds of millions of users.
 
----
-
 ## A  The TON Coin, or the Gram
 
 The principal cryptocurrency of the TON Blockchain, and in particular of its masterchain and basic workchain, is the *TON Coin*, also known as the *Gram* (GRM). It is used to make deposits required to become a validator; transaction fees, gas payments (i.e., smart-contract message processing fees) and persistent storage payments are also usually collected in Grams.
@@ -2249,8 +2221,6 @@ When the total value of Gram buying orders becomes low enough, this system of "b
 
 The "bulk sales" mechanism will probably be used extensively during the initial phase of collecting investments in the TON Project.
 
----
-
 ## References
 
 1. K. Birman, *Reliable Distributed Systems: Technologies, Web Services and Applications*, Springer, 2005.
@@ -2286,8 +2256,6 @@ The "bulk sales" mechanism will probably be used extensively during the initial 
 16. The Univalent Foundations Program, *Homotopy Type Theory: Univalent Foundations of Mathematics*, Institute for Advanced Study, 2013, available at https://homotopytypetheory.org/book.
 
 17. G. Wood, *PolkaDot: vision for a heterogeneous multi-chain framework*, draft 1, https://github.com/w3f/polkadot-white-paper/raw/master/PolkaDotPaper.pdf, 2016.
-
----
 
 ## Footnotes
 
