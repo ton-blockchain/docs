@@ -498,7 +498,7 @@ This parameter provides the configuration for the `Catchain` protocol in the TON
 
 ## Param 29: consensus config \[#29]
 
-This parameter provides the configuration for the consensus protocol above `Catchain` ([Param 28](#param-28-catchain-config)) in the TON Blockchain. The consensus protocol is a crucial component of a blockchain network: it ensures that all nodes agree on the state of the distributed ledger.
+This parameter provides the configuration for the consensus protocol above `Catchain` ([Param 28](#28)) in the TON Blockchain. The consensus protocol is a crucial component of a blockchain network: it ensures that all nodes agree on the state of the distributed ledger.
 
 <Callout type="note">
   `ConfigParam 29` uses the `consensus_config_v4#d9` constructor defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L762-L788). It extends `consensus_config_v3#d8` with a `use_quic:Bool` field, taking 1 bit from `flags`, which shrinks from 7 to 6 bits. It also adds `catchain_max_blocks_coeff:uint32` at the end.
@@ -508,7 +508,7 @@ This parameter provides the configuration for the consensus protocol above `Catc
 
 - `flags`: A general field that can be used to set various binary parameters.
 
-- `use_quic`: A Boolean value indicating whether the legacy Catchain consensus path uses QUIC transport instead of RLDP2. Introduced in `consensus_config_v4#d9`; has the same meaning as the `use_quic` field in [Param 30](#param-30-consensus-extension).
+- `use_quic`: A Boolean value indicating whether the legacy Catchain consensus path uses QUIC transport instead of RLDP2. Introduced in `consensus_config_v4#d9`; has the same meaning as the `use_quic` field in [Param 30](#30).
 
 - `new_catchain_ids`: A Boolean value indicating whether to generate new `Catchain` identifiers.
 
@@ -572,7 +572,7 @@ _ ConsensusConfig = ConfigParam 29;
 ```
 
 <Callout>
-  `consensus_config_v4#d9` was introduced together with the [Catchain 2.0 / Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) migration tracked by [Param 30](#param-30-consensus-extension).
+  `consensus_config_v4#d9` was introduced together with the [Catchain 2.0 / Simplex](https://github.com/ton-blockchain/simplex-docs/blob/main/Simplex.md) migration tracked by [Param 30](#30).
 
   The `use_quic` toggle in Param 29 controls the transport for the legacy Catchain path; the `use_quic` toggle in Param 30 controls the transport for the new Simplex path. They are configured independently.
 </Callout>
@@ -676,7 +676,7 @@ IDs from `0` through `16` are recognized and supported. Missing IDs use the defa
 
 This parameter represents the configuration of smart contract addresses from which no fees are charged for either gas or storage, and where **tick-tock** transactions can be created. The list usually includes governance contracts. The parameter is presented as a binary tree structure — a tree (HashMap 256), where the keys are a 256-bit representation of the address. Only addresses in the masterchain can be present in this list.
 
-Validators classify an account as special when it resides in the masterchain and its address appears in this parameter. The [configuration smart contract](#param-0-config-address) and the [elector smart contract](#param-1-elector-address) are also special, even when their addresses do not appear in parameter `31`.
+Validators classify an account as special when it resides in the masterchain and its address appears in this parameter. The [configuration smart contract](#0) and the [elector smart contract](#1) are also special, even when their addresses do not appear in parameter `31`.
 
 Every basechain account and every other masterchain account is non-special (regular). Only special accounts receive the protocol privileges associated with this classification, including permission to change public libraries.
 
@@ -748,7 +748,7 @@ This parameter imposes [various limits](/foundations/limits) on account state, m
 
 - `max_library_cells`: Maximum number of cells that can be used for library cells.
 
-- `max_vm_data_depth`: Maximum [cell depth](#standard-cell-representation-and-its-hash) in messages and account state.
+- `max_vm_data_depth`: Maximum [cell depth](/foundations/serialization/cells#standard-cell-representation-and-its-hash) in messages and account state.
 
 - `max_ext_msg_size`: Maximum serialized external message size in bytes.
 
