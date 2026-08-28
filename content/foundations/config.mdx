@@ -856,11 +856,11 @@ This parameter relates to bridges for wrapping tokens from other networks into t
 
 ## Negative parameters
 
-Validators enforce TL-B validity only for configuration parameters with non-negative indices. Values with negative indices are **not** validated against a specific `ConfigParam i` type. These values are also referred to as _extension slots_.
+Validators enforce TL-B validity only for configuration parameters with non-negative indices. Values with negative indices are **not** validated against a specific `ConfigParam i` type. These values are also referred to as negative parameters or _extension slots_.
 
-Extension slots are implementation-specific, and their meaning comes from the contracts that read them rather than from `block.tlb`.
+Extension slots are implementation-specific, and their meaning comes from the contracts that read them rather than from `block.tlb` — extension slots are absent from it.
 
-The following table lists known named extension slots. Not every slot appears on every network or at every block. Inspect active slots in the [mainnet configuration](https://actonscan.com/config?network=mainnet) or [testnet configuration](https://actonscan.com/config?network=testnet).
+The following table lists known named extension slots:
 
 | Index                   | Purpose                                                                                                        |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -877,6 +877,7 @@ The following table lists known named extension slots. Not every slot appears on
 | `-236`                  | Testnet faucet contract for the ECHIDNA extra currency.                                                        |
 | `-137`                  | Testnet scratch slot for signed configuration updates.                                                         |
 | `-133`                  | Testnet governance slot containing a parameter 16-shaped value with `max_validators` set to `0`.               |
+| `-123`                  | [Telegram wallet contract][tgw] bytecode used by the Telegram's native Gram wallet.                            |
 | `-90`                   | Validator participation settings for BTC Teleport governance.                                                  |
 | `-80`                   | Testnet TON DNS domain denylist.                                                                               |
 | `-79`                   | Legacy fallback configuration for Ethereum jetton bridge contracts.                                            |
@@ -885,6 +886,12 @@ The following table lists known named extension slots. Not every slot appears on
 | `-41`                   | Legacy full-collated-data flag and configured collator list.                                                   |
 | `-13`                   | Default activation timestamp for legacy restricted wallet contracts.                                           |
 | `-1`                    | Address of the testnet NFT collection that represents ownership of configuration slots.                        |
+
+[tgw]: https://github.com/ton-blockchain/tg-wallet-contract
+
+<Callout type="note">
+  Not every slot appears on every network or at every block. Inspect active slots in [mainnet](https://actonscan.com/config?network=mainnet) and [testnet](https://actonscan.com/config?network=testnet).
+</Callout>
 
 ## Reference
 
