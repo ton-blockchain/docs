@@ -346,6 +346,18 @@ pre.shiki .indent::before {
   margin-top: 1rem;
 }
 
+/* Keep alternate heading IDs at the same scroll position as the canonical ID. */
+.prose h2:has(.heading-alias) {
+  position: relative;
+}
+
+.prose .heading-alias {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  scroll-margin: calc(var(--spacing) * 28);
+}
+
 /*
  * A little hack to apply text non-wrapping for the OpenAPI tag in browsers
  * that do not support the text-wrap property yet.

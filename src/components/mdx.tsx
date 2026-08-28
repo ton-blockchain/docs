@@ -1,5 +1,7 @@
+import type { ComponentPropsWithoutRef } from 'react';
 import type { MDXComponents } from 'mdx/types';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
+import { Heading } from 'fumadocs-ui/components/heading';
 import { APIPage, OpenAPIPage } from '@/components/api-page';
 import { ImageZoom } from '@/components/mdx/image-zoom';
 import { Mermaid } from '@/components/mdx/mermaid';
@@ -19,9 +21,29 @@ import { CatchainVisualizer } from '@/snippets/catchain-visualizer';
 import { TvmInstructionTable } from '@/snippets/tvm-instruction-table';
 import { ParamField, ResponseField, Tooltip } from '@/snippets/stub-components';
 
+type HeadingWithAliasesProps = ComponentPropsWithoutRef<'h2'> & {
+  'data-heading-aliases'?: string;
+};
+
+function HeadingWithAliases({
+  children,
+  'data-heading-aliases': aliases,
+  ...props
+}: HeadingWithAliasesProps) {
+  return (
+    <Heading as="h2" {...props}>
+      {aliases?.split(',').map((alias) => (
+        <span key={alias} id={alias} className="heading-alias" />
+      ))}
+      {children}
+    </Heading>
+  );
+}
+
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
+    h2: HeadingWithAliases,
     // See: https://www.fumadocs.dev/docs/ui/components/image-zoom
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     img: (props) => <ImageZoom {...(props as any)} />,

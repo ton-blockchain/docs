@@ -208,6 +208,21 @@ export default defineConfig({
       // Default Fumadocs remark plugins
       ...v,
       // Additional plugins
+      function remarkHeadingAliases() {
+        return (tree) => {
+          visitParents(tree, (node: any) => {
+            if (node.type !== 'heading' || node.depth !== 2) return;
+
+            const id = node.data?.hProperties?.id;
+            if (typeof id !== 'string') return;
+
+            const aliases = id.split('-and-');
+            if (aliases.length < 2 || !aliases.every((alias) => /^\d+$/.test(alias))) return;
+
+            node.data.hProperties['data-heading-aliases'] = aliases.join(',');
+          });
+        };
+      },
       remarkMath,
       [
         remarkGfm,
