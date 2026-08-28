@@ -30,6 +30,7 @@ const config: NextConfig = {
   },
   experimental: {
     useTypeScriptCli: true,
+    serverSourceMaps: process.env.ENABLE_SERVER_SOURCE_MAPS === '1',
   },
   serverExternalPackages: ['typescript'],
 };
