@@ -208,21 +208,6 @@ export default defineConfig({
       // Default Fumadocs remark plugins
       ...v,
       // Additional plugins
-      function remarkHeadingAliases() {
-        return (tree) => {
-          visitParents(tree, (node: any) => {
-            if (node.type !== 'heading' || node.depth !== 2) return;
-
-            const id = node.data?.hProperties?.id;
-            if (typeof id !== 'string') return;
-
-            const aliases = id.split('-and-');
-            if (aliases.length < 2 || !aliases.every((alias) => /^\d+$/.test(alias))) return;
-
-            node.data.hProperties['data-heading-aliases'] = aliases.join(',');
-          });
-        };
-      },
       remarkMath,
       [
         remarkGfm,
@@ -253,6 +238,55 @@ export default defineConfig({
       // NOTE: KaTeX support should be placed before everything else!
       rehypeKatex,
       ...v,
+      // Add heading aliases after Fumadocs has generated the ToC.
+      function rehypeHeadingAliases() {
+        const paths = ['content/foundations/config.mdx'];
+        return (tree, file) => {
+          const filePath = String(file.path).replaceAll('\\', '/');
+          if (!paths.some((path) => filePath === path || filePath.endsWith(`/${path}`))) return;
+
+          const ids = new Set<string>();
+          visitParents(tree, (node: any) => {
+            const id =
+              node.properties?.id ??
+              node.attributes?.find((attribute: any) => attribute.name === 'id')?.value;
+            if (typeof id === 'string') ids.add(id);
+          });
+
+          visitParents(tree, (node: any) => {
+            if (node.type !== 'element' || node.tagName !== 'h2') return;
+
+            const id = node.properties?.id;
+            if (typeof id !== 'string' || !/^\d+(?:-and-\d+)+$/.test(id)) return;
+
+            const aliases = id.split('-and-');
+            for (const alias of aliases) {
+              if (ids.has(alias)) {
+                file.fail(
+                  `Heading alias #${alias} from #${id} conflicts with an existing ID`,
+                  node,
+                );
+              }
+              ids.add(alias);
+            }
+
+            node.properties.className = [node.properties.className, 'relative']
+              .flat()
+              .filter(Boolean);
+            node.children.unshift(
+              ...aliases.map((alias) => ({
+                type: 'element',
+                tagName: 'span',
+                properties: {
+                  id: alias,
+                  className: ['absolute', 'start-0', 'top-0', 'scroll-m-28'],
+                },
+                children: [],
+              })),
+            );
+          });
+        };
+      },
     ],
   },
   // See: https://github.com/fuma-nama/fumapress/blob/dev/apps/docs/press.config.tsx
