@@ -101,8 +101,8 @@ const paths: Path[] = [
         href: '/applications/overview',
       },
       {
-        title: 'Make wallet services with WalletKit',
-        href: '/applications/walletkit/overview',
+        title: 'Create tools using SDKs',
+        href: '/applications/sdks',
       },
       {
         title: 'Integrate dApps and wallets with TON Connect',
