@@ -10,20 +10,13 @@ Integrate TON into applications and wallet services, manage payments, or interac
 
 There are many libraries for accessing and interacting with blockchain in dApps and tools written in various programming languages: [SDKs](/applications/sdks). For an overview of the blockchain APIs that many SDKs are built around, see the [API overview](/api/overview).
 
-The rest of the page covers higher-level SDKs composed of a variety of smaller libraries.
-
-## WalletKit
-
-[WalletKit](/applications/walletkit/overview) is an SDK for integrating TON into wallet services. It allows custodial and non-custodial wallet providers to manage wallets, sign transactions, and integrate TON across web, mobile, and browser extension platforms.
-
-- Repository on GitHub: [`ton-connect/kit`](https://github.com/ton-connect/kit)
-- NPM package: [`@ton/walletkit`](https://www.npmjs.com/package/@ton/walletkit)
-
-Read more about [WalletKit](/applications/walletkit/overview).
+<Callout type="note">
+  To make wallet services, consider using the experimental [`wallet-engine`](https://github.com/i582/wallet-engine).
+</Callout>
 
 ## TON Connect
 
-[TON Connect](/applications/ton-connect/overview) is the standard wallet connection protocol for the TON blockchain. TON Connect is the underlying communication layer behind WalletKit. It enables applications and wallets to communicate with each other in a standardized way.
+[TON Connect](/applications/ton-connect/overview) is the standard wallet connection protocol for the TON blockchain. It enables applications and wallets to communicate with each other in a standardized way.
 
 - Specification repository on GitHub: [`ton-blockchain/ton-connect`](https://github.com/ton-blockchain/ton-connect)
 - NPM packages:

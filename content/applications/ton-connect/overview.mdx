@@ -34,15 +34,15 @@ Start here:
 When something breaks, jump to [Troubleshooting](/applications/ton-connect/troubleshooting) — error codes and manifest 404 / CORS — or the [FAQ](/applications/ton-connect/faq) for design-choice questions.
 
 <Callout type="note">
-  TON Connect does not provide integration with the TON blockchain. You need to implement it manually or use [WalletKit](/applications/walletkit/overview) — an SDK for integrating TON into dApps and wallet services.
+  TON Connect does not provide deeper integrations with the TON blockchain. Implement them [manually](/applications/ton-connect/deep/overview) or consider using the experimental [`wallet-engine`](https://github.com/i582/wallet-engine).
 </Callout>
 
 ### Build a wallet
 
 TON Connect does not provide an SDK for wallets. If you're a wallet developer, take one of these approaches:
 
-- Implement the protocol directly based on the [TON Connect specification](https://github.com/ton-blockchain/ton-connect). Additionally, you can use [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol) for interfaces.
-- Use [WalletKit](/applications/walletkit/overview) — an SDK for wallet services with built-in support for TON Connect
+- Implement the protocol [directly](/applications/ton-connect/deep/overview) based on the [specification](https://github.com/ton-blockchain/ton-connect). When using TypeScript, prefer utilizing interfaces from [`@tonconnect/protocol`](/applications/ton-connect/api-reference/protocol). See the [manual implementation guides](/applications/ton-connect/deep/overview) for more.
+- Consider using an experimental [`wallet-engine`](https://github.com/i582/wallet-engine).
 
 ## API reference
 
