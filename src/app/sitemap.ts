@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { getIndexablePages } from '@/lib/source';
-import { withBaseUrl } from '@/lib/shared';
+import { isIndexable, withBaseUrl } from '@/lib/shared';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  if (!isIndexable) return [];
+
   const docsPages = await Promise.all(
     getIndexablePages().map(async (page) => {
       // NOTE: Consider enabling https://www.fumadocs.dev/docs/mdx/last-modified

@@ -42,7 +42,11 @@ export const docs = defineDocs({
         /** Special pages that are included in the navigation,
             yet redirect immediately to the given external URL */
         url: z.httpUrl().optional(),
-        /** Excludes the page from search index, yet not from LLM-generated pages */
+        /** Excludes the page only from docs-wide search index and jump-to results,
+            while keeping it in LLM-generated pages and available for the external
+            search engine crawlers.
+
+            NOTE: consider renaming to `unlisted` or somesuch */
         noindex: z.coerce.boolean().default(false),
       })
       .transform((frontmatter) => ({

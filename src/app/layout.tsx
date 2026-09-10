@@ -1,11 +1,16 @@
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
 import { getQuickJumpPages } from '@/lib/source';
+import { isIndexable } from '@/lib/shared';
 
 import './global.css';
 import 'katex/dist/katex.css';
 
 export const dynamic = 'force-static';
+
+export const metadata = {
+  robots: isIndexable ? undefined : { index: false },
+};
 
 const inter = Inter({
   subsets: ['latin'],

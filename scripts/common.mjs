@@ -36,8 +36,7 @@ export const prefix = '/docs';
 export const isVercelBuild = process.env.VERCEL === '1';
 
 // WARN: Must match next.config.static.ts isGitHubPagesBuild
-export const isGitHubPagesBuild =
-  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
+export const isGitHubPagesBuild = process.env.GITHUB_PAGES === 'true';
 
 // WARN: Must match next.config.static.ts isCloudflarePagesBuild
 export const isCloudflarePagesBuild = process.env.CF_PAGES === '1';

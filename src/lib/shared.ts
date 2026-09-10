@@ -1,6 +1,9 @@
 // Constants
 const pathPrefix = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const urlPrefix = (process.env.NEXT_PUBLIC_BASE_URL ?? '').replace(/\/+$/, '');
+export const isIndexable =
+  urlPrefix === 'https://docs.ton.org' &&
+  ['vercel', 'cloudflare'].includes(process.env.NEXT_BUILD_TYPE ?? '');
 export const appName = 'TON Docs';
 // Next.js automatically prepends `basePath` to sidebar and page <Link> hrefs.
 // Do not include the prefix here lest you want to double it (e.g. /docs/docs/... on GitHub Pages).

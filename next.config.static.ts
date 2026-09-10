@@ -6,15 +6,17 @@ import { ghPagesUrl, gitConfig } from './src/lib/shared';
 
 const withMDX = createMDX();
 // WARN: Keep in sync with scripts/common.mjs:
-const isGitHubPagesBuild =
-  process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true';
+const isGitHubPagesBuild = process.env.GITHUB_PAGES === 'true';
 // WARN: Keep in sync with scripts/common.mjs:
 const isVercelBuild = process.env.VERCEL === '1';
 // WARN: Keep in sync with scripts/common.mjs:
 const isCloudflarePagesBuild = process.env.CF_PAGES === '1';
 // WARN: Keep in sync with scripts/common.mjs:
 const isLocalBuild = !isGitHubPagesBuild && !isVercelBuild && !isCloudflarePagesBuild;
-const isVercelProd = isVercelBuild && resolveBaseUrl().startsWith('https://docs.ton.org');
+const isVercelProd =
+  isVercelBuild &&
+  ((process.env.VERCEL_TARGET_ENV ?? process.env.VERCEL_ENV) === 'production' ||
+    resolveBaseUrl().startsWith('https://docs.ton.org'));
 let gitRepoMatch: RegExpMatchArray | null = null;
 try {
   const gitUrl = execSync('git config --get remote.origin.url', {
@@ -36,7 +38,7 @@ function resolveBaseUrl() {
   }
 
   if (isCloudflarePagesBuild) {
-    return process.env.CF_PAGES_URL ?? 'https://docs.ton.org';
+    return process.env.CF_PAGES_URL || 'http://localhost:3000';
   }
 
   return 'http://localhost:3000';

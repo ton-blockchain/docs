@@ -3,7 +3,9 @@ import type { NextConfig } from 'next';
 import { createMDX } from 'fumadocs-mdx/next';
 
 const withMDX = createMDX();
-const isVercelProd = resolveBaseUrl().startsWith('https://docs.ton.org');
+const isVercelProd =
+  (process.env.VERCEL_TARGET_ENV ?? process.env.VERCEL_ENV) === 'production' ||
+  resolveBaseUrl().startsWith('https://docs.ton.org');
 
 function resolveBaseUrl() {
   const publicUrl = process.env.NEXT_PUBLIC_SITE_URL;
