@@ -126,6 +126,32 @@ const result = await contract.sendIncrement(user.getSender(), toNano('0.1'));
 // result.externals - External messages generated
 ```
 
+Use `printTransactionFees()` to print fee totals for every transaction in a trace. The [testing utility reference](/contracts/blueprint/testing/reference#printtransactionfees) defines its signature and parameters.
+
+### Inspect transaction fees
+
+Access compute and action fees through a generic transaction description:
+
+```typescript
+// Not runnable: use a transaction result from a Sandbox test.
+const transaction = result.transactions[1];
+
+if (transaction === undefined || transaction.description.type !== 'generic') {
+    throw new Error('Expected a generic transaction');
+}
+
+const computeFees = transaction.description.computePhase.type === 'vm'
+    ? transaction.description.computePhase.gasFees
+    : undefined;
+const actionFees = transaction.description.actionPhase?.totalActionFees;
+
+if (computeFees === undefined || actionFees === undefined) {
+    throw new Error('Expected compute and action fees');
+}
+
+expect(computeFees + actionFees).toBeLessThan(toNano('1'));
+```
+
 ### Transaction matchers
 
 Blueprint provides powerful matchers for validating transactions:
@@ -145,6 +171,10 @@ expect(result.transactions).toHaveTransaction({
         .endCell()
 });
 ```
+
+The [transaction matcher field reference](/contracts/blueprint/testing/reference#flattransaction) defines `destroyed`, `deploy`, `oldStatus`, and `endStatus`.
+
+Transaction matchers expose compute-phase `exitCode` and action-phase `actionResultCode`. The [TVM exit code reference](/tvm/exit-codes#table-of-exit-codes) defines each code and the phase that emits it.
 
 ## Running tests
 

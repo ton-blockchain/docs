@@ -3,7 +3,9 @@ title: "Addresses overview"
 sidebarTitle: "Overview"
 ---
 
-TON implements an [actor model](https://en.wikipedia.org/wiki/Actor_model), where entities, including wallets, are _smart contracts_ that exchange messages. Each smart contract is hosted on a distinct _account_ that manages its balance and persistent storage. These accounts have identifiable _addresses_, used for sending and receiving messages on the blockchain.
+TON implements an [actor model](https://en.wikipedia.org/wiki/Actor_model), where entities, including wallets, are _smart contracts_ that exchange messages and update isolated state. The actor model can represent any computation.
+
+Each smart contract is hosted on a distinct _account_ that manages its balance and persistent storage. These accounts have identifiable _addresses_, used for sending and receiving messages on the blockchain.
 
 Each actor (account) processes incoming messages on its address one at a time, updating its internal state and generating outgoing messages. While multiple accounts can share the same code, each maintains its own storage and balance. To uphold this separation, each account address is unique.
 

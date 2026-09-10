@@ -1,0 +1,323 @@
+---
+title: "How to monitor node host performance with `sysstat`"
+sidebarTitle: "Monitor host performance"
+---
+
+Collect node host performance history with [`sysstat`](https://github.com/sysstat/sysstat#introduction). Retain central processing unit (CPU), memory, storage, and network samples for incident analysis. Read samples with `sar` and export reports with `sadf`.
+
+Host metrics alone **do not** establish node synchronization or validation efficiency. As such, one needs to correlate host activity with [MyTonCtrl](/nodes/cpp/mytonctrl/overview):
+
+- node statuses and node synchronization with [`status` or `status fast`](/nodes/cpp/mytonctrl/core#status) commands,
+- validator efficiency with the [`check_ef`](/nodes/cpp/mytonctrl/validator#check_ef) command.
+
+## Prerequisites
+
+- A running C++ node, such as a [MyTonCtrl installation](/nodes/cpp/setup-mytonctrl#install-mytonctrl). The following guide assumes host running Ubuntu 22.04 or 24.04 LTS.
+- An account with `sudo` access on the node host.
+
+## Install and enable collection
+
+Install the package:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y sysstat
+```
+
+Enable collection through the package configuration:
+
+```bash
+sudo dpkg-reconfigure sysstat
+```
+
+Select <kbd>Yes</kbd> when prompted to enable system activity collection.
+
+Enable and start `sysstat`:
+
+```bash
+sudo systemctl enable --now sysstat
+```
+
+The `sysstat` unit also enables `sysstat-collect.timer` for samples and `sysstat-summary.timer` for daily summaries.
+
+Verify the service and timers:
+
+```bash
+systemctl is-enabled sysstat
+systemctl is-active sysstat-collect.timer sysstat-summary.timer
+```
+
+Expected output:
+
+```text
+enabled
+active
+active
+```
+
+Record the installed version and create a sample:
+
+```bash
+sar -V
+sudo systemctl start sysstat-collect.service
+ls -l /var/log/sysstat
+```
+
+The `/var/log/sysstat` directory should contain a binary activity file named `saDD` or `saYYYYMMDD`. Historical data begins with the first collected sample; `sysstat` cannot reconstruct earlier activity.
+
+Wait for the next scheduled collection, then verify processor utilization and disk activity:
+
+```bash
+sar -u
+sar -d
+```
+
+Expect interval statistics calculated from at least 2 samples since the last restart marker. A header or restart marker alone is insufficient. An active timer does not prove that samples contain every required activity.
+
+Verify [pressure-stall information (PSI)][pressure-report], which records time tasks spend waiting for processor, memory, or storage resources:
+
+```bash
+sar -q CPU,IO,MEM
+```
+
+If PSI is unavailable, replace subsequent PSI selections with `-q LOAD` for load statistics. Missing activities in existing files cannot be recovered retroactively.
+
+## Configure collection history
+
+The `sysstat-collect.timer` runs `sa1`, which invokes `sadc` to store periodic host samples.
+
+Display the collection schedule:
+
+```bash
+systemctl list-timers --all 'sysstat-*'
+```
+
+Ubuntu schedules a sample every 10 minutes by default. CPU utilization, storage rates, and network rates average counter changes across that interval, which dilutes brief bursts. Memory and run-queue snapshots can miss excursions between samples.
+
+Edit the logging configuration:
+
+```bash
+sudoedit /etc/sysstat/sysstat
+```
+
+- Set [`HISTORY`][history] to the retention period in days. A value of `28` retains about 1 month. With values greater than `28`, `sa1` automatically adds `-D` to use `saYYYYMMDD` filenames.
+
+- Keep `-S DISK` in [`SADC_OPTIONS`][collector-options] to collect device activity. An existing `-S ALL` or `-S XALL` selection also includes disks. Changes to activities selected with `-S` take effect when the collector creates a new file, usually the next day.
+
+- [`COMPRESSAFTER`][compression] controls when daily files are compressed, independently of retention. Keep compressed history and decompress a copy when inspecting an older file.
+
+### Collect samples every minute
+
+For finer incident history, edit the collection timer:
+
+```bash
+sudo systemctl edit sysstat-collect.timer
+```
+
+Add this timer override:
+
+```ini
+[Timer]
+OnCalendar=
+OnCalendar=*-*-* *:*:00
+AccuracySec=1s
+```
+
+The empty `OnCalendar=` clears the inherited schedule. Apply the override and verify that the next collection is scheduled within about 1 minute:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart sysstat-collect.timer
+systemctl list-timers --all 'sysstat-*'
+```
+
+More frequent collection increases history size. Use [live sampling](/nodes/cpp/monitoring-host-performance#inspect-an-active-incident) for events shorter than 1 minute.
+
+## Read daily and historical reports
+
+Display the default CPU report from the active daily file:
+
+```bash
+sar
+```
+
+After the host has collected more than one day of data, display reports from 1 and 2 days ago:
+
+```bash
+sar -1
+sar -2
+```
+
+List the available daily files:
+
+```bash
+ls -l /var/log/sysstat
+```
+
+Set `<ACTIVITY_FILE>` to the full path of a binary `saDD` or `saYYYYMMDD` file, such as `/var/log/sysstat/sa23`, then display it:
+
+```bash
+sar -f <ACTIVITY_FILE>
+```
+
+Files named `sarDD` or `sarYYYYMMDD` are generated text summaries, not binary activity files. Combine `-f <ACTIVITY_FILE>` with the resource options in the following sections.
+
+For compressed history, set `<COMPRESSED_FILE>` to the retained file and `<DECOMPRESSED_FILE>` to a new temporary path. For an `.xz` file:
+
+```bash
+xz -dc <COMPRESSED_FILE> > <DECOMPRESSED_FILE>
+```
+
+For a `.gz` file, use `gzip -dc` instead. Read the temporary file with `sar -f` or `sadf` and leave the retained compressed file intact.
+
+## Inspect memory and swap
+
+Display [memory utilization][memory-report], swap allocation, paging, swap activity, and memory pressure:
+
+```bash
+sar -r ALL -S -B -W -q MEM -f <ACTIVITY_FILE>
+```
+
+Inspect `kbavail`, `pgscand/s`, `pswpin/s`, `pswpout/s`, and `%smem` across the incident window. Falling available memory, direct reclaim (`pgscand/s`), and sustained memory stalls provide evidence of pressure. Swap allocation can remain high after pressure ends.
+
+`%commit` expresses committed virtual memory relative to physical memory plus swap. It does not predict an out-of-memory event. Ordinary paging and major faults (`majflt/s`) alone do not establish memory shortage.
+
+## Inspect CPU and load
+
+Display system-wide and per-CPU utilization, run queues, and [CPU pressure][pressure-report]:
+
+```bash
+sar -u ALL -P ALL -q LOAD,CPU -f <ACTIVITY_FILE>
+```
+
+Check execution time, `%iowait`, and `%steal` separately. Low `%idle` alone does not establish CPU saturation. `%iowait` accounts for idle CPU time with outstanding disk input/output (I/O). On virtual hosts, `%steal` records involuntary waiting while the hypervisor services other virtual processors.
+
+`runq-sz` counts runnable tasks at collection time. `%scpu` measures the percentage of the collection interval during which runnable tasks waited for CPU time. Compare per-CPU utilization and pressure with the host's healthy baseline.
+
+## Inspect storage
+
+Identify the database filesystem and its backing devices. Set `DB_DIR` to the node database directory; MyTonCtrl uses `/var/ton-work/db` by default:
+
+```bash
+DB_DIR=/var/ton-work/db
+findmnt -T "$DB_DIR"
+lsblk
+df -h "$DB_DIR"
+```
+
+Use the filesystem and device mapping to select the relevant rows in the [device activity report][disk-report]:
+
+```bash
+sar -d --pretty -f <ACTIVITY_FILE>
+```
+
+Compare `tps`, `rkB/s`, and `wkB/s` with a healthy baseline for the same devices. `await` is average queue-plus-service time in milliseconds; `aqu-sz` is the average number of outstanding requests. On parallel or virtual storage, `%util` alone does not identify saturation.
+
+Observed `tps` reflects workload demand, not maximum input/output operations per second (IOPS). Assess hardware against the requirements for a [validator](/nodes/cpp/run-validator#12-minimal-hardware-requirements) or [liteserver](/nodes/cpp/run-liteserver#11-minimal-hardware-requirements).
+
+For historical filesystem capacity, include `XDISK` in the collector's `-S` selection, such as `-S XDISK` instead of `-S DISK`. Preserve other selected activities; `XALL` already includes filesystems. After a new daily file has collected samples, display [filesystem usage][filesystem-report]:
+
+```bash
+sar -F MOUNT -f <ACTIVITY_FILE>
+```
+
+Device activity from `sar -d` does not report free filesystem space.
+
+## Inspect network activity
+
+Display [throughput and interface errors][network-report], packet drops, and kernel network-processing pressure:
+
+```bash
+sar -n DEV,EDEV,SOFT -f <ACTIVITY_FILE>
+```
+
+List the host interfaces:
+
+```bash
+ip link show
+```
+
+Set `<INTERFACE>` to an interface name, such as `eno1`, then display its throughput, errors, and drops:
+
+```bash
+sar -n DEV,EDEV --iface=<INTERFACE> -f <ACTIVITY_FILE>
+```
+
+Use `%ifutil` only when the reported interface speed is valid. That speed can differ from a provider's bandwidth limit. Inspect `rxerr/s`, `txerr/s`, `rxdrop/s`, and `txdrop/s` for errors and drops.
+
+In the [software network-processing report][softnet-report], `dropd/s` counts frames dropped because the processing queue is full. `squeezd/s` counts processing-budget or time-limit exhaustion with work remaining. It does not itself establish packet loss.
+
+For TON peer traffic over User Datagram Protocol (UDP), add `SNMP` to the collector's `-S` selection, such as `-S DISK,SNMP`. Preserve other selected activities; `ALL` and `XALL` already include `SNMP`. After a new daily file has collected samples, inspect [UDP errors][udp-report]:
+
+```bash
+sar -n UDP -f <ACTIVITY_FILE>
+```
+
+`idgmerr/s` counts delivery errors other than missing destination ports. `noport/s` counts datagrams received for ports without a listening application. These are host-wide counters, so correlate changes with node symptoms.
+
+## Inspect an active incident
+
+On MyTonCtrl installations, obtain the node process identifier (PID) from `validator.service`, including when the node runs as a liteserver:
+
+```bash
+NODE_PID=$(systemctl show validator.service --property=MainPID --value)
+ps -p "$NODE_PID" -o pid,user,comm,args
+```
+
+Confirm that `NODE_PID` is nonzero and identifies `validator-engine` before sampling. For custom installations, use the corresponding node service. Obtain the PID again after a node restart.
+
+Sample per-CPU utilization, extended device activity, and node-process activity every second for 10 samples:
+
+```bash
+mpstat -P ALL 1 10
+iostat -xz -y 1 10
+sudo pidstat -u -r -d -p "$NODE_PID" 1 10
+```
+
+Use separate terminals for simultaneous measurements, and obtain `NODE_PID` in the terminal running `pidstat`. `sudo` permits reading process I/O counters owned by the node's service account.
+
+`mpstat` reveals load concentrated on individual CPUs. `iostat` shows device throughput, queueing, utilization, and latency; `-y` omits its initial report covering time since boot. `pidstat` attributes CPU, memory, and storage activity to the node process.
+
+Add [`-t`][pidstat-threads] to `pidstat` for individual threads. Process `%CPU` can exceed 100% when multiple threads run on different CPUs. The scheduled daily files retain host-level data, not per-process `pidstat` history.
+
+## Capture an incident report
+
+Set `<START_TIME>` and `<END_TIME>` to export boundaries in 24-hour Coordinated Universal Time (UTC). Include a sample before the incident and one after it. `sadf` uses the first selected sample as a baseline for subsequent interval statistics.
+
+For an incident at 10:01–10:09 UTC with samples every 10 minutes, export 10:00–10:10 UTC. Keep the actual incident interval separate from the export interval.
+
+Set `<REPORT_FILE>` to a new destination file for the JavaScript Object Notation (JSON) report. [Export the records][json-export] from `<ACTIVITY_FILE>`:
+
+```bash
+sadf -j -s <START_TIME> -e <END_TIME> <ACTIVITY_FILE> -- \
+  -P ALL -r ALL -S -B -W -u ALL -q LOAD,CPU,IO,MEM -d -n DEV,EDEV,SOFT \
+  > <REPORT_FILE>
+```
+
+`sadf` writes JSON timestamps in UTC by default, while `sar` displays local time by default. Check the exported timestamps and interval records. If filesystem or UDP history was enabled, add `-F MOUNT` or `UDP` to the corresponding report selection.
+
+Export each daily file covering the padded interval to a distinct output filename. Adjust the time bounds for each file's portion of the interval. For an incident crossing midnight UTC, export the portions before and after midnight separately.
+
+Attach these details to the incident record:
+
+- Node role, `sysstat` version, collection interval, and actual UTC incident interval
+- MyTonCtrl status, synchronization lag, and validator efficiency when applicable, for the affected period
+- Database filesystem, backing devices, and monitored network interface
+- Existing, dated benchmark results, if available
+
+<Callout type="note">
+  Run new benchmarks during planned maintenance, separately from the incident capture. Mind that the [MyTonCtrl benchmark procedure](/nodes/cpp/run-liteserver#performance-issues) requires stopping the node.
+</Callout>
+
+[history]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sysstat.in#L26-L50
+[compression]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sysstat.in#L13-L16
+[collector-options]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sadc.in#L116-L148
+[memory-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L1404-L1453
+[pressure-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L1287-L1400
+[disk-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L199-L246
+[filesystem-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L270-L300
+[network-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L510-L576
+[softnet-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L1124-L1147
+[udp-report]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sar.in#L1206-L1224
+[pidstat-threads]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/pidstat.1#L251-L259
+[json-export]: https://github.com/sysstat/sysstat/blob/5443f7710d764028a66a79013587c1d3099dfcef/man/sadf.in#L152-L155

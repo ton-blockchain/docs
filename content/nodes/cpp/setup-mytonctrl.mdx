@@ -134,7 +134,11 @@ The command writes a `/usr/bin/ton/local.config.json` file with the full network
    sudo ufw status
    ```
 
-1. Confirm connectivity by initializing a lite-client using the generated config.
+1. Confirm connectivity by initializing a lite-client using the generated config in `/usr/bin/ton/local.config.json`. For example, request masterchain information — response containing a masterchain block identifier will confirm that the liteserver accepts external requests.
+
+<Callout type="tip">
+  In addition to the lite-client, one can use SDKs that connect to liteservers over ADNL, e.g., [`tonutils-go`](https://github.com/xssnick/tonutils-go).
+</Callout>
 
 ## Archive liteserver quickstart
 
