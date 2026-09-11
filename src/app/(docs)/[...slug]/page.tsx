@@ -5,7 +5,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import { openapi } from '@/lib/openapi';
-import { gitConfig } from '@/lib/shared';
+import { gitConfig, isIndexable } from '@/lib/shared';
 import OpenAPIPageClient from '@/components/api-page.client';
 import { getMDXComponents } from '@/components/mdx';
 import { LLMCopyButton, ViewOptions } from '@/components/mdx/page-actions';
@@ -159,6 +159,7 @@ export async function generateMetadata(props: PageProps<'/[...slug]'>): Promise<
     title: page.data.title.replace(/`/g, ''),
     description: page.data.description,
     metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
+    robots: { index: isIndexable && !page.data.url },
     alternates: {
       ...(page.data.url ? {} : { canonical: page.url }),
       types: {
