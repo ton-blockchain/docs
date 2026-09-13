@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build:vercel",
+  "buildCommand": "NODE_OPTIONS=\"--max-old-space-size=6144\" npm run build:vercel -- --webpack",
+  "installCommand": "npm ci",
   "headers": [
     {
       "source": "/",
