@@ -262,3 +262,15 @@ test_calculate_loan_amount
 
 - Sends a local HTTP request to the TON HTTP API (`/runGetMethod`) using the configured loan parameters (`min_loan`, `max_loan`, `max_interest_percent`).
 - Prints the raw response (nanogram value) used to size controller loans.
+
+## Related validator mechanics
+
+- Liquid staking controllers participate in the same proof-of-stake elections as direct validators. [Elector contract](/foundations/system#elector) processes applications, selects validator sets, and assigns voting weight. Network configuration defines [validator-count limits](/foundations/config#16) and [shardchain validator groups](/foundations/config#28).
+
+- The [Elector election algorithm](/foundations/system#conducting-elections) sorts candidates by stake and applies each candidate's `max_factor` to calculate effective stake. It selects the subset with the greatest total effective stake, subject to network limits.
+
+- Validation rewards come from transaction fees and configured [block rewards](/foundations/config#14). The [fee-burning mechanism](/foundations/config#5) removes a configured fraction of fees before they enter the validator fee balance. The [Elector reward flow](/foundations/system#distributing-rewards) describes reward distribution. [Election timing parameters](/foundations/config#15) define the validation period and the additional stake-holding period, during which penalties can apply.
+
+- The [Elector complaint process](/foundations/system#report-validator-misbehavior) allows anyone to submit cryptographic evidence of validator misbehavior. Validators verify complaints, and approval requires more than two-thirds of the total validator weight. Approved fines are deducted from frozen stake. Network configuration defines the [misbehavior punishment parameters](/foundations/config#40).
+
+- The [validator efficiency procedure](/nodes/cpp/run-validator#58-monitor-the-efficiency) covers the 90% threshold, the API-based alternative to `checkloadall`, and notifications about penalized validators. Reduce slashing risk through apt [validator maintenance](/nodes/cpp/run-validator#step-5-maintain-validator): through quality hardware, wallet funding, backups, alerts, system monitoring, and efficiency checks.
