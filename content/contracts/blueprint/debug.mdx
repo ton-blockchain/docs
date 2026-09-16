@@ -216,9 +216,9 @@ The `"value"` field contains a base64-encoded BoC string representing a serializ
 
 Use this tool when API responses contain serialized cells that require structural inspection during debugging.
 
-## Debug with TVM Retracer
+## Debug with TVM TxTracer
 
-Even when a contract executes successfully (exit code = `0`) with no errors, the actions may not produce the expected on-chain result. [TVM Retracer](/tvm/tools/retracer) replays the transaction and displays VM-level execution in detail.
+Even when a contract executes successfully (exit code = `0`) with no errors, the actions may not produce the expected on-chain result. [TVM TxTracer](/tvm/tools/txtracer) replays the transaction and displays VM-level execution in detail.
 
 ### Scenarios for retracing
 
@@ -229,8 +229,8 @@ Even when a contract executes successfully (exit code = `0`) with no errors, the
 ### How to analyze a transaction
 
 1. Obtain the transaction hash from a [blockchain explorer](/onboarding/explorers).
-1. Open [TVM Retracer](/tvm/tools/retracer) and enter the transaction hash.
+1. Open [TVM TxTracer](/tvm/tools/txtracer) and enter the transaction hash.
 1. Review the execution:
-   - Inspect **Logs section** for executed instructions and exceptions.
+   - Inspect **Logs** for executed instructions and exceptions.
    - Examine **Actions cell (C5)** to review data passed between contracts.
    - Check **message modes** — some modes can suppress errors, causing actions to be skipped.

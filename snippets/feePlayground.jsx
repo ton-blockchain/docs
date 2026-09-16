@@ -186,8 +186,8 @@ export const FeePlayground = () => {
           </label>
         </div>
         <LocalNote title="Where to get payload sizes?">
-          You can find import, forward and storage parameters in the Executor logs
-          (txtracer/retracer) for a specific transaction.
+          You can find import, forward and storage parameters in the Executor logs (TxTracer) for a
+          specific transaction.
         </LocalNote>
       </div>
 
