@@ -81,18 +81,12 @@ const jettonWalletAddress = contractAddress(BASECHAIN, jettonWalletStateInit);
 console.log(jettonWalletAddress.toString());
 ```
 
-{/* TODO(an explorer that supports calling get methods):
+Additionally, one can use [blockchain explorers](/onboarding/explorers) to call a contract's get methods without writing any code. For example, inspect the [Tether USD (USDT)](https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet#get-methods) master (minter) contract page: calling `get_wallet_address()` with the owner's TON wallet address yields the USDT jetton wallet address for that owner.
 
-  There are also various web services that allow you to call contract's get methods without writing any code.
-  For example, let's inspect the [Tether USD](https://tonviewer.com/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?section=method) master
-  contract page on Tonviewer. Inserting the owner's address in any format and executing the get method, you obtain the Jetton wallet address.
-
-  <Image
+<Image
   src="/images/methods.png"
   darkSrc="/images/methods.png"
-  alt="Tether USDT master contract"
-  />
+  alt="Tether USDT master contract get-methods list"
+/>
 
-  */}
-
-Finally, you can use [API v3 endpoints](/api/v3/overview#endpoints).
+Finally, one can use [API v3 endpoints](/api/v3/overview#endpoints).

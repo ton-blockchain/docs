@@ -7,7 +7,7 @@ Jettons (Fungible Tokens, FTs) serve as TON's counterpart to Ethereum's ERC-20 t
 
 Unlike ERC-20 tokens, jettons use the [contract sharding](/contracts/techniques/contract-sharding) approach and are split into two contracts: a master (minter) contract and a wallet contract. The jetton minter stores key jetton data, such as the owner's address and total supply, while provisioning jetton wallets for each TON wallet holder. Deploying a new jetton means deploying the jetton minter contract.
 
-For example, USDT on TON is implemented as a jetton, and its minter contract address is [`EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`](https://tonscan.org/jetton/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs).
+For example, USDT on TON is implemented as a jetton, and its minter contract address is [`EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs`](https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet).
 
 This guide creates a jetton project from the Acton `jetton` template, edits the metadata, deploys the jetton minter, and runs common post-deployment operations.
 
@@ -236,7 +236,7 @@ acton run jetton-info --fork-net testnet
 
 The expected output includes total supply, admin address, metadata fields, and the owner (admin) jetton wallet address.
 
-Alternatively, enter the `JETTON_MINTER_ADDRESS` value to any of the [TON explorers](/onboarding/explorers).
+Alternatively, enter the `JETTON_MINTER_ADDRESS` value to a [TON explorer](/onboarding/explorers).
 
 #### Mint jettons
 
@@ -292,7 +292,7 @@ Use the following script aliases to run optional follow-up actions after the ini
 | (dangerous) `jetton-claim-admin`     | Claim pending admin status from the new admin wallet.     | `JETTON_MINTER_ADDRESS`                                                        |
 | (dangerous) `jetton-change-metadata` | Update jetton metadata.                                   | `JETTON_MINTER_ADDRESS` and [metadata variables](#3-configure-metadata)        |
 
-Once the jetton is deployed to mainnet, its metadata is correct, and its supply is capped, it is good practice to revoke ownership, i.e., transfer the admin rights to the so-called [_burn address_ on mainnet](https://tonscan.org/address/UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ). It is one of the requirements for listing on some popular [DEXes](/foundations/glossary#decentralized-exchange-dex).
+Once the jetton is deployed to mainnet, its metadata is correct, and its supply is capped, it is good practice to revoke ownership, i.e., transfer the admin rights to the so-called [_burn address_ (or _zero address_) on mainnet](https://actonscan.com/address/UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ?network=mainnet). It is one of the requirements for listing on some popular [DEXes](/foundations/glossary#decentralized-exchange-dex).
 
 ```bash
 JETTON_NEW_ADMIN_ADDRESS=UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ \

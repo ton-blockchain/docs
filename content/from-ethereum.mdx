@@ -36,7 +36,7 @@ Consider a practical example: liquidity withdrawal on a DEX.
     alt="GRAM burn"
   />
 
-Executing a large transaction on Ethereum or any other EVM-based blockchain comes with certain limitations: [call depth](https://ethereum.org/developers/docs/evm/#evm-instructions) of 1,024 nested calls and the [block gas limit](https://ethereum.org/developers/docs/blocks/#block-size). With TON's asynchronous execution model, a trace — a chain of transactions — can have any length, as long as there are enough fees to continue it. For example, the [trace](https://tonscan.org/tx/e887503f7dac857be80487e3ed0774db962379d1c153e6df7b9b5313c657ab94) resulting from this message consisted of more than 1.5 million transactions, lasting more than 4,000 blocks until completion.
+Executing a large transaction on Ethereum or any other EVM-based blockchain comes with certain limitations: [call depth](https://ethereum.org/developers/docs/evm/#evm-instructions) of 1,024 nested calls and the [block gas limit](https://ethereum.org/developers/docs/blocks/#block-size). With TON's asynchronous execution model, a trace — a chain of transactions — can have any length, as long as there are enough fees to continue it. For example, the [trace](https://actonscan.com/tx/e887503f7dac857be80487e3ed0774db962379d1c153e6df7b9b5313c657ab94?network=mainnet) resulting from this message consisted of more than 1.5 million transactions, lasting more than 4,000 blocks until completion.
 
 ### On-chain get methods
 
@@ -83,9 +83,9 @@ For low-level manipulation of TON-specific data structures, there is [`@ton/core
 
 ### Services
 
-[TON Explorer](https://explorer.toncoin.org/) is a low-level open-source dev explorer.
+[Actonscan](https://actonscan.com/) is an [open-source](https://github.com/ton-blockchain/acton/tree/master/packages/explorer-ui) blockchain explorer for smart-contract developers with many supplementary tools built-in, such as transaction retracer, emulator, contract ABI catalog, UI for the testnet faucet, and others. For the low-level and per-block raw [BoC](/foundations/serialization/boc) inspection, switch to the [`explorer.toncoin.org`](https://explorer.toncoin.org/).
 
-[TxTracer](https://txtracer.ton.org/) is a set of web tools to trace and analyze TON Blockchain transactions, visualize execution, and inspect and debug smart contracts with a code editor and user-friendly interface.
+[TxTracer](https://txtracer.ton.org/) is a set of web tools to trace and analyze blockchain transactions, visualize execution, and inspect and debug smart contracts with a code editor and user-friendly interface.
 
 Additionally, TxTracer hosts several interactive playgrounds:
 

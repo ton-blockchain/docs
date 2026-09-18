@@ -1,28 +1,163 @@
 ---
-title: "Blockchain explorers"
+title: "TON blockchain explorers"
 sidebarTitle: "Explorers"
 ---
 
-Explorers are web tools designed for reading blockchain data, allowing users to look up accounts, transactions, blocks, and smart contracts. They provide a searchable user interface (UI) that indexes on-chain data, making it easy to verify activity and debug issues.
+An explorer displays blockchain data through a searchable web interface. Use one to inspect an account, follow a transfer, or investigate contract execution.
 
 ## What explorers show
 
-In TON, explorers typically display account balances, transactions, tokens, contract code and state, as well as links to related blocks and messages.
+TON explorers display account balances, Gram and token transfers, contract code and storage, transactions and messages. Available views depend on the explorer and its data sources.
 
-More precisely, explorers show:
+Some explorers also show masterchain and shardchain block details, validator activity, and network metrics such as transaction volume, gas usage, and fees. Contract views may identify known contract types or show disassembled code.
 
-- Balances and assets: Grams, jettons (FTs), and NFTs held by an address
-- Transactions and messages: history, fees, phases, and traces
-- Blocks and validators: block contents, masterchain and shardchain details
-- Smart contracts: code, state, disassembly, and known contract type
-- Analytics: top entities, volumes, gas, fees, and network health
+## Data sources
 
-## Indexers
+Explorers take data from TON Center's [API v2](/api/v2/overview) and [API v3](/api/v3/overview). The former is a direct wrapper for [liteservers in TON](/nodes/overview#interacting-with-ton-nodes), and the latter is an indexer — it organizes blockchain data and helps with sophisticated data retrieval. Indexers also connect transactions into [traces](/foundations/traces) and recognize common contract operations such as jetton or NFT transfers.
 
-Indexers such as [TON Center API v3](/api/v3/overview) continuously read blocks from nodes, parse messages and transactions, and store them in a database optimized for queries. Explorers rely on these indexers to provide fast search, traces, higher-level events, and historical views beyond what a single node exposes by default.
+## Actonscan
 
-## Examples
+[Actonscan](https://actonscan.com/?network=mainnet) combines account and transaction browsing with tools for inspecting smart contracts.
 
-[TON explorer](https://explorer.toncoin.org/) is a low-level developer-oriented explorer that displays transactions and blocks. It works on [mainnet](https://explorer.toncoin.org/) and [testnet](https://test-explorer.toncoin.org).
+Select **Mainnet** or **Testnet** in the network menu before searching. A shared link can specify the network with `?network=mainnet` or `?network=testnet`. The network menu also supports custom networks configured with compatible [API v2](/api/v2/overview) and [API v3](/api/v3/overview) endpoints.
 
-Discover other [TON explorers](https://duckduckgo.com/?q=ton+explorer).
+<Image
+  src="/images/actonscan/overview.png"
+  width={900}
+  height={656}
+  alt="Actonscan mainnet home page with search, network selection, and links to the emulator and cell inspector"
+  caption="Actonscan on mainnet. Search accepts addresses, transaction hashes, and other supported identifiers."
+/>
+
+### Accounts and assets
+
+Account pages show status, balances, history, jettons, and non-fungible tokens (NFTs). Contract views expose code and storage; available application binary interfaces (ABIs) describe messages and get methods. Verified source files are available for contracts with matching published sources. The [ABI catalog](https://actonscan.com/abi?network=mainnet) exposes known contract interfaces.
+
+- [Find an account or transaction](#find-an-account-or-transaction).
+- [Check a transfer](#check-a-transfer).
+- [Inspect jettons and NFTs](#inspect-jettons-and-nfts).
+- [Inspect a smart contract and call get methods](#inspect-a-smart-contract).
+
+### Transactions and execution
+
+A transaction page combines an operation summary, value flow, transaction details, and a message tree. Select individual transactions to inspect their incoming messages, fees, and execution phases. The debugger replays a transaction to expose its virtual-machine execution.
+
+- [Read a trace](#read-a-trace).
+- [Investigate a failed operation](#investigate-a-failed-operation).
+- [Decode a message body](#decode-a-message-body).
+- [Replay a transaction](#replay-a-transaction).
+
+### Additional tools
+
+- [Blocks](https://actonscan.com/blocks?network=mainnet), [elections](https://actonscan.com/elections?network=mainnet), and [configuration](https://actonscan.com/config?network=mainnet) expose network activity and parameters.
+- [Address converter](https://actonscan.com/address-converter?network=mainnet) displays alternative address forms.
+- [Cell inspector](https://actonscan.com/cell?network=mainnet) parses [BoC](/foundations/serialization/boc)-serialized cell data.
+- [Transaction emulator](https://actonscan.com/emulate?network=mainnet) evaluates transactions out of constructed messages without submitting them to the blockchain.
+
+## Find an account or transaction
+
+To find an account, copy its address from a wallet app or the application being investigated. Paste it into search and press <kbd>Enter</kbd>. Actonscan accepts [raw and user-friendly addresses](/foundations/addresses/overview). Check the address and network on the result, then open **History** for transactions, **Tokens** for jettons, or **Collectibles** for NFTs. An account can hold Gram without deployed code; check its [status](/foundations/status) before treating it as an active contract.
+
+To find a transaction, open its link from the wallet app. If there is no link, search the sender or recipient address and find the entry in **History** by time, counterparty, and amount. If application logs or an API response provide a transaction hash, paste it into search. A wallet submission may instead return a **message hash** — use [message lookup](/applications/ton-connect/how-to/message-lookup) to find its transaction.
+
+<Callout type="note">
+  Recent activity may take time to appear in an explorer.
+</Callout>
+
+## Check a transfer
+
+1. Open the transaction and check **Event overview** for the asset, amount, sender, and recipient.
+1. Open **Transactions** and follow the messages to the recipient. A successful sender transaction shows that a message was sent; check the receiving transaction too.
+1. Inspect the receiving transaction's **Compute phase** and **Action phase** for errors. Check **Value flow** or **State changes** for the resulting balance or owner.
+1. Follow any bounce or refund before concluding that the transfer arrived.
+
+For a jetton, compare the **master address** with the intended token. The jetton amount is in the message body; attached Gram pays for processing. For an NFT, compare the **item address** and owner. Names and images do not identify either asset. The account page shows the latest state; use the historical transaction to check what happened at a particular time.
+
+## Read a trace
+
+A [trace](/foundations/traces) follows messages across accounts. Each node in Actonscan's message tree shows one account's transaction.
+
+1. Start at the sender's transaction. **Event overview** summarizes recognized operations, but its label does not establish that every step succeeded.
+1. Follow the message to the next account. Select its node and check **Message route**, attached Gram, and **Parsed body**.
+1. Check **Compute phase** and **Action phase**, then follow outgoing messages until reaching the intended recipient, a bounce, or a refund.
+1. Use **Value flow** and **State changes** to confirm the result. If a branch is pending or missing, let the explorer load or index it before declaring failure.
+
+This [NFT mint trace](https://actonscan.com/tx/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb?network=mainnet) runs from a wallet to a collection and then to an NFT item. Select each node to distinguish the wallet's request from the item's deployment.
+
+<Image
+  src="/images/actonscan/nft-mint.png"
+  width={900}
+  height={656}
+  alt="Actonscan NFT mint trace showing wallet, collection, and item transactions"
+  caption="An NFT mint spans three account transactions."
+/>
+
+## Investigate a failed operation
+
+Find the transaction that should have produced the missing result. One operation can span several transactions, and a successful sender transaction does not establish that the recipient accepted its message.
+
+1. Follow the trace from the sender to the intended recipient.
+1. Select the receiving transaction. Check **Compute phase** for its success flag and [exit code](/tvm/exit-codes). A skipped phase differs from failed execution.
+1. Check **Action phase** separately: computation can succeed while an outgoing action fails.
+1. Follow any **Bounced** message or refund. Not every failed request bounces, and fees can reduce returned Gram.
+1. If the phases succeeded but the result is missing, inspect the decoded response and refund branch. A contract can reject a request through its own messages without a TVM error.
+
+In this [failed jetton transfer](https://actonscan.com/tx/d5d50c3e5bde493ddc7853f784bdff75a37bf89473e77ba8d04615323c7c8117?network=mainnet), the receiving jetton wallet's compute phase exits with `48`, labeled `WalletErrors.NotEnoughGas` by its ABI. The failure belongs to the receiving transaction; `48` is a contract-specific code. Record the failing account, transaction link, and exit code before changing the contract or resending the request.
+
+## Inspect jettons and NFTs
+
+### Jettons
+
+1. On the owner's account, open **Tokens** and select the jetton. Its balance belongs to a separate **jetton wallet** contract.
+1. Open that wallet and check its owner and **jetton master** addresses. Compare the master address with the one supplied by the token project or application.
+1. Use the token's decimals to interpret the raw amount. The jetton wallet's Gram balance pays fees; it is not the token balance.
+
+To verify the wallet relationship, call `get_wallet_data` on the jetton wallet using [the get-method steps](#call-a-get-method). See [jetton wallet data](/contracts/standard/tokens/jettons/wallet-data) for the returned fields.
+
+### NFTs
+
+1. On the owner's account, open **Collectibles** and select an item, or search its address directly.
+1. Check the **item address**, owner, and collection. The address identifies the NFT; its name and image can change or be copied.
+1. To check a past owner, open the item's **History** and inspect the transfer. The account page shows the latest owner.
+
+Missing images or metadata do not establish that a token is absent. Check its contract address and account state.
+
+## Inspect a smart contract
+
+Open a contract address in Actonscan. The [USDT master](https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet) is an example with a get method.
+
+1. Check the account [status](/foundations/status). An uninitialized account has no deployed code.
+1. Open **Contract**. Use **Source** for published code, **Storage** for current account data, and **ABI** for recognized messages and methods.
+
+Without matching source or a storage schema, raw storage cannot be interpreted from the explorer alone. **Storage** shows current state; inspect the historical transaction for an older state.
+
+### Call a get method
+
+1. Open **Methods** and select a method. On the USDT master, `get_jetton_data` needs no arguments.
+1. Select **Run** and inspect the returned values. See [jetton supply data](/contracts/standard/tokens/jettons/supply-data) for this example.
+
+A [get method](/tvm/get-method) reads contract state without sending a transaction. If **Methods** is absent, the explorer may lack an ABI for this contract; the code may still have get methods.
+
+## Decode a message body
+
+Select the message in a transaction's trace. An internal message's **value** is attached Gram; its **body** can contain contract-specific data such as an opcode and a jetton amount.
+
+1. Check **Message route** for sender and recipient.
+1. Under **Message data**, inspect the opcode and expand **Parsed body** with **Show**, if available.
+1. Interpret fields using the receiving contract's interface. A decoded opcode identifies a requested operation; it does not establish that the contract completed it. Check the receiving transaction's execution result.
+
+If the body is not decoded, select **Copy raw body** and paste it into Actonscan's [cell inspector](https://actonscan.com/cell?network=mainnet). Inspect the bits and references. If the contract publishes a [TL-B schema](/foundations/tlb/overview), use **Parsing options** to parse the body with that schema. An unknown opcode may be valid for a contract the explorer does not recognize.
+
+## Replay a transaction
+
+Replay a transaction when its exit code and messages do not explain a contract failure. Select the **receiving transaction** that ran the relevant code.
+
+1. Select **Debug** beside **Message route**. It allows replaying historical transactions.
+1. In **Disassembled**, step through the instructions and inspect the stack and gas usage before the failure. Use **Sources** if source-level mapping is available.
+1. Compare the replay with the recorded **Compute phase** result on the transaction page.
+
+There, **Edit & emulate** changes inputs to simulate another outcome — that result did not occur on-chain. Neither **Debug** nor **Edit & emulate** actions submit a message.
+
+<Callout type="note">
+  If the debugger reports **Trace incomplete**, rely on the recorded transaction for the actual result.
+</Callout>

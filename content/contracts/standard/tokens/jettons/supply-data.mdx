@@ -3,7 +3,7 @@ title: "How to get jetton supply data"
 sidebarTitle: "Get jetton supply data"
 ---
 
-To retrieve specific Jetton data, use the Jetton master contract's `get_jetton_data()` method.
+To retrieve jetton-specific data, use the jetton master contract's `get_jetton_data()` method.
 
 This method returns the following data:
 
@@ -15,45 +15,45 @@ This method returns the following data:
 | `jetton_content`     | `Cell`           | data formatted according to [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md) |
 | `jetton_wallet_code` | `Cell`           | a code of the corresponding Jetton wallet                                                                                 |
 
-You can call the `get_jetton_data()` method from your favorite IDE:
+Call the `get_jetton_data()` method from TypeScript by using an API wrapper in `@ton/ton`:
 
-```javascript
-import { TonClient, Address } from "@ton/ton"
+```ts
+import { TonClient, Address } from "@ton/ton";
 
 async function main() {
-    const client = new TonClient({
+  const client = new TonClient({
     endpoint: 'https://toncenter.com/api/v2/jsonRPC',
-    });
-
-    const JettonMasterAddress = Address
+  });
+  const JettonMasterAddress = Address
     .parse('0:b113a994b5024a16719f69139328eb759596c38a25f59028b146fecdc3621dfe');
 
-    const data = await client.runMethod(JettonMasterAddress,
-    'get_jetton_data');
+  const data = await client.runMethod(JettonMasterAddress, 'get_jetton_data');
+  const Stack = data.stack;
 
-    const Stack = data.stack;
+  // Total supply
+  console.log(Stack.readNumber());
 
-    console.log(Stack.readNumber()); // Total supply
+  // Mintable flag
+  console.log(Stack.readNumber());
 
-    console.log(Stack.readNumber()); // mintable
+  // Admin address
+  console.log(Stack.readAddress().toString());
 
-    console.log(Stack.readAddress().toString()); // Admin address
+  // jetton_content
+  console.log(Stack.readCell());
 
-    console.log(Stack.readCell()); // jetton_content
-
-    console.log(Stack.readCell()) // jetton_wallet_code
+  // jetton_wallet_code
+  console.log(Stack.readCell());
 }
 
 void main();
 ```
 
-{/* TODO(an explorer that supports calling get methods):
+Or [call it](https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet#get-methods) through a [blockchain explorer](/onboarding/explorers):
 
-  Or call it through an [explorer](https://tonviewer.com/EQDmVdCZ2SALvyfCDVlPLr0hoPhUxgjNFtTAxemz9V_C5wbN?section=method):
+<Image
+  src="/images/actonscan/usdt-get-jetton-data.png"
+  darkSrc="/images/actonscan/usdt-get-jetton-data.png"
+/>
 
-  <Image
-  src="/images/tonviewer/jetton-data.png"
-  darkSrc="/images/tonviewer/jetton-data-dark.png"
-  /> */}
-
-Finally, you can get this information using the [API](/api/overview).
+Finally, one can obtain this information by directly using the [APIs](/api/overview).

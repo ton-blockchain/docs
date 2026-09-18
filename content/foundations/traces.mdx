@@ -2,47 +2,58 @@
 title: "Traces"
 ---
 
-A trace is a partially ordered set of messages. This set includes all dependent messages. In other words, if message B was sent while message A was being processed, then both of these messages belong to exactly one trace. Strictly speaking, this set is partially ordered according to the causal relation “A is sent as a result of processing B.”
+A _trace_ is a partially ordered set of messages according to the causal relation: "`A` is sent as a result of processing `B`". This set includes all dependent messages and related transactions. A trace can span several accounts and blocks.
 
-When drawing a trace, messages are usually drawn on the edges, and the addresses of the accounts to which the messages are sent are drawn at the vertices. Transactions that occurred on the account at that moment in time are also usually signed at the vertex.
+In other words, if message `B` was sent while message `A` was being processed, then both of these messages belong to exactly **one** trace.
 
-### Start of the trace
+## Start of the trace
 
-Most often, a trace begins with an [external message](/foundations/messages/external-in). It is the first one, since there is no message that could generate an external-in. However, trace may be started not only by external messages but also by [tick-tock transactions](/foundations/messages/overview#transactions), commonly used within TON Blockchain [system contracts](/foundations/system). Traces can also start with split and merge transactions, but since they are not currently implemented, this will not occur in a real network.
+Most traces begin with an [external-in message](/foundations/messages/external-in) to a wallet contract, triggering a wallet transaction.
 
-<div
-  className="flex justify-center my-4"
->
-  <Image
-    src="/images/rpc/trace_def_light.png"
-    darkSrc="/images/rpc/trace_def_dark.png"
-    alt="Trace diagram"
-  />
-</div>
+<Image
+  src="/images/rpc/trace_def_light.png"
+  darkSrc="/images/rpc/trace_def_dark.png"
+  alt="Messages connect transactions into causally related branches of a trace"
+/>
 
-As a result, messages in the trace are partially ordered by their [logical time (lt)](/foundations/whitepapers/tblkch#141-logical-time), reflecting their logical dependencies. The diagram shows transactions on independent accounts, each triggered by an incoming message, with `lt` values indicated for every message. It is important to note that in the network in general, lt is formed as follows:
+[Tick-tock transactions](/foundations/messages/overview#transactions) can also start traces. These [election system-triggered](/foundations/system#elector) events do not have an incoming message.
 
-- lt transactions = lt incoming message + 1
-- lt outgoing message = lt transaction + outgoing message index
-  This scheme is not applicable to the first vertex if the trace is started by special transactions mentioned above, as in that case there is no `incoming message` for the first vertex.
+<Callout type="note">
+  In explorers, traces that start with a tick-tock transaction are often marked as initiated by the blockchain protocol.
+</Callout>
+
+<Image
+  src="/images/rpc/tick_tock_initiated_trace_light.png"
+  darkSrc="/images/rpc/tick_tock_initiated_trace_dark.png"
+  alt="Trace initiated by tick-tock transaction"
+  href="https://actonscan.com/tx/9effb91e18be732033fe6aa8c39941f26f5e9566848bc487aa7c6bfecdd9d89d?network=mainnet&tab=details"
+/>
+
+## Logical time
+
+Transactions and messages in a trace are ordered by [logical time (or `lt`)](/foundations/whitepapers/tblkch#1-4-1-logical-time), a non-negative 64-bit integer representing each event in a logically-dependent event sequence. The first event in a trace has the smallest `lt` value.
+
+<Callout type="note">
+  Logical time is **not** the elapsed wall-clock time.
+</Callout>
+
+A transaction receiving an internal message has a logical time greater than that message's creation time, and less than the logical times of its outgoing messages.
+
+A receiving transaction's `lt` is not necessarily the incoming message's `lt` plus one: account history and the block's logical-time constraints also affect its assignment.
 
 <Image
   src="/images/rpc/traces_lt_light.png"
   darkSrc="/images/rpc/traces_lt_dark.png"
-  alt="Traces with logical time"
+  alt="Example logical-time assignments along the branches of a trace"
 />
+
+<Callout type="tip">
+  The [first produced masterchain block](https://actonscan.com/block/-1/8000000000000000/1?network=mainnet) has the `lt` of `1,000,000`.
+</Callout>
 
 ## Representation in explorers
 
-In explorers, traces are visualized as [directed acyclic graphs (DAGs)](https://en.wikipedia.org/wiki/Directed_acyclic_graph), where _transactions are nodes_ and _messages are edges_, showing the full sequence of account state changes.
-
-## Examples
-
-The NFT transfer illustrates a single operation that consists of multiple messages.
-
-{/* TODO: To learn how to read traces, follow [this article](/explorers/tonviewer#steps-to-read-a-trace). */}
-
-This trace is started with an external message and [can be inspected](https://tonscan.org/tx/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb#details):
+Explorers visualize traces as [directed acyclic graphs (DAGs)](https://en.wikipedia.org/wiki/Directed_acyclic_graph), showing the full sequence of account state changes. Transactions appear as _nodes_ associated with accounts, and messages connect them as _edges_. The same account can have several transactions in one trace.
 
 <Image
   src="/images/rpc/nft_transfer_trace_light.png"
@@ -50,14 +61,19 @@ This trace is started with an external message and [can be inspected](https://to
   alt="NFT transfer trace"
 />
 
-Here is the [example](https://tonscan.org/tx/9effb91e18be732033fe6aa8c39941f26f5e9566848bc487aa7c6bfecdd9d89d#details) of the trace that started with tick-tock transaction:
+Explorers may display a partial trace if some messages or related transactions are unavailable or currently inaccessible from the [indexer](/api/v3/overview).
 
-<Image
-  src="/images/rpc/tick_tock_initiated_trace_light.png"
-  darkSrc="/images/rpc/tick_tock_initiated_trace_dark.png"
-  alt="Trace initiated by tick-tock transaction"
-/>
+<Callout type="caution">
+  Successful execution of an individual transaction in a trace does not by itself establish the success of the whole operation. Higher-level summaries given by explorers are interpretations of the trace data.
+</Callout>
+
+## Examples
+
+See the [explorers overview](/onboarding/explorers) page for practical examples on how to:
+
+- [read a trace](/onboarding/explorers#read-a-trace),
+- or [investigate a failed operation](/onboarding/explorers#investigate-a-failed-operation).
 
 ## Access using API
 
-To fetch traces data, use the [`GET /traces`](/api/v3/actions-and-traces/get-traces) endpoint. This method allows finding a trace if any of its parameters are known.
+Use the [`GET /traces`](/api/v3/actions-and-traces/get-traces) endpoint to retrieve traces. It can filter and locate traces by related accounts or time ranges.

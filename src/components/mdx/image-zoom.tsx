@@ -46,7 +46,7 @@ export function ImageZoom({ zoomInProps, children, rmiz, ...props }: ImageZoomPr
         <Image
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"
           {...props}
-          className={cn(props.className, 'transition rounded-xl')}
+          className={cn(props.className, 'transition rounded-xl mt-0 mb-0')}
           src={src}
         />
       )}
