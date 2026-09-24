@@ -33,22 +33,23 @@ export function GET() {
 # UNION DIRECTIVE 2019/790 ON COPYRIGHT AND RELATED RIGHTS
 # IN THE DIGITAL SINGLE MARKET.
 `;
-  const body =
-    preface + '\n' + isIndexable
-      ? [
-          'User-agent: *',
-          'Allow: /',
-          'Content-Signal: ai-train=yes, search=yes, ai-input=yes',
-          '',
-          `Sitemap: ${withBaseUrl('/sitemap.xml')}`,
-          '',
-        ].join('\n')
-      : [
-          'User-agent: *',
-          'Disallow: /',
-          'Content-Signal: ai-train=no, search=no, ai-input=no',
-          '',
-        ].join('\n');
+  const body = isIndexable
+    ? [
+        preface,
+        'User-agent: *',
+        'Allow: /',
+        'Content-Signal: ai-train=yes, search=yes, ai-input=yes',
+        '',
+        `Sitemap: ${withBaseUrl('/sitemap.xml')}`,
+        '',
+      ].join('\n')
+    : [
+        preface,
+        'User-agent: *',
+        'Disallow: /',
+        'Content-Signal: ai-train=no, search=no, ai-input=no',
+        '',
+      ].join('\n');
 
   return new Response(body, {
     headers: {

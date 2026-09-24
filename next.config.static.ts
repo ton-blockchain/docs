@@ -38,7 +38,9 @@ function resolveBaseUrl() {
   }
 
   if (isCloudflarePagesBuild) {
-    return process.env.CF_PAGES_URL || 'http://localhost:3000';
+    return process.env.CF_PAGES_BRANCH === 'main'
+      ? 'https://docs.ton.org'
+      : process.env.CF_PAGES_URL || 'http://localhost:3000';
   }
 
   return 'http://localhost:3000';
