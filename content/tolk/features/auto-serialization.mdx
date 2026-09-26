@@ -277,7 +277,7 @@ type RemainingBitsAndRefs = slice
 
 ## What if data exceeds 1023 bits?
 
-The Tolk compiler issues a warning if a serializable struct may exceed 1023 bits. This can happen because many types have variable size. For example, `int8?` can be 1 or 9 bits, `coins` can range from 4 to 124 bits, etc. Consider a struct:
+The Tolk compiler reports an error if a serializable struct may exceed 1023 bits. This can happen because many types have variable size. For example, `int8?` can be 1 or 9 bits, `coins` can range from 4 to 124 bits, etc. Consider a struct:
 
 ```tolk
 struct MoneyInfo {

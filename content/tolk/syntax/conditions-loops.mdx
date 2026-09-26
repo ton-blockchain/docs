@@ -180,4 +180,31 @@ repeat (5) {
 
 ## `break` and `continue`
 
-The keywords `break` and `continue` are not supported.
+`break` leaves the nearest `while`, `do-while`, or `repeat`. `continue` skips the rest of the current iteration and jumps to the loop condition. For `repeat`, `continue` starts the next iteration when one remains.
+
+```tolk
+while (true) {
+    val ch = s.loadUint(8);
+    if (ch == 0) {
+        break;
+    }
+    bits += 8;
+}
+```
+
+```tolk
+while (r.isFound) {
+    val amount = r.loadValue();
+    r = claims.iterateNext(r);
+    if (amount <= 0) {
+        continue;
+    }
+    paid += amount;
+}
+```
+
+In nested loops, `break` and `continue` apply to the inner loop.
+
+Inside `try/catch` these keywords are not supported.
+
+`break` and `return` cannot appear in the same loop (they both are `RETALT` instruction).

@@ -23,6 +23,8 @@ Certain conversions are automatic:
 - `AliasForT` and `T` (bidirectional).
 - `Cell<T>` to `cell`.
 
+Methods declared on the alias apply only to that alias, not to its underlying type.
+
 ```tolk
 fun autocast() {
     var number: int32 = 100;   // auto cast `int` to `int32`
