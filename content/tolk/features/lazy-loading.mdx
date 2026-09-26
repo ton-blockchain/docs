@@ -37,6 +37,26 @@ get fun publicKey() {
 
 The compiler tracks all control-flow paths, inserts load points when required, and groups unused fields to skip. This works for any type and any combination of fields.
 
+## Setup code before a lazy load
+
+A wrapper for `lazy` may contain some statements before a final `return`:
+
+```tolk
+fun Storage.load() {
+    if (readRevision() != LAST_REVISION) {
+        migrateStorage();
+    }
+    return Storage.fromCell(contract.getData());
+}
+
+get fun new_field(): uint32 {
+    val storage = lazy Storage.load();
+    return storage.new_field;
+}
+```
+
+Here `if` always runs, `new_field` is loaded from the cell, fields before/after are skipped.
+
 ## `lazy` usage of referenced cells
 
 Consider the NFT collection:

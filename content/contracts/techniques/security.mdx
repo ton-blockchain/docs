@@ -285,7 +285,7 @@ struct RequestBody {
 }
 
 struct (0x988d4037) Request {
-    signature: bytes64
+    signature: bits512
     requestBody: RequestBody
 }
 
@@ -352,7 +352,7 @@ Do not sign data without including essential context like the recipient address.
 
 ```tolk
 struct (0x988d4037) Request {
-    signature: bytes64
+    signature: bits512
     data: RemainingBitsAndRefs  // `to` address is not part of the signed data
 }
 

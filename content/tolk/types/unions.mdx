@@ -91,7 +91,7 @@ The type of `a` is inferred as `builder | int`. In most cases, this indicates an
 
 ```ansi
 error: type of `match` was inferred as `builder | int`; probably, it's not what you expected
-assign it to a variable `var a: <type> = match (...) { ... }` manually
+hint: assign it to a variable `var a: <type> = match (...) { ... }` manually
 ```
 
 To resolve this, either explicitly declare `a` as a union type or fix the code if the union is unintended.
