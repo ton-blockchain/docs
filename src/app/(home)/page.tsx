@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -10,6 +10,7 @@ import {
   Coins,
   FileCodeCorner,
   Fuel,
+  Image,
   LifeBuoy,
   MessageCircleCode,
   Rocket,
@@ -17,6 +18,8 @@ import {
   Server,
   Wallet,
 } from 'lucide-react';
+import { ActonToolchain } from '@/components/ui/acton-toolchain';
+import { CopyPromptButton } from '@/components/ui/copy-prompt-button';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
@@ -38,6 +41,7 @@ type QuickLink = { title: string; href: string; external?: boolean | undefined }
 
 type Action = {
   title: string;
+  description: string;
   href: string;
   icon: ComponentType<{ className?: string }>;
 };
@@ -56,24 +60,41 @@ type Support = {
   icon: ComponentType<{ className?: string }>;
 };
 
-// Quick actions with most importance to newcomers
-const actions: Action[] = [
+const appActions: Action[] = [
   {
-    // title: 'Process Gram and USDT payments',
-    // title: 'Process Gram and USDT deposits and withdrawals',
-    // title: 'Payments in Gram and USDT',
-    title: 'Add Gram and USDT payments',
+    // title: 'Add TON to an existing app',
+    title: 'Integrate through TON Connect',
+    description: 'Connect wallets and verify users in the existing app.',
+    href: '/applications/ton-connect/get-started',
+    icon: Blocks,
+  },
+  // {
+  //   title: 'Issue Gram and USDT invoices',
+  //   description: 'Request wallet transfers and verify payments on the server.',
+  //   href: '/applications/payments/invoice',
+  //   icon: Wallet, // Server
+  // },
+  {
+    // title: 'Run a self-hosted payment processor',
+    title: 'Set up Gram and USDT payments',
+    // description: 'Operate deposits and withdrawals in business applications.',
+    description: 'Run a self-hosted payment processor.',
     href: '/applications/payments/setup',
     icon: Wallet,
   },
+];
+
+const tokenActions: Action[] = [
   {
     title: 'Create a Jetton (FT)',
     href: '/contracts/standard/tokens/jettons/create',
+    description: 'Deploy a fungible token currency.',
     icon: Coins,
   },
   // {
   //   title: 'Create an NFT',
   //   href: '/contracts/standard/tokens/nft/create',
+  //   description: 'Deploy a collection and mint the first item.',
   //   icon: Image,
   // },
 ];
@@ -252,10 +273,33 @@ function QuickLinkRow({ title, href, external }: QuickLink) {
   );
 }
 
+function ActionLink({
+  action,
+  children,
+  className,
+}: {
+  action: Pick<Action, 'href'>;
+  children: ReactNode;
+  className: string;
+}) {
+  if (isExternal(action.href)) {
+    return (
+      <a className={className} href={action.href} target="_blank" rel="noreferrer">
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link className={className} href={action.href} prefetch={false}>
+      {children}
+    </Link>
+  );
+}
+
 export default function HomePage() {
   return (
-    <div className="relative isolate flex flex-1 flex-col justify-center text-center">
-      {/* background dots */}
+    <div className="relative isolate flex flex-1 flex-col">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -271,51 +315,89 @@ export default function HomePage() {
         />
       </div>
 
-      <div className="relative isolate mx-auto w-full max-w-5xl px-6 py-12 text-left sm:py-16">
-        {/* hero */}
-        <section className="flex flex-col items-start gap-8 py-8 lg:flex-row lg:items-center lg:gap-12 lg:py-12">
-          <img src="logo/ton.svg" alt="TON logo" className="hidden h-28 w-auto shrink-0 lg:block" />
-          <div className="max-w-2xl">
-            <h1 className="text-balance text-4xl font-semibold tracking-tight">
+      <div className="relative mx-auto w-full max-w-5xl px-6 pb-20 pt-14 text-left sm:pt-20">
+        <header
+          id="use-ton"
+          className="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14"
+        >
+          <div>
+            <p className="text-sm font-semibold text-fd-primary">The Open Network</p>
+            <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
               TON Documentation
             </h1>
-            <p className="mt-6 text-pretty text-xl text-fd-muted-foreground">
+            <p className="mt-5 max-w-xl text-pretty text-lg leading-8 text-fd-muted-foreground">
               TON is a blockchain platform designed for scalable smart contracts, applications, and
               payments at consumer scale.
             </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {/* <Link
+                href="/start-here"
+                prefetch={false}
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-fd-primary px-5 text-base font-medium text-fd-primary-foreground transition-[filter] hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-primary"
+              >
+                Start here
+              </Link> */}
+              <CopyPromptButton />
+            </div>
           </div>
+          <nav aria-label="Add payments and wallet features to an existing app">
+            <p className="mb-3 text-sm font-semibold text-fd-primary">Payments and integrations</p>
+            <ul className="mb-9 grid gap-3">
+              {appActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <li key={action.href}>
+                    <ActionLink
+                      action={action}
+                      className="group flex items-center gap-4 rounded-xl border border-fd-border bg-fd-card px-5 py-4 transition-colors hover:border-fd-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-primary"
+                    >
+                      <Icon className="size-5 shrink-0 text-fd-primary" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold">{action.title}</span>
+                        <span className="mt-1 block text-sm leading-5 text-fd-muted-foreground">
+                          {action.description}
+                        </span>
+                      </span>
+                      <ArrowRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
+                    </ActionLink>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mb-3 text-sm font-semibold text-fd-primary">Fungible tokens</p>
+            <ul className="grid gap-3">
+              {tokenActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <li key={action.href}>
+                    <ActionLink
+                      action={action}
+                      className="group flex items-center gap-4 rounded-xl border border-fd-border bg-fd-card px-5 py-4 transition-colors hover:border-fd-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-primary"
+                    >
+                      <Icon className="size-5 shrink-0 text-fd-primary" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold">{action.title}</span>
+                        <span className="mt-1 block text-sm leading-5 text-fd-muted-foreground">
+                          {action.description}
+                        </span>
+                      </span>
+                      <ArrowRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
+                    </ActionLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </header>
+
+        <section className="mt-12 flex flex-col gap-6">
+          <h2 className="text-balance text-2xl font-semibold tracking-tight">
+            Unified toolchain for smart contracts
+          </h2>
+          <ActonToolchain />
         </section>
 
-        {/* quick actions */}
-        <section className="flex flex-col gap-6">
-          {/* <h2 className="text-balance text-2xl font-semibold tracking-tight">Common actions</h2> */}
-          <div className="grid gap-3 sm:grid-cols-3">
-            {actions.map(({ title, href, icon: Icon }) => {
-              const className =
-                'group flex min-h-20 items-center gap-3 rounded-2xl border border-fd-border bg-fd-card px-5 py-4 text-left transition-colors hover:border-fd-primary hover:bg-fd-accent dark:hover:bg-fd-background';
-              // 'group flex flex-col rounded-2xl border border-fd-border bg-fd-card p-6 transition-colors hover:border-fd-primary';
-              const inner = (
-                <>
-                  <Icon className="size-5 text-fd-primary" />
-                  <span className="min-w-0 flex-1 text-sm font-semibold leading-snug text-fd-card-foreground">
-                    {title}
-                  </span>
-                  <ArrowRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-fd-primary" />
-                </>
-              );
-
-              return isExternal(href) ? (
-                <a key={title} className={className} href={href} target="_blank" rel="noreferrer">
-                  {inner}
-                </a>
-              ) : (
-                <Link key={title} className={className} href={href} prefetch={false}>
-                  {inner}
-                </Link>
-              );
-            })}
-          </div>
-        </section>
+        {/* Future TON DNS, .ton websites, and other Web3 actions can go here. */}
 
         {/* pathfinding */}
         <section className="mt-12 flex flex-col gap-6">

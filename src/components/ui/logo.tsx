@@ -3,18 +3,19 @@
 import Image from 'next/image';
 import logoDark from '@/public/logo/dark.svg';
 import logoLight from '@/public/logo/light.svg';
+import themeStyles from './theme.module.css';
 import styles from './logo.module.css';
 
 export function ThemeLogo() {
   return (
-    <>
+    <span className={styles.headerLogo}>
       <Image
         alt="TON Docs"
         src={logoLight}
         width={100}
         height={100}
         sizes="32px"
-        className={`h-8 w-auto ${styles.lightLogo}`}
+        className={`h-8 w-auto ${themeStyles.light}`}
         aria-label="TON Docs"
       />
       <Image
@@ -23,10 +24,10 @@ export function ThemeLogo() {
         width={100}
         height={100}
         sizes="32px"
-        className={`h-8 w-auto ${styles.darkLogo}`}
+        className={`h-8 w-auto ${themeStyles.dark}`}
         aria-label="TON Docs"
       />
-    </>
+    </span>
   );
 }
 
