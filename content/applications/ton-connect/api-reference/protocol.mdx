@@ -231,6 +231,8 @@ interface SignDataRpcRequest {
 
 ### `SignMessageRpcRequest`
 
+<Badge color="orange">Alpha version</Badge>
+
 RPC request to sign an internal message **without** broadcasting it.
 
 `params[0]` is a JSON-stringified payload identical in shape to
@@ -942,6 +944,8 @@ type SendTransactionFeatureDeprecated = 'SendTransaction';
 
 ### `StructuredItemType`
 
+<Badge color="orange">Alpha version</Badge>
+
 Item kinds a wallet may accept inside `sendTransaction.items` /
 `signMessage.items`. Maps to the structured wallet-built transfers:
 native GRAM, [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) jetton,
@@ -976,6 +980,8 @@ type SignDataFeature = { name: 'SignData'; types: SignDataType[] };
 
 ### `SignMessageFeature`
 
+<Badge color="orange">Alpha version</Badge>
+
 ```ts
 type SignMessageFeature = {
     name: 'SignMessage';
@@ -986,6 +992,8 @@ type SignMessageFeature = {
 ```
 
 ### `EmbeddedRequestFeature`
+
+<Badge color="orange">Alpha version</Badge>
 
 Wallet supports the embedded-request transport (`e` query parameter on the
 connect URL).
