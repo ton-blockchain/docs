@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import themeStyles from '@/components/ui/theme.module.css';
 
 const prompt =
-  'Install the ton-blockchain (TON documentation) skill from https://github.com/ton-blockchain/skills/tree/main/ton-blockchain. Then follow it, using TON Docs as the primary source for my task.';
+  'Fetch and install the `ton-blockchain` (TON documentation), `acton`, and `tolk` skills from https://github.com/ton-blockchain/skills globally. If the user is in the project with `.fc` or `.func` code, suggest installing the `func2tolk` skill from the same repository. Ask the user for confirmation.';
 
 const agents = ['claude', 'codex', 'cursor', 'opencode'] as const;
 
