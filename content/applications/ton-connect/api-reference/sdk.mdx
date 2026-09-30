@@ -205,6 +205,8 @@ Returns `Promise<Traceable<SignDataResponse>>`. The [`SignDataResponse`](#signda
 
 ### `signMessage()`
 
+<Badge color="orange">Alpha version</Badge>
+
 Ask the connected wallet to sign an internal message **without
 broadcasting it**.
 
@@ -574,6 +576,8 @@ interface SendTransactionRequestWithMessages {
 | `items`      | `undefined`                                                                                                            | _Optional_.                                                                                                                                                                                                                                                                                                                     |
 
 ### `SendTransactionRequestWithItems`
+
+<Badge color="orange">Alpha version</Badge>
 
 Send a transaction using structured items. Use only when you
 know the wallet advertises the needed `SendTransactionFeature.itemTypes`.
@@ -1107,6 +1111,8 @@ type TelegramUser = { id: number; isPremium: boolean };
 
 ### `EmbeddedRequest`
 
+<Badge color="orange">Alpha version</Badge>
+
 Method + payload pair the SDK can fold into the connect URL as an
 [embedded request](/applications/ton-connect/how-to/embedded-request) (`e` parameter).
 
@@ -1126,6 +1132,8 @@ type SendTransactionRequest = SendTransactionRequestWithMessages | SendTransacti
 ```
 
 ### `StructuredItem`
+
+<Badge color="orange">Alpha version</Badge>
 
 Structured items describe **what** the transaction should do (send Gram,
 transfer a jetton, transfer an NFT) and let the wallet build the BoC.
