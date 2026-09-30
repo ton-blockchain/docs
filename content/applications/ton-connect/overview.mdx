@@ -32,14 +32,13 @@ TON Connect allows connecting TON wallets to the frontend of web applications or
 Start here:
 
 - [Get started](/applications/ton-connect/get-started) — install the SDK, host a manifest, render a Connect button. React, Next.js, and vanilla JS recipes in one page.
-- [Add TON to an existing app](/applications/ton-connect/add-ton) — authenticate a connected wallet and gate an existing feature by NFT ownership.
 - [How-to recipes](/applications/ton-connect/how-to/connect) — [connect](/applications/ton-connect/how-to/connect), [disconnect](/applications/ton-connect/how-to/disconnect), [send a transaction](/applications/ton-connect/how-to/send-transaction), [sign data](/applications/ton-connect/how-to/sign-data), [gasless transfers](/applications/ton-connect/how-to/sign-message-gasless), [embedded requests](/applications/ton-connect/how-to/embedded-request), [filter wallets](/applications/ton-connect/how-to/filter-wallets), [WalletConnect support](/applications/ton-connect/how-to/walletconnect-support).
 - [Core concepts](/applications/ton-connect/core-concepts) — architecture, bridges, sessions, universal links, manifest, registry, feature negotiation, security model.
 
 When something breaks, jump to [Troubleshooting](/applications/ton-connect/troubleshooting) — error codes and manifest 404 / CORS — or the [FAQ](/applications/ton-connect/faq) for design-choice questions.
 
 <Callout type="note">
-  TON Connect handles wallet connection and user approval. Read on-chain data through an [API](/api/overview), and enforce application access on your server. The [existing-app guide](/applications/ton-connect/add-ton) shows this flow.
+  TON Connect does not provide deeper integrations with the TON blockchain. Implement them [manually](/applications/ton-connect/deep/overview).
 </Callout>
 
 ### Build a wallet
