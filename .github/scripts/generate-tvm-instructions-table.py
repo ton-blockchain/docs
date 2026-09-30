@@ -44,6 +44,12 @@ def render_instruction(insn, aliases):
 def render_static_mdx(spec):
     return '\n\n'.join(render_instruction(insn, [alias for alias in spec['aliases'] if alias['alias_of'] == insn['mnemonic']]) for insn in spec['instructions'])
 
+def resolve_workspace_path(path_value):
+    candidate = os.path.normpath(os.path.abspath(path_value))
+    workspace_root = os.path.normpath(WORKSPACE_ROOT)
+    if os.path.commonpath([workspace_root, candidate]) != workspace_root:
+        raise ValueError(f"Path escapes workspace root: {path_value}")
+    return candidate
 
 def inject_into_mdx(mdx_path, new_block):
     with open(mdx_path, "r", encoding="utf-8") as fh:
@@ -90,4 +96,4 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print(f"Usage: {sys.argv[0]} <cp0-input-path> <cp0-output-path> <instructions-mdx-path>")
         sys.exit(1)
-    generate(sys.argv[1], sys.argv[2], sys.argv[3])
+    generate(resolve_workspace_path(sys.argv[1]), resolve_workspace_path(sys.argv[2]), resolve_workspace_path(sys.argv[3]))
