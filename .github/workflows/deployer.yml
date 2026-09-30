@@ -59,30 +59,11 @@ jobs:
         run: |
           npm run build
           # See some file contents
-          nlines=50
-          target='out/llms.txt'
-          test -f "$target" && {
-            echo -e "\nFirst $nlines lines of $target"
-            head -$nlines "$target" && echo
-          } || echo "$target not found"
-          #
-          target='out/llms-full.txt'
-          test -f "$target" && {
-            echo -e "\nFirst $nlines lines of $target"
-            head -$nlines "$target" && echo
-          } || echo "$target not found"
-          #
-          target='out/llms/foundations/tlb/overview/content.md'
-          test -f "$target" && {
-            echo -e "\nFirst $nlines lines of $target"
-            head -$nlines "$target" && echo
-          } || echo "$target not found"
-          #
-          target='out/404.html'
-          test -f "$target" && {
-            echo -e "\nFirst $nlines lines of $target"
-            head -$nlines "$target" && echo
-          } || echo "$target not found"
+          test_target() { local n=20; test -f "$1" && { echo -e "\nFirst $n lines of $1"; head -$n "$1"; echo; } || echo "$target not found"; }
+          test_target 'out/llms.txt'
+          test_target 'out/llms-full.txt'
+          test_target 'out/llms/foundations/tlb/overview/content.md'
+          test_target 'out/404.html'
 
       - name: Save build cache
         id: next-cache-save
