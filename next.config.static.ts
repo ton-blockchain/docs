@@ -90,7 +90,6 @@ const config: NextConfig = {
       cpus: 3,
       webpackMemoryOptimizations: true,
       webpackBuildWorker: true,
-      turbopackMemoryLimit: 6442450944, // 6 GiB
       // Despite browser console warnings, this is a great RAM usage optimization
       serverSourceMaps: false,
       preloadEntriesOnStart: false,
