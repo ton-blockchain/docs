@@ -84,20 +84,15 @@ const config: NextConfig = {
   serverExternalPackages: ['typescript'],
   experimental: {
     useTypeScriptCli: true,
+    // Despite browser console warnings, this is a great RAM usage optimization
+    serverSourceMaps: process.env.ENABLE_SERVER_SOURCE_MAPS === '1',
     ...(isLocalBuild && {
-      // workerThreads: false,
-      // --webpack --disable-source-maps --no-server-fast-refresh
       cpus: 3,
       webpackMemoryOptimizations: true,
       webpackBuildWorker: true,
-      turbopackMemoryLimit: 6442450944, // 6 GiB
-      // Despite browser console warnings, this is a great RAM usage optimization
       serverSourceMaps: false,
       preloadEntriesOnStart: false,
       memoryBasedWorkersCount: true,
-    }),
-    ...(isCloudflarePagesBuild && {
-      serverSourceMaps: false,
     }),
   },
   ...(isLocalBuild && {

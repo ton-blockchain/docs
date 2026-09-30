@@ -15,6 +15,38 @@ export default function Layout({ children }: { children: ReactNode }) {
       githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}`}
       links={[
         {
+          text: 'Onboarding',
+          url: '/start-here',
+        },
+        {
+          text: 'Nodes',
+          url: '/nodes/overview',
+        },
+        {
+          text: 'Applications',
+          url: '/applications/overview',
+        },
+        {
+          text: 'APIs',
+          url: '/api/overview',
+        },
+        {
+          text: 'Contracts',
+          url: '/contracts/overview',
+        },
+        {
+          text: 'Tolk',
+          url: '/tolk/overview',
+        },
+        {
+          text: 'TVM',
+          url: '/tvm/overview',
+        },
+        {
+          text: 'Foundations',
+          url: '/foundations/overview',
+        },
+        {
           type: 'icon',
           icon: <XTwitter />,
           text: 'X/Twitter',

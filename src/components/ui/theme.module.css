@@ -1,0 +1,15 @@
+.light {
+  display: block;
+}
+
+.dark {
+  display: none;
+}
+
+:global(html.dark) .light {
+  display: none;
+}
+
+:global(html.dark) .dark {
+  display: block;
+}

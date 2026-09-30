@@ -249,6 +249,19 @@ p > span.style-tab-normal {
   margin-top: calc(var(--spacing) * 6);
 } */
 
+/* Ensure title navigation fits on smaller screens */
+@media (max-width: 1168px) {
+  #nd-home-layout #nd-nav > div > div > nav > ul {
+    gap: 0;
+    padding-inline: 0;
+  }
+}
+
+/* Remove background blur of the home page menu */
+#nd-home-layout #nd-nav > div {
+  background-color: var(--color-fd-background);
+}
+
 /* Remove background blur of the mobile header */
 #nd-docs-layout > header#nd-subnav {
   --blur-sm: 0;

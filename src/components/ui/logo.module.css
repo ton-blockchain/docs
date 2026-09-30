@@ -1,15 +1,10 @@
-.lightLogo {
-  display: block;
+.headerLogo {
+  display: inline-flex;
+  align-items: center;
 }
 
-.darkLogo {
-  display: none;
-}
-
-:global(html.dark) .lightLogo {
-  display: none;
-}
-
-:global(html.dark) .darkLogo {
-  display: block;
+@media (min-width: 600px) and (max-width: 1168px) {
+  :global(#nd-home-layout) .headerLogo {
+    display: none;
+  }
 }
