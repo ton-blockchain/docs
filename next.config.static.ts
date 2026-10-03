@@ -82,15 +82,22 @@ const config: NextConfig = {
   },
   images: { unoptimized: true },
   serverExternalPackages: ['typescript'],
+  // Experimenting with React optimizations
+  // reactCompiler: true,
   experimental: {
     useTypeScriptCli: true,
+    // turbopackRustReactCompiler: true,
     // Despite browser console warnings, this is a great RAM usage optimization
     serverSourceMaps: process.env.ENABLE_SERVER_SOURCE_MAPS === '1',
+    cpus: 2,
+    webpackMemoryOptimizations: true,
+    webpackBuildWorker: true,
+    ...(isCloudflarePagesBuild && {
+      // Static exports use server bundles only while generating pages.
+      // Browser JavaScript remains minified.
+      serverMinification: false,
+    }),
     ...(isLocalBuild && {
-      cpus: 3,
-      webpackMemoryOptimizations: true,
-      webpackBuildWorker: true,
-      serverSourceMaps: false,
       preloadEntriesOnStart: false,
       memoryBasedWorkersCount: true,
     }),
