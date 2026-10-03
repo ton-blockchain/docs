@@ -82,11 +82,11 @@ const config: NextConfig = {
   },
   images: { unoptimized: true },
   serverExternalPackages: ['typescript'],
-  // Experimenting with React optimizations
-  // reactCompiler: true,
+  reactCompiler: true,
   experimental: {
     useTypeScriptCli: true,
-    // turbopackRustReactCompiler: true,
+    // Next sets TURBOPACK before loading config; Webpack uses the Babel compiler.
+    turbopackRustReactCompiler: Boolean(process.env.TURBOPACK),
     // Despite browser console warnings, this is a great RAM usage optimization
     serverSourceMaps: process.env.ENABLE_SERVER_SOURCE_MAPS === '1',
     cpus: 2,
