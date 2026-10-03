@@ -90,3 +90,13 @@ Any function in TVM takes its arguments from the stack and pushes return values 
 A getter can return `int`, which is not serializable unlike `intN`. Returning a structure pushes each field onto the stack as a separate value. Client libraries such as [Blueprint](/contracts/blueprint/overview) parse get method responses using a tuple reader.
 
 Get methods do not store their names. They are identified by a `method_id = crc16(name) | 0x10000`, avoiding the need to store additional strings on-chain.
+
+## ABI-only prototypes
+
+A getter may be declared without a body. It is written to the ABI and emits no code. This describes the get-method interface of a contract whose implementation lives elsewhere, for example a FunC contract.
+
+```tolk
+get fun calc_sub_jetton(invite_id: int): CalcJettonReply
+```
+
+The declaration is accepted only with the compiler flag `--allow-empty-get-fun`. Acton passes the flag when it compiles `*.types.tolk` files that collect ABIs.

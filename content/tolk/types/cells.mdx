@@ -77,7 +77,7 @@ Express the shape of data using the type system and fixed-size slices to make se
 
 ### Fixed-size slices
 
-The `slice` type cannot be serialized, but the `bitsN` types, such as `bits32` or `bytes8`, can. At runtime, `bitsN` is a regular slice, just how `int32` are regular TVM integers.
+The `slice` type cannot be serialized, but the `bitsN` types, such as `bits32` or `bits256`, can. At runtime, `bitsN` is a regular slice, just how `int32` are regular TVM integers.
 
 ```tolk
 struct OkayToRead {
@@ -106,8 +106,8 @@ fun demo() {
     calcHash(someSlice);                   // error
     calcHash(someSlice as bits512);        // ok
 
-    someBytes.loadAddress();               // error
-    (someBytes as slice).loadAddress();    // ok
+    rawBits.loadAddress();                 // error
+    (rawBits as slice).loadAddress();      // ok
 }
 ```
 

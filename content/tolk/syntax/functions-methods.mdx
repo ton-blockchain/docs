@@ -404,7 +404,7 @@ fun map<K, map<K2, V2>>.method(self) { ... }
 
 ## Auto-inline small functions
 
-The [compiler automatically inlines small functions](/tolk/features/compiler-optimizations) in-place when possible. For example:
+The [compiler automatically inlines](/tolk/features/compiler-optimizations#auto-inline-functions) small functions and functions called once. An early `return` does not block inlining when control flow leaves a single path into the code below. For example:
 
 ```tolk
 fun int.zero() {
@@ -443,11 +443,11 @@ fun slowSum(a: int, b: int) {
 
 The following attributes are allowed:
 
-- `@inline` forces a function to be inlined in-place. Typically unnecessary, as the compiler performs inlining automatically.
+- `@inline` forces a function to be inlined in-place. If impossible, compilation fails. The compiler already inlines small functions and functions called once, so the annotation is for the remaining cases.
 - `@inline_ref` enables a special form of inlining where the function body is embedded as a child cell reference in the resulting bytecode.
 - `@noinline` turns off inlining for a function, for example, for a slow path.
 - `@method_id(<number>)` is a low-level annotation to manually override the TVM `method_id`.
-- `@pure` indicates that a function does not modify global state, including TVM state. If its result is unused, the call may be removed and typically used in assembler functions.
+- `@pure` is valid only on an [`asm` function](/tolk/features/asm-functions). Pure calls may be reordered.
 - `@deprecated` marks a function as deprecated; it exists only for backward compatibility.
 - `@custom(<anything>)`, `@custom.xxx`, or `@custom.xxx(<anything>)` adds a custom annotation with an arbitrary name that is not analyzed by the compiler.
 - `@test(<anything>)`, `@test.xxx`, and `@test.xxx(<anything>)` is identical to `@custom`.

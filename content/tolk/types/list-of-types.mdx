@@ -22,7 +22,7 @@ Tolk has the following types:
 - [unknown](/tolk/types/unknown) — any value that is a single-slot TVM primitive.
 - [`void` and `never`](/tolk/types/void-never) — both represent the absence of a value.
 
-To make an interchangeable alias for an existing type, including structural types, there are [type aliases](/tolk/types/aliases).
+To give an existing type another name, use [type aliases](/tolk/types/aliases). An alias is assignable to and from its underlying type. Methods declared on the alias apply only to that alias.
 
 Smart contracts run on a stack-based virtual machine, [TVM](/tvm/overview), which imposes specific rules on how values are represented at runtime. For example, [strings](/tolk/types/strings) are stored as snake-encoded cells, because TVM has no native string support.
 

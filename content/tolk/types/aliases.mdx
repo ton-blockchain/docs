@@ -2,38 +2,45 @@
 title: "Type aliases"
 ---
 
-Tolk supports type aliases, similar to TypeScript and Rust. An alias creates a new name for an existing type and remains fully interchangeable with it.
+Tolk supports type aliases. An alias gives an existing type another name. Values of the alias and of the underlying type are assignable in both directions, because they share one runtime representation. Methods, `match`, and `is` treat the alias as a subtype of that type: operations of the underlying type are available on the alias, and operations declared on the alias stay on the alias.
 
 ```tolk
 type UserId = int32
-type MaybeOwnerHash = bytes32?
+type MaybeOwnerHash = bits256?
 
 fun calcHash(id: UserId): MaybeOwnerHash {
     // ...
 }
 ```
 
-## Alias interchangeability
+## Assignment
 
-Aliases are interchangeable with underlying types. `UserId` and `int32` from the above example are fully equivalent:
+`UserId` and `int32` from the example above can be assigned to each other. Operators and functions of the underlying type accept the alias:
 
 - `id + 1` is valid and produces `int`;
-- `someF(id)` is valid if `someF` accepts `int32` or `int`;
-- methods for `int32` can be called on `UserId` values and vice versa; and also for `int`, since `int32` is assignable to `int`;
-- a union `UserId | int32` is redundant and is equivalent to `int32`.
+- `someF(id)` is valid when `someF` accepts `int32` or `int`;
+- methods of `int32` and `int` can be called on a `UserId`.
 
 ```tolk
 fun demo() {
     var id: UserId = 1;       // ok
     var num: int = id;        // ok
+    var back: UserId = num;   // ok
     var h = calcHash(id);
     if (h != null) {
-        h as slice;           // bytes32 as slice
+        h as slice;           // bits256 as slice
     }
 }
 ```
 
-To obtain a “strict alias”, which defines a distinct type, use a struct with one field:
+A union of an alias and its underlying type is invalid. Both variants have the same runtime representation:
+
+```tolk
+type MyInt = int
+type Both = int | MyInt    // error
+```
+
+To get a distinct type with its own stack identity, use a struct with one field:
 
 ```tolk
 struct UniqueId {
@@ -41,31 +48,67 @@ struct UniqueId {
 }
 ```
 
-Such a struct has no overhead over `int32`, but it becomes a distinct type with its own methods and semantics.
+Such a struct has no overhead over `int32`. It is a separate type, with its own methods and serialization.
 
-## Distinct alias types
+## Methods belong to the alias
 
-Two aliases with the same underlying type are considered distinct. If two aliases share the same underlying type:
+A method declared on an alias is available on that alias. It is unavailable on the underlying type until the value is cast to the alias.
+
+```tolk
+type MerkleProofCell = cell
+
+fun MerkleProofCell.validate(self) { /* ... */ }
+
+fun demo(c: cell, proof: MerkleProofCell) {
+    proof.hash();             // ok, methods of `cell` are available on the alias
+    proof.validate();         // ok
+    c.validate();             // error
+    (c as MerkleProofCell).validate();
+}
+```
+
+The relation is structural. A method of `array<cell>` is available on `array<MerkleProofCell>`. A method of `array<MerkleProofCell>` is available only on that type:
+
+```tolk
+fun array<cell>.hashAll(self) { /* ... */ }
+fun array<MerkleProofCell>.validateAll(self) { /* ... */ }
+```
+
+## Sibling aliases
+
+Two aliases of one underlying type are independent subtypes. They stay assignable to each other and to the underlying type. A method declared on one alias is unavailable on the other alias and on the underlying type.
 
 ```tolk
 type AssetsDict = dict
 type BalanceDict = dict
-```
 
-Then, they are not assignable to each other. This allows them to define methods with identical names:
-
-```tolk
 fun AssetsDict.validate(self) { /* ... */ }
 fun BalanceDict.validate(self) { /* ... */ }
 
-fun demo(a: AssetsDict, b: BalanceDict) {
-    a.validate();      // ok, method 1
-    b.validate();      // ok, method 2
-    a = b;             // error, can not assign
+fun demo(a: AssetsDict, b: BalanceDict, plain: dict) {
+    a.validate();       // AssetsDict.validate
+    b.validate();       // BalanceDict.validate
+    plain.validate();   // error: no method `validate` for `dict`
+
+    a = b;              // ok, both are `dict` at runtime
+    a = plain;          // ok
 }
 ```
 
-This behavior is similar to `intN` types: `int32` is assignable to `int`, and `int64` is assignable to `int`, but `int32` and `int64` are not assignable to each other. Assignment can be done with an explicit [cast](/tolk/types/type-checks-and-casts). For example, `b as AssetsDict`.
+## `match` and `is`
+
+[`match`](/tolk/syntax/pattern-matching) and [`is`](/tolk/types/type-checks-and-casts) follow the same direction as methods. An alias can be tested as its underlying type. The underlying type cannot be tested as the alias.
+
+```tolk
+fun demoAlias(m: MerkleProofCell | int) {
+    match (m) {
+        cell => { /* upcast, ok */ }
+        int => { /* ... */ }
+    }
+}
+// but not vice versa!
+// match (cell) { MerkleProofCell => ... } is an error
+```
 
 ## Generic type aliases
 
