@@ -200,7 +200,7 @@ export function ActonToolchain() {
         >
           Acton dApp guide
         </a>
-        .<br className="md:hidden" /> Telegram Mini Apps selling digital goods or services must use{' '}
+        .<br className="md:hidden" /> Note that Telegram Mini Apps selling digital goods or services must use{' '}
         <a
           href="https://core.telegram.org/bots/payments-stars"
           target="_blank"

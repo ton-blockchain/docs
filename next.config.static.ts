@@ -98,24 +98,11 @@ const config: NextConfig = {
       serverMinification: false,
     }),
     ...(isLocalBuild && {
+      cpus: 4,
       preloadEntriesOnStart: false,
       memoryBasedWorkersCount: true,
     }),
   },
-  ...(isLocalBuild && {
-    // These source maps do not affect local builds much:
-    // productionBrowserSourceMaps: false,
-    // enablePrerenderSourceMaps: false,
-    webpack: (config, { dev }) => {
-      if (dev) {
-        config.devtool = false;
-      }
-      return config;
-    },
-    typescript: {
-      ignoreBuildErrors: true,
-    },
-  }),
 };
 
 export default withMDX(config);
