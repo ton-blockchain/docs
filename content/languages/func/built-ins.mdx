@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 ## Reserved keywords
@@ -98,7 +98,7 @@ In addition, FunC does not allow the built-in names in this section to be used a
 
 Each one of the above names is a function wrapping the corresponding operator.
 
-For example, `_+_` can be understood as wrapping the [`+` operator](/languages/func/operators#addition%2C-%2B):
+For example, `_+_` can be understood as wrapping the [`+` operator](/languages/func/operators#addition-):
 
 ```func
 int _+_(int a, int b) { return a + b; }
@@ -129,25 +129,25 @@ apply(+);   ;; DOES NOT COMPILE
 
 ### Built-ins with non-symbolic names
 
-[`divmod`](#divmod)   [`~divmod`](#divmod-2)   [`moddiv`](#moddiv)   [`~moddiv`](#moddiv-2)
+[`divmod`](#divmod)   [`~divmod`](#divmod-1)   [`moddiv`](#moddiv)   [`~moddiv`](#moddiv-1)
 
 [`muldiv`](#muldiv)   [`muldivr`](#muldivr)   [`muldivc`](#muldivc)   [`muldivmod`](#muldivmod)
 
-[`true`](#true)   [`false`](#false)   [`nil`](#nil)   [`Nil`](#nil-2)
+[`true`](#true)   [`false`](#false)   [`nil`](#nil)   [`Nil`](#nil-1)
 
-[`null?`](#null%3F)   [`throw`](#throw)   [`throw_if`](#throw_if)   [`throw_unless`](#throw_unless)
+[`null?`](#null)   [`throw`](#throw)   [`throw_if`](#throw_if)   [`throw_unless`](#throw_unless)
 
 [`throw_arg`](#throw_arg)   [`throw_arg_if`](#throw_arg_if)   [`throw_arg_unless`](#throw_arg_unless)   [`load_int`](#load_int)
 
 [`load_uint`](#load_uint)   [`preload_int`](#preload_int)   [`preload_uint`](#preload_uint)   [`store_int`](#store_int)
 
-[`store_uint`](#store_uint)   [`~store_int`](#store_int-2)   [`~store_uint`](#store_uint-2)   [`load_bits`](#load_bits)
+[`store_uint`](#store_uint)   [`~store_int`](#store_int-1)   [`~store_uint`](#store_uint-1)   [`load_bits`](#load_bits)
 
 [`preload_bits`](#preload_bits)   [`int_at`](#int_at)   [`cell_at`](#cell_at)   [`slice_at`](#slice_at)
 
-[`tuple_at`](#tuple_at)   [`at`](#at)   [`touch`](#touch)   [`~touch`](#touch-2)
+[`tuple_at`](#tuple_at)   [`at`](#at)   [`touch`](#touch)   [`~touch`](#touch2)
 
-[`touch2`](#touch2)   [`~touch2`](#touch2-2)   [`~dump`](#dump)   [`~strdump`](#strdump)
+[`touch2`](#touch2)   [`~touch2`](#touch2-1)   [`~dump`](#dump)   [`~strdump`](#strdump)
 
 [`run_method0`](#run_method0)   [`run_method1`](#run_method1)   [`run_method2`](#run_method2)   [`run_method3`](#run_method3)
 
@@ -211,7 +211,7 @@ int div = a~moddiv(b);
 int muldiv(int factor1, int factor2, int divisor)
 ```
 
-`muldiv` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/languages/func/operators#division%2C-%2F).
+`muldiv` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/languages/func/operators#division-).
 It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `muldivr`
@@ -220,7 +220,7 @@ It uses a 513-bit intermediate result to prevent overflow if the final result fi
 int muldivr(int factor1, int factor2, int divisor)
 ```
 
-`muldivr` performs a multiply-then-divide operation `(factor1 * factor2) ~/ divisor`, where `~/` is the [rounding division operator](/languages/func/operators#rounding-division%2C-%2F).
+`muldivr` performs a multiply-then-divide operation `(factor1 * factor2) ~/ divisor`, where `~/` is the [rounding division operator](/languages/func/operators#rounding-division-).
 It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `muldivc`
@@ -229,7 +229,7 @@ It uses a 513-bit intermediate result to prevent overflow if the final result fi
 int muldivc(int factor1, int factor2, int divisor)
 ```
 
-`muldivc` performs a multiply-then-divide operation `(factor1 * factor2) ^/ divisor`, where `^/` is the [ceiling division operator](/languages/func/operators#ceiling-division%2C-%5E%2F).
+`muldivc` performs a multiply-then-divide operation `(factor1 * factor2) ^/ divisor`, where `^/` is the [ceiling division operator](/languages/func/operators#ceiling-division-).
 It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `muldivmod`
@@ -238,7 +238,7 @@ It uses a 513-bit intermediate result to prevent overflow if the final result fi
 (int, int) muldivmod(int factor1, int factor2, int divisor)
 ```
 
-`muldivmod` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/languages/func/operators#division%2C-%2F),
+`muldivmod` performs a multiply-then-divide operation `(factor1 * factor2) / divisor`, where `/` is the [division operator](/languages/func/operators#division-),
 and returns the quotient and remainder of such division. It uses a 513-bit intermediate result to prevent overflow if the final result fits within 257 bits.
 
 #### `true`
@@ -305,7 +305,7 @@ forall X -> () throw_arg(X arg, int error)
 Triggers an exception, which interrupts the execution flow.
 
 The first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement).
+processed in [`try..catch` statements](/languages/func/statements#trycatch-statement).
 Refer to the `try..catch` statement page for an example on how to use the first argument.
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 
@@ -318,7 +318,7 @@ forall X -> () throw_arg_if(X arg, int error, int condition)
 Triggers an exception only if the provided condition is true, i.e., if the condition is `-1`.
 
 Similarly to [`throw_arg`](#throw_arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw_arg).
+processed in [`try..catch` statements](/languages/func/statements#trycatch-statement), in the same way as with [`throw_arg`](#throw_arg).
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 
@@ -331,7 +331,7 @@ forall X -> () throw_arg_unless(X arg, int error, int condition)
 Triggers an exception only if the provided condition is false, i.e., if the condition is `0`.
 
 Similarly to [`throw_arg`](#throw_arg), the first argument can be of any type, and it is used to pass extra information about the error. This extra information can be
-processed in [`try..catch` statements](/languages/func/statements#try-catch-statement), in the same way as with [`throw_arg`](#throw_arg).
+processed in [`try..catch` statements](/languages/func/statements#trycatch-statement), in the same way as with [`throw_arg`](#throw_arg).
 The second argument is the error code. See [TVM error codes](/tvm/exit-codes) for details about error codes.
 The third argument is the condition to check.
 

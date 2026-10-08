@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 FunC offers a range of built-in types covering all the types the TVM has. On the other hand, FunC has no custom user-defined types like records or classes.
@@ -49,7 +49,7 @@ FunC does not have a boolean type. Instead, booleans are represented as integers
 
 - `false` is `0`, `true` is `-1`, a 257-bit integer with all bits set to `1`.
 - Logical operations are performed using [bitwise operations](/languages/func/operators).
-- In [conditional statements](/languages/func/statements#conditional-statements), [loops](/languages/func/statements#loops), and [conditional expressions](/languages/func/operators#ternary%2C-%3F%3A) any nonzero integer is regarded as `true`.
+- In [conditional statements](/languages/func/statements#conditional-statements), [loops](/languages/func/statements#loops), and [conditional expressions](/languages/func/operators#ternary-) any nonzero integer is regarded as `true`.
 
 ## Typed holes
 

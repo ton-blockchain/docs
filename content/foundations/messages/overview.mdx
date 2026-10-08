@@ -28,7 +28,7 @@ message$_
 A transaction is a record that stores the state changes of a contract. A contract's state cannot be changed without a transaction. When a contract processes a message, a transaction may occur as the result of its processing.
 
 - When an internal message is processed, a transaction is always created.
-- When an incoming external message is processed, a transaction is created only if the contract [accepts the message](/tvm/accept#external-message-outcomes).
+- When an incoming external message is processed, a transaction is created only if the contract [accepts the message](/tvm/accept#external-message-flow).
 - When an outbound external message is processed, a transaction is never created, because outbound external messages can't change contract state.
 
 However, a transaction may be created independently of message processing by
@@ -60,7 +60,7 @@ Each transaction has the following structure:
 = Transaction;
 ```
 
-Transactions implement the concept of `AccountChain` described in the [TON Blockchain whitepaper](/foundations/whitepapers/tblkch#1-2-1-the-infinite-sharding-paradigm-isp-applied-to-blockchain-block-and-state). Each account state can be interpreted as a separate blockchain, so transactions follow a strict order defined by the `prev_trans_hash` field. Thanks to the TON consensus protocol, a transaction becomes final when the first masterchain block references it by storing the hash of the corresponding `ShardChain` state, which in turn stores the hash of the `AccountChain` state.
+Transactions implement the concept of `AccountChain` described in the [TON Blockchain whitepaper](/foundations/whitepapers/tblkch#121-the-infinite-sharding-paradigm-isp-applied-to-blockchain-block-and-state). Each account state can be interpreted as a separate blockchain, so transactions follow a strict order defined by the `prev_trans_hash` field. Thanks to the TON consensus protocol, a transaction becomes final when the first masterchain block references it by storing the hash of the corresponding `ShardChain` state, which in turn stores the hash of the `AccountChain` state.
 
 Because transactions form the `AccountChain`, each one carries a logical timestamp, `lt`, that strictly increases with every new transaction of the account. The `now` field stores the Unix time when the transaction was created.
 

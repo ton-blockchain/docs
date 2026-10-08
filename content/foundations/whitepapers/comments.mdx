@@ -11,7 +11,7 @@ Descriptions in the original [whitepapers](/foundations/whitepapers/overview) ar
 
 The zero element of the `c7` tuple is an environment information (which itself is also a tuple). The remaining 255 slots are used for global variables. [`[i] SETGLOB`](/tvm/instructions#f87_k-setglob) modifies `c7`, inserting an element with index `i`, [`[i] GETGLOB`](/tvm/instructions#f85_k-getglob) reads `i`-th element from `c7`.
 
-See the [TVM registers](/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables) page for details.
+See the [TVM registers](/tvm/registers#c7--environment-information-and-global-variables) page for details.
 
 ### 4.4. Continuations as objects
 
@@ -19,7 +19,7 @@ Tolk implements this via [callable types](/tolk/types/callables) — first-class
 
 ### 4.5.7. List of predefined exceptions
 
-Exit code `11` is thrown by [standard function selector](/tvm/registers#c3-—-function-selector) if there is no function with given ID. Also it is thrown by [`SENDMSG`](/tvm/instructions#fb08-sendmsg) in case of invalid message.
+Exit code `11` is thrown by [standard function selector](/tvm/registers#c3--function-selector) if there is no function with given ID. Also it is thrown by [`SENDMSG`](/tvm/instructions#fb08-sendmsg) in case of invalid message.
 
 ### 5.1. Codepages and interoperability of different TVM versions
 

@@ -31,7 +31,7 @@ The platform runs on a set of servers, called [nodes](/nodes/overview). Most imp
 
 ## Network communication
 
-The nodes that run the blockchain interact via the [ADNL](/foundations/whitepapers/ton#3-1-abstract-datagram-network-layer) protocol. User-facing applications usually use [servers](/api/overview) that proxy JSON HTTP requests into the ADNL network. The official version of such a proxy server is provided by the [liteserver](/nodes/overview#full-node-modes) software. There are public instances of liteserver, so developers are not required to host one on their own servers.
+The nodes that run the blockchain interact via the [ADNL](/foundations/whitepapers/ton#31--abstract-datagram-network-layer) protocol. User-facing applications usually use [servers](/api/overview) that proxy JSON HTTP requests into the ADNL network. The official version of such a proxy server is provided by the [liteserver](/nodes/overview#full-node-modes) software. There are public instances of liteserver, so developers are not required to host one on their own servers.
 
 ## Gram and fees
 
@@ -139,7 +139,7 @@ When some interaction with the blockchain involves multiple contracts, their cod
 
 ## Languages
 
-Most development is done in [Tolk](/tolk/overview), a high-level programming language. Its compiler is included in the [Acton](/contract-dev/acton) development environment.
+Most development is done in [Tolk](/tolk/overview), a high-level programming language. Its compiler is included in the [Acton](/contracts/acton) development environment.
 
 Originally, [Fift](/languages/fift/overview), a Forth-like assembly language, and [FunC](/languages/func/overview), a C-like intermediate-level language, were the first languages for TON smart contract development.
 
@@ -220,7 +220,7 @@ To tell other developers how a certain type of data is stored in cells, a [TL-B]
 
 The TL-B schemas for binary representations of messages, transactions, initial contract state, and most other data structures used by the blockchain can be found in the [`block.tlb`](https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb) file in the [TON monorepo](https://github.com/ton-blockchain/ton). TypeScript functions for serializing and deserializing them are provided by the [`@ton/core`](https://github.com/ton-org/ton-core) and [`@ton/ton`](https://github.com/ton-org/ton) libraries.
 
-In general, a library that converts data structures between cells and the format native to a programming language, or allows calling contract methods as native functions of the language, is called a _wrapper_ or _binding_. For example, functions that deserialize Jetton-related cell data into TypeScript objects can be found in the [`assets-sdk`](https://github.com/ton-community/assets-sdk/blob/5285cd75a97acbb15999e7dfb3b8e4ec9e98b4ed/src/jetton/types/JettonBurnMessage.ts) library. [Acton toolchain](/contract-dev/acton) can generate bindings from the Tolk contract's source code. The "rule of thumb" is that production-grade code should not include low-level manipulation of binary data, and should instead rely on a library with bindings. This reduces the chance of mistakes and ensures the code has more users. With widely reused code, there are more opportunities to detect mistakes, and they are more likely to be fixed quickly.
+In general, a library that converts data structures between cells and the format native to a programming language, or allows calling contract methods as native functions of the language, is called a _wrapper_ or _binding_. For example, functions that deserialize Jetton-related cell data into TypeScript objects can be found in the [`assets-sdk`](https://github.com/ton-community/assets-sdk/blob/5285cd75a97acbb15999e7dfb3b8e4ec9e98b4ed/src/jetton/types/JettonBurnMessage.ts) library. [Acton toolchain](/contracts/acton) can generate bindings from the Tolk contract's source code. The "rule of thumb" is that production-grade code should not include low-level manipulation of binary data, and should instead rely on a library with bindings. This reduces the chance of mistakes and ensures the code has more users. With widely reused code, there are more opportunities to detect mistakes, and they are more likely to be fixed quickly.
 
 ### Blockchain interaction
 

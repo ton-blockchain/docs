@@ -20,7 +20,7 @@ Most often, a trace begins with an [external message](/foundations/messages/exte
   />
 </div>
 
-As a result, messages in the trace are partially ordered by their [logical time (lt)](/foundations/whitepapers/tblkch#1-4-1-logical-time), reflecting their logical dependencies. The diagram shows transactions on independent accounts, each triggered by an incoming message, with `lt` values indicated for every message. It is important to note that in the network in general, lt is formed as follows:
+As a result, messages in the trace are partially ordered by their [logical time (lt)](/foundations/whitepapers/tblkch#141-logical-time), reflecting their logical dependencies. The diagram shows transactions on independent accounts, each triggered by an incoming message, with `lt` values indicated for every message. It is important to note that in the network in general, lt is formed as follows:
 
 - lt transactions = lt incoming message + 1
 - lt outgoing message = lt transaction + outgoing message index

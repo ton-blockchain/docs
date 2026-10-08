@@ -233,7 +233,7 @@ Hot upgrades solve this by scheduling a code change and immediately calling a mi
 1. Send an upgrade message with the new code cell and optional additional data.
 1. Verify the message comes from an admin address.
 1. Call `setCodePostponed()` to schedule the code replacement.
-1. Call `setTvmRegisterC3()` to activate the new code in register [C3](/tvm/registers#c3-—-function-selector) immediately.
+1. Call `setTvmRegisterC3()` to activate the new code in register [C3](/tvm/registers#c3--function-selector) immediately.
 1. Call `hotUpgradeData()` to run the migration with the new code.
 
 The `setTvmRegisterC3()` is the key to hot upgrades. It replaces the current code immediately so the following command (e.g., `hotUpgradeData()`) runs the new code. The migration function reads the current storage, transforms it to the new schema, and saves it. After the transaction completes, the new code becomes permanent through `setCodePostponed()`.

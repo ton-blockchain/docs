@@ -105,7 +105,7 @@ At the TVM level, every enum is represented as `int`. Casting between the enum a
 - `2 as Color` evaluates to `Color.Blue`.
 
 <Callout type="caution">
-  Operator `as` can produce invalid values, for example `100 as Color`. In this case, operator `==` returns `false`, and an exhaustive `match` throws exception [5](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
+  Operator `as` can produce invalid values, for example `100 as Color`. In this case, operator `==` returns `false`, and an exhaustive `match` throws exception [5](/tvm/exit-codes#5-integer-out-of-expected-range).
 </Callout>
 
 During deserialization with `fromCell()`, the compiler validates that encoded integers correspond to valid enum values.

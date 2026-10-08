@@ -108,7 +108,7 @@ const paths: Path[] = [
     links: [
       { title: 'Overview of TON and the documentation', href: '/start-here' },
       { title: 'Create a TON wallet', href: '/onboarding/wallet-apps/web' },
-      { title: 'Read blockchain data with explorers', href: '/onboarding/explorers/overview' },
+      { title: 'Read blockchain data with explorers', href: '/onboarding/explorers' },
       { title: 'Enable TON for agents with @ton/mcp', href: '/onboarding/ai/mcp' },
     ],
   },

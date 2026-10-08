@@ -5,7 +5,7 @@ noindex: true
 ---
 
 <Callout type="note">
-  [Acton](/contract-dev/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
+  [Acton](/contracts/acton) is the recommended tool for new smart contract projects. Blueprint remains supported for existing projects.
 </Callout>
 
 <Callout>
@@ -85,7 +85,7 @@ const blockchain = await Blockchain.create();
 blockchain.verbosity.vmLogs = "vm_logs";
 ```
 
-Of all [verbosity levels](/contracts/blueprint/testing/reference#verbosity-2), the two are the most useful:
+Of all [verbosity levels](/contracts/blueprint/testing/reference#logsverbosity), the two are the most useful:
 
 - `vm_logs` — outputs VM logs for each transaction; includes executed instructions and occurred exceptions.
 - `vm_logs_full` — outputs full VM logs for each transaction; includes executed instructions with binary offsets, the current stack for each instruction, and gas used by each instruction.
@@ -102,7 +102,7 @@ handling exception code 9: cell underflow
 default exception handler, terminating vm with exit code 9
 ```
 
-The contract attempts to load a 64-bit integer from the slice using `LDU 64`. Since there is not enough data, execution stops with [exit code 9](/tvm/exit-codes#9%3A-cell-underflow).
+The contract attempts to load a 64-bit integer from the slice using `LDU 64`. Since there is not enough data, execution stops with [exit code 9](/tvm/exit-codes#9-cell-underflow).
 
 Inspect the same code with the `vm_logs_full` verbosity level. The output is heavily truncated at the top.
 

@@ -6,7 +6,7 @@ Get methods are smart contract methods that are supposed to be executed off-chai
 
 ## Defining
 
-Get methods are processed by the [function selector](/tvm/registers#c3-%E2%80%94-function-selector). By convention, the ID of a get method is calculated as `crc16("name") | 0x10000` where `name` is set by the developer. This simplifies practical usage because a human-readable name has to be used instead of some arbitrary number.
+Get methods are processed by the [function selector](/tvm/registers#c3--function-selector). By convention, the ID of a get method is calculated as `crc16("name") | 0x10000` where `name` is set by the developer. This simplifies practical usage because a human-readable name has to be used instead of some arbitrary number.
 
 <Callout type="note">
   The algorithm used for hashing is CRC-16/XMODEM (`poly=0x1021`, `init=0x0000`, `refin=false`, `refout=false`, `xorout=0x0000`).
@@ -56,7 +56,7 @@ get fun get_x(): int {
 
 ## Executing
 
-In order to execute a get method, the actual state of the smart contract has to be fetched, and TVM has to be executed with [c7](/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables) initialized and the desired parameters pushed on the stack.
+In order to execute a get method, the actual state of the smart contract has to be fetched, and TVM has to be executed with [c7](/tvm/registers#c7--environment-information-and-global-variables) initialized and the desired parameters pushed on the stack.
 
 ### Local way
 
@@ -94,7 +94,7 @@ PROGRAM{
 // C{...} is a new data cell
 ```
 
-Note that if the get method uses some values from c7, for example with instructions such as `NOW` or `MYCODE`, the c7 tuple should be populated according to its [structure](/tvm/registers#c7-%E2%80%94-environment-information-and-global-variables).
+Note that if the get method uses some values from c7, for example with instructions such as `NOW` or `MYCODE`, the c7 tuple should be populated according to its [structure](/tvm/registers#c7--environment-information-and-global-variables).
 
 ### Decentralized way
 
@@ -119,7 +119,7 @@ result:  [ 370018697274653637909640796505742190243510726229256787010608218283510
 
 ### High-level API
 
-The easiest path is using a high-level API, such as [TON Center](/api/overview#toncenter). It has a [`/api/v3/runGetMethod`](/api/v3/api-v2/run-get-method) endpoint that takes a smart contract address, a get method name, and arguments and returns the resulting stack. Example usage:
+The easiest path is using a high-level API, such as [TON Center](/api/overview#ton-center). It has a [`/api/v3/runGetMethod`](/api/v3/api-v2/run-get-method) endpoint that takes a smart contract address, a get method name, and arguments and returns the resulting stack. Example usage:
 
 ```bash
 curl -X 'POST' \

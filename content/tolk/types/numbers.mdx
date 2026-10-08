@@ -24,9 +24,9 @@ There are also types of variable bit-width:
 | Signed `varint32`    | -2<sup>247</sup> to 2<sup>247</sup>-1 | Between 5 and 253 bits | Rarely used                                                            |
 
 <Callout type="caution">
-  All these types are **257-bit integers at runtime**. [Overflows can occur at runtime](/tvm/exit-codes#4%3A-integer-overflow), but they are more likely during serialization.
+  All these types are **257-bit integers at runtime**. [Overflows can occur at runtime](/tvm/exit-codes#4-integer-overflow), but they are more likely during serialization.
 
-  For example, subtracting $300$ from a variable of type `uint8` does not cause a runtime overflow. Yet, attempting to store the result back to the same variable triggers [exit code 5: integer out of expected range](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
+  For example, subtracting $300$ from a variable of type `uint8` does not cause a runtime overflow. Yet, attempting to store the result back to the same variable triggers [exit code 5: integer out of expected range](/tvm/exit-codes#5-integer-out-of-expected-range).
 </Callout>
 
 ## Literals
@@ -148,7 +148,7 @@ v += 1;     // 256
 
 The variable `v` there would neither overflow nor be clamped at runtime. Instead, it would be equal to 256 during subsequent execution steps.
 
-There are no runtime bounds checks, and overflows of all integer types occur only during serialization, except for the general `int` type, which can [overflow when doing arithmetic](/tvm/exit-codes#4%3A-integer-overflow).
+There are no runtime bounds checks, and overflows of all integer types occur only during serialization, except for the general `int` type, which can [overflow when doing arithmetic](/tvm/exit-codes#4-integer-overflow).
 
 ```tolk
 struct Resp {

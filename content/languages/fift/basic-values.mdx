@@ -61,7 +61,7 @@ Such a representation of fractions is useful for defining _"rational arithmetic 
 
 So that, executing `1.7 2/3 R- 5/2 R*` will produce the stack `155 60`, corresponding to the arithmetical operation `(1.7 - 2/3) * 5/2 = 31/30 * 5/2 = 155/60`.
 
-For advanced details on integers, see the [Integers section](/languages/fift/whitepaper#2-8-integer-and-fractional-constants%2C-or-literals) in the Fift whitepaper.
+For advanced details on integers, see the [Integers section](/languages/fift/whitepaper#28-integer-and-fractional-constants-or-literals) in the Fift whitepaper.
 
 ## Strings
 
@@ -182,7 +182,7 @@ A @   // Pushes "foo" into the stack
 
 As the example suggests, the value stored in a box does not need to be of the same type as the box contents mutate.
 
-For advanced details about boxes, see the [named and unnamed variables section](/languages/fift/whitepaper#2-14-named-and-unnamed-variables) in the Fift whitepaper and the variables section in the [words, constants, and variables page](/languages/fift/variables#variables).
+For advanced details about boxes, see the [named and unnamed variables section](/languages/fift/whitepaper#214-named-and-unnamed-variables) in the Fift whitepaper and the variables section in the [words, constants, and variables page](/languages/fift/variables#variables).
 
 ## Tuples
 
@@ -266,7 +266,7 @@ For instance, the following defines a constant `A` containing a tuple of `10` em
 
 The code `10 A 0 [] !` pushes `10` into the stack. Then `A 0 []` pushes the 0-th box into the stack. Finally, `!` consumes both the box and `10` and updates the contents of the box to `10`. The code `"foo" A 2 [] !` has a similar explanation.
 
-For advanced details about tuple, see the [Tuples section](/languages/fift/whitepaper#2-15-tuples-and-arrays) in the Fift whitepaper.
+For advanced details about tuple, see the [Tuples section](/languages/fift/whitepaper#215-tuples-and-arrays) in the Fift whitepaper.
 
 ## Lists
 
@@ -317,7 +317,7 @@ A uncons uncons uncons
 
 The first `uncons` produces the stack `5 [ 6 [ 7 null ] ]`. The second `uncons` the stack `5 6 [ 7 null ]`. Finally, the third `uncons` produces the stack `5 6 7 null`. Since there is a `null` at the top of the stack, `drop` removes the `null` to produce the stack `5 6 7`.
 
-For advanced details about lists, see the [Lists section](/languages/fift/whitepaper#2-16-lists) in the Fift whitepaper.
+For advanced details about lists, see the [Lists section](/languages/fift/whitepaper#216-lists) in the Fift whitepaper.
 
 ## Atoms
 
@@ -340,7 +340,7 @@ For instance,
 `+ `- eq?   // pushes 0 to the stack
 ```
 
-For advanced details about atoms, see the [Atoms section](/languages/fift/whitepaper#2-17-atoms) in the Fift whitepaper.
+For advanced details about atoms, see the [Atoms section](/languages/fift/whitepaper#217-atoms) in the Fift whitepaper.
 
 ## Slices
 
@@ -364,4 +364,4 @@ b{101} b{001} |_
 
 First, `b{101} b{001}` pushes the two slices in that order. Next, `|_` consumes the two slices. Then, `|_` copies `b{101}` into a new slice `s` and creates a cell `c` containing `b{001}`. Finally, `|_` attaches `c` as a reference to `s` and pushes `s` into the stack.
 
-For advanced details about slices, see the [Slices section](/languages/fift/whitepaper#5-1-slice-literals) in the Fift whitepaper. For a list of words for manipulating slices and reading their contents, see the list of common slice words page.
+For advanced details about slices, see the [Slices section](/languages/fift/whitepaper#51-slice-literals) in the Fift whitepaper. For a list of words for manipulating slices and reading their contents, see the list of common slice words page.

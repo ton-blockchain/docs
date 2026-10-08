@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 This page lists all the operators in FunC in decreasing order of their precedence, with examples of usage.
@@ -20,24 +20,24 @@ This page lists all the operators in FunC in decreasing order of their precedenc
 
 The following table lists operators in order of decreasing precedence, from highest to lowest.
 
-| Brief description       | Operators                                                                                                                                                                                                                                                                         |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Parentheses             | [`(` `)`](#parentheses)                                                                                                                                                                                                                                                           |
-| Unary bitwise NOT       | [`~`](#bitwise-not%2C)                                                                                                                                                                                                                                                            |
-| Multiplicative          | [`*`](#multiplication%2C) [`/`](#division%2C-%2F) [`^/`](#ceiling-division%2C-%5E%2F) [`~/`](#rounding-division%2C-%2F) [`%`](#modulo%2C-%25) [`^%`](#ceiling-modulo%2C-%5E%25) [`~%`](#rounding-modulo%2C-%25) [`/%`](#division-and-modulo%2C-%2F%25) [`&`](#bitwise-and%2C-%26) |
-| Unary integer negation  | [`-`](#negation%2C)                                                                                                                                                                                                                                                               |
-| Additive                | [`+`](#addition%2C-%2B) [`-`(integer subtraction)](#subtraction%2C) [`\|`](#bitwise-or%2C-%7C) [`^`](#bitwise-xor%2C-%5E)                                                                                                                                                         |
-| Shifts                  | [`>>`](#shift-right%2C-%3E%3E) [`<<`](#shift-left%2C-%3C%3C) [`^>>`](#ceiling-shift-right%2C-%5E%3E%3E) [`~>>`](#rounding-shift-right%2C-%3E%3E)                                                                                                                                  |
-| Comparison and Equality | [`>`](#greater-than%2C-%3E) [`>=`](#greater-than-or-equal%2C-%3E%3D) [`<`](#less-than%2C-%3C) [`<=`](#less-than-or-equal%2C-%3C%3D) [`<=>`](#comparison%2C-%3C%3D%3E) [`==`](#equality%2C-%3D%3D) [`!=`](#inequality%2C-%3D)                                                      |
-| Ternary                 | [`?:`](#ternary%2C-%3F%3A)                                                                                                                                                                                                                                                        |
-| Assignment              | [`=`](#assignment%2C-%3D) and all [augmented assignment operators](#augmented-assignment-operators)                                                                                                                                                                               |
+| Brief description       | Operators                                                                                                                                                                                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parentheses             | [`(` `)`](#parentheses)                                                                                                                                                                                                |
+| Unary bitwise NOT       | [`~`](#bitwise-not-)                                                                                                                                                                                                   |
+| Multiplicative          | [`*`](#multiplication-) [`/`](#division-) [`^/`](#ceiling-division-) [`~/`](#rounding-division-) [`%`](#modulo-) [`^%`](#ceiling-modulo-) [`~%`](#rounding-modulo-) [`/%`](#division-and-modulo-) [`&`](#bitwise-and-) |
+| Unary integer negation  | [`-`](#negation--)                                                                                                                                                                                                     |
+| Additive                | [`+`](#addition-) [`-`(integer subtraction)](#subtraction--) [`\|`](#bitwise-or-) [`^`](#bitwise-xor-)                                                                                                                 |
+| Shifts                  | [`>>`](#shift-right-) [`<<`](#shift-left-) [`^>>`](#ceiling-shift-right-) [`~>>`](#rounding-shift-right-)                                                                                                              |
+| Comparison and Equality | [`>`](#greater-than-) [`>=`](#greater-than-or-equal-) [`<`](#less-than-) [`<=`](#less-than-or-equal-) [`<=>`](#comparison-) [`==`](#equality-) [`!=`](#inequality-)                                                    |
+| Ternary                 | [`?:`](#ternary-)                                                                                                                                                                                                      |
+| Assignment              | [`=`](#assignment-) and all [augmented assignment operators](#augmented-assignment-operators)                                                                                                                          |
 
 All [binary operators](#binary-operators) are left-associative, with the exception of:
 
-- [Assignment operators](#assignment%2C-%3D) (i.e., bottom row in the table), which are right-associative.
-- [Division-modulo operator](#division-and-modulo%2C-%2F%25) `/%`, which is neither left associative nor right associative.
+- [Assignment operators](#assignment-) (i.e., bottom row in the table), which are right-associative.
+- [Division-modulo operator](#division-and-modulo-) `/%`, which is neither left associative nor right associative.
 
-Also, the [ternary operator](#ternary%2C-%3F%3A) `?:` is right-associative.
+Also, the [ternary operator](#ternary-) `?:` is right-associative.
 
 For example:
 
@@ -149,7 +149,7 @@ All binary operators are infix operators, i.e., placed in the middle of the two 
 ### Multiplication, `*`
 
 The asterisk (multiplication) operator `*` is used for multiplication of two values.
-Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 int five = 5;
@@ -163,7 +163,7 @@ The slash (division) operator `/` is used for integer division of two values, wh
 is positive and away from zero if the result is negative. This is also called [rounding down](https://en.wikipedia.org/wiki/Rounding#Rounding_down)
 or rounding toward negative infinity.
 
-An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 1) / 5;        ;; -1, rounding down away from 0
@@ -180,7 +180,7 @@ The caret-slash (ceiling division) operator `^/` is used for integer division of
 is positive and toward zero if the result is negative. This is also called [rounding up](https://en.wikipedia.org/wiki/Rounding#Rounding_up)
 or rounding toward positive infinity.
 
-An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 1) ^/ 5;       ;; 0, rounding up toward 0
@@ -198,7 +198,7 @@ tie-breaking rule for half values: if the fractional part is `0.5`, it is trunca
 if the result is negative. This is also called [rounding half up](https://en.wikipedia.org/wiki/Rounding#Rounding_half_up)
 or rounding half toward positive infinity.
 
-An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) ~/ 5;      ;; -1, rounding -1.2 to nearest integer
@@ -212,10 +212,10 @@ An attempt to divide by zero results in an error with [exit code 4](/tvm/exit-co
 ### Modulo, `%`
 
 The percent sign (modulo) operator `%` is used for obtaining the modulo of integer division, which is the remainder of dividing the operands with the `/` operator.
-Concretely, `a % b` is defined as `a - (b * (a / b))`, where `/` is the [division operator](#division%2C-%2F), `*` is the [multiplication operator](#multiplication%2C),
-and `-` is the [subtraction operator](#subtraction%2C).
+Concretely, `a % b` is defined as `a - (b * (a / b))`, where `/` is the [division operator](#division-), `*` is the [multiplication operator](#multiplication-),
+and `-` is the [subtraction operator](#subtraction--).
 
-If `b` in the expression `a % b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a % b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) % 5;       ;; 4, result of formula: -6 - (5 * (-6 / 5))
@@ -241,10 +241,10 @@ abs(-3) % abs(-4)   ;; 3, same as 3 % 4
 
 The caret-percent sign (ceiling modulo) operator `^%` is used for obtaining the ceiling modulo of integer ceiling division, which is the remainder of dividing the
 operands with the `^/` operator.
-Concretely, `a ^% b` is defined as `a - (b * (a ^/ b))`, where `^/` is the [ceiling division operator](#ceiling-division%2C-%5E%2F),
-`*` is the [multiplication operator](#multiplication%2C), and `-` is the [subtraction operator](#subtraction%2C).
+Concretely, `a ^% b` is defined as `a - (b * (a ^/ b))`, where `^/` is the [ceiling division operator](#ceiling-division-),
+`*` is the [multiplication operator](#multiplication-), and `-` is the [subtraction operator](#subtraction--).
 
-If `b` in the expression `a ^% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a ^% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) ^% 5;       ;; -1, result of formula: -6 - (5 * (-6 ^/ 5))
@@ -261,11 +261,11 @@ The result of `^%` always has the opposite sign of the divisor (i.e., `b` is the
 
 The tilde-percent sign (rounding modulo) operator `~%` is used for obtaining the rounding modulo of integer rounding division, which is the remainder of dividing the
 operands with the `~/` operator.
-Concretely, `a ~% b` is defined as `a - (b * (a ~/ b))`, where `~/` is the [rounding division operator](#rounding-division%2C-%2F),
-`*` is the [multiplication operator](#multiplication%2C),
-and `-` is the [subtraction operator](#subtraction%2C).
+Concretely, `a ~% b` is defined as `a - (b * (a ~/ b))`, where `~/` is the [rounding division operator](#rounding-division-),
+`*` is the [multiplication operator](#multiplication-),
+and `-` is the [subtraction operator](#subtraction--).
 
-If `b` in the expression `a ~% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a ~% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) ~% 5;       ;; -1, result of formula: -6 - (5 * (-6 ~/ 5))
@@ -279,10 +279,10 @@ If `b` in the expression `a ~% b` is `0`, the result is an error with [exit code
 ### Division and modulo, `/%`
 
 The slash-percent sign (division and modulo) operator `/%` returns a two element [tensor](/languages/func/types#tensor-type), where the first element is the result
-of applying the [division operator](#division%2C-%2F) `/` on the operands,
-and the second element is the result of applying the [modulo operator](#modulo%2C-%25) on the operands.
+of applying the [division operator](#division-) `/` on the operands,
+and the second element is the result of applying the [modulo operator](#modulo-) on the operands.
 
-If `b` in the expression `a /% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+If `b` in the expression `a /% b` is `0`, the result is an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 (- 6) /% 5;       ;; (-2, 4), which is: (-6 / 5, -6 % 5)
@@ -341,7 +341,7 @@ Hence, `&` can work as logical AND when computing boolean conditions:
 ### Addition, `+`
 
 The plus (addition) operator `+` is used for adding numbers together.
-Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 2 + 2;      ;; 4
@@ -351,7 +351,7 @@ Going beyond the range of the integer type will result in an error with [exit co
 ### Subtraction, `-`
 
 The minus (subtraction) operator `-` is used for subtracting numbers from each other.
-Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Going beyond the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 2 - 2;    ;; 0
@@ -442,7 +442,7 @@ Excess bits shifted off from the left are discarded, and zero bits are shifted i
 `x << n` is a more efficient way to multiply `x` by `2^n`.
 In other words, `x << n` is equivalent to `x * 2^n`, where `2^n` is exponentiation of `2` by `n` and `*` is standard arithmetical multiplication.
 
-Exceeding the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4%3A-integer-overflow): `Integer overflow`.
+Exceeding the range of the integer type will result in an error with [exit code 4](/tvm/exit-codes#4-integer-overflow): `Integer overflow`.
 
 ```func
 2 << 1;   ;; 4,  since 2 * 2^1 = 4
@@ -629,19 +629,19 @@ b *= 10;        ;; returns 20 and assigns 20 to b, equivalent to b = b * 10.
 
 List of augmented assignment operators:
 
-- `*=`, which uses the [multiplication operator](#multiplication%2C) `*`.
-- `/=`, which uses the [division operator](#division%2C-%2F) `/`.
-- `^/=`, which uses the [ceiling division operator](#ceiling-division%2C-%5E%2F) `^/`.
-- `~/=`, which uses the [rounding division operator](#rounding-division%2C-%2F) `~/`.
-- `%=`, which uses the [modulo operator](#modulo%2C-%25) `%`.
-- `^%=`, which uses the [ceiling modulo operator](#ceiling-modulo%2C-%5E%25) `^%`.
-- `~%=`, which uses the [rounding modulo operator](#rounding-modulo%2C-%25) `~%`.
-- `&=`, which uses the [bitwise AND operator](#bitwise-and%2C-%26) `&`.
-- `+=`, which uses the [addition operator](#addition%2C-%2B) `+`.
-- `-=`, which uses the [subtraction operator](#subtraction%2C) `-`.
-- `|=`, which uses the [bitwise OR operator](#bitwise-or%2C-%7C) `|`.
-- `^=`, which uses the [bitwise XOR operator](#bitwise-xor%2C-%5E) `^`.
-- `>>=`, which uses the [shift right operator](#shift-right%2C-%3E%3E) `>>`.
-- `<<=`, which uses the [shift left operator](#shift-left%2C-%3C%3C) `<<`.
-- `^>>=`, which uses the [ceiling shift right operator](#ceiling-shift-right%2C-%5E%3E%3E) `^>>`.
-- `~>>=`, which uses the [rounding shift right operator](#rounding-shift-right%2C-%3E%3E) `~>>`.
+- `*=`, which uses the [multiplication operator](#multiplication-) `*`.
+- `/=`, which uses the [division operator](#division-) `/`.
+- `^/=`, which uses the [ceiling division operator](#ceiling-division-) `^/`.
+- `~/=`, which uses the [rounding division operator](#rounding-division-) `~/`.
+- `%=`, which uses the [modulo operator](#modulo-) `%`.
+- `^%=`, which uses the [ceiling modulo operator](#ceiling-modulo-) `^%`.
+- `~%=`, which uses the [rounding modulo operator](#rounding-modulo-) `~%`.
+- `&=`, which uses the [bitwise AND operator](#bitwise-and-) `&`.
+- `+=`, which uses the [addition operator](#addition-) `+`.
+- `-=`, which uses the [subtraction operator](#subtraction--) `-`.
+- `|=`, which uses the [bitwise OR operator](#bitwise-or-) `|`.
+- `^=`, which uses the [bitwise XOR operator](#bitwise-xor-) `^`.
+- `>>=`, which uses the [shift right operator](#shift-right-) `>>`.
+- `<<=`, which uses the [shift left operator](#shift-left-) `<<`.
+- `^>>=`, which uses the [ceiling shift right operator](#ceiling-shift-right-) `^>>`.
+- `~>>=`, which uses the [rounding shift right operator](#rounding-shift-right-) `~>>`.

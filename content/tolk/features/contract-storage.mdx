@@ -42,13 +42,13 @@ fun demoModify() {
 ```
 
 - `fun Storage.f(self)` defines an instance [method](/tolk/syntax/functions-methods).
-- `T.fromCell()` deserializes a cell into `T`, and [`obj.toCell()`](/tolk/features/auto-serialization#unpackoptions-and-packoptions) packs it back into a cell.
+- `T.fromCell()` deserializes a cell into `T`, and [`obj.toCell()`](/tolk/features/auto-serialization#cell-packing-and-unpacking-options) packs it back into a cell.
 - The [`lazy`](/tolk/features/lazy-loading) operator does the parsing on demand.
 - [`contract.getData()`](/tolk/features/standard-library) fetches persistent data.
 
 ## Default values
 
-In TON, a contract’s address depends on its initial storage when it is [created on-chain](/foundations/addresses/derive#on-chain-—-simple). Assign default values to fields that must be defined at deployment:
+In TON, a contract’s address depends on its initial storage when it is [created on-chain](/foundations/addresses/derive#on-chain--simple). Assign default values to fields that must be defined at deployment:
 
 ```tolk
 struct WalletStorage {

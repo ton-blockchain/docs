@@ -210,7 +210,7 @@ Using `throw` with exit codes `0` and `1` can unexpectedly terminate execution. 
 
 ## Gas limitation
 
-The [out of gas error](/tvm/exit-codes#13%3A-out-of-gas-error) cannot be handled in the contract's code. Measure worst-case execution paths and maintain explicit fee and reserve assumptions. Try to precompute gas consumption whenever possible.
+The [out of gas error](/tvm/exit-codes#13-out-of-gas-error) cannot be handled in the contract's code. Measure worst-case execution paths and maintain explicit fee and reserve assumptions. Try to precompute gas consumption whenever possible.
 
 Note that checking only the attached value against the computed gas is not sufficient. Storage fees, forwarding fees, outgoing action fees, variable execution paths, and any required balance reserve must also be considered.
 

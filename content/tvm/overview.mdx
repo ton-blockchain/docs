@@ -61,7 +61,7 @@ When an account with this code gets an internal message, TVM stack [is initializ
 
 1. `s0` (top of the stack), function selector, is `0`. For other events, e.g., external messages or get method calls, selector will be non-zero.
 1. `s1`, message body. The example contract expects exactly 32 bits here.
-1. Three more values `s2`, `s3`, `s4` [are pushed](/tvm/initialization#external%2Finternal-message) by TVM onto a stack. They won't be used in the example. After execution finishes, they'll still be on the stack, and will be silently ignored.
+1. Three more values `s2`, `s3`, `s4` [are pushed](/tvm/initialization#externalinternal-message) by TVM onto a stack. They won't be used in the example. After execution finishes, they'll still be on the stack, and will be silently ignored.
 
 In `Current stack` comments, we represent stack at that moment of execution, keeping its top to the right (e.g., `s2 s1 s0`, where `s0` is the top of the stack).
 
