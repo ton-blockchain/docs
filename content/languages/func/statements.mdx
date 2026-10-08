@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 FunC statements can occur anywhere inside function bodies.
@@ -147,7 +147,7 @@ if (cond) {
 }
 ```
 
-The alternative cases can also include the `elseifnot` keyword, which allows the inclusion of [`ifnot` statements](#ifnot-else-statement) in the alternatives:
+The alternative cases can also include the `elseifnot` keyword, which allows the inclusion of [`ifnot` statements](#ifnotelse-statement) in the alternatives:
 
 ```func
 if (cond) {
@@ -163,7 +163,7 @@ if (cond) {
 
 ### `ifnot...else` statement
 
-The `ifnot...else` statement is equivalent to the [`if...else` statement](#if-else-statement) but with the condition negated using the [bitwise `~` operator](/languages/func/operators#bitwise-not%2C).
+The `ifnot...else` statement is equivalent to the [`if...else` statement](#ifelse-statement) but with the condition negated using the [bitwise `~` operator](/languages/func/operators#bitwise-not-).
 
 More specifically:
 
@@ -226,7 +226,7 @@ ifnot (cond) {
 }
 ```
 
-The alternative cases can also include the `elseif` keyword, which allows the inclusion of standard [`if` statements](#if-else-statement) in the alternatives:
+The alternative cases can also include the `elseif` keyword, which allows the inclusion of standard [`if` statements](#ifelse-statement) in the alternatives:
 
 ```func
 ifnot (cond) {      ;; ifnot
@@ -246,7 +246,7 @@ FunC supports `repeat`, `while`, and `do { ... } until` loops. The `for` loop is
 
 ### `repeat` loop
 
-The `repeat` loop executes a block of code a specified number of times. The number of repetitions should be given as a positive 32-bit integer in the inclusive range from `1` to `2^31 - 1`, i.e., `2,147,483,647`. If the value is greater, an error with [exit code 5](/tvm/exit-codes#5%3A-integer-out-of-expected-range), `Integer out of expected range`, will be thrown.
+The `repeat` loop executes a block of code a specified number of times. The number of repetitions should be given as a positive 32-bit integer in the inclusive range from `1` to `2^31 - 1`, i.e., `2,147,483,647`. If the value is greater, an error with [exit code 5](/tvm/exit-codes#5-integer-out-of-expected-range), `Integer out of expected range`, will be thrown.
 
 ```func
 int x = 1;
@@ -324,11 +324,11 @@ try {
 }
 ```
 
-Unlike many other languages, in FunC, all changes are **undone** if an error occurs inside the `try` block. These modifications include updates to local and global variables and changes to [control registers](/foundations/whitepapers/tvm#1-3-2-list-of-control-registers). For example, `c4` for storage, `c5`for action/messages, `c7` for context, etc.
+Unlike many other languages, in FunC, all changes are **undone** if an error occurs inside the `try` block. These modifications include updates to local and global variables and changes to [control registers](/foundations/whitepapers/tvm#132-list-of-control-registers). For example, `c4` for storage, `c5`for action/messages, `c7` for context, etc.
 
 Any contract storage updates and outgoing messages are also reverted.
 
-However, certain [TVM state components](/foundations/whitepapers/tvm#1-4-total-state-of-tvm-scccg) are **not** rolled back, such as:
+However, certain [TVM state components](/foundations/whitepapers/tvm#14---total-state-of-tvm-scccg) are **not** rolled back, such as:
 
 - Codepage settings
 - Gas counters

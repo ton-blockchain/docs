@@ -3328,7 +3328,10 @@ export const TvmInstructionTable = () => {
       const controlFlowMissing = !raw.control_flow || !Array.isArray(raw.control_flow.branches);
 
       const opcode = bytecode.prefix || '';
-      const anchorId = buildAnchorId({ opcode, mnemonic: raw.mnemonic });
+      const anchorId = buildAnchorId({
+        opcode: doc.opcode || opcode,
+        mnemonic: raw.mnemonic,
+      });
 
       return {
         uid: `${raw.mnemonic}__${opcode || 'nop'}__${idx}`,

@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 ## Version 0.4.6
@@ -25,7 +25,7 @@ Released in [Oct 2024](https://github.com/ton-blockchain/ton/releases/tag/v2024.
 
 **Fixes:**
 
-- Bug in optimization of [operator `<<`](/languages/func/operators#shift-left%2C-%3C%3C).
+- Bug in optimization of [operator `<<`](/languages/func/operators#shift-left-).
 
 ## Version 0.4.4
 
@@ -70,7 +70,7 @@ Released in [Jan 2023](https://github.com/ton-blockchain/ton/releases/tag/v2023.
 
 **New features:**
 
-- Added pragmas for precise control of computation order: [`allow-post-modification`](/languages/func/compiler-directives#%23pragma-allow-post-modification) and [`compute-asm-ltr`](/languages/func/compiler-directives#%23pragma-compute-asm-ltr).
+- Added pragmas for precise control of computation order: [`allow-post-modification`](/languages/func/compiler-directives#pragma-allow-post-modification) and [`compute-asm-ltr`](/languages/func/compiler-directives#pragma-compute-asm-ltr).
 - Added legacy tester, a collection of smart-contracts which is used to check whether a compiler update changes compilation results.
 
 **Fixes:**
@@ -83,7 +83,7 @@ Released in [Jan 2023](https://github.com/ton-blockchain/ton/releases/tag/v2022.
 
 **New features:**
 
-- [`try/catch` statements](/languages/func/statements#try-catch-statement).
+- [`try/catch` statements](/languages/func/statements#trycatch-statement).
 - [`throw_arg`](/languages/func/built-ins#throw_arg), [`throw_arg_if`](/languages/func/built-ins#throw_arg_if), and [`throw_arg_unless`](/languages/func/built-ins#throw_arg_unless) functions.
 - Support for in-place modification and mass assignment of global variables, e.g., `a~inc()` and `(a, b) = (3, 5)`, where `a` is global.
 
@@ -126,8 +126,8 @@ Released in [May 2022](https://github.com/ton-blockchain/ton/releases/tag/v2022.
 
 - [Constants](/languages/func/literals#constants)
 - [Compile-time built-ins](/languages/func/literals#compile-time-built-ins)
-- [Semver pragmas](/languages/func/compiler-directives#%23pragma-version)
-- [Includes](/languages/func/compiler-directives#%23include)
+- [Semver pragmas](/languages/func/compiler-directives#pragma-version)
+- [Includes](/languages/func/compiler-directives#include)
 
 **Fixes:**
 

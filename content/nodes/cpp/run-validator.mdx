@@ -88,7 +88,7 @@ Configure the network on the server according to the following:
 
 - All outgoing connections are allowed.
 - A static external IP address.
-- [One UDP port open for incoming connections.](#2-4-verify-validators-port)
+- [One UDP port open for incoming connections.](#24-verify-validators-port)
 
 ### 1.5 Follow network announcements
 
@@ -168,7 +168,7 @@ sudo apt install -y speedtest-cli
 speedtest-cli
 ```
 
-Ensure download and upload speeds meet the [1 Gbit/s requirement](#1-2-minimal-hardware-requirements).
+Ensure download and upload speeds meet the [1 Gbit/s requirement](#12-minimal-hardware-requirements).
 
 ### 1.8 Harden server security
 
@@ -219,7 +219,7 @@ sudo systemctl restart sshd
 
 #### Firewall configuration
 
-Enable the firewall and allow only the SSH port. The validator UDP port is added after installation in [step 2.5](#2-5-check-validators-port).
+Enable the firewall and allow only the SSH port. The validator UDP port is added after installation in [step 2.5](#25-check-validators-port).
 
 ```bash
 sudo ufw allow <SSH_PORT>/tcp
@@ -245,7 +245,7 @@ sudo ufw status
 
 #### Encrypt sensitive directories (optional)
 
-For additional protection, store validator keys and configuration on an encrypted partition. Create an encrypted volume and symlink the [backup directories](#5-5-organize-validator-backup) from it.
+For additional protection, store validator keys and configuration on an encrypted partition. Create an encrypted volume and symlink the [backup directories](#55-organize-validator-backup) from it.
 
 <Callout type="tip">
   After moving directories to the encrypted partition, create symlinks in their original locations so that MyTonCtrl and the validator service continue to function without path changes.
@@ -714,7 +714,7 @@ In the explorer:
 
 ### 3.11 Test withdrawal from pool
 
-Test withdrawal workflow. Only the [owner's cold wallet](#3-6-create-a-pool) can request a withdrawal.
+Test withdrawal workflow. Only the [owner's cold wallet](#36-create-a-pool) can request a withdrawal.
 Send a withdrawal request, a message with `w` comment from `owner` wallet to the single nominator pool address:
 
 <Image
@@ -919,7 +919,7 @@ Before sending funds to the pool:
 
 - Verify that the pool address is correct and uses the [**bounceable** format](/foundations/addresses/formats#flag-definitions).
 - Confirm that the pool smart contract is still active and not frozen. A pool can become frozen if the entire balance is consumed by storage fees between creation and funding.
-- Follow the [test deposit and withdrawal procedure](#3-10-test-deposit-to-pool) before depositing the full stake.
+- Follow the [test deposit and withdrawal procedure](#310-test-deposit-to-pool) before depositing the full stake.
 
 <Callout type="tip">
   By default, MyTonCtrl splits the pool balance 50/50 between odd and even validation cycles. Ensure the total stake is sufficient to participate in both cycles: `balance > min_stake * 2`.
@@ -935,7 +935,7 @@ There, `<POOL_ADDRESS>` is the bounceable address of the single nominator pool.
 
 ### 5.3 Withdraw funds from the pool
 
-Only the owner wallet can withdraw funds. Follow the [test withdrawal procedure](#3-11-test-withdrawal-from-pool) using the same method.
+Only the owner wallet can withdraw funds. Follow the [test withdrawal procedure](#311-test-withdrawal-from-pool) using the same method.
 
 ### 5.4 Follow the TON announcements channel
 
@@ -1032,7 +1032,7 @@ Check the following indicators:
   Validator efficiency may show 0% at the beginning of a cycle until the validator signs its first blocks. This is normal behavior.
 </Callout>
 
-Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/onboarding/explorers). For greater observability, [set up the monitoring](#5-7-set-up-monitoring) of various validator metrics.
+Confirm that the validator participates in elections and recovers stakes on time by checking the pool balance in a [blockchain explorer](/onboarding/explorers). For greater observability, [set up the monitoring](#57-set-up-monitoring) of various validator metrics.
 
 ## Troubleshoot common issues
 
@@ -1048,7 +1048,7 @@ Confirm that the validator participates in elections and recovers stakes on time
 - Confirm the node is fully synchronized (`Local validator out of sync` ≤ 3 seconds).
 - Check disk performance. Slow storage is the most common cause of low efficiency.
 - Verify that no other resource-intensive processes compete for CPU or RAM.
-- Review hardware against [minimum requirements](#1-2-minimal-hardware-requirements).
+- Review hardware against [minimum requirements](#12-minimal-hardware-requirements).
 
 ### Pool is not participating in elections
 

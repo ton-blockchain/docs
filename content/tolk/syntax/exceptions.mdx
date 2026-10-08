@@ -83,7 +83,7 @@ During contract execution, TVM may throw runtime exceptions. For example:
 - `tuple.push(value)` will fail when the tuple has 255 elements already.
 - etc.
 
-Additionally, an [out-of-gas exception](/tvm/exit-codes#14%3A-out-of-gas-error) may occur at **any** point, and it cannot be caught using a [`catch`](#try-catch-statement) block. It can only be prevented by writing [exhaustive testing suites](/contracts/blueprint/testing/overview).
+Additionally, an [out-of-gas exception](/tvm/exit-codes#13-out-of-gas-error) may occur at **any** point, and it cannot be caught using a [`catch`](#try-catch-statement) block. It can only be prevented by writing [exhaustive testing suites](/contracts/blueprint/testing/overview).
 
 ## `try catch` statement
 

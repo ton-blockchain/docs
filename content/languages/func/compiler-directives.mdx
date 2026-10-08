@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 Compiler directives are keywords that begin with `#`, instructing the compiler to perform specific actions, enforce checks, or modify parameters.
@@ -146,7 +146,7 @@ The `#pragma not-version` is similar to `#pragma version`, but it fails if the s
 ```
 
 where `<op>` is an optional [version operator](#operators) that allows to specify a constraint, and `<sem_version>` is identical as
-in [`#pragma version`](#%23pragma-version).
+in [`#pragma version`](#pragma-version).
 
 This directive is useful for blocking specific compiler versions known to have issues.
 

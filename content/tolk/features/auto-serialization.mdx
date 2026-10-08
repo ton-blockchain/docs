@@ -160,8 +160,8 @@ Typical failure cases include:
 
 Common exception codes:
 
-- [9 – cell underflow](/tvm/exit-codes#9%3A-cell-underflow);
-- [5 – out of range](/tvm/exit-codes#5%3A-integer-out-of-expected-range).
+- [9 – cell underflow](/tvm/exit-codes#9-cell-underflow);
+- [5 – out of range](/tvm/exit-codes#5-integer-out-of-expected-range).
 
 Some behaviors are configurable. For example, to allow extra data:
 
@@ -334,7 +334,7 @@ Frequently used fields should remain in the struct; less-frequent fields can be 
 
 ## What if serialization is unavailable?
 
-A common mistake is using `int`. [It cannot be serialized](/tolk/types/numbers#stack-layout-and-serialization); instead, use `int32`, `uint64`, etc.
+A common mistake is using `int`. [It cannot be serialized](/tolk/types/numbers#intn-describes-serialization-int-does-not); instead, use `int32`, `uint64`, etc.
 
 ```tolk
 struct Storage {

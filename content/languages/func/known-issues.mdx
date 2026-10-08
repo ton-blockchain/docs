@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 ## Constant evaluation breaks function argument substitution
@@ -43,7 +43,7 @@ Issue pages: [#1659](https://github.com/ton-blockchain/ton/issues/1659),
 [#1661](https://github.com/ton-blockchain/ton/issues/1661),
 [#1662](https://github.com/ton-blockchain/ton/issues/1662).
 
-The compiler simplifies the [division `/`](/languages/func/operators#division%2C-%2F) and [modulo `%`](/languages/func/operators#modulo%2C-%25) operators when their left argument is `0`,
+The compiler simplifies the [division `/`](/languages/func/operators#division-) and [modulo `%`](/languages/func/operators#modulo-) operators when their left argument is `0`,
 but only when `/` and `%` are used in tandem with comparison operators like `>=`, `>`, `==`, etc.
 
 For example, the following expressions are **not** simplified to 0 at compile-time, which is the correct behavior:

@@ -55,7 +55,7 @@ Acceptance creates fee liability but does not guarantee success:
 | Compute phase fails without `COMMIT`                                       | Charged     | Discarded                                         |
 | [`COMMIT`](/tvm/instructions#f80f-commit) precedes a later compute failure | Charged     | Committed data and actions enter the action phase |
 
-Commit the replay-state update before later operations and actions that are allowed to fail. In Tolk, [`commitContractDataAndActions()`](/tolk/features/standard-library#commitContractDataAndActions) snapshots persistent data and the current action list.
+Commit the replay-state update before later operations and actions that are allowed to fail. In Tolk, [`commitContractDataAndActions()`](/tolk/features/standard-library#commitcontractdataandactions) snapshots persistent data and the current action list.
 
 Without a committed replay-state update, validators can deliver the same valid external message again. Each attempt that reaches `ACCEPT` can charge the contract.
 

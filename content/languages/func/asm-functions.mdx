@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 ## Assembler function definition
@@ -135,7 +135,7 @@ int showcase() {
 ## Rearranging stack entries
 
 <Callout>
-  When manually rearranging arguments, they are evaluated in the new order. To overwrite this behavior see [`#pragma compute-asm-ltr`](/languages/func/compiler-directives#%23pragma-compute-asm-ltr).
+  When manually rearranging arguments, they are evaluated in the new order. To overwrite this behavior see [`#pragma compute-asm-ltr`](/languages/func/compiler-directives#pragma-compute-asm-ltr).
 </Callout>
 
 Sometimes, the order in which function arguments are passed may not match the expected order of an assembler command. Similarly, the returned values may need to be arranged differently. While this can be done manually using stack manipulation primitives, FunC has special syntax to handle this.

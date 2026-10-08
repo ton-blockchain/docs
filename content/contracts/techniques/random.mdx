@@ -3,7 +3,7 @@ title: "Random number generation"
 sidebarTitle: "Random numbers"
 ---
 
-Generating random numbers is a common smart contract task for applications such as gaming, trait generation for non-fungible tokens (NFTs), and decentralized lotteries. TON provides built-in functions like [`random.uint256()`](/tolk/features/standard-library#random-uint256), but their results can be predicted by validators unless additional techniques are used.
+Generating random numbers is a common smart contract task for applications such as gaming, trait generation for non-fungible tokens (NFTs), and decentralized lotteries. TON provides built-in functions like [`random.uint256()`](/tolk/features/standard-library#randomuint256), but their results can be predicted by validators unless additional techniques are used.
 
 ## Why on-chain randomness is challenging
 
@@ -30,11 +30,11 @@ This limitation means all approaches to on-chain randomness involve trade-offs b
 
 ## Single-block randomness
 
-The [`random.initialize()`](/tolk/features/standard-library#random-initialize) function mixes the transaction's logical time into the current random seed. This provides basic entropy from blockchain state.
+The [`random.initialize()`](/tolk/features/standard-library#randominitialize) function mixes the transaction's logical time into the current random seed. This provides basic entropy from blockchain state.
 
 ### How it works
 
-Call `random.initialize()` once before using [`random.uint256()`](/tolk/features/standard-library#random-uint256) or [`random.range()`](/tolk/features/standard-library#random-range-limit) functions. The logical time adds variability to the seed, making it harder for observers to predict the outcome without executing the transaction.
+Call `random.initialize()` once before using [`random.uint256()`](/tolk/features/standard-library#randomuint256) or [`random.range()`](/tolk/features/standard-library#randomrangelimit) functions. The logical time adds variability to the seed, making it harder for observers to predict the outcome without executing the transaction.
 
 ```tolk title="Tolk"
 random.initialize();

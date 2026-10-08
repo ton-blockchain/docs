@@ -11,7 +11,7 @@ Exit codes 0 and 1 indicate normal (successful) execution of the [compute phase]
 TON Blockchain reserves exit code values from 0 to 127. The range from 256 to 65535 is free for developer-defined exit codes.
 
 <Callout>
-  While an exit (or [result](#action-phase)) code is a 32-bit signed integer on TON Blockchain, an attempt to throw an exit code outside the bounds of a 16-bit unsigned integer ($0 - 65535$) will cause an error with [exit code 5](#5-integer-out-of-expected-range). This is done intentionally to prevent some exit codes from being produced artificially, such as [exit code -14](#14-out-of-gas-error).
+  While an exit (or [result](#action-phase)) code is a 32-bit signed integer on TON Blockchain, an attempt to throw an exit code outside the bounds of a 16-bit unsigned integer ($0 - 65535$) will cause an error with [exit code 5](#5-integer-out-of-expected-range). This is done intentionally to prevent some exit codes from being produced artificially, such as [exit code -14](#13-out-of-gas-error).
 </Callout>
 
 ## Table of exit codes
@@ -31,10 +31,10 @@ The following table lists exit codes with their origin (where they can occur) an
 | [8](#8-cell-overflow)                                     | [Compute phase][c]                  | Cell overflow.                                                                                         |
 | [9](#9-cell-underflow)                                    | [Compute phase][c]                  | Cell underflow.                                                                                        |
 | [10](#10-dictionary-error)                                | [Compute phase][c]                  | Dictionary error.                                                                                      |
-| [11](#11-%22unknown%22-error)                             | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs."                       |
+| [11](#11-unknown-error)                                   | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs."                       |
 | [12](#12-fatal-error)                                     | [Compute phase][c]                  | Fatal error. Thrown by [TVM][tvm] in situations deemed impossible.                                     |
 | [13](#13-out-of-gas-error)                                | [Compute phase][c]                  | Out of gas error.                                                                                      |
-| [-14](#14-out-of-gas-error)                               | [Compute phase][c]                  | Same as 13. Negative, so that it [cannot be faked](#13-out-of-gas-error).                              |
+| [-14](#13-out-of-gas-error)                               | [Compute phase][c]                  | Same as 13. Negative, so that it [cannot be faked](#13-out-of-gas-error).                              |
 | [14](#14-virtualization-error)                            | [Compute phase][c]                  | VM virtualization error. Reserved, but never thrown.                                                   |
 | [32](#32-action-list-is-invalid)                          | [Action phase][a]                   | Action list is invalid.                                                                                |
 | [33](#33-action-list-is-too-long)                         | [Action phase][a]                   | Action list is too long.                                                                               |
@@ -61,8 +61,8 @@ The following table lists exit codes with their origin (where they can occur) an
   Often enough, you might encounter the exit code 65535 (or `0xffff`), which usually means that the received opcode is unknown to the contract, as no handlers were expecting it. The exit code 65535 is set in the smart contract code and not by [TVM][tvm] or the Tolk compiler.
 </Callout>
 
-[c]: /tvm/overview#compute-phase
-[a]: /tvm/overview#action-phase
+[c]: /foundations/phases#compute-phase
+[a]: /foundations/phases#action-phase
 
 ## Exit codes in Blueprint projects
 

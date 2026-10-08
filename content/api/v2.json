@@ -3143,13 +3143,13 @@
         "type": "apiKey",
         "in": "header",
         "name": "X-API-Key",
-        "description": "API key header of the form `X-API-Key: <token>`, where `<token>` is the API key. Requests without a key are limited to 1 RPS. Refer to the [authentication guide](/api/v2-authentication) for details."
+        "description": "API key header of the form `X-API-Key: <token>`, where `<token>` is the API key. Requests without a key are limited to 1 RPS. Refer to the [authentication guide](/api/v2/authentication) for details."
       },
       "APIKeyQuery": {
         "type": "apiKey",
         "in": "query",
         "name": "api_key",
-        "description": "API key query parameter of the form `?api_key=<token>`, where `<token>` is the API key. Equivalent to the header method. Refer to the [authentication guide](/api/v2-authentication) for details."
+        "description": "API key query parameter of the form `?api_key=<token>`, where `<token>` is the API key. Equivalent to the header method. Refer to the [authentication guide](/api/v2/authentication) for details."
       }
     },
     "schemas": {
@@ -3960,7 +3960,7 @@
               "extraCurrency"
             ],
             "default": "extraCurrency",
-            "description": "TonLib type identifier for extra currency balance entries. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for extra currency balance entries. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "id": {
             "type": "integer",
@@ -3989,7 +3989,7 @@
               "internal.transactionId"
             ],
             "default": "internal.transactionId",
-            "description": "TonLib type identifier for transaction ID references. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for transaction ID references. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "lt": {
             "type": "string",
@@ -4017,7 +4017,7 @@
               "raw.accountState"
             ],
             "default": "raw.accountState",
-            "description": "TonLib type identifier for raw (unrecognized) contract states. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for raw (unrecognized) contract states. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "code": {
             "$ref": "#/components/schemas/Bytes",
@@ -4051,7 +4051,7 @@
               "wallet.v3.accountState"
             ],
             "default": "wallet.v3.accountState",
-            "description": "TonLib type identifier for Wallet v3 contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for Wallet v3 contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "wallet_id": {
             "type": "integer",
@@ -4082,7 +4082,7 @@
               "wallet.v4.accountState"
             ],
             "default": "wallet.v4.accountState",
-            "description": "TonLib type identifier for Wallet v4 contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for Wallet v4 contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "wallet_id": {
             "type": "integer",
@@ -4113,7 +4113,7 @@
               "wallet.highload.v1.accountState"
             ],
             "default": "wallet.highload.v1.accountState",
-            "description": "TonLib type identifier for Highload Wallet v1 contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for Highload Wallet v1 contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "wallet_id": {
             "type": "integer",
@@ -4144,7 +4144,7 @@
               "wallet.highload.v2.accountState"
             ],
             "default": "wallet.highload.v2.accountState",
-            "description": "TonLib type identifier for Highload Wallet v2 contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for Highload Wallet v2 contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "wallet_id": {
             "type": "integer",
@@ -4169,7 +4169,7 @@
               "dns.accountState"
             ],
             "default": "dns.accountState",
-            "description": "TonLib type identifier for DNS resolver contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for DNS resolver contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "wallet_id": {
             "type": "integer",
@@ -4194,7 +4194,7 @@
               "rwallet.limit"
             ],
             "default": "rwallet.limit",
-            "description": "TonLib type identifier for restricted wallet spending limit rules. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for restricted wallet spending limit rules. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "seconds": {
             "type": "integer",
@@ -4223,7 +4223,7 @@
               "rwallet.config"
             ],
             "default": "rwallet.config",
-            "description": "TonLib type identifier for restricted wallet configuration. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for restricted wallet configuration. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "start_at": {
             "type": "integer",
@@ -4254,7 +4254,7 @@
               "rwallet.accountState"
             ],
             "default": "rwallet.accountState",
-            "description": "TonLib type identifier for restricted wallet contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for restricted wallet contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "wallet_id": {
             "type": "integer",
@@ -4296,7 +4296,7 @@
               "pchan.config"
             ],
             "default": "pchan.config",
-            "description": "TonLib type identifier for payment channel configuration. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for payment channel configuration. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "alice_public_key": {
             "type": "string",
@@ -4351,7 +4351,7 @@
               "pchan.stateInit"
             ],
             "default": "pchan.stateInit",
-            "description": "TonLib type identifier for payment channels in the initialization phase. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for payment channels in the initialization phase. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "signed_A": {
             "type": "boolean",
@@ -4408,7 +4408,7 @@
               "pchan.stateClose"
             ],
             "default": "pchan.stateClose",
-            "description": "TonLib type identifier for payment channels in the closing phase. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for payment channels in the closing phase. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "signed_A": {
             "type": "boolean",
@@ -4465,7 +4465,7 @@
               "pchan.statePayout"
             ],
             "default": "pchan.statePayout",
-            "description": "TonLib type identifier for payment channels in the payout phase. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for payment channels in the payout phase. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "A": {
             "type": "integer",
@@ -4515,7 +4515,7 @@
               "pchan.accountState"
             ],
             "default": "pchan.accountState",
-            "description": "TonLib type identifier for payment channel contracts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for payment channel contracts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "config": {
             "$ref": "#/components/schemas/PChanConfig",
@@ -4549,7 +4549,7 @@
               "uninited.accountState"
             ],
             "default": "uninited.accountState",
-            "description": "TonLib type identifier for uninitialized accounts. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for uninitialized accounts. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "frozen_hash": {
             "$ref": "#/components/schemas/TonHash",
@@ -4626,7 +4626,7 @@
               "dns_storage_address"
             ],
             "default": "dns_storage_address",
-            "description": "TonLib type identifier for TON Storage DNS records. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for TON Storage DNS records. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "bag_id": {
             "$ref": "#/components/schemas/TonHashHex",
@@ -4648,7 +4648,7 @@
               "dns_adnl_address"
             ],
             "default": "dns_adnl_address",
-            "description": "TonLib type identifier for ADNL address DNS records. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for ADNL address DNS records. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "adnl_addr": {
             "$ref": "#/components/schemas/TonHashHex",
@@ -4671,7 +4671,7 @@
               "addr_std"
             ],
             "default": "addr_std",
-            "description": "TonLib type identifier for standard smart contract addresses. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for standard smart contract addresses. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "workchain_id": {
             "type": "integer",
@@ -4698,7 +4698,7 @@
               "dns_smc_address"
             ],
             "default": "dns_smc_address",
-            "description": "TonLib type identifier for smart contract address DNS records. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for smart contract address DNS records. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "smc_addr": {
             "$ref": "#/components/schemas/SmcAddr",
@@ -4720,7 +4720,7 @@
               "dns_next_resolver"
             ],
             "default": "dns_next_resolver",
-            "description": "TonLib type identifier for next-resolver DNS records. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for next-resolver DNS records. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "resolver": {
             "$ref": "#/components/schemas/SmcAddr",
@@ -4841,7 +4841,7 @@
               "ext.tokens.jettonMasterData"
             ],
             "default": "ext.tokens.jettonMasterData",
-            "description": "TonLib type identifier for Jetton master contract data. Refer to the [token type reference](/api/v2-tonlib-types#token-types-ton-center-extensions) for a full list."
+            "description": "TonLib type identifier for Jetton master contract data. Refer to the [token type reference](/api/v2/tonlib-types#token-types-ton-center-extensions) for a full list."
           },
           "address": {
             "$ref": "#/components/schemas/TonAddr",
@@ -4897,7 +4897,7 @@
               "ext.tokens.jettonWalletData"
             ],
             "default": "ext.tokens.jettonWalletData",
-            "description": "TonLib type identifier for Jetton wallet contract data. Refer to the [token type reference](/api/v2-tonlib-types#token-types-ton-center-extensions) for a full list."
+            "description": "TonLib type identifier for Jetton wallet contract data. Refer to the [token type reference](/api/v2/tonlib-types#token-types-ton-center-extensions) for a full list."
           },
           "address": {
             "$ref": "#/components/schemas/TonAddr",
@@ -4951,7 +4951,7 @@
               "ext.tokens.nftCollectionData"
             ],
             "default": "ext.tokens.nftCollectionData",
-            "description": "TonLib type identifier for NFT collection contract data. Refer to the [token type reference](/api/v2-tonlib-types#token-types-ton-center-extensions) for a full list."
+            "description": "TonLib type identifier for NFT collection contract data. Refer to the [token type reference](/api/v2/tonlib-types#token-types-ton-center-extensions) for a full list."
           },
           "address": {
             "$ref": "#/components/schemas/TonAddr",
@@ -4998,7 +4998,7 @@
               "ext.tokens.nftItemData"
             ],
             "default": "ext.tokens.nftItemData",
-            "description": "TonLib type identifier for NFT item contract data. Refer to the [token type reference](/api/v2-tonlib-types#token-types-ton-center-extensions) for a full list."
+            "description": "TonLib type identifier for NFT item contract data. Refer to the [token type reference](/api/v2/tonlib-types#token-types-ton-center-extensions) for a full list."
           },
           "address": {
             "$ref": "#/components/schemas/TonAddr",
@@ -5087,7 +5087,7 @@
               "blocks.signature"
             ],
             "default": "blocks.signature",
-            "description": "TonLib type identifier for validator signature objects. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for validator signature objects. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "node_id_short": {
             "$ref": "#/components/schemas/TonHash",
@@ -5114,7 +5114,7 @@
               "blocks.shardBlockLink"
             ],
             "default": "blocks.shardBlockLink",
-            "description": "TonLib type identifier for shard-to-masterchain proof links. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for shard-to-masterchain proof links. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "id": {
             "$ref": "#/components/schemas/TonBlockIdExt",
@@ -5141,7 +5141,7 @@
               "blocks.blockLinkBack"
             ],
             "default": "blocks.blockLinkBack",
-            "description": "TonLib type identifier for backward block link proofs. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for backward block link proofs. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "to_key_block": {
             "type": "boolean",
@@ -5188,7 +5188,7 @@
               "blocks.outMsgQueueSize"
             ],
             "default": "blocks.outMsgQueueSize",
-            "description": "TonLib type identifier for per-shard queue size entries. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for per-shard queue size entries. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "id": {
             "$ref": "#/components/schemas/TonBlockIdExt",
@@ -5215,7 +5215,7 @@
               "smc.libraryEntry"
             ],
             "default": "smc.libraryEntry",
-            "description": "TonLib type identifier for shared library cell entries. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for shared library cell entries. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "hash": {
             "$ref": "#/components/schemas/TonHash",
@@ -5243,7 +5243,7 @@
               "blocks.shortTxId"
             ],
             "default": "blocks.shortTxId",
-            "description": "TonLib type identifier for compact transaction references. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for compact transaction references. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "mode": {
             "type": "integer",
@@ -5281,7 +5281,7 @@
               "msg.dataRaw"
             ],
             "default": "msg.dataRaw",
-            "description": "TonLib type identifier for raw (binary) message bodies. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for raw (binary) message bodies. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "body": {
             "$ref": "#/components/schemas/Bytes",
@@ -5303,7 +5303,7 @@
               "msg.dataText"
             ],
             "default": "msg.dataText",
-            "description": "TonLib type identifier for plain text comment message bodies. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for plain text comment message bodies. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "text": {
             "$ref": "#/components/schemas/Bytes",
@@ -5321,7 +5321,7 @@
               "msg.dataDecryptedText"
             ],
             "default": "msg.dataDecryptedText",
-            "description": "TonLib type identifier for decrypted text message bodies. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for decrypted text message bodies. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "text": {
             "$ref": "#/components/schemas/Bytes",
@@ -5339,7 +5339,7 @@
               "msg.dataEncryptedText"
             ],
             "default": "msg.dataEncryptedText",
-            "description": "TonLib type identifier for encrypted text message bodies. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for encrypted text message bodies. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "text": {
             "$ref": "#/components/schemas/Bytes",
@@ -5382,7 +5382,7 @@
               "raw.message"
             ],
             "default": "raw.message",
-            "description": "TonLib type identifier for raw message objects. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for raw message objects. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "hash": {
             "$ref": "#/components/schemas/TonHash",
@@ -5453,7 +5453,7 @@
               "raw.transaction"
             ],
             "default": "raw.transaction",
-            "description": "TonLib type identifier for raw transaction objects. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for raw transaction objects. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "address": {
             "$ref": "#/components/schemas/AccountAddress",
@@ -5542,7 +5542,7 @@
               "ext.message"
             ],
             "default": "ext.message",
-            "description": "TonLib type identifier for extended message objects with decoded comments. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for extended message objects with decoded comments. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "hash": {
             "$ref": "#/components/schemas/TonHash",
@@ -5622,7 +5622,7 @@
               "ext.transaction"
             ],
             "default": "ext.transaction",
-            "description": "TonLib type identifier for extended transaction objects with decoded messages. Refer to the [TonLib type reference](/api/v2-tonlib-types) for a full list."
+            "description": "TonLib type identifier for extended transaction objects with decoded messages. Refer to the [TonLib type reference](/api/v2/tonlib-types) for a full list."
           },
           "address": {
             "$ref": "#/components/schemas/AccountAddress",

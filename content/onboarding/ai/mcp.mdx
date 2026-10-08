@@ -128,7 +128,7 @@ WALLET_VERSION=v4r2 npx @ton/mcp@alpha
 
 The `@ton/mcp` server supports two transport modes:
 
-- [Standard I/O](#standard-i%2Fo) (stdio, default)
+- [Standard I/O](#standard-io) (stdio, default)
 - [HTTP](#http), which can also be run [serverless](#serverless)
 
 ### Standard I/O
@@ -280,7 +280,7 @@ Serverless mode operates in [single-wallet mode](#single-wallet-mode) only and a
   path="TONCENTER_API_KEY"
   type="string"
 >
-  API key for [TON Center](/api/overview#toncenter). Raises the default rate limit from 1 request per second to the limit of the selected plan. Without a key, the server uses a built-in shared key suitable for low-volume development and experiments.
+  API key for [TON Center](/api/overview#ton-center). Raises the default rate limit from 1 request per second to the limit of the selected plan. Without a key, the server uses a built-in shared key suitable for low-volume development and experiments.
 
   For production workloads, [obtain a dedicated key](/api/get-api-key).
 </ParamField>

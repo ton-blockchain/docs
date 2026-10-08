@@ -7,7 +7,7 @@ noindex: true
 <Callout type="note">
   The official smart contract language of TON Blockchain is [Tolk](/tolk/overview). FunC is now a **legacy** language, with its compiler no longer maintained.
 
-  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contract-dev/acton).
+  Learn how to [migrate from FunC to Tolk](/tolk/from-func/tolk-vs-func). For new smart contract projects, use the [Acton toolchain](/contracts/acton).
 </Callout>
 
 The FunC cookbook was created to consolidate all the knowledge and best practices from experienced FunC developers in one place.
@@ -24,8 +24,8 @@ To check whether an event is relevant, use a flag variable of type integer.
 The flag can either be `0`, representing `false`, or `-1`, representing `true`.
 See [absence of boolean type](/languages/func/types#no-boolean-type).
 
-When checking the flag in [`if...else` statements](/languages/func/statements#if-else-statement), it is unnecessary to use
-the [`==` operator](/languages/func/operators#equality%2C-%3D%3D), since a `0` evaluates to `false`, and any nonzero value is
+When checking the flag in [`if...else` statements](/languages/func/statements#ifelse-statement), it is unnecessary to use
+the [`==` operator](/languages/func/operators#equality-), since a `0` evaluates to `false`, and any nonzero value is
 considered to be `true` in `if..else` statements.
 
 ```func
@@ -99,7 +99,7 @@ while (msg.slice_refs_empty?() != -1) { ;; Iterate while there are refs to proce
 
 ### How to write a do until loop
 
-Use a [`do...until` loop](/languages/func/statements#do-until-loop) when the loop must execute at least once.
+Use a [`do...until` loop](/languages/func/statements#dountil-loop) when the loop must execute at least once.
 
 ```func
 int flag = 0;
@@ -653,7 +653,7 @@ names~udict_delete?(256, 27);
 ### How to determine if a tuple is empty
 
 When working with `tuples`, checking for existing values before extracting them is crucial.
-Extracting a value from an empty tuple will result in an error: ["not a tuple of valid size" - `exit code 7`](/tvm/exit-codes#7%3A-type-check-error).
+Extracting a value from an empty tuple will result in an error: ["not a tuple of valid size" - `exit code 7`](/tvm/exit-codes#7-type-check-error).
 
 ```func
 ;; Declare the tlen assembler function because it's not present in stdlib
@@ -1291,7 +1291,7 @@ Use the [`cons`](/languages/func/stdlib#cons) function to add an element at the 
 if `lst` is the list `2, 3`, then `cons(1, lst)` is the list `1, 2, 3`. Internally, `cons(1, lst)` builds the tuple `[1, lst]`, where
 `lst` is the tuple `[2, [3, null]]`.
 
-The [`null?`](/languages/func/built-ins#null%3F) function checks if the provided argument is the `null` value, or equivalently, the empty list.
+The [`null?`](/languages/func/built-ins#null) function checks if the provided argument is the `null` value, or equivalently, the empty list.
 
 The following snippet illustrates these functions:
 
@@ -1323,7 +1323,7 @@ if (numbers.null?()) {
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
 - [`cons`](/languages/func/stdlib#cons)
 - [`null`](/languages/func/stdlib#null)
-- [`null?`](/languages/func/built-ins#null%3F)
+- [`null?`](/languages/func/built-ins#null)
 
 ### How to iterate through a lisp-style list
 
@@ -1366,7 +1366,7 @@ which returns the head of the list and the rest of the list. The following snipp
 - [Modifying notation using \~](/languages/func/expressions#modifying-notation)
 - [`cons`](/languages/func/stdlib#cons)
 - [`null`](/languages/func/stdlib#null)
-- [`null?`](/languages/func/built-ins#null%3F)
+- [`null?`](/languages/func/built-ins#null)
 - [`list_next`](/languages/func/stdlib#list_next)
 
 ### How to iterate a cell tree
@@ -1464,7 +1464,7 @@ forall X -> (tuple, X) pop_back (tuple t) asm "UNCONS";
 - [`Lisp-style lists`](/languages/func/stdlib#lisp-style-lists)
 - [Assembler functions](/languages/func/asm-functions)
 - [`null`](/languages/func/stdlib#null)
-- [`null?`](/languages/func/built-ins#null%3F)
+- [`null?`](/languages/func/built-ins#null)
 - [`slice_refs`](/languages/func/stdlib#slice_refs)
 - [TVM instructions](/tvm/instructions)
 
@@ -1641,7 +1641,7 @@ because `0x10` corresponds to the 6 bits `010000`.
 The call `store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)` sets 7 further headers to the default value `0`. The sum `1 + 4 + 4 + 64 + 32 + 1 + 1` represents the number of bits occupied by each header. Among these 7 headers, the last two are probably the most interesting for a programmer, because they correspond to the `StateInit` header and the message body ref header, respectively. In particular, the default headers state that the message has no `StateInit`, and that the message body is not stored as a cell reference, but directly in the cell, together with the headers. Refer to recipes ["How to send a deploy message"](#how-to-send-a-deploy-message) and ["How to set the message body as a ref in an internal message"](#how-to-set-the-message-body-as-a-ref-in-an-internal-message) for examples on how to manipulate `StateInit` and the message body ref headers, respectively.
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1670,7 +1670,7 @@ Refer to the sending messages page for further details on sending modes in the `
 - [`store_slice`](/languages/func/stdlib#store_slice)
 - [`store_coins`](/languages/func/stdlib#store_coins)
 - [`end_cell`](/languages/func/stdlib#end_cell)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout)
 - Sending messages page
 - [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
 - [`send_raw_message`](/languages/func/stdlib#send_raw_message)
@@ -1718,7 +1718,7 @@ The last header, corresponding to the message body ref header, is set with the c
 message body will be included as a cell reference.
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1750,7 +1750,7 @@ Refer to the sending messages page for further details on sending modes in the `
 - [`store_slice`](/languages/func/stdlib#store_slice)
 - [`store_coins`](/languages/func/stdlib#store_coins)
 - [`end_cell`](/languages/func/stdlib#end_cell)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout)
 - Sending messages page
 - [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
 - [`send_raw_message`](/languages/func/stdlib#send_raw_message)
@@ -1788,7 +1788,7 @@ The function writes the default values for all the message headers, as in the re
 ["How to build an internal message with default headers"](#how-to-build-an-internal-message-with-default-headers).
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1822,7 +1822,7 @@ Refer to the sending messages page for further details on sending modes in the `
 - [`store_coins`](/languages/func/stdlib#store_coins)
 - [`end_cell`](/languages/func/stdlib#end_cell)
 - [`begin_parse`](/languages/func/stdlib#begin_parse)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout)
 - Sending messages page
 - [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
 - [`send_raw_message`](/languages/func/stdlib#send_raw_message)
@@ -1864,7 +1864,7 @@ The function writes the default values for all the message headers, as in the re
 ["How to build an internal message with default headers"](#how-to-build-an-internal-message-with-default-headers).
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout).
 
 Here is an example on how to use function `build_message` to send a message:
 
@@ -1893,7 +1893,7 @@ Refer to the sending messages page for further details on sending modes in the `
 - [`store_slice`](/languages/func/stdlib#store_slice)
 - [`store_coins`](/languages/func/stdlib#store_coins)
 - [`end_cell`](/languages/func/stdlib#end_cell)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout)
 - Sending messages page
 - [`"<address string>"a` compile-time builtin](/languages/func/literals#string-with-suffix-a), where `<address string>` is a string encoding an address.
 - [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
@@ -2052,7 +2052,7 @@ As a second example, the following function also includes a `StateInit`, but the
 ```
 
 For further details on all the headers, see the sending messages page and
-the [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout).
+the [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout).
 
 Refer to the sending messages page for further details on sending modes in the `send_raw_message` function.
 
@@ -2066,7 +2066,7 @@ Refer to the sending messages page for further details on sending modes in the `
 - [`store_ref`](/languages/func/stdlib#store_ref)
 - [`end_cell`](/languages/func/stdlib#end_cell)
 - [`send_raw_message`](/languages/func/stdlib#send_raw_message)
-- [TL-B for messages](/foundations/whitepapers/tblkch#3-1-7-message-layout)
+- [TL-B for messages](/foundations/whitepapers/tblkch#317-message-layout)
 - Sending messages page
 
 ### How to send a message with the entire balance
