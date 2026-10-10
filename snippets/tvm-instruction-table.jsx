@@ -980,7 +980,6 @@ export const TvmInstructionTable = () => {
     return (
       <div className={`tvm-stack-column ${mode === 'compact' ? 'tvm-stack-column--compact' : ''}`}>
         <div className="tvm-stack-column-title">{title}</div>
-        <div className="tvm-stack-top">TOP</div>
         <div className="tvm-stack-list">
           {shown.length === 0 && <span className="tvm-stack-empty">Empty</span>}
           {shown.map((entry, idx) => renderStackEntry(entry, `${title}-${idx}`, mode))}
@@ -1378,7 +1377,7 @@ export const TvmInstructionTable = () => {
             </div>
 
             <div className="tvm-side-block">
-              <span className="tvm-side-title">Stack</span>
+              <span className="tvm-side-title">Stack top</span>
               {hasStackData ? (
                 renderStackColumns(instruction, 'detail')
               ) : (
