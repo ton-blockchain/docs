@@ -1,0 +1,141 @@
+---
+title: "WalletTg messages and opcodes"
+sidebarTitle: "Messages"
+---
+
+WalletTg prepends a 512-bit [Ed25519 signature](/contracts/standard/wallets/how-it-works#how-ownership-verification-works) to each serialized request.
+
+## Signed request
+
+| Field       |    Width | Description                                                              |
+| ----------- | -------: | ------------------------------------------------------------------------ |
+| `signature` | 512 bits | Ed25519 signature over the 256-bit hash of the request cell that follows |
+| `request`   | Variable | Opcode, header, and operation fields                                     |
+
+The contract verifies the signature against the current `publicKey`. The signature covers the hash of the remaining request slice, including the opcode and referenced cells.
+
+After its 32-bit opcode, each signed inbound request contains `SeqnoHeader`:
+
+| Field         |   Width | Validation                                                    |
+| ------------- | ------: | ------------------------------------------------------------- |
+| `subwalletId` | 32 bits | Must equal the stored `subwalletId`                           |
+| `validUntil`  | 32 bits | Unix time in seconds; must be greater than `blockchain.now()` |
+| `seqno`       | 32 bits | Must equal the stored `seqno`                                 |
+
+Internal and external requests use different opcodes, so a signature cannot be reused across channels. The request signature does not cover the internal message envelope's sender or attached value. The contract authenticates the request body and header. Any party can relay a valid request.
+
+Relayers must attach enough Gram for compute gas. The wallet's existing balance can fund outgoing values and fees. [Emulate the request](/contracts/standard/wallets/telegram/interact#relay-gasless-requests) with the current balance and intended attached value; insufficient gas can fail it without advancing `seqno`.
+
+Wallet v5 uses a different signature position and action encoding; see the [wallet v5 interface](/contracts/standard/wallets/v5-api).
+
+## Request opcodes
+
+Opcode values are 32-bit constructor tags serialized before request fields.
+
+| Operation          | Channel      |       Opcode |
+| ------------------ | ------------ | -----------: |
+| Send one message   | Internal     | `0x63896E74` |
+| Send one message   | External     | `0x63896E75` |
+| Send a batch       | Internal     | `0x73896E74` |
+| Send a batch       | External     | `0x73896E75` |
+| Change signing key | Internal     | `0xFBBA99C7` |
+| Change signing key | External     | `0xFBBA99C8` |
+| Key-changed event  | External-out | `0xEBA19948` |
+
+## Send one message
+
+`SendOneMessageRequestI` and `SendOneMessageRequestE` contain a header and one `MessageToSend`:
+
+| Field         |     Width | Description                                |
+| ------------- | --------: | ------------------------------------------ |
+| `sendMode`    |    8 bits | Passed to the outgoing `SENDRAWMSG` action |
+| `messageCell` | Reference | Serialized outgoing message cell           |
+
+The contract builds the outgoing action list ([`c5`](/tvm/registers#c5--outbound-actions-accumulator)) from these fields. Clients do not supply a raw action list.
+
+## Send a batch
+
+`SendBulkMessagesRequestI` and `SendBulkMessagesRequestE` contain the header and a standard Tolk `array<MessageToSend>`. The array stores `len:uint8` and a maybe-reference to its first chunk. Each chunk starts with a maybe-reference to the next chunk.
+
+Entries store `sendMode:uint8` inline and `messageCell` by reference. A chunk with a next reference holds at most 3 entries. The final chunk holds at most 4.
+
+<Image
+  src="/images/wallets/telegram/send-array.svg"
+  alt="Two-message and ten-message Tolk arrays: each array has a length and head reference, and linked chunks hold send modes and message-cell references."
+  width={900}
+  height={488}
+  fullWidth
+/>
+
+Valid arrays contain 1–255 entries. `len` must equal the parsed count.
+
+## Send modes
+
+The contract passes each 8-bit mode to `SENDRAWMSG`. Every message in an external send request must include [`SEND_MODE_IGNORE_ERRORS` (`+2`)](/foundations/messages/modes#errors). This skips eligible send-action errors, not request parsing errors or all action-phase errors.
+
+## Change the signing key
+
+The outer request uses the current key. `rotationSignature` proves possession of `newPublicKey`.
+
+### `ChangePublicKeyRequestI` and `ChangePublicKeyRequestE`
+
+| Field                    | Width or encoding                | Validation                                              |
+| ------------------------ | -------------------------------- | ------------------------------------------------------- |
+| `header`                 | `SeqnoHeader`                    | Must match current wallet state                         |
+| `newPublicKey`           | 256 bits                         | Must differ from the current stored key                 |
+| `rotationSignature`      | Reference to a 512-bit signature | Verifies the rotation payload below with `newPublicKey` |
+| `encryptedOldPrivateKey` | Reference to exactly 256 bits    | Emitted unchanged in the key-changed event              |
+
+### Rotation proof
+
+The new key signs the hash of this payload, serialized in field order:
+
+| Field             |                Width | Value                                         |
+| ----------------- | -------------------: | --------------------------------------------- |
+| `tag`             |              96 bits | `0x4B45595F524F544154494F4E` (`KEY_ROTATION`) |
+| `walletWorkchain` | 8-bit signed integer | Workchain of the wallet address               |
+| `walletAddrHash`  |             256 bits | Account ID hash of the wallet address         |
+
+The address fields bind the proof to this wallet.
+
+### `OnKeyHasBeenChangedEvent`
+
+The contract emits this external-out event to [`addr_none`](/foundations/addresses/overview#external-addresses). Its body is opcode `0xEBA19948` followed by the same 256-bit encrypted value. The contract treats the value as opaque; [key management](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) explains the limits of the published format.
+
+## Failure and sequence-number behavior
+
+The trampoline returns for internal message bodies shorter than 512 bits before loading configuration. Other internal and external messages reach WalletTg. External requests call [`ACCEPT`](/tvm/accept) after validation. Processing is charged to the WalletTg balance.
+
+Successful send and key-change requests increment `seqno` once, regardless of the outgoing message count.
+
+External send handlers save the incremented `seqno` and call [`COMMIT`](/tvm/instructions#f80f-commit) before parsing outgoing messages. `COMMIT` preserves the saved data and actions across a later compute failure. Internal send and key-rotation handlers omit `COMMIT`. The table distinguishes compute failures from action-phase failures:
+
+| Condition                            | Internal request                                                      | External request                                                                  |
+| ------------------------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Invalid signature                    | Returns; `seqno` is unchanged. A future migration may still persist.  | Throws before `ACCEPT`; `seqno` is unchanged.                                     |
+| Header mismatch or expiry            | Fails; `seqno` is unchanged.                                          | Fails before `ACCEPT`; `seqno` is unchanged.                                      |
+| Unknown or channel-mismatched opcode | Fails without updating `seqno`.                                       | Fails before `ACCEPT`; `seqno` is unchanged.                                      |
+| Malformed send array                 | Compute failure rolls back `seqno`.                                   | Can fail after `COMMIT`; `seqno` remains incremented and no messages are emitted. |
+| External send omits `+2`             | `+2` is not required.                                                 | Fails after `COMMIT`; `seqno` remains incremented and no messages are emitted.    |
+| Eligible action error with `+2`      | Action is skipped; `seqno` persists if the action phase succeeds.     | Action is skipped; `seqno` persists if the action phase succeeds.                 |
+| Non-skippable send-action error      | Action phase fails; `seqno` rolls back.                               | Action phase fails; `seqno` rolls back despite compute-phase `COMMIT`.            |
+| Key-change event action fails        | Key rotation and `seqno` roll back; the request path has no `COMMIT`. | Key rotation and `seqno` roll back; the request path has no `COMMIT`.             |
+
+## Error codes
+
+| Error                                             |               Code | Condition                                                                                        |
+| ------------------------------------------------- | -----------------: | ------------------------------------------------------------------------------------------------ |
+| `BeginParseOfNull`                                |                `7` | A required cell or reference is absent; an empty batch has no head reference and fails here      |
+| `InvalidSeqno`                                    |              `133` | Header sequence number differs from storage                                                      |
+| `InvalidSubwalletId`                              |              `134` | Header subwallet ID differs from storage                                                         |
+| `InvalidSignature`                                |              `135` | External signature is invalid; invalid internal signatures return without throwing               |
+| `Expired`                                         |              `136` | `validUntil` is not greater than current Unix time                                               |
+| `ExternalSendMessageMustHaveIgnoreErrorsSendMode` |              `137` | An external send request contains a message without the `+2` flag                                |
+| `InvalidOutArrayLen`                              |              `147` | Parsed count is zero or differs from `len`; an empty batch fails earlier with `BeginParseOfNull` |
+| `NewKeyMustDiffer`                                |              `148` | Rotation supplies the current public key                                                         |
+| `NewKeySignatureIsInvalid`                        |              `149` | New-key proof does not verify for this wallet address                                            |
+| `InvalidOpcode`                                   | `65535` (`0xFFFF`) | Request opcode is not allowed for the selected channel                                           |
+
+## Source files
+
+[WalletTg revision 0](https://github.com/ton-blockchain/tg-wallet-contract/tree/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c): [message definitions](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/messages.tolk), [request handlers](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/WalletTg.tolk), and [outgoing-message parser](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/send-to-c5.tolk). The [TON VM reference](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/doc/tvm.tex) defines `COMMIT`; [TON Core's `CHKSIGNU` implementation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/vm/tonops.cpp) verifies the signature.

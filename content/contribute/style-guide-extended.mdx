@@ -759,7 +759,9 @@ Start the node with `--threads` (see [validator flags → `--threads`](/nodes/ov
 
 ### 12.3 Link targets and format
 
-- Internal links **MUST** be root-absolute and stable (start with `/`), yet relative to the `content/` directory; anchors **MUST** resolve correctly. **MUST NOT** use relative segments like `./` or `../` in Markdown/MDX link URLs or HTML/JSX. (Why: files and folders move frequently; root-absolute links remain correct across moves; relative segments are brittle and costly to maintain.) \[HIGH]
+- Links to other internal pages **MUST** be root-absolute and stable (start with `/`), relative to the `content/` directory; anchors **MUST** resolve correctly. **MUST NOT** use relative segments like `./` or `../` in Markdown/MDX link URLs or HTML/JSX. (Why: root-absolute links do not depend on the source page's location.) \[HIGH]
+
+- Links to anchors on the same page **MUST** use only `#anchor`, without the page path. This applies to inline links, reference definitions, and HTML/JSX links. Anchors **MUST** resolve correctly. (Why: fragment-only links remain on the current page when its path changes.) \[HIGH]
 
 - Cross-section links **SHOULD** deep-link to the exact section or anchor instead of the page top. (Why: deep links land readers on the exact answer.)
 
@@ -773,7 +775,7 @@ Start the node with `--threads` (see [validator flags → `--threads`](/nodes/ov
   [jetton-wallet]: /content/standard/jettons/wallet
   ```
 
-  This keeps body text readable and makes URL updates cheaper, while still requiring root-absolute URLs in the reference definition. (Why: shared link definitions reduce visual noise and simplify maintenance.)
+  Reference definitions **MUST** follow the same target rules: use `#anchor` for the current page and root-absolute URLs for other internal pages. (Why: shared link definitions reduce visual noise and simplify maintenance.)
 
 ### 12.4 Avoid circularity and drift
 
@@ -990,7 +992,7 @@ Objective. Keep repository structure and UI labels consistent. (Why: predictable
 
 ### 16.4 Links and anchors
 
-- Internal links **MUST** be root-absolute (start with `/`) and **MUST NOT** include `./` or `../`; ensure anchors are stable. (Why: root-absolute links survive file moves and changes to the information architecture; relative segments break during reorganizations.) \[HIGH]
+- Internal links **MUST** follow [§12.3](#123-link-targets-and-format): use `#anchor` for same-page anchors and root-absolute URLs for other internal pages. **MUST NOT** include `./` or `../` segments; ensure anchors are stable. (Why: link targets remain independent of the source page's location.) \[HIGH]
 - Trailing slashes: Follow a single repo-wide policy set by the site generator, and apply it consistently across all internal links. (Why: consistency prevents duplicate routes, cache misses, and SEO issues.)
 - Cross-section links **SHOULD** target specific anchors rather than page tops. (Why: deep links land readers directly on the needed detail.)
 

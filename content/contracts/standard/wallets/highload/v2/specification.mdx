@@ -56,15 +56,15 @@ The Highload Wallet v2 contract stores four persistent fields (in this order):
 Allows a single keypair to control multiple wallets with different addresses.
 
 **How it works:**\
-The `subwallet_id` is part of the contract's initial state. Changing it produces a different contract address. Each external message must include the correct `subwallet_id`; mismatches result in transaction failure.
+The `subwallet_id` is part of the contract's initial state. Changing it produces a different contract address. Each [external message](/foundations/messages/external-in) must include the correct `subwallet_id`; mismatches result in transaction failure.
 
 ### `last_cleaned` (64 bits)
 
 **Purpose:**\
-Timestamp (in query\_id format) of the oldest query that was kept during the last cleanup.
+The greatest `query_id` removed by cleanup. The getter uses this watermark to report IDs that may have been forgotten.
 
 **How it works:**\
-During each transaction, the contract removes queries older than **64 seconds** from the `queries` dictionary. The `last_cleaned` field tracks the last query ID that was removed.
+When an external message runs, the contract removes stored IDs whose timestamp portion is strictly more than **64 seconds** old. Cleanup runs only when the wallet processes a later external message, so an idle wallet can retain older entries longer. `last_cleaned` records the last key removed during that cleanup.
 
 **Cleanup logic:**
 
@@ -81,7 +81,7 @@ Queries with `query_id < (now() - 64) << 32` are removed from storage.
 ### `public_key` (256 bits)
 
 **Purpose:**\
-The Ed25519 public key is used to verify signatures on incoming external messages.
+The [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) public key is used to verify signatures on incoming external messages.
 
 **How it works:**\
 When the wallet receives an external message, it verifies that the 512-bit signature was created by the holder of the private key corresponding to this public key.
@@ -94,7 +94,7 @@ Stores processed `query_id` values for replay protection.
 **Structure:**
 
 - **Key:** 64-bit `query_id`
-- **Value:** Cell containing metadata (typically the timestamp when processed)
+- **Value:** An empty cell marker. The key's presence means the ID was processed.
 
 **How it works:**\
 Before processing a message, the contract checks if `query_id` exists in `queries`. If found, the message is rejected (replay attack). If not found, the `query_id` is added to `queries`, and the message is processed.
@@ -150,13 +150,13 @@ Unique identifier for replay protection and timestamp validation.
 The 64-bit value is internally interpreted as a timestamped identifier:
 
 - High 32 bits: Unix timestamp (seconds)
-- Low 32 bits: counter within that second
+- Low 32 bits: application-chosen counter or differentiator
 
 **Validation:**\
 The contract checks `query_id >= now() << 32`, ensuring the query ID is not from the past (based on the current time shifted left by 32 bits).
 
-**Total unique IDs:**\
-Approximately **32,000** unique query IDs (limited by the cleanup mechanism and the bitmap structure).
+**Capacity:**\
+The contract does not define a fixed limit of 32,000 query IDs. The practical limit depends on storage size and the gas needed to remove expired entries. The source recommends no more than 1,000 queries in an expiration interval and fewer than 100 removals in one transaction.
 
 ### `messages` (HashmapE 16)
 
@@ -183,7 +183,7 @@ do {
 ```
 
 **Max batch size:**\
-Up to **255 messages** (limited by action list size, not dictionary structure).
+Up to **254 messages**. The limit comes from TVM action list, not the 16-bit dictionary key space.
 
 ## Replay protection mechanism
 
@@ -200,7 +200,7 @@ Up to **255 messages** (limited by action list size, not dictionary structure).
 <Callout type="caution">
   **Rollback issue:** Highload Wallet v2 does not use `commit()` to persist storage changes. If the compute phase fails after `accept_message()` (e.g., gas limit exceeded during cleanup) or if the action phase fails, **all changes roll back**, including replay protection. The `query_id` is not marked as processed, and lite-servers will retry the same message, burning gas repeatedly.
 
-  Highload Wallet v3 solves this with `commit()` and a two-transaction pattern. See [Why internal messages to self?](/contracts/standard/wallets/highload/v3/specification#why-internal-messages-to-self) for details.
+  Highload Wallet v3 calls `commit()` before validating the outgoing message and processes batch actions in a separate internal transaction. See [Why internal messages to self?](/contracts/standard/wallets/highload/v3/specification#why-internal-messages-to-self) for the batch flow.
 </Callout>
 
 ## Exit codes
@@ -238,10 +238,10 @@ Cleanup operations that exceed this limit will fail, preventing the contract fro
 ### Query ID expiration
 
 **Expiration time:**\
-Queries older than **64 seconds** are removed from storage during cleanup.
+Cleanup removes query IDs whose timestamp portion is strictly older than `now() - 64` seconds. It runs when a later external message is processed, not on a timer.
 
 **Effective limit:**\
-With the 64-second expiration window and recommended limit of ≤1,000 queries per window, the effective query ID space is approximately **32,000** unique IDs before cleanup is required.
+The source recommends no more than 1,000 queries in an expiration interval and fewer than 100 expired entries removed per transaction. These are operating limits for storage and cleanup gas, not a fixed query ID count.
 
 ## Get methods
 
@@ -256,7 +256,7 @@ With the 64-second expiration window and recommended limit of ≤1,000 queries p
 
 - `-1` (true) — the `query_id` was processed and is still stored in `queries`
 - `0` (false) — the `query_id` has not been processed yet
-- `1` (unknown) — the `query_id` is older than `last_cleaned` and was forgotten during cleanup
+- `1` (unknown) — `query_id <= last_cleaned`; cleanup removed that ID or an earlier range of IDs
 
 ## Implementation
 

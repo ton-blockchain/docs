@@ -3,36 +3,42 @@ title: "How to interact with wallets"
 sidebarTitle: "Interact with wallets"
 ---
 
-Creating a wallet involves several steps
+Creating a wallet involves several steps:
 
-- Generate a mnemonic; wallet will be still in [`nonexist`](/foundations/status#status-variety) status.
-- Derive the public key and the wallet address out of it.
-- Put some funds to the address; wallet account will move to [`uninit`](/foundations/status#status-variety) status.
-- Deploy code of wallet contract to that address; account will move to [`active`](/foundations/status#status-variety) status.
+1. Generating a [mnemonic](/contracts/standard/wallets/mnemonics). At this point, an account is still in the [`nonexist`](/foundations/status#status-variety) state.
+1. Deriving the public key and wallet address.
+1. Funding the address with a non-bounceable transfer. The account becomes [`uninit`](/foundations/status#status-variety).
+1. Deploying the wallet contract using its initial [`StateInit`](/foundations/messages/deploy). The account becomes [`active`](/foundations/status#status-variety).
+
+This page covers address derivation and composition of plaintext or encrypted comments. For transfers, use wallet wrappers in an SDK or directly use the [V5 interface](/contracts/standard/wallets/v5-api).
+
+<Callout type="note">
+  For [WalletTg](/contracts/standard/wallets/telegram/overview), use its own [interaction guide](/contracts/standard/wallets/telegram/interact).
+</Callout>
 
 ## Derive wallet address
 
-The following algorithm is used by wallet apps, and has to be replicated if the same wallet address should be generated programmatically.
+Address derivation is contract-specific. For [V4R2][v4] and [V5R1][v5], the address is [derived](/foundations/addresses/derive) from initial [`StateInit`](/foundations/messages/deploy), whose `data` includes:
 
-A wallet account's address is [derived](/foundations/addresses/derive) from [`StateInit`](/foundations/messages/deploy) that stores in its `data` field two values:
-
-- `public_key`, dependent on the [mnemonic](/contracts/standard/wallets/mnemonics);
-- `wallet_id`, a special [salt-like](https://en.wikipedia.org/wiki/Salt_\(cryptography\)) field, dependent on the wallet contract type and the `network_id`.
+- `public_key`, derived from the [mnemonic](/contracts/standard/wallets/mnemonics);
+- `wallet_id`, a wallet identifier whose value depends on the contract and may vary by network.
 
 <Callout type="note">
-  Sometimes `wallet_id` is also called `subwallet_id` in some of the libraries and documentation. They mean the same thing.
+  Sometimes `wallet_id` is also called `subwallet_id` or `subwalletId` in some of the libraries and documentation. They mean the same thing.
 </Callout>
 
-This means that the mnemonic alone does not determine an address uniquely: `wallet_id` has to be known to compute the address.
+The mnemonic alone does not determine contract addresses: the contract version and `wallet_id` **must** also **match**.
+
+Furthermore, the [WalletTg](/contracts/standard/wallets/telegram/overview) contract also derives its address from an initial `StateInit`, but its anchor public key can differ from the current signing key after rotation. See the [integration guide](/contracts/standard/wallets/telegram/integrate#derive-the-original-account) for how to identify both keys.
 
 ### Default `wallet_id` values
 
-| Network | [V4R2](/contracts/standard/wallets/v4) | [V5](/contracts/standard/wallets/v5) |
-| ------- | -------------------------------------- | ------------------------------------ |
-| Mainnet | `0x29a9a317` (698983191)               | `0x7FFFFF11` (2147483409)            |
-| Testnet | `0x29a9a317` (698983191)               | `0x7FFFFFFD` (2147483645)            |
+| Network | [V4R2][v4]               | [V5][v5]                  |
+| ------- | ------------------------ | ------------------------- |
+| Mainnet | `0x29a9a317` (698983191) | `0x7FFFFF11` (2147483409) |
+| Testnet | `0x29a9a317` (698983191) | `0x7FFFFFFD` (2147483645) |
 
-For Wallet V4R2 `wallet_id` is defined as first 4 bytes from TON mainnet blockchain initial state hash. There is no specific logic why this number was chosen, community needed some default value and this one works well enough.
+For Wallet V4R2, the default `wallet_id` comes from the first 4 bytes of TON mainnet's initial state hash. It is a client convention; the contract accepts other IDs.
 
 For Wallet V5, `wallet_id` is different between mainnet and testnet for security reasons. Wallet addresses for the same mnemonic differ across networks. This prevents replaying transactions from testnet on mainnet and ensuing loss of funds. The `wallet_id` value is obtained from
 
@@ -54,7 +60,8 @@ type WalletIdV5ClientContext = {
   // currently always 0 for V5R1
   readonly walletVersion: number;
   // 0 for the first wallet with this mnemonic
-  readonly subwalletNumber: number; // 0..2^15-1
+  // 0..2^15-1
+  readonly subwalletNumber: number;
 };
 
 export function storeWalletIdV5R1(ctx: WalletIdV5ClientContext) {
@@ -82,26 +89,31 @@ export function storeWalletIdV5R1(ctx: WalletIdV5ClientContext) {
 
 ### Examples
 
-The following examples use wrappers for wallet contracts from the [`@ton/ton`](https://github.com/ton-org/ton) TypeScript SDK.
+The following offline examples use [Node.js](https://nodejs.org/en/download) 22 and wrappers from the [`@ton/ton`](https://github.com/ton-org/ton) TypeScript SDK.
+
+Install the dependencies:
+
+```bash
+npm install --save-exact @ton/ton@16.3.0 @ton/core@0.63.1 @ton/crypto@3.3.0
+```
+
+Each example generates a temporary 24-word TON mnemonic and prints an address. For an existing wallet, validate its stored phrase with `mnemonicValidate` before deriving its key pair.
 
 #### Wallet V4R2
 
 ```ts expandable
-import { mnemonicToPrivateKey } from '@ton/crypto';
+import { mnemonicNew, mnemonicToPrivateKey } from '@ton/crypto';
 import { WalletContractV4 } from '@ton/ton';
 
-// 12- or 24-word mnemonic (space-separated)
-const mnemonic = 'bread table ...';
-
-// async function for await
 const main = async () => {
-    const keyPair = await mnemonicToPrivateKey(
-        mnemonic.split(' ')
-    );
+    // Alternatively, pass an existing mnemonic as an env var
+    // and use process.env to retrieve it here
+    const mnemonic = await mnemonicNew(24);
+    const keyPair = await mnemonicToPrivateKey(mnemonic);
     const walletContractV4 = WalletContractV4.create({
         workchain: 0,
         publicKey: keyPair.publicKey,
-        // this magic number is default wallet_id for V4R2 wallet contract
+        // Default wallet_id for V4R2.
         walletId: 0x29a9a317,
     });
     console.log(walletContractV4.address);
@@ -113,17 +125,14 @@ void main();
 #### Wallet V5
 
 ```ts expandable
-import { mnemonicToPrivateKey } from '@ton/crypto';
+import { mnemonicNew, mnemonicToPrivateKey } from '@ton/crypto';
 import { WalletContractV5R1 } from '@ton/ton';
 
-// 12- or 24-word mnemonic (space-separated).
-const mnemonic = 'foo bar baz ...';
-
-// async function for await
 const main = async () => {
-    const keyPair = await mnemonicToPrivateKey(
-        mnemonic.split(' '),
-    );
+    // Alternatively, pass an existing mnemonic as an env var
+    // and use process.env to retrieve it here
+    const mnemonic = await mnemonicNew(24);
+    const keyPair = await mnemonicToPrivateKey(mnemonic);
 
     // testnet
     const testnetV5Wallet = WalletContractV5R1.create({
@@ -151,11 +160,11 @@ const main = async () => {
 void main();
 ```
 
-This wallet contract instance can be used to [send messages](/contracts/standard/wallets/v5-api) to the blockchain.
+Use the resulting wallet wrapper's `sendTransfer` method to send messages. For custom V5 requests, see the [message interface](/contracts/standard/wallets/v5-api).
 
 ## Comments
 
-Wallet apps can attach short human-readable notes — commonly called _comments_ — to outgoing internal messages. On-chain they are just message bodies with a specific layout that ecosystem agreed to interpret as text.
+Wallet apps can attach short human-readable notes, called comments, to outgoing [internal messages](/foundations/messages/internal). A comment has a specific message-body layout that wallet apps interpret as text.
 
 ### Comment format
 
@@ -166,22 +175,22 @@ Wallet apps can attach short human-readable notes — commonly called _comments_
   When parsing, always inspect the opcode before assuming a text or an [encrypted](#encrypted-comments) comment. If the opcode differs, fall back to handling other contract-specific payloads.
 </Callout>
 
-Because comments ride inside ordinary internal messages, the format works identically for:
+The comment encoding is the same across these transfers, but its location differs:
 
-- native Gram transfers between wallets;
-- [Jetton transfers](/contracts/standard/tokens/jettons/api#forward-payload-formats), where the wallet forwards an internal message to the token wallet along with the comment payload;
-- [NFT transfers](/contracts/standard/tokens/nft/api#forward-payload-formats), where the comment travels in the same forwarding message that moves the ownership record.
+- Native Gram transfers between wallets use the comment as the internal message body.
+- [Jetton transfers](/contracts/standard/tokens/jettons/api#forward-payload-formats) put the comment in `forward_payload` of the jetton transfer request.
+- [NFT transfers](/contracts/standard/tokens/nft/api#forward-payload-formats) put the comment in `forward_payload` of the NFT transfer request.
 
 ### Attaching a comment when sending
 
 To include a comment in an outgoing transfer, construct an internal message body that starts with `0x00000000` and append the UTF-8 bytes of the note to share. Most wallet libraries expose helpers for this, but the underlying steps are:
 
-1. Allocate a cell.
+1. Allocate a [cell](/foundations/serialization/cells).
 1. Store the 32-bit zero opcode.
 1. Store the text as a [byte string](/contracts/standard/tokens/metadata#snake-data-encoding) (UTF-8 encoded).
-1. Send the internal message along with the desired Gram, [Jettons](/contracts/standard/tokens/jettons/how-it-works), or [NFT](/contracts/standard/tokens/nft/how-it-works) payload.
+1. For a native Gram transfer, use the cell as the internal message body. For a jetton or NFT transfer, put it in the normal transfer request's `forward_payload` and set a positive forwarding amount to deliver the notification.
 
-Receivers that follow the convention will display the decoded text to the user. Contracts that do not recognize the opcode will ignore it or treat the message body as opaque data, so comments are backward-compatible with existing transfers.
+Wallet apps that support the convention display the decoded text. Contract behavior depends on its message interface; an unsupported body can be rejected or bounced.
 
 ### Example: Composing a comment with `@ton/core`
 
@@ -200,16 +209,19 @@ function createCommentCell(comment: string): Cell {
 
 ## Encrypted comments
 
-Comments can be encrypted: an _encrypted comment_ is an internal message body that hides the contents of a UTF-8 or binary comment from everyone except the sender and the recipient. On-chain, it is still just a message body cell, but the body starts with the opcode `0x2167da4b` instead of the plaintext comment opcode `0x00000000`.
+An _encrypted comment_ hides the contents of a UTF-8 or binary comment from everyone except the sender and recipient. Its [internal message](/foundations/messages/internal) body starts with opcode `0x2167da4b` instead of the [plaintext comment](#comments) opcode `0x00000000`.
 
-Use encrypted comments for wallet-to-wallet transfers when the human-readable memo should remain private. Messages with encrypted comments can be sent anywhere regular plaintext comments can.
+Use encrypted comments when the recipient supports the format and its signing public key is known:
+
+- For [WalletTg](/contracts/standard/wallets/telegram/overview), use the active key from `get_public_key()`.
+- For jetton and NFT transfers, place the encrypted comment in `forward_payload` as described for plaintext comments.
 
 ### Encrypted comment format
 
 Message body layout:
 
 - The first 32 bits of the incoming message body contain the opcode `0x2167da4b`.
-- The rest of the payload contains the encrypted comment stored in the snake cell format. Wallet apps should tolerate invalid or empty strings — many senders emit messages without a comment or with zero-length payloads.
+- The rest of the payload contains the encrypted comment in [snake encoding](/contracts/standard/tokens/metadata#snake-data-encoding). Parse it as binary data, not UTF-8 text.
 
 <Callout type="caution">
   When parsing, always inspect the opcode before assuming a [text](#comments) or encrypted comment. If the opcode differs, fall back to handling other contract-specific payloads.
@@ -218,15 +230,16 @@ Message body layout:
 Bytes stored:
 
 1. `pub_xor`: 32 bytes of `sender_public_key` XOR `recipient_public_key`.
-1. `msg_key`: first 16 bytes of `HMAC-SHA512(salt, padded_data)`, where `salt` is the sender's [user-friendly and URL-safe address string](/foundations/addresses/formats#user-friendly-format):
+1. `msg_key`: first 16 bytes of [`HMAC-SHA512`](https://www.rfc-editor.org/rfc/rfc4231) applied to `padded_data` with `salt` as the key. The salt is the sender's [user-friendly and URL-safe address string](/foundations/addresses/formats#user-friendly-format):
    ```ts
+   // Not runnable: address is the sender's @ton/core Address.
    address.toString({
      bounceable: true,
      testOnly: false,
      urlSafe: true,
    })
    ```
-1. `ciphertext`: up to 976 bytes of `AES-256-CBC(padded_data)` ciphertext.
+1. `ciphertext`: up to 976 bytes of [`AES-256-CBC`](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf) ciphertext from `padded_data`.
 
 There, `padded_data` consists of:
 
@@ -237,8 +250,10 @@ Finally,
 
 - `HMAC-SHA512` is a [HMAC](https://en.wikipedia.org/wiki/HMAC) applied with a 512-bit [SHA-2](https://en.wikipedia.org/wiki/SHA-2) hash.
 - `AES-256-CBC` stands for [AES encryption](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) with a 256-bit key using [Cipher Block Chaining (CBC) mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_block_chaining_\(CBC\)).
-- `sender_public_key` and `sender_private_key` — 32-byte Ed25519 public and private keys of the sender, respectively.
+- `sender_public_key` and `sender_private_key` — the sender's 32-byte [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) public key and private seed, respectively.
 - `recipient_public_key` — 32-byte Ed25519 public key of the receiver.
+
+When decrypting, reject malformed lengths and invalid prefixes. Recompute `msg_key` from the salt and decrypted `padded_data`, and require it to match before displaying the comment.
 
 ### Attaching an encrypted comment when sending
 
@@ -248,7 +263,7 @@ To include an encrypted comment in an outgoing transfer, construct an internal m
 1. Generate a random prefix so `prefix.length >= 16` and `(prefix.length + comment.length) % 16 == 0`.
 1. Set `prefix[0] = prefix.length`.
 1. Set `padded_data` as byte-string concatenation of `prefix` and `comment` bytes.
-1. Derive `shared_secret` using `sender_private_key` and `recipient_public_key`.
+1. Derive `shared_secret` using `sender_private_key` and `recipient_public_key`. Validate the recipient's Ed25519 point, convert both keys to X25519, and reject an all-zero shared secret.
 1. Set `salt` as a bounceable, URL-safe, user-friendly `sender_address` string.
 1. Compute `msg_key` as the first 16 bytes of HMAC-SHA512 of the `salt` and `padded_data`.
 1. Compute `x` as HMAC-SHA512 of the `shared_secret` and `msg_key`.
@@ -259,11 +274,11 @@ To include an encrypted comment in an outgoing transfer, construct an internal m
    - Each cell, except the last, has a reference to the next cell. The maximum allowed reference depth `k` is 16, and the maximum total string length is 1024 bytes.
    - The root cell `c_1` contains up to 39 bytes, including the 4-byte tag; all following contain up to 127 bytes.
 
-Contracts that do not recognize the opcode will ignore it or treat the message body as opaque data, so encrypted comments are backward-compatible with existing transfers.
+The recipient contract must accept the body or forwarding payload. Contracts that do not recognize the opcode will ignore it or treat the message body as opaque data, so encrypted comments are backward-compatible with regular Gram transfers.
 
 ### Example: Composing an encrypted comment with `@ton/core`
 
-This implementation uses `@ton/core` for cells and addresses, `@ton/crypto` for TON wallet keys and hashes, and Node.js `crypto` for AES-256-CBC:
+This implementation uses `@ton/core` for cells and addresses, `@ton/crypto` for Ed25519 public-key derivation and hashes, and Node.js `crypto` for AES-256-CBC. It includes Ed25519-to-X25519 conversion and X25519 helpers and accepts the sender's already-derived 32-byte Ed25519 signing seed.
 
 ```ts
 import { createCipheriv } from 'node:crypto';
@@ -271,42 +286,32 @@ import { Address, beginCell, Cell } from '@ton/core';
 import {
   getSecureRandomBytes,
   keyPairFromSeed,
-  mnemonicToPrivateKey,
-  sha512,
   hmac_sha512,
+  sha512,
 } from '@ton/crypto';
 
 const ENCRYPTED_COMMENT_OP = 0x2167da4b;
 
 export async function createEncryptedCommentBody(args: {
-  /** Sender wallet mnemonic. Defaults to process.env.MNEMONIC */
-  mnemonic?: string;
+  /** The sender's current signing key as an already-derived, 32-byte Ed25519 seed. */
+  senderPrivateSeed: Buffer;
 
   /** From whom the message will be sent */
   senderAddress: Address;
 
-  /**
-   * Public key of the recipient's TON wallet,
-   * obtained via calling the get_public_key() get-method
-   */
+  /** Recipient's active Ed25519 public key; for WalletTg, read it with get_public_key(). */
   recipientPublicKey: Buffer;
 
   /** Plaintext comment or data to encrypt */
   comment: string | Buffer;
 }): Promise<Cell> {
-  const mnemonic = args.mnemonic ?? process.env.MNEMONIC;
-  if (!mnemonic) {
-    throw new Error('Pass mnemonic or set MNEMONIC in the environment');
+  const senderSeed = Buffer.from(args.senderPrivateSeed);
+  if (senderSeed.length !== 32) {
+    throw new Error('senderPrivateSeed must be a 32-byte Ed25519 seed');
   }
   if (args.recipientPublicKey.length !== 32) {
     throw new Error('recipientPublicKey must be 32 bytes');
   }
-  const keyPair = await mnemonicToPrivateKey(mnemonic.trim().split(/\s+/));
-  // First 32 bytes of the sender_private_key
-  const senderSeed = Buffer.from(
-    // sender_private_key
-    keyPair.secretKey,
-  ).subarray(0, 32);
   // sender_public_key
   const senderPublicKey = Buffer.from(keyPairFromSeed(senderSeed).publicKey);
 
@@ -361,7 +366,7 @@ export async function createEncryptedCommentBody(args: {
   return encryptedCommentToCell(encryptedComment);
 }
 
-// --- helper functions ---
+// --- utils ---
 
 function mod(a: bigint): bigint {
   const P = (1n << 255n) - 19n;
@@ -473,13 +478,33 @@ async function tonEd25519SharedSecret(
   const publicY = Buffer.from(peerPublicKey);
   publicY[31] &= 127;
 
+  const P = (1n << 255n) - 19n;
   const y = leToBigInt(publicY);
+  if (y >= P) {
+    throw new Error('Invalid Ed25519 public key');
+  }
+
+  // Check that the encoded y coordinate corresponds to an Ed25519 point.
+  const ySquared = mod(y * y);
+  const d = mod(-121665n * inv(121666n));
+  const xSquared = mod((ySquared - 1n) * inv(d * ySquared + 1n));
+  if (
+    (xSquared === 0n && (peerPublicKey[31] & 128) !== 0) ||
+    (xSquared !== 0n && modPow(xSquared, (P - 1n) / 2n) !== 1n)
+  ) {
+    throw new Error('Invalid Ed25519 public key');
+  }
+
   const u = mod((y + 1n) * inv(1n - y));
 
   const h = await sha512(privateSeed);
   const scalar = Buffer.from(h.subarray(0, 32));
 
-  return x25519(scalar, bigIntToLe(u, 32));
+  const sharedSecret = x25519(scalar, bigIntToLe(u, 32));
+  if (sharedSecret.every((byte) => byte === 0)) {
+    throw new Error('Invalid public key: all-zero shared secret');
+  }
+  return sharedSecret;
 }
 
 function xor32(a: Buffer, b: Buffer): Buffer {
@@ -525,7 +550,17 @@ function encryptedCommentToCell(encryptedComment: Buffer): Cell {
 }
 ```
 
+<Callout
+  type="note"
+  title="WalletTg"
+>
+  When composing the encrypted messages for WalletTg, use the sender's current signing seed. The [WalletTg integration guide](/contracts/standard/wallets/telegram/integrate#derive-the-original-account) explains key selection, and the [key-management reference](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) covers historical encrypted comments.
+</Callout>
+
 References:
 
 - [`encryption.js` in `toncenter/ton-wallet`](https://github.com/toncenter/ton-wallet/blob/be5c434c1ca0694c67661bf2c726d6859c95352f/src/js/util/encryption.js)
 - [`SimpleEncryption.cpp` in `ton-blockchain/ton`](https://github.com/ton-blockchain/ton/blob/f262baeaba892f17b8f612f97b919a2b25e83bf0/tonlib/tonlib/keys/SimpleEncryption.cpp)
+
+[v4]: /contracts/standard/wallets/v4
+[v5]: /contracts/standard/wallets/v5

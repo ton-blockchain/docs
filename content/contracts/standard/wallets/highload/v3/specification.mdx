@@ -18,7 +18,7 @@ Understand the internal architecture, data structures, and operational mechanics
 Highload Wallet v3 is a specialized wallet smart contract designed for services that need to send many transactions in a short time (e.g., cryptocurrency exchanges, payment processors).
 
 **Key difference from standard wallets:**\
-Unlike seqno-based wallets (v3, v4, v5) that require sequential transaction processing, Highload v3 stores processed request identifiers in a dictionary, enabling **parallel transaction submission** without blocking.
+Unlike seqno-based wallets (v3, v4, v5), which require clients to coordinate the next `seqno`, Highload v3 stores processed request identifiers in a dictionary. Clients can submit requests concurrently with distinct `query_id` values; the account still processes transactions sequentially.
 
 **Compared to Highload v2:**\
 v3 solves architectural issues that could lock funds in v2 and consumes less gas during operations.
@@ -71,7 +71,7 @@ The Highload Wallet v3 contract stores six persistent fields:
 ### `public_key` (256 bits)
 
 **Purpose:**\
-An Ed25519 public key is used to verify signatures on incoming external messages.
+An [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) public key is used to verify signatures on incoming [external messages](/foundations/messages/external-in).
 
 **How it works:**\
 When the wallet receives an external message, it verifies that the 512-bit signature was created by the holder of the private key corresponding to this public key.
@@ -92,7 +92,7 @@ The `subwallet_id` is part of the contract's initial state. Changing it produces
 One private key manages multiple "virtual" wallets for organizational or accounting purposes.
 
 **Recommendation:**\
-Use `subwallet_id: 0x10ad` (4269) to avoid conflicts with other wallet types (standard wallets or vesting wallets) derived from the same keypair. See [How to create Highload Wallet v3](/contracts/standard/wallets/highload/v3/create) for details.
+The official Highload Wallet v3 repository uses `subwallet_id: 0x10ad` (4269) as a convention. Different wallet code produces different addresses even when the key and `subwallet_id` match. Use distinct [`subwalletId` values](/contracts/standard/wallets/highload/v3/create#subwalletid) to distinguish wallets with the same code and remaining configuration.
 
 ### `old_queries` (HashmapE 13 ^Cell)
 
@@ -126,7 +126,7 @@ When a message arrives, the contract checks if its `query_id` is already marked 
 Unix timestamp (in seconds) of the last cleanup operation.
 
 **Usage:**\
-Tracks when the contract last rotated `queries` → `old_queries`. Cleanup triggers when `current_time >= last_clean_time + timeout`.
+Tracks when the contract last rotated `queries` → `old_queries`. Cleanup triggers when `current_time > last_clean_time + timeout`.
 
 **Details:** See [Replay protection mechanism](#replay-protection-mechanism).
 
@@ -139,7 +139,7 @@ Defines the validity window (in seconds) for external messages.
 Messages are valid if `created_at > now() - timeout` and `created_at <= now()`. If expired or from the future, the contract rejects them with exit code `35`.
 
 <Callout type="note">
-  22 bits allows timeout values up to \~4,194,303 seconds (\~48.6 days).
+  22 bits encodes values from 0 to 4,194,303 seconds (about 48.6 days). A zero timeout has no valid timestamp because the lower bound is strict; choose a positive timeout. If your client subtracts 30 seconds from the current time, use a timeout greater than 30 seconds.
 </Callout>
 
 **Details:**
@@ -189,21 +189,21 @@ Enables [parallel transaction submission](#what-is-highload-wallet-v3) — multi
 
 ### Rotation mechanism
 
-When `current_time >= last_clean_time + timeout`, the contract performs cleanup:
+When the contract processes an external request after `current_time > last_clean_time + timeout`, it performs cleanup:
 
 1. `old_queries := queries` — move current queries to old
 1. `queries := {}` — clear current queries hashmap
 1. `last_clean_time := current_time` — update timestamp
 
 **Additional cleanup:**\
-If `current_time >= last_clean_time + (2 × timeout)` (i.e., no cleanup for twice the timeout period), the contract also clears `old_queries` completely to prevent unbounded storage growth.
+If `current_time > last_clean_time + (2 × timeout)` when an external request is processed, the contract also clears `old_queries` completely to prevent unbounded storage growth.
 
 **Why two hashmaps?**\
 This provides a **double timeout window** for replay protection:
 
-- A `query_id` is protected for at least `timeout` seconds in `queries`
-- After rotation, it remains in `old_queries` for another `timeout` period before deletion
-- Total protection window: between `timeout` and `2 × timeout`
+- A `query_id` remains protected while its marker is in either hashmap
+- Cleanup is request-driven, so an idle wallet can retain markers longer than `2 × timeout`
+- Message timestamp validation independently rejects a replay after its signed validity window
 
 **Benefit:**\
 Prevents replay attacks even if messages arrive near the rotation boundary.
@@ -214,8 +214,8 @@ The `created_at` timestamp combined with `timeout` ensures that even very old me
 
 ```text
 The message is valid if:
-  created_at > now() - timeout  // Not too old
-  created_at <= now()           // Not from future
+  created_at > now() - timeout
+  created_at <= now()
 Otherwise: reject with exit code 35
 ```
 
@@ -225,7 +225,8 @@ Otherwise: reject with exit code 35
   **Best practice:** Set `created_at` to 30-60 seconds **before** the current time to ensure the message passes validation:
 
   ```typescript
-  const createdAt = Math.floor(Date.now() / 1000) - 30;  // 30 seconds ago
+  // Not runnable: use when constructing the signed request.
+  const createdAt = Math.floor(Date.now() / 1000) - 30;
   ```
 
   If `created_at` equals your current system time, it may appear to be "from the future" when validated on-chain, causing the transaction to fail with exit code `35`.
@@ -239,9 +240,9 @@ Otherwise: reject with exit code 35
 
 ### Why internal messages to self?
 
-Highload v3 uses a unique **internal message to self** pattern for a critical security reason related to TON's transaction phases.
+For batch transfers, Highload v3 queues the action list in an **internal message to self**. This separates replay protection from the action phase that sends the batch.
 
-**The problem with standard external message wallets:**
+**The transaction rollback risk:**
 
 In TON, transaction processing includes several phases. Two phases are critical for understanding this problem:
 
@@ -250,18 +251,18 @@ In TON, transaction processing includes several phases. Two phases are critical 
 
 If the action phase fails (e.g., insufficient funds for outgoing messages), the **entire transaction is rolled back**, including all storage changes made in the compute phase.
 
-For standard wallets that process external messages and send outgoing messages directly, this creates a problem: if you mark a message as "processed" in the compute phase but the action phase then fails (e.g., due to insufficient balance or invalid message), the rollback will **undo the replay protection**. Since the message was never marked as processed, lite-servers will keep retrying the same external message again and again, **burning gas on each attempt** for a long time or until the wallet runs out of funds.
+If a contract records a replay marker in the same transaction that sends outgoing messages, an action-phase failure can roll back both the messages and the marker. Whether this applies depends on the contract's commit behavior and message flow.
 
-**Highload v3's solution:**
+**Highload v3's batch flow:**
 
-Highload v3 uses a two-step approach with **internal messages**:
+For a batch, Highload v3 uses two transactions:
 
-1. **Transaction 1 (external message):** Only marks `query_id` as processed and sends an **internal message to itself**
-1. **Transaction 2 (internal message):** Processes the internal message and sends actual outgoing transfers
+1. **Transaction 1 (external message):** Marks `query_id` as processed and sends an **internal message to itself** with the action list
+1. **Transaction 2 (internal message):** Processes the action list and sends outgoing transfers
 
-Even if Transaction 2 fails in the action phase, Transaction 1 has already succeeded, and its storage changes (replay protection) cannot be rolled back. The `query_id` remains marked as processed, preventing replay attacks.
+If Transaction 2 fails in its action phase, Transaction 1 has already succeeded. That failure cannot roll back Transaction 1's replay marker, so the `query_id` remains consumed.
 
-This architecture solves a fundamental problem present in all standard external message wallets, including seqno-based wallets and earlier highload designs.
+The direct single-transfer path sends its one message in Transaction 1 and does not use this internal self-message pattern.
 
 ## External message structure
 
@@ -370,7 +371,7 @@ Must match the `timeout` value stored in contract storage.
 Exit code `38`.
 
 <Callout type="note">
-  22 bits allows timeout values up to \~4.8 million seconds (\~55 days).
+  A 22-bit unsigned integer holds values from 0 through 4,194,303 seconds (about 48.6 days).
 </Callout>
 
 ### `send_mode` (8 bits)
@@ -411,7 +412,7 @@ Highload v3 can send **only ONE internal message** per external message. For bat
 
 ## Message sending flow
 
-Highload v3 uses a two-transaction pattern to safely send messages:
+Highload v3 uses a two-transaction pattern for batch transfers:
 
 <Image
   src="/images/wallets/msg_flow_light.png"
@@ -422,7 +423,7 @@ Highload v3 uses a two-transaction pattern to safely send messages:
 <Callout type="note">
   **Why two transactions?**
 
-  This pattern ensures that replay protection is never rolled back, even if the actual message sending fails due to insufficient funds or other action phase errors. Transaction 1 commits the `query_id` to storage before any outgoing messages are attempted in Transaction 2.
+  For a batch, Transaction 1 commits the `query_id` before Transaction 2 attempts its outgoing messages. A failure in Transaction 2 cannot roll back Transaction 1. Direct single transfers send one message in Transaction 1 and do not create a self-message transaction.
 
   **Critical detail:** Message validation (step 9) happens **after commit** (step 8) to prevent infinite retries of invalid messages by lite-servers.
 </Callout>
@@ -463,11 +464,15 @@ Send an internal message to the wallet itself with opcode `0xae42e5a4` (`interna
 
 Highload v3 supports up to **8,380,416 unique query IDs** (see [`query_id` structure](#query-id-structure) for details).
 
-**Impact on throughput:**\
-If you send messages faster than `timeout`, you may exhaust available query IDs. After `timeout`, old IDs can be reused.
+### Safe query ID allocation
 
-**Recommended strategy:**\
-Use a counter-based approach, incrementing `query_id` for each message.
+Allocate a new `query_id` for each new request and persist the allocator state before sending. Reserve IDs atomically so concurrent processes cannot allocate the same value. A crash after reservation may leave a gap; skipping an ID is safe.
+
+The TypeScript `HighloadQueryId.getNext()` method returns a new object and does not mutate the current one. Assign the returned value and persist it. The repository wrapper reserves the final value for emergency withdrawal; check `hasNext()` before reserving.
+
+For an uncertain submission, look up the saved request and retry it with the same `query_id`, `created_at`, and action payload. Do not allocate a new ID for a transport retry. Allocate a new ID for a new request. Keep each request's ID, timestamp, and payload in a durable outbox so the request can be reconstructed after a restart.
+
+Do not reset the counter or reuse an ID based only on elapsed time. A processed ID remains protected while its marker is present in either hashmap. Reuse an ID only after cleanup has removed its marker from both maps and no request using it can still be valid.
 
 ### Timeout constraints
 
@@ -477,7 +482,7 @@ The `timeout` value affects message validity, storage costs, and operational beh
 Messages are valid for `timeout` seconds after `created_at`. Expired messages are rejected with exit code 35.
 
 **Storage costs:**\
-Processed `query_id` values remain in storage for up to `2 × timeout` (across `queries` and `old_queries` hashmaps). Longer timeouts increase storage size and costs.
+Processed `query_id` markers remain in storage until a later external request runs cleanup. With regular activity, cleanup rotates the maps at timeout intervals; an idle wallet can retain markers longer than `2 × timeout`. Longer timeouts can increase storage size and costs.
 
 **Operational impact:**
 
@@ -494,13 +499,13 @@ Gas costs vary depending on the number of outgoing messages sent:
 | 10 messages  | TBD                      | TBD                      | TBD   |
 | 254 messages | TBD                      | TBD                      | TBD   |
 
-**What affects gas costs:**
+**Replay bookkeeping:**
 
-Gas consumption depends **only** on the number of entries in `queries` and `old_queries` hashmaps. Cleanup/rotation operations are highly optimized and add minimal overhead (unlike Highload v2).
+Gas for replay bookkeeping depends on entries in the `queries` and `old_queries` hashmaps. Cleanup and rotation add work as those maps grow. This does not describe the full transaction cost, which also includes message import, self-message forwarding, and outgoing actions.
 
 **Forward fees:**
 
-The two-transaction pattern means forward fees are spent **twice**: first when sending the external message (outside → external), then when the wallet sends an internal message to itself (external → internal). This makes Highload v3 approximately **2× more expensive in forward fees** compared to single-transaction wallets like v5.
+The external message incurs its import and processing costs. The wallet then pays a forwarding fee for the internal message to itself and forwarding fees for outgoing messages. The external inbound message is not a second on-chain forwarding hop, so do not estimate forward fees by doubling a single-transaction wallet's total.
 
 Forward fees scale with:
 
@@ -511,25 +516,26 @@ Forward fees scale with:
 
 Highload Wallet v3 provides several read-only methods for monitoring and verification.
 
-| Method                             | Returns          | Description                                                                   |
-| ---------------------------------- | ---------------- | ----------------------------------------------------------------------------- |
-| `get_public_key()`                 | `int` (256 bits) | Returns the stored public key                                                 |
-| `get_subwallet_id()`               | `int` (32 bits)  | Returns the subwallet ID                                                      |
-| `get_timeout()`                    | `int`            | Returns the current timeout value (stored as uint22)                          |
-| `get_last_clean_time()`            | `int` (64 bits)  | Returns the Unix timestamp of the last cleanup                                |
-| `processed?(query_id, need_clean)` | `(int, int)`     | Checks if `query_id` was processed; optionally indicates if cleanup is needed |
+| Method                             | Returns          | Description                                                                      |
+| ---------------------------------- | ---------------- | -------------------------------------------------------------------------------- |
+| `get_public_key()`                 | `int` (256 bits) | Returns the stored public key                                                    |
+| `get_subwallet_id()`               | `int` (32 bits)  | Returns the subwallet ID                                                         |
+| `get_timeout()`                    | `int`            | Returns the current timeout value (stored as uint22)                             |
+| `get_last_clean_time()`            | `int` (64 bits)  | Returns the Unix timestamp of the last cleanup                                   |
+| `processed?(query_id, need_clean)` | `int` (boolean)  | Returns whether `query_id` is currently processed, optionally evaluating cleanup |
 
 ### `processed?` method details
 
 **Parameters:**
 
 - `query_id` (int): The query ID to check.
-- `need_clean` (int): If non-zero, also return whether cleanup is due.
+- `need_clean` (int): If non-zero, evaluate the query after applying the time-based cleanup logic for this getter call.
 
 **Returns:**
 
-- First int: `-1` if processed, `0` if not.
-- Second int: `-1` if cleanup is needed, `0` otherwise.
+- `-1` if processed, `0` if not.
+
+The getter returns one stack value. A getter call does not persist cleanup changes to contract storage. The repository wrapper reads the value as a boolean and defaults `need_clean` to `true`.
 
 **Use case:**\
 Before sending a message, check if a `query_id` was already used to avoid replay errors.

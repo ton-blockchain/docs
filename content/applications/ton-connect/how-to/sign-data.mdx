@@ -15,13 +15,14 @@ Three payload variants cover three use cases:
 
 ## Calling `signData`
 
-`tonConnectUi.signData(payload)` is the entry point. The wallet must be connected when you call it, or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal — a compliant wallet then handles connect and sign in one tap. See [Connect-and-act in one tap](/applications/ton-connect/how-to/embedded-request). Without either, the SDK throws.
+`tonConnectUi.signData(payload)` is the entry point. The wallet must be connected when you call it, or pass `options.enableEmbeddedRequest: true` to defer the request until a wallet is picked from the modal. A compliant wallet then handles [connect and sign in one tap](/applications/ton-connect/how-to/embedded-request). Without either, the SDK throws.
 
 ### Text
 
 Use `text` for anything a person should read and approve — confirmation prompts, off-chain auth challenges, login messages.
 
 ```ts
+// Not runnable: initialize tonConnectUi with a connected wallet.
 const result = await tonConnectUi.signData({
     type: 'text',
     text: 'Confirm new 2fa number:\n+1 234 567 8901',
@@ -35,6 +36,7 @@ const result = await tonConnectUi.signData({
 Use `binary` for opaque bytes — encrypted blobs, hashes, anything the user cannot read. Pass the bytes as base64 (not URL-safe).
 
 ```ts
+// Not runnable: initialize tonConnectUi with a connected wallet.
 const result = await tonConnectUi.signData({
     type: 'binary',
     bytes: 'KGVsZWN0cmljIGJvb2dhbG9vKQ==',
@@ -48,6 +50,7 @@ const result = await tonConnectUi.signData({
 Use `cell` when a smart contract will verify the signature. The wallet hashes a TON cell, not a flat byte string; you also send the [TL-B](/foundations/tlb/overview) schema so the wallet can decode the cell on-screen.
 
 ```ts
+// Not runnable: initialize tonConnectUi with a connected wallet.
 const result = await tonConnectUi.signData({
     type: 'cell',
     schema: 'transfer#0f8a7ea5 query_id:uint64 amount:(VarUInteger 16) destination:MsgAddress response_destination:MsgAddress custom_payload:(Maybe ^Cell) forward_ton_amount:(VarUInteger 16) forward_payload:(Either Cell ^Cell) = InternalMsgBody;',
@@ -65,26 +68,34 @@ All three variants return the same shape:
 
 ```ts
 interface SignDataResult {
-    signature: string;  // base64 Ed25519 signature
-    address: string;    // raw wallet address ("0:<hex>")
-    timestamp: number;  // unix seconds (UTC) at signing time
-    domain: string;     // app domain (URL part, not encoded)
-    payload: object;    // the payload from the request
-    traceId?: string;   // UUID for end-to-end analytics correlation
+    // Base64 Ed25519 signature.
+    signature: string;
+    // Raw wallet address ("0:<hex>").
+    address: string;
+    // Unix seconds (UTC) at signing time.
+    timestamp: number;
+    // App domain (URL part, not encoded).
+    domain: string;
+    // The payload from the request.
+    payload: object;
+    // UUID for end-to-end analytics correlation.
+    traceId?: string;
 }
 ```
 
 `payload` is the original request payload, echoed back verbatim. Reuse it when reconstructing the signed bytes for verification — never re-serialize.
 
 ```ts
+// Not runnable: initialize tonConnectUi and define the payload.
 const result = await tonConnectUi.signData(payload, {
-    traceId: '019a2a92-a884-7cfc-b1bc-caab18644b6f', // optional; SDK generates a UUIDv7 if omitted
+    // Optional; the SDK generates a UUIDv7 if omitted.
+    traceId: '019a2a92-a884-7cfc-b1bc-caab18644b6f',
 });
 
 console.log(result.signature);
 ```
 
-See [Bridge specification § `trace_id`](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#trace_id--analytics-correlation) for the protocol-level details.
+The [bridge specification](https://github.com/ton-blockchain/ton-connect/blob/main/spec/bridge.md#trace_id--analytics-correlation) defines `trace_id` at the protocol level.
 
 ## Detecting wallet support
 
@@ -98,20 +109,18 @@ To verify on the backend:
 
 1. Reconstruct `message` from the response fields.
 1. Compute `sha256(message)`.
-1. Look up the user's Ed25519 `publicKey` — extract it from `walletStateInit` (see below), then fall back to calling `get_public_key` on-chain. Never trust `publicKey` from the wallet response directly. See [Connect a wallet § backend verification](/applications/ton-connect/how-to/connect#backend-verification).
+1. Resolve the user's Ed25519 `publicKey` from trusted wallet data: parse `StateInit` only for a recognized layout, or use the active account's `get_public_key()` getter after validating the account code. [Never trust](/applications/ton-connect/how-to/connect#backend-verification) a key echoed by the wallet response.
 1. Verify the Ed25519 signature against the digest.
 1. Reject if `Timestamp` is outside your tolerance window — 15 minutes is a common bound.
 1. Reject if `domain` is not your domain.
 
 ### Extracting the public key
 
-The wallet response carries the address and the signature; the public key needed for verification has to be resolved from the wallet's `stateInit` (received during connect and stored in the dApp's session) or from the on-chain `get_public_key` getter when the contract is deployed.
+The `tryExtractPublicKey()` function below walks the standard `v1R1`–`v5R1` wallet contract codes and parses the public key out of the data cell when it finds a match. The data layout differs per wallet version, so each version has its own parser:
 
-`tryExtractPublicKey` walks the standard `v1R1`–`v5R1` contract codes and parses the public key out of the data cell when it finds a match. The data layout differs per wallet version, so each version has its own parser:
-
-```ts
+```ts title="wallet-public-key.ts"
+import type { Slice, StateInit } from '@ton/core';
 import {
-    Slice, StateInit,
     WalletContractV1R1, WalletContractV1R2, WalletContractV1R3,
     WalletContractV2R1, WalletContractV2R2,
     WalletContractV3R1, WalletContractV3R2,
@@ -148,19 +157,77 @@ export function tryExtractPublicKey(stateInit: StateInit): Buffer | null {
             if (code.equals(stateInit.code)) {
                 return load(stateInit.data.beginParse());
             }
-        } catch { /* unknown layout — try next */ }
+        } catch {
+            // Try the next known layout.
+        }
     }
     return null;
 }
 ```
 
+[`WalletTg`](/contracts/standard/wallets/telegram/overview) has a special layout that is not recognized by the `tryExtractPublicKey()` function above: its initial public key from the `StateInit` can become stale after [rotation](/contracts/standard/wallets/mnemonics#rotation-mnemonics).
+
+To extract the current public key, match the `StateInit` code hash of a given contract with the one of `WalletTg`, then read the current key from the active account's get-method. Configure `TonClient` for the connected TON network to call the getter off-chain.
+
+<Callout type="tip">
+  If the contract type is known ahead of time, one only needs to call the `get_public_key` getter off-chain to obtain the target public key. Otherwise, proceed with the example below.
+</Callout>
+
+```ts title="wallet-tg-public-key.ts"
+import { Cell } from '@ton/core';
+import type { Address, StateInit } from '@ton/core';
+import type { TonClient } from '@ton/ton';
+import { Buffer } from 'node:buffer';
+
+export const WALLET_TG_CODE_HASH = '9149ae51c1e4689710cebf7830297b16acfbadb363a920a537893e7ffeeca768';
+
+export async function getWalletTgPublicKey(
+    client: TonClient,
+    address: Address,
+    stateInit: StateInit,
+): Promise<Buffer> {
+    if (stateInit.code?.hash().toString('hex') !== WALLET_TG_CODE_HASH) {
+        throw new Error('StateInit is not WalletTg');
+    }
+
+    const provider = client.provider(address, null);
+    const account = await provider.getState();
+    if (account.state.type !== 'active' || !account.state.code) {
+        throw new Error('Address is not an active WalletTg account');
+    }
+    const code = Cell.fromBoc(account.state.code);
+    if (
+        code.length !== 1 ||
+        code[0].hash().toString('hex') !== WALLET_TG_CODE_HASH
+    ) {
+        throw new Error('Address is not an active WalletTg account');
+    }
+
+    const { stack } = await provider.get('get_public_key', []);
+    const value = stack.readBigNumber();
+    if (value < 0n || value >= (1n << 256n)) {
+        throw new Error('Invalid WalletTg public key');
+    }
+
+    // The uint256 getter value is converted to exactly 32 big-endian bytes.
+    return Buffer.from(value.toString(16).padStart(64, '0'), 'hex');
+}
+```
+
+If account-state lookup or the getter fails, reject verification. The verifier below supports the fixed-key wallets listed above and WalletTg. Add other wallet contracts only after defining how to validate their code and resolve their signing key.
+
 ### Node.js verifier
 
-```ts
-import { Address, Cell, contractAddress, loadStateInit } from '@ton/ton';
+```ts title="verify-sign-data.ts"
+import { Address, Cell, contractAddress, loadStateInit } from '@ton/core';
+import type { TonClient } from '@ton/ton';
 import { sha256 } from '@ton/crypto';
 import { Buffer } from 'node:buffer';
 import nacl from 'tweetnacl';
+
+// Save the two helpers above alongside this file.
+import { tryExtractPublicKey } from './wallet-public-key.js';
+import { getWalletTgPublicKey, WALLET_TG_CODE_HASH } from './wallet-tg-public-key.js';
 
 interface SignDataResult {
     signature: string;
@@ -172,9 +239,11 @@ interface SignDataResult {
 
 export async function verifyTextOrBinary(
     res: SignDataResult,
-    walletStateInit: string,    // base64 BoC from the connect event
+    // Base64-encoded BoC string from the connect event.
+    walletStateInit: string,
+    // Configure for the connected account's network.
+    client: TonClient,
     expected: { domain: string; maxAgeSeconds: number },
-    getWalletPublicKey: (address: string) => Promise<Buffer | null>,
 ): Promise<boolean> {
     if (res.domain !== expected.domain) return false;
     const now = Math.floor(Date.now() / 1000);
@@ -185,7 +254,15 @@ export async function verifyTextOrBinary(
     const derivedAddress = contractAddress(addr.workChain, stateInit);
     if (!derivedAddress.equals(addr)) return false;
 
-    const publicKey = tryExtractPublicKey(stateInit) ?? (await getWalletPublicKey(res.address));
+    const isWalletTg = stateInit.code?.hash().toString('hex') === WALLET_TG_CODE_HASH;
+    let publicKey: Buffer | null;
+    try {
+        publicKey = isWalletTg
+            ? await getWalletTgPublicKey(client, addr, stateInit)
+            : tryExtractPublicKey(stateInit);
+    } catch {
+        return false;
+    }
     if (!publicKey) return false;
 
     const wc = Buffer.alloc(4);
@@ -232,12 +309,18 @@ import { beginCell } from '@ton/core';
 import crc32 from 'crc-32';
 
 const message = beginCell()
-    .storeUint(0x75569022, 32)              // magic prefix
-    .storeUint(crc32.buf(Buffer.from(schema, 'utf8')) >>> 0, 32) // schema hash
-    .storeUint(timestamp, 64)               // unix seconds
-    .storeAddress(userWalletAddress)        // MsgAddressInt
-    .storeStringRefTail(encodedDomain)      // DNS wire format per TEP-81
-    .storeRef(payloadCell);                 // the cell the dApp sent
+    // Magic prefix.
+    .storeUint(0x75569022, 32)
+    // Schema hash.
+    .storeUint(crc32.buf(Buffer.from(schema, 'utf8')) >>> 0, 32)
+    // Unix seconds.
+    .storeUint(timestamp, 64)
+    // MsgAddressInt.
+    .storeAddress(userWalletAddress)
+    // DNS wire format per TEP-81.
+    .storeStringRefTail(encodedDomain)
+    // The cell the dApp sent.
+    .storeRef(payloadCell);
 
 const signature = Ed25519Sign(message.hash(), privkey);
 ```
@@ -260,13 +343,16 @@ message#75569022
 
 ### FunC verifier
 
-A receiver smart contract that accepts a signed cell stores the expected `user_address`, `user_pubkey`, `app_domain`, and the schema hash at compile time, then runs six checks:
+A receiver stores the expected `user_address`, `user_pubkey`, and `app_domain` in contract data. Compile the schema hash into the code. Load the stored values and run six checks:
 
 ```func
+;; Not runnable: add an entrypoint and initialize the receiver's stored values.
 #include "imports/stdlib.fc";
 
-const int SCHEMA_HASH = 0x047cf718;       ;; crc32 of your TL-B schema string
-const int SIGNATURE_TTL = 360;            ;; 6 minutes
+;; CRC-32 of your TL-B schema string.
+const int SCHEMA_HASH = 0x047cf718;
+;; 6 minutes.
+const int SIGNATURE_TTL = 360;
 
 global slice state::owner_address;
 global int   state::user_pubkey;
@@ -294,8 +380,9 @@ int verify_signature(cell signed, slice signature) method_id {
     throw_unless(461, prefix == 0x75569022);
     throw_unless(462, schema_hash == SCHEMA_HASH);
     throw_unless(463, (timestamp <= now()) & (now() < timestamp + SIGNATURE_TTL));
-    throw_unless(464, equal_slices_bits(addr, state::owner_address));
-    throw_unless(465, equal_slices_bits(domain, state::domain));
+    throw_unless(464, equal_slice_bits(addr, state::owner_address));
+    ;; Include SnakeData continuation cells in the domain comparison.
+    throw_unless(465, domain.slice_hash() == state::domain.slice_hash());
 
     cell payload = cs~load_ref();
     return 1;
@@ -304,7 +391,23 @@ int verify_signature(cell signed, slice signature) method_id {
 
 The contract must run all six checks: signature, magic prefix, schema hash, freshness, sender, domain. Skipping any one of them lets a different signature pass — the magic prefix alone does not bind the signature to a specific schema, sender, or dApp.
 
-The `SCHEMA_HASH` constant is the CRC-32 of the exact UTF-8 schema string the dApp passes in `signData`. Compute it once at deploy time and hard-code it; recomputing it on-chain would burn gas.
+The `SCHEMA_HASH` constant is the CRC-32 of the exact UTF-8 schema string the dApp passes in `signData`. Compute it once at deploy time and hard-code it; recomputing it on-chain costs gas.
+
+#### WalletTg key rotation
+
+This verifier uses the public key stored in the receiver's own state. [WalletTg](/contracts/standard/wallets/telegram/overview) rotation updates the wallet's stored `publicKey`; it does not update this receiver. Without a receiver-side update, the verifier stays fixed to its initialized key. Once the receiver stores a new key, signatures from the old key fail this verifier.
+
+To support rotation, add an application-defined internal `SetSigningKey` operation. Store the WalletTg account address as the authorized sender. In `recv_internal`, reject bounced messages, read `src` from the internal-message envelope, and require it to match the stored address before parsing the operation.
+
+Require an exact body such as `op:uint32, keyVersion:uint32, newPublicKey:uint256`. Accept only a `keyVersion` greater than the stored version, then save the version and key. Do not authorize an update from an address in the body or a public-key value returned by an off-chain getter. The receiver trusts an internal message emitted by its stored WalletTg account; it does not call a get-method.
+
+Refresh the receiver in this order:
+
+1. Complete WalletTg key rotation and retain the new signing key.
+1. Send a separate WalletTg request, signed by the current key, that emits `SetSigningKey` to the receiver. WalletTg's [key-change request](/contracts/standard/wallets/telegram/messages#change-the-signing-key) updates WalletTg storage and emits an external-out event; it cannot include this receiver update.
+1. Wait for the receiver transaction to succeed and confirm its stored key changed before verifying signatures from the new key. Until the receiver processes the update, it still accepts signatures from the old key. WalletTg rotation does not update keys cached by receivers or backend verifiers that verify against a fixed key.
+
+A strictly increasing `keyVersion` rejects duplicate and lower-version updates; a delayed message with a higher version can still be accepted. The timestamp check above still permits replay during its validity window; require a single-use nonce or consumed-state check when a signed payload must execute once.
 
 ## Errors
 
@@ -322,3 +425,5 @@ The `SCHEMA_HASH` constant is the CRC-32 of the exact UTF-8 schema string the dA
 - [`signData` wallet guide](https://github.com/ton-blockchain/ton-connect/blob/main/guides/sign-data.md)
 - [Filter wallets by required features](/applications/ton-connect/how-to/filter-wallets)
 - [Connect a wallet § backend verification](/applications/ton-connect/how-to/connect#backend-verification) — for looking up the user's public key
+- [`WalletTg`-aware TON Proof verification](/applications/ton-connect/how-to/ton-proof#obtain-the-public-key)
+- [`WalletTg` getter reference](/contracts/standard/wallets/telegram/contract#getters)

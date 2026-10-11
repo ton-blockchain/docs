@@ -19,61 +19,66 @@ By the end of this guide, you will:
 ## Prerequisites
 
 - Completed [wallet creation](/contracts/standard/wallets/highload/v3/create) with funded balance and saved configuration in `.wallet.json`
+- Use the Node.js project and wrapper files created in that guide. Create `wallet-send-single.ts` and append each TypeScript block below in order.
+- For an authenticated TON Center endpoint, inject `TONCENTER_API_KEY` from protected storage.
 
 ## Step 1: Load wallet configuration
 
 Load the wallet data and create the wallet instance:
 
 ```typescript
+// Not runnable: append to wallet-send-single.ts after setup on the create page.
 import { TonClient, internal, toNano } from '@ton/ton';
 import { mnemonicToPrivateKey } from '@ton/crypto';
-import { Cell, SendMode } from '@ton/core';
+import { Address, Cell, SendMode } from '@ton/core';
 import { HighloadWalletV3 } from './wrappers/HighloadWalletV3';
 import { HighloadQueryId } from './wrappers/HighloadQueryId';
 import * as fs from 'fs';
 
-// Load wallet data
+// Load public wallet configuration
 const walletData = JSON.parse(fs.readFileSync('.wallet.json', 'utf-8'));
-const mnemonic = walletData.mnemonic.split(' ');
+const mnemonicPhrase = process.env.TON_WALLET_MNEMONIC;
+if (!mnemonicPhrase) throw new Error('Inject TON_WALLET_MNEMONIC from protected storage.');
+const mnemonic = mnemonicPhrase.trim().split(/\s+/);
 const keyPair = await mnemonicToPrivateKey(mnemonic);
 
 const CODE = Cell.fromBoc(Buffer.from('b5ee9c7241021001000228000114ff00f4a413f4bcf2c80b01020120020d02014803040078d020d74bc00101c060b0915be101d0d3030171b0915be0fa4030f828c705b39130e0d31f018210ae42e5a4ba9d8040d721d74cf82a01ed55fb04e030020120050a02027306070011adce76a2686b85ffc00201200809001aabb6ed44d0810122d721d70b3f0018aa3bed44d08307d721d70b1f0201200b0c001bb9a6eed44d0810162d721d70b15800e5b8bf2eda2edfb21ab09028409b0ed44d0810120d721f404f404d33fd315d1058e1bf82325a15210b99f326df82305aa0015a112b992306dde923033e2923033e25230800df40f6fa19ed021d721d70a00955f037fdb31e09130e259800df40f6fa19cd001d721d70a00937fdb31e0915be270801f6f2d48308d718d121f900ed44d0d3ffd31ff404f404d33fd315d1f82321a15220b98e12336df82324aa00a112b9926d32de58f82301de541675f910f2a106d0d31fd4d307d30cd309d33fd315d15168baf2a2515abaf2a6f8232aa15250bcf2a304f823bbf2a35304800df40f6fa199d024d721d70a00f2649130e20e01fe5309800df40f6fa18e13d05004d718d20001f264c858cf16cf8301cf168e1030c824cf40cf8384095005a1a514cf40e2f800c94039800df41704c8cbff13cb1ff40012f40012cb3f12cb15c9ed54f80f21d0d30001f265d3020171b0925f03e0fa4001d70b01c000f2a5fa4031fa0031f401fa0031fa00318060d721d300010f0020f265d2000193d431d19130e272b1fb00b585bf03', 'hex'))[0];
 
 const client = new TonClient({
-    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC', // This is TESTNET endpoint
-    // apiKey: 'your-api-key' // Optional: get from @tonapibot or @tontestnetapibot
+    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
+    ...(process.env.TONCENTER_API_KEY ? { apiKey: process.env.TONCENTER_API_KEY } : {}),
 });
 
-const wallet = client.open(
-    HighloadWalletV3.createFromConfig(
-        {
-            publicKey: keyPair.publicKey,
-            subwalletId: walletData.subwalletId,
-            timeout: walletData.timeout,
-        },
-        CODE
-    )
+const walletContract = HighloadWalletV3.createFromConfig(
+    {
+        publicKey: keyPair.publicKey,
+        subwalletId: walletData.subwalletId,
+        timeout: walletData.timeout,
+    },
+    CODE
 );
+if (!walletContract.address.equals(Address.parse(walletData.address))) {
+    throw new Error('Mnemonic does not match the wallet address in .wallet.json.');
+}
+const wallet = client.open(walletContract);
 ```
 
 ## Step 2: Prepare the transfer message
 
-Create an internal message with the transfer details:
+Set `TON_TESTNET_RECIPIENT` to a valid testnet address and define the transfer inputs:
 
 ```typescript
-const internalMessage = internal({
-    to: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c', // Zero address (for testing)
-    value: toNano('0.01'),
-    bounce: false,
-});
-```
+// Not runnable: append to wallet-send-single.ts after the configuration block.
+const recipient = process.env.TON_TESTNET_RECIPIENT;
+if (!recipient) throw new Error('Set TON_TESTNET_RECIPIENT to a testnet address.');
 
-This example uses the zero address for testing. Replace it with your actual destination address.
+const transferValue = toNano('0.01');
+```
 
 <Callout type="caution">
   **No state-init support:** Highload Wallet v3 cannot send messages containing [`StateInit`](/foundations/messages/deploy) using this method.
 
-  If you need to deploy a contract (send a message with `StateInit`), use [batch transfers](/contracts/standard/wallets/highload/v3/send-batch-transfers) with an action list instead. See [Limitations and constraints](/contracts/standard/wallets/highload/v3/specification#limitations-and-constraints) in the specification for details.
+  If you need to deploy a contract (send a message with `StateInit`), use [batch transfers](/contracts/standard/wallets/highload/v3/send-batch-transfers) with an action list instead. The [limitations and constraints](/contracts/standard/wallets/highload/v3/specification#limitations-and-constraints) reference describes the supported messages.
 </Callout>
 
 ## Step 3: Send the transfer
@@ -81,23 +86,110 @@ This example uses the zero address for testing. Replace it with your actual dest
 Send the transfer using the `sendExternalMessage` method:
 
 ```typescript
-const createdAt = Math.floor(Date.now() / 1000) - 30; // 30 seconds ago
-const queryId = new HighloadQueryId(); // Represents query_id as a seqno
+// Not runnable: append to wallet-send-single.ts after the transfer-message block.
+// Reuse a saved request only when its stable ID and complete payload match.
+function getOrReserveRequest(requestId: string, request: Record<string, unknown>) {
+    const lockFd = fs.openSync('.wallet.json.lock', 'wx', 0o600);
+    try {
+        const current = JSON.parse(fs.readFileSync('.wallet.json', 'utf-8'));
+        current.requests ??= [];
+        const saved = current.requests.find((entry: any) => entry.requestId === requestId);
+        if (saved) {
+            if (JSON.stringify(saved.request) !== JSON.stringify(request)) {
+                throw new Error('TON_REQUEST_ID already belongs to a different payload.');
+            }
+            const timeout = Number(request.timeout);
+            if (!Number.isSafeInteger(saved.createdAt) || saved.createdAt + timeout <= Math.floor(Date.now() / 1000)) {
+                throw new Error('Saved request is too old to retry by the local clock. Check its on-chain outcome before assigning a new ID.');
+            }
+            const queryId = HighloadQueryId.fromSeqno(BigInt(saved.seqno));
+            if (queryId.getQueryId().toString() !== saved.queryId) {
+                throw new Error('Saved query ID does not match its sequence number.');
+            }
+            return { request: saved.request, queryId, createdAt: saved.createdAt };
+        }
+
+        if (!Number.isSafeInteger(current.nextQuerySeqno) || current.nextQuerySeqno < 0) {
+            throw new Error('Invalid nextQuerySeqno in .wallet.json.');
+        }
+
+        const queryId = HighloadQueryId.fromSeqno(BigInt(current.nextQuerySeqno));
+        if (!queryId.hasNext()) throw new Error('Highload query ID space is exhausted.');
+
+        const createdAt = Math.floor(Date.now() / 1000) - 30;
+        const nextQueryId = queryId.getNext();
+        current.nextQuerySeqno = Number(nextQueryId.toSeqno());
+        current.requests.push({
+            requestId,
+            queryId: queryId.getQueryId().toString(),
+            seqno: queryId.toSeqno().toString(),
+            createdAt,
+            request,
+        });
+        fs.writeFileSync('.wallet.json.tmp', JSON.stringify(current, null, 2), { mode: 0o600 });
+        fs.renameSync('.wallet.json.tmp', '.wallet.json');
+        return { request, queryId, createdAt };
+    } finally {
+        fs.closeSync(lockFd);
+        fs.unlinkSync('.wallet.json.lock');
+    }
+}
+
+const requestId = process.env.TON_REQUEST_ID?.trim();
+if (!requestId) throw new Error('Set TON_REQUEST_ID to a stable ID for this intended transfer.');
+const request = {
+    kind: 'single',
+    recipient: Address.parse(recipient).toRawString(),
+    valueNano: transferValue.toString(),
+    bounce: false,
+    body: 'empty',
+    mode: SendMode.PAY_GAS_SEPARATELY,
+    subwalletId: walletData.subwalletId,
+    timeout: walletData.timeout,
+};
+const saved = getOrReserveRequest(requestId, request);
+const savedRequest = saved.request;
+const internalMessage = internal({
+    to: Address.parse(String(savedRequest.recipient)),
+    value: BigInt(String(savedRequest.valueNano)),
+    bounce: Boolean(savedRequest.bounce),
+});
 
 await wallet.sendExternalMessage(keyPair.secretKey, {
     message: internalMessage,
-    mode: SendMode.PAY_GAS_SEPARATELY,
-    query_id: queryId,
-    createdAt: createdAt,
-    subwalletId: walletData.subwalletId,
-    timeout: walletData.timeout,
+    mode: Number(savedRequest.mode),
+    query_id: saved.queryId,
+    createdAt: saved.createdAt,
+    subwalletId: Number(savedRequest.subwalletId),
+    timeout: Number(savedRequest.timeout),
 });
 
 console.log('Transfer sent');
+console.log(`Query ID: ${saved.queryId.getQueryId()}`);
+console.log(`Created at: ${saved.createdAt}`);
+```
+
+`TON_REQUEST_ID` identifies one intended transfer. If submission is uncertain, rerun the command with the same ID and inputs. A retry reuses the saved query ID, timestamp, and payload; changed inputs fail.
+
+Once the saved timestamp is at least `timeout` seconds old by the local clock, the script stops retries. Before replacing the request, wait for a confirmed block in the wallet's shard with a timestamp at or beyond `createdAt + timeout`. Check the wallet and recipient histories and resolve pending outgoing messages. Use a new `TON_REQUEST_ID` for a replacement only after confirming the transfer did not execute.
+
+The exclusive lock serializes reservations across processes. Remove a stale lock only after confirming that no sender process is running. For a service with many requests, use a transactional database for the allocator and outbox.
+
+In a private shell, inject the mnemonic without putting it in shell history, set a testnet recipient and stable request ID, then run the script:
+
+```bash
+read -r -s -p 'Wallet mnemonic: ' TON_WALLET_MNEMONIC
+printf '\n'
+export TON_WALLET_MNEMONIC
+read -r -p 'Testnet recipient: ' TON_TESTNET_RECIPIENT
+export TON_TESTNET_RECIPIENT
+read -r -p 'Payment ID (record for retries): ' TON_REQUEST_ID
+export TON_REQUEST_ID
+npx tsx wallet-send-single.ts
 ```
 
 <Callout type="note">
-  **Automatic deployment:** If your wallet is in `uninit` status (has a balance but no code), it will automatically deploy when processing this external message. The wallet transitions to `active` status, and the transfer is executed in the same transaction.
+  **Automatic deployment:** If your wallet is in `uninit` status (has a balance but no code), this external message deploys it and sends the transfer directly. Deployment and transfer happen in the same transaction.
 </Callout>
 
 ### Parameter explanation
@@ -106,18 +198,18 @@ console.log('Transfer sent');
 
 - Each `query_id` can only be processed once within the protection window
 - `HighloadQueryId` is a wrapper class that represents the composite `query_id` as a sequential counter
-- Provides `getNext()` method to increment to the next unique ID
+- `getNext()` returns a new wrapper object; it does not mutate the current one
 - Total range: 8,380,416 unique IDs
-- See [Query ID structure](/contracts/standard/wallets/highload/v3/specification#query-id-structure) for details
+- The [query ID structure](/contracts/standard/wallets/highload/v3/specification#query-id-structure) reference defines the counter layout
 
 **`createdAt`** — Message timestamp for expiration:
 
 - Set to 30 seconds **before** current time: `Math.floor(Date.now() / 1000) - 30`
 - Compensates for blockchain time lag (lite-servers use last block time, not current time)
-- See [Timestamp validation](/contracts/standard/wallets/highload/v3/specification#timestamp-validation) for why this is necessary
+- The [timestamp validation](/contracts/standard/wallets/highload/v3/specification#timestamp-validation) rules explain this offset
 
 ## Next steps
 
-Your wallet is fully operational. You can send multiple transfers in parallel or batch multiple messages in one transaction.
+Your wallet is ready to send transfers. Use an atomic shared allocator before sending requests in parallel.
 
-To verify that your message, see [How to verify message is processed](/contracts/standard/wallets/highload/v3/verify-is-processed).
+To verify a direct transfer, find the wallet's external transaction by its saved `queryId` and `createdAt`. Confirm that its VM compute and action phases succeeded, then compare the outgoing message with the saved recipient, value, and bounce flag. This example uses an empty body. Check the recipient's transaction history to confirm downstream execution. This method sends directly from the external transaction; it has no self-message transaction. The [batch verification guide](/contracts/standard/wallets/highload/v3/verify-is-processed) covers only the two-transaction batch flow.

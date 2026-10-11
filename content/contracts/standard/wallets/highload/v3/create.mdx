@@ -1,49 +1,49 @@
 ---
-title: "How to create a highload wallet v3"
-sidebarTitle: "Create and deploy"
+title: "How to create a Highload Wallet v3"
+sidebarTitle: "Create wallet"
 ---
 
-This guide shows how to create a Highload Wallet v3 instance from scratch: choose configuration parameters, generate a mnemonic, and calculate the wallet address.
+This guide shows how to create a Highload Wallet v3 instance from scratch: choose configuration parameters, generate a mnemonic, and calculate the wallet address. The examples use testnet.
 
 ## Objective
 
 By the end of this guide, you will have:
 
-- A 24-word mnemonic phrase (seed phrase) for your wallet
+- A 24-word mnemonic phrase (seed phrase) for the wallet
 - A calculated wallet address (but not yet deployed on-chain)
 - Configuration parameters: `subwalletId` and `timeout`
 
 ## Prerequisites
 
-- Node.js 18+ or TypeScript environment
-- `@ton/ton`, `@ton/core`, `@ton/crypto` packages installed
-- Highload Wallet v3 wrapper and compiled contract code
+- [Node.js](https://nodejs.org/en/download/) 22 or later
 
 <Callout type="note">
-  **No deployment yet:** Creating a wallet calculates its future address but does not deploy it. The wallet will auto-deploy on the first external message (when you send your first transfer).
+  **No deployment yet:** Creating a wallet calculates its future address but does not deploy it. The wallet will auto-deploy on the first external message (when you send a first transfer).
 </Callout>
 
 This guide uses TypeScript with the official wrapper. The same logic applies to other SDKs (Go/Python): generate or load a mnemonic, derive a keypair, choose parameters, and calculate the address.
 
 ## Step 1: Set up dependencies
 
-Install required packages:
+In a new project directory, install the required packages:
 
 ```bash
-npm install @ton/ton @ton/core @ton/crypto
+npm init -y
+npm pkg set type=module
+npm install --save-exact @ton/ton@16.3.0 @ton/core@0.63.1 @ton/crypto@3.3.0 tsx@4.20.5
+mkdir -p wrappers/ tests/imports/
 ```
 
-Copy the wrapper and contract code from the [official repository](https://github.com/ton-blockchain/highload-wallet-contract-v3):
+- Copy the [HighloadWalletV3 wrapper](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/f5d9b592bd5ab5c9ae6ca627819929e140f6bd61/wrappers/HighloadWalletV3.ts) to `wrappers/HighloadWalletV3.ts`,
+- Copy the [HighloadQueryId wrapper](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/f5d9b592bd5ab5c9ae6ca627819929e140f6bd61/wrappers/HighloadQueryId.ts) to `wrappers/HighloadQueryId.ts`,
+- Copy the [`const.ts`](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/f5d9b592bd5ab5c9ae6ca627819929e140f6bd61/tests/imports/const.ts) to `tests/imports/const.ts`.
 
-```bash
-# Clone the repository or download these files:
-# - wrappers/HighloadWalletV3.ts
-# - wrappers/HighloadQueryId.ts
-# - Compiled contract BoC (from build/ or inline hex)
-```
+Preserve these paths so imports resolve. The guide uses the inline compiled contract BoC below.
+
+In `wrappers/HighloadWalletV3.ts`, change the signing import from `ton-crypto` to `@ton/crypto`. Run the scripts with `tsx` — the wrapper uses TypeScript parameter properties, which Node's type-stripping mode does not support.
 
 <Callout type="note">
-  **Why copy wrappers?** The official `@ton/ton` SDK does not include Highload Wallet v3 wrappers yet. Copy `HighloadWalletV3.ts` and `HighloadQueryId.ts` from the repository until SDK support is added.
+  The guide copies the repository's `HighloadWalletV3` and `HighloadQueryId` wrappers because those classes define this wallet's configuration and message encoding, while not being a part of the `@ton/ton` SDK.
 </Callout>
 
 ## Step 2: Choose configuration parameters
@@ -57,9 +57,11 @@ Highload Wallet v3 requires two configuration parameters at creation time:
 
 The `timeout` determines:
 
-- How long a signed external message remains valid: `created_at` must be within `[now - timeout, now]`
-- When old processed messages rotate to `old_queries`: every `timeout` seconds
-- When `old_queries` is cleared: after `2 × timeout`
+- How long a signed external message remains valid: `created_at` must be within `(now - timeout, now]`
+- When cleanup can move processed-message markers to `old_queries`: after `timeout` seconds, during a later external request
+- When cleanup can remove markers from `old_queries`: after `2 × timeout`, during a later external request
+
+Cleanup is request-driven, not a timer. If the wallet is idle, markers can remain on-chain beyond these thresholds until another external request triggers cleanup.
 
 **Choosing a value:**
 
@@ -69,11 +71,13 @@ The `timeout` determines:
 | Medium (1–6 hours) | Balanced; suitable for most production use                                                     |
 | Long (24+ hours)   | High tolerance for blockchain congestion; higher storage costs; slower certainty on expiration |
 
+Although `uint22` can encode zero, a zero timeout leaves no valid message timestamp. Choose a positive timeout; this guide's 24-hour value also permits the 30-second timestamp offset used when sending.
+
 <Callout type="caution">
   **Cannot be changed later:** `timeout` is part of the contract's [initial configuration](/contracts/standard/wallets/highload/v3/specification#storage-structure). Changing it would change the wallet address entirely.
 </Callout>
 
-See [Timeout constraints](/contracts/standard/wallets/highload/v3/specification#timeout-constraints) in the specification for details.
+The [timeout constraints](/contracts/standard/wallets/highload/v3/specification#timeout-constraints) reference defines the timestamp boundary and cleanup behavior.
 
 ### `subwalletId`
 
@@ -82,44 +86,51 @@ See [Timeout constraints](/contracts/standard/wallets/highload/v3/specification#
 
 A single mnemonic can generate multiple independent wallet addresses by varying `subwalletId`. Each wallet has its own balance, state, and transaction history.
 
+The [official Highload Wallet v3 repository](https://github.com/ton-blockchain/highload-wallet-contract-v3) uses `0x10ad` (4269) as its recommended value. This is a convention for Highload v3 wallets, not a cross-contract collision guard.
+
+The address is derived from the full [`StateInit`](/foundations/messages/deploy), including code and data. Different wallet code produces a different address even when the key and `subwalletId` match.
+
 <Callout type="caution">
-  **Recommended value: `0x10ad` (4269).**\
-  Use a `subwalletId` different from other wallet types (standard wallets v3/v4/v5 or vesting wallets) derived from the same keypair. The value `0x10ad` is recommended in the [official repository](https://github.com/ton-blockchain/highload-wallet-contract-v3) to avoid conflicts with other contracts.
+  Use distinct IDs to distinguish wallets that share the same code and other configuration.
 </Callout>
 
-**Why this matters:**
-
-If you use the same `subwalletId` across different wallet types (e.g., Highload v3 and standard wallet v5), they might share the same address, causing conflicts. Using `0x10ad` ensures isolation from standard wallets.
-
-See [Storage structure](/contracts/standard/wallets/highload/v3/specification#storage-structure) in the specification for details.
+The [storage structure](/contracts/standard/wallets/highload/v3/specification#storage-structure) reference defines the stored fields.
 
 ## Step 3: Generate or load a mnemonic
 
-A mnemonic is your wallet's master secret. It derives the private key used to sign all transactions.
+A [mnemonic](/contracts/standard/wallets/mnemonics) is the wallet's master secret. It derives the private key used to sign all transactions.
 
-### Generate a new mnemonic
+### Option 1: Generate a new mnemonic
 
 ```typescript
+// Not runnable: add to wallet-create.ts.
 import { mnemonicNew } from '@ton/crypto';
 
-const mnemonic = await mnemonicNew(24); // Array of 24 words
+const mnemonic = await mnemonicNew(24);
+process.stdout.write(`Save this phrase securely: ${mnemonic.join(' ')}\n`);
 ```
 
-### Load an existing mnemonic
+### Option 2: Load an existing mnemonic
 
 ```typescript
-const mnemonic = 'word1 word2 word3 ... word24'.split(' ');
+// Not runnable: add to wallet-create.ts.
+const mnemonicPhrase = process.env.TON_WALLET_MNEMONIC;
+if (!mnemonicPhrase) throw new Error('Inject TON_WALLET_MNEMONIC from protected storage.');
+const mnemonic = mnemonicPhrase.trim().split(/\s+/);
 ```
 
+For a new phrase, run the script in a private local terminal that does not record output, then store it in a password manager, OS keychain, or encrypted keystore. For an existing phrase, inject `TON_WALLET_MNEMONIC` from protected storage. Do not store either phrase in `.wallet.json`, shell history, or logs.
+
 <Callout type="danger">
-  **Protect your mnemonic:** Anyone with access to your mnemonic can control your wallet and all funds. Store it securely (password manager, hardware wallet, encrypted storage). Never commit it to version control.
+  **Protect the mnemonic:** Anyone with access to the mnemonic can control the wallet and all funds. Store it securely (password manager, hardware wallet, encrypted storage). Never commit it to version control.
 </Callout>
 
 ## Step 4: Derive the keypair
 
-Convert the mnemonic to an Ed25519 keypair:
+Convert the mnemonic to an [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) keypair:
 
 ```typescript
+// Not runnable: add to wallet-create.ts after the selected mnemonic block.
 import { mnemonicToPrivateKey } from '@ton/crypto';
 
 const keyPair = await mnemonicToPrivateKey(mnemonic);
@@ -129,16 +140,17 @@ const keyPair = await mnemonicToPrivateKey(mnemonic);
 
 ## Step 5: Create the wallet instance
 
-Create a Highload Wallet v3 contract instance with your chosen parameters:
+Create a Highload Wallet v3 contract instance with the chosen parameters:
 
 ```typescript
-import { TonClient } from '@ton/ton';
+// Not runnable: add to wallet-create.ts after the keypair block.
 import { Cell } from '@ton/core';
 import { HighloadWalletV3 } from './wrappers/HighloadWalletV3';
 
 // Configuration
-const SUBWALLET_ID = 0x10ad; // Recommended for Highload Wallets
-const TIMEOUT = 60 * 60 * 24; // 24 hours
+// The official repository recommends 0x10ad for Highload Wallet v3.
+const SUBWALLET_ID = 0x10ad;
+const TIMEOUT = 60 * 60 * 24;
 
 // Compiled contract code (BoC)
 const CODE = Cell.fromBoc(
@@ -148,20 +160,13 @@ const CODE = Cell.fromBoc(
     )
 )[0];
 
-const client = new TonClient({
-    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC', // This is TESTNET endpoint
-    // apiKey: 'your-api-key' // Optional: get from @tonapibot or @tontestnetapibot
-});
-
-const wallet = client.open(
-    HighloadWalletV3.createFromConfig(
-        {
-            publicKey: keyPair.publicKey,
-            subwalletId: SUBWALLET_ID,
-            timeout: TIMEOUT,
-        },
-        CODE
-    )
+const wallet = HighloadWalletV3.createFromConfig(
+    {
+        publicKey: keyPair.publicKey,
+        subwalletId: SUBWALLET_ID,
+        timeout: TIMEOUT,
+    },
+    CODE
 );
 ```
 
@@ -170,56 +175,68 @@ const wallet = client.open(
 Calculate the wallet's address:
 
 ```typescript
+// Not runnable: add to wallet-create.ts after the wallet block.
 // Get non-bounceable address for funding
 const address = wallet.address.toString({ bounceable: false, testOnly: true });
 console.log('Wallet address:', address);
-// Example (truncated): 0Q... (non-bounceable, testnet)
 ```
 
 This address is deterministic: it depends only on `CODE`, `publicKey`, `subwalletId`, and `timeout`. The same parameters always produce the same address.
 
 <Callout type="tip">
-  **Why non-bounceable?** When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. See [Address formats](/foundations/addresses/formats) for details.
+  **Why non-bounceable?** When funding a `nonexist` account, use the non-bounceable format so funds do not bounce if the account does not exist. The [address formats](/foundations/addresses/formats) page explains the alternatives.
 </Callout>
 
 **Account status: [`nonexist`](/foundations/status#status-variety)**
 
 The calculated address exists only as a deterministic value. No account exists on the blockchain yet — no balance, no code, no data.
 
-## Step 7: Fund the wallet
-
-<Callout type="danger">
-  **Funds at risk:** You will send GRAM to this address. Test on testnet first. Verify the wallet address carefully — blockchain transactions cannot be reversed.
-</Callout>
-
-**Required before deployment:** Send GRAM to your wallet address (from Step 6) to prepare it for deployment.
-
-External messages (which deploy the wallet) require gas to execute. By funding the address, you transition the account from `nonexist` to `uninit` status and provide the balance needed for deployment. See [Account status](/foundations/status) for details on how account states work.
-
-Send GRAM using a faucet (testnet) or from another wallet (mainnet). After funding, the account transitions to `uninit` status — it has a balance and can accept external messages, but no code or data yet.
-
 ## Saving wallet data
 
-For convenience, save your wallet configuration to reuse later:
+Save the public wallet configuration separately from the mnemonic:
 
 ```typescript
+// Not runnable: add to wallet-create.ts after the address block.
 import * as fs from 'fs';
 
 const walletData = {
-    mnemonic: mnemonic.join(' '),
-    address: address, // From Step 6
+    address,
     subwalletId: SUBWALLET_ID,
     timeout: TIMEOUT,
+    nextQuerySeqno: 0,
 };
 
 fs.writeFileSync('.wallet.json', JSON.stringify(walletData, null, 2));
 console.log('Wallet saved to .wallet.json');
 ```
 
-<Callout type="danger">
-  **Never commit `.wallet.json`:** Add it to `.gitignore`. This file contains your mnemonic.
+Create `wallet-create.ts` and add the TypeScript blocks in order, choosing one mnemonic block. Then run:
+
+```bash
+npx tsx wallet-create.ts
+```
+
+The script calculates the address and saves `.wallet.json`; it does not contact the blockchain or fund the wallet.
+
+<Callout type="note">
+  `.wallet.json` contains the address, contract parameters, and the next query ID sequence number. It does not contain a secret. Keep the mnemonic in protected storage and inject it into sending processes from a secret manager.
 </Callout>
+
+## Step 7: Fund the wallet
+
+<Callout
+  type="danger"
+  title="Funds at risk"
+>
+  Test on testnet first. Verify the wallet address carefully — blockchain transactions cannot be reversed.
+</Callout>
+
+**Required before deployment:** Send GRAM to the wallet address (from Step 6) to prepare it for deployment.
+
+[External messages](/foundations/messages/external-in) (which deploy the wallet) require [gas](/tvm/gas) to execute. Funding changes the account from `nonexist` to `uninit` and provides the balance needed for deployment; the [account status](/foundations/status) reference explains these states.
+
+Send testnet GRAM from a [faucet](/onboarding/wallet-apps/get-coins) or another testnet wallet. After funding, the account transitions to `uninit` status — it has a balance and can accept external messages, but no code or data yet.
 
 ## Next steps
 
-Your wallet is ready for deployment. The wallet will auto-deploy on the first external message.
+The wallet will initialize itself upon receiving the first external message.

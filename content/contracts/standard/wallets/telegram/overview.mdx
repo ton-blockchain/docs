@@ -1,0 +1,57 @@
+---
+title: "WalletTg: Telegram wallet contract"
+sidebarTitle: "Overview"
+---
+
+WalletTg is the TON wallet contract used by the [Telegram's native Gram wallet](/onboarding/wallet-apps/telegram).
+
+## Features
+
+- Receive Gram, jettons, and non-fungible tokens (NFTs) at a stable address.
+- Send a [single message](/contracts/standard/wallets/telegram/messages#send-one-message) or a [batch of up to 255 messages](/contracts/standard/wallets/telegram/messages#send-a-batch).
+- Connect to decentralized applications (dApps) through [TON Connect](/applications/ton-connect/overview).
+- Import [12-word phrases or 24-word rotation mnemonics](/contracts/standard/wallets/telegram/key-management#mnemonic-interpretation) in compatible wallet apps.
+- Disable Telegram's encrypted backup, with an optional signing-key rotation.
+- [Rotate the signing key](/contracts/standard/wallets/telegram/key-management#rotation-request-and-event) while keeping the same address.
+- Submit signed internal requests through a [relayer](/contracts/standard/wallets/telegram/interact#relay-gasless-requests) that attaches Gram for processing.
+
+## Shared implementation
+
+Each account stores immutable _trampoline_ code. The trampoline loads the shared implementation from [configuration parameter `-123`](/foundations/config#negative-parameters), while each account keeps its own balance and storage.
+
+<Image
+  src="/images/wallets/telegram/architecture.svg"
+  darkSrc="/images/wallets/telegram/architecture.svg"
+  alt="WalletTg accounts keep trampoline code and local storage while executing shared implementation code from configuration parameter minus 123."
+  width={900}
+  height={390}
+  fullWidth
+/>
+
+Validators approve configuration changes through voting. An update changes the implementation used by every WalletTg account on that network. Wallet owners cannot change the implementation or opt out of updates.
+
+The brief [contract reference](/contracts/standard/wallets/telegram/contract#storage-and-migration) documents storage and upgrade migration behavior.
+
+## Address anchor and signing key
+
+The contract address is derived from the original [`StateInit`](/foundations/messages/deploy), which includes the trampoline code and anchor public key.
+
+Initially, the anchor is also the signing key. Rotation replaces the current on-chain signing key but leaves the original `StateInit` and address unchanged.
+
+<Callout type="caution">
+  Composing a new `StateInit` with the replacement key derives a different address.
+</Callout>
+
+After rotation, only the current signing key authorizes requests; the anchor cannot restore signing access. The [key-management reference](/contracts/standard/wallets/telegram/key-management) explains the two-key mnemonic and rotation.
+
+## Backup and self-custody
+
+Telegram's [encrypted backup and phrase updates](/contracts/standard/wallets/telegram/key-management#telegram-encrypted-backup-and-phrase-update) are app features, separate from contract storage.
+
+## Comparison with V5
+
+WalletTg and [wallet V5](content/contracts/standard/wallets/v5) use different signed-request encodings. That is, the layout and composition of their messages differ. Refer to the [WalletTg message reference](/contracts/standard/wallets/telegram/messages) and the [V5 reference](/contracts/standard/wallets/v5-api) for details.
+
+<Callout type="note">
+  Compare wallet capabilities in the [table](/contracts/standard/wallets/comparison#comparison-table).
+</Callout>

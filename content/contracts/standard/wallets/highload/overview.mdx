@@ -3,79 +3,88 @@ title: "Highload wallets"
 sidebarTitle: "Overview"
 ---
 
-Highload Wallets are specialized wallet contracts designed for services that need to send hundreds of transactions per second, such as cryptocurrency exchanges, payment processors, and high-volume trading platforms.
+Highload Wallets are specialized wallet contracts for services that submit many outgoing transfers, such as exchanges and payment processors. They do not guarantee a transactions-per-second rate; actual throughput depends on network load, message size, fees, and account execution.
 
 ## What makes them different
 
-Unlike standard wallets (v3, v4, v5) that use sequential processing with a `seqno` counter, Highload Wallets (v2 and v3) store processed request identifiers in a dictionary, enabling **parallel transaction submission** without blocking.
+Unlike [seqno-based wallets](/contracts/standard/wallets/how-it-works#how-replay-protection-works), [Highload Wallet v2][highload-v2] and [v3][highload-v3] store processed request identifiers in dictionaries. Clients can submit requests with distinct IDs concurrently. TON still processes transactions for one account sequentially.
 
 <Callout>
-  **`seqno`** (sequence number) is a counter that increments with each transaction. Standard wallets use it for [replay protection](/contracts/standard/wallets/how-it-works#how-replay-protection-works) — each transaction must match the current `seqno` value.
+  **`seqno`** (sequence number) is stored in standard wallets for [replay protection](/contracts/standard/wallets/how-it-works#how-replay-protection-works). A signed request must include the next `seqno` — the wallet advances it when the request commits.
 </Callout>
 
-**Standard wallet limitation:**\
-Each transaction must wait for the previous one to complete. If you send 100 transactions, they must process sequentially: transaction 2 waits for transaction 1, transaction 3 waits for transaction 2, and so on.
+**Standard wallet coordination:**\
+Clients must coordinate the current `seqno` and submit requests in an order the wallet can accept. A mismatched value fails. A future-seqno request can be retried after earlier requests advance the wallet, while it remains valid. A stale request must be signed again with the current value.
 
-**Highload Wallet advantage:**\
-You can send 100, 1,000, or 100,000 transactions simultaneously. Each transaction uses a unique `query_id` instead of a sequential `seqno`, allowing parallel processing without conflicts.
+**Highload Wallet submission:**\
+Clients can submit multiple requests without waiting for a new `seqno`, using a distinct `query_id` for each. Reserve IDs atomically to prevent duplicates. The account still processes each transaction one at a time.
 
 ## Version history
 
 ### Highload Wallet v1
 
-The first highload wallet, using a simple `seqno` counter:
+The first highload wallet, [Highload Wallet v1][highload-v1], used a simple `seqno` counter:
 
 - **Simple seqno-based:** Sequential processing like standard wallets
-- **Batch support:** Could send up to 255 messages per transaction
-- **Replay protection rollback:** If the action phase failed, replay protection would roll back ([learn about](#replay-protection-rollback))
+- **Batch support:** Could send up to 254 messages per transaction
+- **Replay marker rollback:** A non-skipped action-phase failure can roll back the `seqno` update ([replay behavior](#replay-protection-rollback)).
 
-<Callout type="danger">
-  **Legacy contracts:** Highload Wallet v1 and v2 are deprecated. Use Highload Wallet v3 for all new deployments.
+<Callout
+  type="danger"
+  title="Legacy contracts"
+>
+  Highload Wallet v1 and v2 are deprecated. Use [Highload Wallet v3][highload-v3] for all new deployments.
 </Callout>
 
 ### Highload Wallet v2
 
-Improved version with dictionary-based replay protection:
+[Highload Wallet v2][highload-v2] introduced dictionary-based replay protection:
 
-- **Fund locking risk:** Under certain conditions, the contract could enter a state where funds become inaccessible
-- **High gas costs:** Storage updates and cleanup operations consumed excessive gas
-- **Replay protection rollback:** If the action phase failed, replay protection would roll back ([learn about](#replay-protection-rollback))
+- **Fund locking risk:** If `old_queries` grows beyond storage limits or the contract exceeds the gas limit during cleanups, the wallet can become unable to process new requests.
+- **High cleanup gas:** Storage updates and cleanup operations can consume substantial gas.
+- **Replay marker rollback:** A non-skipped action-phase failure can roll back the query marker ([replay behavior](#replay-protection-rollback)).
 
-<Callout type="danger">
-  **Legacy contracts:** Highload Wallet v1 and v2 are deprecated. Use Highload Wallet v3 for all new deployments.
+<Callout
+  type="danger"
+  title="Legacy contracts"
+>
+  Highload Wallet v1 and v2 are deprecated. Use [Highload Wallet v3][highload-v3] for all new deployments.
 </Callout>
 
 ### Highload Wallet v3
 
-The current recommended version, redesigned to solve all previous architectural problems:
+[Highload Wallet v3][highload-v3] is the recommended version for new deployments.
 
-- **More requests:** Up to 8,380,416 unique query IDs with efficient rotation
-- **Lower gas costs:** Optimized cleanup and storage operations
-- **Maximum safety:** Architectural design prevents fund locking; bulletproof
-- **Guaranteed replay protection:** Unlike v1, v2, and standard wallets v1-v4, replay protection **never rolls back** even if the action phase fails. The two-transaction pattern ensures the `query_id` is always committed before attempting to send messages.
+- **Query ID space:** Up to 8,380,416 unique IDs, with rotation between two dictionaries.
+- **Cleanup:** The design rotates query dictionaries to limit storage growth. Unlike previous highload wallet versions, clean up does not have a fund-locking risk.
+- **Batch replay protection:** Unlike previous highload wallet versions and standard wallets V1 to V4, a later failure in the internal batch transaction **cannot** roll back its query marker after a successful first transaction. The `query_id` is always committed before attempting to send messages. However, direct single-message requests use one transaction.
 
 ## Highload Wallet version comparison
 
-| Feature                               | v1                 | v2                    | v3                              |
-| ------------------------------------- | ------------------ | --------------------- | ------------------------------- |
-| **Replay rollback on action failure** | ⚠️ Yes             | ⚠️ Yes                | ✅ No (two-transaction pattern) |
-| **Fund locking risk**                 | ✅ No              | ⚠️ Yes                | ✅ No                           |
-| **Gas efficiency**                    | Not optimized      | ⚠️ High cleanup costs | ✅ Optimized                    |
-| **Max batch size**                    | 255 messages       | 255 messages          | 254 messages                    |
-| **Replay protection**                 | Simple seqno       | Query ID dictionary   | Dual dictionary + timestamp     |
-| **Transaction pattern**               | Single transaction | Single transaction    | Two-transaction pattern         |
-| **Query ID space**                    | Sequential seqno   | \~32,000              | 8,380,416 unique IDs            |
-| **Parallel submissions**              | ❌ Sequential only | ✅ Supported          | ✅ Supported                    |
-| **Status**                            | ⚠️ Deprecated      | ⚠️ Deprecated         | ✅ Recommended                  |
+|                                          | [v1][highload-v1]  | [v2][highload-v2]     | [v3][highload-v3]                                                                         |
+| ---------------------------------------- | ------------------ | --------------------- | ----------------------------------------------------------------------------------------- |
+| **Risk of message replays** (`query_id`) | ⚠️ Present         | ⚠️ Present            | ✅ Absent: batch transactions commit `query_id`, single-message sends use one transaction |
+| **Fund locking risk** (`old_queries`)    | ✅ Absent          | ⚠️ Present            | ✅ Absent                                                                                 |
+| **Gas efficiency**                       | Not optimized      | ⚠️ High cleanup costs | ✅ Optimized                                                                              |
+| **Max messages per batch**               | 254 per request    | 254 per request       | 254 per internal action list                                                              |
+| **Replay protection**                    | Simple `seqno`     | Query ID dictionary   | Dual dictionary + timestamp                                                               |
+| **Transaction pattern**                  | Single transaction | Single transaction    | Two-transaction pattern for batches; single for direct message sends                      |
+| **Query ID space**                       | Sequential `seqno` | \~32,000 unique IDs   | 8,380,416 unique IDs                                                                      |
+| **Parallel submissions**                 | ❌ Sequential only | ✅ Supported          | ✅ Supported                                                                              |
+| **Status**                               | ⚠️ Deprecated      | ⚠️ Deprecated         | ✅ Recommended                                                                            |
 
 ## Replay protection rollback
 
-Standard wallets (v1-v4) and Highload wallets (v1-v2) share a fundamental problem: if the action phase fails (e.g., insufficient funds), the entire transaction rolls back, including [replay protection](/contracts/standard/wallets/how-it-works#how-replay-protection-works) marks. This causes lite-servers to retry the same message repeatedly, burning gas for a long time.
+In standard wallets V1-V4, a non-skipped action-phase failure can roll back the [`seqno` replay marker](/contracts/standard/wallets/how-it-works#how-replay-protection-works). Highload Wallet v1 and v2 can likewise roll back their `seqno` or query-ID marker. The [`+2` send mode](/foundations/messages/modes) skips eligible errors. Without a committed replay marker, resubmitting a failed request can repeat the same work while it remains valid.
 
-**Highload v3's solution:** Uses a [two-transaction pattern](/contracts/standard/wallets/highload/v3/specification#why-internal-messages-to-self) where replay protection is committed in the first transaction, and actions are performed in a separate internal transaction. This guarantees replay protection **never rolls back**, even if sending messages fails.
+**Highload v3 batch behavior:** The external transaction records the `query_id` and queues an internal message to itself. Once that first transaction succeeds, a failure in the later internal batch transaction cannot undo its marker. Direct single-message requests use one transaction, so they do not get this separation. The [`COMMIT` instruction](/tvm/instructions#f80f-commit) is not a blanket guarantee against every non-skipped action-phase failure.
 
 ## See also
 
-- [Highload Wallet v3](/contracts/standard/wallets/highload/v3/specification) — complete technical reference and how-to guides
-- [Highload Wallet v2](/contracts/standard/wallets/highload/v2/specification) — legacy version (deprecated)
-- [Highload Wallet v1](https://github.com/ton-blockchain/ton/blob/4ebd7412c52248360464c2df5f434c8aaa3edfe1/crypto/smartcont/highload-wallet-code.fc) — legacy version (deprecated)
+- [Highload Wallet v3][highload-v3] — complete technical reference and how-to guides
+- [Highload Wallet v2][highload-v2] — legacy version (deprecated)
+- [Highload Wallet v1][highload-v1] — legacy version (deprecated)
+
+[highload-v1]: https://github.com/ton-blockchain/ton/blob/4ebd7412c52248360464c2df5f434c8aaa3edfe1/crypto/smartcont/highload-wallet-code.fc
+[highload-v2]: /contracts/standard/wallets/highload/v2/specification
+[highload-v3]: /contracts/standard/wallets/highload/v3/specification

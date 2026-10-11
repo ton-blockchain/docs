@@ -10,7 +10,7 @@ sidebarTitle: "Wallet V4"
 
 This version retains all the functionality of the previous versions and introduces plugins.
 
-Plugins enable developers to implement custom logic that integrates with wallet functionality. When a plugin is installed on a wallet through a signed transaction, it can force wallet to send internal message with predefined opcode (`0xf06c7567`) and any available Gram amount to specified addresses. Plugins are separate smart contracts that can implement their own custom logic.
+Plugins are separate smart contracts that can request assets from a V4 wallet after the owner installs them with a signed request. A plugin can request Gram and extra currencies for its own address; it cannot choose an arbitrary recipient. The wallet checks that its balance, excluding the request's attached value, covers the requested Gram. The send action can still fail if the requested extra currencies are unavailable.
 
 View the original [wallet V4 source code](https://github.com/ton-blockchain/wallet-contract) or the code of an [example subscription plugin](https://github.com/ton-blockchain/wallet-contract/blob/main/func/simple-subscription-plugin.fc).
 
@@ -48,20 +48,20 @@ sequenceDiagram
 
 ## Persistent memory layout
 
-Here we will break down wallet V4 storage structure.
+V4 stores its persistent state in a cell; see [TL-B and dictionary serialization](/foundations/tlb/overview).
 
 ```tlb
 contract_state$_
   seqno:(## 32)
   wallet_id:(## 32)
   public_key:(## 256)
-  plugins:(HashmapE 256 int1) = ContractState;
+  plugins:(HashmapE 264 Unit) = ContractState;
 ```
 
 - `seqno`: 32-bit long sequence number.
 - `wallet_id`: 32-bit long wallet\_id. This is a number that allows you to create multiple wallets with the same private key but different addresses.
 - `public_key`: 256-bit long public key.
-- `plugins`: dictionary containing plugins (may be empty).
+- `plugins`: dictionary keyed by an 8-bit signed workchain ID and a 256-bit address hash. Each key maps to `Unit` (an empty value); the key width is 264 bits.
 
 <Callout type="tip">
   Default value for wallet\_id is `698983191` in V4, it is a partial hash of TON Mainnet zero state.
@@ -69,10 +69,10 @@ contract_state$_
 
 ## Receiving internal messages
 
-All previous versions of wallets had a straightforward implementation for receiving internal messages. They simply accepted incoming funds from any sender, ignoring the internal message body if present, or in other words, they had an empty `recv_internal` method. However, as mentioned earlier, the fourth version of the wallet introduces two additional available operations. Let's take a look at the internal message body layout:
+V4 accepts incoming funds from any sender. It interprets an [internal message](/foundations/messages/internal) as a plugin operation only when the body has a recognized opcode and the sender is installed.
 
 - `opcode` (optional): 32-bit long operation code. This is an optional field. Any message containing less than 32 bits in the message body, an incorrect opcode, or a sender address that isn't registered as a plugin will be considered a simple transfer, similar to previous wallet versions.
-- `query_id`: 64-bit long integer. This field has no effect on the smart contract's behavior; it is used to track chains of messages between contracts.
+- `query_id`: 64-bit identifier immediately after the opcode. It does not affect wallet behavior; it correlates the request and response.
 
 1. opcode = `0x706c7567`, request funds operation.
    - `amount`: [Coins](/tvm/instructions#fa02-stgrams) amount of requested Gram.
@@ -83,13 +83,19 @@ TL-B for plugin operations:
 
 ```tlb
 request_funds#706c7567
+  query_id:(## 64)
   amount:Coins
   extra_currencies:ExtraCurrencyCollection = InternalMsgBody;
 
-self_destroy#64737472 = InternalMsgBody;
+self_destroy#64737472
+  query_id:(## 64) = InternalMsgBody;
 ```
 
+For a funds request, V4 sends the requested assets to the plugin address in a reply with opcode `0xf06c7567` and the same `query_id`. A removal request deletes only the sending plugin.
+
 ## External message body layout
+
+An [external-in message](/foundations/messages/external-in) to V4 has this body layout:
 
 - `signature`: 512-bit long [Ed25519](https://en.wikipedia.org/wiki/EdDSA#Ed25519) signature.
 - `wallet_id`: 32-bit long subwallet ID.
@@ -182,6 +188,8 @@ Wallet V4 provides standard functionality through the `0x0` opcode, similar to p
 
 ## Exit codes
 
+The following [exit codes](/tvm/exit-codes) are specific to V4:
+
 | Exit code | Description                                                             |
 | --------- | ----------------------------------------------------------------------- |
 | 33        | `seqno` check failed, replay protection triggered                       |
@@ -193,6 +201,8 @@ Wallet V4 provides standard functionality through the `0x0` opcode, similar to p
 | 0         | Standard successful execution exit code.                                |
 
 ## Get methods
+
+These read-only methods expose the wallet's sequence number, public key, wallet ID, and installed plugins.
 
 1. `int seqno()` returns current stored seqno.
 1. `int get_public_key()` returns current stored public key.

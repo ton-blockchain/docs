@@ -1,0 +1,51 @@
+---
+title: "Telegram Money — the native Gram wallet"
+sidebarTitle: "Telegram Money"
+---
+
+Telegram Money is a [_mainnet_](/start-here#mainnet-and-testnet) wallet on The Open Network (TON) for receiving assets and connecting to decentralized apps (dApps) through [TON Connect](/applications/ton-connect/overview).
+
+- **On-chain transfers:** send Gram to Telegram users, including those who have not opened the wallet yet. Transfers execute on TON through the [WalletTg smart contract](/contracts/standard/wallets/telegram/overview).
+
+- **Sponsored fees:** Telegram covers network fees for a daily allowance of five free transfers through [gasless transactions](/contracts/standard/wallets/gasless).
+
+- **One wallet across devices:** an [encrypted cloud backup](/contracts/standard/wallets/telegram/key-management#telegram-encrypted-backup-and-phrase-update) allows using the same wallet across devices without manual imports. It splits the wallet key into three parts stored in data centers on three continents.
+
+- **Connect dApps once:** TON Connect connections sync across devices without reconnecting each one. Each device needs the current wallet key, restored from the cloud backup or the recovery phrase.
+
+- **Control the keys:** disable cloud backup or [rotate the signing key](/contracts/standard/wallets/telegram/key-management#rotation-request-and-event) without changing the wallet address. The current recovery phrase also allows importing the wallet into another compatible app.
+
+- **Shared contract upgrades:** validators can vote to [upgrade the shared wallet implementation](/contracts/standard/wallets/telegram/overview#shared-implementation) to add features and improvements for all Telegram Money users at once, without user action. These upgrades require more than 75% of the total validator weight — neither Telegram nor anyone else can bypass validator approval to perform them.
+
+<Callout type="note">
+  For _testnet_ wallets, use [wallet.ton.org](/onboarding/wallet-apps/web) or [manage development wallets](https://ton-blockchain.github.io/acton/docs/wallets) with the \[[Acton toolchain](/contracts/acton).
+</Callout>
+
+## Open or restore a wallet
+
+In Telegram Desktop, open the main menu and select <kbd>Money</kbd>. This entry appears only when Telegram enables wallet access for the account.
+
+- To restore access on a device, use the recovery phrase:
+
+  1. Open the Money menu and select <kbd>Keys & Backup</kbd>.
+  1. Select <kbd>Restore from recovery phrase</kbd> when Telegram offers phrase-based restoration, then enter the current phrase.
+
+- To display the phrase in Telegram Desktop, open Money's menu, select <kbd>Keys & Backup</kbd>, then <kbd>Show Recovery Phrase</kbd>.
+
+  <Callout
+    type="danger"
+  >
+    The recovery phrase gives control of the wallet and funds. Store it securely — never share the recovery phase in plain text.
+  </Callout>
+
+- To import the phrase in another app, use an app that supports the [WalletTg](/contracts/standard/wallets/telegram/overview) contract and its [rotation mnemonic format](/contracts/standard/wallets/telegram/key-management). For backup settings and phrase updates, see [key management](/contracts/standard/wallets/telegram/key-management#telegram-encrypted-backup-and-phrase-update).
+
+## Confirm the address and connect a dApp
+
+1. Copy the wallet address from Telegram Money and check it in a [mainnet explorer](/onboarding/explorers).
+1. Start a [TON Connect](/applications/ton-connect/overview) session from the dApp and confirm its name in Telegram Money.
+1. Review each transaction or signing request before approving it. A connection alone does not authorize a transaction.
+
+## Learn more
+
+- [WalletTg contract](/contracts/standard/wallets/telegram/overview)
