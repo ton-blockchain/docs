@@ -60,7 +60,7 @@ After rotation, the `get_public_key()` getter returns the active signing key, no
 
 ## Storage and migration
 
-`Storage.load()` runs `runMigrationAndUpdateC4()` when the stored prefix differs from `LAST_REVISION`. A transaction persists the migration when it commits [account data](/tvm/registers#c4--persistent-account-storage)
+`Storage.load()` runs `runMigrationAndUpdateC4()` when the stored prefix differs from `LAST_REVISION`. A transaction persists the migration when it commits [account data](/tvm/registers#c4--persistent-account-storage).
 
 <Callout type="note">
   See [request failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior) for external-send commit timing.

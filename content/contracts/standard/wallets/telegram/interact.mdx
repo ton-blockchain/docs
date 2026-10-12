@@ -1,14 +1,19 @@
 ---
-title: "How to interact with WalletTg"
-sidebarTitle: "Interact"
+title: "How to send messages to WalletTg"
+sidebarTitle: "Send messages"
 ---
 
-Build and submit single transfers, batches, and gasless relayed requests for a [WalletTg account](/contracts/standard/wallets/telegram/overview).
+Build and submit owner-signed requests to a [WalletTg account](/contracts/standard/wallets/telegram/overview). Each request instructs the wallet to send a single message or a batch of messages.
+
+<Callout type="caution">
+  Mainnet transfers are irreversible. Test in a local emulator, then confirm the recipient, amount, and fees before signing.
+</Callout>
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/en/download) 22 or later LTS version.
 - The example project from the [integration guide](/contracts/standard/wallets/telegram/integrate#offline-derivation-example).
+- An active mainnet WalletTg account and its [current signing key](/contracts/standard/wallets/telegram/integrate#validate-the-deployed-account).
 
 ## Build signed requests
 
@@ -73,7 +78,7 @@ export function signedSend(
 
 export function externalEnvelope(identity: WalletIdentity, body: Cell) {
   return beginCell()
-    .store(storeMessage(external({ to: identity.address, body })))
+    .store(storeMessage(external({ to: identity.address, body }), { forceRef: true }))
     .endCell();
 }
 ```
@@ -81,6 +86,47 @@ export function externalEnvelope(identity: WalletIdentity, body: Cell) {
 Set `channel` to `external` for direct submission or `internal` for relaying. Changing the channel requires a new signature.
 
 The script uses [send mode `3`](/foundations/messages/modes): pay transfer fees separately and ignore eligible send errors. It checks expiry against the local clock, while the contract uses `blockchain.now()`.
+
+## Send external messages to the contract
+
+In the [example project](/contracts/standard/wallets/telegram/integrate#offline-derivation-example), install an additional dependency:
+
+```bash
+npm install --save-exact @ton/ton@16.3.0
+```
+
+Use a `TonClient` from [`@ton/ton`](/applications/sdks) and the validated `identity` from the integration guide. Replace `<MAINNET_RPC_URL>` with a trusted mainnet JSON-RPC endpoint and `<RECIPIENT_ADDRESS>` with the recipient wallet address.
+
+Obtain user approval and emulate the 0.01 GRAM transfer before submission.
+
+```ts title="submit.ts"
+// Not runnable: supply identity and replace the RPC and recipient placeholders.
+import { internal, toNano } from '@ton/core';
+import { TonClient } from '@ton/ton';
+import { readWallet } from './wallet-tg.ts';
+import { signedSend, externalEnvelope } from './requests.ts';
+
+const client = new TonClient({ endpoint: '<MAINNET_RPC_URL>' });
+// NOTE: For a batch transfer, add more messages to this array:
+const messages = [
+  internal({
+    to: '<RECIPIENT_ADDRESS>',
+    value: toNano('0.01'),
+    bounce: false,
+    body: 'WalletTg transfer',
+  }),
+];
+const validUntil = Math.floor(Date.now() / 1000) + 300;
+
+const provider = client.provider(identity.address, null);
+const { seqno } = await readWallet(provider, identity, 'mainnet');
+const body = signedSend(identity, { seqno, validUntil, messages });
+const envelope = externalEnvelope(identity, body);
+await client.sendFile(envelope.toBoc());
+const messageHash = envelope.hash();
+```
+
+Use `messageHash`, a [normalized external message hash](/applications/ton-connect/how-to/message-lookup#message-normalization), to [track the transaction](/applications/ton-connect/how-to/message-lookup).
 
 ## Relay gasless requests
 
@@ -96,49 +142,10 @@ The sender and incoming value are outside the signature. Anyone can relay the re
 
 WalletTg provides the signed internal entrypoint. A wallet app must arrange sponsorship or reimbursement with a relayer. The contract supplies neither a relayer service nor an automatic jetton fee payment. The relayer must check what it sponsors before sending Gram.
 
-## Submit external requests
-
-In the example project, install the client:
-
-```bash
-npm install --save-exact @ton/ton@16.3.0
-```
-
-For an active mainnet account, pass a configured [`TonClient`](https://github.com/ton-org/ton/blob/master/src/client/TonClient.ts) and its network identifier to this function. Call it only after user approval and successful emulation of the approved messages against current network state.
-
-This application integration excerpt builds the complete external-in envelope and submits its BoC.
-
-```ts
-// Not runnable: requires a configured client and approved transfer arguments.
-import type { MessageRelaxed } from '@ton/core';
-import type { TonClient } from '@ton/ton';
-import { readWallet, type WalletIdentity } from './wallet-tg.ts';
-import { signedSend, externalEnvelope } from './requests.ts';
-
-export async function submitApprovedTransfer({
-  client, network, identity, messages, validUntil,
-}: {
-  client: TonClient;
-  network: string;
-  identity: WalletIdentity;
-  messages: MessageRelaxed[];
-  validUntil: number;
-}) {
-  const provider = client.provider(identity.address, null);
-  const { seqno } = await readWallet(provider, identity, network);
-  const body = signedSend(identity, { seqno, validUntil, messages });
-  const envelope = externalEnvelope(identity, body);
-  await client.sendFile(envelope.toBoc());
-  return { seqno, messageHash: envelope.hash() };
-}
-```
-
-`network` must come from trusted provider configuration, not wallet input. Use `mainnet` for Telegram accounts. Read state and getters from the same block when the provider supports it.
-
 ## Verify the result
 
 - Allow enough time for user confirmation when setting `validUntil`. Serialize pending requests per wallet: do not sign two requests with the same `seqno`.
 
-- For the complete confirmation, track the wallet transaction, check its compute and action results, and inspect the outgoing messages and recipient transactions.
+- [Track the wallet transaction](/applications/ton-connect/how-to/message-lookup), check its compute and action results, and inspect the outgoing messages and recipient transactions.
 
 - After failure or an unknown outcome, read the current key and `seqno` before retrying. [Failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior) determines whether the request was consumed.

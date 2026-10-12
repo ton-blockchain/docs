@@ -3,7 +3,7 @@ title: "How to integrate WalletTg support into a wallet app or service"
 sidebarTitle: "Integrate into a wallet"
 ---
 
-This page covers integration with existing [WalletTg](/contracts/standard/wallets/telegram/overview) accounts: how to detect and import the rotation mnemonic, derive the account address, check or rotate the current signing key, decrypt comments, and compose WalletTg-compatible messages.
+This page covers integration with existing [WalletTg](/contracts/standard/wallets/telegram/overview) accounts: how to detect and import the rotation mnemonic, derive the account address, check or rotate the current signing key, decrypt comments, and support TON Connect flows. For sending WalletTg-compatible messages, [complete the integration](#verify-the-integration) and proceed [onto the next step](#next-steps).
 
 <Callout type="caution">
   WalletTg is the wallet contract used by Telegram. It is not the only kind of wallets on TON.
@@ -185,10 +185,6 @@ Pin the reads to one block when the provider supports it. A failed read or valid
   Some popular wallets implement similar [import steps](https://github.com/mytonwallet-org/mytonwallet/blob/bb3f357690633d274e390e799babaf1d642b31de/src/api/chains/ton/auth.ts) and [account checks](https://github.com/mytonwallet-org/mytonwallet/blob/bb3f357690633d274e390e799babaf1d642b31de/src/api/chains/ton/wallet.ts).
 </Callout>
 
-## Build and track requests
-
-Use the [request guide](/contracts/standard/wallets/telegram/interact) to build and submit single transfers, batches, and gasless relayed requests. Its helpers use `readWallet` above to validate the active account and read its current key and `seqno`.
-
 ## Rotate the signing key
 
 1. Keep words 1-12 (anchor) unchanged. Generate a fresh 12-word BIP-39 signing half from a cryptographically secure random source, independently of the anchor and every previous signing half. Never rotate back to the anchor key.
@@ -307,3 +303,7 @@ Test in a local emulator with the [WalletTg implementation](/contracts/standard/
 <Callout type="note">
   The [WalletTg Acton tests](https://github.com/ton-blockchain/tg-wallet-contract/tree/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/tests) include fixtures with config param `-123`. Without that entry, an emulator would not be able to execute WalletTg's signed requests or getters.
 </Callout>
+
+## Next steps
+
+Build and submit [single transfers, batches, and gasless requests](/contracts/standard/wallets/telegram/interact) to deployed WalletTg contracts.
