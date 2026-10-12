@@ -26,7 +26,9 @@ Internal and external requests use different opcodes, so a signature cannot be r
 
 Relayers must attach enough Gram for compute gas. The wallet's existing balance can fund outgoing values and fees. [Emulate the request](/contracts/standard/wallets/telegram/interact#relay-gasless-requests) with the current balance and intended attached value; insufficient gas can fail it without advancing `seqno`.
 
-Wallet v5 uses a different signature position and action encoding; see the [wallet v5 interface](/contracts/standard/wallets/v5-api).
+<Callout type="note">
+  Wallet V5 uses a different [signature position and action encoding](/contracts/standard/wallets/v5-api).
+</Callout>
 
 ## Request opcodes
 
