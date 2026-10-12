@@ -43,6 +43,6 @@ If rotation succeeds but the following backup-disable request fails, the new phr
 
 ## Historical encrypted comments
 
-[`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent) carries `encryptedOldPrivateKey: bits256`. The contract checks its 256-bit shape and emits the value unchanged. Contract comments describe it as `XOR(hash(newPrivateKey + salt), currentPrivateKey)`, for indexers to surface old-key data that clients use to decrypt comments. `get_public_key()` exposes only the current key.
+[`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent) carries `encryptedOldPrivateKey: bits256`. The WalletTg contract checks its 256-bit shape and emits the value unchanged in an [external-out](/foundations/messages/external-out) message. The value emitted is `XOR(hash(newPrivateKey + salt), currentPrivateKey)`, for indexers to surface old-key data that clients use to decrypt comments.
 
-The published contract source does not specify the hash, salt, byte encoding, or how clients select a historical key for a comment. The formula alone is not an interoperable format. Enable rotation and old-comment recovery only with a verified client implementation. Apps that decrypt with only the current signing key cannot read comments encrypted for an earlier key.
+Apps that decrypt with only the current signing key cannot read comments encrypted for an earlier key.
