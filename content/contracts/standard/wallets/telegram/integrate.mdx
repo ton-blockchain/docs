@@ -5,9 +5,15 @@ sidebarTitle: "Integrate into an app"
 
 To support existing [WalletTg](/contracts/standard/wallets/telegram/overview) accounts, derive the account address, check the current signing key, and compose WalletTg-compatible messages.
 
+<Callout type="note">
+  WalletTg is the wallet contract used by Telegram. It is not the only kind of wallets on TON.
+
+  When creating new wallets for TON, prefer to use the [wallet V5](/contracts/standard/wallets/v5) contract, unless the user explicitly provides the [rotation mnemonic](/contracts/standard/wallets/mnemonics#mnemonic-import-and-scheme-detection) that is only compatible with WalletTg.
+</Callout>
+
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download) 22 for the example.
+- [Node.js](https://nodejs.org/en/download) 22 or later LTS version **for the examples** below.
 - Access to account state and get-methods on the TON mainnet.
 - Encrypted mnemonic storage and Ed25519 signing in the wallet app.
 
@@ -26,8 +32,6 @@ The example runs offline with temporary keys and targets the Telegram Money-crea
    - For a 24-word rotation mnemonic, derive each 12-word half separately. The first half derives the address anchor; the second half derives the signing key.
 
 For each 12-word phrase, use BIP-39 seed derivation with an empty passphrase, then SLIP-0010 Ed25519 at `m/44'/607'/0'`.
-
-For 24 words, `deriveWalletTg` expects a rotation mnemonic already selected by the importer.
 
 ## Derive the original account
 
@@ -75,6 +79,7 @@ function halfKey(words: string[]) {
   return keyPairFromSeed(node.subarray(0, 32));
 }
 
+/** NOTE: `words` are expected to be a rotation mnemonic */
 export function deriveWalletTg(words: string[]) {
   if (words.length !== 12 && words.length !== 24) {
     throw new Error('Expected 12 words or a selected 24-word rotation mnemonic');
@@ -182,7 +187,7 @@ Pin the reads to one block when the provider supports it. A failed read or valid
 
 ## Build and track requests
 
-Use the [request guide](/contracts/standard/wallets/telegram/interact) to build and emulate single transfers, batches, and gasless relayed requests. Its helpers use `readWallet` above to validate the active account and read its current key and `seqno`.
+Use the [request guide](/contracts/standard/wallets/telegram/interact) to build and submit single transfers, batches, and gasless relayed requests. Its helpers use `readWallet` above to validate the active account and read its current key and `seqno`.
 
 ## Rotate the signing key
 

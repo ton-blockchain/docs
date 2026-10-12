@@ -3,24 +3,18 @@ title: "How to interact with WalletTg"
 sidebarTitle: "Interact"
 ---
 
-Build and emulate a single transfer, a batch, and a gasless relayed request for a [WalletTg account](/contracts/standard/wallets/telegram/overview). The example uses local execution with temporary keys.
+Build and submit single transfers, batches, and gasless relayed requests for a [WalletTg account](/contracts/standard/wallets/telegram/overview).
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download) 22.
+- [Node.js](https://nodejs.org/en/download) 22 or later LTS version.
 - The example project from the [integration guide](/contracts/standard/wallets/telegram/integrate#offline-derivation-example).
 
 ## Build signed requests
 
-In that project directory, install:
-
-```bash
-npm install --save-exact @ton/core@0.63.1 @ton/crypto@3.3.0 bip39@3.1.0 @ton/sandbox@0.38.0 @ton/ton@16.3.0
-```
-
 The `signedSend()` function in the following script can accept 1-255 outgoing messages and select the [single-message layout](/contracts/standard/wallets/telegram/messages#send-one-message) or [batch layout](/contracts/standard/wallets/telegram/messages#send-a-batch).
 
-```ts
+```ts title="requests.ts"
 import { beginCell, external, storeMessage, storeMessageRelaxed, type Cell, type MessageRelaxed } from '@ton/core';
 import { sign } from '@ton/crypto';
 import type { WalletIdentity } from './wallet-tg.ts';
@@ -88,110 +82,6 @@ Set `channel` to `external` for direct submission or `internal` for relaying. Ch
 
 The script uses [send mode `3`](/foundations/messages/modes): pay transfer fees separately and ignore eligible send errors. It checks expiry against the local clock, while the contract uses `blockchain.now()`.
 
-## Emulate transfers
-
-Download the pinned revision-0 [shared implementation](/contracts/standard/wallets/telegram/contract):
-
-```bash
-curl --fail --location --output implementation.boc https://raw.githubusercontent.com/ton-blockchain/tg-wallet-contract/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/revisions-boc/WalletTg-rev00.boc
-```
-
-The following script installs the implementation in the emulator's configuration `-123`, funds a temporary wallet, and checks the resulting transactions.
-
-```ts title="emulate.ts"
-import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { beginCell, Cell, Dictionary, internal, toNano } from '@ton/core';
-import { Blockchain } from '@ton/sandbox';
-import bip39 from 'bip39';
-import { deriveWalletTg, readWallet } from './wallet-tg.ts';
-import { signedSend, externalEnvelope } from './requests.ts';
-
-// Arbitrarily-chosen values!
-const TRANSFER_VALUE = toNano('0.001');
-const RELAY_VALUE = toNano('0.05');
-const VALIDITY_SECONDS = 300;
-
-const blockchain = await Blockchain.create();
-const now = Math.floor(Date.now() / 1000);
-blockchain.now = now;
-const implementation = Cell.fromBoc(readFileSync('implementation.boc'))[0];
-assert.equal(implementation.hash().toString('hex'),
-  'e30911420bef1191c09dce58b9df2b4ca4c2d9c383cc3b6a91170349ffa70e2c');
-const config = Dictionary.loadDirect(Dictionary.Keys.Int(32), Dictionary.Values.Cell(), blockchain.config);
-config.set(-123, implementation);
-blockchain.setConfig(beginCell().storeDictDirect(config).endCell());
-
-const identity = deriveWalletTg(bip39.generateMnemonic(128).split(' '));
-const relayer = await blockchain.treasury('relayer');
-const receiver = await blockchain.treasury('receiver');
-await relayer.send({ to: identity.address, value: toNano('1'), init: identity.init, bounce: false });
-const provider = blockchain.provider(identity.address);
-
-async function sendAndCheck(count: number, channel: 'external' | 'internal') {
-  const { seqno } = await readWallet(provider, identity, 'mainnet');
-  const messages = Array.from({ length: count }, () => internal({
-    to: receiver.address, value: TRANSFER_VALUE, bounce: false,
-  }));
-  const body = signedSend(identity, {
-    seqno, validUntil: now + VALIDITY_SECONDS, messages, channel,
-  });
-  const result = channel === 'external'
-    ? await blockchain.sendMessage(externalEnvelope(identity, body))
-    : await relayer.send({ to: identity.address, value: RELAY_VALUE, body, bounce: false });
-  const tx = result.transactions.find(({ inMessage }) =>
-    inMessage && inMessage.info.type !== 'external-out'
-    && inMessage.info.dest.equals(identity.address));
-  assert(tx && tx.description.type === 'generic');
-  assert.equal(tx.description.aborted, false);
-  assert(tx.description.computePhase.type === 'vm');
-  assert.equal(tx.description.computePhase.exitCode, 0);
-  assert.equal(tx.description.actionPhase?.resultCode, 0);
-  const outgoing = [...tx.outMessages.values()];
-  assert.equal(outgoing.length, count);
-  for (const message of outgoing) {
-    assert(message.info.type === 'internal');
-    assert(message.info.dest.equals(receiver.address));
-    assert.equal(message.info.value.coins, TRANSFER_VALUE);
-  }
-  const delivered = result.transactions.filter((item) =>
-    item.inMessage?.info.type === 'internal'
-    && item.inMessage.info.src.equals(identity.address)
-    && item.inMessage.info.dest.equals(receiver.address));
-  assert.equal(delivered.length, count);
-  for (const item of delivered) {
-    assert(item.description.type === 'generic' && !item.description.aborted);
-  }
-  assert.equal((await readWallet(provider, identity, 'mainnet')).seqno, seqno + 1);
-  console.log(`PASS: ${channel}, ${count} message(s)`);
-}
-
-await sendAndCheck(1, 'external');
-await sendAndCheck(5, 'external');
-(await blockchain.getContract(identity.address)).balance = 0n;
-await sendAndCheck(1, 'internal');
-```
-
-Run:
-
-```bash
-npx tsx emulate.ts
-```
-
-Expected output:
-
-```text
-PASS: external, 1 message(s)
-PASS: external, 5 message(s)
-PASS: internal, 1 message(s)
-```
-
-The final case starts with a zero wallet balance. The relayer's incoming Gram covers both the transferred value and transaction fees.
-
-<Callout type="note">
-  The `0.05 GRAM` above is chosen arbitrarily. It is not a fee estimate for other requests.
-</Callout>
-
 ## Relay gasless requests
 
 Gasless submission lets a relayer submit an owner-signed internal request and attach Gram for processing, as described in the [gasless transactions guide](/contracts/standard/wallets/gasless):
@@ -208,9 +98,15 @@ WalletTg provides the signed internal entrypoint. A wallet app must arrange spon
 
 ## Submit external requests
 
+In the example project, install the client:
+
+```bash
+npm install --save-exact @ton/ton@16.3.0
+```
+
 For an active mainnet account, pass a configured [`TonClient`](https://github.com/ton-org/ton/blob/master/src/client/TonClient.ts) and its network identifier to this function. Call it only after user approval and successful emulation of the approved messages against current network state.
 
-This application integration excerpt builds the complete external-in envelope and submits its BoC. It does not run as part of the local example.
+This application integration excerpt builds the complete external-in envelope and submits its BoC.
 
 ```ts
 // Not runnable: requires a configured client and approved transfer arguments.
@@ -241,8 +137,8 @@ export async function submitApprovedTransfer({
 
 ## Verify the result
 
-Allow time for user confirmation when setting `validUntil`. Serialize pending requests per wallet: do not sign two requests with the same `seqno`.
+- Allow enough time for user confirmation when setting `validUntil`. Serialize pending requests per wallet: do not sign two requests with the same `seqno`.
 
-Submission confirms delivery to a provider, not execution. Track the wallet transaction, check its compute and action results, and inspect the outgoing messages and recipient transactions. An increased `seqno` alone does not prove every message was sent.
+- For the complete confirmation, track the wallet transaction, check its compute and action results, and inspect the outgoing messages and recipient transactions.
 
-After failure or an unknown outcome, read the current key and `seqno` before retrying. [Failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior) determines whether the request was consumed.
+- After failure or an unknown outcome, read the current key and `seqno` before retrying. [Failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior) determines whether the request was consumed.
