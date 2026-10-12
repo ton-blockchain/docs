@@ -1,14 +1,14 @@
 ---
-title: "How to integrate WalletTg support into a wallet app"
-sidebarTitle: "Integrate into an app"
+title: "How to integrate WalletTg support into a wallet app or service"
+sidebarTitle: "Integrate into a wallet"
 ---
 
-To support existing [WalletTg](/contracts/standard/wallets/telegram/overview) accounts, derive the account address, check the current signing key, and compose WalletTg-compatible messages.
+This page covers integration with existing [WalletTg](/contracts/standard/wallets/telegram/overview) accounts: how to detect and import the rotation mnemonic, derive the account address, check or rotate the current signing key, decrypt comments, and compose WalletTg-compatible messages.
 
-<Callout type="note">
+<Callout type="caution">
   WalletTg is the wallet contract used by Telegram. It is not the only kind of wallets on TON.
 
-  When creating new wallets for TON, prefer to use the [wallet V5](/contracts/standard/wallets/v5) contract, unless the user explicitly provides the [rotation mnemonic](/contracts/standard/wallets/mnemonics#mnemonic-import-and-scheme-detection) that is only compatible with WalletTg.
+  When creating new wallets, prefer to use the [wallet V5](/contracts/standard/wallets/v5) contract, unless the user explicitly provides the [rotation mnemonic](/contracts/standard/wallets/mnemonics#mnemonic-import-and-scheme-detection) that is only compatible with WalletTg.
 </Callout>
 
 ## Prerequisites
