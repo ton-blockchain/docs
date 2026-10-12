@@ -138,4 +138,7 @@ External send handlers save the incremented `seqno` and call [`COMMIT`](/tvm/ins
 
 ## Source files
 
-[WalletTg revision 0](https://github.com/ton-blockchain/tg-wallet-contract/tree/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c): [message definitions](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/messages.tolk), [request handlers](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/WalletTg.tolk), and [outgoing-message parser](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/send-to-c5.tolk). The [TON VM reference](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/doc/tvm.tex) defines `COMMIT`; [TON Core's `CHKSIGNU` implementation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/vm/tonops.cpp) verifies the signature.
+- [WalletTg repository on GitHub](https://github.com/ton-blockchain/tg-wallet-contract):
+  - [shared implementation](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/WalletTg.tolk),
+  - [message definitions](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/messages.tolk),
+  - [outgoing-message parser](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/send-to-c5.tolk)
