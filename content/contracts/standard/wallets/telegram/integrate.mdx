@@ -186,15 +186,71 @@ Use the [request guide](/contracts/standard/wallets/telegram/interact) to build 
 
 ## Rotate the signing key
 
-Before enabling rotation, obtain a verified implementation of the [key-history encryption format](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) from the originating client. The contract sources do not fully specify that format. Importing and sending from already-rotated accounts does not require it.
-
-With that prerequisite met:
+Use Telegram's [key-history encryption format](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) to preserve access to comments encrypted with now-replaced signing keys.
 
 1. Keep words 1-12 unchanged. Generate a fresh 12-word BIP-39 signing half from a cryptographically secure random source, independently of the anchor and every previous signing half. Never rotate back to the anchor key.
 1. Save both the current and candidate phrases in encrypted storage before submission.
-1. Build the [rotation request](/contracts/standard/wallets/telegram/messages#change-the-signing-key). Sign the outer request with the current key and the rotation proof with the new key. Encode `encryptedOldPrivateKey` with the verified client implementation. Do not substitute arbitrary 256-bit data.
+1. Build the [rotation request](/contracts/standard/wallets/telegram/messages#change-the-signing-key). Sign the outer request with the current key and the rotation proof with the new key. Encode the replaced signing seed as `encryptedOldPrivateKey` using the key-history format.
 1. Emulate and submit the request.
 1. Read `get_public_key()` and `seqno()` again. Make the candidate phrase current only when the on-chain key matches its signing half. If submission fails or its result is unknown, retain both phrases and read the state before retrying.
+
+## Decrypt historical comments
+
+When decrypting [encrypted comments](/contracts/standard/wallets/interact#encrypted-comments), try the current signing key and the anchor key first. Recover intermediate signing keys from public rotation history only when neither authenticates the comment.
+
+The decryption itself can be performed locally, but the retrieval of the earlier signing keys requires querying the blockchain.
+
+### Recover earlier signing keys
+
+1. Derive the current and anchor key pairs from the validated recovery phrase. For an `@ton/crypto` key pair, copy its 32-byte seed with `Buffer.from(secretKey.subarray(0, 32))`.
+1. Query [TON Center's `/api/v3/actions`](/api/v3/actions-and-traces/get-actions) endpoint with `account` set to the wallet address and `action_type=change_wallet_key`. Use `limit=100`, `offset=0`, and `sort=desc`. Increase `offset` by the returned action count until a page contains fewer than 100 actions.
+1. Keep only actions with `success: true` whose `details.destination` matches the wallet address. Compare parsed addresses: the account filter also returns rotations relayed for other wallets. Decode `details.new_public_key` and `details.encrypted_old_private_key` from 64 hexadecimal digits into 32 bytes, preserving leading zeros.
+1. Find the rotation that installed the current signing public key. Recover its previous seed with the [key-history formula](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments), then derive the previous public key with `keyPairFromSeed`.
+1. Continue backward from that public key through earlier rotations. Stop at the anchor, a missing link, or a repeated public key. Keep the recovered keys as candidates for decryption.
+
+When parsing transactions directly, pair `newPublicKey` from the accepted rotation request with `encryptedOldPrivateKey` from its emitted [`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent).
+
+<Callout type="note">
+  The event itself does not identify the installed key, and it does not prove that rotation succeeded.
+</Callout>
+
+The following helper recovers one previous seed:
+
+```ts
+// Not runnable: call with the rotation's ciphertext and its new signing seed.
+import { createHash } from 'node:crypto';
+
+function recoverPreviousSeed(encryptedOldPrivateKey: Buffer, newSeed: Buffer): Buffer {
+  if (encryptedOldPrivateKey.length !== 32 || newSeed.length !== 32) {
+    throw new Error('Expected 32-byte ciphertext and seed');
+  }
+  const mask = createHash('sha256')
+    .update(newSeed)
+    .update('keyChangeSaltV1', 'ascii')
+    .digest();
+  const previousSeed = Buffer.alloc(32);
+  for (let i = 0; i < 32; i++) {
+    previousSeed[i] = encryptedOldPrivateKey[i] ^ mask[i];
+  }
+  mask.fill(0);
+  return previousSeed;
+}
+```
+
+### Decrypt with each candidate key
+
+1. Read the comment body or the token transfer's `forward_payload`. Require the [encrypted-comment opcode and binary snake format](/contracts/standard/wallets/interact#encrypted-comment-format). Split the payload into `pub_xor`, `msg_key`, and `ciphertext`. Reject empty ciphertext or a ciphertext length that is not a multiple of 16 bytes.
+1. Reconstruct the peer public key as `pub_xor XOR candidatePublicKey`. Use the candidate seed and that peer key for the [Ed25519-to-X25519 shared-secret derivation](/contracts/standard/wallets/interact#attaching-an-encrypted-comment-when-sending). Skip the candidate if its peer key is invalid or its shared secret is all zeros. The peer's current getter can return a different key after rotation.
+1. Compute `x = HMAC-SHA512(key=shared_secret, data=msg_key)`. Decrypt `ciphertext` with AES-256-CBC using `x[0..32]` as the key and `x[32..48]` as the initialization vector. Disable automatic padding.
+1. Set `salt` to the original sender wallet's bounceable, URL-safe, non-test-only address string. For outgoing comments, use this wallet's address; for incoming comments, use the originating wallet's address, including inside token notifications.
+1. Recompute `HMAC-SHA512(key=salt, data=padded_data)[0..16]` and compare it with `msg_key` in constant time. On a key mismatch, try the next candidate. Display plaintext only after this check passes.
+1. Validate that `padded_data[0]` gives a prefix length of 16–31 bytes within the decrypted buffer. Remove the prefix and decode the remaining comment bytes. Reject comments longer than 960 bytes and, for text comments, invalid UTF-8.
+
+Report missing rotation history separately from a comment that fails authentication. Retry a lagging indexer before declaring older keys unavailable. Keep comments readable with the anchor or already recovered keys even when another history link is missing.
+
+<Callout type="note">
+  Exemplary [decryption workflow](https://github.com/i582/wallet-engine/blob/e59e0d89d7ee90c388bf36e3334c5b276f396697/src/engine/encrypted_comment.rs#L162-L274) implements the candidate-key search and history lookup.
+</Callout>
 
 ## Support TON Connect and TON Proof
 
@@ -218,6 +274,8 @@ Test in a local emulator with the [WalletTg implementation](/contracts/standard/
 - Reject a stale signing half, wrong subwallet ID or code, and failed getter reads.
 - Offer a choice when a 24-word phrase matches several mnemonic schemes.
 - Rotate to an independent signing key. Check that the address and trampoline hash stay the same and the old key can no longer sign valid requests.
+- Encrypt incoming and outgoing comments before rotation, between 2 rotations, and after rotation. Restore only the current phrase and public history; all comments must decrypt.
+- Reject tampered comments and incorrect sender salts. Check missing history links and delayed indexer updates without blocking comments readable with known keys.
 - Accept `ton_proof` signed by the current key and reject proofs signed by the old key.
 - Check single and bulk requests, internal/external opcode separation, expiration, requests with the same `seqno`, and [failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior).
 

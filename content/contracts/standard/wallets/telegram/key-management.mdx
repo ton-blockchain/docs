@@ -43,6 +43,18 @@ If rotation succeeds but the following backup-disable request fails, the new phr
 
 ## Historical encrypted comments
 
-[`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent) carries `encryptedOldPrivateKey: bits256`. The WalletTg contract checks its 256-bit shape and emits the value unchanged in an [external-out](/foundations/messages/external-out) message. The value emitted is `XOR(hash(newPrivateKey + salt), currentPrivateKey)`, for indexers to surface old-key data that clients use to decrypt comments.
+[`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent) carries `encryptedOldPrivateKey: bits256`. The contract emits the value unchanged in an [external-out](/foundations/messages/external-out) message.
 
-Apps that decrypt with only the current signing key cannot read comments encrypted for an earlier key.
+The [`wallet-engine`](https://github.com/i582/wallet-engine/blob/e59e0d89d7ee90c388bf36e3334c5b276f396697/src/wallet/key_history.rs#L16-L44) defines the client format:
+
+```text
+encryptedOldPrivateKey = oldSeed XOR SHA256(newSeed || ASCII("keyChangeSaltV1"))
+```
+
+There,
+
+- `oldSeed` and `newSeed` are raw 32-byte Ed25519 signing seeds.
+- `||` concatenates bytes: the new seed is followed by the 15 ASCII salt bytes `keyChangeSaltV1`, without a terminator.
+- `XOR` combines corresponding bytes.
+
+The current recovery phrase preserves the anchor and current signing keys. Wallet apps can [recover intermediate keys and decrypt historical comments](/contracts/standard/wallets/telegram/integrate#decrypt-historical-comments) by walking successful rotations backward. Each recovered seed opens the previous rotation's ciphertext. Missing or incompatible recovery data can prevent access to earlier comments even after a successful key rotation.

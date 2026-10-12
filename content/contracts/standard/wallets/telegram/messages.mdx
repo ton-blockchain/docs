@@ -100,7 +100,11 @@ The address fields bind the proof to this wallet.
 
 ### `OnKeyHasBeenChangedEvent`
 
-The contract emits this external-out event to [`addr_none`](/foundations/addresses/overview#external-addresses). Its body is opcode `0xEBA19948` followed by the same 256-bit encrypted value. The contract treats the value as opaque; [key management](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) explains the limits of the published format.
+The contract emits this external-out event to [`addr_none`](/foundations/addresses/overview#external-addresses). Its body is opcode `0xEBA19948` followed by the 256-bit encrypted key. The contract treats the value as opaque.
+
+<Callout type="note">
+  See how to [decrypt the historical encrypted messages](/contracts/standard/wallets/telegram/integrate#decrypt-historical-comments).
+</Callout>
 
 ## Failure and sequence-number behavior
 
