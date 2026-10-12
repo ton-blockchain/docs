@@ -3,7 +3,7 @@ title: "How to authenticate users with `ton_proof`"
 sidebarTitle: "Authenticate users"
 ---
 
-`ton_proof` lets a backend verify that a user controls the wallet account they connected. The wallet signs an application-provided payload with the account's private key; the backend checks the signature and issues a session token.
+`ton_proof` lets a backend verify that a user controls the wallet account they connected. The wallet signs an application-provided payload with the account's private key; the backend checks the signature and establishes an authenticated session.
 
 ## Verification flow
 
@@ -13,19 +13,24 @@ sidebarTitle: "Authenticate users"
   alt="TON Proof verification flow: client requests payload, signs with wallet, and sends proof to backend"
 />
 
-During wallet connection, the client receives a `TonProofItemReplySuccess` object and sends it to the backend:
+During wallet connection, the SDK exposes a `TonProofItemReplySuccess` object with this shape. The client sends its proof to the backend:
 
 ```typescript
 type TonProofItemReplySuccess = {
   name: 'ton_proof';
   proof: {
-    timestamp: number;     // Unix epoch time of the signing operation in seconds
+    // Unix epoch time of the signing operation in seconds.
+    timestamp: number;
     domain: {
-      lengthBytes: number; // AppDomain length
-      value: string;       // App domain name (URL part, without encoding)
+      // UTF-8 byte length of the app domain.
+      lengthBytes: number;
+      // App domain name (URL part, without encoding).
+      value: string;
     };
-    signature: string;     // base64-encoded signature
-    payload: string;       // payload from the request
+    // Base64-encoded signature.
+    signature: string;
+    // Payload from the request.
+    payload: string;
   };
 };
 ```
@@ -34,40 +39,70 @@ The SDK exposes `timestamp` as a number, while the TON Connect specification def
 
 ## Request a proof
 
-Generate an unpredictable, single-use payload on the backend. Associate it with the login attempt and give it a short expiration time. Then pass the payload to `setConnectRequestParameters` before opening the wallet modal:
+Generate an unpredictable, single-use payload on the backend. Store it with a short expiration time and bind it to the browser's login attempt. The [backend example](#api-endpoints) returns `{ payload }` — pass that value to the wallet before opening the connection modal.
+
+Save this helper as `ton-proof-api.ts` in an app using `@tonconnect/ui-react`:
+
+```ts title="ton-proof-api.ts"
+// Not runnable: add to an @tonconnect/ui-react app and implement the endpoints below.
+import type { Account, TonProofItemReplySuccess } from '@tonconnect/ui-react';
+
+export const TonProofApi = {
+  async generatePayload() {
+    const response = await fetch('/api/ton-proof/payload', { method: 'POST' });
+    if (!response.ok) throw new Error('Could not create a login challenge');
+    const { payload } = await response.json();
+    return { tonProof: payload as string };
+  },
+
+  async checkProof(proof: TonProofItemReplySuccess['proof'], account: Account) {
+    const response = await fetch('/api/ton-proof/verify', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        address: account.address,
+        network: account.chain,
+        public_key: account.publicKey,
+        proof: { ...proof, state_init: account.walletStateInit },
+      }),
+    });
+    if (!response.ok) throw new Error('Wallet proof was rejected; reconnect the wallet');
+    return response.json() as Promise<{ address: string; network: string }>;
+  },
+};
+```
+
+Prepare the request before opening the wallet modal:
 
 ```ts
-// Not runnable: initialize tonConnectUI and provide the API endpoint.
-const payload = await fetch('/api/ton-proof/payload', {
-  method: 'POST',
-}).then((response) => response.text());
+// Not runnable: initialize tonConnectUI and import TonProofApi from the helper above.
+const payload = await TonProofApi.generatePayload();
 
 tonConnectUI.setConnectRequestParameters({
   state: 'ready',
-  value: { tonProof: payload },
+  value: payload,
 });
 ```
 
 Keep the payload short. The SDK allows at most 128 UTF-8 bytes for the domain, 128 UTF-8 bytes for the payload, and 222 bytes for both combined.
 
-Read the proof from the wallet status callback and send it to the backend together with `wallet.account`. A wallet that does not support `ton_proof` returns a connect-item error instead of a `proof` field, so handle both variants:
+Read the proof from the wallet status callback. `checkProof()` maps `account.chain` to `network` and `account.walletStateInit` to `proof.state_init`. JSON omits `public_key` when the SDK account has no `publicKey`.
+
+A wallet that does not support `ton_proof` returns a connect-item error instead of a `proof` field, so handle both variants:
 
 ```ts
-// Not runnable: initialize tonConnectUI and provide the API endpoint.
+// Not runnable: initialize tonConnectUI and import TonProofApi from the helper above.
 tonConnectUI.onStatusChange(async (wallet) => {
   const tonProof = wallet?.connectItems?.tonProof;
   if (!wallet || !tonProof || !('proof' in tonProof)) {
     return;
   }
 
-  await fetch('/api/ton-proof/verify', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      account: wallet.account,
-      proof: tonProof.proof,
-    }),
-  });
+  try {
+    await TonProofApi.checkProof(tonProof.proof, wallet.account);
+  } catch (error) {
+    console.error(error);
+  }
 });
 ```
 
@@ -107,141 +142,125 @@ The backend hashes the message, prepends `0xffff ++ "ton-connect"`, hashes again
 
 ## Obtain the public key
 
-### From walletStateInit (preferred)
+### From `walletStateInit` (preferred)
 
-Extract the public key from the `walletStateInit` in `TonAddressItemReply` — no network call needed.
+For a standard wallet with a known fixed-key data layout, extract the public key from `walletStateInit` in `TonAddressItemReply`:
 
-1. Parse `walletStateInit` — decode the `walletStateInit` cell.
-1. Identify the wallet version — compare the `code` hash of the `walletStateInit` with known standard wallet contract codes.
-1. Extract the public key — parse the `data` section according to the identified wallet version.
+1. Parse `walletStateInit` as a `StateInit` cell.
+1. Match its `code` hash to a supported wallet version.
+1. Parse the `data` cell for that version and read its public key.
 
-### From on-chain get\_public\_key (fallback)
+### From on-chain `get_public_key` (fallback)
 
-For non-standard wallets where `walletStateInit` parsing fails, query the blockchain:
+For [`WalletTg`](/contracts/standard/wallets/telegram/overview), match the trampoline hash in `walletStateInit`, then require the live account to be active and its code hash to match the same trampoline. Only then call `get_public_key()` and use the returned current signing key. Reject inactive accounts, a code mismatch, or a failed getter. A key getter alone does not establish that the connected account is WalletTg.
 
-1. Invoke the `get_public_key` get method on the smart contract at the user's address.
-1. Extract the public key from the result.
+For non-standard wallets, validate their active code against an allowlist of reviewed implementations before using `get_public_key()`.
 
 ### Final checks
 
-After extracting the public key, verify:
+Before accepting the proof:
 
-1. It matches the `publicKey` field in `TonAddressItemReply`.
-1. `contractAddress(workchain, walletStateInit)` equals the user's address.
-1. The domain equals the expected dApp domain and `lengthBytes` equals its UTF-8 byte length.
-1. The timestamp is within a short acceptance window, including a bound on future clock skew.
-1. The payload belongs to this login attempt, has not expired, and is consumed atomically so it cannot be reused.
-1. The connected network matches a network accepted by the application. The `ton_proof` signature does not bind the network.
+1. Derive the account address from its `walletStateInit` and require it to equal the connected address.
+1. Use `walletStateInit` for a supported fixed-key wallet or `get_public_key()` for WalletTg to select the proof-verification key. If the SDK account includes `publicKey`, require it to equal that key. The SDK exposes this field as optional, although the protocol's `TonAddressItemReply` type requires it. Its absence does not invalidate a proof verified with a key resolved from trusted wallet data.
+1. Verify the proof signature with that validated public key.
+1. Require the domain to equal the expected dApp domain and `lengthBytes` to equal its UTF-8 byte length.
+1. Require the timestamp to be within a short acceptance window, say, up to 10 minutes.
+1. Require the payload to belong to this login attempt, remain unexpired, and be consumed atomically so it cannot be reused.
+1. Require the connected network to match a TON network accepted by the application. The `ton_proof` signature does not enforce the network.
 
-<Callout>
-  Public-key extraction is wallet-version-specific. Identify the wallet by its code hash and parse the matching data layout; see [`tryExtractPublicKey`](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) for an implementation covering standard wallet versions.
+<Callout type="note">
+  [Public-key extraction](/applications/ton-connect/how-to/sign-data#extracting-the-public-key) is wallet-version-specific. Identify the wallet by its code hash and parse the matching data layout, or validate its active code before calling a key getter.
 </Callout>
 
 ## React example
 
-Adapted from the [SDK demo frontend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src):
+The following component uses `ton-proof-api.ts` from [Request a proof](#request-a-proof). Place it inside `TonConnectUIProvider`, alongside a `TonConnectButton`. It refreshes the challenge while disconnected and authenticates a new connection. A restored wallet connection does not establish a backend session — reconnect to request a fresh proof.
 
 ```tsx expandable
-// Not runnable: copy the linked app and install its dependencies.
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ReactJson from 'react-json-view';
-import { TonProofDemoApi } from '../../TonProofDemoApi';
-import { useTonConnectUI, useTonWallet, CHAIN } from '@tonconnect/ui-react';
-import useInterval from '../../hooks/useInterval';
+// Not runnable: add the helper above and render inside TonConnectUIProvider.
+import { useEffect, useState } from 'react';
+import { useTonConnectUI } from '@tonconnect/ui-react';
+import { TonProofApi } from './ton-proof-api';
 
 export const TonProofDemo = () => {
-  const firstProofLoading = useRef<boolean>(true);
-
-  const [data, setData] = useState({});
-  const wallet = useTonWallet();
   const [authorized, setAuthorized] = useState(false);
+  const [error, setError] = useState('');
   const [tonConnectUI] = useTonConnectUI();
 
-  const recreateProofPayload = useCallback(async () => {
-    if (firstProofLoading.current) {
+  useEffect(() => {
+    let disposed = false;
+    let preparing = false;
+    let statusVersion = 0;
+
+    const prepare = async () => {
+      if (preparing || tonConnectUI.connected) return;
+      preparing = true;
       tonConnectUI.setConnectRequestParameters({ state: 'loading' });
-      firstProofLoading.current = false;
-    }
-
-    const payload = await TonProofDemoApi.generatePayload();
-
-    if (payload) {
-      tonConnectUI.setConnectRequestParameters({ state: 'ready', value: payload });
-    } else {
-      tonConnectUI.setConnectRequestParameters(null);
-    }
-  }, [tonConnectUI, firstProofLoading]);
-
-  if (firstProofLoading.current) {
-    recreateProofPayload();
-  }
-
-  useInterval(recreateProofPayload, TonProofDemoApi.refreshIntervalMs);
-
-  useEffect(
-    () =>
-      tonConnectUI.onStatusChange(async (w) => {
-        if (!w || w.account.chain === CHAIN.TESTNET) {
-          TonProofDemoApi.reset();
-          setAuthorized(false);
-          return;
+      try {
+        const payload = await TonProofApi.generatePayload();
+        if (!disposed) {
+          tonConnectUI.setConnectRequestParameters({ state: 'ready', value: payload });
         }
-
-        if (w.connectItems?.tonProof && 'proof' in w.connectItems.tonProof) {
-          await TonProofDemoApi.checkProof(w.connectItems.tonProof.proof, w.account);
+      } catch {
+        if (!disposed) {
+          tonConnectUI.setConnectRequestParameters(null);
+          setError('Could not create a login challenge');
         }
+      } finally {
+        preparing = false;
+      }
+    };
 
-        if (!TonProofDemoApi.accessToken) {
-          tonConnectUI.disconnect();
-          setAuthorized(false);
-          return;
-        }
+    const unsubscribe = tonConnectUI.onStatusChange(async (wallet) => {
+      const version = ++statusVersion;
+      setAuthorized(false);
+      setError('');
+      if (!wallet) {
+        void prepare();
+        return;
+      }
+      const item = wallet.connectItems?.tonProof;
+      if (!item || !('proof' in item)) {
+        setError('Reconnect with a wallet that supports ton_proof');
+        return;
+      }
+      try {
+        await TonProofApi.checkProof(item.proof, wallet.account);
+        if (!disposed && version === statusVersion) setAuthorized(true);
+      } catch {
+        if (!disposed && version === statusVersion) setError('Proof rejected; reconnect to try again');
+      }
+    });
 
-        setAuthorized(true);
-      }),
-    [tonConnectUI],
-  );
+    void prepare();
+    const timer = setInterval(prepare, 9 * 60 * 1000);
+    return () => {
+      disposed = true;
+      unsubscribe();
+      clearInterval(timer);
+    };
+  }, [tonConnectUI]);
 
-  const handleClick = useCallback(async () => {
-    if (!wallet) {
-      return;
-    }
-    const response = await TonProofDemoApi.getAccountInfo(wallet.account);
-    setData(response);
-  }, [wallet]);
-
-  if (!authorized) {
-    return null;
-  }
-
-  return (
-    <div className="ton-proof-demo">
-      <h3>Demo backend API with ton_proof verification</h3>
-      {authorized ? (
-        <button onClick={handleClick}>Call backend getAccountInfo()</button>
-      ) : (
-        <div className="ton-proof-demo__error">Connect wallet to call API</div>
-      )}
-      <ReactJson src={data} name="response" theme="ocean" />
-    </div>
-  );
+  return <p>{error || (authorized ? 'Authenticated' : 'Connect a wallet to authenticate')}</p>;
 };
 ```
 
 ## Backend example
 
-Adapted from the [SDK demo backend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/server).
+The following examples follow the [SDK demo backend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/server). They depend on `@ton/ton`, `@ton/crypto`, and `zod` NPM packages.
+
+Save the schema and service in the indicated files. Copy the SDK's [wallet parsing helpers](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/server/wrappers), including `wallets-data.ts` and its `wallet-contract-v4-r1.ts` dependency, into `wrappers/`.
 
 ### Proof request schema
 
 ```ts
-// Not runnable: add this file to the linked server and install its dependencies.
+// Not runnable: save as dto/check-proof-request-dto.ts and install zod.
 import zod from 'zod';
 
 export const CheckProofRequest = zod.object({
   address: zod.string(),
   network: zod.string().regex(/^-?\d+$/),
-  public_key: zod.string(),
+  public_key: zod.string().regex(/^[0-9a-fA-F]{64}$/).optional(),
   proof: zod.object({
     timestamp: zod.coerce.number().int().nonnegative(),
     domain: zod.object({
@@ -252,7 +271,6 @@ export const CheckProofRequest = zod.object({
     signature: zod.string(),
     state_init: zod.string(),
   }),
-  payloadToken: zod.string(),
 });
 
 export type CheckProofRequestDto = zod.infer<typeof CheckProofRequest>;
@@ -261,7 +279,7 @@ export type CheckProofRequestDto = zod.infer<typeof CheckProofRequest>;
 ### Proof verification service
 
 ```ts expandable
-// Not runnable: add the referenced DTO and wallet parsing helpers.
+// Not runnable: save as services/ton-proof-service.ts and add the DTO and parsing helpers.
 import { getSecureRandomBytes, sha256 } from '@ton/crypto';
 import {
   Address,
@@ -269,7 +287,9 @@ import {
   contractAddress,
   domainSignVerify,
   loadStateInit,
+  TonClient4,
   type SignatureDomain,
+  type StateInit,
 } from '@ton/ton';
 import { Buffer } from 'buffer';
 import { CheckProofRequestDto } from '../dto/check-proof-request-dto';
@@ -277,12 +297,59 @@ import { tryParsePublicKey } from '../wrappers/wallets-data';
 
 const tonProofPrefix = 'ton-proof-item-v2/';
 const tonConnectPrefix = 'ton-connect';
-const allowedDomains = [
-  'tonconnect-demo-dapp-with-react-ui.vercel.app',
-  'ton-connect.github.io',
-  'localhost:5173',
-];
-const validAuthTime = 15 * 60; // 15 minutes
+// 10 minutes.
+const validAuthTime = 10 * 60;
+const walletTgTrampolineCodeHash = '9149ae51c1e4689710cebf7830297b16acfbadb363a920a537893e7ffeeca768';
+// Add only reviewed wallet implementations whose getter returns their signing key.
+const additionalWalletCodeHashes = new Set<string>();
+
+function publicKeyFromUint256(value: bigint): Buffer {
+  if (value < 0n || value >= (1n << 256n)) {
+    throw new Error('Invalid public key getter result');
+  }
+  return Buffer.from(value.toString(16).padStart(64, '0'), 'hex');
+}
+
+async function getWalletTgPublicKey(
+  client: TonClient4,
+  address: Address,
+  stateInit: StateInit,
+): Promise<Buffer> {
+  if (stateInit.code?.hash().toString('hex') !== walletTgTrampolineCodeHash) {
+    throw new Error('StateInit is not WalletTg');
+  }
+
+  const provider = client.provider(address, null);
+  const account = await provider.getState();
+  if (account.state.type !== 'active' || !account.state.code) {
+    throw new Error('Address is not an active WalletTg account');
+  }
+
+  const code = Cell.fromBoc(account.state.code);
+  if (
+    code.length !== 1 ||
+    code[0].hash().toString('hex') !== walletTgTrampolineCodeHash
+  ) {
+    throw new Error('Active account code is not the WalletTg trampoline');
+  }
+
+  const { stack } = await provider.get('get_public_key', []);
+  return publicKeyFromUint256(stack.readBigNumber());
+}
+
+async function getWalletPublicKey(client: TonClient4, address: Address): Promise<Buffer> {
+  const provider = client.provider(address, null);
+  const account = await provider.getState();
+  if (account.state.type !== 'active' || !account.state.code) {
+    throw new Error('Address is not an active supported wallet account');
+  }
+  const code = Cell.fromBoc(account.state.code);
+  if (code.length !== 1 || !additionalWalletCodeHashes.has(code[0].hash().toString('hex'))) {
+    throw new Error('Unsupported active wallet code');
+  }
+  const { stack } = await provider.get('get_public_key', []);
+  return publicKeyFromUint256(stack.readBigNumber());
+}
 
 function signatureDomain(network: string): SignatureDomain {
   return network === '-239' || network === '-3'
@@ -302,36 +369,46 @@ export class TonProofService {
    */
   public async checkProof(
     payload: CheckProofRequestDto,
-    getWalletPublicKey: (address: string) => Promise<Buffer | null>,
+    client: TonClient4,
+    expectedDomain: string,
   ): Promise<boolean> {
     try {
       const stateInit = loadStateInit(
         Cell.fromBase64(payload.proof.state_init).beginParse(),
       );
-
-      // 1. Try to obtain public key from stateInit.
-      // 2. Fall back to get_public_key get method on-chain.
-      let publicKey =
-        tryParsePublicKey(stateInit) ??
-        (await getWalletPublicKey(payload.address));
-      if (!publicKey) {
-        return false;
-      }
-
-      // Verify public key matches the one provided by TonAddressItemReply
-      const wantedPublicKey = Buffer.from(payload.public_key, 'hex');
-      if (!publicKey.equals(wantedPublicKey)) {
-        return false;
-      }
-
-      // Verify address matches the stateInit hash
       const wantedAddress = Address.parse(payload.address);
+
+      // Validate the address independently of the key used to verify the proof.
       const address = contractAddress(wantedAddress.workChain, stateInit);
       if (!address.equals(wantedAddress)) {
         return false;
       }
 
-      if (!allowedDomains.includes(payload.proof.domain.value)) {
+      const isWalletTg =
+        stateInit.code?.hash().toString('hex') === walletTgTrampolineCodeHash;
+
+      // WalletTg's StateInit key can be stale after rotation. Validate its live code,
+      // then use the current getter result. Never cache this key between proofs.
+      const stateInitPublicKey = isWalletTg ? null : tryParsePublicKey(stateInit);
+      const publicKey = isWalletTg
+        ? await getWalletTgPublicKey(client, address, stateInit)
+        : stateInitPublicKey ?? await getWalletPublicKey(client, address);
+      if (publicKey.length !== 32) {
+        return false;
+      }
+
+      // Compare the SDK account's public key only when supplied.
+      if (payload.public_key !== undefined) {
+        if (!/^[0-9a-fA-F]{64}$/.test(payload.public_key)) {
+          return false;
+        }
+        const wantedPublicKey = Buffer.from(payload.public_key, 'hex');
+        if (!publicKey.equals(wantedPublicKey)) {
+          return false;
+        }
+      }
+
+      if (payload.proof.domain.value !== expectedDomain) {
         return false;
       }
 
@@ -404,88 +481,100 @@ export class TonProofService {
 
 ### API endpoints
 
-<Callout type="warning">
-  The demo below verifies the payload token's signature and expiration, but that alone does not make it single-use. In production, store a nonce identifier on the backend and consume it atomically during `checkProof`; reject every later request that uses the same identifier.
-</Callout>
+Use the same two routes as the browser helper:
 
-<CodeGroup>
-  ```ts title="Check proof" icon="globe"
-  // Not runnable: add the linked server's services, utilities, and DTO.
-  import { sha256 } from '@ton/crypto';
-  import { HttpResponseResolver } from 'msw';
-  import { CheckProofRequest } from '../dto/check-proof-request-dto';
-  import { TonApiService } from '../services/ton-api-service';
-  import { TonProofService } from '../services/ton-proof-service';
-  import { badRequest, ok } from '../utils/http-utils';
-  import { createAuthToken, verifyToken } from '../utils/jwt';
+| Route                         | Behavior                                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `POST /api/ton-proof/payload` | Store a challenge and return `{ payload }`.                                                                  |
+| `POST /api/ton-proof/verify`  | Verify the proof, consume its challenge, create an authenticated session, and return `{ address, network }`. |
 
-  // POST /api/check_proof
-  export const checkProof: HttpResponseResolver = async ({ request }) => {
-    try {
-      const body = CheckProofRequest.parse(await request.json());
+Use the app's existing session mechanism to identify the pending login attempt on both requests. The attempt ID must come from trusted server-side session state, such as a session identified by a Secure, HttpOnly cookie. Never take it from the proof body. For browser requests, require the dApp's expected origin. The browser helper uses same-origin URLs and sends the session cookie automatically.
 
-      const client = TonApiService.create(body.network);
-      const service = new TonProofService();
+The handler functions below leave HTTP routing and session storage to the app. `createSession` must establish the authenticated session before the response is sent. Use a fresh session ID after authentication, and check that session on every protected endpoint.
 
-      const isValid = await service.checkProof(body, (address) =>
-        client.getWalletPublicKey(address),
-      );
-      if (!isValid) {
-        return badRequest({ error: 'Invalid proof' });
-      }
+```ts title="ton-proof-handlers.ts"
+// Not runnable: supply the challenge store, server-side login attempt, and session creation.
+import { Address, TonClient4 } from '@ton/ton';
+import { CheckProofRequest } from './dto/check-proof-request-dto';
+import { TonProofService } from './services/ton-proof-service';
 
-      const payloadTokenHash = body.proof.payload;
-      const payloadToken = body.payloadToken;
-      if (!(await verifyToken(payloadToken))) {
-        return badRequest({ error: 'Invalid token' });
-      }
-      if ((await sha256(payloadToken)).toString('hex') !== payloadTokenHash) {
-        return badRequest({ error: 'Invalid payload token hash' });
-      }
+// Configure the exact domain and trusted endpoints on the server.
+const expectedDomain = 'example.com';
+const endpoints: Record<string, string | undefined> = {
+  '-239': process.env.TON_MAINNET_ENDPOINT, // toncenter.com
+  '-3': process.env.TON_TESTNET_ENDPOINT, // testnet.toncenter.com
+};
+const service = new TonProofService();
 
-      const token = await createAuthToken({
-        address: body.address,
-        network: body.network,
-      });
+type AccountIdentity = { address: string; network: string };
 
-      return ok({ token: token });
-    } catch (e) {
-      console.error(e);
-      return badRequest({ error: 'Invalid request' });
-    }
+export interface ChallengeStore {
+  // Insert a new challenge; never overwrite an existing payload.
+  create(payload: string, attemptId: string, expiresAt: number): Promise<void>;
+  // Atomically delete a matching, unexpired challenge; return true only if deleted.
+  consume(payload: string, attemptId: string, now: number): Promise<boolean>;
+}
+
+export async function generatePayload(store: ChallengeStore, attemptId: string) {
+  const payload = (await service.generateRandomBytes()).toString('hex');
+  const expiresAt = Math.floor(Date.now() / 1000) + 10 * 60;
+  await store.create(payload, attemptId, expiresAt);
+  return { payload };
+}
+
+export async function checkProof(
+  requestBody: unknown,
+  attemptId: string,
+  store: ChallengeStore,
+  createSession: (account: AccountIdentity) => Promise<void>,
+): Promise<AccountIdentity> {
+  const body = CheckProofRequest.parse(requestBody);
+  const endpoint = endpoints[body.network];
+  if (!endpoint) throw new Error('Unsupported network');
+
+  const client = new TonClient4({ endpoint });
+  if (!(await service.checkProof(body, client, expectedDomain))) {
+    throw new Error('Invalid proof');
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  if (!(await store.consume(body.proof.payload, attemptId, now))) {
+    throw new Error('Login challenge expired, was already used, or belongs to another attempt');
+  }
+
+  const account = {
+    address: Address.parse(body.address).toRawString(),
+    network: body.network,
   };
-  ```
+  await createSession(account);
+  return account;
+}
+```
 
-  ```ts title="Generate payload" icon="globe"
-  // Not runnable: add the linked server's services and utilities.
-  import { sha256 } from '@ton/crypto';
-  import { HttpResponseResolver } from 'msw';
-  import { TonProofService } from '../services/ton-proof-service';
-  import { badRequest, ok } from '../utils/http-utils';
-  import { createPayloadToken } from '../utils/jwt';
+Implement `consume()` as one atomic operation. A separate read followed by a delete allows concurrent requests to reuse the challenge. For example, a PostgreSQL or SQLite store can use this table and these parameterized statements:
 
-  // POST /api/generate_payload
-  export const generatePayload: HttpResponseResolver = async () => {
-    try {
-      const service = new TonProofService();
+```sql title="Challenge table"
+CREATE TABLE ton_proof_challenges (
+  payload text PRIMARY KEY,
+  attempt_id text NOT NULL,
+  expires_at bigint NOT NULL
+);
+```
 
-      const randomBytes = await service.generateRandomBytes();
-      const payloadToken = await createPayloadToken({
-        randomBytes: randomBytes.toString('hex'),
-      });
-      const payloadTokenHash = (await sha256(payloadToken)).toString('hex');
+```sql title="create(payload, attemptId, expiresAt)"
+-- Not runnable: bind $1 to payload, $2 to attemptId, and $3 to expiresAt.
+INSERT INTO ton_proof_challenges (payload, attempt_id, expires_at)
+VALUES ($1, $2, $3);
+```
 
-      return ok({
-        payloadToken: payloadToken,
-        payloadTokenHash: payloadTokenHash,
-      });
-    } catch (e) {
-      console.error(e);
-      return badRequest({ error: 'Invalid request' });
-    }
-  };
-  ```
-</CodeGroup>
+```sql title="consume(payload, attemptId, now)"
+-- Not runnable: bind $1 to payload, $2 to attemptId, and $3 to the current Unix time.
+DELETE FROM ton_proof_challenges
+WHERE payload = $1 AND attempt_id = $2 AND expires_at > $3
+RETURNING payload;
+```
+
+Return `true` from `consume()` only when the statement returns one row. The primary key and atomic delete allow at most one request to succeed, including across server processes. Expired challenges can be deleted periodically. Failed signature verification leaves the challenge available until expiration; a failure after consumption requires a new challenge.
 
 ## Verification examples in other languages
 
@@ -508,3 +597,5 @@ export class TonProofService {
 - [TON Connect overview](/applications/ton-connect/overview)
 - [dApp integration](/applications/ton-connect/get-started)
 - [SDK demo backend](https://github.com/ton-connect/sdk/tree/a07a165977eae17578b2414797f74d4bf54962eb/apps/demo-dapp-with-react-ui/src/server)
+- [WalletTg integration](/contracts/standard/wallets/telegram/integrate)
+- [WalletTg key management](/contracts/standard/wallets/telegram/key-management)

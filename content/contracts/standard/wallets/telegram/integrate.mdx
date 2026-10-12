@@ -1,0 +1,226 @@
+---
+title: "How to integrate WalletTg support into a wallet app"
+sidebarTitle: "Integrate into an app"
+---
+
+To support existing [WalletTg](/contracts/standard/wallets/telegram/overview) accounts, derive the account address, check the current signing key, and compose WalletTg-compatible messages.
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/en/download) 22 for the example.
+- Access to account state and get-methods on the TON mainnet.
+- Encrypted mnemonic storage and Ed25519 signing in the wallet app.
+
+The example runs offline with temporary keys and targets the Telegram Money-created wallets that use subwallet ID `0x7FFF7F11`.
+
+<Callout type="caution">
+  A recovery phrase gives control of the wallet. Store production phrases encrypted — never log them and never share them.
+</Callout>
+
+## Detect the mnemonic scheme
+
+1. Validate the phrase using the [mnemonic import rules](/contracts/standard/wallets/mnemonics#mnemonic-import-and-scheme-detection). For rotation input, each 12-word half must pass its own BIP-39 checksum.
+1. If several schemes match, derive the supported accounts and offer a choice.
+1. Derive the keys for the selected WalletTg phrase:
+   - For 12 BIP-39 words, derive one key pair. Use it as both the address anchor and signing key.
+   - For a 24-word rotation mnemonic, derive each 12-word half separately. The first half derives the address anchor; the second half derives the signing key.
+
+For each 12-word phrase, use BIP-39 seed derivation with an empty passphrase, then SLIP-0010 Ed25519 at `m/44'/607'/0'`.
+
+For 24 words, `deriveWalletTg` expects a rotation mnemonic already selected by the importer.
+
+## Derive the original account
+
+Build `StateInit` with the anchor public key and the [trampoline and initial data](/contracts/standard/wallets/telegram/contract#initial-state). For Telegram's mainnet account, use workchain `0` and subwallet ID `0x7FFF7F11`.
+
+Store the original `StateInit` separately from the current signing public key.
+
+### Offline derivation example
+
+In a disposable directory, set up the example:
+
+```bash
+npm install --save-exact @ton/core@0.63.1 @ton/crypto@3.3.0 bip39@3.1.0 tsx@4.20.5
+npm pkg set type=module
+```
+
+Create the following script:
+
+```ts title="wallet-tg.ts"
+import { createHmac } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
+import { beginCell, Cell, contractAddress, type ContractProvider } from '@ton/core';
+import { keyPairFromSeed } from '@ton/crypto';
+import bip39 from 'bip39';
+
+// WalletTg's trampoline hash and BoC
+const CODE_HASH = '9149ae51c1e4689710cebf7830297b16acfbadb363a920a537893e7ffeeca768';
+const CODE_BOC = 'b5ee9c7241010101001a000030ff00209821d7498308b9f240df8085f833d0ed1e20ed53d969427e39';
+const code = Cell.fromBoc(Buffer.from(CODE_BOC, 'hex'))[0];
+if (code.hash().toString('hex') !== CODE_HASH) throw new Error('Invalid trampoline');
+
+function halfKey(words: string[]) {
+  if (words.length !== 12 || !bip39.validateMnemonic(words.join(' '))) {
+    throw new Error('Expected 12 valid BIP39 words');
+  }
+  const hmac = (key: string | Buffer, data: Buffer) => createHmac('sha512', key).update(data).digest();
+  let node = hmac('ed25519 seed', bip39.mnemonicToSeedSync(words.join(' '), ''));
+  for (const index of [44, 607, 0]) {
+    const childIndex = Buffer.alloc(4);
+    childIndex.writeUInt32BE(index + 0x80000000);
+    node = hmac(node.subarray(32), Buffer.concat([
+      Buffer.alloc(1), node.subarray(0, 32), childIndex,
+    ]));
+  }
+  return keyPairFromSeed(node.subarray(0, 32));
+}
+
+export function deriveWalletTg(words: string[]) {
+  if (words.length !== 12 && words.length !== 24) {
+    throw new Error('Expected 12 words or a selected 24-word rotation mnemonic');
+  }
+  const anchor = halfKey(words.slice(0, 12));
+  const signer = words.length === 12 ? anchor : halfKey(words.slice(12));
+  const subwalletId = 0x7FFF7F11;
+  const data = beginCell()
+    // Initial storage revision.
+    .storeUint(0, 8)
+    .storeUint(0, 32)
+    .storeUint(subwalletId, 32)
+    .storeBuffer(anchor.publicKey)
+    .endCell();
+  const init = { code, data };
+  return { address: contractAddress(0, init), init, subwalletId, signer };
+}
+
+export type WalletIdentity = ReturnType<typeof deriveWalletTg>;
+
+export function assertCurrentWallet(identity: WalletIdentity, snapshot: {
+  network: string;
+  active: boolean;
+  code: Cell;
+  subwalletId: number;
+  publicKey: Buffer;
+}) {
+  if (snapshot.network !== 'mainnet') {
+    throw new Error('Expected mainnet');
+  }
+  if (!snapshot.active || snapshot.code.hash().toString('hex') !== CODE_HASH) {
+    throw new Error('Account is not an active WalletTg');
+  }
+  if (snapshot.subwalletId !== identity.subwalletId) {
+    throw new Error('Subwallet ID mismatch');
+  }
+  if (!Buffer.isBuffer(snapshot.publicKey) || snapshot.publicKey.length !== 32
+      || !snapshot.publicKey.equals(identity.signer.publicKey)) {
+    throw new Error('Phrase has a stale or incorrect signing half');
+  }
+}
+
+export async function readWallet(provider: ContractProvider, identity: WalletIdentity, network: string) {
+  const account = await provider.getState();
+  if (account.state.type !== 'active' || !account.state.code) {
+    throw new Error('Account is not active');
+  }
+  const roots = Cell.fromBoc(account.state.code);
+  if (roots.length !== 1 || roots[0].hash().toString('hex') !== CODE_HASH) {
+    throw new Error('Account is not WalletTg');
+  }
+  const readUint = async (name: string, bits: number) => {
+    const { stack } = await provider.get(name, []);
+    const value = stack.readBigNumber();
+    if (value < 0n || value >= (1n << BigInt(bits))) {
+      throw new Error(`Invalid ${name} result`);
+    }
+    return value;
+  };
+  const [subwalletId, publicKey, seqno] = await Promise.all([
+    readUint('get_subwallet_id', 32),
+    readUint('get_public_key', 256),
+    readUint('seqno', 32),
+  ]);
+  const snapshot = {
+    network, active: true, code: roots[0],
+    subwalletId: Number(subwalletId),
+    publicKey: Buffer.from(publicKey.toString(16).padStart(64, '0'), 'hex'),
+    seqno: Number(seqno),
+  };
+  assertCurrentWallet(identity, snapshot);
+  return snapshot;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const identity = deriveWalletTg(bip39.generateMnemonic(128).split(' '));
+  console.log('Derived mainnet address:', identity.address.toRawString());
+}
+```
+
+Run the offline check:
+
+```bash
+npx tsx wallet-tg.ts
+```
+
+Each run prints `Derived mainnet address: 0:` followed by a new 64-digit hexadecimal account ID.
+
+## Validate the deployed account
+
+Bind `provider` to `identity.address` using trusted mainnet configuration. The helper cannot inspect the provider's target address or actual network. Then call `readWallet`:
+
+```ts
+// Not runnable: derive identity above and bind provider to its address on mainnet.
+const snapshot = await readWallet(provider, identity, 'mainnet');
+```
+
+`readWallet` checks the active state, trampoline hash, subwallet ID, and current signing key using the account code and [wallet getters](/contracts/standard/wallets/telegram/contract#getters). It returns the validated state, including `seqno`.
+
+Pin the reads to one block when the provider supports it. A failed read or validation rejects the import; do not substitute defaults. If the signing key does not match, request the current recovery phrase.
+
+<Callout type="note">
+  Some popular wallets implement similar [import steps](https://github.com/mytonwallet-org/mytonwallet/blob/bb3f357690633d274e390e799babaf1d642b31de/src/api/chains/ton/auth.ts) and [account checks](https://github.com/mytonwallet-org/mytonwallet/blob/bb3f357690633d274e390e799babaf1d642b31de/src/api/chains/ton/wallet.ts).
+</Callout>
+
+## Build and track requests
+
+Use the [request guide](/contracts/standard/wallets/telegram/interact) to build and emulate single transfers, batches, and gasless relayed requests. Its helpers use `readWallet` above to validate the active account and read its current key and `seqno`.
+
+## Rotate the signing key
+
+Before enabling rotation, obtain a verified implementation of the [key-history encryption format](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) from the originating client. The contract sources do not fully specify that format. Importing and sending from already-rotated accounts does not require it.
+
+With that prerequisite met:
+
+1. Keep words 1-12 unchanged. Generate a fresh 12-word BIP-39 signing half from a cryptographically secure random source, independently of the anchor and every previous signing half. Never rotate back to the anchor key.
+1. Save both the current and candidate phrases in encrypted storage before submission.
+1. Build the [rotation request](/contracts/standard/wallets/telegram/messages#change-the-signing-key). Sign the outer request with the current key and the rotation proof with the new key. Encode `encryptedOldPrivateKey` with the verified client implementation. Do not substitute arbitrary 256-bit data.
+1. Emulate and submit the request.
+1. Read `get_public_key()` and `seqno()` again. Make the candidate phrase current only when the on-chain key matches its signing half. If submission fails or its result is unknown, retain both phrases and read the state before retrying.
+
+## Support TON Connect and TON Proof
+
+Return the account address, original `walletStateInit`, and current signing public key in the TON Connect account reply. `walletStateInit` stays unchanged after rotation.
+
+Sign [`ton_proof`](/applications/ton-connect/how-to/ton-proof#final-checks) with the current signing key. The backend must verify that [`StateInit`](/foundations/messages/deploy) derives to the account address and that the active code matches the trampoline hash.
+
+Read `get_public_key()` and verify the proof signature with that key. If the account reply includes `publicKey`, require it to match the getter. An absent field does not invalidate an otherwise valid proof. The anchor key from `StateInit` can be stale after rotation.
+
+If the app supports [`signData`](/applications/ton-connect/how-to/sign-data#extracting-the-public-key), use the current key for its protocol payloads too. On-chain `cell` verifiers need a separate [authenticated receiver key update](/applications/ton-connect/how-to/sign-data#wallettg-key-rotation) after rotation.
+
+After rotation, disconnect the existing TON Connect session and require a new connection. TON Connect has no event that updates an account's public key. The new connection returns the same address and original `walletStateInit`, with the current signing public key. Require a fresh `ton_proof` when authenticating that connection.
+
+Advertise only the transaction limits and TON Connect methods the app supports.
+
+## Verify the integration
+
+Test in a local emulator with the [WalletTg implementation](/contracts/standard/wallets/telegram/contract):
+
+- Import 12 words before rotation and the current 24-word phrase after rotation; both must restore the same address.
+- Reject a stale signing half, wrong subwallet ID or code, and failed getter reads.
+- Offer a choice when a 24-word phrase matches several mnemonic schemes.
+- Rotate to an independent signing key. Check that the address and trampoline hash stay the same and the old key can no longer sign valid requests.
+- Accept `ton_proof` signed by the current key and reject proofs signed by the old key.
+- Check single and bulk requests, internal/external opcode separation, expiration, requests with the same `seqno`, and [failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior).
+
+<Callout type="note">
+  The [WalletTg Acton tests](https://github.com/ton-blockchain/tg-wallet-contract/tree/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/tests) include fixtures with config param `-123`. Without that entry, an emulator would not be able to execute WalletTg's signed requests or getters.
+</Callout>

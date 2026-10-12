@@ -7,7 +7,7 @@ sidebarTitle: "Interact"
   type="caution"
   title="Community implementation"
 >
-  This wallet is a community-created implementation. Use at your own risk. Always test thoroughly on testnet before using with real funds.
+  This wallet is a community-created implementation. Test it on testnet before using it with real funds.
 
   - Code hash: `45ebbce9b5d235886cb6bfe1c3ad93b708de058244892365c9ee0dfe439cb7b5`
   - Source: [`pw-code.fif` on GitHub](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2/blob/d95a25ef7e259c27a07e185296b57335c2b4974b/pw-code.fif)
@@ -23,7 +23,7 @@ sidebarTitle: "Interact"
 This guide shows how to deploy Preprocessed Wallet V2 and send transfers.
 
 <Callout type="tip">
-  For technical details, see [Preprocessed Wallet V2 specification](/contracts/standard/wallets/preprocessed-v2/specification).
+  The [Preprocessed Wallet V2 specification](/contracts/standard/wallets/preprocessed-v2/specification) documents its storage and message formats.
 </Callout>
 
 ## Objective
@@ -36,9 +36,7 @@ By the end of this guide, you will:
 
 ## Prerequisites
 
-- Node.js 18+ or TypeScript environment
-- `@ton/ton`, `@ton/core`, `@ton/crypto` packages installed
-- Preprocessed Wallet V2 wrapper and compiled contract code
+- [Node.js](https://nodejs.org/en/download/) 22 or later
 
 This guide uses TypeScript with the official wrapper. The same logic applies to other SDKs (Go/Python): generate or load a mnemonic, derive a keypair, and calculate the address.
 
@@ -50,12 +48,7 @@ Install required packages:
 npm install @ton/ton @ton/core @ton/crypto
 ```
 
-Copy the wrapper and contract code from the [official repository](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2):
-
-```bash
-# Clone the repository or download this file:
-# - typescript/wrappers/PreprocessedWalletV2.ts
-```
+Copy `typescript/wrappers/PreprocessedWalletV2.ts` and the compiled contract code from the [official repository](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2).
 
 <Callout
   type="note"
@@ -66,21 +59,23 @@ Copy the wrapper and contract code from the [official repository](https://github
 
 ## Step 2: Generate or load a mnemonic
 
-A mnemonic is your wallet's master secret. It derives the private key used to sign all transactions.
+A wallet mnemonic derives the private key used to sign transactions. The [wallet ownership guide](/contracts/standard/wallets/how-it-works#how-ownership-verification-works) explains how the contract verifies signatures.
 
 ### Generate a new mnemonic
 
 ```typescript
 import { mnemonicNew } from '@ton/crypto';
 
-const mnemonic = await mnemonicNew(24); // Array of 24 words
+const mnemonic = await mnemonicNew(24);
 ```
 
 ### Load an existing mnemonic
 
 ```typescript
-const mnemonic = 'word1 word2 word3 ... word24'.split(' ');
+const mnemonic = process.env.TON_WALLET_MNEMONIC.split(' ');
 ```
+
+Pass the environment variable `TON_WALLET_MNEMONIC` containing a valid space-separated 24-word mnemonic for the wallet.
 
 <Callout
   type="danger"
@@ -94,28 +89,31 @@ const mnemonic = 'word1 word2 word3 ... word24'.split(' ');
 Convert the mnemonic to an Ed25519 keypair:
 
 ```typescript
+// Not runnable: requires the mnemonic from the previous step.
 import { mnemonicToPrivateKey } from '@ton/crypto';
 
 const keyPair = await mnemonicToPrivateKey(mnemonic);
-// keyPair.publicKey  — used in contract state
-// keyPair.secretKey  — used to sign external messages
 ```
+
+Use `keyPair.publicKey` in the contract state and `keyPair.secretKey` to sign external messages.
 
 ## Step 4: Create the wallet instance
 
-Create a Preprocessed Wallet V2 contract instance:
+Create a Preprocessed Wallet V2 contract instance. The wrapper exports its compiled code as `walletCode`.
+
+The example uses TON Center's testnet endpoint. An API key is optional; if needed, request one from `@tonapibot` or `@tontestnetapibot`.
 
 ```typescript
+// Not runnable: requires the keyPair from Step 3 and the copied wrapper.
 import { TonClient } from '@ton/ton';
 import { Cell } from '@ton/core';
 import { Wallet, walletCode } from './wrappers/PreprocessedWalletV2';
 
 // Compiled contract code (BoC)
-const CODE = walletCode; // Already included in the wrapper
+const CODE = walletCode;
 
 const client = new TonClient({
-    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC', // This is TESTNET endpoint
-    // apiKey: 'your-api-key' // Optional: get from @tonapibot or @tontestnetapibot
+    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
 });
 
 const wallet = client.open(
@@ -128,19 +126,19 @@ const wallet = client.open(
 Calculate the wallet's address:
 
 ```typescript
+// Not runnable: requires the wallet instance from Step 4.
 // Get non-bounceable address for funding
 const address = wallet.address.toString({ bounceable: false, testOnly: true });
 console.log('Wallet address:', address);
-// Example (truncated): 0Q... (non-bounceable, testnet)
 ```
 
-This address is deterministic: it depends only on `CODE` and `publicKey`. The same parameters always produce the same address.
+The output is the wallet's non-bounceable testnet address. It is deterministic: the same `CODE` and `publicKey` produce the same address.
 
 <Callout
   type="tip"
   title="Why non-bounceable?"
 >
-  When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. See [Address formats](/foundations/addresses/formats) for details.
+  When funding a `nonexist` account, use the non-bounceable format to prevent funds from bouncing back if the account doesn't exist yet. The [address formats reference](/foundations/addresses/formats) describes bounceable and non-bounceable forms.
 </Callout>
 
 **Account status: [`nonexist`](/foundations/status#status-variety)**
@@ -160,7 +158,7 @@ The calculated address exists only as a deterministic value. No account exists o
 
 **Required before deployment:** Send GRAM to your wallet address (from Step 5) to prepare it for deployment.
 
-External messages (which deploy the wallet) require gas to execute. By funding the address, you transition the account from `nonexist` to `uninit` status and provide the balance needed for deployment. See [Account statuses](/foundations/status) for details on how account states work.
+An [external-in message](/foundations/messages/external-in) that deploys the wallet requires Gram to pay for execution. By funding the address, you transition the account from `nonexist` to `uninit` status and provide the balance needed for deployment. The [account status reference](/foundations/status) describes this transition.
 
 Send GRAM using a faucet (testnet) or from another wallet (mainnet). After funding, the account transitions to `uninit` status — it has a balance and can accept external messages, but no code or data yet.
 
@@ -177,16 +175,18 @@ Send GRAM using a faucet (testnet) or from another wallet (mainnet). After fundi
 
 ### Send single transfers
 
+Replace `<TESTNET_RECIPIENT_ADDRESS>` with an address you control on testnet.
+
 ```typescript
+// Not runnable: requires the active testnet wallet and keyPair from earlier steps.
 import { Address, toNano } from '@ton/ton';
-import { beginCell } from '@ton/core';
 
 // Get current sequence number
 const currentSeqno = Number(await wallet.getSeqno());
 
 // Send a single transfer
 await wallet.sendTransfers(keyPair, [{
-    to: Address.parse('EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c'), // Zero address for testing
+    to: Address.parse('<TESTNET_RECIPIENT_ADDRESS>'),
     value: toNano('0.01'),
     bounce: false
 }], currentSeqno);
@@ -197,6 +197,7 @@ console.log('Transfer sent');
 ### Send batch transfers
 
 ```typescript
+// Not runnable: requires the active testnet wallet and keyPair from earlier steps.
 import { Address, toNano, comment } from '@ton/ton';
 
 // Get current sequence number
@@ -206,7 +207,7 @@ const currentSeqno = Number(await wallet.getSeqno());
 const transfers = [];
 for (let i = 0; i < 5; i++) {
     transfers.push({
-        to: Address.parse('EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c'),
+        to: Address.parse('<TESTNET_RECIPIENT_ADDRESS>'),
         value: toNano('0.01'),
         body: comment(`#${i}`)
     });
@@ -222,5 +223,5 @@ console.log('Batch transfers sent');
   type="note"
   title="Maximum actions"
 >
-  reprocessed Wallet V2 supports up to 255 actions per transaction. This is the maximum number of out actions supported by TON blockchain.
+  Preprocessed Wallet V2 limits each request to 255 outgoing actions.
 </Callout>

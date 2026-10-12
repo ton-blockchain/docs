@@ -30,9 +30,9 @@ storage$_
   = Storage;
 ```
 
-- `seqno`: 32-bit sequence number for replay protection.
+- `seqno`: 32-bit sequence number for [replay protection](/contracts/standard/wallets/how-it-works#how-replay-protection-works).
 - `subwallet_id`: 32-bit wallet identifier.
-- `public_key`: 256-bit Ed25519 public key for signing external messages (wallet operations).
+- `public_key`: 256-bit [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) public key for signing [external messages](/foundations/messages/external-in) (wallet operations).
 - `config_public_key`: 256-bit Ed25519 public key for signing internal messages that add locked funds. This separation allows a third party to initialize and fund the lockup wallet without having access to spend the funds.
 - `allowed_destinations`: Prefix dictionary of allowlisted destination addresses (uses `pfxdict_get?` for prefix matching).
 - `total_locked_value`: Total amount of locked funds (unrestricted destinations).
@@ -50,7 +50,7 @@ storage$_
 - `msg_seqno`: 32-bit sequence number.
 - Message list: References to messages to send.
 
-The contract unlocks expired funds, reserves locked amounts using `raw_reserve(effectively_locked, 2)`, and sends messages. Each message is sent with its specified mode, but if mode is not 2, it's forced to mode 3 (pay fees separately, ignore errors).
+The contract unlocks expired funds, reserves locked amounts using [`raw_reserve(effectively_locked, 2)`](/languages/func/stdlib#raw_reserve), and sends messages. Each message is sent with its specified [mode](/foundations/messages/modes), but if mode is not 2, it's forced to mode 3 (pay fees separately, ignore errors).
 
 #### Internal message body layout
 
@@ -129,9 +129,9 @@ storage$_
   = Storage;
 ```
 
-- `stored_seqno`: 32-bit sequence number (replay protection).
+- `stored_seqno`: 32-bit sequence number for [replay protection](/contracts/standard/wallets/how-it-works#how-replay-protection-works).
 - `stored_subwallet`: 32-bit wallet identifier.
-- `public_key`: 256-bit Ed25519 public key for signing external messages.
+- `public_key`: 256-bit [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) public key for signing [external messages](/foundations/messages/external-in).
 - `start_time`: 64-bit Unix timestamp when vesting begins.
 - `total_duration`: 32-bit total vesting duration in seconds.
 - `unlock_period`: 32-bit period between unlocks in seconds.
@@ -147,7 +147,7 @@ storage$_
 - `subwallet_id`: 32-bit subwallet identifier.
 - `valid_until`: 32-bit Unix timestamp.
 - `msg_seqno`: 32-bit sequence number.
-- Optional: One message reference. If present, mode MUST be 3 (pay fees separately, ignore errors).
+- Optional: One message reference. If present, the [send mode](/foundations/messages/modes) MUST be 3 (pay fees separately, ignore errors).
 
 The contract calculates locked amount based on vesting schedule:
 

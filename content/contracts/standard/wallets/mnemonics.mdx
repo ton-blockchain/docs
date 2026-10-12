@@ -5,12 +5,71 @@ sidebarTitle: "Mnemonics"
 
 ## Key pair
 
-TON Blockchain uses asymmetric cryptography, such as the [Ed25519](https://en.wikipedia.org/wiki/EdDSA#Ed25519) signature scheme.
+TON wallet mnemonics use asymmetric cryptography and derive [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) key pairs. The private key signs wallet messages as message signatures, while the contract verifies these signatures with the public key in its account state.
 
-There are multiple ways to derive a key pair from a mnemonic. Below is the most common approach in TON.
+<Callout type="note">
+  Some TON ecosystem apps may use a different derivation method, eventually producing an Ed25519-conformant key pair.
+</Callout>
 
-<Callout>
-  Some apps in the TON ecosystem may use a different derivation method, eventually producing an Ed25519-conformant key pair.
+<Callout type="note">
+  The public key alone does not identify an address of a wallet contract, because the latter is derived from its complete [initial state (`StateInit`)](/foundations/messages/deploy) and the target workchain.
+</Callout>
+
+## Mnemonic schemes
+
+TON, multichain, and rotation mnemonics use the [BIP-39 English word list](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki). They have different validation and derivation rules.
+
+| Scheme              | Words                                    | Derivation                                                                                                                                                                                                                                | Role                                               |
+| :------------------ | :--------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------- |
+| TON mnemonic        | 24                                       | TON-specific HMAC and PBKDF2; see [key derivation](#key-pair-from-a-mnemonic).                                                                                                                                                            | One Ed25519 key pair.                              |
+| Multichain mnemonic | 12 or 24                                 | [BIP-39 seed](#multichain-mnemonic-derivation), [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki), and [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) Ed25519; path `m/44'/607'/{i}'`. | One key pair per derivation path.                  |
+| Rotation mnemonic   | 24: two valid 12-word multichain phrases | Derive both halves separately at `m/44'/607'/0'`.                                                                                                                                                                                         | First half anchors the address; second half signs. |
+
+For new wallets, a 12-word [multichain](#multichain-mnemonic-derivation) phrase is recommended, while a 24-word [TON](#key-pair-from-a-mnemonic) phrase may also be used.
+
+<Callout type="caution">
+  Wallet apps do not create 24-word multichain or rotation mnemonics by default. Furthermore, the rotation mnemonic is employed only by the [WalletTg](/contracts/standard/wallets/telegram/overview) contract.
+</Callout>
+
+## Multichain mnemonic derivation
+
+Normalize the phrase and optional [BIP-39 passphrase](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) with NFKD. Use the phrase as the PBKDF2-HMAC-SHA512 password, with 2048 iterations and salt `mnemonic` followed by the normalized passphrase. The output is a 64-byte seed. The passphrase defaults to empty and differs from a TON password.
+
+Derive an Ed25519 key with [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) and [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) at TON path `m/44'/607'/{i}'`. For instance, index `0` gives `m/44'/607'/0'`. Record the path and index because a different index derives a different key pair.
+
+<Callout type="note">
+  Some wallet apps [use this path template](https://github.com/mytonwallet-org/mytonwallet/blob/bb3f357690633d274e390e799babaf1d642b31de/src/api/chains/ton/derivationConstants.ts#L10).
+</Callout>
+
+The derivation-path index is separate from the wallet contract's `subwalletId`. A derived key can initialize different wallet contracts or subwallet IDs, producing different addresses from their `StateInit` and workchain.
+
+## Mnemonic import and scheme detection
+
+Accept 12- and 24-word input. Treat a 12-word phrase as multichain.
+
+For a 24-word phrase, check TON mnemonic validity with the supplied TON password, if applicable. Check the [BIP-39 checksum](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) for all 24 words. If the wallet supports rotation, check the BIP-39 checksum of each 12-word half.
+
+If exactly one supported scheme matches, import with that scheme. If several match, derive and show each candidate account for user selection; do not choose silently. Reject a phrase that matches no supported scheme.
+
+<Callout type="note">
+  A wallet without rotation mnemonic support should reject a phrase that matches only the rotation mnemonic. Importing [WalletTg](/contracts/standard/wallets/telegram/overview) also requires checking the derived signer against the active account's [`get_public_key()` value](/contracts/standard/wallets/telegram/key-management#import-checks).
+</Callout>
+
+## Rotation mnemonic
+
+A _rotation_ mnemonic has two independently valid 12-word [multichain](#multichain-mnemonic-derivation) halves. Derive each half separately at `m/44'/607'/0'`. Do not derive one seed from all 24 words. The anchor half must come from a cryptographically secure random source. It never changes.
+
+| Words | Key         | Role                                                      |
+| :---- | :---------- | :-------------------------------------------------------- |
+| 1-12  | Anchor key  | Determines the address and authorizes the first rotation. |
+| 13-24 | Signing key | Signs ordinary messages; rotation replaces this key.      |
+
+In the initial form, words 13-24 repeat words 1-12. Each rotation must replace them with a new 12-word multichain phrase from a cryptographically secure random source. The new half must be independent of the anchor and all earlier signing halves. A wallet must not derive it from an old key or set it back to the anchor.
+
+A rotation-capable contract must keep its current signing key separate from the values that determine its address. It must accept only the stored current key for ordinary outgoing messages.
+
+<Callout type="note">
+  The rotation mnemonic is employed only by the [WalletTg](/contracts/standard/wallets/telegram/overview) contract.
 </Callout>
 
 ## Key pair from a mnemonic
@@ -19,7 +78,7 @@ To transform a mnemonic phrase into a key pair, a `seed` is first derived using 
 
 PBKDF2 has [five input parameters](https://en.wikipedia.org/wiki/PBKDF2#Key_derivation_process): `PRF`, `Password`, `Salt`, `c`, and `dkLen`. Each of those parameters is assigned a concrete value.
 
-The most commonly used values are:
+Seed of the mnemonic is derived with PBKDF2 with these parameters:
 
 | Parameter  | Description                                                                                            | Value                                             |
 | :--------- | :----------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
@@ -29,43 +88,53 @@ The most commonly used values are:
 | `c`        | Number of iterations desired                                                                           | 100000                                            |
 | `dkLen`    | Desired bit-length of the derived key                                                                  | 64                                                |
 
+The first 32 seed bytes initialize the [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) private key.
+
 ### Generate a key pair
 
 ```ts title="TypeScript"
-import { mnemonicToPrivateKey, mnemonicNew } from "@ton/crypto";
+import { mnemonicNew, mnemonicToPrivateKey } from '@ton/crypto';
 
-// Replace with your own persisted mnemonic phrase (see note below).
-const mnemonicArray = await mnemonicNew();
+const mnemonic = await mnemonicNew(24);
+const keyPair = await mnemonicToPrivateKey(mnemonic);
 
-// derive private and public keys from the mnemonic
-const keyPair = await mnemonicToPrivateKey(mnemonicArray);
-
-console.log("Public Key: " + keyPair.publicKey.toString('hex'));
-console.log("Private Key: " + keyPair.secretKey.toString('hex'));
+console.log(`Public key: ${keyPair.publicKey.toString('hex')}`);
 ```
 
-The private key is needed to sign messages, and the public key is stored in the wallet's smart contract. When new external messages arrive on that smart contract, the public key would be used to check the authenticity of the messages signed using the corresponding private key.
+This example generates a TON mnemonic and prints only the public key. The same words and TON password always produce the same key pair.
 
-<Callout
-  type="caution"
-  title="Important"
->
-  Save the generated mnemonic seed phrase. If you need deterministic behavior during development, print and reuse the exact phrase so the wallet derives the same key pair on every run.
+<Callout type="caution">
+  Store the mnemonic securely. Never log the mnemonic or `keyPair.secretKey`. Use a test-only phrase for reproducible local tests.
 </Callout>
 
 ## Mnemonic validation
 
-1. Check that all the words are from the list of [BIP-39](https://github.com/ton-org/ton-crypto/blob/c3435833a0da52a96f674c352c4c6f91fcc07f6d/src/mnemonic/wordlist.ts#L9).
-1. If a password is used: the first byte of the derived `seed` computed with `c = 1` and `salt = 'TON fast seed version'` must equal `0`.
-1. If no password is used: the first byte of the derived `seed` computed with `c = floor(100000/256) = 390` and `salt = 'TON seed version'` must equal `1`.
+Require all 24 words to be in the [BIP-39 English word list](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki). Notice, that TON validity does not use the BIP-39 checksum, but the TON seed.
 
-Random mnemonic phrases are generated until PBKDF2 yields a seed whose first byte matches the expected version (0 for the 'fast seed' parameters, 1 for the 'seed version' parameters); then a valid mnemonic is returned.
+Following TON seed checks use `entropy` from the HMAC step as the PBKDF2-HMAC-SHA512 password and produce 64 bytes:
+
+| Check           | TON HMAC message           | Salt                    | Iterations                          | Pass condition    |
+| :-------------- | :------------------------- | :---------------------- | :---------------------------------- | :---------------- |
+| Basic seed      | Supplied password or empty | `TON seed version`      | `max(1, floor(100000 / 256)) = 390` | First byte is `0` |
+| Password marker | Empty                      | `TON fast seed version` | 1                                   | First byte is `1` |
+
+For a phrase without a TON password, the basic-seed check must pass with an empty password. For a password-enabled phrase, the password marker must pass and the basic-seed check must fail without the password. The basic-seed check must then pass with the supplied password. Use a TON mnemonic implementation for these checks.
 
 ### Generate a mnemonic
 
 ```ts title="TypeScript"
-import { mnemonicNew } from "@ton/crypto";
+import { mnemonicNew, mnemonicValidate } from '@ton/crypto';
 
-const mnemonicArray = await mnemonicNew();
-console.log(mnemonicArray);
+const mnemonic = await mnemonicNew(24);
+console.log(await mnemonicValidate(mnemonic));
 ```
+
+The example prints `true` for a valid phrase, not the recovery phrase. `tonlib` selects words from the BIP-39 list using secure random bytes. It retries until TON checks pass.
+
+<Callout type="caution">
+  Always run a [scheme detection](#mnemonic-import-and-scheme-detection) before importing a 24-word phrase.
+</Callout>
+
+<Callout type="note">
+  A 24-word TON phrase can also pass the BIP-39 checksum, but it is not a requirement. Some wallet apps [reject and regenerate such candidates](https://github.com/mytonwallet-org/mytonwallet/blob/bb3f357690633d274e390e799babaf1d642b31de/src/api/chains/ton/auth.ts#L61-L77) to avoid ambiguous imports.
+</Callout>

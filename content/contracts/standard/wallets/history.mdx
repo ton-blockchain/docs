@@ -3,22 +3,21 @@ title: "Wallets history"
 sidebarTitle: "History"
 ---
 
-You may have heard about different versions of wallets on TON Blockchain. But what do these versions actually mean, and how do they differ?
-
-In this article, we will explore the various versions and modifications of TON wallets.
+This article explores the various versions and modifications of TON wallets.
 
 ## Common concept
 
-We should first understand that wallets are not a specific entity in the TON ecosystem. They are still just smart contracts consisting of code and data, and in that sense, are equal to any other actor (i.e., smart contract) in TON.
+Wallets are not a specific separate entity in TON. They are smart contracts consisting of code and data. In that sense, are equal to any other actor, i.e., smart contract, in TON.
 
-Read more about [differences](/from-ethereum).
+<Callout type="note">
+  Read more about [blockchain differences](/from-ethereum).
+</Callout>
 
-Like your own custom smart contract, or any other one, wallets can receive external and internal messages, send internal messages and logs, and provide `get methods`.
-So the question is: what functionality do they provide, and how do they differ between versions?
+Like any custom smart contract, wallets can receive external and internal messages, send internal messages and logs, and execute off-chain get-methods.
 
-You can consider each wallet version as a smart contract implementation providing a standard external interface, allowing different external clients to interact with the wallets in the same way. You can find these implementations in FunC and Fift languages in the main TON monorepo:
+Standard wallets differ in their functionality, message formats, implementation languages and some operational details. However, all wallet versions are able to successfully receive Gram from internal messages between each other, just like any other smart contract.
 
-- [`ton/crypto/smartcont/`](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/)
+The V1-V3 implementations are written in FunC or Fift and live in [`ton/crypto/smartcont/`](https://github.com/ton-blockchain/ton/tree/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/smartcont).
 
 ## Basic wallets
 
@@ -27,18 +26,19 @@ You can consider each wallet version as a smart contract implementation providin
 Here, you can find the current hashes of the wallet contract code versions.
 For detailed specifications of each wallet contract, please refer to the sections further down this page.
 
-| Contract version    | Hash                                                               |
-| ------------------- | ------------------------------------------------------------------ |
-| [V1 R1](#wallet-v1) | `a0cfc2c48aee16a271f2cfc0b7382d81756cecb1017d077faaab3bb602f6868c` |
-| [V1 R2](#wallet-v1) | `d4902fcc9fad74698fa8e353220a68da0dcf72e32bcb2eb9ee04217c17d3062c` |
-| [V1 R3](#wallet-v1) | `587cc789eff1c84f46ec3797e45fc809a14ff5ae24f1e0c7a6a99cc9dc9061ff` |
-| [V2 R1](#wallet-v2) | `5c9a5e68c108e18721a07c42f9956bfb39ad77ec6d624b60c576ec88eee65329` |
-| [V2 R2](#wallet-v2) | `fe9530d3243853083ef2ef0b4c2908c0abf6fa1c31ea243aacaa5bf8c7d753f1` |
-| [V3 R1](#wallet-v3) | `b61041a58a7980b946e8fb9e198e3c904d24799ffa36574ea4251c41a566f581` |
-| [V3 R2](#wallet-v3) | `84dafa449f98a6987789ba232358072bc0f76dc4524002a5d0918b9a75d2d599` |
-| [V4 R1](#wallet-v4) | `64dd54805522c5be8a9db59cea0105ccf0d08786ca79beb8cb79e880a8d7322d` |
-| [V4 R2](#wallet-v4) | `feb5ff6820e2ff0d9483e7e0d62c817d846789fb4ae580c878866d959dabd5c0` |
-| [V5 R1](#wallet-v5) | `20834b7b72b112147e1b2fb457b84e74d1a30f04f737d4f62a668e9552d2b72f` |
+| Contract version      | Hash                                                               |
+| --------------------- | ------------------------------------------------------------------ |
+| [V1 R1](#wallet-v1)   | `a0cfc2c48aee16a271f2cfc0b7382d81756cecb1017d077faaab3bb602f6868c` |
+| [V1 R2](#wallet-v1)   | `d4902fcc9fad74698fa8e353220a68da0dcf72e32bcb2eb9ee04217c17d3062c` |
+| [V1 R3](#wallet-v1)   | `587cc789eff1c84f46ec3797e45fc809a14ff5ae24f1e0c7a6a99cc9dc9061ff` |
+| [V2 R1](#wallet-v2)   | `5c9a5e68c108e18721a07c42f9956bfb39ad77ec6d624b60c576ec88eee65329` |
+| [V2 R2](#wallet-v2)   | `fe9530d3243853083ef2ef0b4c2908c0abf6fa1c31ea243aacaa5bf8c7d753f1` |
+| [V3 R1](#wallet-v3)   | `b61041a58a7980b946e8fb9e198e3c904d24799ffa36574ea4251c41a566f581` |
+| [V3 R2](#wallet-v3)   | `84dafa449f98a6987789ba232358072bc0f76dc4524002a5d0918b9a75d2d599` |
+| [V4 R1](#wallet-v4)   | `64dd54805522c5be8a9db59cea0105ccf0d08786ca79beb8cb79e880a8d7322d` |
+| [V4 R2](#wallet-v4)   | `feb5ff6820e2ff0d9483e7e0d62c817d846789fb4ae580c878866d959dabd5c0` |
+| [V5 R1](#wallet-v5)   | `20834b7b72b112147e1b2fb457b84e74d1a30f04f737d4f62a668e9552d2b72f` |
+| [WalletTg](#wallettg) | `9149ae51c1e4689710cebf7830297b16acfbadb363a920a537893e7ffeeca768` |
 
 **Note:** These hashes can also be found in the explorers.
 
@@ -143,7 +143,7 @@ Wallet source code:
   Final Fift source: [`ton/crypto/smartcont/wallet-v3-code.fif`](https://github.com/ton-blockchain/ton/blob/master/crypto/smartcont/wallet-v3-code.fif).
 </Callout>
 
-Essentially, `subwallet_id` is just a number added to the contract state when it’s deployed. Since the contract address in TON is a hash of its state and code, the wallet address will change with a different `subwallet_id`. This version is the most widely used right now. It covers most use cases and remains clean, simple, and mostly the same as previous versions. All get methods remain the same.
+`subwallet_id` is a number in the contract's initial data. Changing it produces a different [`StateInit`](/foundations/messages/deploy) and wallet address. All get methods remain the same.
 
 #### Official code hashes
 
@@ -192,12 +192,24 @@ Read about this standard iteration on its dedicated page: [V4 wallet standard](/
 
 **Why V5 was created**: V5 was developed by the Tonkeeper team to address the growing need for gasless transactions, improved extensibility, and better user experience. It adds support for owner-signed internal messages, enabling gasless transactions where users can pay fees in tokens like USDt instead of Gram.
 
-It is the most modern wallet version at the moment, aimed at replacing V4 and allowing arbitrary extensions.
+Within the V1–V5 basic-wallet family, V5 is the latest version and supports extensions.
 
 Read more:
 
 - [V5 wallet standard](/contracts/standard/wallets/v5)
 - [How to interact with V5 wallet](/contracts/standard/wallets/v5-api)
+
+### WalletTg
+
+[WalletTg](/contracts/standard/wallets/telegram/overview) is the TON wallet contract used by the [Telegram's native Gram wallet](/onboarding/wallet-apps/telegram). It uses a baseline trampoline and a separate Tolk implementation shared through network configuration.
+
+Its functionality is very close to wallet V5, and it was developed by TON Core and Telegram teams to provide TON blockchain functionality to all Telegram users.
+
+Read more:
+
+- [WalletTg overview](/contracts/standard/wallets/telegram/overview)
+- [How to interact with WalletTg](/contracts/standard/wallets/telegram/interact)
+- [How to integrate WalletTg support into a wallet service](/contracts/standard/wallets/telegram/integrate)
 
 ## Special wallets
 
@@ -231,7 +243,7 @@ Wallet source code:
 
 ## Conclusion
 
-As you can see, there are many different versions of wallets in TON. For new deployments, prefer `V5`. Use `V3R2` or `V4R2` only for legacy compatibility or specific constraints. You can also use one of the special wallets if you want additional functionality like periodic unlocking of funds.
+Within the V1–V5 family, prefer V5 for new deployments. Use V3R2 or V4R2 only for legacy compatibility or specific constraints. Specialized wallets such as Lockup support features such as periodic unlocking.
 
 ## See also
 

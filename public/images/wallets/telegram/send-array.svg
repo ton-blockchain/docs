@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="705" viewBox="0 0 1300 705" role="img" aria-labelledby="title desc">
+  <title id="title">WalletTg send messages array encoding examples</title>
+  <desc id="desc">Two examples of Tolk array encoding: two MessageToSend items and ten MessageToSend items split into three chunks.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .bg { fill: #ffffff; }
+      .divider { stroke: #e7ebf4; stroke-width: 1.5; }
+      .scheme-title { font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .box { fill: #ffffff; stroke: #334155; stroke-width: 1.6; }
+      .root { fill: #fafffa; }
+      .chunk { fill: #f8fafc; }
+      .field { fill: #eef6ff; stroke: #94a3b8; stroke-width: 1.1; }
+      .next { fill: #e2e8f0; stroke: #64748b; stroke-width: 1.1; }
+      .item { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.1; }
+      .mode { fill: #fef3c7; stroke: #d6a94a; stroke-width: 1; }
+      .msg { fill: #dbeafe; stroke: #93c5fd; stroke-width: 1; }
+      .arrow { fill: none; stroke: #334155; stroke-width: 1.7; marker-end: url(#arrow); }
+      .label { font: 700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1e293b; }
+      .mono { font: 700 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #0f172a; }
+      .mono-small { font: 650 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #475569; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1300" height="705"/>
+
+  <g id="two-messages">
+    <text class="scheme-title" x="450" y="47">2 items in `msgArr`</text>
+
+    <g id="two-root" transform="translate(70 32)">
+      <rect class="box root" width="300" height="104" rx="6"/>
+      <text class="label" x="18" y="27">array header</text>
+      <rect class="field" x="18" y="42" width="264" height="24" rx="4"/>
+      <text class="mono" x="30" y="59">len: uint8 = 2</text>
+      <rect class="field" x="18" y="70" width="264" height="24" rx="4"/>
+      <text class="mono" x="30" y="87">head: bit 1 + ref</text>
+    </g>
+
+    <path class="arrow" d="M 352 114 L 450 114"/>
+
+    <g id="two-chunk-1" transform="translate(450 86)">
+      <rect class="box chunk" width="360" height="190" rx="6"/>
+      <text class="label" x="18" y="28">chunk #1</text>
+      <rect class="next" x="18" y="44" width="324" height="30" rx="4"/>
+      <text class="mono" x="30" y="64">next: bit 0 = null</text>
+
+      <g transform="translate(18 88)">
+        <rect class="item" width="324" height="38" rx="5"/>
+        <text class="mono" x="14" y="25">m1</text>
+        <rect class="mode" x="50" y="8" width="134" height="22" rx="4"/>
+        <text class="mono-small" x="117" y="23" text-anchor="middle">sendMode: uint8</text>
+        <rect class="msg" x="196" y="8" width="114" height="22" rx="4"/>
+        <text class="mono-small" x="253" y="23" text-anchor="middle">msgCell: ref</text>
+      </g>
+      <g transform="translate(18 134)">
+        <rect class="item" width="324" height="38" rx="5"/>
+        <text class="mono" x="14" y="25">m2</text>
+        <rect class="mode" x="50" y="8" width="134" height="22" rx="4"/>
+        <text class="mono-small" x="117" y="23" text-anchor="middle">sendMode: uint8</text>
+        <rect class="msg" x="196" y="8" width="114" height="22" rx="4"/>
+        <text class="mono-small" x="253" y="23" text-anchor="middle">msgCell: ref</text>
+      </g>
+    </g>
+  </g>
+
+  <line class="divider" x1="70" y1="316" x2="1238" y2="316"/>
+
+  <g id="ten-messages">
+    <text class="scheme-title" x="450" y="376">10 items in `msgArr`</text>
+
+    <g id="ten-root" transform="translate(70 361)">
+      <rect class="box root" width="300" height="104" rx="6"/>
+      <text class="label" x="18" y="27">array header</text>
+      <rect class="field" x="18" y="42" width="264" height="24" rx="4"/>
+      <text class="mono" x="30" y="59">len: uint8 = 10</text>
+      <rect class="field" x="18" y="70" width="264" height="24" rx="4"/>
+      <text class="mono" x="30" y="87">head: bit 1 + ref</text>
+    </g>
+
+    <path class="arrow" d="M 352 443 L 450 443"/>
+
+    <g id="ten-chunk-1" transform="translate(450 415)">
+      <rect class="box chunk" width="206" height="184" rx="6"/>
+      <text class="label" x="18" y="28">chunk #1</text>
+      <rect class="next" x="18" y="44" width="170" height="24" rx="4"/>
+      <text class="mono" x="30" y="61">next: bit 1 + ref</text>
+
+      <g transform="translate(18 82)">
+        <rect class="item" width="170" height="26" rx="5"/>
+        <text class="mono" x="12" y="18">m1</text>
+        <text class="mono-small" x="48" y="18">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 112)">
+        <rect class="item" width="170" height="26" rx="5"/>
+        <text class="mono" x="12" y="18">m2</text>
+        <text class="mono-small" x="48" y="18">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 142)">
+        <rect class="item" width="170" height="26" rx="5"/>
+        <text class="mono" x="12" y="18">m3</text>
+        <text class="mono-small" x="48" y="18">mode + msg ref</text>
+      </g>
+    </g>
+
+    <path class="arrow" d="M 638 471 L 690 471"/>
+
+    <g id="ten-chunk-2" transform="translate(690 443)">
+      <rect class="box chunk" width="206" height="184" rx="6"/>
+      <text class="label" x="18" y="28">chunk #2</text>
+      <rect class="next" x="18" y="44" width="170" height="24" rx="4"/>
+      <text class="mono" x="30" y="61">next: bit 1 + ref</text>
+
+      <g transform="translate(18 82)">
+        <rect class="item" width="170" height="26" rx="5"/>
+        <text class="mono" x="12" y="18">m4</text>
+        <text class="mono-small" x="48" y="18">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 112)">
+        <rect class="item" width="170" height="26" rx="5"/>
+        <text class="mono" x="12" y="18">m5</text>
+        <text class="mono-small" x="48" y="18">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 142)">
+        <rect class="item" width="170" height="26" rx="5"/>
+        <text class="mono" x="12" y="18">m6</text>
+        <text class="mono-small" x="48" y="18">mode + msg ref</text>
+      </g>
+    </g>
+
+    <path class="arrow" d="M 878 499 L 930 499"/>
+
+    <g id="ten-chunk-3" transform="translate(930 471)">
+      <rect class="box chunk" width="206" height="206" rx="6"/>
+      <text class="label" x="18" y="28">chunk #3 (last)</text>
+      <rect class="next" x="18" y="44" width="170" height="24" rx="4"/>
+      <text class="mono" x="30" y="61">next: bit 0 = null</text>
+
+      <g transform="translate(18 82)">
+        <rect class="item" width="170" height="24" rx="5"/>
+        <text class="mono" x="12" y="17">m7</text>
+        <text class="mono-small" x="48" y="17">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 110)">
+        <rect class="item" width="170" height="24" rx="5"/>
+        <text class="mono" x="12" y="17">m8</text>
+        <text class="mono-small" x="48" y="17">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 138)">
+        <rect class="item" width="170" height="24" rx="5"/>
+        <text class="mono" x="12" y="17">m9</text>
+        <text class="mono-small" x="48" y="17">mode + msg ref</text>
+      </g>
+      <g transform="translate(18 166)">
+        <rect class="item" width="170" height="24" rx="5"/>
+        <text class="mono" x="12" y="17">m10</text>
+        <text class="mono-small" x="48" y="17">mode + msg ref</text>
+      </g>
+    </g>
+  </g>
+</svg>

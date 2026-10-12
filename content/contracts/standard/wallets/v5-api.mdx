@@ -7,7 +7,7 @@ sidebarTitle: "V5: Messages and get methods"
 | ---------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | V5 R1            | `20834b7b72b112147e1b2fb457b84e74d1a30f04f737d4f62a668e9552d2b72f` | [Source](https://github.com/ton-blockchain/wallet-contract-v5/blob/88557ebc33047a95207f6e47ac8aadb102dff744/contracts/wallet_v5.fc) |
 
-This article provides overview of wallet V5 public interfaces, how to interact with them and serialize used data structures.
+This article describes Wallet V5 message formats, serialization, and public get methods. For the contract's behavior, see the [Wallet V5 overview](/contracts/standard/wallets/v5).
 
 <Callout>
   Note, that many of the things we implement in this article are for education purposes and they might need to be refined before production use.
@@ -65,7 +65,7 @@ w5_extension_action_request#6578746e {m:#} {n:#} query_id:uint64 request:(W5Inne
 
 // opcode detection, actual InternalMsgBody / ExternalMsgBody is in W5MsgBody
 w5_internal_signed_request#73696e74 rest:Any = InternalMsgBody;
-w5_external_signed_request#7369676e rest:Any = InternalMsgBody;
+w5_external_signed_request#7369676e rest:Any = ExternalMsgBody;
 w5_extension_action_request#6578746e rest:Any = InternalMsgBody;
 ```
 
@@ -117,7 +117,9 @@ The action structure allows for:
   - **Delete Extension**: Remove extension addresses
   - **Set Signature Auth**: Enable/disable signature-based authentication
 
-As you can see in TL-B, `out_actions` are snake-cell list of ordinary out messages, followed then by binary flag `has_other_actions` and `other_actions` extended action list.
+Only a registered extension can change signature authentication. Do not include `set_signature_auth_allowed` in an owner-signed request. An external signed request with this action fails with [exit code 146](/contracts/standard/wallets/v5#exit-codes).
+
+In TL-B, `out_actions` are snake-cell list of ordinary out messages, followed then by binary flag `has_other_actions` and `other_actions` extended action list.
 
 #### Inner Request Structure
 
@@ -283,9 +285,10 @@ function packExtendedActionsRec(extendedActions: OutActionExtended[]): Cell {
 
 Now we have to deal with basic action serialization. However, since these are the messages that are described in [`block.tlb`](/foundations/tlb/overview), we can use contract-agnostic code from serialization library to store them.
 
-Here is a code snippet for storing V5 wallet actions as per `Inner Request` TL-B:
+The following is a partial snippet. It uses the action types defined above and stores the basic actions and extended actions in their separate lists.
 
 ```ts expandable
+// Not runnable: depends on the extended-action serializer from the previous snippet.
 import {
     beginCell,
     Builder, Cell,
@@ -348,12 +351,16 @@ There are several additional arguments that we need to create signed message bes
 - `privateKey`
 - `validUntil`
 
+`walletId` is the signed 32-bit value from the [V5 wallet ID scheme](/contracts/standard/wallets/v5#wallet-id-scheme). For an external signed request, each `sendMsg` action must include `SendMode.IGNORE_ERRORS` (`+2`) before signing. This helper rejects external actions without that flag and preserves the supplied modes.
+
 You can read more about where to obtain them and what there purpose is in [How it works](/contracts/standard/wallets/how-it-works) section.
 
-In this code snippet we will learn how to create signed serialized message.
+This partial snippet uses the action serializers from the previous sections and the corresponding `@ton/core` imports.
 
 ```ts expandable
+// Not runnable: depends on both serializer snippets and wallet arguments.
 import { sign } from "@ton/crypto";
+import { SendMode } from "@ton/core";
 
 export type WalletV5BasicSendArgs = {
     seqno: number;
@@ -404,8 +411,15 @@ export function createWalletTransferV5R1<T extends WalletV5SendArgs>(
             .endCell();
     }
 
+    const authType = args.authType ?? 'external';
+    if (authType === 'external' && args.actions.some((action) =>
+        action.type === 'sendMsg' && (action.mode & SendMode.IGNORE_ERRORS) === 0
+    )) {
+        throw new Error('External send actions must include SendMode.IGNORE_ERRORS (+2)');
+    }
+
     const signingMessage = beginCell()
-        .storeUint(args.authType === 'internal'
+        .storeUint(authType === 'internal'
             ? OpCodes.authSignedInternal
             : OpCodes.authSignedExternal, 32)
         .store(args.walletId);
@@ -429,9 +443,12 @@ Now what is left is sending the message. The way we send created message is depe
 
 #### Sending external\_signed message
 
-After obtaining signed message cell we need to serialize it as external message and send it to the blockchain.
+Submit the signed body in an [external-in message](/foundations/messages/external-in).
+
+This partial snippet assumes `walletId`, `validUntil`, `seqno`, `privateKey`, and `actions` are defined. `privateKey` must belong to the V5 wallet owner. Replace `<V5_WALLET_ADDRESS>` with the target wallet's address.
 
 ```ts
+// Not runnable: provide the V5 serializer and signed-request arguments before running.
 import {
     Address,
     beginCell,
@@ -441,9 +458,16 @@ import {
 } from '@ton/core';
 
 // with authType = 'external'
-const msgCell = createWalletTransferV5(...);
+const msgCell = createWalletTransferV5R1({
+    authType: 'external',
+    walletId: (builder) => builder.storeInt(walletId, 32),
+    validUntil,
+    seqno,
+    privateKey,
+    actions,
+});
 
-const v5WalletAddress = Address.parse("EQ....");
+const v5WalletAddress = Address.parse('<V5_WALLET_ADDRESS>');
 
 const serializedExternal = external({
   to: v5WalletAddress,
@@ -461,7 +485,7 @@ You can send this BoC to the network in any convenient way, e.g. with API provid
 
 #### Sending internal\_extension and internal\_signed
 
-These two types of messages are internal messages, meaning that they need to come from another contract. However strange that may sound, the easiest way to send internal message from another contract is to ask another wallet contract to send internal message to our wallet contract with body that will contain our constructed message.
+These message types are [internal messages](/foundations/messages/internal), so another contract must send them. This example uses a V4 wallet as the sender. Sign `internal_signed` with the V5 owner's key; `internal_extension` instead requires an installed extension. The V4 key authorizes only the outer message. `internal_signed` cannot change signature authentication.
 
 <Image
   src="/images/wallets/internal_message_light.svg"
@@ -469,21 +493,23 @@ These two types of messages are internal messages, meaning that they need to com
   alt="Internal message flow"
 />
 
-For simplicity, we will use wallet V4 contract with existing client serialization library that will take care of all low level stuff.
+This partial example assumes `v5WalletId`, `v5Seqno`, `validUntil`, `v5PrivateKey`, and `actions` are defined for the target V5 wallet. Replace `<V4_MNEMONIC>` with the valid mnemonic for the funded V4 sender and `<V5_WALLET_ADDRESS>` with the target address.
 
 ```ts expandable
-import {beginCell, toNano, TonClient, WalletContractV4, internal, fromNano} from "@ton/ton"
+// Not runnable: provide the V5 signing data and funded V4 sender before running.
+import {Address} from "@ton/core"
+import {toNano, TonClient, WalletContractV4, internal} from "@ton/ton"
 import {mnemonicToPrivateKey} from "@ton/crypto"
 
-// v4 wallet mnemonic
-const mnemonics = "dog bacon bread ..."
+const mnemonics = '<V4_MNEMONIC>'.split(' ')
 
 const client = new TonClient({
     endpoint: "https://testnet.toncenter.com/api/v2/jsonRPC",
 })
-const keyPair = await mnemonicToPrivateKey(mnemonics.split(" "))
+const keyPair = await mnemonicToPrivateKey(mnemonics)
 const secretKey = keyPair.secretKey
-const workchain = 0 // we are working in basechain.
+// The V4 sender uses workchain 0 (basechain).
+const workchain = 0
 const deployerWallet = WalletContractV4.create({
     workchain: workchain,
     publicKey: keyPair.publicKey,
@@ -492,19 +518,26 @@ const deployerWallet = WalletContractV4.create({
 const deployerWalletContract = client.open(deployerWallet)
 
 
-// with authType = 'internal' or 'extension'
-const internalMsgBody = createWalletTransferV5(...);
+// with authType = 'internal'
+const internalMsgBody = createWalletTransferV5R1({
+    authType: 'internal',
+    walletId: (builder) => builder.storeInt(v5WalletId, 32),
+    validUntil,
+    seqno: v5Seqno,
+    privateKey: v5PrivateKey,
+    actions,
+});
 
 // here we use function from previous section to create V5 wallet message cell
 // next, we will send it as internal message using V4 wallet
 
 // address of our V5 wallet contract
-const v5WalletAddress = Address.parse("EQ....");
+const v5WalletAddress = Address.parse('<V5_WALLET_ADDRESS>');
 
-const seqnoForV4Wallet: number = await deployerWalletContract.getSeqno()
+const seqnoForV4Wallet = await deployerWalletContract.getSeqno()
 
 await deployerWalletContract.sendTransfer({
-    seqno,
+    seqno: seqnoForV4Wallet,
     secretKey,
     messages: [
         internal({
@@ -515,3 +548,15 @@ await deployerWalletContract.sendTransfer({
     ],
 })
 ```
+
+## Get methods
+
+Wallet V5 exposes the following get methods:
+
+- `is_signature_allowed()`,
+- `seqno()`,
+- `get_subwallet_id()`,
+- `get_public_key()`,
+- and `get_extensions()`.
+
+See the [get-method reference](/contracts/standard/wallets/v5#get-methods) for details.

@@ -5,11 +5,9 @@ sidebarTitle: "How they work"
 
 Wallets are often the entry point of transactions in TON. See [external messages](/foundations/whitepapers/ton#246-external-messages-or-messages-from-nowhere).
 
-### General principle
+## General principle
 
-A wallet smart contract stores two critical variables — the public key and the sequence number (`seqno`). Together, they secure the wallet.
-
-Using the public key, the contract verifies that the request comes from the wallet owner; using `seqno`, it protects against replayed transactions (see [How replay protection works](#how-replay-protection-works)).
+Many seqno-based wallet contracts store a public key and the sequence number (`seqno`). The contract uses the stored key to authenticate signed requests and `seqno` to [prevent replay](#how-replay-protection-works).
 
 ## Why wallet contracts don't store a `balance` field
 
@@ -31,7 +29,7 @@ You generate a private key (keep it safe) and a public key (stored in the contra
   The public key is not the wallet address. The address is [derived](/foundations/addresses/derive) from the contract's [`StateInit`](/foundations/messages/deploy).
 </Callout>
 
-An external message is sent to the contract (containing a 512-bit signature and the desired payload). Ed25519 verifies that the provided signature matches the hash of the message.
+An external signed request carries a 512-bit signature and a payload. The wallet verifies the signature before processing the request. [WalletTg](/contracts/standard/wallets/telegram/overview) also accepts owner-signed internal requests, using distinct opcodes for the two paths; see its [message reference](/contracts/standard/wallets/telegram/messages).
 
 ## How replay protection works
 
@@ -42,17 +40,17 @@ An external message is sent to the contract (containing a 512-bit signature and 
   Imagine Alice has 100 Gram. Alice sends 10 Gram to Bob as a gift. Bob, being sneaky, forwards an identical message to Alice's wallet and would receive another 10 Gram — unless the wallet prevents replays.
 </Callout>
 
-Each transaction carries a counter value (in our case, `seqno`) that must be unique and strictly increasing for every outgoing transaction. Because `seqno` changes, the message hash changes as well, making it impossible to reuse a previous signature.
+Seqno-based wallets put one `seqno` in each signed request, even when it contains several outgoing messages. The contract checks it against stored state; its rules determine when a valid request consumes it. Once consumed, the old request fails the `seqno` check.
 
 ### Role of `valid_until`
 
-`valid_until` is a Unix timestamp embedded into the wallet’s signing message. The wallet rejects any external message if the current time exceeds this value. This limits the lifetime of a signature and prevents an attacker from replaying a captured message indefinitely.
+`valid_until` is a Unix timestamp that sets a signed request's expiry. Contracts that use it reject expired requests. WalletTg checks expiry on both external and internal signed requests.
 
-It also makes retries safe: a client may re-send the same signed message until the deadline; after it expires, the client must re-sign with a new `valid_until`. Combined with `seqno` equality (the contract accepts only the exact current `seqno` and increments it on success), this provides robust replay protection.
+Retry an unchanged signed request only while its `seqno` is current and it has not expired. If the result is unknown, read wallet state before retrying; another accepted request may have advanced `seqno`. If the request expired without being processed, sign a replacement with the current `seqno` and a new deadline.
 
 ## Subwallet ID
 
-`subwallet_id` is a 32-bit identifier tied to a wallet instance. It is set at wallet creation time and is included in the signing message. On each external call, the wallet verifies that the provided `subwallet_id` matches its own; otherwise, the message is rejected.
+`subwallet_id` is a 32-bit identifier tied to a wallet instance. It is set at wallet creation time and is included in the signing message. On each signed request, the wallet verifies that the provided `subwallet_id` matches its own; otherwise, the message is rejected.
 
 Multiple independent wallet contracts can share the same public key by using different `subwallet_id` values, each with its own address and `seqno`. This is useful for separating accounts, environments, or business lines while keeping a single keypair.
 
@@ -60,7 +58,7 @@ Multiple independent wallet contracts can share the same public key by using dif
   type="caution"
   title="Important"
 >
-  Changing `subwallet_id` creates a different wallet address. Funds are not shared across subwallets even if they use the same public key.
+  Selecting a different `subwallet_id` in the original `StateInit` derives a different wallet address. Each address is a separate account; funds are not shared even if the public key is the same.
 </Callout>
 
 <Callout

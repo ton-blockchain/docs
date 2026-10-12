@@ -1,0 +1,79 @@
+---
+title: "WalletTg code and storage"
+sidebarTitle: "Code and storage"
+---
+
+Every deployed wallet stores an immutable _trampoline_ code. The trampoline code hash is `9149AE51C1E4689710CEBF7830297B16ACFBADB363A920A537893E7FFEECA768`. It is the root-cell hash of [`WalletTrampoline.boc`](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTrampoline.boc).
+
+## Trampoline
+
+The trampoline loads and executes the shared implementation from [configuration parameter `-123`](/foundations/config#negative-parameters). The `-123 PUSHINT CONFIGOPTPARAM` instructions fetch the code cell, the trampoline turns it into a continuation and starts executing the code that processes incoming signed internal or external requests, and get-method calls.
+
+```fift title="Excerpt from the WalletTrampoline.fif"
+SETCP0
+DUP IFNOT:<{        // method_id 0 = internal
+  s1 PUSH           // copy body_slice
+  SBITS             // n_bits of body_slice
+  9 PUSHPOW2 LESS   // n_bits < 512, -1 or 0
+  0 THROWIF         // n_bits < 512: exit 0
+}>
+-123 PUSHINT        // ... idx-in-config
+CONFIGOPTPARAM      // ... cell | null, but we suppose it exists
+CTOS BLESS          // ... continuation
+DUP c3 POPCTR       // ... continuation
+JMPX                // ... jump to WalletTg code to process
+//                         an internal or external signed request
+//                         or a getter call
+```
+
+Validators can change the [active shared implementation](https://actonscan.com/config?network=mainnet#config-parameter--123) by voting. Every mainnet WalletTg account uses this implementation — a wallet owner cannot pin a version, change the code, or opt out of code updates.
+
+## Initial state
+
+TON derives the address from the hash of the original [`StateInit`](/foundations/messages/deploy), which contains the trampoline code and initial `Storage` data. The fields serialize in this order:
+
+### Current storage
+
+| Field           |    Width | Initial value            | Current meaning                                      |
+| --------------- | -------: | ------------------------ | ---------------------------------------------------- |
+| Revision prefix |   8 bits | `0x00` (`Rev00_Initial`) | Storage schema revision                              |
+| `seqno`         |  32 bits | `0`                      | Expected sequence number for the next signed request |
+| `subwalletId`   |  32 bits | Chosen by the client     | Wallet ID checked in each request header             |
+| `publicKey`     | 256 bits | Anchor public key        | Current request-signing key                          |
+
+The source defines mainnet default `subwalletId` `0x7FFF7F11` and testnet default `0x7FFF7FFD`. The selected ID is part of `StateInit` and must match each request header.
+
+`publicKey` starts with the [anchor key](/contracts/standard/wallets/telegram/key-management). Rotation replaces it with the new signing key; the anchor is not stored separately. Rotation changes storage only, so the original `StateInit`, address, and trampoline code hash stay the same. Rebuilding `StateInit` with the new key derives a different address.
+
+## Getters
+
+| Getter               | Result    | Behavior                                                          |
+| -------------------- | --------- | ----------------------------------------------------------------- |
+| `revision()`         | `uint8`   | Reads the stored revision prefix; does not call `Storage.load()`. |
+| `seqno()`            | `uint32`  | Calls `Storage.load()` and returns `seqno`.                       |
+| `get_subwallet_id()` | `uint32`  | Calls `Storage.load()` and returns `subwalletId`.                 |
+| `get_public_key()`   | `uint256` | Calls `Storage.load()` and returns `publicKey`.                   |
+
+After rotation, the `get_public_key()` getter returns the active signing key, not the anchor key.
+
+## Storage and migration
+
+`Storage.load()` runs `runMigrationAndUpdateC4()` when the stored prefix differs from `LAST_REVISION`. A transaction persists the migration when it commits [account data](/tvm/registers#c4--persistent-account-storage)
+
+<Callout type="note">
+  See [request failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior) for external-send commit timing.
+</Callout>
+
+Revision 0 stores prefix `0x00`, has no old layouts in `UnionOfOldStorages`, and uses a no-op `runMigrationAndUpdateC4()`. Later revisions must preserve prior layouts and define migrations to the current schema. The [migration rules](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/MIGRATION.md) also require existing messages and getters to remain compatible as new ones are added.
+
+<Callout type="caution">
+  The call to a `revision()` get-method can report an older storage revision while the account already executes newer shared code. It does not identify the active implementation.
+</Callout>
+
+## Source files
+
+- [WalletTg repository on GitHub](https://github.com/ton-blockchain/tg-wallet-contract):
+  - [trampoline assembly](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTrampoline.fif),
+  - [shared implementation](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/WalletTg.tolk),
+  - [storage](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/storage.tolk),
+  - [migration code](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/migration.tolk)

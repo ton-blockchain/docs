@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">WalletTg trampoline architecture</title>
+  <desc id="desc">Each on-chain wallet account stores trampoline code and c4 storage, then jumps to WalletTg bytecode in config[-123].</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-callout" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .bg { fill: #ffffff; }
+      .box { fill: #fafffa; stroke: #334155; stroke-width: 2; }
+      .soft { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.5; }
+      .chip { fill: #e2e8f0; stroke: #64748b; stroke-width: 1.2; }
+      .arrow { fill: none; stroke: #334155; stroke-width: 1.8; marker-end: url(#arrow); }
+      .thin { fill: none; stroke: #64748b; stroke-width: 1.2; marker-end: url(#arrow); }
+      .callout { fill: none; stroke: #94a3b8; stroke-width: 1.2; stroke-dasharray: 4 3; marker-end: url(#arrow-callout); }
+      .title { font: 700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .label { font: 600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1e293b; }
+      .subtitle { font: 500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475579; }
+      .small { font: 500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #999; }
+      .mono { font: 700 15px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #0f172a; }
+      .callout-text { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #334155; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1200" height="520"/>
+
+  <g id="shared-bytecode">
+    <rect class="box" x="250" y="46" width="700" height="116" rx="12"/>
+    <text class="mono" x="300" y="110">config[-123]</text>
+    <text class="title" x="500" y="98">WalletTg bytecode</text>
+    <text class="subtitle" x="500" y="128">Shared by all Telegram wallets. Updated by validator voting.</text>
+  </g>
+
+  <path class="arrow" d="M 600 268 L 600 176"/>
+
+  <g id="jump">
+    <rect class="soft" x="480" y="268" width="240" height="58" rx="10"/>
+    <text class="mono" x="522" y="301">JMP to config[-123]</text>
+  </g>
+
+  <text class="label" x="600" y="476" text-anchor="middle">on-chain wallet accounts</text>
+  <text class="small" x="600" y="498" text-anchor="middle">each account: trampoline code + c4 storage</text>
+
+  <path class="thin" d="M 136 365 C 266 334, 390 318, 480 303"/>
+  <path class="thin" d="M 445 365 C 476 342, 490 322, 520 309"/>
+  <path class="thin" d="M 755 365 C 724 342, 710 322, 680 309"/>
+  <path class="thin" d="M 1064 365 C 934 334, 810 318, 720 303"/>
+
+  <g id="account-anatomy">
+    <text class="callout-text" x="600" y="396" text-anchor="middle">trampoline</text>
+    <path class="callout" d="M 546 392 L 516 392"/>
+    <path class="callout" d="M 654 392 L 684 392"/>
+    <text class="callout-text" x="600" y="428" text-anchor="middle">c4</text>
+    <path class="callout" d="M 582 424 L 516 424"/>
+    <path class="callout" d="M 618 424 L 684 424"/>
+  </g>
+
+  <g id="accounts-left" transform="translate(90 365)">
+    <g transform="translate(0 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+    <g transform="translate(103 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+    <g transform="translate(206 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+    <g transform="translate(309 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+  </g>
+
+  <g id="accounts-right" transform="translate(709 365)">
+    <g transform="translate(0 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+    <g transform="translate(103 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+    <g transform="translate(206 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+    <g transform="translate(309 0)">
+      <rect class="soft" width="92" height="82" rx="9"/>
+      <rect class="chip" x="22" y="52" width="48" height="12" rx="3"/>
+    </g>
+  </g>
+</svg>

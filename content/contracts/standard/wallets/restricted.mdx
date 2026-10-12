@@ -9,11 +9,11 @@ title: "Restricted wallet"
   Restricted Wallet is unmaintained and has unresolved security issues.
 </Callout>
 
-Restricted Wallet is a specialized wallet contract that restricts transfers to predefined owner address, and some operations with Elector and Config contracts. It is used in [Single Nominator](https://github.com/orbs-network/single-nominator) project to securely hold a validator stake and participate in elections without a risk of stealing funds from it.
+Restricted Wallet is a validator-staking wallet with destination checks for the owner and permitted system-contract operations. The [Single Nominator project](https://github.com/orbs-network/single-nominator) describes it as an alternative to its nominator-pool contract and documents unresolved attack vectors. The checks apply only while the configured restriction is active; they do not guarantee that funds cannot be lost.
 
 ## What makes it different
 
-Unlike standard wallets that allow transfers to any address, Restricted Wallet implements address-based restrictions that limit where funds can be sent.
+Restricted Wallet checks the destinations of outgoing messages against its configured owner address and permitted system-contract operations. The check does not validate message bodies or make permitted operations harmless.
 
 **Standard wallet behavior:**\
 You can send funds to any valid address.
@@ -28,6 +28,10 @@ You can only send funds to the predefined owner address or do operations with [E
   darkSrc="/images/wallets/restricted.png"
   alt="Single Nominator Architecture"
 />
+
+Legacy Restricted Wallet code uses `config_param(-13)` as an activation timestamp. If the parameter is absent, the restriction remains active; if set, destination checks stop when its timestamp is no longer in the future, according to the [configuration parameter rules](/foundations/config).
+
+The wallet holds stake principal and fee funds in one balance. The upstream project documents gas-drain attacks that can consume principal and a withdrawal race between an attacker and owner submitting requests with the same `seqno` ([security notes](https://github.com/orbs-network/single-nominator#2-restricted-wallet)). A valid request can still spend Gram on fees, and mode `128` sends the remaining balance to an allowed destination. Check the active restriction and serialize submissions.
 
 ### Allowed actions
 

@@ -3,22 +3,22 @@ title: "Gasless transactions"
 sidebarTitle: "Gasless transactions"
 ---
 
-Gasless transactions execute wallet operations when the wallet owner does not hold Gram to pay [network fees](/foundations/fees). A relayer service and its on-chain contract submit transactions on behalf of users and attach Gram to cover gas costs.
+Gasless transactions allow the wallet owner to not hold Gram for [network fees](/foundations/fees). Such requests use internal messages submitted by a relayer — its service and on-chain contract submit transactions on behalf of users and attach Gram to cover network fees when the wallet balance is zero. Otherwise, its existing balance can fund its own operations.
 
 <Callout type="note">
-  The wallet contract must support owner-signed internal messages — implementations that only accept external messages cannot participate in gasless flows.
+  The wallet contract must support owner-signed internal messages — implementations that accept only external messages cannot participate in gasless flows.
 </Callout>
 
 ## How it works
 
 ### Core mechanism
 
-On TON, every smart contract processes two message types:
+TON contracts process external-in and internal messages:
 
-- External messages: arrive from outside the blockchain. When a wallet contract receives an external message, it pays gas from its own Gram balance.
-- Internal messages: arrive from other contracts. Gas is paid from Gram attached to the message.
+- External-in messages arrive from outside the blockchain. The wallet pays transaction costs from its account balance.
+- Internal messages arrive from other contracts. The incoming value is credited to the wallet before execution; transaction costs are debited from its balance.
 
-Gasless transactions use internal messages: the relayer's contract sends an internal message with attached Gram to the wallet contract. The wallet executes actions without spending its own balance.
+An internal message's initial gas limit depends on its incoming value. [WalletTg](/contracts/standard/wallets/telegram/overview) does not call `ACCEPT` for internal requests, so the relayer must attach enough Gram for compute even when the wallet has an existing balance.
 
 ### Architecture
 
@@ -33,7 +33,7 @@ Gasless transfers:
 
 ```mermaid
 flowchart LR
-  U2["User (off-chain)"] -->|External msg with payload| R["Relayer (pays for fees)"] -->|Internal msg| W2[Wallet] --> A2([Actions])
+  U2["User (off-chain)"] -->|Signed request over API| R["Relayer (pays for fees)"] -->|Internal msg| W2[Wallet] --> A2([Actions])
 ```
 
 Three components enable gasless transactions:
@@ -64,11 +64,11 @@ The relayer verifies off-chain:
 
 #### Step 3: Relayer submits internal message
 
-The relayer's contract sends an internal message to the user's wallet:
+The relayer's wallet sends an internal message to the user's wallet:
 
-- Attaches sufficient Gram for gas
-- Includes the user's signed payload as the message body
-- Spends the relayer's Gram, not the user's
+- Attaches enough Gram for compute and any outgoing costs the wallet balance cannot cover
+- Forwards the signed request body unchanged
+- Pays the message value and its own sending fees from the relayer's balance
 
 #### Step 4: Wallet executes
 
@@ -76,8 +76,8 @@ The wallet contract:
 
 - Verifies signature on-chain
 - Checks replay protection
-- Executes signed actions using attached Gram
-- Increments sequence number
+- Executes signed actions using the incoming value and any existing balance
+- Updates replay-protection state
 
 The blockchain sees a standard internal message. Authentication happens inside the wallet contract.
 
@@ -85,7 +85,7 @@ The blockchain sees a standard internal message. Authentication happens inside t
 
 Relayers use different models to recover gas costs:
 
-- Jetton payment: the user includes a jetton transfer to the relayer in the signed action list. The relayer receives jettons after transaction execution.
+- Jetton payment: the user includes a [jetton transfer](/contracts/standard/tokens/jettons/transfer) to the relayer in the signed action list. The relayer receives jettons only if the downstream transfer succeeds.
 - Prepaid credits: the user purchases credits off-chain. The relayer deducts credits per transaction. No on-chain payment.
 - Sponsorship: the relayer covers costs without payment. Common for onboarding, promotions, or subsidized dApp actions. Requires abuse prevention (rate limits, address restrictions).
 
@@ -93,124 +93,76 @@ Relayers use different models to recover gas costs:
 
 ### Cryptographic protection
 
-The user's signature covers all actions and replay protection data. The wallet contract verifies the signature on-chain before execution.
+The wallet contract must verify the signature and replay-protection fields on-chain. When it verifies the complete request, a relayer cannot change the signed actions without invalidating the signature.
 
-Guarantees:
+For example, [WalletTg](/contracts/standard/wallets/telegram/overview) signs the request body, including its opcode, header, and outgoing-message cells. The internal message sender and attached value are outside that signature.
 
-- Relayer cannot modify actions, recipients, or amounts
-- Relayer cannot forge transactions
-- Relayer cannot replay old transactions (sequence numbers prevent this)
-- Relayer cannot use expired signatures (expiration timestamps prevent this)
-
-Any modification invalidates the signature and causes rejection.
+Sequence-number and expiry checks prevent replay according to the selected wallet's rules. They do not guarantee that a relayer will submit the request or that a state-dependent action will have the same outcome later.
 
 ### Relayer trust requirements
 
-The relayer controls transaction submission but cannot compromise funds:
-
-The relayer can:
+The relayer controls whether and when it submits a request. It can:
 
 - Refuse to submit transactions (censorship)
-- Delay submission (timing attacks)
-- Observe transaction content before submission (privacy loss)
+- Delay submission
+- Observe the signed request before submission
 
-The relayer cannot:
+If compromised, the relayer service may also expose request metadata, such as user IP addresses. The wallet signature prevents the relayer from changing authenticated actions or creating a new authorized request; it does not protect privacy, availability, or actions the owner signed.
 
-- Modify signed actions
-- Steal funds
-- Create unauthorized transactions
-
-Users depend on relayer availability and honesty for submission, but funds remain cryptographically protected.
+If the relayer refuses or delays submission, use another compatible relayer.
 
 ### MEV and front-running
 
-The relayer sees transaction content before blockchain submission, which enables value extraction:
+The relayer sees the request before submission and can delay it or submit another transaction first. State-dependent dApp actions, such as swaps, may then fail or execute under changed conditions. The signature protects the action fields, not market state or transaction ordering.
 
-- Sandwich attacks: for DEX trades, the relayer can submit its own transactions before and after the user's transaction to profit from price impact.
-- Transaction reordering: the relayer can delay or reorder transactions to maximize profit, particularly in DeFi scenarios where order matters.
+Mitigate state and timing risks by:
 
-Mitigation:
-
-- Use short expiration windows (60-300 seconds)
-- Choose relayers with reputation systems
-- For high-value operations, use direct external messages when Gram is available
-- Monitor for suspicious delays or failures
+- Setting a request expiry that allows for user approval and relay time.
+- Including application-level limits, such as a swap's minimum output and deadline.
+- Sending a direct external request when the wallet has enough Gram.
+- Checking the final on-chain result.
 
 ### Operational risks
 
-- Insufficient gas: if the relayer attaches too little Gram, execution fails. The wallet's sequence number does not increment, so the user can retry with the same signed payload.
-- Network congestion: gas costs spike during high load. Relayers may refuse service or increase fees temporarily.
+- Insufficient Gram: execution can fail if the incoming value does not buy enough compute or the total balance cannot cover outgoing values and fees. Retry only after checking that the current `seqno` still matches and the signed request has not expired.
+- Network congestion can delay message delivery. Network fees follow fee parameters and transaction shape; they do not rise with load like gas-auction prices.
+- Jetton transfers execute through downstream messages. A successful wallet transaction only confirms that transfer messages were sent; follow the transaction chain to confirm each recipient and any jetton reimbursement.
 - Jetton payment risks: jetton contracts may have restrictions, insufficient balance, or bugs. Relayers should emulate transactions off-chain before spending Gram.
 - Prepaid credit risks: users trust the relayer to honor off-chain credit balances. No on-chain recourse if the relayer refuses service.
 - Sponsorship abuse: without rate limits and address restrictions, attackers can drain relayer resources through spam.
 
-### Relayer compromise
-
-If a relayer's infrastructure is breached:
-
-The attacker gains:
-
-- Visibility into pending transactions
-- User IP addresses and metadata
-- Ability to censor transactions
-
-The attacker does not gain:
-
-- Ability to forge signatures
-- Ability to steal funds
-- Ability to modify signed actions
-
-Users can switch to alternative relayers or use external messages once Gram is available.
-
 ## Example: jetton payment
 
-Alice wants to send 100 USDT to Bob but has zero Gram. The relayer charges 0.5 USDT.
+Alice has zero Gram and wants to transfer 100 USDT to Bob. The relayer charges 0.5 USDT. Alice signs two actions: a 100 USDT [jetton transfer](/contracts/standard/tokens/jettons/transfer) through her jetton wallet and a 0.5 USDT transfer to the relayer. With [WalletTg](/contracts/standard/wallets/telegram/overview), both are outgoing messages in the signed request.
 
-Alice's wallet:
+The relayer emulates the full transaction chain using current state and fee parameters. For illustration, assume it estimates 0.04 GRAM for wallet execution and fees, and 0.05 GRAM in outgoing message value for each jetton transfer. The relayer attaches 0.16 GRAM. The WalletTg transaction spends 0.04 GRAM in fees and sends 0.10 GRAM in message values, leaving an estimated 0.02 GRAM in the wallet at that point. The relayer also pays its own fees to send the internal message.
 
-1. Creates actions: send 100 USDT to Bob, send 0.5 USDT to the relayer
-1. Adds a sequence number (e.g., 42) and expiration (e.g., 5 minutes)
-1. Signs with the private key
-1. Sends signed payload to relayer API
+The values illustrate a budget calculation, not a fee quote. Jetton-wallet contracts process the outgoing messages asynchronously. Their transactions may consume, return, or bounce Gram. The relayer must confirm that its jetton payment succeeded, not only that WalletTg accepted the request.
 
-Relayer:
+On confirmed completion:
 
-1. Verifies signature against Alice's public key
-1. Checks that the sequence number is 42 (matches wallet state)
-1. Checks that the expiration is valid
-1. Sends internal message to Alice's wallet with 0.1 Gram attached
+- Alice's jetton balance decreases by 100.5 USDT.
+- Bob receives 100 USDT.
+- The relayer's jetton wallet receives 0.5 USDT.
+- Any Gram left in WalletTg or returned by downstream messages remains subject to later transactions and fees.
 
-Alice's wallet contract:
-
-1. Receives the internal message
-1. Verifies signature
-1. Checks that the sequence number is 42 and the expiration is valid
-1. Executes both USDT transfers using attached 0.1 Gram for gas
-1. Increments sequence number to 43
-
-Result:
-
-- Alice: 0 Gram (unchanged), -100.5 USDT
-- Bob: +100 USDT
-- Relayer: -0.1 Gram, +0.5 USDT
-
-The relayer accumulates USDT fees and exchanges them for Gram periodically.
+A relayer that accepts USDT reimbursement can accumulate the jettons and exchange them for Gram periodically.
 
 ## Limitations
 
-Not a protocol feature: gasless transactions are an application-layer pattern. The blockchain does not enforce or guarantee relayer behavior.
+- **Not a protocol feature:** gasless transactions are an application-layer pattern. The blockchain does not enforce or guarantee relayer behavior.
 
-Wallet requirement: the wallet contract must support authenticated internal messages. Not all wallet implementations provide this. In practice, only Wallet v5 reference contracts currently implement owner-signed internal messages.
+- **Centralization of transactions:** users depend on relayer uptime, policies, and willingness to serve requests. Relayers can censor addresses or refuse to provide the service.
 
-No standardization: relayer APIs, fee structures, and supported assets vary. Each integration requires custom implementation.
+- **Wallet requirement:** the wallet contract must support authenticated internal messages. Wallet V5 and [WalletTg](/contracts/standard/wallets/telegram/overview) support owner-signed internal requests, but use different formats. Relayers must implement the selected wallet's format and validation rules; the [WalletTg message reference](/contracts/standard/wallets/telegram/messages) defines its format.
 
-[TON Connect](/applications/ton-connect/overview) incompatibility: currently, TON Connect does not support gasless. The `sendTransaction` method does not return signed payloads to dApps — it submits transactions directly. Gasless requires obtaining signed payloads and forwarding them to relayers off-chain.
+- **No standardization:** relayer APIs, fee structures, and supported assets vary. Each integration requires custom implementation.
+
+- **Mandatory** [TON Connect](/applications/ton-connect/overview) **flows:** `sendTransaction` submits a transaction through the connected wallet. [`signMessage()`](/applications/ton-connect/api-reference/sdk#signmessage) can return a signed message without broadcasting it when the connected wallet advertises the `SignMessage` feature. The [gasless `signMessage()` guide](/applications/ton-connect/how-to/sign-message-gasless) shows its Wallet V5 flow.
 
 <Callout type="note">
-  dApps that need gasless must implement custom signing flows outside TON Connect. Users sign payloads directly via a browser extension or a native app and send them to relayers via an API.
+  WalletTg's owner-signed internal request support does not imply that Telegram Money advertises `SignMessage` or that an existing relayer accepts WalletTg's request format.
 </Callout>
-
-Centralization: users depend on relayer uptime, policies, and willingness to serve requests. Relayers can censor addresses or refuse service.
 
 ## Implementation
 
@@ -223,7 +175,7 @@ Centralization: users depend on relayer uptime, policies, and willingness to ser
 ### Relayer requirements
 
 - Validate signatures and replay protection off-chain before spending Gram
-- Attach sufficient Gram to cover gas for wallet execution and outgoing actions
+- Attach enough Gram for compute and any outgoing costs the wallet balance cannot cover
 - Implement rate limiting and abuse prevention
 - For jetton payments, emulate transactions to verify successful execution
 - Forward the signed payload verbatim in the internal message body without modifying fields covered by the signature

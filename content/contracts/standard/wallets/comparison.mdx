@@ -2,98 +2,97 @@
 title: "Wallets comparison"
 ---
 
-[Unlike some other blockchains](/from-ethereum), wallets in TON are represented as distinct smart contracts. They handle transaction signing, replay protection, and even gasless transfers. Different wallet versions implement different custom logic, suitable for various use cases.
-
-This article will cover the differences between these wallets and identify the best pick for each task.
+[Unlike some other blockchains](/from-ethereum), wallets in TON are regular smart contracts. Each version defines its message format, replay protection, and optional features. For instance, [Wallet V5](/contracts/standard/wallets/v5) supports [gasless transfers](/contracts/standard/wallets/gasless), while [Highload Wallet v3](/contracts/standard/wallets/highload/overview) supports frequent batch transfers.
 
 ## Comparison table
 
-| Feature                         | V4                  | V5                    | Highload                    | Preprocessed          | Multisig                                                        |
-| ------------------------------- | ------------------- | --------------------- | --------------------------- | --------------------- | --------------------------------------------------------------- |
-| **Seqno<sup>1</sup> based**     | ✅ Yes              | ✅ Yes                | ❌ No (`query_id` based)    | ✅ Yes                | 🟡 Has boolean flag that turns off seqno `+1` incremental check |
-| **Messages throughput**         | Up to 4 per request | Up to 255 per request | Up to 2 billion per timeout | Up to 255 per request | Up to 255 per vote                                              |
-| **Multi-owner**                 | ❌ Single owner     | ❌ Single owner       | ❌ Single owner             | ❌ Single owner       | ✅ Multiple owners                                              |
-| **Message cost**                | Standard            | Standard              | Lower                       | Lowest                | Higher (multiple signatures)                                    |
-| **Support plugins**             | ✅ Yes              | ✅ Yes                | ❌ No                       | ❌ No                 | ❌ No                                                           |
-| **Support gasless<sup>2</sup>** | ❌ No               | ✅ Yes                | ❌ No                       | ❌ No                 | ❌ No                                                           |
-| **Subwallet ID**                | ✅ Yes              | ✅ Yes                | ✅ Yes                      | ❌ No                 | ❌ No                                                           |
+| Feature                         | [V4](/contracts/standard/wallets/v4) | [V5](/contracts/standard/wallets/v5)              | [WalletTg](/contracts/standard/wallets/telegram/overview)                                                        | [Highload v3](/contracts/standard/wallets/highload/overview) | [Preprocessed v2](/contracts/standard/wallets/preprocessed-v2/specification) | Multisig                                            |
+| ------------------------------- | ------------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| **Seqno<sup>1</sup> based**     | ✅ Yes                               | ✅ Yes                                            | ✅ Yes                                                                                                           | ❌ No (`query_id` based)                                     | ✅ Yes                                                                       | Contract-specific                                   |
+| **Messages per request/batch**  | Up to 4 per request                  | Up to 255 per request                             | Up to 255 per request                                                                                            | Up to 254 per batch                                          | Up to 255 per request                                                        | Contract-specific                                   |
+| **Query-ID capacity**           | —                                    | —                                                 | —                                                                                                                | 8,380,416 possible values<sup>4</sup>                        | —                                                                            | Contract-specific                                   |
+| **Multi-owner**                 | ❌ No                                | ❌ No                                             | ❌ No                                                                                                            | ❌ No                                                        | ❌ No                                                                        | ✅ Yes                                              |
+| **Message cost**                | Standard                             | Standard; optimized for more messages per request | Lower for up to 5 messages per request, then Standard                                                            | Lower; depends on batch size                                 | Lowest<sup>3</sup>                                                           | Contract-specific; signatures add verification work |
+| **Support plugins**             | ✅ Yes                               | ✅ Yes                                            | ❌ No                                                                                                            | ❌ No                                                        | ❌ No                                                                        | ❌ No                                               |
+| **Support gasless<sup>2</sup>** | ❌ No                                | ✅ Yes                                            | [Signed internal requests; relay required](/contracts/standard/wallets/telegram/interact#relay-gasless-requests) | ❌ No built-in support                                       | ❌ No built-in support                                                       | Contract-specific                                   |
+| **Subwallet ID**                | ✅ Yes                               | ✅ Yes                                            | ✅ Yes                                                                                                           | ✅ Yes                                                       | ❌ No                                                                        | Contract-specific                                   |
+| **Signing-key rotation**        | ❌ No                                | ❌ No                                             | ✅ Yes; [address stays the same](/contracts/standard/wallets/telegram/key-management)                            | ❌ No                                                        | ❌ No                                                                        | Contract-specific                                   |
+| **Implementation**              | Per-account code                     | Per-account code                                  | Trampoline; shared implementation code in validator-governed config                                              | Per-account code                                             | Per-account code                                                             | Contract-specific                                   |
 
-<sup>1</sup> Seqno means "sequential number" - a persistent unsigned integer variable, which is incremented by 1 for each valid transaction submission. Also, sometimes it's called "nonce". It is a common way to implement replay protection.<br />
-<sup>2</sup> "Gasless" is the kind of a transaction that doesn't require native currency to pay network fees.
+<sup>1</sup> A sequence number (`seqno`) is a stored counter used for replay protection. Request-consumption behavior varies by contract.<br />
+<sup>2</sup> A gasless request lets a relayer submit an owner-authorized request. WalletTg requires enough attached Gram for compute; its existing balance can fund outgoing values and fees. The contract does not provide a relayer service.<br />
+<sup>3</sup> 1,537 gas units per transaction, which forms the lowest compute fee. Network fees also depend on message forwarding, storage, and the actions in a request.<br />
+<sup>4</sup> Highload v3's 8,380,416 query IDs are possible identifiers, not a throughput guarantee.
 
 ## Use cases
 
 ### Retail users
 
-If you are new to TON and want to create your first wallet to engage with the ecosystem, wallet **v5** is your best choice.
+Most wallet apps use [Wallet V5R1](/contracts/standard/wallets/v5) by default when creating wallet accounts, while Telegram uses [WalletTg](/contracts/standard/wallets/telegram/overview). Other wallet apps need to support Telegram's wallet request format and key-management rules to import and operate the account.
 
-All major wallet apps support both standards and implement secure cryptography to ensure users' funds are safe.
-
-It is recommended to use the v5 wallet standard, since it's the latest and most powerful implementation to date. It supports gasless transactions and up to 255 out messages per one signed external request.
-
-**Use for**:
-
-- **Buying stablecoins**: Purchase USDT and other stable assets
-- **Trading Jettons**: Swap tokens on DEXes and participate in DeFi
-- **Daily payments**: Send and receive GRAM for everyday transactions
-- **NFT collecting**: Buy, sell, and store digital collectibles
-- **Staking**: Participate in TON validation and earn rewards
-- **DApp interactions**: Connect to games, social apps, and other TON applications
-- **Savings**: Store cryptocurrency for long-term holding
-
-**Key benefits:**
-
-- Simple setup with any major TON wallet app
-- Low transaction fees for everyday use
-- Battle-tested security with millions of users
-- Full ecosystem compatibility
-
-Read more:
-
-- Recommended: [Wallet v5](/contracts/standard/wallets/v5)
-- [Wallet v4](/contracts/standard/wallets/v4)
-
-### Shared custody
-
-For experienced institutional managers and fund operators with high security demands, **Multisig wallets are your best choice** when managing institutional funds, treasury assets, or any situation requiring shared custody.
-
-Multisig wallets provide the highest level of security through distributed control:
-
-- **Shared responsibility**: No single person can move funds alone
-- **Configurable thresholds**: Set up 2-of-3, 3-of-5, or any N-of-M configuration
-- **Audit trails**: Every transaction requires multiple approvals, creating clear accountability
-- **Risk mitigation**: Protects against key compromise, insider threats, and human error
-
-**Key considerations:**
-
-- Higher transaction costs due to multiple signature verification
-- Longer processing time as multiple parties must sign
-- Requires coordination between signers for each transaction
-- More complex setup and key management procedures
-
-While the operational overhead is higher than that of single-signature wallets, the security benefits make multisig essential for any custodial operation handling significant assets or requiring regulatory compliance.
-
-### Payment gateways
-
-For businesses operating payment gateways, exchanges, or services requiring high-volume transaction processing, **Highload wallets are your best choice** when handling thousands of payments and withdrawals efficiently.
-
-Highload wallets are engineered explicitly for maximum throughput and cost efficiency:
-
-- **Massive throughput**: Process up to 8,380,415 requests with up to 254 outgoing messages (total maximum of up to 2 billion outgoing messages) per timeout period
-- **Query-based processing**: Uses `query id` and `batch id` instead of seqno for better transaction submission tracking. They help discover individual transaction submissions
+<Callout type="note">
+  When starting in the TON ecosystem, use either Telegram Money or a modern wallet app that supports both Wallet V5 and WalletTg contracts.
+</Callout>
 
 **Use for:**
 
-- **Cryptocurrency exchanges**: Handle thousands of user withdrawals and deposits
-- **Payment processors**: Process merchant payments and payouts at scale
-- **Trading platforms**: Execute high-frequency trading operations
+- **Buying stablecoins:** Purchase USDT and other stable assets.
+- **Trading jettons:** Swap tokens on decentralized exchanges and participate in decentralized finance (DeFi).
+- **Daily payments:** Send and receive Gram and jettons.
+- **NFT collecting:** Buy, sell, store, and transfer [non-fungible tokens (NFTs)](/contracts/standard/tokens/nft/overview).
+- **Staking:** Stake Gram through a staking service and earn rewards.
+- **dApp interactions:** Connect to games, social apps, and other decentralized applications (dApps) through [TON Connect](/applications/ton-connect/overview).
+- **Savings:** Hold TON-based assets for long-term storage.
+
+**Read more:**
+
+- [Wallet V5](/contracts/standard/wallets/v5)
+- [WalletTg](/contracts/standard/wallets/telegram/overview)
+
+### Shared custody
+
+Multisig contracts distribute transaction approval across key holders. In a threshold design, an order executes after it collects the configured number of signatures.
+
+Multisig contracts are best for managing institutional funds, treasury assets, or any situation requiring shared custody.
+
+**Key benefits:**
+
+- **Shared responsibility:** A threshold above one can prevent a single signer from authorizing a transfer if the contract has no alternate authorization path.
+- **Configurable thresholds:** Use a threshold such as 2-of-3 when the implementation supports it.
+- **Auditability:** Pending orders and approvals may be recorded on-chain; visibility depends on the implementation.
+- **Reduced single-key risk:** A threshold can remain usable after key loss if enough signers remain, but does not prevent collusion or every operational mistake.
+
+Use multisig for team treasuries, shared budgets, and other spending that requires approvals from multiple key holders.
 
 **Key considerations:**
 
-- Requires technical expertise for proper implementation
-- More complex setup compared to standard wallets
-- Need robust monitoring and error handling systems
+- Additional signatures can increase message size, verification work, and fees.
+- Signers must coordinate; a request may expire before it collects enough approvals.
+- Setup, key management, signer changes, request limits, and recovery depend on the implementation.
 
-Read more:
+### Payment gateways
 
-- [Highload wallet implementation](/contracts/standard/wallets/highload/overview)
+[Highload v3](/contracts/standard/wallets/highload/overview) uses unique [`query_id`](/contracts/standard/wallets/highload/v3/specification#query-id-structure) values instead of a sequential [`seqno`](/contracts/standard/wallets/how-it-works#how-replay-protection-works), which allows clients to track multiple submitted requests without waiting for a single counter to advance. The query-ID format provides 8,380,416 possible values. Reuse follows the contract's timeout and replay-protection rules.
+
+Batch transfers send an internal message to the wallet itself. That message can include up to 254 outgoing messages. These contract limits do not guarantee network throughput.
+
+**Use for:**
+
+- **Cryptocurrency exchanges:** Process withdrawals and payouts.
+- **Payment processors:** Send merchant payments at higher volumes.
+- **Trading platforms:** Submit many independent outbound transfers.
+
+**Key considerations:**
+
+- Budget for fees and balance consumed across the two-transaction pattern.
+- Track unique query IDs, expiry, cleanup, and request outcomes.
+- Keep request batches within the 254-message limit and test failure handling.
+
+<Callout type="caution">
+  Use Highload v3 for new deployments — previous highload wallet versions are deprecated.
+</Callout>
+
+**Read more:**
+
+- [Highload Wallet v3 specification](/contracts/standard/wallets/highload/v3/specification)
+- [Highload Wallet v3 guides](/contracts/standard/wallets/highload/v3/create)

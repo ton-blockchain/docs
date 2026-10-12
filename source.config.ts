@@ -108,6 +108,7 @@ export default defineConfig({
         'python',
         'rust',
         'shellscript',
+        'sql',
         'powershell',
         'ts',
         'tsx',

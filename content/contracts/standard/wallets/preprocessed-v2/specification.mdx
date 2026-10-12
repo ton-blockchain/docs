@@ -20,7 +20,7 @@ This page provides a complete technical specification for Preprocessed Wallet V2
 Understand the internal architecture, data structures, and operational mechanics of Preprocessed Wallet V2. This reference page explains how the wallet processes batch transactions efficiently with minimal gas consumption.
 
 <Callout type="tip">
-  For practical usage, see [How-to guides](/contracts/standard/wallets/preprocessed-v2/interact).
+  The [interaction guide](/contracts/standard/wallets/preprocessed-v2/interact) shows how to create and use this wallet.
 </Callout>
 
 ## What is Preprocessed Wallet V2?
@@ -67,7 +67,7 @@ The Preprocessed Wallet V2 contract stores two persistent fields:
 ### `pub_key` (256 bits)
 
 **Purpose:**\
-An Ed25519 public key is used to verify signatures on incoming external messages.
+An [Ed25519](https://www.rfc-editor.org/rfc/rfc8032) public key verifies signatures on incoming [external messages](/foundations/messages/external-in).
 
 **How it works:**\
 When the wallet receives an external message, it verifies that the 512-bit signature was created by the holder of the private key corresponding to this public key.
@@ -79,7 +79,7 @@ When the wallet receives an external message, it verifies that the 512-bit signa
 ### `seq_no` (16 bits)
 
 **Purpose:**\
-Prevents replay attacks by ensuring each message has a unique sequence number.
+Provides [replay protection](/contracts/standard/wallets/how-it-works#how-replay-protection-works) by checking the sequence number of each message.
 
 **How it works:**\
 Each external message must contain the correct `seq_no` that matches the current value stored in the contract. After successful processing, the sequence number is incremented (with modulo 2^16 to prevent overflow).
@@ -93,11 +93,11 @@ The sequence number is limited to 16 bits (instead of 32 bits used in other wall
 Even if an attacker intercepts an old message, they cannot replay it because the sequence number will no longer match the current value in storage.
 
 **Wrap-around note:**\
-See [Replay protection mechanism](#replay-protection-mechanism) for guidance on wrap-around and `valid_until` windows.
+The [replay protection mechanism](#replay-protection-mechanism) explains wrap-around and `valid_until` windows.
 
 ## External message structure
 
-External messages sent to Preprocessed Wallet V2 have a specific layout.
+[External messages](/foundations/messages/external-in) sent to Preprocessed Wallet V2 have a specific layout.
 
 ### Message layout
 
@@ -118,12 +118,10 @@ The signature is in the root cell (512 bits); all other parameters are in a refe
   This structure saves gas units during signature verification. If the signature were in the same cell as the message body, the contract would need to use `slice_hash()` (which rebuilds the cell internally, costing extra gas) instead of simply taking `cell_hash()` of the reference.
 </Callout>
 
----
-
 ### `sign` (512 bits)
 
 **Type:**\
-Ed25519 signature (512 bits).
+[Ed25519](https://www.rfc-editor.org/rfc/rfc8032) signature (512 bits).
 
 **What is signed:**\
 The hash of the reference cell (`MsgInner`) containing `valid_until`, `seq_no`, and `actions`.
@@ -138,10 +136,6 @@ check_signature(hash(ref_cell), signature, public_key)
 **On failure:**\
 Exit code `35`.
 
-**Link:** [Ed25519 signature scheme](https://en.wikipedia.org/wiki/EdDSA#Ed25519)
-
----
-
 ### `valid_until` (64 bits)
 
 **Purpose:**\
@@ -151,7 +145,7 @@ Unix timestamp (seconds) when the external message expires.
 The contract performs a single check:
 
 ```func
-now() > valid_until  // Message expired
+now() > valid_until
 ```
 
 **On failure:**\
@@ -162,8 +156,6 @@ Prevents replay of expired messages. If `now() > valid_until`, the message is co
 
 **Recommendation:**\
 Set `valid_until` to 1 minute (60 seconds) from message creation time.
-
----
 
 ### `seq_no` (16 bits)
 
@@ -203,7 +195,7 @@ All standard TVM actions are supported without restrictions:
 
 ## Replay protection mechanism
 
-Preprocessed Wallet V2 uses sequence numbers and time-based expiration to prevent replay attacks.
+Preprocessed Wallet V2 uses [sequence numbers and time-based expiration](/contracts/standard/wallets/how-it-works#how-replay-protection-works) to prevent replay attacks.
 
 ### Sequence number protection
 
@@ -263,7 +255,7 @@ Do not set `valid_until` excessively far in the future. A very long validity win
 Each external message can trigger up to 255 actions.
 
 **Why this limitation?**\
-255 is the maximum number of out actions supported by TON blockchain. This is a fundamental limitation of the TVM execution environment.
+255 is the maximum number of out actions supported by the [TVM action phase](/foundations/phases#action-phase).
 
 **Impact:**\
 Suitable for batch operations with up to 255 actions per transaction.
@@ -280,7 +272,3 @@ Suitable for batch operations with up to 255 actions per transaction.
 ### Source code
 
 - Repository: - [pyAndr3w/ton-preprocessed-wallet-v2](https://github.com/pyAndr3w/ton-preprocessed-wallet-v2)
-
-## See also
-
-- [How to interact with Preprocessed Wallet V2](/contracts/standard/wallets/preprocessed-v2/interact)

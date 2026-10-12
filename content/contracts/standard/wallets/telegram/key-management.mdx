@@ -1,0 +1,48 @@
+---
+title: WalletTg key management
+sidebarTitle: Key management
+---
+
+The original WalletTg [`StateInit`](/contracts/standard/wallets/telegram/contract#initial-state) contains the anchor public key and determines the address. The [`get_public_key()` getter](/contracts/standard/wallets/telegram/contract#getters) returns the current signing public key. Rotation changes that key without changing the address.
+
+## Mnemonic interpretation
+
+| Phrase                    | Address anchor        | Current signing key            |
+| ------------------------- | --------------------- | ------------------------------ |
+| 12-word multichain phrase | Key from all 12 words | Same key before first rotation |
+| 24-word rotation mnemonic | Key from words 1-12   | Key from words 13-24           |
+
+WalletTg clients can import a 12-word multichain phrase or a 24-word rotation mnemonic. After rotation, the 12-word phrase still identifies the address but cannot sign; use the current 24-word phrase. The [TON wallet mnemonic guide](/contracts/standard/wallets/mnemonics) covers derivation and ambiguous 24-word input handling.
+
+## Import checks
+
+Derive the expected address from the anchor public key, [WalletTg code and initial data](/contracts/standard/wallets/telegram/contract#initial-state), workchain, and network-specific subwallet ID. Require it to equal the account address. Never derive the address from words 13-24.
+
+For an active account, verify the code hash and `get_subwallet_id()`. Require `get_public_key()` to equal the public key derived from the phrase's current signing half. Reject a mismatch as stale or wrong-account input. The [integration guide](/contracts/standard/wallets/telegram/integrate#validate-the-deployed-account) shows how to read and validate these fields.
+
+## Rotation request and event
+
+The current key signs the [rotation request](/contracts/standard/wallets/telegram/messages#changepublickeyrequesti-and-changepublickeyrequeste). The request includes a proof signed by the new key, which must differ from the current key.
+
+On success, the contract stores the new signing public key. It emits [`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent) as an external-out message. The address stays unchanged.
+
+## Telegram encrypted backup and phrase update
+
+Telegram's encrypted phrase backup is separate from WalletTg contract storage. Telegram describes it as three parts stored across three continents and reassembled on the user's devices ([backup text](https://github.com/telegramdesktop/tdesktop/blob/6fed91ffab9861771a75f29df65031b3c80b6941/Telegram/Resources/langs/lang.strings#L8993)).
+
+The [creation flow](https://github.com/telegramdesktop/tdesktop/blob/6fed91ffab9861771a75f29df65031b3c80b6941/Telegram/SourceFiles/wallet/wallet_content.cpp#L13258-L13265) does not display the recovery phrase or ask for word confirmation. Reveal it from <kbd>Keys & Backup</kbd>, then <kbd>Show Recovery Phrase</kbd>. Backup is unavailable for wallets imported from a recovery phrase.
+
+Select <kbd>Keys & Backup</kbd>, then <kbd>Disable Backup</kbd>. This reveals the phrase and asks the user to confirm selected words. When key rotation is available, <kbd>Update Secret Phrase</kbd> is optional and unchecked by default.
+
+- Without phrase update, Telegram disables backup after the current phrase passes the word check. The signing key does not change, so existing copies remain current.
+- With phrase update, Telegram shows the rotation fee. It prepares and displays a new phrase, then checks selected words. It disables backup only after the key rotation succeeds. Words 1-12 keep the address anchor; words 13-24 become the new signing key.
+
+If rotation fails or is canceled, the current key and backup remain unchanged.
+
+If rotation succeeds but the following backup-disable request fails, the new phrase is current while backup may remain enabled with the old phrase. Keep the new phrase and verify the backup state.
+
+## Historical encrypted comments
+
+[`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent) carries `encryptedOldPrivateKey: bits256`. The contract checks its 256-bit shape and emits the value unchanged. Contract comments describe it as `XOR(hash(newPrivateKey + salt), currentPrivateKey)`, for indexers to surface old-key data that clients use to decrypt comments. `get_public_key()` exposes only the current key.
+
+The published contract source does not specify the hash, salt, byte encoding, or how clients select a historical key for a comment. The formula alone is not an interoperable format. Enable rotation and old-comment recovery only with a verified client implementation. Apps that decrypt with only the current signing key cannot read comments encrypted for an earlier key.
