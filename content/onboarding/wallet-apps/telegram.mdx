@@ -9,11 +9,11 @@ Telegram Money is a [_mainnet_](/start-here#mainnet-and-testnet) wallet on The O
 
 - **Sponsored fees:** Telegram covers network fees for a daily allowance of five free transfers through [gasless transactions](/contracts/standard/wallets/gasless).
 
-- **One wallet across devices:** an [encrypted cloud backup](/contracts/standard/wallets/telegram/key-management#telegram-encrypted-backup-and-phrase-update) allows using the same wallet across devices without manual imports. It splits the wallet key into three parts stored in data centers on three continents.
+- **One wallet across devices:** an [encrypted cloud backup](#disable-backup-or-update-the-phrase) allows using the same wallet across devices without manual imports. It splits the wallet key into **three** parts stored in data centers on **three** continents.
 
 - **Connect dApps once:** TON Connect connections sync across devices without reconnecting each one. Each device needs the current wallet key, restored from the cloud backup or the recovery phrase.
 
-- **Control the keys:** disable cloud backup or [rotate the signing key](/contracts/standard/wallets/telegram/key-management#rotation-request-and-event) without changing the wallet address. The current recovery phrase also allows importing the wallet into another compatible app.
+- **Control the keys:** disable cloud backup or [rotate the signing key](#disable-backup-or-update-the-phrase) without changing the wallet address. The current recovery phrase also allows importing the wallet into another compatible wallet app.
 
 - **Shared contract upgrades:** validators can vote to [upgrade the shared wallet implementation](/contracts/standard/wallets/telegram/overview#shared-implementation) to add features and improvements for all Telegram Money users at once, without user action. These upgrades require more than 75% of the total validator weight — neither Telegram nor anyone else can bypass validator approval to perform them.
 
@@ -38,13 +38,28 @@ In Telegram Desktop, open the main menu and select <kbd>Money</kbd>. This entry 
     The recovery phrase gives control of the wallet and funds. Store it securely — never share the recovery phase in plain text.
   </Callout>
 
-- To import the phrase in another app, use an app that supports the [WalletTg](/contracts/standard/wallets/telegram/overview) contract and its [rotation mnemonic format](/contracts/standard/wallets/telegram/key-management). For backup settings and phrase updates, see [key management](/contracts/standard/wallets/telegram/key-management#telegram-encrypted-backup-and-phrase-update).
+- To import the phrase in another app, use an app that supports the [WalletTg](/contracts/standard/wallets/telegram/overview) contract and its [rotation mnemonic format](/contracts/standard/wallets/mnemonics#rotation-mnemonic).
 
 ## Confirm the address and connect a dApp
 
 1. Copy the wallet address from Telegram Money and check it in a [mainnet explorer](/onboarding/explorers).
 1. Start a [TON Connect](/applications/ton-connect/overview) session from the dApp and confirm its name in Telegram Money.
 1. Review each transaction or signing request before approving it. A connection alone does not authorize a transaction.
+
+## Disable backup or update the phrase
+
+An encrypted backup splits the wallet key into 3 parts stored across 3 continents, and then reassembles it on devices. It is done off-chain, so this backup is unavailable for wallets imported from the recovery phrase.
+
+To disable the backup, select <kbd>Keys & Backup</kbd>, then <kbd>Disable Backup</kbd>. This reveals the phrase and asks for confirmation of selected words. When key rotation is available, <kbd>Update Secret Phrase</kbd> is optional and unchecked by default.
+
+- Without the phrase update, Telegram disables backup after the current phrase passes the word check. The signing key does not change, so existing copies remain current.
+- With the phrase update, Telegram shows the rotation fee. It prepares and displays a new phrase, then checks selected words. It disables backup only after the key rotation succeeds. Words 1-12 keep the address anchor, and words 13-24 become the new signing key.
+
+<Callout type="note">
+  If rotation fails or is canceled, the current key and backup remain unchanged.
+</Callout>
+
+If rotation succeeds but the following backup-disable request fails, the new phrase becomes the current while the backup may remain enabled with the old phrase. Keep the new phrase and verify the backup state until the request succeeds.
 
 ## Learn more
 

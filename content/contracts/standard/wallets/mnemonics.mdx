@@ -12,7 +12,7 @@ TON wallet mnemonics use asymmetric cryptography and derive [Ed25519](https://ww
 </Callout>
 
 <Callout type="note">
-  The public key alone does not identify an address of a wallet contract, because the latter is derived from its complete [initial state (`StateInit`)](/foundations/messages/deploy) and the target workchain.
+  The public key does not identify an address of a wallet contract, because the latter is derived from its complete [initial state (`StateInit`)](/foundations/messages/deploy) and the target workchain.
 </Callout>
 
 ## Mnemonic schemes
@@ -28,7 +28,7 @@ TON, multichain, and rotation mnemonics use the [BIP-39 English word list](https
 For new wallets, a 12-word [multichain](#multichain-mnemonic-derivation) phrase is recommended, while a 24-word [TON](#key-pair-from-a-mnemonic) phrase may also be used.
 
 <Callout type="caution">
-  Wallet apps do not create 24-word multichain or rotation mnemonics by default. Furthermore, the rotation mnemonic is employed only by the [WalletTg](/contracts/standard/wallets/telegram/overview) contract.
+  Wallet apps should not create 24-word multichain or rotation mnemonics by default. Furthermore, the rotation mnemonic is employed only by the [WalletTg](/contracts/standard/wallets/telegram/overview) contract.
 </Callout>
 
 ## Multichain mnemonic derivation
@@ -52,19 +52,23 @@ For a 24-word phrase, check TON mnemonic validity with the supplied TON password
 If exactly one supported scheme matches, import with that scheme. If several match, derive and show each candidate account for user selection; do not choose silently. Reject a phrase that matches no supported scheme.
 
 <Callout type="note">
-  A wallet without rotation mnemonic support should reject a phrase that matches only the rotation mnemonic. Importing [WalletTg](/contracts/standard/wallets/telegram/overview) also requires checking the derived signer against the active account's [`get_public_key()` value](/contracts/standard/wallets/telegram/key-management#import-checks).
+  A wallet without rotation mnemonic support should reject a phrase that matches only the rotation mnemonic. Importing [WalletTg](/contracts/standard/wallets/telegram/overview) also requires checking the derived signer against the active account's [`get_public_key()` value](/contracts/standard/wallets/telegram/integrate#validate-the-deployed-account).
 </Callout>
 
 ## Rotation mnemonic
 
-A _rotation_ mnemonic has two independently valid 12-word [multichain](#multichain-mnemonic-derivation) halves. Derive each half separately at `m/44'/607'/0'`. Do not derive one seed from all 24 words. The anchor half must come from a cryptographically secure random source. It never changes.
+A _rotation_ mnemonic has two independently valid 12-word [multichain](#multichain-mnemonic-derivation) halves. Derive each half separately at `m/44'/607'/0'`. Do not derive one seed from all 24 words.
+
+The anchor half must come from a cryptographically secure random source. It does not rotate.
 
 | Words | Key         | Role                                                      |
 | :---- | :---------- | :-------------------------------------------------------- |
 | 1-12  | Anchor key  | Determines the address and authorizes the first rotation. |
 | 13-24 | Signing key | Signs ordinary messages; rotation replaces this key.      |
 
-In the initial form, words 13-24 repeat words 1-12. Each rotation must replace them with a new 12-word multichain phrase from a cryptographically secure random source. The new half must be independent of the anchor and all earlier signing halves. A wallet must not derive it from an old key or set it back to the anchor.
+Before all rotations, words 13-24 repeat words 1-12 — that is, anchor key is identical to the signing key upon deployment of the [WalletTg](/contracts/standard/wallets/telegram/overview) contract. Each rotation must replace them with a new 12-word multichain phrase from a cryptographically secure random source.
+
+The new, rotated half must be independent of the anchor and all earlier signing halves. A wallet must not derive it from an old key or set it back to the anchor.
 
 A rotation-capable contract must keep its current signing key separate from the values that determine its address. It must accept only the stored current key for ordinary outgoing messages.
 
@@ -74,7 +78,7 @@ A rotation-capable contract must keep its current signing key separate from the 
 
 ## Key pair from a mnemonic
 
-To transform a mnemonic phrase into a key pair, a `seed` is first derived using [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2), and the key pair is then derived from that `seed`.
+To transform a TON mnemonic phrase into a key pair, a `seed` is first derived using [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2), and the key pair is then derived from that `seed`.
 
 PBKDF2 has [five input parameters](https://en.wikipedia.org/wiki/PBKDF2#Key_derivation_process): `PRF`, `Password`, `Salt`, `c`, and `dkLen`. Each of those parameters is assigned a concrete value.
 

@@ -191,26 +191,46 @@ Use the [request guide](/contracts/standard/wallets/telegram/interact) to build 
 
 ## Rotate the signing key
 
-Use Telegram's [key-history encryption format](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments) to preserve access to comments encrypted with now-replaced signing keys.
-
-1. Keep words 1-12 unchanged. Generate a fresh 12-word BIP-39 signing half from a cryptographically secure random source, independently of the anchor and every previous signing half. Never rotate back to the anchor key.
+1. Keep words 1-12 (anchor) unchanged. Generate a fresh 12-word BIP-39 signing half from a cryptographically secure random source, independently of the anchor and every previous signing half. Never rotate back to the anchor key.
 1. Save both the current and candidate phrases in encrypted storage before submission.
 1. Build the [rotation request](/contracts/standard/wallets/telegram/messages#change-the-signing-key). Sign the outer request with the current key and the rotation proof with the new key. Encode the replaced signing seed as `encryptedOldPrivateKey` using the key-history format.
 1. Emulate and submit the request.
 1. Read `get_public_key()` and `seqno()` again. Make the candidate phrase current only when the on-chain key matches its signing half. If submission fails or its result is unknown, retain both phrases and read the state before retrying.
 
+<Callout type="note">
+  Use the [key-history encryption format](#key-history-format) to preserve access to comments encrypted with now-replaced signing keys.
+</Callout>
+
 ## Decrypt historical comments
 
-When decrypting [encrypted comments](/contracts/standard/wallets/interact#encrypted-comments), try the current signing key and the anchor key first. Recover intermediate signing keys from public rotation history only when neither authenticates the comment.
+[Encrypted comments](/contracts/standard/wallets/interact#encrypted-comments) made with old keys need to be decrypted with those keys. To keep the public log, WalletTg emits the `encryptedOldPrivateKey` 256-bit value in an [external-out](/foundations/messages/external-out) message upon every [`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent).
+
+When decrypting comments, try the current signing key and the anchor key first. Recover intermediate signing keys from public rotation history only when neither authenticates the comment.
 
 The decryption itself can be performed locally, but the retrieval of the earlier signing keys requires querying the blockchain.
+
+### Key-history format
+
+The `encryptedOldPrivateKey` is [commonly encoded](https://github.com/i582/wallet-engine/blob/e59e0d89d7ee90c388bf36e3334c5b276f396697/src/wallet/key_history.rs#L16-L44) as:
+
+```text
+encryptedOldPrivateKey = oldSeed XOR SHA256(newSeed || ASCII("keyChangeSaltV1"))
+```
+
+There,
+
+- `oldSeed` and `newSeed` are raw 32-byte Ed25519 signing seeds.
+- `||` concatenates bytes: the new seed is followed by the 15 ASCII salt bytes `keyChangeSaltV1`, without a terminator character.
+- `XOR` combines corresponding bytes of the `oldSeed` and the SHA-256 of the `||`-concatenation.
+
+As such, wallet apps can recover intermediate keys and decrypt historical comments by walking successful rotations backward. Each recovered seed opens the previous rotation's ciphertext. Missing or incompatible recovery data can prevent access to earlier comments even after a successful key rotation.
 
 ### Recover earlier signing keys
 
 1. Derive the current and anchor key pairs from the validated recovery phrase. For an `@ton/crypto` key pair, copy its 32-byte seed with `Buffer.from(secretKey.subarray(0, 32))`.
 1. Query [TON Center's `/api/v3/actions`](/api/v3/actions-and-traces/get-actions) endpoint with `account` set to the wallet address and `action_type=change_wallet_key`. Use `limit=100`, `offset=0`, and `sort=desc`. Increase `offset` by the returned action count until a page contains fewer than 100 actions.
 1. Keep only actions with `success: true` whose `details.destination` matches the wallet address. Compare parsed addresses: the account filter also returns rotations relayed for other wallets. Decode `details.new_public_key` and `details.encrypted_old_private_key` from 64 hexadecimal digits into 32 bytes, preserving leading zeros.
-1. Find the rotation that installed the current signing public key. Recover its previous seed with the [key-history formula](/contracts/standard/wallets/telegram/key-management#historical-encrypted-comments), then derive the previous public key with `keyPairFromSeed`.
+1. Find the rotation that installed the current signing public key. Recover its previous seed with the [key-history formula](#key-history-format), then derive the previous public key with `keyPairFromSeed`.
 1. Continue backward from that public key through earlier rotations. Stop at the anchor, a missing link, or a repeated public key. Keep the recovered keys as candidates for decryption.
 
 When parsing transactions directly, pair `newPublicKey` from the accepted rotation request with `encryptedOldPrivateKey` from its emitted [`OnKeyHasBeenChangedEvent`](/contracts/standard/wallets/telegram/messages#onkeyhasbeenchangedevent).

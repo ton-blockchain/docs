@@ -43,7 +43,9 @@ TON derives the address from the hash of the original [`StateInit`](/foundations
 
 The source defines mainnet default `subwalletId` `0x7FFF7F11` and testnet default `0x7FFF7FFD`. The selected ID is part of `StateInit` and must match each request header.
 
-`publicKey` starts with the [anchor key](/contracts/standard/wallets/telegram/key-management). Rotation replaces it with the new signing key; the anchor is not stored separately. Rotation changes storage only, so the original `StateInit`, address, and trampoline code hash stay the same. Rebuilding `StateInit` with the new key derives a different address.
+`publicKey` starts with the [anchor key](/contracts/standard/wallets/telegram/overview#two-key-rotation-architecture). Rotation replaces it with the new signing key.
+
+Rotation changes only the storage, so the original `StateInit`, address, and trampoline code hash stay the same. Rebuilding `StateInit` with the new key would derive a different address.
 
 ## Getters
 
