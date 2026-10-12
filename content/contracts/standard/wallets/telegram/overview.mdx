@@ -33,13 +33,11 @@ The brief [contract reference](/contracts/standard/wallets/telegram/contract#sto
 
 ## Two-key rotation architecture
 
-WalletTg is the only TON wallet contract that can rotate its public signing key without changing its address.
+WalletTg is the only TON wallet contract that can rotate its public signing key without changing its address. Its [24-word rotation mnemonic](/contracts/standard/wallets/mnemonics#rotation-mnemonic) combines two 12-word [multichain mnemonics](/contracts/standard/wallets/mnemonics#multichain-mnemonic-derivation): the first half derives an _anchor key_, and the second half derives a _signing key_. The complete rotation mnemonic preserves both the anchor and the signing keys.
 
-To do so, instead of a standard [24-word TON wallet mnemonic](/contracts/standard/wallets/mnemonics) that derives a single key pair bound to the wallet, WalletTg uses two 12-word [multichain mnemonics](/contracts/standard/wallets/mnemonics#multichain-mnemonic-derivation) combined in a 24-word list: the first half is called an _anchor key_, and the second half is a _signing key_. The complete [24-word rotation mnemonic](/contracts/standard/wallets/mnemonics#rotation-mnemonic) preserves both the anchor and the signing keys.
+Initially, an anchor key is also the signing key. The contract's [`StateInit`](/foundations/messages/deploy) uses the anchor public key as its first signing public key. The _rotation_ replaces the current on-chain signing key with a new one. It requires a request signed by the current private key and a rotation proof signed by the new private key. The anchor key does not change.
 
-Initially, an anchor key is the signing key. The contract's [`StateInit`](/foundations/messages/deploy) uses the anchor key as its first signing key. The _rotation_ is the act of replacing the current on-chain signing key part of the public rotation key with the new one. The anchor key part does not change.
-
-After rotation, only the new signing key authorizes requests — the anchor key continues to derive the original address, but it cannot restore signing access.
+After rotation, only the new signing key authorizes requests — the anchor key continues to derive the original address, but it cannot restore signing access on its own.
 
 <Callout type="caution">
   Composing a new `StateInit` with the new signing key would yield a different address. The original `StateInit` must always be composed with the original signing key, which is the anchor key.
@@ -47,9 +45,9 @@ After rotation, only the new signing key authorizes requests — the anchor key 
 
 ## Comparison with V5
 
-[Wallet V5](/contracts/standard/wallets/v5) is the default wallet contract on TON. It does not rotate the signing key, has an optional extensions support, and does not allow code upgrades. Additionally, V5 uses a different [messages format](/contracts/standard/wallets/v5-api) compared to the [WalletTg messages](/contracts/standard/wallets/telegram/messages).
+[Wallet V5](/contracts/standard/wallets/v5) is the default general-purpose wallet contract on TON. It does not rotate the signing key, has an optional extensions support, and does not allow code upgrades. Additionally, V5 uses a different [messages format](/contracts/standard/wallets/v5-api) compared to the [WalletTg messages](/contracts/standard/wallets/telegram/messages).
 
-WalletTg is the wallet contract primarily used by Telegram. Wallet apps and services should default to V5 for all new TON wallets, but also be able to import rotation mnemonics and manage WalletTg contracts.
+WalletTg is used primarily by Telegram. Wallet apps and services should default to Wallet V5 for all new TON wallet contracts, but also support importing rotation mnemonics and managing WalletTg contracts.
 
 <Callout type="note">
   Compare wallet capabilities in the [table](/contracts/standard/wallets/comparison#comparison-table).

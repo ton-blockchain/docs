@@ -207,19 +207,19 @@ The decryption itself can be performed locally, but the retrieval of the earlier
 
 ### Key-history format
 
-The `encryptedOldPrivateKey` is [commonly encoded](https://github.com/i582/wallet-engine/blob/e59e0d89d7ee90c388bf36e3334c5b276f396697/src/wallet/key_history.rs#L16-L44) as:
+The `encryptedOldPrivateKey` is [commonly encoded](https://github.com/i582/wallet-engine/blob/e59e0d89d7ee90c388bf36e3334c5b276f396697/src/wallet/key_history.rs#L16-L45) as:
 
 ```text
-encryptedOldPrivateKey = oldSeed XOR SHA256(newSeed || ASCII("keyChangeSaltV1"))
+encryptedOldPrivateKey = oldKey XOR SHA256(newKey || ASCII("keyChangeSaltV1"))
 ```
 
 There,
 
-- `oldSeed` and `newSeed` are raw 32-byte Ed25519 signing seeds.
-- `||` concatenates bytes: the new seed is followed by the 15 ASCII salt bytes `keyChangeSaltV1`, without a terminator character.
-- `XOR` combines corresponding bytes of the `oldSeed` and the SHA-256 of the `||`-concatenation.
+- `oldKey` and `newKey` are raw 32-byte seeds of the Ed25519 private keys.
+- `||` concatenates bytes: the new key seed is followed by the 15 ASCII salt bytes `keyChangeSaltV1`, without a terminator character.
+- `XOR` combines corresponding bytes of the `oldKey` and the SHA-256 of the `||`-concatenation.
 
-As such, wallet apps can recover intermediate keys and decrypt historical comments by walking successful rotations backward. Each recovered seed opens the previous rotation's ciphertext. Missing or incompatible recovery data can prevent access to earlier comments even after a successful key rotation.
+As such, wallet apps can recover intermediate keys and decrypt historical comments by walking successful rotations backward. Each recovered key opens the previous rotation's ciphertext. Missing or incompatible recovery data can prevent access to earlier comments even after a successful key rotation.
 
 ### Recover earlier signing keys
 
