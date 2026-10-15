@@ -1,0 +1,103 @@
+---
+title: "TON Tunnel reference"
+sidebarTitle: "Reference"
+description: "Relay options, configuration, identifiers, and payment units"
+---
+
+This reference describes ADNL Tunnel v0.2.1. Client integrations may embed another library version, as listed below.
+
+## Relay CLI
+
+| Option                           | Default                                   | Purpose                                                             |
+| -------------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
+| `-config <FILE>`                 | `config.json`                             | Private relay configuration; generated if absent                    |
+| `-gen-shared-config <FILE>`      | Disabled                                  | Export a public node pool and exit; output path must end in `.json` |
+| `-payment-node <KEY_HEX>`        | Automatic selection or interactive prompt | Select a payment peer by its 32-byte public key in hexadecimal      |
+| `-v <LEVEL>`                     | `2`                                       | Logging verbosity                                                   |
+| `-log-filename <FILE>`           | `tunnel.log`                              | Log file path                                                       |
+| `-log-disable-file`              | `false`                                   | Disable file logging                                                |
+| `-metrics-listen-addr <ADDRESS>` | Disabled                                  | HTTP address for Prometheus metrics                                 |
+
+## Relay configuration
+
+| Field              | Purpose                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| `TunnelServerKey`  | Private Ed25519 seed identifying the relay; keep it secret       |
+| `TunnelListenAddr` | UDP listener, default `0.0.0.0:17330`                            |
+| `ExternalIP`       | Public IPv4 address advertised for the relay                     |
+| `NetworkConfigUrl` | TON network configuration URL; mainnet by default                |
+| `TunnelThreads`    | Listener worker count; `0` uses the CPU count                    |
+| `PaymentsEnabled`  | Whether to initialize the payment service; default `false`       |
+| `Payments`         | Payment keys, database path, channel settings, and packet prices |
+
+## Network endpoints
+
+The fixed UDP listener accepts tunnel traffic. When acting as an outbound gateway, the relay also allocates a UDP socket on an operating-system-selected port. Return traffic uses this socket. Network rules must accommodate these gateway sockets as well as the configured listener.
+
+`ExternalIP` does not configure port forwarding or a firewall.
+
+## Client configuration and node pools
+
+| Field                 | Purpose                                                                     |
+| --------------------- | --------------------------------------------------------------------------- |
+| `NodesPoolConfigPath` | Path to the public pool JSON file                                           |
+| `TunnelSectionsNum`   | Number of sections used to construct a route; generated default `1`         |
+| `PaymentsEnabled`     | With `false`, only entries whose `Payment` is absent or `null` are eligible |
+| `TunnelServerKey`     | Client's generated private tunnel key                                       |
+| `Payments`            | Client payment configuration, including private keys                        |
+
+A pool contains a `NodesPool` array. Each entry has a `Key` and an optional `Payment` object. `Key` is an Ed25519 public key encoded as base64 in JSON. `Payment` contains a payment-node chain and packet prices. Export this file with `-gen-shared-config` rather than copying a private configuration.
+
+To combine relays, copy the entries from their exported `NodesPool` arrays into a single `NodesPool` array in one JSON file. Preserve each entry's `Key` and `Payment` fields, and include each relay key only once.
+
+The pool must contain enough eligible entries for `TunnelSectionsNum`. Outgoing and returning routes can use different intermediate nodes.
+
+## Client integrations
+
+| Application                   | Embedded ADNL Tunnel | Configuration object | Activation                               |
+| ----------------------------- | -------------------- | -------------------- | ---------------------------------------- |
+| Tonutils-Proxy v1.8.3         | v0.1.8               | `TunnelConfig`       | Nonempty `NodesPoolConfigPath`           |
+| tonutils-reverse-proxy v0.6.0 | v0.2.1               | `tunnel_config`      | `--enable-tunnel` with a configured pool |
+
+These are application integration points, not flags of `tunnel-node`. Keep each application's generated configuration and private keys when changing tunnel settings.
+
+## Payment settings
+
+| Field under `Payments`   | Purpose                                                         |
+| ------------------------ | --------------------------------------------------------------- |
+| `MinPricePerPacketRoute` | Minimum price in nanograms per routed packet                    |
+| `MinPricePerPacketInOut` | Minimum price in nanograms per gateway inbound/outbound packet  |
+| `PaymentsNodeKey`        | Private seed for the Payment Network node                       |
+| `ADNLServerKey`          | Private seed for the payment transport                          |
+| `WalletPrivateKey`       | Private seed for the payment wallet                             |
+| `DBPath`                 | Persistent payment database, generated default `./payments-db/` |
+| `ChannelsConfig`         | Payment Network channel policy                                  |
+
+The shared configuration advertises payment terms when `PaymentsEnabled` is true and at least one price is positive. Private seeds are not included in the export.
+
+Without `-payment-node`, startup selects an active channel using the peer's TON deposit, or prompts for a peer if none is available. The CLI option accepts hexadecimal; the prompt accepts base64. Both identify a 32-byte payment-node public key, distinct from the relay key and wallet address.
+
+## Console commands
+
+Enter these commands in the running relay's console, not in a shell.
+
+| Command               | Result                                                                                   |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| `stats`               | Cumulative packet and prepaid-credit counters per active section                         |
+| `speed`               | Toggle per-second packet statistics                                                      |
+| `balance`             | Summed available local TON balance across active payment channels                        |
+| `capacity`            | Summed available peer-side TON balance across active payment channels                    |
+| `wallet-ton-balance`  | Balance of the separate payment wallet                                                   |
+| `wallet-ton-transfer` | Interactive transfer from the payment wallet; prompts for recipient, amount, and comment |
+
+Payment commands require paid mode. Channel balances and capacity are separate from the wallet's on-chain balance.
+
+## Sources
+
+- [Relay startup, payment setup, and console commands](https://github.com/ton-blockchain/adnl-tunnel/blob/4758832c31970071c4fec13c4c668122d7d28b01/cmd/node/main.go)
+- [Configuration and public pool export](https://github.com/ton-blockchain/adnl-tunnel/blob/4758832c31970071c4fec13c4c668122d7d28b01/config/config.go)
+- [Relay selection and route construction](https://github.com/ton-blockchain/adnl-tunnel/blob/4758832c31970071c4fec13c4c668122d7d28b01/tunnel/setup.go)
+- [Forwarding, gateway allocation, and payment checks](https://github.com/ton-blockchain/adnl-tunnel/blob/4758832c31970071c4fec13c4c668122d7d28b01/tunnel/instructions.go)
+- [Local single-route and multiple-relay integration tests](https://github.com/ton-blockchain/adnl-tunnel/blob/4758832c31970071c4fec13c4c668122d7d28b01/cmd/test-tunnel/integration_test.go)
+- [Tonutils-Proxy tunnel initialization](https://github.com/xssnick/Tonutils-Proxy/blob/526ece06e3c6e7398df09039a5ad0e3c144fc6ec/proxy/proxy.go#L225)
+- [Go reverse proxy tunnel initialization](https://github.com/tonutils/reverse-proxy/blob/300fc0ced8eab48ff5879ce822419d42b8e3a43e/cmd/proxy/main.go#L182)

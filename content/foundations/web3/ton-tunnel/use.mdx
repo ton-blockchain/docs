@@ -1,0 +1,60 @@
+---
+title: "How to use an ADNL tunnel"
+sidebarTitle: "Use a tunnel"
+description: "Configure a relay pool in a compatible TON proxy application"
+---
+
+Route a compatible application's ADNL traffic through relays. This guide starts with a relay that does not charge for traffic.
+
+## Prerequisites
+
+- Either [Tonutils-Proxy v1.8.3](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy) or [tonutils-reverse-proxy v0.6.0](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy), already initialized with its generated `config.json`
+- A `nodes.json` file exported by a [relay operator](/foundations/web3/ton-tunnel/run-relay#generate-configuration), containing at least one reachable relay without payment requirements
+
+The two applications use different tunnel-library versions and JSON field names. Follow the matching configuration below; see [client integrations](/foundations/web3/ton-tunnel/reference#client-integrations).
+
+## Configure the pool
+
+Stop the application before editing its `config.json`. Keep the generated private keys and other settings intact.
+
+This is a partial configuration fragment, not a replacement file. Merge these fields into `TunnelConfig` for Tonutils-Proxy, or into `tunnel_config` for tonutils-reverse-proxy:
+
+```json
+{
+  "NodesPoolConfigPath": "<NODES_POOL_PATH>",
+  "TunnelSectionsNum": 1,
+  "PaymentsEnabled": false
+}
+```
+
+Replace `<NODES_POOL_PATH>` with the absolute path to `nodes.json` on the application's host. Protect `config.json`: it contains private keys. Do not share it with the relay operator.
+
+One section is sufficient for the initial connection check. For multiple sections, [combine relay entries into one pool](/foundations/web3/ton-tunnel/reference#client-configuration-and-node-pools) containing at least that many eligible entries. Adding sections does not by itself establish an anonymity guarantee.
+
+## Start Tonutils-Proxy
+
+Restart the same executable you used in the [forward proxy guide](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy). A nonempty `TunnelConfig.NodesPoolConfigPath` enables tunnel mode; there is no `--enable-tunnel` flag for this application.
+
+Wait for the log message `tunnel updated`, then for the HTTP listener to start. Keep the browser configured to use the local forward proxy.
+
+## Start tonutils-reverse-proxy
+
+Alternatively, append `--enable-tunnel` to the startup command from [Run a reverse proxy](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy). Preserve the existing backend and domain settings.
+
+Wait for `Tunnel updated`, then for the server to start. The application uses the tunnel's external endpoint for its ADNL address list.
+
+## Verify
+
+Request a known TON Site through the forward proxy, or request your hosted site through the reverse proxy. Confirm the expected response and ask the relay operator to check its [traffic counters](/foundations/web3/ton-tunnel/run-relay#connect-a-client-and-verify).
+
+An ordinary Internet HTTP request through Tonutils-Proxy does not test the tunnel: it uses the regular HTTP client. Use a `.ton` or `.adnl` destination for this check.
+
+## Troubleshoot
+
+| Problem                                   | Check                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| `failed to load tunnel nodes pool config` | Check the pool path and file permissions.                                           |
+| `no nodes pool provided`                  | With payments disabled, the pool must include an entry with no payment requirement. |
+| `not enough nodes`                        | Reduce `TunnelSectionsNum` or add eligible relays to the pool.                      |
+| No tunnel initialization message          | Check the application's field name and whether its tunnel mode is enabled.          |
+| Tunnel is established but the site fails  | Check the destination and its DNS record separately from relay connectivity.        |
