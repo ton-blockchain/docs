@@ -35,11 +35,13 @@ The TON Distributed Hash Table (DHT) plays a crucial role in the networking comp
 
 ## TON Proxy
 
-[TON Proxy](/foundations/web3/ton-proxy) provides a protocol where nodes wishing to offer their services (with or without compensation) as tunnels for ADNL network traffic can register. Those needing them can then choose one of these nodes based on the price, latency, and bandwidth offered. Since ADNL traffic is encrypted, Proxy can't access tunneled data, meaning that this protocol is secure.
+[TON Proxy](/foundations/web3/ton-proxy) allows web browsers to access [TON Sites](/foundations/web3/ton-sites) over the TON network. A forward proxy sends browser requests over RLDP/ADNL, while a reverse proxy forwards incoming requests to an HTTP server.
 
-The relay functionality is provided by [TON Tunnel](/foundations/web3/ton-tunnel), with optional traffic payments through TON Payment Network.
+This can be combined with TON DNS and other TON Services, forming together what is called "Open Network".
 
-Running TON Proxy allows you to visit [TON Sites](/foundations/web3/ton-sites) (HTTP over ADNL). This can be combined with TON DNS and other TON Services, forming together what is called "Open Network".
+## TON Tunnel
+
+[TON Tunnel](/foundations/web3/ton-tunnel) routes ADNL network traffic through intermediate nodes, with or without compensation. Clients select relays from a configured pool. ADNL encrypts the tunneled traffic. Optional traffic payments use [TON Payment Network](/foundations/web3/payment-network).
 
 ## TON Sites
 
