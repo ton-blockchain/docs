@@ -1,0 +1,70 @@
+---
+title: "How to register a .ton domain"
+sidebarTitle: "Register a domain"
+---
+
+Register a `.ton` domain through an auction on [dns.ton.org](https://dns.ton.org/).
+
+## Prerequisites
+
+- A compatible non-custodial wallet on mainnet.
+- Funds for the bid and transaction fees.
+
+## Find a domain
+
+1. Open [dns.ton.org](https://dns.ton.org/) and connect the wallet.
+1. Search for the desired name.
+1. Check whether the domain is available or has an auction in progress.
+
+Names must contain 4 to 126 characters before `.ton`: lowercase letters `a-z`, digits, and hyphens. A hyphen cannot be the first or last character.
+
+## Check the price
+
+The minimum first bid depends on the name's length, excluding `.ton`:
+
+| Characters | Minimum first bid (GRAM) |
+| ---------- | ------------------------ |
+| 4          | 100                      |
+| 5          | 50                       |
+| 6          | 40                       |
+| 7          | 30                       |
+| 8          | 20                       |
+| 9          | 10                       |
+| 10         | 5                        |
+| 11–126     | 1                        |
+
+Transaction fees are additional. The final price depends on competing bids. For an auction already in progress, use the minimum bid displayed on the domain page.
+
+## Place a bid
+
+<Callout
+  type="caution"
+  title="Domain bids"
+>
+  Bids and transaction fees are paid on mainnet. Check the domain name and amount before confirming; confirmed transactions cannot be rolled back.
+</Callout>
+
+1. Select <kbd>Place bid</kbd> and enter an amount at least equal to the displayed minimum.
+1. Check the domain name and amount, then confirm the transaction in the wallet.
+1. Wait for the domain page to display the accepted bid and bidder address.
+
+## Follow the auction
+
+A new domain's auction starts with a one-hour duration. Each competing bid must be at least 5% higher. A bid in the final hour extends the deadline to one hour after that bid.
+
+Check the deadline and highest bidder on the domain page. If outbid, place another bid only if the new amount is acceptable. After the auction ends, confirm that the winning address matches the connected wallet.
+
+## Finalize registration
+
+After the auction ends, the site displays the winning wallet as the owner. Recording ownership in the contract requires a further transaction. See [auction finalization](/foundations/web3/ton-dns/reference#auction-finalization).
+
+## Troubleshooting
+
+| Issue                | Action                                                    |
+| -------------------- | --------------------------------------------------------- |
+| Bid is too small     | Refresh the domain page and check the updated minimum.    |
+| Transaction rejected | Check the wallet result and domain state before retrying. |
+
+## Register programmatically
+
+Send messages to the `.ton` collection and domain contracts to register a domain from an application. See the [contract reference](/foundations/web3/ton-dns/reference#auction-messages) for auction messages and the [TypeScript examples](/foundations/web3/ton-dns/reference#typescript-helpers).

@@ -1,0 +1,50 @@
+---
+title: "TON DNS overview"
+sidebarTitle: "Overview"
+description: "Human-readable names for addresses and services on TON"
+---
+
+TON DNS is a service for translating human-readable domain names (such as `example.ton` or `mysite.temp.ton`) into TON smart contract addresses, ADNL addresses used by services on the TON Network, and other network entities.
+
+## What TON DNS resolves
+
+TON DNS records can contain:
+
+- **Wallet addresses**: on-chain smart contract addresses stored under the `wallet` category, allowing users to send cryptocurrency directly to a human-readable domain name instead of a raw address.
+- **ADNL addresses**: used to locate TON Sites running on the TON Network.
+- **TON Storage Bag IDs**: identifiers for files and data stored via TON Storage.
+- **Next resolver references**: delegation of subdomains to another DNS smart contract.
+- **Text records**: arbitrary UTF-8 text associated with a domain name.
+
+## How resolution works
+
+TON DNS is built as a tree of DNS smart contracts. The root contract lives on the masterchain; its address is stored in blockchain configuration parameter #4.
+
+Applications query the `dnsresolve` get-method to retrieve a record. When a contract resolves only part of a name, it returns a reference to another resolver that handles the remaining part.
+
+The official root resolver supports the `.ton` and `.t.me` namespaces.
+
+## .ton domains
+
+Each registered domain in the `.ton` collection is an NFT. The owner can update its DNS records or transfer ownership.
+
+Domains are initially acquired through auctions and require renewal to retain ownership. After the renewal period expires, anyone can trigger a new auction under the domain contract's rules.
+
+Subdomains can be delegated to another resolver through a `dns_next_resolver` record.
+
+## Next steps
+
+- [Register a domain](/foundations/web3/ton-dns/register): acquire a `.ton` domain through an auction.
+- [Manage records](/foundations/web3/ton-dns/manage-records): configure or remove domain records.
+- [Renew a domain](/foundations/web3/ton-dns/renew): renew ownership and verify the expiration date.
+- [Delegate subdomains](/foundations/web3/ton-dns/subdomains): delegate subdomain resolution.
+- [Resolve a domain](/foundations/web3/ton-dns/resolve): read records from an application.
+- [TON DNS reference](/foundations/web3/ton-dns/reference): record types, resolution, domain ownership, and lifecycle.
+
+## Reference topics
+
+- <span id="implementation" />[DNS protocol](/foundations/web3/ton-dns/reference#dns-protocol).
+- <span id="dns-record-types" />[Record types](/foundations/web3/ton-dns/reference#dns-record-types).
+- <span id="record-categories" />[Record categories](/foundations/web3/ton-dns/reference#record-categories).
+- <span id="domain-lifecycle" />[Domain lifecycle](/foundations/web3/ton-dns/reference#domain-lifecycle).
+- <span id="ecosystem-integration" />[Ecosystem integration](/foundations/web3/ton-dns/reference#ecosystem-integration).

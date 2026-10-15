@@ -1,0 +1,68 @@
+---
+title: "How to manage TON DNS records"
+sidebarTitle: "Manage records"
+---
+
+Update or remove the addresses associated with a `.ton` domain on [dns.ton.org](https://dns.ton.org/). Records configure the domain's uses; changing them does not transfer ownership.
+
+## Prerequisites
+
+- A `.ton` domain controlled by the connected mainnet wallet.
+- Funds for the update transaction.
+
+## Choose a record
+
+| Field on dns.ton.org                         | Value                                                                   |
+| -------------------------------------------- | ----------------------------------------------------------------------- |
+| Wallet address                               | The wallet or smart contract address that should receive payments.      |
+| TON Site                                     | The site's ADNL address in hexadecimal.                                 |
+| TON Site with Hosting in TON Storage enabled | The Bag ID of the site stored in TON Storage.                           |
+| TON Storage                                  | A Bag ID for stored files. This field is separate from the site record. |
+| Subdomains                                   | The address of a DNS resolver contract.                                 |
+
+A site record contains either an ADNL address or a Bag ID. Saving one replaces the previous value in that record. The separate TON Storage field does not replace the site record.
+
+## Update a record
+
+<Callout
+  type="caution"
+  title="Record updates"
+>
+  Updating records sends a mainnet transaction. Check the payment recipient before saving a wallet record; confirmed transactions cannot be rolled back.
+</Callout>
+
+1. Connect the domain owner's wallet on [dns.ton.org](https://dns.ton.org/).
+1. Search for the domain and select <kbd>Manage domain</kbd>.
+1. Enter the value in the corresponding field. For a site stored in TON Storage, enable <kbd>Hosting in TON Storage</kbd>.
+1. Save the field and confirm the transaction in the wallet.
+1. Reload the domain page and check the saved value.
+
+A successful update also refreshes the domain's renewal timestamp.
+
+## Remove a record
+
+Clear the corresponding field, save, and confirm the transaction. Reload the page to check that the field is empty. Removing a record does not delete the domain or transfer it to another owner.
+
+## Set a text record
+
+The official site's form has no generic text field. Write a `dns_text` record through the domain contract:
+
+1. Choose a category agreed upon by the application that will read the text.
+1. Encode the value as `dns_text`, including the TL-B `Text` structure.
+1. Send `change_dns_record` from the owner's wallet.
+1. Resolve that category and decode the returned text to verify the update.
+
+TEP-81 does not define a standard text category. A text record's type does not determine its category. See [record updates and text encoding](/foundations/web3/ton-dns/reference#record-updates).
+
+## Troubleshoot
+
+| Issue                                | Check                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| Management controls are unavailable  | Confirm the connected wallet owns the domain and the auction has ended. |
+| Invalid address or Bag ID            | Check the selected field, format, and Hosting in TON Storage setting.   |
+| The previous value remains           | Check the transaction result, then reload the domain page.              |
+| An application ignores a text record | Check the category and encoding expected by that application.           |
+
+## Manage records programmatically
+
+Use the [record update message](/foundations/web3/ton-dns/reference#record-updates) to set or delete a category. Use [Resolve a domain](/foundations/web3/ton-dns/resolve) to read the result.

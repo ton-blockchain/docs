@@ -1,0 +1,60 @@
+---
+title: "How to resolve a TON DNS domain"
+sidebarTitle: "Resolve a domain"
+---
+
+Resolve a TON DNS name by querying the root contract and following delegated resolvers.
+
+For records already indexed by TON Center, use [Get DNS records](/api/v3/dns/get-dns-records) with the `domain` filter. That endpoint searches indexed records. This guide follows the resolver contracts, including delegation to custom subdomain resolvers; it does not depend on those records being indexed.
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/) 22 or later.
+- The [TypeScript helpers](/foundations/web3/ton-dns/reference#typescript-helpers), using `@ton/core` 0.63.1 and `@ton/ton` 16.3.0.
+
+Resolution uses [get-method calls](/tvm/get-method). It does not require a wallet signature or a transaction fee. For API setup, see [authentication and limits](/api/v2/authentication).
+
+## Choose a category
+
+This example requests `wallet` to retrieve a payment address. Hash the UTF-8 category name with SHA-256 to obtain its key. For other categories or category `0`, see the [category reference](/foundations/web3/ton-dns/reference#record-categories).
+
+## Resolve the name
+
+The reference's `resolveDomain` helper reads the root through [getConfigParam](/api/v2/configuration/get-config-parameter), encodes the name, and follows `dns_next_resolver` records using `TonClient`. It limits recursion to 16 calls as an application safeguard.
+
+Calls read current chain state independently. Records can change during a lookup; the result is not a snapshot of one block.
+
+Place this excerpt after the Shared client and Resolve a record helpers from the reference, in the same Node.js module. Replace `<DOMAIN>` with the full domain name, including `.ton`:
+
+```typescript
+import { createHash } from 'node:crypto';
+
+const DOMAIN = '<DOMAIN>';
+const CATEGORY = BigInt('0x' + createHash('sha256').update('wallet').digest('hex'));
+const record = await resolveDomain(DOMAIN, CATEGORY);
+
+if (record === null) {
+  console.log('No wallet record found');
+} else {
+  const value = record.beginParse();
+  if (value.loadUint(16) !== 0x9fd3) throw new Error('Expected a wallet address record');
+  console.log(value.loadAddress().toString());
+}
+```
+
+Expected result: the wallet address stored for that name, or `No wallet record found` if resolution returns no record. A get-method or RPC failure throws an error rather than reporting an absent record.
+
+## Decode other records
+
+Inspect the returned record's TL-B constructor before decoding its fields. In particular, the `site` category can contain either an ADNL address or a Bag ID. A text record uses `dns_text` and the `Text` structure, not a raw string after its constructor.
+
+For category `0`, decode the returned cell as a category dictionary rather than as one record. See the [record schemas](/foundations/web3/ton-dns/reference#dns-record-types).
+
+## Troubleshoot
+
+| Issue                  | Check                                                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| No record found        | Check the name, category, and parent delegation. A registered domain can have no record for that category.                   |
+| Unexpected record type | Check the constructor before decoding. Category names and record types are separate.                                         |
+| Get-method fails       | Check that the resolver is active and inspect the API response. See [API authentication and limits](/api/v2/authentication). |
+| Depth limit reached    | Inspect the delegation chain. The limit belongs to the helper, not to TEP-81.                                                |
