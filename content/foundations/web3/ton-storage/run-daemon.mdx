@@ -1,0 +1,55 @@
+---
+title: "How to run a TON Storage daemon"
+sidebarTitle: "Run a storage daemon"
+description: "Start the official TON Storage daemon and connect its CLI"
+---
+
+Start `storage-daemon` and connect `storage-daemon-cli` to manage bags.
+
+## Prerequisites
+
+- `storage-daemon` and `storage-daemon-cli` from the same [TON release](https://github.com/ton-blockchain/ton/releases/tag/v2026.08)
+- A global configuration file for the target network: [mainnet](https://ton-blockchain.github.io/global.config.json) or [testnet](https://ton-blockchain.github.io/testnet-global.config.json)
+- A public IP address and reachable [ADNL](/foundations/network/adnl) port
+
+## Start the daemon
+
+1. Start `storage-daemon`:
+
+   ```bash
+   storage-daemon -v 3 \
+     -C <GLOBAL_CONFIG_PATH> \
+     -I <PUBLIC_IP>:<ADNL_PORT> \
+     -p <CONTROL_PORT> \
+     -D <STORAGE_DB_DIR>
+   ```
+
+   There,
+
+   - `<GLOBAL_CONFIG_PATH>` is the target network's global configuration file.
+   - `<PUBLIC_IP>` and `<ADNL_PORT>` identify the public ADNL endpoint.
+   - `<CONTROL_PORT>` is the local CLI control port.
+   - `<STORAGE_DB_DIR>` is the daemon's persistent data directory.
+
+   On its first launch, the daemon creates CLI keys under `<STORAGE_DB_DIR>/cli-keys`.
+
+1. Connect `storage-daemon-cli` to the control interface:
+
+   ```bash
+   storage-daemon-cli \
+     -I 127.0.0.1:<CONTROL_PORT> \
+     -k <STORAGE_DB_DIR>/cli-keys/client \
+     -p <STORAGE_DB_DIR>/cli-keys/server.pub
+   ```
+
+## Verify
+
+Run the following command inside `storage-daemon-cli`:
+
+```bash
+list
+```
+
+The command lists the bags managed by the daemon. A new database has no bags.
+
+Continue with [Share files](/foundations/web3/ton-storage/share-files) or [Download files](/foundations/web3/ton-storage/download-files).

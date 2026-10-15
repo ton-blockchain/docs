@@ -1,0 +1,155 @@
+---
+title: "How to run a TON Storage provider"
+sidebarTitle: "Run a storage provider"
+description: "Deploy and operate a paid storage provider"
+---
+
+Run the `storage-daemon` in provider mode, deploy its main contract, and manage paid storage contracts.
+
+<Callout
+  type="danger"
+  title="Funds and provider data at risk"
+>
+  Provider commands deploy contracts, transfer funds, close storage contracts, and may delete local bag files. Test the complete workflow on testnet first. Mainnet transactions and contract closures cannot be rolled back.
+
+  Keep independent backups of required files, verify every address and network, and use a small initialization transfer.
+</Callout>
+
+## Prerequisites
+
+- `storage-daemon` and `storage-daemon-cli` from the same [TON release](https://github.com/ton-blockchain/ton/releases/tag/v2026.08)
+- A global configuration file for the target network: [mainnet](https://ton-blockchain.github.io/global.config.json) or [testnet](https://ton-blockchain.github.io/testnet-global.config.json)
+- A funded wallet on the target network
+- A public IP address and reachable [ADNL](/foundations/network/adnl) port
+
+## Start provider mode
+
+Follow [Run a storage daemon](/foundations/web3/ton-storage/run-daemon#start-the-daemon), adding `-P` to the daemon startup command. Use a dedicated database directory for the provider.
+
+Run the commands below inside the connected `storage-daemon-cli`, one command per line.
+
+## Deploy the provider contract
+
+Run the deployment command inside `storage-daemon-cli`:
+
+```bash
+deploy-provider
+```
+
+<Callout
+  type="danger"
+  title="Initialization transfer"
+>
+  Use testnet for the first deployment. The command prints an address that requires a non-bounceable initialization message containing 1 GRAM. Verify the network and address before sending funds. A transfer to the wrong network or address cannot be recovered.
+</Callout>
+
+Do not attach a large balance to the initialization message. Verify the deployed provider:
+
+```bash
+get-provider-info
+```
+
+Fund the deployed provider contract separately to cover later transaction fees. Increase the balance only after verifying the deployment.
+
+## Configure capacity
+
+Set the maximum number and total size of managed storage contracts:
+
+```bash
+set-provider-config --max-contracts <MAX_CONTRACTS> --max-total-size <MAX_TOTAL_SIZE_BYTES>
+```
+
+There,
+
+- `<MAX_CONTRACTS>` is the maximum number of concurrent storage contracts.
+- `<MAX_TOTAL_SIZE_BYTES>` is the maximum combined bag size in bytes.
+
+## Configure contract terms
+
+Keep new requests disabled while configuring the on-chain terms:
+
+```bash
+set-provider-params --accept 0 --rate <RATE_NANOGRAM_PER_MB_DAY> --max-span <MAX_PROOF_SPAN_SECONDS> --min-file-size <MIN_BAG_SIZE_BYTES> --max-file-size <MAX_BAG_SIZE_BYTES>
+```
+
+There,
+
+- `<RATE_NANOGRAM_PER_MB_DAY>` is the price per 1,048,576 bytes per day in nanograms.
+- `<MAX_PROOF_SPAN_SECONDS>` caps the time paid between consecutive storage proofs. A later proof remains valid, but time beyond this limit is not paid.
+- `<MIN_BAG_SIZE_BYTES>` and `<MAX_BAG_SIZE_BYTES>` define the accepted bag-size range.
+
+Omitted flags retain their prior values. Wait for each on-chain update and verify it with `get-provider-info` before submitting another update.
+
+Enable requests after verifying every parameter:
+
+```bash
+set-provider-params --accept 1
+```
+
+The daemon then downloads accepted bags, distributes them to peers, and submits storage proofs.
+
+## Operate active contracts
+
+List active contracts and their balances:
+
+```bash
+get-provider-info --contracts --balances
+```
+
+`Client$` is the unpaid client balance. The difference between `Contract$` and `Client$` includes provider earnings, storage reserves, and transaction funds; it is not the exact withdrawable amount.
+
+Withdraw earnings from one per-bag storage contract managed by the provider:
+
+```bash
+withdraw <STORAGE_CONTRACT_ADDRESS>
+```
+
+Withdraw from every contract with at least 1 GRAM available:
+
+```bash
+withdraw-all
+```
+
+## Close a storage contract
+
+<Callout
+  type="caution"
+  title="Local bag files may be deleted"
+>
+  Closing a contract may delete its local bag files when no other active contract uses the bag. Keep an independent copy before closing the contract. The on-chain closure cannot be rolled back.
+</Callout>
+
+Close one provider-managed contract:
+
+```bash
+close-contract <STORAGE_CONTRACT_ADDRESS>
+```
+
+Closing transfers available provider earnings to the main provider contract.
+
+## Transfer provider funds
+
+<Callout
+  type="danger"
+  title="Provider funds at risk"
+>
+  Test transfers with a small amount on testnet. Verify the destination, amount, and network before sending. Mainnet transfers cannot be rolled back.
+</Callout>
+
+Transfer nanograms from the main provider contract:
+
+```bash
+send-coins <DESTINATION_ADDRESS> <AMOUNT_NANOGRAM>
+```
+
+To include a text message, append `--message "<MESSAGE>"` to this command.
+
+There,
+
+- `<DESTINATION_ADDRESS>` is the receiving account.
+- `<AMOUNT_NANOGRAM>` is the transferred amount in nanograms.
+- `<MESSAGE>` is an optional text message.
+
+## Protect provider data
+
+The `list` command shows all bags managed by the daemon. Do not remove these bags or use the provider daemon to manage unrelated bags. Keep independent copies of data that must remain available after a storage contract closes.

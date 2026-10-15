@@ -1,0 +1,79 @@
+---
+title: "How to share files with TON Storage"
+sidebarTitle: "Share files"
+description: "Create a bag, share its BagID, and export a metafile"
+---
+
+Create a bag from a file or directory and make it available to other TON Storage peers.
+
+## Prerequisites
+
+- A running daemon and connected CLI from [TON v2026.08](https://github.com/ton-blockchain/ton/releases/tag/v2026.08), configured as described in [Run a storage daemon](/foundations/web3/ton-storage/run-daemon)
+- A file or directory to share on the daemon's host
+
+Run the commands below inside `storage-daemon-cli` on the same host as the daemon.
+
+## Create a bag
+
+Replace `<SOURCE_PATH>` with the absolute path to the file or directory:
+
+```bash
+create --copy "<SOURCE_PATH>"
+```
+
+The CLI prints `Bag created` followed by the bag information, including `BagID =` and its 64-character hexadecimal identifier. Use this identifier as `<BAG_ID>` below.
+
+`--copy` copies the files into the daemon's storage directory. Allow enough disk space for this additional copy. Sharing is enabled by default.
+
+Keep the daemon running to serve the bag. Creating a bag does not automatically arrange paid storage with a provider.
+
+## Verify
+
+Inspect the bag:
+
+```bash
+get <BAG_ID>
+```
+
+Check that the file list matches your source and that `Downloaded:` shows `(completed)`. An `Upload speed:` line indicates that sharing is enabled; a speed of zero can mean that no peer is requesting data.
+
+Share the BagID with a recipient who can [download the files](/foundations/web3/ton-storage/download-files). A successful download on another node verifies that the bag is reachable.
+
+## Export a metafile
+
+You can also distribute a metafile containing the bag metadata. Replace `<METAFILE_PATH>` with an absolute output file path on the CLI host:
+
+```bash
+get-meta <BAG_ID> "<METAFILE_PATH>"
+```
+
+The CLI prints `Saved meta` with the number of bytes written. A metafile does not replace the peers serving the file contents.
+
+## Pause or resume sharing
+
+Pause uploads for this bag:
+
+```bash
+upload-pause <BAG_ID>
+```
+
+Resume uploads:
+
+```bash
+upload-resume <BAG_ID>
+```
+
+Pausing uploads does not remove copies already downloaded by other peers.
+
+To publish changed files, create a new bag from the updated source and distribute its new BagID. See [bags and integrity](/foundations/web3/ton-storage#bags-and-integrity).
+
+## Troubleshoot
+
+| Problem                                | Check                                                                                      |
+| -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `Invalid path` when creating a bag     | Use an existing source path accessible to the CLI and daemon.                              |
+| `Upload paused` in the bag information | Run `upload-resume <BAG_ID>`.                                                              |
+| A recipient cannot download the bag    | Keep the daemon online, check its ADNL connectivity, and confirm that uploads are enabled. |
+| `Failed to write meta`                 | Check that the output directory exists and the CLI can write to it.                        |
+
+See the [command reference](/foundations/web3/ton-storage/reference#manage-bags) for additional options.
