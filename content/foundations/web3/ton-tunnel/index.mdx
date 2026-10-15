@@ -1,0 +1,39 @@
+---
+title: "TON Tunnel overview"
+sidebarTitle: "Overview"
+description: "Route ADNL traffic through relays with optional traffic payments"
+---
+
+TON Tunnel routes ADNL traffic through intermediate nodes. The official implementation, ADNL Tunnel, provides the relay functionality described in TON Proxy announcements.
+
+Applications that integrate ADNL Tunnel can use a relay's network endpoint instead of communicating directly from their own endpoint.
+
+## Clients and relays
+
+A tunnel client selects relays from a configured pool and establishes routes for outgoing and returning traffic. Routes can contain one or more relays.
+
+A relay runs `tunnel-node` and forwards traffic according to encrypted routing instructions. Operators can share a public configuration containing their relay's public key and optional payment terms.
+
+TON Tunnel transports ADNL packets. Applications such as Tonutils-Proxy and tonutils-reverse-proxy integrate it with their existing networking. It does not replace the HTTP proxy described in [TON Proxy](/foundations/web3/ton-proxy).
+
+## Privacy and scope
+
+Routing instructions are encrypted for each relay. A relay processes its own instructions before forwarding traffic.
+
+Relays still observe the network connections they participate in. For example, the first relay receives a connection from the tunnel client. Using a tunnel does not by itself guarantee anonymity.
+
+Only traffic sent through the tunnel integration uses these routes. Other connections made by the application or device are outside that scope.
+
+## Optional traffic payments
+
+Relays can forward traffic without charging or accept payments through TON Payment Network.
+
+Operators configure prices for forwarding traffic and for traffic entering or leaving the tunnel through a gateway. Clients use the payment terms associated with the relays in their pool.
+
+When payments are disabled on the client, it selects only pool entries without payment requirements.
+
+## Next steps
+
+- [Use a tunnel](/foundations/web3/ton-tunnel/use) to configure a compatible application.
+- [Run a relay](/foundations/web3/ton-tunnel/run-relay) to forward traffic for tunnel clients.
+- [Accept traffic payments](/foundations/web3/ton-tunnel/payments) to enable paid service on a relay.

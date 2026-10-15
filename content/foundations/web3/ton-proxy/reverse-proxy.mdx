@@ -1,0 +1,94 @@
+---
+title: "How to run a TON reverse proxy"
+sidebarTitle: "Run a reverse proxy"
+description: "Forward requests from the TON network to an HTTP server"
+---
+
+Connect an HTTP server to the TON network using one of the following implementations.
+
+## Prerequisites
+
+- A running HTTP server; the examples use port `80` on the proxy host
+- A public IP address and reachable UDP port `3333` for the C++ example
+- For C++: extract `rldp-http-proxy` and `generate-random-id` from the archive for your platform in [TON v2026.08](https://github.com/ton-blockchain/ton/releases/tag/v2026.08) into your working directory, and save the [mainnet configuration](https://ton-blockchain.github.io/global.config.json) there as `global.config.json`
+- For the Go source build only: [Go 1.26](https://go.dev/dl/) and [Make](https://www.gnu.org/software/make/)
+- For domain linking: a `.ton` domain and its owner's wallet
+
+<Callout
+  type="caution"
+  title="Private keys and domain updates"
+>
+  Protect and back up generated private keys to preserve the site's ADNL identity. Linking a domain sends a mainnet transaction. Check the domain and record before confirming; confirmed transactions cannot be rolled back.
+</Callout>
+
+## Use rldp-http-proxy
+
+`rldp-http-proxy` is the reverse proxy from the official TON monorepo. Key generation is manual.
+
+**Step 1.** Generate a persistent ADNL address:
+
+```bash
+chmod +x rldp-http-proxy generate-random-id
+mkdir keyring
+./generate-random-id -m adnlid
+```
+
+The command prints a hexadecimal key identifier and a user-friendly ADNL address. It writes the private key to a file named after the hexadecimal identifier.
+
+Replace `<KEY_ID_HEX>` with that exact identifier and move the key into the keyring:
+
+```bash
+mv "<KEY_ID_HEX>" keyring/
+```
+
+**Step 2.** Start the reverse proxy. Replace `<PUBLIC_IP>` with the server's public IP and `<ADNL_ADDRESS>` with the user-friendly address from step 1:
+
+```bash
+./rldp-http-proxy -a <PUBLIC_IP>:3333 -L '*' -C global.config.json -A <ADNL_ADDRESS> -l tonsite.log
+```
+
+## Use tonutils-reverse-proxy
+
+`tonutils-reverse-proxy` is a Go implementation that handles key generation and domain linking automatically.
+
+**Install on Linux (x86-64):**
+
+```bash
+wget https://github.com/tonutils/reverse-proxy/releases/download/v0.6.0/tonutils-reverse-proxy-linux-amd64
+chmod +x tonutils-reverse-proxy-linux-amd64
+```
+
+To build from source:
+
+```bash
+git clone --branch v0.6.0 https://github.com/tonutils/reverse-proxy
+cd reverse-proxy && make build
+```
+
+Run the downloaded binary, replacing `<DOMAIN>` with the full `.ton` domain you own:
+
+```bash
+./tonutils-reverse-proxy-linux-amd64 --domain <DOMAIN>
+```
+
+If you built from source, use `./build/tonutils-reverse-proxy --domain <DOMAIN>` instead.
+
+On first run, the proxy generates a persistent ADNL key pair. With `--domain`, it displays a QR code if the domain's site record needs updating. Scan it with a compatible TON wallet and send the record-update transaction from the domain owner's wallet.
+
+By default, the proxy forwards requests to `http://127.0.0.1:80/`. Set `proxy_pass` in `config.json` or `PROXY_PASS` in the environment to use another backend. See [implementation-specific headers](/foundations/web3/ton-proxy/reference#client-information-headers).
+
+## Domain assignment
+
+For manual domain linking, follow [Manage records](/foundations/web3/ton-dns/manage-records) to set the domain's `site` record to the proxy's ADNL address.
+
+## Verify
+
+Through a [forward proxy](/foundations/web3/ton-proxy/forward-proxy), open `http://<ADNL_ADDRESS>.adnl` or your linked `.ton` domain and confirm that your backend page loads.
+
+## Troubleshoot
+
+| Problem                              | Check                                                                                                                                                |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C++ proxy cannot load the ADNL key   | Run it from the directory containing `keyring`, or set the [database path](/foundations/web3/ton-proxy/reference#reverse-proxy-options) accordingly. |
+| Backend is unreachable               | Check its listening address and the reverse proxy's routing configuration.                                                                           |
+| Domain points to another destination | Update its `site` record with the domain owner's wallet.                                                                                             |

@@ -1,0 +1,68 @@
+---
+title: "How to renew a .ton domain"
+sidebarTitle: "Renew a domain"
+---
+
+Renew a `.ton` domain on [dns.ton.org](https://dns.ton.org/) and check its updated expiration date.
+
+## Prerequisites
+
+- A `.ton` domain controlled by the connected mainnet wallet.
+- Funds for the renewal transaction.
+
+## Check the expiration date
+
+1. Connect the owner's wallet on [dns.ton.org](https://dns.ton.org/).
+1. Search for the domain and check its expiration date.
+
+The site shows <kbd>Renew this domain</kbd> when expiration is within 180 days or the domain has expired. This display rule belongs to the website; it is not a contract restriction on renewal.
+
+## Renew the domain
+
+<Callout
+  type="caution"
+  title="Domain renewal"
+>
+  Renewal sends a mainnet transaction. Check the domain, current ownership, and amount before confirming; confirmed transactions cannot be rolled back.
+</Callout>
+
+1. Select <kbd>Renew this domain</kbd>.
+1. Check the domain and amount in the wallet, then confirm the transaction.
+1. Reload the domain page and verify that the expiration date has advanced.
+
+The interface requests 0.015 GRAM for renewal. This is the website's transaction amount, not a fixed renewal price enforced by the contract.
+
+## Renew through other operations
+
+The renewal button is not the only way to renew a domain. The following successful owner operations also reset the renewal timestamp:
+
+| Operation                     | Example                                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Update or remove a DNS record | Change the wallet address, site address, Bag ID, resolver, or a text record.                             |
+| Edit the domain content       | Update the content through the domain contract.                                                          |
+| Transfer ownership            | Transfer the domain NFT to another wallet.                                                               |
+| Top up the domain contract    | Send funds from the owner's wallet with an empty message body or opcode `0`, after auction finalization. |
+
+Each operation starts a new 366-day renewal period from its execution time. It does not add 366 days to the previous deadline.
+
+Not every transaction renews the domain. Failed transactions and static-data requests do not reset the renewal timestamp. A payment sent to a domain name's wallet record goes to that recipient, not necessarily to the domain contract.
+
+See the [renewal interface](/foundations/web3/ton-dns/reference#renewal-interface) for message details.
+
+## Check an expired domain
+
+Expiration does not automatically delete the domain. After the contract's renewal period has elapsed, another account can [start a new auction](/foundations/web3/ton-dns/expired-domains). Renewal remains possible while the previous owner still controls the domain and no new auction has started.
+
+Check the domain's state before sending a renewal transaction. An active auction is not a renewal operation.
+
+## Troubleshoot
+
+| Issue                           | Check                                                                                                       |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Renew this domain is absent     | Check ownership and the displayed expiration date. The website hides the button outside its renewal window. |
+| Expiration date has not changed | Check the transaction result and reload the domain page.                                                    |
+| A new auction has started       | Inspect the auction state before sending funds. The former owner no longer has the same renewal path.       |
+
+## Renew programmatically
+
+The domain contract exposes `get_last_fill_up_time` for checking the renewal timestamp. See [renewal messages and getters](/foundations/web3/ton-dns/reference#renewal-interface) for the owner message and deadline calculation.

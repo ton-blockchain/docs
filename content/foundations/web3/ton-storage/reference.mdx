@@ -1,0 +1,161 @@
+---
+title: "TON Storage reference"
+sidebarTitle: "Reference"
+description: "Bag formats, daemon commands, and storage provider behavior"
+---
+
+## Bags
+
+Files are organized into _bags_, each identified by a unique 256-bit `BagID` (the hash of the torrent info cell). A bag can contain a single file or a directory.
+
+The official `storage-daemon` creates bags with **128 KiB chunks**. A Merkle tree built from SHA-256 hashes allows verification of individual chunks without downloading the full bag. Bag metadata can be exported as a metafile.
+
+## Peer discovery
+
+Nodes that store a bag register in the TON DHT under a key derived from the `BagID`. Clients query the DHT to find seeder addresses for a given bag.
+
+## Daemon options
+
+Options used in the [daemon guide](/foundations/web3/ton-storage/run-daemon):
+
+- `-v` - log verbosity, where `3` = INFO
+- `-C` - path to the global network config
+- `-I` - ADNL listen IP and port, where `<IP>` is the public or reachable address of the host
+- `-p` - TCP port for the console interface
+- `-D` - path to the daemon database. CLI keys are generated inside the `cli-keys/` subdirectory on first start
+
+## Manage bags
+
+| Command                                         | Description                                                 |
+| ----------------------------------------------- | ----------------------------------------------------------- |
+| `create <SOURCE_PATH> -d "description"`         | Create a new bag from a file or directory                   |
+| `add-by-hash <BAG_ID> -d <DOWNLOAD_DIR>`        | Add a bag by its `BagID`                                    |
+| `add-by-meta <METAFILE_PATH> -d <DOWNLOAD_DIR>` | Add a bag from a metafile                                   |
+| `list`                                          | List all bags                                               |
+| `list --hashes`                                 | List bags with their `BagID`s                               |
+| `get <BAG_ID>`                                  | Show full bag information                                   |
+| `get-peers <BAG_ID>`                            | Show peers connected for a bag                              |
+| `get-meta <BAG_ID> <METAFILE_PATH>`             | Export the bag metafile                                     |
+| `download-pause <BAG_ID>`                       | Pause a download                                            |
+| `download-resume <BAG_ID>`                      | Resume a download                                           |
+| `priority-name <BAG_ID> <FILE_PATH> <PRIORITY>` | Set download priority for a file (0 = skip, 255 = highest)  |
+| `upload-pause <BAG_ID>`                         | Pause sharing a bag with peers                              |
+| `upload-resume <BAG_ID>`                        | Resume sharing a bag with peers                             |
+| `priority-all <BAG_ID> <PRIORITY>`              | Set the priority of every file (0 to 255; 0 excludes files) |
+
+### Bag command options
+
+| Option                  | Commands                               | Behavior                                                                                              |
+| ----------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--copy`                | `create`                               | Copy source files into the daemon's storage directory; without it, serve the original files in place. |
+| `--no-upload`           | `create`, `add-by-hash`, `add-by-meta` | Disable sharing when adding the bag. Sharing is enabled by default.                                   |
+| `-d <DESCRIPTION>`      | `create`                               | Store a description in the torrent info.                                                              |
+| `-d <DOWNLOAD_DIR>`     | `add-by-hash`, `add-by-meta`           | Set the download root directory; defaults to the daemon's internal storage.                           |
+| `--paused`              | `add-by-hash`, `add-by-meta`           | Add the bag without starting its download.                                                            |
+| `--partial <FILE_PATH>` | `add-by-hash`, `add-by-meta`           | Download only the named files. All arguments after this flag are file names.                          |
+
+Paths passed to `create` must be accessible to both the CLI and daemon. The CLI reads and writes metafile data. When the CLI and daemon run on different hosts, download paths must also exist on the daemon host; the CLI creates and resolves the destination directory locally before sending the request.
+
+## Storage providers
+
+A storage provider is a node that stores bags for a fee, backed by an on-chain smart contract. The provider system has two components:
+
+- Smart contract: deployed on the TON Blockchain, stores the Merkle tree hash of each bag, issues proof challenges, and manages client payments.
+- `storage-daemon`: runs on the provider's machine, downloads bags, serves data to peers, and submits storage proofs to the contract.
+
+Provider workflow:
+
+1. The provider deploys a main smart contract and shares its address with clients.
+1. A client creates a bag and sends a storage request to the provider contract. The initial request funds the client balance, after fees.
+1. The provider contract deploys a per-bag storage contract and notifies the client.
+1. The provider downloads the bag and activates the per-bag contract.
+1. The provider submits periodic Merkle proofs to receive payment for storage; the client can top up the balance.
+1. Either party can send a closure message. The provider daemon does so when it detects a zero client balance. Closure distributes the remaining funds according to the contract rules and deletes the contract.
+
+Storage pricing is expressed in **nanograms per 1,048,576 bytes per day**. `max_span` caps the elapsed time used to calculate payment for each proof. It does not make a later proof invalid.
+
+## Send a storage request
+
+The following helper uses `@ton/core` 0.63.1 with an existing [TON Connect application](/applications/ton-connect/how-to/connect). It builds a mainnet request with 1 GRAM attached. The provider contract requires at least 0.06 GRAM for a deployment request; fees and notification messages reduce the balance available for storage.
+
+```typescript
+import { Address, Cell, toNano } from '@ton/core';
+
+export function storageRequest(provider: Address, sender: Address, body: Cell) {
+  return {
+    validUntil: Math.floor(Date.now() / 1000) + 300,
+    network: '-239' as const,
+    from: sender.toRawString(),
+    messages: [{
+      address: provider.toString({ bounceable: true }),
+      amount: toNano('1').toString(),
+      payload: body.toBoc().toString('base64'),
+    }],
+  };
+}
+```
+
+Integration excerpt, not a standalone application: `tonConnectUi` is your connected TON Connect UI instance, `provider` and `sender` are `Address` values, and `BODY_BASE64` is the base64-encoded contents of the BoC file generated by `new-contract-message`.
+
+```typescript
+const body = Cell.fromBase64(BODY_BASE64);
+const request = storageRequest(provider, sender, body);
+await tonConnectUi.sendTransaction(request);
+```
+
+The response from TON Connect is not confirmation that the storage contract is deployed or active. Verify the on-chain result.
+
+## Read a storage contract
+
+Use `@ton/ton` 16.3.0 with `@ton/core` 0.63.1. Supply a `TonClient` configured for mainnet using [TON Center API v2](/api/v2/rpc/json-rpc-endpoint) and the storage contract address obtained from the deployment notification.
+
+```typescript
+import { Address } from '@ton/core';
+import { TonClient } from '@ton/ton';
+
+export async function readStorageContract(client: TonClient, address: Address) {
+  const { stack } = await client.runMethod(address, 'get_storage_contract_data');
+  const active = stack.readBoolean();
+  const balance = stack.readBigNumber();
+  const provider = stack.readAddress();
+  stack.readBigNumber();
+  stack.readBigNumber();
+  stack.readBigNumber();
+  const rate = stack.readBigNumber();
+  const maxSpan = stack.readNumber();
+  stack.readNumber();
+  const owner = stack.readAddress();
+  const bagId = stack.readBigNumber().toString(16).padStart(64, '0');
+  return { active, balance, provider, rate, maxSpan, owner, bagId };
+}
+
+```
+
+Call `readStorageContract(client, address)`. `balance` and `rate` are in nanograms; `rate` is per 1,048,576 bytes per day. `maxSpan` is in seconds. `owner` is the client wallet, and `bagId` is a 64-character hexadecimal string. `active: false` means the provider has not activated the agreement.
+
+## Integration with TON DNS
+
+A `.ton` domain can point to a bag using the `dns_storage_address` record:
+
+```tlb
+dns_storage_address#7473 bag_id:bits256 = DNSRecord;
+```
+
+See [TON DNS](/foundations/web3/ton-dns/reference#dns-record-types) for all record types.
+
+## Ecosystem use cases
+
+- NFT metadata: NFT collections can reference off-chain media and metadata stored as bags, using the `BagID` as a stable content identifier.
+- [Static TON Sites](/foundations/web3/ton-sites): a bag containing HTML and static assets can be served as a TON Site by combining TON Storage, [TON DNS](/foundations/web3/ton-dns), and [TON Proxy](/foundations/web3/ton-proxy).
+
+## Sources
+
+- [CLI command parsing and options](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/storage-daemon-cli.cpp#L322)
+- [CLI command execution and output](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/storage-daemon-cli.cpp#L995)
+- [Bag completion and file selection](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/Torrent.cpp#L444)
+- [Copying bag files](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/Torrent.cpp#L708)
+- [Storage contract messages, payments, and getters](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-contract.fc)
+- [Provider deployment and request validation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-provider.fc)
+- [Provider daemon lifecycle](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/StorageProvider.cpp#L650)
+- [Torrent info serialization and BagID](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentInfo.cpp#L27)
+- [Merkle proof validation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/MerkleTree.cpp#L104)

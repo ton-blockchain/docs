@@ -1,0 +1,49 @@
+---
+title: "TON Proxy overview"
+sidebarTitle: "Overview"
+description: "Access and host TON Sites through an HTTP proxy"
+---
+
+TON Proxy is an HTTP-to-ADNL bridge that allows ordinary web browsers to access TON Sites. The official `rldp-http-proxy` implementation operates as a forward proxy for clients and as a reverse proxy for servers hosting TON Sites.
+
+## Forward and reverse proxies
+
+A forward proxy accepts HTTP requests from a browser, resolves the destination, and sends requests over RLDP on the ADNL network.
+
+A reverse proxy receives those requests from the TON network and forwards them to a configured HTTP server. The server can run on the same machine or another host.
+
+## Name resolution
+
+The C++ proxy supports three forms of destination:
+
+- `.ton` domains: TON DNS resolves the domain's `site` record to an ADNL address or a TON Storage BagID.
+- `.adnl` addresses: the proxy connects to the specified ADNL identity without DNS resolution.
+- `.bag` addresses: the proxy routes requests for files in a bag through a configured TON Storage gateway.
+
+With the C++ proxy, accessing a BagID directly or through TON DNS requires a Storage gateway. Tonutils-Proxy includes a TON Storage client and can retrieve bag contents directly from peers. See [Access files over HTTP](/foundations/web3/ton-proxy/storage-gateway).
+
+## Privacy and relays
+
+ADNL encrypts traffic between the proxy and the TON destination. This protection does not extend automatically to the HTTP connections between the browser and the proxy, or between the reverse proxy and its backend.
+
+A direct ADNL connection does not hide the peers' network addresses. Routing through intermediate nodes is a separate capability provided by [ADNL Tunnel](/foundations/web3/ton-tunnel). Compatible implementations can use these relays, with optional traffic payments through TON Payment Network.
+
+## Next steps
+
+- [Run a forward proxy](/foundations/web3/ton-proxy/forward-proxy) to access TON Sites.
+- [Run a reverse proxy](/foundations/web3/ton-proxy/reverse-proxy) to connect an HTTP server to the TON network.
+- [Reference](/foundations/web3/ton-proxy/reference) for configuration, routing, and implementation details.
+
+<details>
+  <summary>Moved sections</summary>
+
+  - <span id="how-ton-proxy-works" />[How TON Proxy works](#forward-and-reverse-proxies).
+  - <span id="forward-proxy-client-side" />[Forward proxy (client-side)](/foundations/web3/ton-proxy/forward-proxy).
+  - <span id="reverse-proxy-mode" />[Reverse proxy mode](/foundations/web3/ton-proxy/reverse-proxy).
+  - <span id="use-rldp-http-proxy" />[Use rldp-http-proxy](/foundations/web3/ton-proxy/reverse-proxy#use-rldp-http-proxy).
+  - <span id="use-tonutils-reverse-proxy" />[Use tonutils-reverse-proxy](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy).
+  - <span id="domain-assignment" />[Domain assignment](/foundations/web3/ton-proxy/reverse-proxy#domain-assignment).
+  - <span id="security-and-privacy" />[Security and privacy](/foundations/web3/ton-proxy/reference#security-and-privacy).
+  - <span id="response-headers" />[Response headers](/foundations/web3/ton-proxy/reference#response-headers).
+  - <span id="related-components" />[Related components](/foundations/web3/ton-proxy/reference#related-components).
+</details>

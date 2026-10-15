@@ -1,0 +1,91 @@
+---
+title: "How to accept ADNL tunnel traffic payments"
+sidebarTitle: "Accept traffic payments"
+description: "Enable packet pricing and connect a relay to TON Payment Network"
+---
+
+Enable mainnet traffic payments on an existing ADNL Tunnel v0.2.1 relay. The relay uses TON Payment Network channels to receive payment for forwarded packets.
+
+## Prerequisites
+
+- A configured relay from [Run a relay](/foundations/web3/ton-tunnel/run-relay)
+- A mainnet Payment Network peer willing to open a channel and provide incoming capacity
+- That peer's payment-node public key, supplied by its operator
+- Funds for the relay's payment wallet to cover channel deployment and transaction fees
+
+<Callout
+  type="caution"
+  title="Payment wallet and channels"
+>
+  Enabling payments can deploy an on-chain channel and spend funds from the wallet configured in `relay.json`. Verify the peer and network first. Preserve the private configuration and payment database; restarting with new keys does not restore the old channels.
+</Callout>
+
+## Configure prices
+
+Stop the relay. In `relay.json`, enable `PaymentsEnabled` and set the two prices under `Payments`.
+
+The following is a partial fragment to merge into the existing configuration. Preserve all generated keys and channel settings. The values are example prices, in nanograms per packet:
+
+```json
+{
+  "PaymentsEnabled": true,
+  "Payments": {
+    "MinPricePerPacketRoute": 1,
+    "MinPricePerPacketInOut": 1
+  }
+}
+```
+
+The first price applies to relay forwarding; the second applies to the gateway's inbound and outbound traffic. See [payment settings](/foundations/web3/ton-tunnel/reference#payment-settings).
+
+## Connect to the payment peer
+
+Start the relay, replacing `<PAYMENT_NODE_KEY_HEX>` with the peer's 32-byte payment-node public key encoded as 64 hexadecimal characters:
+
+```bash
+./build/tunnel-node -config relay.json -payment-node <PAYMENT_NODE_KEY_HEX>
+```
+
+This is the payment-node key, not its wallet address or tunnel relay key.
+
+The startup logs include `wallet initialized` with the relay wallet address. If channel deployment fails because the wallet has insufficient funds, fund that address on mainnet and restart with the same configuration and database. There is no fixed funding amount in this guide; fees and required reserves depend on the channel settings.
+
+The relay reuses an active channel with the specified peer or attempts to open one. Wait for the message `prioritized channel for payments is active`.
+
+## Obtain incoming capacity
+
+Coordinate with the payment peer's operator to [fund its side of the channel](/foundations/web3/payment-network/open-channel#fund-the-local-side). Funding only the relay wallet does not provide incoming channel capacity.
+
+In the relay console, run:
+
+```text
+capacity
+```
+
+Confirm that `Capacity left` is positive before serving paying clients. This is channel capacity, not the relay wallet balance.
+
+## Publish the payment terms
+
+Export an updated pool file from another terminal in the repository directory:
+
+```bash
+./build/tunnel-node -config relay.json -gen-shared-config nodes.json
+```
+
+Share the updated `nodes.json` with clients. It includes the relay's public key, prices, and payment-chain information. Clients need payments enabled and funded Payment Network connectivity to use these terms; the unpaid client configuration in [Use a tunnel](/foundations/web3/ton-tunnel/use) excludes paid entries.
+
+## Verify
+
+After a funded client sends traffic, check `stats`, `balance`, and `capacity` in the relay console. `balance` reports the available TON channel balance; `capacity` reports the available balance on the peer's side. Use `wallet-ton-balance` to inspect the separate payment wallet.
+
+Record `balance` and `capacity` before and after a controlled traffic test. These values aggregate all active payment channels; they are not tunnel-specific revenue counters. Account for deposits, withdrawals, and other channel activity when interpreting changes. Packet counters alone do not prove that payment was received.
+
+## Troubleshoot
+
+| Problem                           | Check                                                                                        |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| Invalid payment-node key          | The CLI option expects hexadecimal; the interactive prompt, if used instead, expects base64. |
+| Channel deployment fails          | Check wallet funds, peer reachability, and whether both nodes use mainnet.                   |
+| `Capacity left` is zero           | Ask the peer operator to provide incoming capacity.                                          |
+| Clients cannot select the relay   | Distribute the updated pool and check client payment settings.                               |
+| Payment database cannot be opened | Do not run multiple paid relay processes against the same database.                          |

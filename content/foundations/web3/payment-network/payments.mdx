@@ -1,0 +1,61 @@
+---
+title: "How to send and receive Payment Network payments"
+sidebarTitle: "Send and receive payments"
+description: "Send a routed payment and verify it at the recipient"
+---
+
+Send a payment through a route of payment nodes using the standalone v1.3.1 console.
+
+## Prerequisites
+
+- A running node and a [funded channel](/foundations/web3/payment-network/open-channel) to the first peer
+- The ordered base64 public keys of the route's payment nodes, ending with the recipient
+- Sufficient capacity for the selected asset along the route and agreed forwarding fees
+
+<Callout
+  type="caution"
+  title="Payment submission"
+>
+  Entering the final amount or fee response submits the request. Verify the recipient, route, asset, and fee before proceeding. Keep the node's state and keys backed up.
+</Callout>
+
+## Send a payment
+
+In the sender's node console, enter:
+
+```text
+send
+```
+
+Answer the prompts in order:
+
+1. The next nodes in the route, including the recipient, separated by commas without spaces. Do not include the sender's node key.
+1. The configured currency symbol, such as `TON`.
+1. The amount the recipient should receive, in whole-coin units.
+1. The forwarding fee per intermediate node, in the same asset's units.
+
+For a direct payment, the route contains only the recipient's key. For a routed payment, consecutive nodes must have suitable channels and capacity.
+
+The command reports `virtual transfer requested`. This confirms submission, not completion at the recipient.
+
+## Verify receipt
+
+On both sender and recipient nodes, use `show` followed by the relevant local channel address. Compare the selected asset's available balances before and after the payment has settled off-chain. Account for fees, locked capacity, and any concurrent channel activity.
+
+Do not treat a request log or the sender's wallet balance as proof of receipt. The recipient should confirm the resulting channel state.
+
+## Repeated payments
+
+For a reusable virtual channel, `open` follows the same route and capacity prompts but returns a private signing key. The sender uses `sign` to produce a signed payment state; the recipient uses `close` with that state to settle it. Keep the private signing key with the sender, not the recipient.
+
+See [virtual-channel commands](/foundations/web3/payment-network/reference#virtual-channel-commands) for cumulative signing amounts, command inputs, and the distinction from `send`.
+
+## Troubleshoot
+
+| Problem                                   | Check                                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------------- |
+| Route cannot be opened                    | Check every peer key, channel, deadline policy, fee, and available capacity. |
+| Unknown currency                          | Each participating node must support the selected asset.                     |
+| Request submitted but receipt unconfirmed | Inspect both endpoints' channel states and logs before retrying.             |
+
+For returning funds on-chain, see [Withdraw and close a channel](/foundations/web3/payment-network/close-channel).

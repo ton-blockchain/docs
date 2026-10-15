@@ -1,0 +1,90 @@
+---
+title: "How to download files from TON Storage"
+sidebarTitle: "Download files"
+description: "Download a bag or selected files using a BagID or metafile"
+---
+
+Download files from TON Storage using a BagID or a metafile supplied by the publisher.
+
+## Prerequisites
+
+- A running daemon and connected CLI from [TON v2026.08](https://github.com/ton-blockchain/ton/releases/tag/v2026.08), configured as described in [Run a storage daemon](/foundations/web3/ton-storage/run-daemon)
+- A BagID or metafile, and enough disk space for the files you want to download
+
+Run the commands below inside `storage-daemon-cli` on the same host as the daemon. Downloaded data is shared with other peers by default.
+
+## Add a bag
+
+Replace `<BAG_ID>` with the bag's 64-character hexadecimal identifier and `<DOWNLOAD_DIR>` with an absolute destination directory:
+
+```bash
+add-by-hash <BAG_ID> -d "<DOWNLOAD_DIR>"
+```
+
+Alternatively, replace `<METAFILE_PATH>` with the absolute path to a metafile on the CLI host:
+
+```bash
+add-by-meta "<METAFILE_PATH>" -d "<DOWNLOAD_DIR>"
+```
+
+Choose one method for the bag. The CLI prints `Bag added` and the bag information; downloading starts in the background. For the metafile method, use the returned `BagID` as `<BAG_ID>` in subsequent commands.
+
+## Verify
+
+Inspect download progress and the file list:
+
+```bash
+get <BAG_ID>
+```
+
+Wait for `Downloaded:` to show `(completed)`. The `Dir name:` field identifies the bag's directory under `<DOWNLOAD_DIR>`; the file list shows paths within it.
+
+Inspect connected peers if the download is not progressing:
+
+```bash
+get-peers <BAG_ID>
+```
+
+A BagID or metafile alone does not guarantee availability. Peers must be online and serving the required pieces.
+
+## Download selected files
+
+When adding a bag, use `--partial` followed by exact file names within the bag. Replace `<FILE_PATH>` with a path supplied by the publisher:
+
+```bash
+add-by-hash <BAG_ID> -d "<DOWNLOAD_DIR>" --partial "<FILE_PATH>"
+```
+
+You can list multiple file paths after `--partial`. Put all other options before it: every following argument is treated as a file name. Unlisted files receive priority `0` and are excluded from the download.
+
+For a bag already added to the daemon, use the [file priority commands](/foundations/web3/ton-storage/reference#manage-bags). Do not add the same bag again to change its selection.
+
+Use `get <BAG_ID>` to verify the selected files. `(completed)` refers to the selected download, not necessarily the entire bag.
+
+## Pause or resume
+
+Pause downloads:
+
+```bash
+download-pause <BAG_ID>
+```
+
+Resume downloads:
+
+```bash
+download-resume <BAG_ID>
+```
+
+These commands do not pause uploads. To stop sharing downloaded data, use [Pause or resume sharing](/foundations/web3/ton-storage/share-files#pause-or-resume-sharing).
+
+## Troubleshoot
+
+| Problem                           | Check                                                                                                     |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `Invalid BagID`                   | Copy the complete hexadecimal BagID without a URL prefix or file path.                                    |
+| `Failed to read meta`             | Check the metafile path and read permissions on the CLI host.                                             |
+| `Download paused`                 | Run `download-resume <BAG_ID>`.                                                                           |
+| No peers or no progress           | Check connectivity and ask the publisher to keep a complete copy online with sharing enabled.             |
+| A selected file does not download | Compare its name with the file list from `get <BAG_ID>` once the header is available. Check its priority. |
+
+See the [command reference](/foundations/web3/ton-storage/reference#manage-bags) for additional options.

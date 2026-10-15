@@ -1,0 +1,58 @@
+---
+title: "How to delegate TON DNS subdomains"
+sidebarTitle: "Delegate subdomains"
+---
+
+Delegate subdomains of a `.ton` domain to a DNS resolver contract. For example, the resolver can provide records for `app.example.ton` under `example.ton`.
+
+## Prerequisites
+
+- A `.ton` domain controlled by the connected mainnet wallet.
+- A deployed DNS resolver with a record configured for the intended subdomain.
+- Funds for the domain record update.
+
+## Prepare the resolver
+
+The resolver must implement `dnsresolve`. Subdomain creation, permissions, and payments depend on that contract; the `.ton` collection's registration rules do not automatically apply to it.
+
+Official implementations include [manual DNS](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/smartcont/dns-manual-code.fc), managed through signed requests, and [automatic DNS](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/smartcont/dns-auto-code.fc), which implements registration and expiration rules. Deploying either implementation is outside this delegation guide.
+
+Before linking the resolver, query its `dnsresolve` method for the intended subdomain and category. Check that it returns the expected record. See [name encoding and resolution results](/foundations/web3/ton-dns/reference#name-encoding).
+
+## Delegate the subdomains
+
+<Callout
+  type="caution"
+  title="Subdomain delegation"
+>
+  Changing the resolver redirects subdomain resolution. Verify the resolver address before confirming the mainnet transaction; confirmed transactions cannot be rolled back.
+</Callout>
+
+1. Open [dns.ton.org](https://dns.ton.org/) and connect the parent domain owner's wallet.
+1. Search for the parent domain and select <kbd>Manage domain</kbd>.
+1. Enter the resolver contract address in <kbd>Subdomains</kbd>.
+1. Save and confirm the transaction.
+
+This stores a `dns_next_resolver` record on the parent domain. It does not deploy a resolver or create records inside it.
+
+## Verify the delegation
+
+1. Reload the parent domain's management page and check the resolver address.
+1. [Resolve the full subdomain name](/foundations/web3/ton-dns/resolve), such as `app.example.ton`, for the intended category.
+1. Compare the result with the record configured in the resolver.
+
+The Subdomains field verifies the delegation address; resolving the full name verifies the resulting lookup.
+
+## Change or remove the delegation
+
+Replace the Subdomains address to use a different resolver. Clear the field to remove delegation. Confirm the update and resolve the full name again.
+
+Removing the parent record leaves the resolver contract and its data intact, but lookup through that parent name no longer reaches it.
+
+## Troubleshoot
+
+| Issue                                         | Check                                                                              |
+| --------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Parent domain resolves but subdomain does not | Check the Subdomains field and whether the resolver contains the requested record. |
+| Resolver returns an error                     | Check the encoded name, requested category, and resolver-specific requirements.    |
+| Unexpected destination                        | Check both the delegated resolver and the record it returns.                       |

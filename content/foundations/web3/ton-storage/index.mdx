@@ -1,0 +1,65 @@
+---
+title: "TON Storage overview"
+sidebarTitle: "Overview"
+description: "Distributed file sharing and paid storage on TON"
+---
+
+TON Storage is a distributed file storage system on the TON Network. Files are shared using a torrent-like protocol, with optional on-chain smart contracts for paid storage.
+
+## Bags and integrity
+
+Files are organized into _bags_, each identified by a unique 256-bit `BagID`, the hash of the torrent info cell. A bag can contain a single file or a directory.
+
+A Merkle tree built from SHA-256 hashes allows verification of individual pieces without downloading the full bag. This verification does not require a paid storage contract.
+
+Bags are immutable. Changing their contents requires creating a new bag with a new BagID. The identifier also depends on metadata, including the bag description.
+
+## File distribution
+
+TON Storage uses the TON DHT to discover peers for a bag. Peers exchange pieces of the bag, allowing downloads from multiple nodes.
+
+The official implementation provides `storage-daemon` and `storage-daemon-cli` to create, download, and share bags. Downloaded data is shared with other peers by default; sharing can be paused or disabled.
+
+Files remain available while peers retain and serve the required data.
+
+## Paid storage
+
+A storage provider stores bags for a fee. A client requests storage through the provider's smart contract and funds a separate storage contract for the bag.
+
+The provider submits Merkle proofs to the storage contract to receive payment for storing the data. These proofs establish possession of the challenged data; the contract does not verify that the provider serves download requests.
+
+## Ecosystem integration
+
+- [TON DNS](/foundations/web3/ton-dns): associates a domain name with a BagID.
+- [TON Sites](/foundations/web3/ton-sites): uses bags to store static website files, accessed through a Storage gateway.
+- [Blockchain archives](/nodes/cpp/run-archive-liteserver): uses TON Storage to distribute historical blocks and state snapshots.
+
+## Next steps
+
+- [Run a storage daemon](/foundations/web3/ton-storage/run-daemon) to start creating, downloading, and sharing bags.
+- [Store with a provider](/foundations/web3/ton-storage/store-with-provider) to request paid storage.
+- [Reference](/foundations/web3/ton-storage/reference) for formats, commands, and storage contracts.
+
+<details>
+  <summary>Moved sections</summary>
+
+  - <span id="bags" />[Bags](/foundations/web3/ton-storage/reference#bags).
+  - <span id="peer-discovery" />[Peer discovery](/foundations/web3/ton-storage/reference#peer-discovery).
+  - <span id="storage-daemon" />[Storage daemon](/foundations/web3/ton-storage/run-daemon).
+  - <span id="manage-bags" />[Manage bags](/foundations/web3/ton-storage/reference#manage-bags).
+  - <span id="storage-providers" />[Storage providers](/foundations/web3/ton-storage/reference#storage-providers).
+  - <span id="integration-with-ton-dns" />[Integration with TON DNS](/foundations/web3/ton-storage/reference#integration-with-ton-dns).
+  - <span id="ecosystem-use-cases" />[Ecosystem use cases](/foundations/web3/ton-storage/reference#ecosystem-use-cases).
+  - <span id="run-a-storage-provider" />[Run a storage provider](/foundations/web3/ton-storage/run-provider).
+  - <span id="prerequisites" />[Prerequisites](/foundations/web3/ton-storage/run-provider#prerequisites).
+  - <span id="start-provider-mode" />[Start provider mode](/foundations/web3/ton-storage/run-provider#start-provider-mode).
+  - <span id="deploy-the-provider-contract" />[Deploy the provider contract](/foundations/web3/ton-storage/run-provider#deploy-the-provider-contract).
+  - <span id="configure-capacity" />[Configure capacity](/foundations/web3/ton-storage/run-provider#configure-capacity).
+  - <span id="configure-contract-terms" />[Configure contract terms](/foundations/web3/ton-storage/run-provider#configure-contract-terms).
+  - <span id="request-storage-from-a-provider" />[Request storage from a provider](/foundations/web3/ton-storage/store-with-provider#request-storage-from-a-provider).
+  - <span id="monitor-the-client-balance" />[Monitor the client balance](/foundations/web3/ton-storage/store-with-provider#monitor-the-client-balance).
+  - <span id="operate-active-contracts" />[Operate active contracts](/foundations/web3/ton-storage/run-provider#operate-active-contracts).
+  - <span id="close-a-storage-contract" />[Close a storage contract](/foundations/web3/ton-storage/run-provider#close-a-storage-contract).
+  - <span id="transfer-provider-funds" />[Transfer provider funds](/foundations/web3/ton-storage/run-provider#transfer-provider-funds).
+  - <span id="protect-provider-data" />[Protect provider data](/foundations/web3/ton-storage/run-provider#protect-provider-data).
+</details>

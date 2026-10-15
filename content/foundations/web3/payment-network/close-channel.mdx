@@ -1,0 +1,68 @@
+---
+title: "How to withdraw and close a payment channel"
+sidebarTitle: "Withdraw and close a channel"
+description: "Withdraw funds or settle a channel through cooperative or dispute procedures"
+---
+
+Withdraw funds from a payment channel or close it using the standalone v1.3.1 node.
+
+## Prerequisites
+
+- A running [payment node](/foundations/web3/payment-network/run-node) with the original channel database and private keys
+- The local channel address and sufficient available balance for the operation
+- A mainnet destination address for a withdrawal
+
+<Callout
+  type="caution"
+  title="Withdrawals and closure"
+>
+  These operations can send on-chain transactions and affect active payments. Check the destination, amount, and pending obligations first. Keep the node running and its state available during settlement.
+</Callout>
+
+## Withdraw part of the balance
+
+In the node's console, enter:
+
+```text
+withdraw
+```
+
+Provide the local channel address, destination wallet address, currency symbol, and amount in whole-coin units when prompted.
+
+The command requests a withdrawal through the channel. Verify the resulting transaction and destination balance; a submitted request is not a completed withdrawal. Withdrawing funds reduces capacity available for subsequent payments.
+
+## Close cooperatively
+
+To request closure with the peer's cooperation, enter:
+
+```text
+destroy
+```
+
+Provide the local channel address. The node reports `cooperative channel closure attempt has been started`.
+
+Wait for completion and verify the on-chain results. The node also schedules a non-cooperative closure attempt after five minutes. The worker proceeds only if the same channel remains active and both sides are active on-chain.
+
+## Close without cooperation
+
+To request non-cooperative closure directly, inspect the channel state and active obligations, then enter:
+
+```text
+kill
+```
+
+Provide the local channel address. The node reports `uncooperative channel closure has been started`.
+
+This begins a settlement process governed by the channel's quarantine, conditional-settlement, and action deadlines. Funds are not necessarily available immediately. Preserve the latest signed state and keep the node online to process the required steps. See [closure settings](/foundations/web3/payment-network/reference#closure-settings).
+
+## Verify
+
+Use `list_all` to include closing and inactive channels, then `show` with the local address. Check the final state and resulting on-chain transfers. A channel disappearing from `list`, which shows active channels only, is not sufficient proof that settlement finished.
+
+## Troubleshoot
+
+| Problem                           | Check                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| Withdrawal cannot proceed         | Check available balance, fees, peer connectivity, and pending obligations. |
+| Cooperative close remains pending | Check the peer's response and the scheduled fallback in the node logs.     |
+| Forced closure is not finished    | Check the contract deadlines and the node's settlement progress.           |

@@ -1,0 +1,75 @@
+---
+title: "How to store a bag with a provider"
+sidebarTitle: "Store with a provider"
+description: "Request paid storage and monitor the client balance"
+---
+
+Request paid storage for a bag on mainnet and monitor its storage contract.
+
+## Prerequisites
+
+- A running TON v2026.08 [storage daemon](/foundations/web3/ton-storage/run-daemon) configured for mainnet and connected CLI
+- A funded mainnet wallet
+- The provider contract address on mainnet
+
+<Callout
+  type="caution"
+  title="Storage payments"
+>
+  Sending a storage request or topping up its contract transfers funds. Verify the mainnet provider address, amount, and terms before sending. Mainnet transfers cannot be rolled back.
+</Callout>
+
+Run the following commands inside `storage-daemon-cli`, one command per line. Keep the bag available until the provider finishes downloading it.
+
+## Request storage from a provider
+
+1. Inspect a provider's on-chain terms by its contract address:
+
+   ```bash
+   get-provider-params <PROVIDER_ADDRESS>
+   ```
+
+   The result states whether the provider accepts contracts, its bag-size limits, its rate, and the maximum paid interval between proofs.
+
+1. Create and share a bag using [Share files](/foundations/web3/ton-storage/share-files), record its `BagID`, and generate a request body:
+
+   ```bash
+   new-contract-message <BAG_ID> <MESSAGE_BODY_PATH> --query-id <QUERY_ID> --provider <PROVIDER_ADDRESS>
+   ```
+
+   There,
+
+   - `<BAG_ID>` is the bag's 256-bit identifier.
+   - `<MESSAGE_BODY_PATH>` receives the internal message body, not a complete message.
+   - `<QUERY_ID>` is an integer from `0` through `2^64 - 1`.
+
+   Large bags can take longer to process. Review the rate and proof interval printed by the command before sending the body. The provider contract rejects the request if its parameters change before processing.
+
+1. Send the generated body to `<PROVIDER_ADDRESS>` with your wallet, using the [request example](/foundations/web3/ton-storage/reference#send-a-storage-request). The example attaches 1 GRAM to cover deployment and an initial storage balance. This is an example amount, not a fixed price or storage duration; review the provider's rate before sending.
+
+## Verify
+
+Find the incoming `0xbf7bd0c1` notification in the requesting wallet's transaction history. Its body contains your query ID and BagID. The sender is the new storage contract; use that address as `<STORAGE_CONTRACT_ADDRESS>`.
+
+Read the contract with the [verification helper](/foundations/web3/ton-storage/reference#read-a-storage-contract). Confirm that `owner`, `provider`, and `bagId` match your request, and that `balance` is positive. Wait for `active` to become `true` after the provider downloads the bag. Activation also sends a `0xd4caedcd` notification to the client.
+
+## Monitor the client balance
+
+The storage contract deducts provider earnings from the client balance according to the configured rate. The initial balance comes from the storage request message. Any wallet can top up the storage contract with a transfer.
+
+Call [`get_storage_contract_data`](https://github.com/ton-blockchain/ton/blob/v2026.08/storage/storage-daemon/smartcont/storage-contract.fc#L222) to inspect the contract. Its second return value, `balance`, is the unpaid client balance.
+
+A storage contract can close when:
+
+- The provider declines it before activation.
+- Its client balance reaches `0` and the provider daemon sends a closure message.
+- The provider closes it.
+- The client sends [`0x79f937ea`](https://github.com/ton-blockchain/ton/blob/v2026.08/storage/storage-daemon/smartcont/constants.fc#L3) with any 64-bit query ID from the client's wallet.
+
+## Troubleshoot
+
+| Problem                                                                | Check                                                                         |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Request rejected after the provider changes its rate or proof interval | Read the updated terms and regenerate the request body.                       |
+| Contract remains inactive                                              | Keep the bag shared and check with the provider that it can download the bag. |
+| No deployment notification                                             | Inspect the wallet transaction for a bounced request before retrying.         |

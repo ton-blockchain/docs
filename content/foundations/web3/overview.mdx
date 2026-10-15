@@ -9,9 +9,11 @@ Although many people refer to TON only as a blockchain, _The Open Network_ is a 
 - A peer-to-peer network used by Blockchain Nodes (TON Network)
 - A distributed file storage technology (TON Storage)
 - A network proxy/anonymizer layer (TON Proxy)
+- A relay layer for ADNL traffic ([TON Tunnel](/foundations/web3/ton-tunnel))
+- Websites accessible through the TON network ([TON Sites](/foundations/web3/ton-sites))
 - A Kademlia-like distributed hash table (TON DHT)
 - A service for assigning human-readable names to accounts, smart contracts, services, and network nodes (TON DNS)
-- A platform for micro-payments (TON Payments)
+- A platform for micro-payments ([TON Payments](/foundations/web3/payment-network))
 
 This article provides a general overview of TON Services, beyond the blockchain.
 
@@ -33,9 +35,17 @@ The TON Distributed Hash Table (DHT) plays a crucial role in the networking comp
 
 ## TON Proxy
 
-[TON Proxy](/foundations/web3/ton-proxy) provides a protocol where nodes wishing to offer their services (with or without compensation) as tunnels for ADNL network traffic can register. Those needing them can then choose one of these nodes based on the price, latency, and bandwidth offered. Since ADNL traffic is encrypted, Proxy can't access tunneled data, meaning that this protocol is secure.
+[TON Proxy](/foundations/web3/ton-proxy) allows web browsers to access [TON Sites](/foundations/web3/ton-sites) over the TON network. A forward proxy sends browser requests over RLDP/ADNL, while a reverse proxy forwards incoming requests to an HTTP server.
 
-Running TON Proxy allows you to visit [TON Sites](/foundations/web3/ton-sites) (HTTP over ADNL). This can be combined with TON DNS and other TON Services, forming together what is called "Open Network".
+This can be combined with TON DNS and other TON Services, forming together what is called "Open Network".
+
+## TON Tunnel
+
+[TON Tunnel](/foundations/web3/ton-tunnel) routes ADNL network traffic through intermediate nodes, with or without compensation. Clients select relays from a configured pool. ADNL encrypts the tunneled traffic. Optional traffic payments use [TON Payment Network](/foundations/web3/payment-network).
+
+## TON Sites
+
+[TON Sites](/foundations/web3/ton-sites) can be served by an HTTP server connected to the TON network through a reverse proxy, or published as a bag of static files on TON Storage. TON DNS can associate a domain name with either destination.
 
 ## TON DNS
 
@@ -43,12 +53,12 @@ Running TON Proxy allows you to visit [TON Sites](/foundations/web3/ton-sites) (
 
 TON Domain names are well-established in the ecosystem - various wallet applications and explorers recognize them.
 
-TON Domains can be assigned to any ADNL address, meaning that it is possible to assign names to TON Storage files (bags).
+TON domain names can resolve to ADNL addresses or TON Storage BagIDs.
 
 ## TON Payments
 
-TON Payments platform enables "instant payments" - a way to transfer monetary values without the need to commit all transactions to the blockchain. This protocol is built on top of TON Blockchain, using a system of smart contracts.
+[TON Payments](/foundations/web3/payment-network) platform enables "instant payments" - a way to transfer monetary values without the need to commit all transactions to the blockchain. This protocol is built on top of TON Blockchain, using a system of smart contracts.
 
 The core idea for such a "lightning network" is point-to-point **payment channels**. Two parties create a shared "money pool" and then update the balance inside it.
 
-The overall overhead of such instant payments is so small that one can use them for micro-payments. For example, a TON file-storing service might charge the user for every 128 KiB of downloaded data, or a paid TON Proxy might require some tiny micro-payment for every 128 KiB of traffic relayed.
+TON Payment Network supports routed payments through intermediate nodes, using virtual channels over existing payment channels. It can be used for micro-payments, including optional traffic payments to TON Tunnel relays.
