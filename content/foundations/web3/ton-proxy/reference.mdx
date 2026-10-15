@@ -1,0 +1,102 @@
+---
+title: "TON Proxy reference"
+sidebarTitle: "Reference"
+description: "Proxy options, routing, headers, and transport behavior"
+---
+
+The options and routing below describe the C++ `rldp-http-proxy`, except where another implementation is named.
+
+## Forward proxy options
+
+| Flag                | Long form           | Description                                                 |
+| ------------------- | ------------------- | ----------------------------------------------------------- |
+| `-p <PORT>`         | `--port`            | HTTP listening port on all network interfaces               |
+| `-c <PORT>`         | `--client-port`     | UDP port for client ADNL queries                            |
+| `-C <FILE>`         | `--global-config`   | Path to the TON global network config file                  |
+| `-P <YES\|NO>`      | `--proxy-all`       | Disable the TON hostname suffix filter (default `NO`)       |
+| `-S <ADNL_ADDRESS>` | `--storage-gateway` | ADNL address of a TON Storage gateway for `.bag` resolution |
+| `-D <PATH>`         | `--db`              | Database root path                                          |
+| `-d`                | `--daemonize`       | Install the SIGHUP handler described below                  |
+| `-l <FILE>`         | `--logname`         | Log file path                                               |
+
+## Tonutils-Proxy options
+
+These options apply to the Tonutils-Proxy v1.8.3 CLI, not to `rldp-http-proxy`.
+
+| Option                  | Default                                        | Description                                                      |
+| ----------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
+| `-addr <ADDRESS>`       | `127.0.0.1:8080`                               | HTTP listener address and port                                   |
+| `-global-config <FILE>` | Mainnet configuration downloaded automatically | Use a local TON network configuration file                       |
+| `-no-http`              | Disabled                                       | Block ordinary HTTP requests instead of forwarding them directly |
+
+Tonutils-Proxy routes `.ton`, `.adnl`, `.t.me`, and `.bag` destinations through its TON transport. Its integrated TON Storage client retrieves bag contents from peers.
+
+## Reverse proxy options
+
+| Flag                                  | Description                                                                                               |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `-a <IP>:<PORT>`                      | Public IP and UDP port for inbound ADNL connections (published to the TON DHT)                            |
+| `-A <ADNL_ADDRESS>`                   | Server ADNL identity; see [key generation](/foundations/web3/ton-proxy/reverse-proxy#use-rldp-http-proxy) |
+| `-L <HOSTNAME>[:<PORTS>]`             | Forward requests for `<HOSTNAME>` to `127.0.0.1` (default ports: 80, 443)                                 |
+| `-R <HOSTNAME>[:<PORTS>]@<IP>:<PORT>` | Forward requests for `<HOSTNAME>` to a remote HTTP server at `<IP>:<PORT>`                                |
+| `-C <FILE>`                           | Path to the TON global network configuration file                                                         |
+| `-D <PATH>`                           | Database root path                                                                                        |
+| `-d`                                  | Install the SIGHUP handler described below                                                                |
+| `-l <FILE>`                           | Log file path                                                                                             |
+
+On Linux and macOS, `-d` installs a SIGHUP handler that closes standard input and starts a new session. It does not immediately launch the process in the background.
+
+The default database directory is `.`. Server private keys are read from its `keyring/` subdirectory.
+
+## Routing
+
+For the C++ proxy, destinations must end in `.ton`, `.adnl`, or `.bag`; other hostnames are rejected with `bad server name`. `-P YES` disables this suffix check. It does not add ordinary Internet DNS forwarding.
+
+TON DNS resolution reads the `site` category and accepts an ADNL address or a Storage BagID. Bag requests require `-S` and are forwarded to `/gateway/<BAG_ID>/<FILE_PATH>` at that gateway.
+
+## Security and privacy
+
+Traffic between the proxy and the TON Site is encrypted at the ADNL layer. The server is authenticated by its ADNL address, derived from its public key.
+
+In direct server mode, the server's public address is advertised for ADNL routing. Omitting an IP address from the site's URL does not hide that address from the network. See [Privacy and relays](/foundations/web3/ton-proxy#privacy-and-relays).
+
+## Client information headers
+
+`tonutils-reverse-proxy` adds the following headers to requests forwarded to its backend:
+
+- `X-Adnl-Ip`: the connecting client's address as reported by the ADNL connection.
+- `X-Adnl-Id`: the connecting client's ADNL node ID.
+
+These headers are implementation-specific; they are not a general privacy guarantee or a feature of every TON proxy.
+
+## Response headers
+
+The C++ proxy adds version headers when forwarding responses:
+
+| Header                    | Added by                    | Value format                  |
+| ------------------------- | --------------------------- | ----------------------------- |
+| `Ton-Proxy-Site-Version`  | Reverse proxy (server-side) | `Commit: <sha>, Date: <date>` |
+| `Ton-Proxy-Entry-Version` | Forward proxy (client-side) | `Commit: <sha>, Date: <date>` |
+
+## CONNECT
+
+The C++ proxy supports HTTP `CONNECT` to establish a TCP tunnel over RLDP. On the reverse proxy, the destination must match a configured host and port. This can carry TLS connections and protocols such as WebSocket inside the tunnel.
+
+## Related components
+
+- [ADNL](/foundations/network/adnl): network addressing and encrypted transport.
+- RLDP: reliable transfer over ADNL for HTTP requests, responses, and tunnels.
+- [TON Sites](/foundations/web3/ton-sites): web services accessed through TON Proxy.
+- [TON DNS](/foundations/web3/ton-dns): names resolving to ADNL addresses or BagIDs.
+- [TON Storage](/foundations/web3/ton-storage): files distributed as bags.
+
+## Sources
+
+- [C++ proxy options and routing](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/rldp-http-proxy.cpp)
+- [DNS resolution](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/DNSResolver.cpp)
+- [ADNL key generation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/utils/generate-random-id.cpp)
+- [Go reverse proxy](https://github.com/tonutils/reverse-proxy/tree/300fc0ced8eab48ff5879ce822419d42b8e3a43e)
+- [ADNL Tunnel](https://github.com/ton-blockchain/adnl-tunnel/tree/4758832c31970071c4fec13c4c668122d7d28b01)
+- [Tonutils-Proxy CLI options](https://github.com/xssnick/Tonutils-Proxy/blob/526ece06e3c6e7398df09039a5ad0e3c144fc6ec/cmd/proxy-cli/main.go)
+- [Tonutils-Proxy HTTP routing and Storage client](https://github.com/xssnick/Tonutils-Proxy/blob/526ece06e3c6e7398df09039a5ad0e3c144fc6ec/proxy/proxy.go)
+- [C++ HTTP listener](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/http/http-server.cpp#L100)

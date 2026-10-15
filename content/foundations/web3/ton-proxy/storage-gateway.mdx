@@ -1,0 +1,53 @@
+---
+title: "How to access TON Storage files over HTTP"
+sidebarTitle: "Access files over HTTP"
+description: "Access bag files directly with Tonutils-Proxy or through a gateway with the C++ proxy"
+---
+
+Access files in TON Storage bags over HTTP using either Tonutils-Proxy or the C++ forward proxy.
+
+## Prerequisites
+
+- The binary for your chosen implementation from [Run a forward proxy](/foundations/web3/ton-proxy/forward-proxy)
+- A BagID and the path of a file in that bag
+- For C++ only: `global.config.json` and the user-friendly ADNL address of an existing TON Storage HTTP gateway
+
+## Use Tonutils-Proxy
+
+Start Tonutils-Proxy v1.8.3 as described in [Use Tonutils-Proxy](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy).
+
+Its integrated Storage client retrieves file contents directly from peers. No external Storage gateway configuration is required.
+
+## Use rldp-http-proxy
+
+<span
+  id="configure-the-gateway"
+/>
+
+For C++, apply the [HTTP listener restrictions](/foundations/web3/ton-proxy/forward-proxy#use-rldp-http-proxy).
+
+Start the forward proxy with `-S`, replacing `<GATEWAY_ADNL_ADDRESS>` with the gateway's ADNL address:
+
+```bash
+./rldp-http-proxy -p 8080 -c 3333 -C global.config.json -S <GATEWAY_ADNL_ADDRESS>
+```
+
+## Connect the browser
+
+Configure your browser to use `127.0.0.1:8080` as its HTTP proxy. Keep your chosen proxy running; do not run both on the same port.
+
+## Verify
+
+Open `http://<BAG_ID>.bag/<FILE_PATH>`. Replace `<BAG_ID>` with the bag's hexadecimal identifier and `<FILE_PATH>` with the path within the bag.
+
+Confirm that the expected file is returned. Both implementations also accept a `.ton` domain whose `site` record contains the BagID: open `http://<DOMAIN>/<FILE_PATH>`, replacing `<DOMAIN>` with the full domain name. Tonutils-Proxy retrieves the file directly; C++ uses the configured gateway. See [Manage records](/foundations/web3/ton-dns/manage-records).
+
+## Troubleshoot
+
+| Problem                             | Check                                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `storage gateway is not set`        | For C++, start the forward proxy with `-S`.                                                            |
+| File is unavailable                 | Check the BagID and file path. Peers must serve the bag; with C++, the gateway must also be reachable. |
+| Domain routes to the wrong resource | Check the domain's `site` record.                                                                      |
+
+To create and share a bag, see [Share files](/foundations/web3/ton-storage/share-files).
