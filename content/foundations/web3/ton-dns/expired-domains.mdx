@@ -1,0 +1,53 @@
+---
+title: "How to start an auction for an expired domain"
+sidebarTitle: "Expired domains"
+---
+
+Expiration does not automatically release a `.ton` domain. After more than 366 days without renewal, anyone can start a new auction if none is already active.
+
+Until a new auction starts, the domain remains owned by the same wallet. Its owner can [renew it](/foundations/web3/ton-dns/renew) without bidding again.
+
+Start the auction on [dns.ton.org](https://dns.ton.org/) by placing the first bid.
+
+## Prerequisites
+
+- A compatible non-custodial wallet on mainnet that does not own the domain.
+- Funds for the first bid and transaction fees.
+
+## Check the domain
+
+1. Open [dns.ton.org](https://dns.ton.org/) and connect the wallet.
+1. Search for the domain and check its expiration date.
+1. Confirm that no auction is already in progress.
+
+The website shows <kbd>Place a bid to start the auction</kbd> to non-owners when the domain is eligible.
+
+## Start the auction
+
+<Callout
+  type="caution"
+  title="Opening bid"
+>
+  Starting the auction transfers the opening bid on mainnet and removes the previous owner's control of the domain. Check the domain and amount before confirming; confirmed transactions cannot be rolled back.
+</Callout>
+
+1. Select <kbd>Place a bid to start the auction</kbd>.
+1. Enter an amount at least equal to the displayed minimum bid.
+1. Check the domain and amount, then confirm the transaction in the wallet.
+
+The minimum first bid follows the same [pricing table](/foundations/web3/ton-dns/register#check-the-price) as a new domain. Transaction fees are additional.
+
+## Verify
+
+Reload the domain page and check the auction's bidder, amount, and deadline. The initial duration is one week. Starting the auction places the first bid; it does not immediately assign ownership to the bidder.
+
+Follow the auction on the domain page. For subsequent bids, see [Place a bid](/foundations/web3/ton-dns/register#place-a-bid). After winning, follow [auction finalization](/foundations/web3/ton-dns/reference#auction-finalization).
+
+## Troubleshoot
+
+| Issue                      | Check                                                                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| The start button is absent | Check expiration, the connected wallet, and whether an auction is already active. The site hides this action from the owner. |
+| The transaction fails      | The owner may have renewed the domain or another account may have started an auction. Refresh the state before retrying.     |
+
+For contract calls, see [expired-domain auctions](/foundations/web3/ton-dns/reference#expired-domain-auctions).

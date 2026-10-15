@@ -193,6 +193,32 @@ Once an auction is finalized, an owner message with an empty body or opcode `0` 
 
 The website uses a record-update message for its renewal action, requests 0.015 GRAM, and shows the renewal button within 180 days of expiration or after expiration. These are interface choices, not restrictions imposed by the contract.
 
+### Expired domain auctions
+
+Send `dns_balance_release` to the existing domain contract when the [renewal period has elapsed and no auction is active](/foundations/web3/ton-dns/reference#renewal-interface). Any sender can call it, including the owner; the website only offers this action to non-owners.
+
+| Field    | Encoding                 |
+| -------- | ------------------------ |
+| Opcode   | `0x4ed14b65`, 32 bits.   |
+| Query ID | Unsigned 64-bit integer. |
+
+The attached message value is the opening bid and must meet the [minimum first bid](/foundations/web3/ton-dns/register#check-the-price) for the label's length. The website uses query ID `0`.
+
+On success, the contract:
+
+- Clears the owner address to `addr_none`.
+- Records the sender as the highest bidder and the message value as the bid.
+- Sets the auction deadline to `now() + 604800` (one week) and resets the renewal timestamp.
+- Keeps the domain address and DNS records unchanged.
+- Attempts to return the existing balance above the 1 GRAM reserve to the previous owner. This excludes the opening bid; message fees affect the received amount.
+
+Subsequent bids follow the [auction rules](/foundations/web3/ton-dns/reference#domain-lifecycle). Ownership is assigned through [auction finalization](/foundations/web3/ton-dns/reference#auction-finalization).
+
+| Exit code | Meaning                                                             |
+| --------- | ------------------------------------------------------------------- |
+| `414`     | The renewal period has not elapsed or an auction is already active. |
+| `407`     | The message value is below the minimum first bid.                   |
+
 ## TypeScript helpers
 
 The examples use `@ton/core` 0.63.1, `@ton/ton` 16.3.0, and `@tonconnect/ui` 5.0.1 with [TON Center API v2](/api/v2/overview).
@@ -396,3 +422,4 @@ TON DNS also integrates with other TON services:
 - [TEP-81](https://github.com/ton-blockchain/TEPs/blob/fe8a154e4dad9f5c0bf7240df278cb50ec6cd908/text/0081-dns-standard.md).
 - [DNS and Text schemas](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/block/block.tlb#L951-L975).
 - [Official DNS interface](https://github.com/ton-blockchain/dns/blob/429f58774b05d8f3cfa05bd22f0e18df615daa01/src/index.js).
+- [Release message payload](https://github.com/ton-blockchain/dns/blob/429f58774b05d8f3cfa05bd22f0e18df615daa01/src/utils.js#L515-L520).
