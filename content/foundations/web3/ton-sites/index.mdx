@@ -1,0 +1,55 @@
+---
+title: "TON Sites overview"
+sidebarTitle: "Overview"
+description: "Publish websites on TON using an HTTP server or TON Storage"
+---
+
+TON Sites are websites accessible through the TON network. You can publish a site using an HTTP server connected through a reverse proxy, or distribute its static files through TON Storage.
+
+## Choose how to publish
+
+| Property    | Web server                                       | TON Storage                                                         |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------------- |
+| Content     | Static files and dynamically generated responses | An immutable bag of files                                           |
+| Backend     | Runs on your server                              | Not executed by Storage                                             |
+| Destination | The reverse proxy's ADNL address                 | The bag's BagID                                                     |
+| Updates     | Update the files or application on your server   | Create and share a new bag, then update the domain's record if used |
+
+With a web server, a reverse proxy forwards requests from the TON network to your HTTP application. Your server can process requests, access databases, and generate responses.
+
+With TON Storage, peers distribute the site's HTML, CSS, JavaScript, and other assets. The BagID identifies a particular version of the bag, including its content and metadata. Changing the published files produces a new BagID.
+
+JavaScript delivered from a bag can run in the browser. Storage serves the files; it does not run server-side application code.
+
+## Domain names and access
+
+A TON DNS domain can point to either destination through its `site` record:
+
+- An ADNL address for a site served through a reverse proxy.
+- A BagID for a site published on TON Storage.
+
+The domain name can stay the same when its destination changes. See [Manage records](/foundations/web3/ton-dns/manage-records).
+
+Visitors access the site through a compatible TON client or a browser configured with a [forward proxy](/foundations/web3/ton-proxy/forward-proxy). Direct access is also possible using a `.adnl` address or a `.bag` address, depending on the publication method and client.
+
+For Storage-backed sites, Tonutils-Proxy retrieves files directly from peers. The C++ forward proxy uses a configured Storage gateway. See [Access files over HTTP](/foundations/web3/ton-proxy/storage-gateway).
+
+## Next steps
+
+- [Publish with a web server](/foundations/web3/ton-sites/web-server) to expose an HTTP application through the TON network.
+- [Publish on TON Storage](/foundations/web3/ton-sites/storage) to distribute a versioned set of static files.
+
+<details>
+  <summary>Moved sections</summary>
+
+  - <span id="how-ton-sites-work" />[How TON Sites work](#choose-how-to-publish).
+  - <span id="adnl-address-as-identity" />[ADNL address as identity](/foundations/web3/ton-sites/web-server#connect-the-reverse-proxy).
+  - <span id="host-a-ton-site" />[Host a TON Site](/foundations/web3/ton-sites/web-server).
+  - <span id="use-rldp-http-proxy" />[Use rldp-http-proxy](/foundations/web3/ton-proxy/reverse-proxy#use-rldp-http-proxy).
+  - <span id="use-tonutils-reverse-proxy" />[Use tonutils-reverse-proxy](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy).
+  - <span id="domain-assignment" />[Domain assignment](/foundations/web3/ton-dns/manage-records).
+  - <span id="domain-name-resolution" />[Domain name resolution](#domain-names-and-access).
+  - <span id="ton-dns" />[TON DNS](/foundations/web3/ton-dns).
+  - <span id="direct-access-via-adnl-address" />[Direct access via ADNL address](/foundations/web3/ton-sites/web-server#verify-direct-access).
+  - <span id="related-components" />[Related components](/foundations/web3/ton-proxy/reference#related-components).
+</details>
