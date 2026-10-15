@@ -1,0 +1,67 @@
+---
+title: "How to open and fund a payment channel"
+sidebarTitle: "Open and fund a channel"
+description: "Initialize a channel with a peer and add payment capacity"
+---
+
+Initialize a channel with another payment node, then deposit funds into the local side.
+
+## Prerequisites
+
+- A running [payment node v1.3.1](/foundations/web3/payment-network/run-node) configured for mainnet and manual balance management
+- A reachable mainnet peer and its payment-node public key in base64
+- Funds in the node's wallet for the chosen asset and native-currency transaction fees
+
+<Callout
+  type="caution"
+  title="Channel funding"
+>
+  `topup` sends funds from the node's wallet. Check the channel, currency, and amount before submitting the final console response. Mainnet transfers cannot be rolled back.
+</Callout>
+
+## Initialize the channel
+
+Enter this command inside the node's console:
+
+```text
+init
+```
+
+When prompted, enter the peer's base64 payment-node public key. This is not the peer's wallet address or ADNL transport key.
+
+Wait for `channel opened offchain`, then run `list` to find the local channel address. In this version, initialization exchanges signed configuration off-chain. It does not by itself prove that the channel contracts are deployed or funded.
+
+## Fund the local side
+
+Enter:
+
+```text
+topup
+```
+
+Answer the prompts in order:
+
+1. The local channel address from `list`.
+1. The configured currency symbol, such as `TON` for the native currency.
+1. The amount in whole-coin units, for example `1` rather than `1000000000` for one native coin.
+
+The first top-up can deploy and activate the channel contracts. Wait for `topup transaction completed`, then allow the node to process the on-chain update.
+
+For jettons or extra-currencies, enable the asset's configuration on the participating nodes first. Symbols and decimals come from that configuration; see [assets and amounts](/foundations/web3/payment-network/reference#assets-and-amounts).
+
+## Verify
+
+Enter `show`, then the local channel address. Check the peer identity, on-chain activation flags, and balances for the chosen asset.
+
+The local available outgoing balance is separate from incoming capacity. To receive payments through the peer, its side must provide sufficient capacity. Funding the local node's wallet does not fund the peer's side.
+
+## Troubleshoot
+
+| Problem                                | Check                                                                  |
+| -------------------------------------- | ---------------------------------------------------------------------- |
+| Invalid key format or length           | Use the peer's 32-byte payment-node public key encoded as base64.      |
+| Unknown currency                       | Check the enabled asset and symbol in `ChannelConfig.SupportedCoins`.  |
+| Insufficient wallet funds              | Check both the asset balance and native currency for transaction fees. |
+| Channel listed but not active on-chain | Inspect the activation flags and the result of the first top-up.       |
+
+Continue with [Send and receive payments](/foundations/web3/payment-network/payments).
