@@ -15,6 +15,10 @@ The official C++ implementation, `rldp-http-proxy`, supports both roles. The com
 
 ## Request flow
 
+<span
+  id="how-ton-proxy-works"
+/>
+
 For a request to `http://example.ton/page`, where the domain points to a reverse proxy:
 
 1. The HTTP client sends the request to its configured forward proxy.
@@ -36,6 +40,10 @@ Storage access depends on the forward proxy implementation:
 - Tonutils-Proxy includes a Storage client and retrieves files from the bag's peers.
 
 ## Privacy and relays
+
+<span
+  id="security-and-privacy"
+/>
 
 ADNL encrypts traffic between the forward and reverse proxies. This encryption does not cover the HTTP connection from the client to the forward proxy or from the reverse proxy to its HTTP server.
 
