@@ -1,0 +1,37 @@
+---
+title: "TON Sites overview"
+sidebarTitle: "Overview"
+description: "Publish websites on TON using an HTTP server or TON Storage"
+---
+
+TON Sites are websites and HTTP applications accessible through the TON network. A site can run on an HTTP server connected to TON, or its static files can be distributed through TON Storage.
+
+Visitors use a compatible TON client or a browser configured with a [forward proxy](/foundations/web3/ton-proxy/forward-proxy). The publication method determines how the site is hosted and updated.
+
+## Choose how to publish
+
+With a web server, a reverse proxy forwards requests from the TON network to the HTTP application. The server can process requests, access databases, and generate responses. The reverse proxy's [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) address identifies it on the TON network.
+
+With TON Storage, the site's HTML, CSS, JavaScript, and other assets are shared as a [bag](/foundations/web3/ton-storage#bags-and-bagids), identified by its BagID. The BagID identifies a particular version of the bag, including its content and metadata. Changing the published files produces a new BagID.
+
+JavaScript delivered from a bag can run in the browser. Storage serves the files; it does not run server-side application code.
+
+| Property    | Web server                                       | TON Storage                                                         |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------------- |
+| Content     | Static files and dynamically generated responses | An immutable bag of files                                           |
+| Backend     | Runs on the server                               | Not executed by Storage                                             |
+| Destination | The reverse proxy's ADNL address                 | The bag's BagID                                                     |
+| Updates     | Update the files or application on the server    | Create and share a new bag, then update the domain's record if used |
+
+## Domain names and access
+
+A TON DNS domain gives the site a readable name. Its `site` record points to the destination for the chosen publication method: the reverse proxy's ADNL address or the bag's BagID.
+
+The domain name can stay the same when its destination changes: [update its record](/foundations/web3/ton-dns/manage-domains#manage-records).
+
+Access without a domain is also possible through a `.adnl` address or a [`.bag` address](/foundations/web3/ton-proxy/forward-proxy#access-files-over-http), depending on the publication method and client.
+
+## Next steps
+
+- [Publish with a web server](/foundations/web3/ton-sites/web-server) to expose an HTTP application through the TON network.
+- [Publish on TON Storage](/foundations/web3/ton-sites/storage) to distribute a versioned set of static files.
