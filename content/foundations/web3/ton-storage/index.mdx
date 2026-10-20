@@ -1,0 +1,98 @@
+---
+title: "TON Storage overview"
+sidebarTitle: "Overview"
+description: "Distributed file sharing and paid storage on TON"
+---
+
+TON Storage distributes files between peers on the TON network. A publisher shares files from a storage daemon, and other peers download and share copies of those files. The files remain on the participating peers' disks.
+
+File sharing does not require an on-chain transaction. Optional storage contracts allow clients to pay providers to retain a copy of the data.
+
+## Bags and BagIDs
+
+<span
+  id="bag-contents-and-identity"
+/>
+
+<span
+  id="bags-and-integrity"
+/>
+
+A _bag_ is the unit of content shared through TON Storage. It contains a file or directory together with metadata describing the files and allowing their contents to be verified.
+
+Each bag has a _BagID_, a 256-bit identifier derived from its data and metadata. A publisher shares this identifier so that other peers can find and download the bag. The BagID identifies the content independently of which peer supplies it.
+
+The bag's header records the directory name, file paths, and positions of file data. Identical file contents alone do not guarantee identical BagIDs: the file paths, directory name, and bag description also contribute to the identifier.
+
+## File distribution
+
+<span
+  id="peer-discovery-and-transfer"
+/>
+
+The official implementation provides two tools: `storage-daemon` stores files and exchanges data with peers, while `storage-daemon-cli` controls the running daemon.
+
+When a daemon creates a bag, it makes the bag available to other peers if uploading is enabled. A receiving daemon uses the BagID to join the bag's overlay, a group of peers associated with that bag. Peer discovery uses the [distributed hash table (DHT)](/foundations/network/dht); the DHT stores discovery information rather than file contents.
+
+Peers exchange the bag's metadata and advertise which pieces they have. The receiving daemon requests missing pieces from those peers and verifies each piece before accepting it. Different pieces can come from different peers. When uploading is enabled, downloaded pieces can also be shared before the entire bag is complete.
+
+In the C++ implementation, peer queries use version 2 of the [Reliable Large Datagram Protocol (RLDP2)](/foundations/network/rldp) over the [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl).
+
+## Pieces and integrity
+
+The serialized header and file contents form a continuous data stream, divided into pieces. A piece can contain the end of one file and the beginning of another. Consequently, downloading a selected file can also transfer bytes from an adjacent, unselected file. The last piece can be shorter than the others.
+
+Each piece has a SHA-256 hash. These hashes form a [Merkle tree](/foundations/serialization/merkle) whose root is recorded in the `TorrentInfo` cell, together with the header hash and other [bag metadata](/foundations/web3/ton-storage/reference#bag-formats). The hash of that cell is the BagID.
+
+When starting from a BagID, the daemon checks that the received `TorrentInfo` cell hashes to that identifier. It then validates proofs of piece hashes against the Merkle root. For each received piece, it calculates the SHA-256 hash of the bytes and compares it with the expected hash. The header is also checked against its hash in `TorrentInfo`.
+
+These checks connect the file layout and downloaded bytes to the expected BagID, without a paid storage contract.
+
+## Metafiles and partial downloads
+
+A _metafile_ supplies bag metadata that a daemon would otherwise obtain from peers. It contains `TorrentInfo` and can optionally include the header and a Merkle proof. It does not contain the file contents or replace the peers serving them.
+
+A daemon can [download selected files](/foundations/web3/ton-storage/get-started#additional-bag-operations) from a bag. It uses the header to map file paths to the required pieces. Selecting files changes which pieces are requested, not the BagID or verification rules.
+
+## Availability and updates
+
+<span
+  id="integrity-availability-and-updates"
+/>
+
+Integrity means that received data matches the expected BagID. Availability requires reachable peers that retain and serve every piece needed for the requested files. A valid BagID or metafile does not guarantee that those pieces are currently available.
+
+Updating files creates a new bag rather than changing an existing bag's identity. Copies already downloaded by other peers remain copies of the old bag. A [TON DNS record](/foundations/web3/ton-dns/manage-domains#manage-records) can point to the new BagID while keeping the same domain name.
+
+## Paid storage
+
+A [storage provider](/foundations/web3/ton-storage/provider-lifecycle) retains and serves bags in exchange for payment. The client funds an on-chain storage agreement, and the provider submits proofs of the stored data to earn payments.
+
+These proofs establish possession of the challenged data; the contract does not verify that the provider serves download requests.
+
+## Ecosystem integration
+
+- [TON DNS](/foundations/web3/ton-dns): associates a domain name with a BagID.
+- [TON Sites](/foundations/web3/ton-sites): uses bags to store static website files, accessed through a Storage gateway.
+- [Blockchain archives](/nodes/cpp/run-archive-liteserver): uses TON Storage to distribute historical blocks and state snapshots.
+- Non-fungible token (NFT) collections can reference off-chain media and metadata stored as bags, using the BagID as a stable content identifier.
+
+## Next steps
+
+- [Get started](/foundations/web3/ton-storage/get-started) to run a daemon, share a bag, and download files.
+- [Store with a provider](/foundations/web3/ton-storage/store-with-provider) to request paid storage.
+- [Reference](/foundations/web3/ton-storage/reference) for formats, commands, and storage contracts.
+
+## Sources
+
+- [Header layout](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentHeader.h#L49)
+- [Torrent info serialization and BagID](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentInfo.cpp#L27)
+- [Stream construction and piece hashing](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentCreator.cpp#L117)
+- [Torrent info, header, and piece verification](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/Torrent.cpp)
+- [Merkle proof validation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/MerkleTree.cpp#L104)
+- [Bag overlay identifier](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/StorageManager.cpp#L27)
+- [Peer discovery and query transport](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/PeerManager.h)
+- [Peer information and piece exchange](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/PeerActor.cpp)
+- [File priorities and piece selection](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/NodeActor.cpp#L334)
+- [Metafile contents](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentMeta.cpp)
+- [Paid storage contracts](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-contract.fc)

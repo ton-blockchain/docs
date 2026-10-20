@@ -1,0 +1,169 @@
+---
+title: "How to run a TON Storage provider"
+sidebarTitle: "Run a storage provider"
+description: "Deploy and operate a paid storage provider"
+---
+
+Run the `storage-daemon` in provider mode, deploy its main contract, and manage paid storage contracts on mainnet.
+
+<Callout
+  type="danger"
+  title="Funds and provider data at risk"
+>
+  Provider commands deploy contracts, transfer funds, close storage contracts, and may delete local bag files. Mainnet transactions and contract closures cannot be rolled back.
+
+  Keep independent backups of required files, verify every address and network, and use a small initialization transfer.
+</Callout>
+
+## Prerequisites
+
+- `storage-daemon` and `storage-daemon-cli` from the same [TON release](https://github.com/ton-blockchain/ton/releases/tag/v2026.08)
+- The [mainnet global configuration file](https://ton-blockchain.github.io/global.config.json)
+- A funded mainnet wallet
+- A public IP address and reachable [ADNL](/foundations/network/adnl) port
+
+## Start provider mode
+
+<span
+  id="protect-provider-data"
+/>
+
+Follow [Start the daemon](/foundations/web3/ton-storage/get-started#start-the-daemon), adding `-P` to the daemon startup command. Use a dedicated database directory for the provider.
+
+The `list` command shows all bags managed by the daemon. Do not remove these bags or use the provider daemon to manage unrelated bags. Keep independent copies of data that must remain available after a storage contract closes.
+
+Run the commands below inside the connected `storage-daemon-cli`, one command per line.
+
+## Deploy the provider contract
+
+Run the [deployment command](/foundations/web3/ton-storage/reference#provider-commands) inside `storage-daemon-cli`:
+
+```bash
+deploy-provider
+```
+
+<Callout
+  type="danger"
+  title="Initialization transfer"
+>
+  The command prints an address that requires a non-bounceable initialization message containing 1 GRAM. Verify the network and address before sending funds. A transfer to the wrong network or address cannot be recovered.
+</Callout>
+
+Do not attach a large balance to the initialization message. Verify the deployed provider:
+
+```bash
+get-provider-info
+```
+
+Fund the deployed provider contract separately to cover later transaction fees. Increase the balance only after verifying the deployment.
+
+## Configure capacity
+
+Set the maximum number and total size of managed storage contracts:
+
+```bash
+set-provider-config --max-contracts <MAX_CONTRACTS> --max-total-size <MAX_TOTAL_SIZE_BYTES>
+```
+
+`<MAX_CONTRACTS>` is the contract-count limit; `<MAX_TOTAL_SIZE_BYTES>` is the combined bag-size limit in bytes. These are daemon limits, separate from the [on-chain terms](/foundations/web3/ton-storage/reference#provider-parameters).
+
+## Configure contract terms
+
+Keep new requests disabled while configuring the on-chain terms:
+
+```bash
+set-provider-params --accept 0 --rate <RATE_NANOGRAM_PER_MB_DAY> --max-span <MAX_PROOF_SPAN_SECONDS> --min-file-size <MIN_BAG_SIZE_BYTES> --max-file-size <MAX_BAG_SIZE_BYTES>
+```
+
+Set [`<RATE_NANOGRAM_PER_MB_DAY>`](/foundations/web3/ton-storage/reference#provider-parameters) to the price per 1,048,576 bytes per day. `<MAX_PROOF_SPAN_SECONDS>` is the maximum paid interval between proofs. `<MIN_BAG_SIZE_BYTES>` and `<MAX_BAG_SIZE_BYTES>` bound the bag stream size, including its header.
+
+Omitted flags retain their prior values. After each on-chain update, read the terms with `get-provider-params <PROVIDER_ADDRESS>` before submitting another update. Use the main contract address printed during deployment as `<PROVIDER_ADDRESS>`.
+
+## Enable and verify requests
+
+Enable requests after verifying every parameter:
+
+```bash
+set-provider-params --accept 1
+```
+
+Run `get-provider-params <PROVIDER_ADDRESS>` again and confirm that requests are enabled and all terms match the intended configuration.
+
+The daemon downloads accepted bags, distributes them to peers, and submits storage proofs.
+
+## Monitor agreements and withdraw earnings
+
+<span
+  id="operate-active-contracts"
+/>
+
+List tracked contracts, their states, and their balances:
+
+```bash
+get-provider-info --contracts --balances
+```
+
+`Client$` is the unpaid client balance. The difference between `Contract$` and `Client$` includes provider earnings, storage reserves, and transaction funds; it is not the exact withdrawable amount.
+
+Withdraw earnings from one per-bag storage contract managed by the provider:
+
+```bash
+withdraw <STORAGE_CONTRACT_ADDRESS>
+```
+
+Request withdrawals from active contracts meeting the [CLI threshold](/foundations/web3/ton-storage/reference#provider-commands):
+
+```bash
+withdraw-all
+```
+
+A withdrawal with a zero client balance can also delete the storage contract; see [Payment accounting](/foundations/web3/ton-storage/reference#payment-accounting).
+
+## Transfer provider funds
+
+<Callout
+  type="danger"
+  title="Provider funds at risk"
+>
+  Start with a small transfer. Verify the destination, amount, and network before sending. Mainnet transfers cannot be rolled back.
+</Callout>
+
+Transfer nanograms from the main provider contract:
+
+```bash
+send-coins <DESTINATION_ADDRESS> <AMOUNT_NANOGRAM>
+```
+
+To include a text message, append `--message "<MESSAGE>"` to this command.
+
+There,
+
+- `<DESTINATION_ADDRESS>` is the receiving account.
+- `<AMOUNT_NANOGRAM>` is the transferred amount in nanograms.
+- `<MESSAGE>` is an optional text message.
+
+## Close a storage contract
+
+<Callout
+  type="caution"
+  title="Local bag files may be deleted"
+>
+  Closing a contract may delete its local bag files when no other tracked contract uses the bag. Keep an independent copy before closing the contract. The on-chain closure cannot be rolled back.
+</Callout>
+
+Close one provider-managed contract:
+
+```bash
+close-contract <STORAGE_CONTRACT_ADDRESS>
+```
+
+[Closing an active agreement](/foundations/web3/ton-storage/provider-lifecycle#closure-and-data-retention) transfers available provider earnings to the main provider contract. Before activation, the remaining funds return to the client.
+
+## Troubleshoot
+
+| Problem                                                  | Check                                                                                                                                                          |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Provider commands fail because provider mode is disabled | Restart the daemon with `-P` and its existing database directory.                                                                                              |
+| Contract is deployed but requests are rejected           | Read the on-chain terms with `get-provider-params <PROVIDER_ADDRESS>` and check the [contract error](/foundations/web3/ton-storage/reference#contract-errors). |
+| Agreement starts closing before activation               | Check local capacity limits and daemon logs; deployment does not guarantee daemon acceptance.                                                                  |
+| `withdraw-all` prints “Nothing to withdraw”              | Check contract states and the [withdrawal threshold](/foundations/web3/ton-storage/reference#provider-commands).                                               |
