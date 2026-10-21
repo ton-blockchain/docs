@@ -6,5 +6,6 @@ export const openapi = createOpenAPI({
   input: {
     v2: path.resolve('./content/api/v2.json'),
     v3: path.resolve('./content/api/v3.yaml'),
+    emulate: path.resolve('./content/api/emulate.json'),
   },
 });
