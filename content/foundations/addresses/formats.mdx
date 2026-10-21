@@ -2,15 +2,12 @@
 title: "Internal address formats"
 ---
 
-Accordingly to [TEP 0002](https://github.com/ton-blockchain/TEPs/blob/master/text/0002-address.md#smart-contract-addresses)
-there exist two internal address formats on TON Blockchain:
+According to [TEP 0002][tep-2], there are two internal address formats on TON blockchain:
 
 - **raw**;
 - **user-friendly**.
 
-Every internal address can be represented in each of these formats. However, these representations are equivalent: refer to exactly one address,
-although they visually differ significantly from each other.
-For a detection how wallets and other applications use these formats, see the [address workflow](/onboarding/wallet-apps/addresses-workflow) page.
+Every internal address can be represented in each of these formats. However, these representations are equivalent: they refer to the same address, though they look different.
 
 ## Raw format
 
@@ -55,7 +52,10 @@ The user-friendly address format is a secure, base64-encoded (or base64url-encod
 
 A user-friendly address is a 36-byte structure with the following components:
 
-1. Flags (1 byte): metadata that changes the handling of messages in the wallet application. `0x11` for sending bounceable messages, `0x51` for non-bounceable, add the `0x80` summand if that address should not be accepted by software running in Mainnet.
+1. Flags (1 byte): metadata that changes the handling of messages in the wallet application.
+   - `0x11` requires bounceable messages.
+   - `0x51` permits non-bounceable messages.
+   - Add `0x80` if the message should not be accepted on mainnet (testnet-only).
 1. `workchain_id` (1 byte): an 8-bit signed integer.
 1. `account_id` (32 bytes): the 256-bit ([big-endian](https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/)) account identifier.
 1. Checksum (2 bytes): a [CRC16-CCITT](https://github.com/ton-blockchain/ton-kotlin/blob/main/crypto/src/crc16.kt) checksum of the preceding 34 bytes.
@@ -64,7 +64,7 @@ The checksum mechanism in user-friendly addresses is similar to the [Luhn algori
 
 ### Flag definitions
 
-The first 8 bits of the user-friendly format encode the handling of messages, as defined in [TEP 0002](https://github.com/ton-blockchain/TEPs/blob/master/text/0002-address.md#smart-contract-addresses):
+The first 8 bits of the user-friendly format encode the handling of messages, as defined in [TEP 0002][tep-2]:
 
 | Address prefix | Binary form | Bounceable | Testnet-only |
 | :------------: | :---------: | :--------: | :----------: |
@@ -73,12 +73,12 @@ The first 8 bits of the user-friendly format encode the handling of messages, as
 |     `k...`     |  `10010001` |     Yes    |      Yes     |
 |     `0...`     |  `11010001` |     No     |      Yes     |
 
-As we can see, there are four variants of the handling:
+There are four variants in total:
 
-- send a **bounceable** message to a **Mainnet** address;
-- send a **non-bounceable** message to a **Mainnet** address;
-- send a **bounceable** message to a **Testnet** address;
-- send a **non-bounceable** message to a **Testnet** address;
+- a **bounceable** address usable on mainnet or testnet;
+- a **non-bounceable** address usable on mainnet or testnet;
+- a **bounceable** address restricted to testnet;
+- a **non-bounceable** address restricted to testnet.
 
 ### Encoding
 
@@ -98,15 +98,36 @@ Examples:
 
 ### Custom address safety
 
-When developing custom solutions on TON Blockchain, it is critical to implement proper address handling logic. First, always verify whether the recipient address is initialized before sending funds to prevent unintended losses.
+When developing custom solutions on TON blockchain, it is critical to implement proper address handling logic. First, always verify whether the recipient address is [initialized](/foundations/status#status-variety) before sending funds to prevent unintended losses.
 
-For user-friendly format forms selection: use _bounceable_ addresses for user smart contracts with custom logic to ensure funds are returned if the contract is invalid, and _non-bounceable_ addresses for wallets to guarantee funds are credited even if the recipient is uninitialized.
+For user-friendly format selection according to [TEP 0002][tep-2-wallets]:
+
+- Use **non-bounceable** addresses for **wallet contracts** so funds can be credited even if the recipient is uninitialized.
+- Use **bounceable** addresses for **contracts with custom logic** so funds can be returned if message processing fails.
 
 ### Drawbacks
 
 - **Public key extraction**: it is impossible to extract the public key from the address, which is needed for some tasks (for example,
   to send an encrypted message to this address). Thus, until the smart contract is deployed for this address, there is no way to get the public key on-chain.
 - **UI**: most OS do not allow you to select an address with a double click because of `_`, `-`, `/`, `+` base64 symbols.
+
+## Wallet address handling
+
+[TEP 0002][tep-2-wallets] specifies non-bounceable receiving addresses for wallet contracts and bounceable addresses for other smart contracts.
+
+The address's bounceable flag and the recipient's [account status](/foundations/status#status-variety) determine the message's [`bounce`](/foundations/messages/internal#bounces) flag:
+
+| Address form   | Recipient status       | Message `bounce` |
+| -------------- | ---------------------- | ---------------- |
+| Bounceable     | Any                    | `true`           |
+| Non-bounceable | `nonexist` or `uninit` | `false`          |
+| Non-bounceable | `active` or `frozen`   | `true`           |
+
+<Callout type="caution">
+  Non-bounceable transfers to an incorrect address can leave mainnet funds inaccessible. Verify the recipient and test the funding flow on testnet before transferring real funds.
+</Callout>
+
+Wallet apps should also check the address's length, valid characters, prefix, and checksum. If the address is invalid, an alert should be shown and the sending operation should not be performed. Additionally, mainnet apps should reject addresses marked testnet-only.
 
 ## Summary
 
@@ -118,3 +139,6 @@ For user-friendly format forms selection: use _bounceable_ addresses for user sm
 For more technical details, refer to:
 
 - [Account status](/foundations/status): how addresses evolve (active, frozen, etc.).
+
+[tep-2]: https://github.com/ton-blockchain/TEPs/blob/2f7754f417519f78eaba039bbcb28589c7017efa/text/0002-address.md#smart-contract-addresses
+[tep-2-wallets]: https://github.com/ton-blockchain/TEPs/blob/2f7754f417519f78eaba039bbcb28589c7017efa/text/0002-address.md#wallets-applications

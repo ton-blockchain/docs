@@ -109,18 +109,18 @@ With the diagram **Legend** below, you can inspect all possible changes in the a
 
 We additionally review some important points regarding the statuses except `nonexist`.
 
-**Sending to `uninit` account**:
+Sending to `uninit` account:
 
-- **Messages of any type without `state_init`**: changes to `nonexist` if its balance becomes zero.
-- **Messages of any type with valid `state_init`**: changes to `active` if the balance is at least 40000 nanograms.
+- Messages of any type **without `state_init`**: changes to `nonexist` if its balance becomes zero.
+- Messages of any type **with valid `state_init`**: changes to `active` if the balance is at least 40000 nanograms.
 
-**Sending to `frozen` account**:
+Sending to `frozen` account:
 
-- **Messages of any type**: Changes to `nonexist` if its `storage_fees_due` exceeds 1 GRAM and the balance is zero.
-- **Internal message with valid `state_init` (non-bounceable)**: changes to `active` if its `storage_fees_due` becomes zero.
-- **Internal message with valid `state_init` (bounceable)**: changes to `active` with the same debt, and the account balance equals the message's balance minus compute and action fees.
+- Messages of **any type**: changes to `nonexist` if its `storage_fees_due` exceeds 1 GRAM and the balance is zero.
+- Internal **non-bounceable** message with valid `state_init`: changes to `active` if its `storage_fees_due` becomes zero.
+- Internal **bounceable** message with valid `state_init`: changes to `active` with the same debt, and the account balance equals the message's balance minus compute and action fees.
 
-**Sending to `active` account**:
+Sending to `active` account:
 
 - **Messages of any type**: changes to `frozen` if its `storage_fees_due` exceeds 0.1 GRAM and the account's state has ever changed.
 - **Messages of any type**: changes to `uninit` if its `storage_fees_due` exceeds 0.1 GRAM and the account's state has never changed.
@@ -129,7 +129,7 @@ We additionally review some important points regarding the statuses except `none
 
 **Deployment strategy**: The standard practice for deploying a wallet is to first send a non-bounceable message with Gram to its address. This transitions the account to the `uninit` status. The wallet owner can then deploy the contract in a subsequent transaction, using the pre-funded balance.
 
-**Protection against errors**: standard wallets and applications manage these complexities by automatically setting the `bounce` flag based on the status of the destination account. Developers of custom applications must implement similar logic to prevent fund loss.
+**Protection against errors**: standard wallets and applications manage these complexities by automatically setting the `bounce` flag based on the address flags and the status of the destination account. Developers of custom applications must implement similar [address handling logic](/foundations/addresses/formats#wallet-address-handling) to prevent fund loss.
 
 ## Summary
 

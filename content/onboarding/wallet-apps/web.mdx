@@ -78,13 +78,13 @@ Overall procedure is:
 
 ### Add funds into the wallet
 
-There is a [separate article](/onboarding/wallet-apps/get-coins) on this.
+Request coins with [Testgiver TON bot](/onboarding/wallet-apps/get-coins#use-testgiver-ton-bot):
 
 1. Message [`@testgiver_ton_bot`](https://t.me/testgiver_ton_bot) in [Telegram](https://telegram.org/).
 1. Press the Start button or send `/start` message.
 1. Pass the captcha test.
-1. Enter and send the testnet wallet address displayed by wallet.ton.org.
-1. Soon after the "Request added to the queue" response, 2 GRAM will be sent to the wallet.
+1. Copy and enter the receiving wallet address after [switching to testnet](#switch-to-testnet).
+1. Soon after the "Request added to the queue" response, 2 GRAM will be sent to the wallet, which can receive GRAM before its contract is deployed. The first deposit funds [deployment](#deploy-the-code).
 1. There won't be any other message that the transfer happened. [Use an explorer](#check-the-account-state) to check the request status.
 1. The account should be in the `uninit` status now.
 
