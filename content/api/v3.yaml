@@ -237,6 +237,12 @@ paths:
             enum:
               - asc
               - desc
+        - name: cursor
+          in: query
+          description: Continue after the page that returned this `next_cursor`. Send the same filters and sort; do not
+            combine with `offset`.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -3084,7 +3090,7 @@ paths:
         - APIKeyQuery: []
       description: >-
         Get wallet smart contract information. Supports the following wallet versions: `v1r1`, `v1r2`, `v1r3`, `v2r1`,
-        `v2r2`, `v3r1`, `v3r2`, `v4r1`, `v4r2`, `v5beta`, and `v5r1`. If the account is not a wallet, returns error code
+        `v2r2`, `v3r1`, `v3r2`, `v4r1`, `v4r2`, `v5beta`, `v5r1`, and `tg-wallet`. If the account is not a wallet, returns error code
         `409`.
       tags:
         - API v2
@@ -3306,6 +3312,9 @@ components:
             $ref: "#/components/schemas/Transaction"
         type:
           type: string
+        parent_gasless_action:
+          description: The `action_id` of the `gasless_request` action that directly produced this action.
+          type: string
     ActionPhase:
       type: object
       properties:
@@ -3350,6 +3359,8 @@ components:
           $ref: "#/components/schemas/AddressBook"
         metadata:
           $ref: "#/components/schemas/Metadata"
+        next_cursor:
+          type: string
     AddressBook:
       type: object
       additionalProperties:
@@ -3545,6 +3556,10 @@ components:
           type: string
         nft_item_owner:
           type: string
+        self_assigned:
+          description: Whether the owner, wallet, and last wallet writer are the same. Available only when the server
+            uses `-dns-self-assigned-only`.
+          type: boolean
     DNSAuction:
       type: object
       properties:

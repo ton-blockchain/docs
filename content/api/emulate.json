@@ -1,0 +1,385 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "description": "Emulate transactions and traces before sending messages to the TON blockchain.",
+    "title": "TON Emulate API",
+    "contact": {},
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://toncenter.com",
+      "description": "TON Mainnet"
+    },
+    {
+      "url": "https://testnet.toncenter.com",
+      "description": "TON Testnet"
+    }
+  ],
+  "paths": {
+    "/api/emulate/v1/emulateTonConnect": {
+      "post": {
+        "tags": [
+          "Traces"
+        ],
+        "summary": "Emulate TON Connect trace",
+        "description": "Emulate a trace by composing an external message from a TON Connect request.",
+        "operationId": "emulateTonConnect",
+        "parameters": [
+          {
+            "name": "X-Actions-Version",
+            "in": "header",
+            "description": "Supported actions version used when classifying the emulated trace.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "TON Connect emulation request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TonConnectEmulateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Emulated trace and transactions, with optional actions, code, data, address book, and metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmulateTraceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmulateError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Emulation or result processing failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmulateError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/emulate/v1/emulateTrace": {
+      "post": {
+        "tags": [
+          "Traces"
+        ],
+        "summary": "Emulate trace",
+        "description": "Emulate a trace from an external message serialized as a base64-encoded BoC.",
+        "operationId": "emulateTrace",
+        "parameters": [
+          {
+            "name": "X-Actions-Version",
+            "in": "header",
+            "description": "Supported actions version used when classifying the emulated trace.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "External message emulation request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmulateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Emulated trace and transactions, with optional actions, code, data, address book, and metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmulateTraceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmulateError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Emulation or result processing failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmulateError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Traces",
+      "description": "Trace emulation for external messages and TON Connect requests."
+    }
+  ],
+  "components": {
+    "schemas": {
+      "EmulateRequest": {
+        "type": "object",
+        "properties": {
+          "boc": {
+            "type": "string",
+            "description": "External message serialized as a base64-encoded BoC.",
+            "minLength": 1
+          },
+          "ignore_chksig": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Skip signature checks during emulation."
+          },
+          "include_code_data": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Include contract code and data cells in the response."
+          },
+          "include_address_book": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Include address book entries. Requires address book support on the server."
+          },
+          "include_metadata": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Include account metadata. Requires metadata support on the server."
+          },
+          "with_actions": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Classify the emulated trace into actions."
+          },
+          "mc_block_seqno": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "example": null,
+            "description": "Masterchain block sequence number used for emulation. If omitted or null, use the latest available state.",
+            "minimum": 0,
+            "maximum": 4294967295
+          }
+        },
+        "required": [
+          "boc"
+        ]
+      },
+      "TonConnectEmulateRequest": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "example": "EQB3ncyBUTjZUA5EnFKR5_EnOMI9V1tTEAAPaiU71gc4TiUt",
+            "description": "Wallet address from which to compose the external message.",
+            "minLength": 1
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "example": "EQB3ncyBUTjZUA5EnFKR5_EnOMI9V1tTEAAPaiU71gc4TiUt",
+                  "description": "Destination account address.",
+                  "minLength": 1
+                },
+                "amount": {
+                  "type": "string",
+                  "example": "1000000000",
+                  "description": "Amount to send, in nanograms, as a decimal string.",
+                  "pattern": "^[0-9]+$"
+                },
+                "payload": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Message body serialized as a base64-encoded BoC. Optional."
+                },
+                "stateInit": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "example": null,
+                  "description": "Contract initial state serialized as a base64-encoded BoC. Optional."
+                }
+              },
+              "required": [
+                "address",
+                "amount"
+              ]
+            },
+            "description": "Internal messages to include in the wallet request.",
+            "minItems": 1,
+            "maxItems": 4
+          },
+          "valid_until": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "example": null,
+            "description": "Expiration time of the wallet request as a Unix timestamp, in seconds.",
+            "minimum": 0
+          },
+          "include_code_data": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Include contract code and data cells in the response."
+          },
+          "include_address_book": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Include address book entries. Requires address book support on the server."
+          },
+          "include_metadata": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Include account metadata. Requires metadata support on the server."
+          },
+          "with_actions": {
+            "type": "boolean",
+            "example": false,
+            "default": false,
+            "description": "Classify the emulated trace into actions."
+          },
+          "mc_block_seqno": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "example": null,
+            "description": "Masterchain block sequence number used for emulation. If omitted or null, use the latest available state.",
+            "minimum": 0,
+            "maximum": 4294967295
+          }
+        },
+        "required": [
+          "from",
+          "messages"
+        ]
+      },
+      "EmulateTraceResponse": {
+        "type": "object",
+        "required": [
+          "mc_block_seqno",
+          "trace",
+          "transactions",
+          "rand_seed",
+          "is_incomplete"
+        ],
+        "properties": {
+          "mc_block_seqno": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Masterchain block sequence number used for emulation."
+          },
+          "trace": {
+            "$ref": "./v3.yaml#/components/schemas/TraceNode",
+            "description": "Tree of emulated transactions."
+          },
+          "transactions": {
+            "type": "object",
+            "description": "Emulated transactions keyed by transaction hash.",
+            "additionalProperties": {
+              "$ref": "./v3.yaml#/components/schemas/Transaction"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "description": "Actions classified from the emulated trace when requested.",
+            "items": {
+              "$ref": "./v3.yaml#/components/schemas/Action"
+            }
+          },
+          "code_cells": {
+            "type": "object",
+            "description": "Base64-encoded contract code cells keyed by cell hash, when requested.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "data_cells": {
+            "type": "object",
+            "description": "Base64-encoded contract data cells keyed by cell hash, when requested.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "address_book": {
+            "$ref": "./v3.yaml#/components/schemas/AddressBook"
+          },
+          "metadata": {
+            "$ref": "./v3.yaml#/components/schemas/Metadata"
+          },
+          "rand_seed": {
+            "type": "string",
+            "description": "Random seed used for emulation."
+          },
+          "is_incomplete": {
+            "type": "boolean",
+            "description": "Whether the trace exceeded the emulation depth limit."
+          }
+        }
+      },
+      "EmulateError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error description."
+          }
+        }
+      }
+    }
+  }
+}

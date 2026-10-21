@@ -1,0 +1,59 @@
+---
+title: "TON Center Emulation API overview"
+sidebarTitle: "Overview"
+---
+
+The TON Center Emulation API simulates execution of transactions and traces on the blockchain. Submit an external message or a TON Connect request to inspect the resulting transactions and optional actions.
+
+Emulation **does not** send messages to the blockchain.
+
+## Base URLs
+
+| Network | Base URL                                       |
+| ------- | ---------------------------------------------- |
+| Mainnet | `https://toncenter.com/api/emulate/v1`         |
+| Testnet | `https://testnet.toncenter.com/api/emulate/v1` |
+
+## Endpoints
+
+{/* BEGIN_AUTO_GENERATED: API_EMULATE_ENDPOINTS */}
+| Category | Method | Description |
+| -------- | ------ | ----------- |
+| Traces | [`POST /emulateTonConnect`](/api/emulate/traces/emulate-ton-connect-trace) | Emulate a trace by composing an external message from a TON Connect request. |
+| Traces | [`POST /emulateTrace`](/api/emulate/traces/emulate-trace) | Emulate a trace from an external message serialized as a base64-encoded BoC. |
+{/* END_AUTO_GENERATED: API_EMULATE_ENDPOINTS */}
+
+### Emulating a TON Connect request
+
+TON Connect emulation accepts one to four internal messages. The sending wallet must be deployed. Supported wallets are `v3r1`, `v3r2`, `v4r1`, `v4r2`, and [`v5r1`](/contracts/standard/wallets/v5).
+
+Replace `<WALLET_ADDRESS>` with the sending wallet address and `<DESTINATION_ADDRESS>` with the recipient address. The `amount` is a decimal string in nanograms: `1000000000` represents 1 GRAM.
+
+```bash
+curl "https://testnet.toncenter.com/api/emulate/v1/emulateTonConnect" \
+  -H "Content-Type: application/json" \
+  --data '{
+    "from": "<WALLET_ADDRESS>",
+    "messages": [
+      {
+        "address": "<DESTINATION_ADDRESS>",
+        "amount": "1000000000"
+      }
+    ],
+    "with_actions": true
+  }'
+```
+
+## Results and options
+
+The response includes the masterchain block sequence number, a transaction tree in `trace`, a `transactions` map keyed by hash, and the random seed used for emulation. The boolean `is_incomplete` field indicates whether the trace exceeded the emulation depth limit.
+
+- Set `with_actions` to classify the trace into actions. Use `X-Actions-Version` to select the supported actions version.
+- Set `include_code_data` to include contract code and data cells.
+- Set `include_address_book` or `include_metadata` to include address book entries or account metadata. These options require server support.
+- Set `mc_block_seqno` to select the masterchain state for emulation. If omitted or null, the server uses the latest available state.
+- For external-message emulation, set `ignore_chksig` to skip signature checks.
+
+<Callout type="note">
+  Shared transaction, trace, action, address book, and metadata models follow [API v3](/api/v3/overview).
+</Callout>

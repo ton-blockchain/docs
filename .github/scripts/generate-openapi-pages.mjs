@@ -57,5 +57,20 @@ const genV3 = async () =>
     name: (path) => commonNameTransform(path.info.title),
   });
 
+const genEmulate = async () =>
+  await generateFiles({
+    ...commonConfig,
+    input: createOpenAPI({
+      input: {
+        emulate: path.resolve('./content/api/emulate.json'),
+      },
+    }),
+    output: path.resolve('./content/api/emulate'),
+    per: 'operation',
+    groupBy: 'tag',
+    name: (path) => commonNameTransform(path.info.title),
+  });
+
 await genV2();
 await genV3();
+await genEmulate();
