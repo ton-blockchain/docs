@@ -3,6 +3,7 @@
 import Link from 'fumadocs-core/link';
 import { ImageZoom } from './image-zoom';
 import { Callout } from './callout';
+import { cn } from '@/lib/cn';
 
 /**
  * @param {{
@@ -103,14 +104,20 @@ export const Image = ({
   const shouldNotZoom =
     noZoom === 'true' || noZoom === true || shouldCreateLink || shouldInvert ? true : false;
   const shouldUseFullWidth = fullWidth === 'true' || fullWidth === true ? true : false;
-  const extraImageClasses = `${shouldUseFullWidth ? 'w-full h-auto' : ''} ${shouldNotZoom ? 'cursor-default' : ''}`;
-  const extraWrapperClasses = `${shouldCenter ? 'flex justify-center' : ''} ${shouldUseFullWidth ? 'w-full' : ''}`;
+  const extraImageClasses = cn(
+    shouldUseFullWidth && 'w-full h-auto',
+    shouldNotZoom && 'cursor-default',
+  );
+  const extraWrapperClasses = cn(
+    shouldCenter && 'flex justify-center',
+    shouldUseFullWidth && 'w-full',
+  );
 
   // Resulting images
   const images = (
     <>
       <ImageZoom
-        className={`block dark:hidden ${extraImageClasses}`}
+        className={cn('block dark:hidden', extraImageClasses)}
         src={src}
         alt={alt}
         height={heightPx}
@@ -122,7 +129,7 @@ export const Image = ({
         })}
       />
       <ImageZoom
-        className={`hidden dark:block ${shouldInvert ? 'invert' : ''} ${extraImageClasses}`}
+        className={cn('hidden dark:block', shouldInvert && 'invert', extraImageClasses)}
         src={darkSrc ?? src}
         alt={darkAlt ?? alt}
         height={heightPx}
@@ -161,7 +168,7 @@ export const Image = ({
     return (
       <figure className={shouldUseFullWidth ? 'w-full' : undefined}>
         {mbCentered}
-        <figcaption className="mt-2 text-center text-sm italic text-fd-muted-foreground">
+        <figcaption className="text-center text-sm italic text-fd-muted-foreground">
           {caption}
         </figcaption>
       </figure>

@@ -47,7 +47,7 @@ The above is particularly applicable to the blocks and state of the TON Blockcha
 
 ### 1.1.3. The layout of a single cell
 
-Each single cell consists of up to 1023 data bits and up to four references to other cells. When a cell is kept in memory, its exact representation is implementation-dependent. However, there is a standard representation of cells, useful for instance, for serializing cells for file storage or network transmission. 
+Each single cell consists of up to 1023 data bits and up to four references to other cells. When a cell is kept in memory, its exact representation is implementation-dependent. However, there is a standard representation of cells, useful for instance, for serializing cells for file storage or network transmission.
 This "standard representation" or "standard layout" $\text{CellRepr}(c)$ of a cell $c$ consists of the following:
 
 - Two *descriptor bytes* come first, sometimes denoted by $d_1$ and $d_2$. The first of these bytes $d_1$ equals (in the simplest case) the number of references $0\leq r\leq 4$ in the cell. The second descriptor byte $d_2$ encodes the bit length $l$ of the data part of the cell as follows: the first seven bits of $d_2$ equal $\lfloor l/8\rfloor$, the number of complete data bytes present in the cell, while the last bit of $d_2$ is the *completion tag*, equal to one if $l$ is not divisible by eight. Therefore,
@@ -928,12 +928,12 @@ The serialization of source and destination addresses is defined by the followin
 
 ```
 addr_none$00 = MsgAddressExt;
-addr_extern$01 len:(## 9) external_address:(len * Bit) 
+addr_extern$01 len:(## 9) external_address:(len * Bit)
              = MsgAddressExt;
 anycast_info$_ depth:(## 5) rewrite_pfx:(depth * Bit) = Anycast;
-addr_std$10 anycast:(Maybe Anycast) 
+addr_std$10 anycast:(Maybe Anycast)
    workchain_id:int8 address:uint256  = MsgAddressInt;
-addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9) 
+addr_var$11 anycast:(Maybe Anycast) addr_len:(## 9)
    workchain_id:int32 address:(addr_len * Bit) = MsgAddressInt;
 _ MsgAddressInt = MsgAddress;
 _ MsgAddressExt = MsgAddress;
@@ -960,7 +960,7 @@ Amounts of Grams are expressed with the aid of two types representing variable-l
 ```
 var_uint$_ {n:#} len:(#< n) value:(uint (len * 8))
          = VarUInteger n;
-var_int$_ {n:#} len:(#< n) value:(int (len * 8)) 
+var_int$_ {n:#} len:(#< n) value:(int (len * 8))
         = VarInteger n;
 nanograms$_ amount:(VarUInteger 16) = Grams;
 ```
@@ -976,9 +976,9 @@ Recall that the TON Blockchain allows its users to define arbitrary cryptocurren
 When some amounts of one or several such cryptocurrencies need to be represented, a [dictionary](/foundations/whitepapers/tvm#33---hashmaps-or-dictionaries) with 32-bit $\textit{currency\_id}$s as keys and `VarUInteger 32` values is used:
 
 ```
-extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32)) 
+extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32))
                  = ExtraCurrencyCollection;
-currencies$_ grams:Grams other:ExtraCurrencyCollection 
+currencies$_ grams:Grams other:ExtraCurrencyCollection
            = CurrencyCollection;
 ```
 
@@ -990,10 +990,10 @@ A message consists of its *header* followed by its *body, or payload*. The body 
 
 ```
 int_msg_info$0 ihr_disabled:Bool bounce:Bool
-  src:MsgAddressInt dest:MsgAddressInt 
+  src:MsgAddressInt dest:MsgAddressInt
   value:CurrencyCollection ihr_fee:Grams fwd_fee:Grams
   created_lt:uint64 created_at:uint32 = CommonMsgInfo;
-ext_in_msg_info$10 src:MsgAddressExt dest:MsgAddressInt 
+ext_in_msg_info$10 src:MsgAddressExt dest:MsgAddressInt
   import_fee:Grams = CommonMsgInfo;
 ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt
   created_lt:uint64 created_at:uint32 = CommonMsgInfo;
@@ -1054,14 +1054,14 @@ Notice that *the source address and the logical creation time of an internal or 
 [Message envelopes](#2116-message-envelopes) are used for attaching routing information, such as the current (transit) address and the next-hop address, to inbound, transit, and outbound messages. The message itself is kept in a separate cell and referred to from the message envelope by a cell reference.
 
 ```
-interm_addr_regular$0 use_src_bits:(#<= 96) 
+interm_addr_regular$0 use_src_bits:(#<= 96)
   = IntermediateAddress;
-interm_addr_simple$10 workchain_id:int8 addr_pfx:(64 * Bit) 
+interm_addr_simple$10 workchain_id:int8 addr_pfx:(64 * Bit)
   = IntermediateAddress;
 interm_addr_ext$11 workchain_id:int32 addr_pfx:(64 * Bit)
   = IntermediateAddress;
-msg_envelope cur_addr:IntermediateAddress 
-  next_addr:IntermediateAddress fwd_fee_remaining:Grams 
+msg_envelope cur_addr:IntermediateAddress
+  next_addr:IntermediateAddress fwd_fee_remaining:Grams
   msg:^(Message Any) = MsgEnvelope;
 ```
 
@@ -1079,12 +1079,12 @@ Each inbound message mentioned in *InMsgDescr* is described by a value of type *
 
 Inbound messages may be classified as follows:
 
-- *Inbound external messages* — Need no additional reason for being imported into the block, but must be immediately processed by a transaction in the same block.  
-- *Internal IHR messages with destination addresses in this block* — The reason for their being imported into the block includes a Merkle proof of their generation (i.e., their inclusion in *OutMsgDescr* of their original block). Such a message must be immediately delivered to its final destination and processed by a transaction.  
-- *Internal messages with destinations in this block* — The reason for their inclusion is their presence in *OutMsgQueue* of the most recent state of a neighboring shardchain,<a id="ref-fn26"></a><sup>[26](#fn26)</sup> or their presence in *OutMsgDescr* of this very block. This neighboring shardchain is completely determined by the transit address indicated in the forwarded message envelope, which is replicated in *InMsg* as well. The "fate" of this message is again described by a reference to the processing transaction inside the current block.  
-- *Immediately routed internal messages* — Essentially a subclass of the previous class of messages. In this case, the imported message is one of the outbound messages generated in this very block.  
-- *Transit internal messages* — Have the same reason for inclusion as the previous class of messages. However, they are not processed inside the block, but internally forwarded into *OutMsgDescr* and *OutMsgQueue*. This fact, along with a reference to the new envelope of the transit message, must be registered in *InMsg*.  
-- *Discarded internal messages with destinations in this block* — An internal message with a destination in this block may be imported and immediately discarded instead of being processed by a transaction if it has already been received and processed via IHR in a preceding block of this shardchain. In this case, a reference to the previous processing transaction must be provided.  
+- *Inbound external messages* — Need no additional reason for being imported into the block, but must be immediately processed by a transaction in the same block.
+- *Internal IHR messages with destination addresses in this block* — The reason for their being imported into the block includes a Merkle proof of their generation (i.e., their inclusion in *OutMsgDescr* of their original block). Such a message must be immediately delivered to its final destination and processed by a transaction.
+- *Internal messages with destinations in this block* — The reason for their inclusion is their presence in *OutMsgQueue* of the most recent state of a neighboring shardchain,<a id="ref-fn26"></a><sup>[26](#fn26)</sup> or their presence in *OutMsgDescr* of this very block. This neighboring shardchain is completely determined by the transit address indicated in the forwarded message envelope, which is replicated in *InMsg* as well. The "fate" of this message is again described by a reference to the processing transaction inside the current block.
+- *Immediately routed internal messages* — Essentially a subclass of the previous class of messages. In this case, the imported message is one of the outbound messages generated in this very block.
+- *Transit internal messages* — Have the same reason for inclusion as the previous class of messages. However, they are not processed inside the block, but internally forwarded into *OutMsgDescr* and *OutMsgQueue*. This fact, along with a reference to the new envelope of the transit message, must be registered in *InMsg*.
+- *Discarded internal messages with destinations in this block* — An internal message with a destination in this block may be imported and immediately discarded instead of being processed by a transaction if it has already been received and processed via IHR in a preceding block of this shardchain. In this case, a reference to the previous processing transaction must be provided.
 - *Discarded transit internal messages* — Similarly, a transit message may be discarded immediately after import if it has already been delivered via IHR to its final destination. In this case, a Merkle proof of its processing in the final block (as an IHR message) is required.
 
 
@@ -1093,19 +1093,19 @@ Inbound messages may be classified as follows:
 Each [inbound message](#321-types-and-sources-of-inbound-messages) is described by an instance of the `InMsg` type, which has six constructors corresponding to the cases:
 
 ```
-msg_import_ext$000 msg:^(Message Any) transaction:^Transaction 
+msg_import_ext$000 msg:^(Message Any) transaction:^Transaction
               = InMsg;
-msg_import_ihr$010 msg:^(Message Any) transaction:^Transaction 
+msg_import_ihr$010 msg:^(Message Any) transaction:^Transaction
     ihr_fee:Grams proof_created:^Cell = InMsg;
 msg_import_imm$011 in_msg:^MsgEnvelope
     transaction:^Transaction fwd_fee:Grams = InMsg;
-msg_import_fin$100 in_msg:^MsgEnvelope 
+msg_import_fin$100 in_msg:^MsgEnvelope
     transaction:^Transaction fwd_fee:Grams = InMsg;
-msg_import_tr$101  in_msg:^MsgEnvelope out_msg:^MsgEnvelope 
+msg_import_tr$101  in_msg:^MsgEnvelope out_msg:^MsgEnvelope
     transit_fee:Grams = InMsg;
-msg_discard_fin$110 in_msg:^MsgEnvelope transaction_id:uint64 
+msg_discard_fin$110 in_msg:^MsgEnvelope transaction_id:uint64
     fwd_fee:Grams = InMsg;
-msg_discard_tr$111 in_msg:^MsgEnvelope transaction_id:uint64 
+msg_discard_tr$111 in_msg:^MsgEnvelope transaction_id:uint64
     fwd_fee:Grams proof_delivered:^Cell = InMsg;
 ```
 
@@ -1147,16 +1147,16 @@ These augmentation values must satisfy certain *aggregation conditions*. Typical
 The [serialization of augmented hashmaps](/foundations/whitepapers/tvm#333-serialization-of-hashmaps) with $n$-bit keys, values of type $X$, and augmentation values of type $Y$ is given by the following TL-B scheme, which is an extension:
 
 ```
-ahm_edge#_ {n:#} {X:Type} {Y:Type} {l:#} {m:#} 
-  label:(HmLabel ~l n) {n = (~m) + l} 
+ahm_edge#_ {n:#} {X:Type} {Y:Type} {l:#} {m:#}
+  label:(HmLabel ~l n) {n = (~m) + l}
   node:(HashmapAugNode m X Y) = HashmapAug n X Y;
-ahmn_leaf#_ {X:Type} {Y:Type} extra:Y value:X 
+ahmn_leaf#_ {X:Type} {Y:Type} extra:Y value:X
   = HashmapAugNode 0 X Y;
 ahmn_fork#_ {n:#} {X:Type} {Y:Type}
-    left:^(HashmapAug n X Y) right:^(HashmapAug n X Y) extra:Y 
+    left:^(HashmapAug n X Y) right:^(HashmapAug n X Y) extra:Y
   = HashmapAugNode (n + 1) X Y;
 
-ahme_empty$0 {n:#} {X:Type} {Y:Type} extra:Y 
+ahme_empty$0 {n:#} {X:Type} {Y:Type} extra:Y
           = HashmapAugE n X Y;
 ahme_root$1 {n:#} {X:Type} {Y:Type} root:^(HashmapAug n X Y)
   extra:Y = HashmapAugE n X Y;
@@ -1167,7 +1167,7 @@ ahme_root$1 {n:#} {X:Type} {Y:Type} root:^(HashmapAug n X Y)
 The collection of inbound message descriptors is augmented by a vector of two currency values, representing the imported value and the forwarding and transit fees collected from a message or a collection of messages:
 
 ```
-import_fees$_ fees_collected:Grams 
+import_fees$_ fees_collected:Grams
   value_imported:CurrencyCollection = ImportFees;
 ```
 
@@ -1213,15 +1213,15 @@ Each outbound message is described by an instance of *OutMsg*:
 ```
 msg_export_ext$000 msg:^(Message Any)
     transaction:^Transaction = OutMsg;
-msg_export_imm$010 out_msg:^MsgEnvelope 
+msg_export_imm$010 out_msg:^MsgEnvelope
     transaction:^Transaction reimport:^InMsg = OutMsg;
-msg_export_new$001 out_msg:^MsgEnvelope 
+msg_export_new$001 out_msg:^MsgEnvelope
     transaction:^Transaction = OutMsg;
-msg_export_tr$011  out_msg:^MsgEnvelope 
+msg_export_tr$011  out_msg:^MsgEnvelope
     imported:^InMsg = OutMsg;
-msg_export_deq$110 out_msg:^MsgEnvelope 
+msg_export_deq$110 out_msg:^MsgEnvelope
     import_block_lt:uint64 = OutMsg;
-msg_export_tr_req$111 out_msg:^MsgEnvelope 
+msg_export_tr_req$111 out_msg:^MsgEnvelope
     imported:^InMsg = OutMsg;
 ```
 
@@ -1312,8 +1312,8 @@ There are three kinds of accounts:
 The *storage profile* of an account is a data structure describing the amount of persistent blockchain state storage used by that account. It describes the total amount of cells, data bits, and internal and external cell references used.
 
 ```
-storage_used$_ cells:(VarUInteger 7) bits:(VarUInteger 7) 
-  ext_refs:(VarUInteger 7) int_refs:(VarUInteger 7) 
+storage_used$_ cells:(VarUInteger 7) bits:(VarUInteger 7)
+  ext_refs:(VarUInteger 7) int_refs:(VarUInteger 7)
   public_cells:(VarUInteger 7) = StorageUsed;
 ```
 
@@ -1335,7 +1335,7 @@ account$1 addr:MsgAddressInt storage_stat:StorageInfo
           storage:AccountStorage = Account;
 
 account_storage$_ last_trans_lt:uint64
-    balance:CurrencyCollection state:AccountState 
+    balance:CurrencyCollection state:AccountState
   = AccountStorage;
 
 account_uninit$00 = AccountState;
@@ -1520,7 +1520,7 @@ Any transaction contains the [fields](#423-generic-components-of-a-transaction).
 ```
 transaction$_ account_addr:uint256 lt:uint64 outmsg_cnt:uint15
   orig_status:AccountStatus end_status:AccountStatus
-  in_msg:(Maybe ^(Message Any)) 
+  in_msg:(Maybe ^(Message Any))
   out_msgs:(HashmapE 15 ^(Message Any))
   total_fees:Grams state_update:^(MERKLE_UPDATE Account)
   description:^TransactionDescr = Transaction;
@@ -1615,7 +1615,7 @@ On the other hand, we want to minimize the size of each transaction, because we 
 The storage phase is present in several kinds of transactions, so a common representation for this phase is used:
 
 ```
-tr_phase_storage$_ storage_fees_collected:Grams 
+tr_phase_storage$_ storage_fees_collected:Grams
   storage_fees_due:(Maybe Grams)
   status_change:AccStatusChange
   = TrStoragePhase;
@@ -1643,7 +1643,7 @@ The computing phase consists in invoking TVM with correct inputs. On some occasi
 ```
 tr_phase_compute_skipped$0 reason:ComputeSkipReason
   = TrComputePhase;
-tr_phase_compute_vm$1 success:Bool msg_state_used:Bool 
+tr_phase_compute_vm$1 success:Bool msg_state_used:Bool
   account_activated:Bool gas_fees:Grams
   _:^[ gas_used:(VarUInteger 7)
   gas_limit:(VarUInteger 7) gas_credit:(Maybe (VarUInteger 3))
@@ -1687,8 +1687,8 @@ tr_phase_action$_ success:Bool valid:Bool no_funds:Bool
   status_change:AccStatusChange
   total_fwd_fees:(Maybe Grams) total_action_fees:(Maybe Grams)
   result_code:int32 result_arg:(Maybe int32) tot_actions:int16
-  spec_actions:int16 msgs_created:int16 
-  action_list_hash:uint256 tot_msg_size:StorageUsed 
+  spec_actions:int16 msgs_created:int16
+  action_list_hash:uint256 tot_msg_size:StorageUsed
   = TrActionPhase;
 ```
 
@@ -1698,7 +1698,7 @@ tr_phase_action$_ success:Bool valid:Bool no_funds:Bool
 tr_phase_bounce_negfunds$00 = TrBouncePhase;
 tr_phase_bounce_nofunds$01 msg_size:StorageUsed
   req_fwd_fees:Grams = TrBouncePhase;
-tr_phase_bounce_ok$1 msg_size:StorageUsed 
+tr_phase_bounce_ok$1 msg_size:StorageUsed
   msg_fees:Grams fwd_fees:Grams = TrBouncePhase;
 ```
 
@@ -1878,9 +1878,9 @@ The smart-contract information structure *SmartContractInfo*, passed in the firs
 
 ```
 [ magic:0x076ef1ea actions:Integer msgs_sent:Integer
-  unixtime:Integer block_lt:Integer trans_lt:Integer 
+  unixtime:Integer block_lt:Integer trans_lt:Integer
   rand_seed:Integer balance_remaining:[Integer (Maybe Cell)]
-  myself:MsgAddressInt global_config:(Maybe Cell) 
+  myself:MsgAddressInt global_config:(Maybe Cell)
 ] = SmartContractInfo;
 ```
 
@@ -1953,10 +1953,10 @@ ext_blk_ref$_ start_lt:uint64 end_lt:uint64
 
 master_info$_ master:ExtBlkRef = BlkMasterInfo;
 
-shard_ident$00 shard_pfx_bits:(## 6) 
+shard_ident$00 shard_pfx_bits:(## 6)
   workchain_id:int32 shard_prefix:uint64 = ShardIdent;
 
-shard_state shard_id:ShardIdent 
+shard_state shard_id:ShardIdent
   out_msg_queue:OutMsgQueue
   total_balance:CurrencyCollection
   total_validator_fees:CurrencyCollection
@@ -1985,13 +1985,13 @@ Here `publishers` is a hashmap with keys equal to the addresses of all accounts 
 The precise format of an [unsigned](#126-validator-signatures-signed-and-unsigned-blocks) shardchain block is given by the following TL-B scheme:
 
 ```
-block_info version:uint32 
-  not_master:(## 1) 
+block_info version:uint32
+  not_master:(## 1)
   after_merge:(## 1) before_split:(## 1) flags:(## 13)
-  seq_no:# vert_seq_no:# 
+  seq_no:# vert_seq_no:#
   shard:ShardIdent gen_utime:uint32
   start_lt:uint64 end_lt:uint64
-  master_ref:not_master?^BlkMasterInfo 
+  master_ref:not_master?^BlkMasterInfo
   prev_ref:seq_no?^(BlkPrevInfo after_merge)
   prev_vert_ref:vert_seq_no?^(BlkPrevInfo 0)
   = BlockInfo;
@@ -2000,7 +2000,7 @@ prev_blk_info#_ {merged:#} prev:ExtBlkRef
   prev_alt:merged?ExtBlkRef = BlkPrevInfo merged;
 
 unsigned_block info:^BlockInfo value_flow:^ValueFlow
-  state_update:^(MERKLE_UPDATE ShardState) 
+  state_update:^(MERKLE_UPDATE ShardState)
   extra:^BlockExtra = Block;
 
 block_extra in_msg_descr:^InMsgDescr
@@ -2017,7 +2017,7 @@ The field `custom` is usually present only in the masterchain and contains all t
 The total value flow through a block is serialized according to the following TL-B scheme:
 
 ```
-value_flow _:^[ from_prev_blk:CurrencyCollection 
+value_flow _:^[ from_prev_blk:CurrencyCollection
   to_next_blk:CurrencyCollection
   imported:CurrencyCollection
   exported:CurrencyCollection ]
@@ -2036,7 +2036,7 @@ Recall that `_:^[`...`]` is a TL-B construction indicating that a group of field
 A signed shardchain block is just an unsigned block augmented by a collection of validator signatures:
 
 ```
-ed25519_signature#5 R:uint256 s:uint256 = CryptoSignature; 
+ed25519_signature#5 R:uint256 s:uint256 = CryptoSignature;
 
 signed_block block:^Block blk_serialize_hash:uint256
   signatures:(HashmapE 64 CryptoSignature)
@@ -2093,14 +2093,14 @@ In addition to the [components of the shardchain block](#512-components-of-a-sha
 *ShardHashes* is represented by a dictionary with 32-bit $\mathit{workchain\_id}$s as keys, and "shard binary trees", represented by TL-B type *BinTree ShardDescr*, as values. Each leaf of this shard binary tree contains a value of type *ShardDescr*, which describes a single shard by indicating the sequence number `seq_no`, the logical time `lt`, and the hash `hash` of the latest (signed) block of the corresponding shardchain.
 ```
 bt_leaf$0 {X:Type} leaf:X = BinTree X;
-bt_fork$1 {X:Type} left:^(BinTree X) right:^(BinTree X) 
+bt_fork$1 {X:Type} left:^(BinTree X) right:^(BinTree X)
           = BinTree X;
 
 fsm_none$0 = FutureSplitMerge;
 fsm_split$10 mc_seqno:uint32 = FutureSplitMerge;
 fsm_merge$11 mc_seqno:uint32 = FutureSplitMerge;
 
-shard_descr$_ seq_no:uint32 lt:uint64 hash:uint256 
+shard_descr$_ seq_no:uint32 lt:uint64 hash:uint256
   split_merge_at:FutureSplitMerge = ShardDescr;
 
 _ (HashmapE 32 ^(BinTree ShardDescr)) = ShardHashes;
@@ -2116,7 +2116,7 @@ Notice that the masterchain itself is omitted from *ShardHashes* (i.e., 32-bit i
 
 ```
 bta_leaf$0 {X:Type} {Y:Type} leaf:X extra:Y = BinTreeAug X Y;
-bta_fork$1 {X:Type} {Y:Type} left:^(BinTreeAug X Y) 
+bta_fork$1 {X:Type} {Y:Type} left:^(BinTreeAug X Y)
            right:^(BinTreeAug X Y) extra:Y = BinTreeAug X Y;
 
 _ (HashmapAugE 32 ^(BinTreeAug True CurrencyCollection)
@@ -2130,7 +2130,7 @@ The structure of *ShardFees* is similar to that of [ShardHashes](#523-descriptio
 Recall that the [configurable parameters](#16---configurable-parameters-and-smart-contracts) or the *configuration dictionary* is a dictionary `config` with 32-bit keys kept inside the first cell reference of the persistent data of the configuration smart contract $\gamma$. The address $\gamma$ of the configuration smart contract and a copy of the configuration dictionary are duplicated in fields `config_addr` and `config` of a *ConfigParams* structure, explicitly included into masterchain state to [facilitate access](#163-quick-access-through-the-header-of-masterchain-blocks) to the current values of the configurable parameters:
 
 ```
-_ config_addr:uint256 config:^(Hashmap 32 ^Cell) 
+_ config_addr:uint256 config:^(Hashmap 32 ^Cell)
   = ConfigParams;
 ```
 
@@ -2242,11 +2242,11 @@ In addition to the [values](#537-a-classification-of-serialization-schemes-for-b
 Several TL-B constructors can be used to serialize bags of cells into octet (i.e., 8-bit byte) sequences. The only one that is currently used to serialize new bags of cell is
 
 ```
-serialized_boc#b5ee9c72 has_idx:(## 1) has_crc32c:(## 1) 
+serialized_boc#b5ee9c72 has_idx:(## 1) has_crc32c:(## 1)
   has_cache_bits:(## 1) flags:(## 2) { flags = 0 }
   size:(## 3) { size <= 4 }
-  off_bytes:(## 8) { off_bytes <= 8 } 
-  cells:(##(size * 8)) 
+  off_bytes:(## 8) { off_bytes <= 8 }
+  cells:(##(size * 8))
   roots:(##(size * 8)) { roots >= 1 }
   absent:(##(size * 8)) { roots + absent <= cells }
   tot_cells_size:(##(off_bytes * 8))
@@ -2263,8 +2263,8 @@ Two older constructors are still supported in the bag-of-cells deserialization f
 
 ```
 serialized_boc_idx#68ff65f3 size:(## 8) { size <= 4 }
-  off_bytes:(## 8) { off_bytes <= 8 } 
-  cells:(##(size * 8)) 
+  off_bytes:(## 8) { off_bytes <= 8 }
+  cells:(##(size * 8))
   roots:(##(size * 8)) { roots = 1 }
   absent:(##(size * 8)) { roots + absent <= cells }
   tot_cells_size:(##(off_bytes * 8))
@@ -2273,8 +2273,8 @@ serialized_boc_idx#68ff65f3 size:(## 8) { size <= 4 }
   = BagOfCells;
 
 serialized_boc_idx_crc32c#acc3a728 size:(## 8) { size <= 4 }
-  off_bytes:(## 8) { off_bytes <= 8 } 
-  cells:(##(size * 8)) 
+  off_bytes:(## 8) { off_bytes <= 8 }
+  cells:(##(size * 8))
   roots:(##(size * 8)) { roots = 1 }
   absent:(##(size * 8)) { roots + absent <= cells }
   tot_cells_size:(##(off_bytes * 8))
@@ -2295,7 +2295,7 @@ compiled_smart_contract
        compiler_version:(Maybe ^TinyString) ]
   = CompiledSmartContract;
 
-tiny_string#_ len:(#<= 126) str:(len * [ uint8 ]) = TinyString; 
+tiny_string#_ len:(#<= 126) str:(len * [ uint8 ]) = TinyString;
 ```
 
 Then a compiled smart contract may be represented by a value of type *CompiledSmartContract*, transformed into a tree of cells and then into a bag of cells, and then serialized using one of the [constructors](#539-tl-b-scheme-for-serializing-bags-of-cells). The resulting octet string may be then written into a file with suffix `.tvc` ("TVM smart contract"), and this file may be used to distribute the compiled smart contract, download it into a wallet application for deploying into the TON Blockchain, and so on.

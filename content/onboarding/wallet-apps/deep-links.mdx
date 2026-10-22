@@ -2,7 +2,7 @@
 title: "Deep links"
 ---
 
-Deep links allow to seamlessly direct users from a dApp back to a meaningful location within a TON wallet and invoke corresponding actions.
+Deep links allow directing users from a dApp to a meaningful location within a TON wallet and invoking corresponding actions.
 
 Issue wallet invoices using deep links. See [transaction link formats](#explorers-links) for popular explorers.
 
@@ -31,7 +31,7 @@ Explore [TON Connect](/applications/ton-connect/overview).
 ## Deep links invoices
 
 <Callout type="caution">
-  The TON link `ton://` is less preferred in the ecosystem, but may be useful for simple and tiny one-time payment flow.
+  The `ton://` link is less common in the ecosystem than `tc://`, but it may be useful for a simple, one-time payment flow.
 </Callout>
 
 ```bash
@@ -251,26 +251,76 @@ Example: transferring 1 USDT to `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sD
 https://my.tt/transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=1000000&jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
 ```
 
-## Explorers links
+## Explorer links
 
-To generate a transaction link, the service must obtain the account address, logical time (lt), and transaction hash by calling the [`getTransactions`](https://toncenter.com/api/v2/#/transactions/get_transactions_getTransactions_get) method. Using these values, [TON Explorer](https://explorer.toncoin.org/) renders the transaction page.
+[Actonscan](/onboarding/explorers#actonscan) links can open accounts, transactions, and blocks by providing their respective values:
+
+- `<ADDRESS>` is a raw or user-friendly TON address,
+- `<TRANSACTION_HASH>` is a hexadecimal transaction hash,
+- and `<WORKCHAIN>`, `<SHARD>`, and `<SEQNO>` identify a block.
+
+The low-level [TON Explorer](https://explorer.toncoin.org/) only provides direct links to transactions — they require an account address, logical time (`lt`), and a transaction hash. Obtain these values by calling the [`getTransactions`](https://toncenter.com/api/v2/#/transactions/get_transactions_getTransactions_get) API endpoint. Convert the hexadecimal transaction hash to uppercase before composing a link.
 
 ### Mainnet
 
-```bash title="Mainnet link"
-https://explorer.toncoin.org/transaction?account=<account address>&lt=<lt as int>&hash=<transaction uppercase hex>
-```
+<Tabs
+  items={["Actonscan", "TON Explorer"]}
+>
+  <Tab
+    value="Actonscan"
+  >
+    ```text title="Links"
+    https://actonscan.com/address/<ADDRESS>?network=mainnet
+    https://actonscan.com/tx/<TRANSACTION_HASH>?network=mainnet
+    https://actonscan.com/block/<WORKCHAIN>/<SHARD>/<SEQNO>?network=mainnet
+    ```
 
-```bash title="Example"
-https://explorer.toncoin.org/transaction?account=Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF&lt=63333243000002&hash=AEE8D185A0C8F73C787BF1872EE9659AC53CE11A90B16B384856A7821EFF8C29
-```
+    ```text title="Transaction example"
+    https://actonscan.com/tx/47d0989633fc03ff3fdca05880ab5760d0321c196501a6a4cbb5578dea2624cb?network=mainnet
+    ```
+  </Tab>
+
+  <Tab
+    value="TON Explorer"
+  >
+    ```text title="Transaction link"
+    https://explorer.toncoin.org/transaction?account=<ADDRESS>&lt=<LT>&hash=<TRANSACTION_HASH>
+    ```
+
+    ```text title="Example"
+    https://explorer.toncoin.org/transaction?account=Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF&lt=63333243000002&hash=AEE8D185A0C8F73C787BF1872EE9659AC53CE11A90B16B384856A7821EFF8C29
+    ```
+  </Tab>
+</Tabs>
 
 ### Testnet
 
-```bash title="Testnet link"
-https://test-explorer.toncoin.org/transaction?account=<account address>&lt=<lt as int>&hash=<transaction uppercase hex>
-```
+<Tabs
+  items={["Actonscan", "TON Explorer"]}
+>
+  <Tab
+    value="Actonscan"
+  >
+    ```text title="Links"
+    https://actonscan.com/address/<ADDRESS>?network=testnet
+    https://actonscan.com/tx/<TRANSACTION_HASH>?network=testnet
+    https://actonscan.com/block/<WORKCHAIN>/<SHARD>/<SEQNO>?network=testnet
+    ```
 
-```bash title="Example"
-https://test-explorer.toncoin.org/transaction?account=Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF&lt=40988257000002&hash=61EF8FAC43EDF408FCC041AA8AFAEC14AC2C4F68FAAFE6EB18C50A921697D2F6
-```
+    ```text title="Transaction example"
+    https://actonscan.com/tx/59ac226ac63ba4ecfcf4b9da1a02510fc787cc1f52fdfddb3a2b8f1bf54bbd77?network=testnet
+    ```
+  </Tab>
+
+  <Tab
+    value="TON Explorer"
+  >
+    ```text title="Transaction link"
+    https://test-explorer.toncoin.org/transaction?account=<ADDRESS>&lt=<LT>&hash=<TRANSACTION_HASH>
+    ```
+
+    ```text title="Example"
+    https://test-explorer.toncoin.org/transaction?account=Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF&lt=40988257000002&hash=61EF8FAC43EDF408FCC041AA8AFAEC14AC2C4F68FAAFE6EB18C50A921697D2F6
+    ```
+  </Tab>
+</Tabs>

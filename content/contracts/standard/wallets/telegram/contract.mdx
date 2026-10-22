@@ -3,7 +3,7 @@ title: "WalletTg code and storage"
 sidebarTitle: "Code and storage"
 ---
 
-Every deployed wallet stores an immutable _trampoline_ code. The trampoline code hash is `9149AE51C1E4689710CEBF7830297B16ACFBADB363A920A537893E7FFEECA768`. It is the root-cell hash of [`WalletTrampoline.boc`](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTrampoline.boc).
+Every deployed wallet stores an immutable _trampoline_ code. The trampoline code hash is `9149AE51C1E4689710CEBF7830297B16ACFBADB363A920A537893E7FFEECA768`. It is the root-cell hash of [`WalletTrampoline.boc`](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/contracts/WalletTrampoline.boc).
 
 ## Trampoline
 
@@ -26,7 +26,13 @@ JMPX                // ... jump to WalletTg code to process
 //                         or a getter call
 ```
 
-Validators can change the [active shared implementation](https://actonscan.com/config?network=mainnet#config-parameter--123) by voting. Every mainnet WalletTg account uses this implementation — a wallet owner cannot pin a version, change the code, or opt out of code updates.
+## Active implementation
+
+Validators can change the active shared implementation in [config param `-123`](https://actonscan.com/config?network=mainnet#config-parameter--123) by voting. Every mainnet WalletTg account uses this implementation — a wallet owner cannot pin a version, change the code, or opt out of code updates.
+
+- Latest revision: [`rev00` tag in GitHub](https://github.com/ton-blockchain/tg-wallet-contract/tree/rev00).
+- Revision code hash: `e30911420bef1191c09dce58b9df2b4ca4c2d9c383cc3b6a91170349ffa70e2c`.
+- Source: [`WalletTg.tolk`](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/contracts/WalletTg/WalletTg.tolk).
 
 ## Initial state
 
@@ -66,7 +72,7 @@ After rotation, the `get_public_key()` getter returns the active signing key, no
   See [request failure behavior](/contracts/standard/wallets/telegram/messages#failure-and-sequence-number-behavior) for external-send commit timing.
 </Callout>
 
-Revision 0 stores prefix `0x00`, has no old layouts in `UnionOfOldStorages`, and uses a no-op `runMigrationAndUpdateC4()`. Later revisions must preserve prior layouts and define migrations to the current schema. The [migration rules](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/MIGRATION.md) also require existing messages and getters to remain compatible as new ones are added.
+Revision 0 stores prefix `0x00`, has no old layouts in `UnionOfOldStorages`, and uses a no-op `runMigrationAndUpdateC4()`. Later revisions must preserve prior layouts and define migrations to the current schema. The [migration rules](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/MIGRATION.md) also require existing messages and getters to remain compatible as new ones are added.
 
 <Callout type="caution">
   The call to a `revision()` get-method can report an older storage revision while the account already executes newer shared code. It does not identify the active implementation.
@@ -75,7 +81,7 @@ Revision 0 stores prefix `0x00`, has no old layouts in `UnionOfOldStorages`, and
 ## Source files
 
 - [WalletTg repository on GitHub](https://github.com/ton-blockchain/tg-wallet-contract):
-  - [trampoline assembly](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTrampoline.fif),
-  - [shared implementation](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/WalletTg.tolk),
-  - [storage](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/storage.tolk),
-  - [migration code](https://github.com/ton-blockchain/tg-wallet-contract/blob/1a29ae5d90e03c3d585d3e42e6ecef691d727a3c/contracts/WalletTg/migration.tolk)
+  - [trampoline assembly](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/contracts/WalletTrampoline.fif),
+  - [shared implementation](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/contracts/WalletTg/WalletTg.tolk),
+  - [storage](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/contracts/WalletTg/storage.tolk),
+  - [migration code](https://github.com/ton-blockchain/tg-wallet-contract/blob/rev00/contracts/WalletTg/migration.tolk)
