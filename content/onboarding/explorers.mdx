@@ -17,9 +17,7 @@ Explorers take data from TON Center's [API v2](/api/v2/overview) and [API v3](/a
 
 ## Actonscan
 
-[Actonscan](https://actonscan.com/?network=mainnet) combines account and transaction browsing with tools for inspecting smart contracts.
-
-Select **Mainnet** or **Testnet** in the network menu before searching. A shared link can specify the network with `?network=mainnet` or `?network=testnet`. The network menu also supports custom networks configured with compatible [API v2](/api/v2/overview) and [API v3](/api/v3/overview) endpoints.
+[Actonscan](https://actonscan.com/?network=mainnet) is the official open-source TON explorer for smart-contract developers that combines account and transaction browsing with tools for inspecting and interacting with contracts.
 
 <Image
   src="/images/actonscan/overview.png"
@@ -29,14 +27,20 @@ Select **Mainnet** or **Testnet** in the network menu before searching. A shared
   caption="Actonscan on mainnet. Search accepts addresses, transaction hashes, token names, .ton domains, and block identifiers."
 />
 
+### Networks
+
+Actonscan supports browsing TON **Mainnet** and **Testnet** networks, as well as custom networks managed by [Acton Studio's virtual environments](https://ton-blockchain.github.io/acton/docs/environments/overview) or configured with compatible [API v2](/api/v2/overview) and [API v3](/api/v3/overview) endpoints. To switch a network, use the menu on the top right.
+
+Additionally, Actonscan links specify the network with `?network=mainnet` or `?network=testnet`. For example, a link to an address on the mainnet takes the following form: `https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet`.
+
 ### Accounts and assets
 
-Account pages show status, balances, history, jettons, and non-fungible tokens (NFTs). Contract views expose code and storage; available application binary interfaces (ABIs) describe messages and get methods. Verified source files are available for contracts with matching published sources. The [ABI catalog](https://actonscan.com/abi?network=mainnet) exposes known contract interfaces.
+Account pages show status, balances, history, jettons, and non-fungible tokens (NFTs). Contract views expose code and storage; available application binary interfaces (ABIs) describe messages and get-methods. Verified source files are available for contracts with matching published sources. The [ABI catalog](https://actonscan.com/abi?network=mainnet) exposes known contract interfaces.
 
 - [Find an account or transaction](#find-an-account-or-transaction).
 - [Check a transfer](#check-a-transfer).
 - [Inspect jettons and NFTs](#inspect-jettons-and-nfts).
-- [Inspect a smart contract and call get methods](#inspect-a-smart-contract).
+- [Inspect a smart contract and call get-methods](#inspect-a-smart-contract).
 
 ### Transactions and execution
 
@@ -124,19 +128,25 @@ Missing images or metadata do not establish that a token is absent. Check its co
 
 ## Inspect a smart contract
 
-Open a contract address in Actonscan. The [USDT master](https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet) is an example with a get method.
+Open a contract address in Actonscan. For example, open the [Tether USD (USDT) master](https://actonscan.com/address/EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs?network=mainnet).
 
 1. Check the account [status](/foundations/status). An uninitialized account has no deployed code.
-1. Open **Contract**. Use **Source** for published code, **Storage** for current account data, and **ABI** for recognized messages and methods.
+1. Open the **Contract** tab. Use **Source** for published code, **Storage** for current account data, and **ABI** for recognized messages and methods.
 
-Without matching source or a storage schema, raw storage cannot be interpreted from the explorer alone. **Storage** shows current state; inspect the historical transaction for an older state.
+<Callout type="note">
+  **Storage** shows current state when there is a matching source or a storage schema. For an older state, inspect the historical transactions or [register a custom source artifact](https://actonscan.com/sources?network=mainnet).
+</Callout>
 
-### Call a get method
+### Call a get-method
 
-1. Open **Methods** and select a method. On the USDT master, `get_jetton_data` needs no arguments.
-1. Select **Run** and inspect the returned values. See [jetton supply data](/contracts/standard/tokens/jettons/supply-data) for this example.
+[Get-methods](/tvm/get-method) (or getters) are used to read contract state without sending a transaction or modifying the state.
 
-A [get method](/tvm/get-method) reads contract state without sending a transaction. If **Methods** is absent, the explorer may lack an ABI for this contract; the code may still have get methods.
+1. On the contract page, open the **Methods** tab and select a method. Most of the get-methods of standard contracts do not require arguments.
+1. Select **Run** and inspect the returned values.
+
+<Callout type="note">
+  If the **Methods** tab is absent, the explorer may lack an ABI for this contract, but the code may still have get-methods. In such cases, call getters via [blockchain APIs](/api/overview).
+</Callout>
 
 ## Decode a message body
 
@@ -146,7 +156,9 @@ Select the message in a transaction's trace. An internal message's **value** is 
 1. Under **Message data**, inspect the opcode and expand **Parsed body** with **Show**, if available.
 1. Interpret fields using the receiving contract's interface. A decoded opcode identifies a requested operation; it does not establish that the contract completed it. Check the receiving transaction's execution result.
 
-If the body is not decoded, select **Copy raw body** and paste it into Actonscan's [cell inspector](https://actonscan.com/cell?network=mainnet). Inspect the bits and references. If the contract publishes a [TL-B schema](/foundations/tlb/overview), use **Parsing options** to parse the body with that schema. An unknown opcode may be valid for a contract the explorer does not recognize.
+If the body is not decoded, select **Copy raw body** and paste it into Actonscan's [cell inspector](https://actonscan.com/cell?network=mainnet). Inspect the bits and references.
+
+If the contract publishes a [TL-B schema](/foundations/tlb/overview), use **Parsing options** to parse the body with that schema. An unknown opcode may be valid for a contract the explorer does not recognize.
 
 ## Replay a transaction
 
