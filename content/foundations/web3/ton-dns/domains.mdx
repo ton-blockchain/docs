@@ -1,0 +1,61 @@
+---
+title: ".ton domains"
+sidebarTitle: ".ton domains"
+---
+
+Names directly under `.ton` follow the registration, auction, and renewal rules of the official domain collection. These rules apply independently of the application used to manage the domain. Use [dns.ton.org](/foundations/web3/ton-dns/manage-domains) for registration and management through the website.
+
+## Registration rules
+
+The label before `.ton` must contain 4 to 126 characters: lowercase ASCII letters (`a-z`), digits (`0-9`), or hyphens. A hyphen cannot be the first or last character. For example, `example.ton` has the label `example`.
+
+These restrictions apply to registration in the `.ton` collection. The broader name format in [TEP-81](/foundations/web3/ton-dns/reference#name-encoding) also supports names served by other resolvers. Delegated subdomains follow their resolver's rules.
+
+## Minimum first bids
+
+The minimum opening bid depends on the label's length, excluding `.ton`:
+
+| Characters | Minimum first bid (GRAM) |
+| ---------: | -----------------------: |
+|          4 |                      100 |
+|          5 |                       50 |
+|          6 |                       40 |
+|          7 |                       30 |
+|          8 |                       20 |
+|          9 |                       10 |
+|         10 |                        5 |
+|     11–126 |                        1 |
+
+Transaction fees are additional. The final price depends on competing bids.
+
+## Auctions
+
+Registration starts an auction for an unregistered name. New-domain auctions initially last one hour. Each competing bid must be at least 5% higher than the previous bid, with integer rounding in nanograms. A bid in the final hour extends the deadline to one hour after that bid.
+
+The collection deploys the domain contract and forwards the remaining message value after fees. The accepted first bid can therefore differ from the submitted value.
+
+After the deadline, the highest bidder can take ownership. Ownership is recorded when a further successful transaction finalizes the auction. The website displays the winner before that finalization; an owner record update can finalize it. See the [finalization interface](/foundations/web3/ton-dns/reference#auction-finalization) for contract behavior.
+
+## Ownership
+
+Each domain is a transferable [non-fungible token (NFT)](/foundations/glossary#non-fungible-token-nft). Its owner controls the DNS records and can transfer the domain to another account.
+
+Ownership and payment routing are separate: the `wallet` record can point to an account other than the owner. Transferring ownership keeps the existing DNS records, so a new owner must review payment and delegation destinations.
+
+## Renewal
+
+A domain's renewal period is 366 days from its last qualifying transaction. A successful owner record update, content replacement, ownership transfer, or balance top-up resets that period. An empty-body top-up qualifies after auction finalization. The [renewal interface](/foundations/web3/ton-dns/reference#renewal-interface) specifies the eligible messages.
+
+Renewal starts a new period from execution time. It does not add 366 days to the previous deadline. A payment to the domain's resolved wallet address does not necessarily reach or renew the domain contract.
+
+## Expiration
+
+Expiration does not automatically release the domain or remove its DNS records. After more than 366 days without renewal, anyone can start a new auction if none is active. Until that auction starts, the current owner can still renew.
+
+An expired-domain auction removes the previous owner's control and records the opening bidder. It initially lasts one week; subsequent bids follow the same extension rules as new-domain auctions. The domain address and DNS records remain unchanged. Ownership is assigned through finalization after the auction ends.
+
+## Sources
+
+- [Collection contract](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/nft-collection.fc): registration and deployment.
+- [Naming and pricing](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/dns-utils.fc): label validation and minimum bids.
+- [Domain contract](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/nft-item.fc): auctions, ownership, renewal, and expiration.
