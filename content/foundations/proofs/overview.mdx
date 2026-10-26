@@ -243,3 +243,27 @@ _ (HashmapE 32 ^(BinTree ShardDescr)) = ShardHashes;
 A `BinTree` is a TL-B structure that operates straightforwardly. It stores a single bit to indicate whether the current cell is a leaf. If it is a leaf, it stores the **`ShardDescr`**. Otherwise, the cell holds two references: a left child and a right child.
 
 Since a shard identifier is a binary prefix of an address, we can traverse the tree by following the path of bits in the address.
+
+## Collated proofs
+
+<Badge since="TON v2026.10" />
+
+_Collated proofs_ are a new format for proofs in collated data, which accompanies a block candidate and supplies proofs needed for validator checks.
+
+The [`block.tlb` schema](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.tlb#L893-L895) defines three constructors:
+
+```tlb
+collated_data_root_state#4b2f36ec hash:bits256 = CollatedDataRootState;
+collated_data_root_storage_dict#796eaeb6 hash:bits256 = CollatedDataRootStorageDict;
+collated_data_separator#fa8b2b92 = CollatedDataSeparator;
+```
+
+There,
+
+- `CollatedDataRootState` identifies a shard-state proof root by hash, including previous states and neighboring states used for message-queue checks.
+- `CollatedDataRootStorageDict` identifies an account storage dictionary proof root by hash.
+- `CollatedDataSeparator` ends the metadata roots. The remaining BoC roots contain the partially pruned state and storage dictionary trees.
+
+<Callout type="note">
+  Legacy Merkle proof roots and the `account_storage_dict_proof#37c1e3fc` wrapper [remain accepted](https://github.com/ton-blockchain/ton/blob/v2026.10/validator/impl/validate-query.cpp#L688-L750).
+</Callout>

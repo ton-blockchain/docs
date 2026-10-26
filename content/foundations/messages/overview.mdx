@@ -69,3 +69,40 @@ The `state_update` field is a [Merkle update](/foundations/serialization/merkle-
 Other fields, such as `in_msg`, `out_msgs`, and `outmsg_cnt`, relate to the [messages](/foundations/messages/overview) processed and emitted during the transaction. A trace may start from a transaction rather than a message, in which case `in_msg` is `Nothing`. However, a trace cannot continue without messages: if it contains `n` transactions it must contain at least `n-1` messages. Consequently, a trace can include at most one non-ordinary transaction, because messages can trigger only an [ordinary transaction](/foundations/messages/ordinary-tx).
 
 The `total_fees` field stores the total [fees](/foundations/fees) paid by the transaction. Its type supports [extra currencies](/foundations/extra-currencies), but blockchain fees are charged only in Gram.
+
+## Message queues
+
+A shard's outbound queue stores internal messages awaiting delivery. A separate _dispatch queue_ stores deferred outgoing messages until they can be processed.
+
+The dispatch queue groups messages by sender account. Each account queue indexes messages by their 64-bit `created_lt` and stores a 48-bit message count. Empty account queues are omitted.
+
+<Badge since="TON v2026.10" />
+
+Account queues and dictionary augmentation data also carry `total_balance:CurrencyCollection`. This balance sums the deferred messages' `value` and `fwd_fee`, including any [extra currencies](/foundations/extra-currencies). The augmentation stores the minimum `created_lt` and the aggregate balance for its subtree.
+
+The [`block.tlb` schema](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.tlb#L252-L259) includes legacy and balance-carrying constructors, with legacy ones marked by the suffix `_old`:
+
+```tlb
+// Legacy
+account_dispatch_queue_old$1
+  messages:^(Hashmap 64 EnqueuedMsg) count:uint48 = AccountDispatchQueue;
+
+// Since v2026.10
+account_dispatch_queue$000
+  messages:^(Hashmap 64 EnqueuedMsg) count:uint48
+  total_balance:CurrencyCollection = AccountDispatchQueue;
+
+// Legacy
+dispatch_queue_aug_old$0
+  min_created_lt:uint63 = DispatchQueueAugData;
+
+// Since v2026.10
+dispatch_queue_aug$10
+  min_created_lt:uint64
+  total_balance:CurrencyCollection = DispatchQueueAugData;
+
+// Queue
+_ (HashmapAugE 256 AccountDispatchQueue DispatchQueueAugData) = DispatchQueue;
+```
+
+In legacy augmentation data, the `$0` tag followed by `uint63` occupies the same 64 bits as the earlier `min_created_lt` with its high bit unset. The [queue](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.cpp#L2464-L2514) reads **both** formats and defines their balance calculation.

@@ -120,6 +120,7 @@ blocks.header id:ton.blockIdExt global_id:int32 version:int32 flags:# after_merg
     before_split:Bool want_merge:Bool want_split:Bool validator_list_hash_short:int32 catchain_seqno:int32
     min_ref_mc_seqno:int32 is_key_block:Bool prev_key_block_seqno:int32 start_lt:int64 end_lt:int64
     gen_utime:int53 vert_seqno:# prev_blocks:vector<ton.blockIdExt> = blocks.Header;
+blocks.blockData id:ton.blockIdExt data:bytes = blocks.BlockData;
 blocks.transactions id:ton.blockIdExt req_count:int32 incomplete:Bool
     transactions:vector<blocks.shortTxId> = blocks.Transactions;
 blocks.transactionsExt id:ton.blockIdExt req_count:int32 incomplete:Bool
@@ -136,6 +137,7 @@ blocks.outMsgQueueSizes shards:(vector blocks.outMsgQueueSize)
 | `blocks.masterchainInfo`    | `MasterchainInfo`            | Latest and genesis block references.          |
 | `blocks.shards`             | `Shards`                     | Active shard block identifiers.               |
 | `blocks.header`             | `BlockHeader`                | Block metadata, merge or split flags, timing. |
+| `blocks.blockData`          | `BlockData`                  | Block identifier and base64-encoded BoC.      |
 | `blocks.transactions`       | `BlockTransactions`          | Short transaction IDs within a block.         |
 | `blocks.transactionsExt`    | `BlockTransactionsExt`       | Full transactions within a block.             |
 | `blocks.shortTxId`          | `ShortTxId`                  | Compact reference: account, lt, hash.         |

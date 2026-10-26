@@ -13,7 +13,7 @@ TON features a complex configuration comprising many technical parameters, some 
 
 The explorer shows the active [mainnet configuration](https://actonscan.com/config?network=mainnet) and [testnet configuration](https://actonscan.com/config?network=testnet). Filter by signed parameter index to inspect decoded fields and the raw cell hex bytes.
 
-Configuration values are [TL-B](/foundations/tlb/overview)-typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc). Non-negative parameters and their serialization are defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb).
+Configuration values are [TL-B](/foundations/tlb/overview)-typed cells serialized into [Bags of Cells (BoC)](/foundations/serialization/boc). Non-negative parameters and their serialization are defined in [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.tlb).
 
 ### Overview
 
@@ -39,7 +39,7 @@ It is important to note that all configuration parameters are readily accessible
 
 The values of configuration parameters are not arbitrary. Specifically, if the configuration parameter index `i` is non-negative, then its value must correspond to a valid value of the TL-B type `ConfigParam i`. Validators enforce this restriction and do not accept changes to configuration parameters with non-negative indices unless the values are valid for the corresponding TL-B type.
 
-The structure of these parameters is defined in [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L623-L865), where `ConfigParam i` is specified for different values of `i`. For example:
+The structure of these parameters is defined in [`crypto/block/block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.tlb#L627-L866), where `ConfigParam i` is specified for different values of `i`. For example:
 
 ```tlb
 _ config_addr:bits256 = ConfigParam 0;
@@ -52,7 +52,7 @@ _ GlobalVersion = ConfigParam 8;  // all zero if absent
 
 The configuration parameter `#8` includes a `Cell` that has no references and contains exactly 104 data bits. The first eight bits are allocated for `11000100` (`0xc4`), followed by 32 bits that represent the enabled global TVM version. This is followed by a 64-bit integer with flags that correspond to the enabled capabilities.
 
-The [`block.tlb` definitions](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb#L623-L865) provide the canonical TL-B schemas for all non-negative parameters.
+The [`block.tlb` definitions](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.tlb#L627-L866) provide the canonical TL-B schemas for all non-negative parameters.
 
 Unlike configuration parameters with non-negative indices, those with negative indices can hold arbitrary values. Validators do not enforce any restrictions on these values. As a result, they can be used to store essential information, such as the Unix time when specific smart contracts are set to begin operating. This information is not critical for block generation but is necessary for some fundamental smart contracts.
 
@@ -704,9 +704,11 @@ These parameters store validator sets from the previous (`32`), current (`34`), 
 
 ## Param 33, 35, and 37: temporary validator lists \[#33-and-35-and-37]
 
-These parameters are the temporary counterparts of parameters [32, 34, and 36](#32-and-34-and-36). They use the same validator sets schema for the previous (`33`), current (`35`), and next (`37`) election rounds.
+<Callout type="danger">
+  Removed in [TON v2026.10](https://github.com/ton-blockchain/ton/releases/tag/v2026.10).
+</Callout>
 
-[Parameter #33 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-33) | [Parameter #35 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-35) | [Parameter #37 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-37)
+These parameters were the temporary counterparts of parameters [32, 34, and 36](#32-and-34-and-36). They used the same validator sets schema for the previous (`33`), current (`35`), and next (`37`) election rounds.
 
 ## Param 39: temporary validator keys \[#39]
 
@@ -774,8 +776,20 @@ This parameter imposes [various limits](/foundations/limits) on account state, m
 
 - `max_total_msg_bits` and `max_total_msg_cells`: Maximum aggregate size of messages created during 1 transaction.
 
+- `out_msg_queue_size_hard_limit`: Maximum number of messages in a shard's outbound queue. Excess messages enter the [dispatch queue](/foundations/messages/overview#message-queues).
+
+  <Callout type="note">
+    When the outbound queue exceeds half the `out_msg_queue_size_hard_limit`, a shard cannot set `want_merge`, yet forced merges required by [parameter 12](#12) remain possible. A queue can exceed this limit after a forced shard merge. A queue already above the limit may persist, but cannot grow beyond the previous state's queue size.
+  </Callout>
+
+- `out_msg_queue_size_soft_limit`: Threshold above which the previous state's outbound queue size permits deferring all newly created messages, including the first message of a transaction and messages from governance accounts.
+
+  <Callout type="note">
+    Processing the dispatch queue before internal messages is already not required when the queue size exceeds the `defer_out_queue_size_limit`, which defaults to 256.
+  </Callout>
+
 <Callout type="note">
-  [`SizeLimitsConfig`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/mc-config.h#L394-L417) sets default values for missing fields. For detailed limits, refer to the [blockchain limits page](/foundations/limits).
+  [`SizeLimitsConfig`](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/mc-config.h#L394-L421) sets default values for missing fields. For detailed limits, refer to the [blockchain limits page](/foundations/limits).
 </Callout>
 
 [Parameter #43 on mainnet](https://actonscan.com/config?network=mainnet#config-parameter-43)
@@ -902,8 +916,8 @@ The following table lists known named extension slots:
 
 Source code:
 
-- [`mc-config.h`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/mc-config.h)
-- [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.08/crypto/block/block.tlb)
+- [`mc-config.h`](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/mc-config.h)
+- [`block.tlb`](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/block.tlb)
 
 Original descriptions, which may be limited or outdated with respect to source code:
 
