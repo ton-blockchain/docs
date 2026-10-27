@@ -76,7 +76,9 @@ A shard's outbound queue stores internal messages awaiting delivery. A separate 
 
 The dispatch queue groups messages by sender account. Each account queue indexes messages by their 64-bit `created_lt` and stores a 48-bit message count. Empty account queues are omitted.
 
-<Badge since="TON v2026.10" />
+<Badge
+  since="TON v2026.10"
+/>
 
 Account queues and dictionary augmentation data also carry `total_balance:CurrencyCollection`. This balance sums the deferred messages' `value` and `fwd_fee`, including any [extra currencies](/foundations/extra-currencies). The augmentation stores the minimum `created_lt` and the aggregate balance for its subtree.
 
