@@ -41,7 +41,7 @@ The contract code hash is not in `ConfigParam 45`. TVM executes normally with st
 
 ### 2. Contract is precompiled
 
-The contract code hash exists in `ConfigParam 45`. The validator checks the contract balance against the configured `gas_usage`. If insufficient, the compute phase fails with `cskip_no_gas`.
+The contract code hash exists in `ConfigParam 45`. The [validator compares](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/block/transaction.cpp#L1938-L1945) the configured `gas_usage` with [`gas_max`](/tvm/gas#gaslimits-structure) for external messages and `gas_limit` for internal messages. If `gas_usage` exceeds that limit, the compute phase is skipped with [`cskip_no_gas`](/foundations/phases#when-the-compute-phase-is-skipped).
 
 Otherwise, execution proceeds via one of two paths.
 
@@ -56,7 +56,7 @@ Transaction [result](/foundations/phases#compute-phase):
 
 #### Contract has no native C++ implementation
 
-The native C++ implementation is disabled or unavailable in the validator node. TVM executes the contract code normally.
+The native C++ implementation is disabled or unavailable in the validator node. TVM executes the contract code.
 
 [`GETPRECOMPILEDGAS`](#accessing-precompiled-gas-value) returns the configured gas value during execution.
 

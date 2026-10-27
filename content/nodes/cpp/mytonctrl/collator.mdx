@@ -151,6 +151,15 @@ print_collation_whitelist
 
 ## Collator configuration JSON commands
 
+The [collator options JSON](https://github.com/ton-blockchain/ton/blob/v2026.10/tl/generate/scheme/ton_api.tl#L634-L646) supports optional
+
+- `block_limits_bytes`,
+- `block_limits_gas`,
+- `block_limits_lt_delta`,
+- and `block_limits_collated_data` objects.
+
+Each contains `underload`, `soft_limit`, and `hard_limit`, with `0 <= underload <= soft_limit <= hard_limit`. These override local [collation thresholds](/foundations/config#22-and-23).
+
 ### `set_collation_config`
 
 **Purpose:** Store the preferred collator options JSON location and apply it to the validator console.
