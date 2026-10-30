@@ -74,7 +74,7 @@ jobs:
               // Comment right in the actions output
               console.log('\n\x1b[31mError:\x1b[0m Some files are not properly formatted!');
               console.log('1. Install necessary dependencies: \x1b[31mnpm ci\x1b[0m');
-              console.log(`2. Run this command to fix the issues: \x1b[31mnpm run fmt:some -- ${files.join(' ')}\x1b[0m`);
+              console.log(`2. Run this command to fix the issues: \x1b[31mnode scripts/format-dictionaries.mjs && npm run fmt:some -- ${files.join(' ')}\x1b[0m`);
 
               // Rethrow the exit code of the failed formatting check
               core.setFailed('Some files are not properly formatted!');
@@ -108,7 +108,7 @@ jobs:
               '1. Install necessary dependencises: `npm ci`',
               '2. Then, run this command:',
               '   ```shell',
-              `   npm run fmt:some -- ${files.join(' ')}`,
+              `   node scripts/format-dictionaries.mjs && npm run fmt:some -- ${files.join(' ')}`,
               '   ```',
               '\nAlternatively, a maintainer can comment /fmt in this PR to auto-apply fixes in a new commit from the bot.',
             ].join('\n');

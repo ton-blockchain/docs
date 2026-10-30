@@ -21,7 +21,7 @@
     "check:fmt:some": "remark --no-stdout --quiet --frail --silently-ignore",
     "check:spell": "cspell --no-progress --show-suggestions .",
     "check:all": "npm run check:openapi && npm run check:links && npm run check:redirects && npm run check:fs && npm run check:fmt && npm run check:spell",
-    "fmt": "remark . -e mdx,md -o --silent && prettier --write --list-different .",
+    "fmt": "node scripts/format-dictionaries.mjs && remark . -e mdx,md -o --silent && prettier --write --list-different .",
     "fmt:some": "remark -o --silent --silently-ignore",
     "spell": "cspell lint --no-progress --show-suggestions .",
     "spell:some": "cspell lint",
