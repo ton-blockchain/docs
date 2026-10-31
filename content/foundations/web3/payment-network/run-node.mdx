@@ -1,0 +1,89 @@
+---
+title: "How to run a TON Payment Network node"
+sidebarTitle: "Run a payment node"
+description: "Build and configure a mainnet payment node with manual balance management"
+---
+
+Run the standalone TON Payment Network v1.3.2 node. This guide uses mainnet and manual deposits and withdrawals. The commands require a POSIX shell.
+
+## Prerequisites
+
+- [Go 1.26 or later](https://go.dev/dl/) (tested with Go 1.26.1)
+- UDP connectivity for communication with peers
+- For an inbound node: a public IPv4 address and a reachable UDP listener
+
+## Build the node
+
+```bash
+git clone --branch v1.3.2 https://github.com/xssnick/ton-payment-network
+cd ton-payment-network
+go build -ldflags "-w -s -X main.GitCommit=$(git describe --tags --always --dirty)" -o build/payment-node cmd/node/main.go
+```
+
+The executable is `build/payment-node`. Run subsequent commands from this repository directory.
+
+## Generate and review configuration
+
+<Callout
+  type="caution"
+  title="Private keys and automatic transfers"
+>
+  The configuration contains wallet and node private keys. Keep it private and backed up with the payment database. Generated balance-control settings can trigger transfers after channels become active; review them before funding the wallet.
+</Callout>
+
+Generate the configuration without starting the payment service using the [`-config` and `-web-conn-info` options](/foundations/web3/payment-network/reference#cli-options):
+
+```bash
+umask 077
+./build/payment-node -config payment-network-config.json -web-conn-info
+chmod 600 payment-network-config.json
+```
+
+[`-web-conn-info`](/foundations/web3/payment-network/reference#cli-options) prints public connection keys for browser clients and exits. The private keys remain in the configuration file.
+
+Open `payment-network-config.json`. Keep the generated mainnet [`NetworkConfigUrl`](/foundations/web3/payment-network/reference#configuration-fields). For manual funding in these guides, set [`ChannelConfig.SupportedCoins.Ton.BalanceControl`](/foundations/web3/payment-network/reference#configuration-fields) to `null`. Apply the same choice to any additional enabled asset.
+
+For an inbound node, set [`ExternalIP`](/foundations/web3/payment-network/reference#node-configuration) to the node's public IPv4 address and make the UDP port in `NodeListenAddr` reachable. With an empty `ExternalIP`, the node starts as an outbound ADNL client.
+
+## Start and verify
+
+```bash
+./build/payment-node -config payment-network-config.json
+```
+
+Wait for “wallet initialized” and “payment node initialized”. They report different identifiers: the wallet address receives on-chain funds; the node public key identifies the payment peer.
+
+In the running node's console, enter:
+
+```text
+list
+```
+
+A fresh node reports “no active channels”. The console accepts a command name and then asks for each argument separately.
+
+Use <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop the process before changing configuration. Preserve the configured `DBPath` and private keys when restarting.
+
+## Enable the HTTP API (optional)
+
+<span
+  id="optional-http-api"
+/>
+
+To bind the HTTP API to localhost, use [`-api`](/foundations/web3/payment-network/reference#cli-options):
+
+```bash
+./build/payment-node -config payment-network-config.json -api 127.0.0.1:8096
+```
+
+The [HTTP API](/foundations/web3/payment-network/reference#http-api) can request fund movements. Keep it on a trusted local interface; configure both [`-api-login` and `-api-password`](/foundations/web3/payment-network/reference#cli-options) if authentication is needed.
+
+## Troubleshoot
+
+| Problem                                        | Check                                                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Configuration upgrade message followed by exit | Review the updated file and restart.                                                             |
+| Cannot connect to liteservers                  | Check `NetworkConfigUrl` and network reachability.                                               |
+| Peer cannot connect to the node                | Check `ExternalIP`, UDP listener, and firewall rules.                                            |
+| API does not start                             | Enable `-api`; the `APIListenAddr` configuration field alone does not enable it in this version. |
+
+Continue with [Open and fund a channel](/foundations/web3/payment-network/use-channels#initialize-the-channel).

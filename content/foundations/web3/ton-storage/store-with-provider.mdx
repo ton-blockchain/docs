@@ -1,0 +1,85 @@
+---
+title: "How to store a bag with a provider"
+sidebarTitle: "Store with a provider"
+description: "Request paid storage and monitor the client balance"
+---
+
+Request paid storage for a bag on mainnet and monitor its storage contract.
+
+## Prerequisites
+
+- A running TON v2026.08 [storage daemon](/foundations/web3/ton-storage/get-started#start-the-daemon) configured for mainnet and connected CLI
+- A funded mainnet wallet
+- The provider contract address on mainnet
+
+<Callout
+  type="danger"
+  title="Storage payments"
+>
+  Sending a storage request or topping up its contract transfers funds. Verify the mainnet provider address, amount, and terms before sending. Mainnet transfers cannot be rolled back.
+</Callout>
+
+Run the following [commands](/foundations/web3/ton-storage/reference#provider-commands) inside `storage-daemon-cli`, one command per line.
+
+## Prepare the bag
+
+[Create and share a bag](/foundations/web3/ton-storage/get-started#create-and-share-a-bag) and record its 64-character hexadecimal identifier as `<BAG_ID>`. Keep the bag available until the provider finishes downloading it.
+
+## Check provider terms
+
+Inspect the on-chain terms at `<PROVIDER_ADDRESS>`, the main provider contract address:
+
+```bash
+get-provider-params <PROVIDER_ADDRESS>
+```
+
+The result states whether the provider accepts contracts, its bag-size limits, its rate, and the maximum paid interval between proofs.
+
+## Request storage from a provider
+
+1. Generate a request body for the bag:
+
+   ```bash
+   new-contract-message <BAG_ID> <MESSAGE_BODY_PATH> --query-id <QUERY_ID> --provider <PROVIDER_ADDRESS>
+   ```
+
+   There,
+
+   - `<MESSAGE_BODY_PATH>` receives the internal message body, not a complete message.
+   - `<QUERY_ID>` is an integer from `0` through `2^64 - 1`.
+
+   Large bags can take longer to process. Review the rate and proof interval printed by the command before sending the body. The provider contract rejects the request if its rate or proof interval changes before processing.
+
+1. Send the generated body to `<PROVIDER_ADDRESS>` from the client wallet, using the [request example](/foundations/web3/ton-storage/reference#send-a-storage-request). The example attaches 1 GRAM to cover deployment and an initial storage balance. This is an example amount, not a fixed price or storage duration; review the provider's rate before sending.
+
+## Verify activation
+
+<span id="verify" />
+
+Find the incoming `0xbf7bd0c1` notification in the requesting wallet's transaction history. Its body contains the request query ID and BagID. The sender is the new storage contract; use that address as `<STORAGE_CONTRACT_ADDRESS>`.
+
+Read the contract with the [verification helper](/foundations/web3/ton-storage/reference#read-a-storage-contract). Confirm that `owner`, `provider`, and `bagId` match the request, and that `balance` is positive. Wait for `active` to become `true` after the provider downloads the bag. Activation also sends a `0xd4caedcd` notification to the client.
+
+## Monitor and top up the balance
+
+<span
+  id="monitor-the-client-balance"
+/>
+
+Read `balance` with the [verification helper](/foundations/web3/ton-storage/reference#read-a-storage-contract). It is the [unpaid client balance](/foundations/web3/ton-storage/provider-lifecycle#payments-and-balances), not the contract's total coin balance.
+
+To top up, send a transfer to `<STORAGE_CONTRACT_ADDRESS>` with an empty body or a text comment. Any wallet can add funds. Read the balance again after the transaction is included.
+
+## Close the agreement
+
+Send a closure request from the client wallet to `<STORAGE_CONTRACT_ADDRESS>`, using the [closure example](/foundations/web3/ton-storage/reference#close-a-storage-contract). The provider's main contract address is not the destination for this request.
+
+Verify the closure notification and the contract's deletion on-chain. Refunds depend on whether the agreement was active; see [Closure and data retention](/foundations/web3/ton-storage/provider-lifecycle#closure-and-data-retention). A provider can also decline or close an agreement, including when its client balance reaches zero.
+
+## Troubleshoot
+
+| Problem                                                                | Check                                                                         |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Request rejected after the provider changes its rate or proof interval | Read the updated terms and regenerate the request body.                       |
+| Contract remains inactive                                              | Keep the bag shared and check with the provider that it can download the bag. |
+| No deployment notification                                             | Inspect the wallet transaction for a bounced request before retrying.         |

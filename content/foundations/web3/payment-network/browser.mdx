@@ -1,0 +1,90 @@
+---
+title: "How to run Payment Network in a browser"
+sidebarTitle: "Run in a browser"
+description: "Build the supplied WebAssembly example and connect it to a payment node"
+---
+
+Build the browser example included in TON Payment Network v1.3.2 and connect it to a payment node. The example includes wallet callbacks, browser storage, and channel controls.
+
+## Prerequisites
+
+- The v1.3.2 repository and a configured mainnet node from [Run a payment node](/foundations/web3/payment-network/run-node)
+- [Go 1.26.1](https://go.dev/dl/), [Node.js 22.23.2](https://nodejs.org/en/download), and npm 10.9.8 for the build below
+- A mainnet wallet compatible with [TON Connect](/applications/ton-connect/how-to/connect) for the interactive channel workflow
+
+The commands require a POSIX shell. The build below uses the standard Go compiler and its matching JavaScript runtime. The repository also provides TinyGo build targets; do not mix their runtime files with this build.
+
+<Callout
+  type="caution"
+  title="Browser keys and channel state"
+>
+  The client stores configuration and private keys in localStorage and channel state in IndexedDB, associated with the wallet address. Preserve the browser profile and origin while channels are active. Clearing site data can remove state needed to continue or settle channels; connecting the same wallet in another browser does not restore it.
+</Callout>
+
+## Enable the node's web transport
+
+Stop the payment node and set [`WebTransportListenAddr`](/foundations/web3/payment-network/reference#configuration-fields) to `127.0.0.1:7161` in its existing configuration. Preserve its keys, network, and database settings, then restart it.
+
+From the repository root, print its public browser initializer with [`-web-conn-info`](/foundations/web3/payment-network/reference#cli-options):
+
+```bash
+./build/payment-node -config payment-network-config.json -web-conn-info
+```
+
+Copy the two public keys into the `window.startPaymentNetwork(...)` call in `cmd/web/web-payments-frontend/src/App.tsx`, replacing the bundled demonstration keys. The first key identifies the node's [Abstract Datagram Network Layer (ADNL) transport](/foundations/network/adnl-udp); the second identifies its payment node.
+
+The supplied `src/setupProxy.js` forwards `/web-channel/api/` requests to `http://localhost:7161`. This is the node's web transport, not its administration API.
+
+## Run the example locally
+
+From the repository root:
+
+```bash
+GOOS=js GOARCH=wasm go build -o cmd/web/web-payments-frontend/public/web.wasm ./cmd/web
+cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" cmd/web/web-payments-frontend/public/wasm_exec.js
+cd cmd/web/web-payments-frontend
+npm ci --legacy-peer-deps
+```
+
+Set the URLs in `public/tonconnect-manifest.json` to match the served application, then start the local development server with its API forwarding:
+
+```bash
+PORT=3001 npm start
+```
+
+Open `http://localhost:3001`. For a wallet on another device, use a reachable deployment and manifest URL following the [TON Connect setup guide](/applications/ton-connect/how-to/connect); that wallet cannot reach the development computer through its own `localhost`.
+
+The example also contains demonstration asset and trading settings. Review them before enabling assets or deploying the application; they are not a list of supported mainnet assets for the node.
+
+## Build for production (optional)
+
+<span
+  id="optional-production-build"
+/>
+
+After setting the deployment URLs in `public/tonconnect-manifest.json`, run from the frontend directory:
+
+```bash
+npm run build
+```
+
+The output is written to `build/`. The static build does not include `src/setupProxy.js`; configure `/web-channel/api/` forwarding to the node's web transport separately on the deployment.
+
+## Verify
+
+Check that `web.wasm` and `wasm_exec.js` load successfully. With a connected wallet, the page starts the payment node and displays channel information. Ensure that the wallet and backend node use mainnet before requesting an on-chain action.
+
+<Callout type="caution">
+  Mainnet transactions are irreversible. Verify the destination and amount before confirming in the wallet.
+</Callout>
+
+Use the example's channel controls to open and fund a channel and send a payment. Check wallet transaction details before confirming, then inspect the resulting channel balances.
+
+## Troubleshoot
+
+| Problem                                    | Check                                                                   |
+| ------------------------------------------ | ----------------------------------------------------------------------- |
+| WebAssembly fails to load                  | Build `web.wasm` and copy `wasm_exec.js` from the same Go installation. |
+| Browser cannot reach the payment node      | Check the web transport listener and `/web-channel/api/` forwarding.    |
+| Peer authentication or channel setup fails | Replace both bundled keys with values from the node's initializer.      |
+| Wallet rejects the application manifest    | Check that its URLs match a deployment reachable by the wallet.         |

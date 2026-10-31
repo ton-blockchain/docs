@@ -1,0 +1,412 @@
+---
+title: "TON DNS reference"
+sidebarTitle: "Reference"
+---
+
+Domain Name System (DNS) resolver interface, record schemas, and messages of the `.ton` domain contracts. For names, prices, auctions, and renewal periods, see [.ton domains](/foundations/web3/ton-dns/domains).
+
+<span
+  id="sdk-examples"
+/>
+
+<span
+  id="typescript-helpers"
+/>
+
+<span
+  id="typescript-examples"
+/>
+
+<span
+  id="shared-client"
+/>
+
+<span
+  id="resolve-a-record"
+/>
+
+<span
+  id="read-a-wallet-address"
+/>
+
+<span
+  id="prerequisites"
+/>
+
+<span
+  id="set-up-the-client"
+/>
+
+<span
+  id="configure-the-client-and-wallet"
+/>
+
+<span
+  id="add-recursive-resolution"
+/>
+
+<span
+  id="configure-the-operation"
+/>
+
+<span
+  id="resolve-a-domain"
+/>
+
+<span
+  id="resolve-the-name"
+/>
+
+<span
+  id="troubleshoot"
+/>
+
+## DNS protocol
+
+TON DNS is built as a tree of DNS smart contracts. The [root resolver](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/root-dns.fc) lives on the masterchain; its address is stored in blockchain configuration parameter #4.
+
+Every DNS smart contract exposes a `dnsresolve` get-method:
+
+```func
+(int, cell) dnsresolve(slice subdomain, int category)
+```
+
+`subdomain` contains the remaining name in its internal encoding. `category` is an unsigned 256-bit key, usually the SHA-256 hash of a category name. Category `0` requests all records.
+
+### Name encoding
+
+TON Enhancement Proposal 81 (TEP-81) defines names as UTF-8 strings of at most 126 bytes, excluding byte values `0` through `32`. Applications normalize names to lowercase. Individual resolvers can impose additional registration restrictions.
+
+Reverse the dot-separated labels and terminate each with a zero byte: `app.example.ton` becomes `ton\0example\0app\0`. Each resolver returns the number of bits consumed; pass the remaining bytes to the next resolver. Do not strip a leading zero byte from that remainder.
+
+A single zero byte refers to the resolver itself. When starting a lookup directly on a non-root resolver, prefix the internal name with a zero byte. For a record on the domain contract itself, pass `\0`.
+
+### Resolution results
+
+| Result                              | Meaning                                                                                   |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- |
+| Get-method failure                  | Resolution failed.                                                                        |
+| Zero bits consumed                  | No matching prefix was resolved.                                                          |
+| Full name consumed, record returned | The requested record was found.                                                           |
+| Full name consumed, null returned   | No record exists for the requested category.                                              |
+| Partial name consumed               | Continue through the returned `dns_next_resolver`. A missing delegation stops resolution. |
+| Category `0`, full name consumed    | The result is the category dictionary, which can be empty.                                |
+
+<span
+  id="read-dns-records"
+/>
+
+<span
+  id="decode-other-records"
+/>
+
+### DNS record types
+
+Record values use the following [TL-B](/foundations/tlb/overview) schemas:
+
+- `dns_adnl_address`: stores a 256-bit [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) address for network services such as TON Sites. An optional protocol list describes supported protocols.
+
+  ```tlb
+  dns_adnl_address#ad01 adnl_addr:bits256 flags:(## 8) { flags <= 1 }
+    proto_list:flags . 0?ProtoList = DNSRecord;
+  ```
+
+- `dns_smc_address`: stores any smart contract address on the TON Blockchain, including wallets. An optional capability list describes the capabilities of the contract. Under the standard `wallet` category, this record enables sending funds to a domain name.
+
+  ```tlb
+  dns_smc_address#9fd3 smc_addr:MsgAddressInt flags:(## 8) { flags <= 1 }
+    cap_list:flags . 0?SmcCapList = DNSRecord;
+  ```
+
+- `dns_next_resolver`: delegates resolution of subdomains to another DNS smart contract at the specified address.
+
+  ```tlb
+  dns_next_resolver#ba93 resolver:MsgAddressInt = DNSRecord;
+  ```
+
+- `dns_storage_address`: stores a 256-bit TON Storage Bag ID, allowing domain names to be assigned to files stored via TON Storage.
+
+  ```tlb
+  dns_storage_address#7473 bag_id:bits256 = DNSRecord;
+  ```
+
+- `dns_text`: stores arbitrary UTF-8 text using the `Text` chunked encoding defined in the block layout specification.
+
+  ```tlb
+  dns_text#1eda _:Text = DNSRecord;
+  ```
+
+<span
+  id="choose-a-category"
+/>
+
+#### Record categories
+
+Categories select records independently of their TL-B type. Their keys are SHA-256 hashes of UTF-8 names.
+
+| Category            | Record type                                 | Definition or use                                                                                           |
+| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `wallet`            | `dns_smc_address`                           | Defined by TEP-81.                                                                                          |
+| `site`              | `dns_adnl_address` or `dns_storage_address` | Site destination.                                                                                           |
+| `dns_next_resolver` | `dns_next_resolver`                         | Defined by TEP-81.                                                                                          |
+| `storage`           | `dns_storage_address`                       | Used by the official DNS interface for a separate storage record; not a standard category listed in TEP-81. |
+
+TEP-81 defines the ADNL form. The [official proxy](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/DNSResolver.cpp#L69-L93) accepts both ADNL addresses and Bag IDs in the `site` category. The DNS interface also supports both.
+
+TEP-81 does not define a standard text category. Applications must agree on the category used for a `dns_text` value.
+
+#### Text encoding
+
+For `dns_text`, prefix the value with constructor `0x1eda` (16 bits), then encode `Text`:
+
+```tlb
+chunk_ref$_ {n:#} ref:^(TextChunks (n + 1)) = TextChunkRef (n + 1);
+chunk_ref_empty$_ = TextChunkRef 0;
+text_chunk$_ {n:#} len:(## 8) data:(bits (len * 8)) next:(TextChunkRef n) = TextChunks (n + 1);
+text_chunk_empty$_ = TextChunks 0;
+text$_ chunks:(## 8) rest:(TextChunks chunks) = Text;
+```
+
+`chunks` counts the text chunks. Each chunk carries its byte length and data; a reference leads to the remaining chunks. Encode the text as UTF-8. This is not the same serialization as appending a string directly after `0x1eda`.
+
+<span
+  id="delegate-subdomains"
+/>
+
+### Subdomain resolvers
+
+The parent domain's `dns_next_resolver` category stores a record of the same type, containing the delegated contract's address. The `.ton` domain contract returns this record when resolving a subdomain. Updating or deleting it uses the [record update message](#record-updates).
+
+The delegated contract must implement `dnsresolve`. Subdomain creation, permissions, and payments depend on that contract; the `.ton` collection's registration rules do not automatically apply to it.
+
+Official implementations include [manual DNS](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/smartcont/dns-manual-code.fc), managed through signed requests, and [automatic DNS](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/smartcont/dns-auto-code.fc), which implements registration and expiration rules.
+
+## .ton contracts
+
+<span
+  id="transfer-a-domain"
+/>
+
+### Domain ownership
+
+Each `.ton` domain is a transferable non-fungible token (NFT) item following [TEP-62](https://github.com/ton-blockchain/TEPs/blob/fe8a154e4dad9f5c0bf7240df278cb50ec6cd908/text/0062-nft-standard.md). The collection and domain contracts implement DNS resolution following [TEP-81](https://github.com/ton-blockchain/TEPs/blob/fe8a154e4dad9f5c0bf7240df278cb50ec6cd908/text/0081-dns-standard.md).
+
+<span
+  id="find-a-domain"
+/>
+
+<span
+  id="add-domain-discovery"
+/>
+
+### Domain contract address
+
+The NFT index is `slice_hash` of the cell containing the label without `.ton`. The collection's `get_nft_address_by_index` returns the corresponding domain address, including before deployment.
+
+| Account state   | Meaning                                                                        |
+| --------------- | ------------------------------------------------------------------------------ |
+| `uninitialized` | No active domain contract at this address.                                     |
+| `active`        | Read the NFT and auction state to determine ownership or bidding availability. |
+| `frozen`        | Stop the registration flow.                                                    |
+
+<span
+  id="registration-getters"
+/>
+
+<span
+  id="read-an-auction"
+/>
+
+<span
+  id="read-domain-and-auction-state"
+/>
+
+### Getters
+
+| Getter                            | Returns                                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------- |
+| `get_nft_address_by_index(index)` | Domain address, queried on the collection.                                              |
+| `get_nft_data()`                  | Initialization flag, NFT index, collection address, owner address, and content cell.    |
+| `get_domain()`                    | Label as a slice, without `.ton`.                                                       |
+| `get_auction_info()`              | Highest bidder, accepted bid in nanograms, and deadline as a Unix timestamp in seconds. |
+| `get_last_fill_up_time()`         | Renewal timestamp in Unix seconds.                                                      |
+
+<span
+  id="domain-lifecycle"
+/>
+
+<span
+  id="registration-rules"
+/>
+
+<span
+  id="minimum-first-bids"
+/>
+
+### Registration constraints
+
+The collection enforces the [label restrictions](/foundations/web3/ton-dns/domains#registration-rules) and [minimum opening bids](/foundations/web3/ton-dns/domains#minimum-first-bids).
+
+<span
+  id="build-a-registration-body"
+/>
+
+<span
+  id="prepare-a-wallet-request"
+/>
+
+<span
+  id="send-a-request"
+/>
+
+<span
+  id="register-a-domain"
+/>
+
+<span
+  id="bid-in-an-auction"
+/>
+
+### Auction messages
+
+The destination and body distinguish new registrations from competing bids. Both follow the [auction deadlines and extension rules](/foundations/web3/ton-dns/domains#auctions).
+
+| Operation             | Destination     | Message body                                                |
+| --------------------- | --------------- | ----------------------------------------------------------- |
+| Start an auction      | Collection      | Opcode `0` (32 bits), followed by the label without `.ton`. |
+| Place a competing bid | Domain contract | Empty body.                                                 |
+
+The collection deploys the domain contract and forwards the remaining message value after fees. The accepted first bid can therefore differ from the value sent to the collection.
+
+The minimum competing bid is `previousBid * 105 / 100`, using integer division in nanograms. Another bid can change this threshold between reading the state and processing a transaction.
+
+<span
+  id="build-a-finalization-request"
+/>
+
+<span
+  id="verify-ownership"
+/>
+
+<span
+  id="finalize-ownership"
+/>
+
+<span
+  id="verify-a-transaction"
+/>
+
+### Auction finalization
+
+After the deadline, a successful internal `get_static_data` message finalizes the auction without changing DNS records. An empty message does not finalize ownership. A request before the deadline returns static data without finalizing the auction.
+
+| Message              | Opcode       | Fields after the opcode                                                |
+| -------------------- | ------------ | ---------------------------------------------------------------------- |
+| `get_static_data`    | `0x2fcb26a2` | `query_id:uint64`                                                      |
+| `report_static_data` | `0x8b771735` | `query_id:uint64`, `index:uint256`, `collection_address:MsgAddressInt` |
+
+Opcodes occupy 32 bits. The response is sent to the request sender. Attach enough value for execution and outgoing-message fees; this payment is not another bid.
+
+An authorized record update after the deadline also finalizes ownership. A wallet record is not required to own the domain.
+
+After finalization, `get_nft_data` returns the winning wallet as owner. `get_auction_info` returns a null bidder, zero bid, and zero deadline. A wallet signature or broadcast confirmation alone does not establish these results.
+
+<span
+  id="update-or-remove-dns-records"
+/>
+
+<span
+  id="set-a-text-record"
+/>
+
+### Record updates
+
+Send `change_dns_record` to the domain contract from its owner's wallet:
+
+| Field        | Encoding                                                                        |
+| ------------ | ------------------------------------------------------------------------------- |
+| Opcode       | `0x4eb1f0f9`, 32 bits.                                                          |
+| Query ID     | Unsigned 64-bit integer.                                                        |
+| Category key | Unsigned 256-bit integer.                                                       |
+| Value        | Reference to the serialized DNS record, or no reference to delete the category. |
+
+The contract stores the referenced cell without validating its DNS record type. Encode the expected schema before sending. An absent reference deletes the category; a reference to an empty cell stores an empty cell instead. A successful update refreshes `last_fill_up_time`.
+
+For `dns_text` values, use the [Text encoding](#text-encoding).
+
+<span
+  id="renew-a-domain"
+/>
+
+### Renewal interface
+
+The following successful owner operations reset `last_fill_up_time`:
+
+| Operation                     | Message                                               |
+| ----------------------------- | ----------------------------------------------------- |
+| Update or remove a DNS record | `change_dns_record`.                                  |
+| Edit the domain content       | `edit_content`.                                       |
+| Transfer ownership            | NFT `transfer`.                                       |
+| Top up the domain contract    | Empty body or opcode `0`, after auction finalization. |
+
+Each operation starts a new 366-day renewal period from its execution time. It does not add 366 days to the previous deadline. The contract does not enforce a fixed renewal payment; messages must fund their execution fees.
+
+Failed transactions and static-data requests do not reset the timestamp. A payment sent to a domain name's wallet record goes to that recipient, not necessarily to the domain contract.
+
+<span
+  id="start-an-auction-for-an-expired-domain"
+/>
+
+### Expired domain auctions
+
+Send `dns_balance_release` to the existing domain contract when `now() - last_fill_up_time > 31622400` (366 days) and no auction is active. Any sender can call it, including the owner.
+
+| Field    | Encoding                 |
+| -------- | ------------------------ |
+| Opcode   | `0x4ed14b65`, 32 bits.   |
+| Query ID | Unsigned 64-bit integer. |
+
+The attached message value is the opening bid and must meet the [minimum first bid](/foundations/web3/ton-dns/domains#minimum-first-bids) for the label's length. Query ID is an unsigned 64-bit value.
+
+On success, the contract:
+
+- Clears the owner address to `addr_none`.
+- Records the sender as the highest bidder and the message value as the bid.
+- Sets the auction deadline to `now() + 604800` (1 week) and resets the renewal timestamp.
+- Keeps the domain address and DNS records unchanged.
+- Attempts to return the existing balance above the 1 GRAM reserve to the previous owner. This excludes the opening bid; message fees affect the received amount.
+
+Subsequent bids follow the [auction rules](#auction-messages). Ownership is assigned through [auction finalization](#auction-finalization).
+
+<span
+  id="registration-errors"
+/>
+
+### Contract errors
+
+| Contract   | Exit code | Meaning                                                             |
+| ---------- | --------- | ------------------------------------------------------------------- |
+| Collection | `200`     | Label shorter than four characters.                                 |
+| Collection | `201`     | Label longer than 126 characters.                                   |
+| Collection | `202`     | Invalid label byte alignment or comment continuation structure.     |
+| Collection | `203`     | Invalid label characters.                                           |
+| Collection | `204`     | First bid below the minimum.                                        |
+| Collection | `205`     | Domain index present in the governance configuration.               |
+| Domain     | `407`     | Bid below the required minimum.                                     |
+| Domain     | `414`     | The renewal period has not elapsed or an auction is already active. |
+
+Check both compute and action results when investigating a failed transaction.
+
+<span
+  id="ecosystem-integration"
+/>
+
+## Sources
+
+- [Collection contract](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/nft-collection.fc).
+- [Domain contract](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/nft-item.fc).
+- [Naming and pricing](https://github.com/ton-blockchain/dns-contract/blob/d08131031fb659d2826cccc417ddd9b98476f814/func/dns-utils.fc).
+- [TEP-81](https://github.com/ton-blockchain/TEPs/blob/fe8a154e4dad9f5c0bf7240df278cb50ec6cd908/text/0081-dns-standard.md).
+- [DNS and Text schemas](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/crypto/block/block.tlb#L951-L975).
+- [Official DNS interface](https://github.com/ton-blockchain/dns/blob/429f58774b05d8f3cfa05bd22f0e18df615daa01/src/index.js).
+- [Release message payload](https://github.com/ton-blockchain/dns/blob/429f58774b05d8f3cfa05bd22f0e18df615daa01/src/utils.js#L515-L520).
