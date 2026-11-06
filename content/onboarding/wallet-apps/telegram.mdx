@@ -62,6 +62,19 @@ To disable the backup, select <kbd>Keys & Backup</kbd>, then <kbd>Disable Backup
 
 If rotation succeeds but the following backup-disable request fails, the new phrase becomes the current while the backup may remain enabled with the old phrase. Keep the new phrase and verify the backup state until the request succeeds.
 
+## Create TON Connect links
+
+To direct users from a dApp to Telegram Money, prepare a payload for its [TON Connect link formats](/onboarding/wallet-apps/deep-links#ton-connect-in-telegram):
+
+1. Build the [standard connection query](/applications/ton-connect/core-concepts#universal-links) using `v`, `id`, `r`, and optional `trace_id`. For Telegram Money, use a lowercase `id`, include `ton_addr` in the [connection request](/applications/ton-connect/api-reference/protocol#connectrequest), and use an HTTPS `manifestUrl` without credentials or a fragment.
+1. Start with the percent-encoded query without its leading `?`. Encode any remaining literal `-`, `.`, `_`, and `~` as `%2D`, `%2E`, `%5F`, and `%7E`, respectively. Preserve existing percent-encoded bytes.
+1. Replace `&` with `-`, `=` with `__`, and `%` with `--`.
+1. Use the result as `<PACKED>` in the link format. The templates already include the `tonconnect-` prefix.
+
+To reopen a pending request, omit `r` and include `v=2`, the existing connection's lowercase `id`, and the UUID `trace_id` sent with that request. Apply the same packing steps. The request data must already have been sent through the connection.
+
+To decode a payload, restore `--` to `%`, then `__` to `=`, then `-` to `&`, before parsing the query.
+
 ## Learn more
 
 - [WalletTg contract](/contracts/standard/wallets/telegram/overview)

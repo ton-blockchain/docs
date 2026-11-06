@@ -4,21 +4,28 @@ title: "Deep links"
 
 Deep links allow directing users from a dApp to a meaningful location within a TON wallet and invoking corresponding actions.
 
-Issue wallet invoices using deep links. See [transaction link formats](#explorers-links) for popular explorers.
+Choose a link based on what the user needs to do:
+
+| Goal                                             | Format                                                            |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| Prepare a one-time payment                       | [`ton://transfer/...`, Deep links invoices](#deep-links-invoices) |
+| Connect a dApp to a wallet                       | [`tc://?...`, TON Connect invoices](#ton-connect-invoices)        |
+| Target a specific wallet, such as Telegram Money | [Wallet-specific links](#wallet-specific-invoices)                |
+| View an account, transaction, or block           | [Explorer links](#explorer-links)                                 |
 
 ## TON Connect invoices
 
-```bash
-tc://<TON_CONNECT_LINK_BODY>
-```
+Use TON Connect when a dApp needs a persistent wallet connection and responses to transaction or signing requests.
 
-Best for dApps that require multiple transactions within a session or a persistent wallet connection.
+```bash
+tc://?v=2&id=<ID>&r=<REQUEST>
+```
 
 **Advantages**
 
-- Permanent communication channel with the wallet.
-- Users only scan a QR code once.
-- Can track transaction confirmation via the returned BoC.
+- Persistent communication channel with the wallet.
+- Users only need to connect once per session.
+- Can track transactions on-chain using the [returned BoC](/applications/ton-connect/how-to/message-lookup).
 - Ready-made SDKs and UI kits for various platforms.
 
 **Disadvantages**
@@ -26,16 +33,22 @@ Best for dApps that require multiple transactions within a session or a persiste
 - If only one payment is needed, users must connect the wallet and confirm the transaction.
 - More complex integration than a `ton://` link.
 
-Explore [TON Connect](/applications/ton-connect/overview).
+See [TON Connect universal links](/applications/ton-connect/core-concepts#universal-links) for parameter definitions and other TON Connect link formats.
+
+<Callout type="note">
+  Most Telegram clients support opening `tc://` links from outside Telegram, but the operating system may open another registered wallet. To target Telegram Money, use its [Telegram-specific TON Connect links](#ton-connect-in-telegram).
+</Callout>
 
 ## Deep links invoices
+
+The `ton://` scheme is part of the broader standard, enabling interoperability across different TON-based wallets and services.
 
 <Callout type="caution">
   The `ton://` link is less common in the ecosystem than `tc://`, but it may be useful for a simple, one-time payment flow.
 </Callout>
 
 ```bash
-ton://<LINK-BODY>
+ton://transfer/<ADDRESS>
 ```
 
 **Advantages**
@@ -47,20 +60,18 @@ ton://<LINK-BODY>
 
 - Users must scan a new QR code for each payment.
 - Cannot track if the user signed the transaction.
-- No information about the user’s address.
+- No information about the user's address.
 - Requires workarounds for platforms where links are not clickable (e.g., Telegram Desktop bots).
 
-The `ton://` scheme is part of the broader TON blockchain standard, enabling interoperability across different TON-based wallets and services.
+### Example workflows
 
-#### Example workflows
+- **Quick payments:** Open a pre-filled payment request from a website using a `ton://` link.
+- **In-app transactions:** Open a wallet's send screen from an application.
+- **Link to specific transfers:** Use [explorer links](#explorer-links) to open and review a single transaction.
 
-- Quick payments: Integrate payment requests directly from your website, allowing users to complete transactions with a single tap using `ton://` transfer links.
-- In-app transactions: Use deep links to facilitate seamless transfers between users within your application.
-- Link to specific transfers: Provide support or history review by linking directly to specific transactions or transfers.
+### Gram transfer
 
-### GRAM transfer
-
-Opens the pre-filled Send screen and prompts the user to enter the missing data.
+Opens the pre-filled send screen and prompts the user to enter the missing data.
 
 ```bash title="Transfer scheme"
 ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>
@@ -69,10 +80,10 @@ ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>
 | Parameter   | Description                                                 | Required |
 | ----------- | ----------------------------------------------------------- | -------- |
 | `<ADDRESS>` | The recipient's TON address.                                | required |
-| `<AMOUNT>`  | The amount of GRAM to send, in nanograms.                   | optional |
+| `<AMOUNT>`  | The amount of Gram to send, in nanograms.                   | optional |
 | `<TEXT>`    | A URL-encoded UTF-8 text message to attach to the transfer. | optional |
 
-#### GRAM transfer to address
+#### Gram transfer to address
 
 ```bash title="scheme"
 ton://transfer/<ADDRESS>
@@ -82,7 +93,7 @@ ton://transfer/<ADDRESS>
 ton://transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K
 ```
 
-#### GRAM transfer with amount
+#### Gram transfer with amount
 
 ```bash title="scheme"
 ton://transfer/<ADDRESS>?amount=<AMOUNT>
@@ -93,7 +104,7 @@ ton://transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=5000000
 
 ```
 
-#### GRAM transfer with text comment
+#### Gram transfer with text comment
 
 ```bash title="scheme"
 ton://transfer/<ADDRESS>?text=<TEXT>
@@ -103,7 +114,7 @@ ton://transfer/<ADDRESS>?text=<TEXT>
 ton://transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?text=hello
 ```
 
-#### GRAM Transfer with amount and text comment
+#### Gram Transfer with amount and text comment
 
 ```bash title="scheme"
 ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>
@@ -115,7 +126,7 @@ ton://transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=5000000&t
 
 ### Transfer with expiry timestamp
 
-Opens the Send screen with an expiry timestamp for the transaction.
+Opens the send screen with an expiry timestamp `exp` for the transaction — the blockchain would reject transactions past that timestamp.
 
 ```bash title="Scheme with timestamp"
 ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>&exp=<EXPIRY_TIMESTAMP>
@@ -124,15 +135,13 @@ ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>&exp=<EXPIRY_TIMESTAMP>
 | Parameter            | Description                                                 | Required |
 | -------------------- | ----------------------------------------------------------- | -------- |
 | `<ADDRESS>`          | The recipient's TON address.                                | required |
-| `<AMOUNT>`           | The amount of GRAM to send, in nanograms.                   | optional |
+| `<AMOUNT>`           | The amount of Gram to send, in nanograms.                   | optional |
 | `<TEXT>`             | A URL-encoded UTF-8 text message to attach to the transfer. | optional |
 | `<EXPIRY_TIMESTAMP>` | Expiry timestamp in seconds since the Unix epoch.           | optional |
 
-The `exp` parameter, like other parameters, must be included when constructing the message to ensure the blockchain rejects transactions with an expired exp.
+#### Gram transfer with expiry timestamp
 
-#### GRAM transfer with expiry timestamp
-
-```bash title="scheme tranfser with expiry"
+```bash title="scheme transfer with expiry"
 ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>&exp=<EXPIRY_TIMESTAMP>
 ```
 
@@ -142,7 +151,7 @@ ton://transfer/EQD2NmD_lH5f5u1Kj3KfGyTvhZSX0Eg6qp2a5IQUKXxOG21n?amount=100000&te
 
 ### Jetton transfer
 
-Opens the Send screen with a jetton transfer. [Jetton](/contracts/standard/tokens/jettons/overview) is a standard for TON assets, like USDT, USDC and e.t.c.
+Opens the send screen with a [jetton](/contracts/standard/tokens/jettons/overview) transfer. Jetton is a standard for fungible assets on TON, like USDT or other tokens.
 
 ```bash title="scheme"
 ton://transfer/<ADDRESS>?jetton=<JETTON_ADDRESS>&amount=<AMOUNT>&text=<TEXT>
@@ -234,7 +243,7 @@ ton://transfer/<ADDRESS>?amount=<AMOUNT>&bin=<BINARY_DATA>
 | Parameter       | Description                                                                    | Required |
 | --------------- | ------------------------------------------------------------------------------ | -------- |
 | `<ADDRESS>`     | The recipient's TON address.                                                   | required |
-| `<AMOUNT>`      | The amount of GRAM to send, in nanograms.                                      | optional |
+| `<AMOUNT>`      | The amount of Gram to send, in nanograms.                                      | optional |
 | `<BINARY_DATA>` | A URL-encoded base64 BoC which will be attached as a body to internal message. | optional |
 
 ```bash title="example transfer with binary data"
@@ -250,6 +259,60 @@ Example: transferring 1 USDT to `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sD
 ```bash title="MyTonWallet"
 https://my.tt/transfer/UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K?amount=1000000&jetton=EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
 ```
+
+### Telegram Money
+
+[Telegram Money](/onboarding/wallet-apps/telegram) links open the native wallet in the installed Telegram app, including when opened from another app or a browser.
+
+```bash title="Open Telegram Money"
+tg://sendgrams
+```
+
+The HTTPS form, `https://t.me/sendgrams`, accepts the same parameters as the `tg://sendgrams` deep link.
+
+<Callout type="tip">
+  Telegram Money also handles regular [Gram transfer links](#gram-transfer) on mainnet.
+</Callout>
+
+<Callout type="note">
+  The `tg://ton` link opens Telegram's separate TON balance screen, associated with [channel monetization](https://telegram.org/blog/monetization-for-channels). It does not open Telegram Money.
+</Callout>
+
+#### Gram transfer in Telegram
+
+Add `to` and optionally `amount` to prepare a transfer:
+
+```bash title="scheme"
+tg://sendgrams?to=<RECIPIENT>&amount=<AMOUNT>
+```
+
+| Parameter     | Description                                                                                                     | Required |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | -------- |
+| `<RECIPIENT>` | An `@username` or a mainnet TON address in raw or URL-safe friendly format.                                     | required |
+| `<AMOUNT>`    | A positive decimal amount in Gram, using ASCII digits and `.` with at most nine fractional digits, e.g., `1.5`. | optional |
+
+- For `@username`, the recipient must be another ordinary Telegram user.
+- TON address recipients can use wallets outside Telegram.
+- TON DNS names such as `alice.ton` are **not resolved**.
+
+Supply each parameter once, using lowercase names. Omit the amount to use its default value: `0`.
+
+```bash title="1.5 Gram"
+tg://sendgrams?to=@monk&amount=1.5
+tg://sendgrams?to=UQDYzZmfsrGzhObKJUw4gzdeIxEai3jAFbiGKGwxvxHinf4K&amount=1.5
+```
+
+#### TON Connect in Telegram
+
+These links open Telegram Money's native TON Connect flow:
+
+```bash title="Telegram Money TON Connect"
+tg://sendgrams?startapp=tonconnect-<PACKED>
+tg://resolve?domain=sendgrams&startapp=tonconnect-<PACKED>
+https://t.me/sendgrams?startapp=tonconnect-<PACKED>
+```
+
+There, `<PACKED>` is a [TON Connect query](/applications/ton-connect/core-concepts#universal-links) encoded for Telegram's `startapp` parameter. For packing and reopening pending requests, see how to [create TON Connect links for Telegram Money](/onboarding/wallet-apps/telegram#create-ton-connect-links).
 
 ## Explorer links
 
