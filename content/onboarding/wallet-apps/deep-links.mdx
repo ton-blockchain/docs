@@ -137,7 +137,7 @@ ton://transfer/<ADDRESS>?amount=<AMOUNT>&text=<TEXT>&exp=<EXPIRY_TIMESTAMP>
 | `<ADDRESS>`          | The recipient's TON address.                                | required |
 | `<AMOUNT>`           | The amount of Gram to send, in nanograms.                   | optional |
 | `<TEXT>`             | A URL-encoded UTF-8 text message to attach to the transfer. | optional |
-| `<EXPIRY_TIMESTAMP>` | Expiry timestamp in seconds since the Unix epoch.           | optional |
+| `<EXPIRY_TIMESTAMP>` | Expiry timestamp in seconds since the UNIX epoch.           | optional |
 
 #### Gram transfer with expiry timestamp
 
@@ -163,7 +163,7 @@ ton://transfer/<ADDRESS>?jetton=<JETTON_ADDRESS>&amount=<AMOUNT>&text=<TEXT>
 | `<JETTON_ADDRESS>`   | The jetton master address.                                  | required |
 | `<AMOUNT>`           | The amount of jettons to send.                              | optional |
 | `<TEXT>`             | A URL-encoded UTF-8 text message to attach to the transfer. | optional |
-| `<EXPIRY_TIMESTAMP>` | Expiry timestamp in seconds since the Unix epoch.           | optional |
+| `<EXPIRY_TIMESTAMP>` | Expiry timestamp in seconds since the UNIX epoch.           | optional |
 
 <Callout type="tip">
   One whole Jetton for `<AMOUNT>` is defined by
