@@ -34,6 +34,14 @@ paths:
           schema:
             type: boolean
             default: true
+        - name: code_hash
+          in: query
+          description: Filter the requested addresses by contract code hash. Repeat the parameter to supply multiple hashes.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: OK
@@ -60,7 +68,7 @@ paths:
       parameters:
         - name: account
           in: query
-          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          description: Account address in hex, base64, or base64url form.
           schema:
             type: string
         - name: tx_hash
@@ -131,14 +139,17 @@ paths:
             minimum: 0
         - name: action_type
           in: query
-          description: Filter actions by type.
+          description: Filter by the stored action type. See [action classification](/api/v3/action-types).
           explode: true
           schema:
             type: array
             items:
-              enum:
+              anyOf:
+              - type: string
+                enum:
                 - call_contract
                 - contract_deploy
+                - gasless_request
                 - ton_transfer
                 - auction_bid
                 - change_dns
@@ -159,17 +170,80 @@ paths:
                 - stake_withdrawal_request
                 - subscribe
                 - unsubscribe
-              type: string
+                - auction_outbid
+                - cocoon_client_change_secret_hash
+                - cocoon_client_increase_stake
+                - cocoon_client_register
+                - cocoon_client_request_refund
+                - cocoon_client_top_up
+                - cocoon_client_withdraw
+                - cocoon_grant_refund
+                - cocoon_proxy_charge
+                - cocoon_proxy_payout
+                - cocoon_register_proxy
+                - cocoon_unregister_proxy
+                - cocoon_worker_payout
+                - coffee_create_pool
+                - coffee_create_pool_creator
+                - coffee_create_vault
+                - coffee_mev_protect_hold_funds
+                - coffee_mev_protect_failed_swap
+                - coffee_staking_claim_rewards
+                - coffee_staking_deposit
+                - coffee_staking_withdraw
+                - dns_purchase
+                - dns_release
+                - evaa_liquidate
+                - evaa_supply
+                - evaa_withdraw
+                - jvault_claim
+                - jvault_stake
+                - jvault_unstake
+                - jvault_unstake_request
+                - layerzero_commit_packet
+                - layerzero_dvn_verify
+                - layerzero_receive
+                - layerzero_send
+                - layerzero_send_tokens
+                - multisig_approve
+                - multisig_create_order
+                - multisig_execute
+                - nft_cancel_auction
+                - nft_cancel_sale
+                - nft_discovery
+                - nft_finish_auction
+                - nft_purchase
+                - nft_put_on_auction
+                - nft_put_on_sale
+                - nft_transfer
+                - nft_update_sale
+                - teleitem_cancel_auction
+                - teleitem_start_auction
+                - tgbtc_burn
+                - tgbtc_burn_fallback
+                - tgbtc_dkg_log_fallback
+                - tgbtc_mint
+                - tgbtc_mint_fallback
+                - tgbtc_new_key
+                - tgbtc_new_key_fallback
+                - tonco_deploy_pool
+                - vesting_add_whitelist
+                - vesting_send_message
+                - unknown
+              - type: string
         - name: exclude_action_type
           in: query
-          description: Exclude the specified action types.
+          description: Exclude specified action types. See [action classification](/api/v3/action-types).
           explode: true
           schema:
             type: array
             items:
-              enum:
+              anyOf:
+              - type: string
+                enum:
                 - call_contract
                 - contract_deploy
+                - gasless_request
                 - ton_transfer
                 - auction_bid
                 - change_dns
@@ -190,10 +264,70 @@ paths:
                 - stake_withdrawal_request
                 - subscribe
                 - unsubscribe
-              type: string
+                - auction_outbid
+                - cocoon_client_change_secret_hash
+                - cocoon_client_increase_stake
+                - cocoon_client_register
+                - cocoon_client_request_refund
+                - cocoon_client_top_up
+                - cocoon_client_withdraw
+                - cocoon_grant_refund
+                - cocoon_proxy_charge
+                - cocoon_proxy_payout
+                - cocoon_register_proxy
+                - cocoon_unregister_proxy
+                - cocoon_worker_payout
+                - coffee_create_pool
+                - coffee_create_pool_creator
+                - coffee_create_vault
+                - coffee_mev_protect_hold_funds
+                - coffee_mev_protect_failed_swap
+                - coffee_staking_claim_rewards
+                - coffee_staking_deposit
+                - coffee_staking_withdraw
+                - dns_purchase
+                - dns_release
+                - evaa_liquidate
+                - evaa_supply
+                - evaa_withdraw
+                - jvault_claim
+                - jvault_stake
+                - jvault_unstake
+                - jvault_unstake_request
+                - layerzero_commit_packet
+                - layerzero_dvn_verify
+                - layerzero_receive
+                - layerzero_send
+                - layerzero_send_tokens
+                - multisig_approve
+                - multisig_create_order
+                - multisig_execute
+                - nft_cancel_auction
+                - nft_cancel_sale
+                - nft_discovery
+                - nft_finish_auction
+                - nft_purchase
+                - nft_put_on_auction
+                - nft_put_on_sale
+                - nft_transfer
+                - nft_update_sale
+                - teleitem_cancel_auction
+                - teleitem_start_auction
+                - tgbtc_burn
+                - tgbtc_burn_fallback
+                - tgbtc_dkg_log_fallback
+                - tgbtc_mint
+                - tgbtc_mint_fallback
+                - tgbtc_new_key
+                - tgbtc_new_key_fallback
+                - tonco_deploy_pool
+                - vesting_add_whitelist
+                - vesting_send_message
+                - unknown
+              - type: string
         - name: supported_action_types
           in: query
-          description: List supported action types.
+          description: Supported action types or version shortcuts. See [classification presets](/api/v3/action-types#classification-presets).
           explode: true
           schema:
             type: array
@@ -241,6 +375,11 @@ paths:
           in: query
           description: Continue after the page that returned this `next_cursor`. Send the same filters and sort; do not
             combine with `offset`.
+          schema:
+            type: string
+        - name: X-Actions-Version
+          in: header
+          description: Action type or version shortcut. Overrides `supported_action_types` when supplied. Defaults to `latest` when neither is supplied.
           schema:
             type: string
       responses:
@@ -362,6 +501,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RequestError"
+  /api/v3/balanceChanges:
+    get:
+      security:
+        - APIKeyHeader: []
+        - APIKeyQuery: []
+      description: Calculate balance changes for a trace or action. Supply `trace_id` or `action_id`. If only `action_id` is supplied, the API finds its trace.
+      tags:
+        - Actions and traces
+      summary: Get balance changes
+      operationId: api_v3_get_balance_changes
+      parameters:
+        - name: trace_id
+          in: query
+          description: Trace ID. If supplied with `action_id`, the action is looked up within this trace.
+          schema:
+            type: string
+        - name: action_id
+          in: query
+          description: Action ID. If supplied, return changes for this action instead of the entire trace.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Balance changes. An action absent from the selected trace returns null maps.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceChangesResult"
+        "400":
+          description: Neither identifier was supplied.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "404":
+          description: The action ID could not be resolved to a trace.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "422":
+          description: The request could not be parsed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
+        "500":
+          description: The trace could not be processed or a server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndexError"
   /api/v3/blocks:
     get:
       security:
@@ -488,10 +679,11 @@ paths:
       parameters:
         - name: opcodes
           in: query
-          description: List of opcodes to decode in hexadecimal or decimal format.
+          description: List of opcodes to decode in hexadecimal or decimal format. An unprefixed value that parses as unsigned 32-bit hexadecimal is interpreted as hexadecimal.
           explode: true
           schema:
             type: array
+            maxItems: 1000
             items:
               type: string
         - name: bodies
@@ -500,6 +692,7 @@ paths:
           explode: true
           schema:
             type: array
+            maxItems: 1000
             items:
               type: string
       responses:
@@ -713,9 +906,17 @@ paths:
       summary: Get jetton burns
       operationId: api_v3_get_jetton_burns
       parameters:
+        - name: owner_address
+          in: query
+          description: Jetton wallet owner addresses. Repeat the parameter to supply multiple addresses. Takes precedence over `address`.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
         - name: address
           in: query
-          description: "Address of the jetton wallet owner in any form. Maximum: 1000 addresses."
+          description: "Address of the jetton wallet owner in any form. Maximum: 1000 addresses. Used when `owner_address` is not supplied."
           explode: true
           schema:
             type: array
@@ -1214,7 +1415,7 @@ paths:
             type: string
         - name: opcode
           in: query
-          description: Opcode of message in hex or signed 32-bit decimal form.
+          description: Opcode of message in hex or signed 32-bit decimal form. An unprefixed value that parses as unsigned 32-bit hexadecimal is interpreted as hexadecimal.
           schema:
             type: string
         - name: start_utime
@@ -1767,7 +1968,7 @@ paths:
       security:
         - APIKeyHeader: []
         - APIKeyQuery: []
-      description: Query pending actions that match the specified filters.
+      description: Query pending actions that match the specified filters. Specify `account` or `ext_msg_hash`. If both are supplied, `account` takes precedence.
       tags:
         - Actions and traces
       summary: Get pending actions
@@ -1775,7 +1976,7 @@ paths:
       parameters:
         - name: account
           in: query
-          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          description: Account address in hex, base64, or base64url form.
           schema:
             type: string
         - name: ext_msg_hash
@@ -1788,7 +1989,7 @@ paths:
               type: string
         - name: supported_action_types
           in: query
-          description: List supported action types.
+          description: Supported action types or version shortcuts. See [classification presets](/api/v3/action-types#classification-presets).
           explode: true
           schema:
             type: array
@@ -1800,6 +2001,11 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: X-Actions-Version
+          in: header
+          description: Action type or version shortcut. Overrides `supported_action_types` when supplied. Defaults to `latest` when neither is supplied.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1818,7 +2024,7 @@ paths:
       security:
         - APIKeyHeader: []
         - APIKeyQuery: []
-      description: Query pending traces that match the specified filters.
+      description: Query pending traces that match the specified filters. Specify `account` or `ext_msg_hash`. If both are supplied, `account` takes precedence.
       tags:
         - Actions and traces
       summary: Get pending traces
@@ -1826,7 +2032,7 @@ paths:
       parameters:
         - name: account
           in: query
-          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          description: Account address in hex, base64, or base64url form.
           schema:
             type: string
         - name: ext_msg_hash
@@ -1837,6 +2043,19 @@ paths:
             type: array
             items:
               type: string
+        - name: supported_action_types
+          in: query
+          description: Supported action types or version shortcuts. See [classification presets](/api/v3/action-types#classification-presets).
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: X-Actions-Version
+          in: header
+          description: Action type or version shortcut. Overrides `supported_action_types` when supplied. Defaults to `latest` when neither is supplied.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -2649,7 +2868,7 @@ paths:
       security:
         - APIKeyHeader: []
         - APIKeyQuery: []
-      description: Query traces that match the specified filters.
+      description: Query traces that match the specified filters. Specify at most one of `account`, `trace_id`, `tx_hash`, and `msg_hash`.
       tags:
         - Actions and traces
       summary: Get traces
@@ -2657,7 +2876,7 @@ paths:
       parameters:
         - name: account
           in: query
-          description: List of account addresses to query. Provide addresses in hex, base64, or base64url form.
+          description: Account address in hex, base64, or base64url form.
           schema:
             type: string
         - name: trace_id
@@ -2726,7 +2945,7 @@ paths:
             default: false
         - name: supported_action_types
           in: query
-          description: List supported action types.
+          description: Supported action types or version shortcuts. See [classification presets](/api/v3/action-types#classification-presets).
           explode: true
           schema:
             type: array
@@ -2758,6 +2977,11 @@ paths:
             enum:
               - asc
               - desc
+        - name: X-Actions-Version
+          in: header
+          description: Action type or version shortcut. Overrides `supported_action_types` when supplied. Defaults to `latest` when neither is supplied.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -2961,7 +3185,7 @@ paths:
       security:
         - APIKeyHeader: []
         - APIKeyQuery: []
-      description: Get transactions whose inbound or outbound message has the specified hash.
+      description: Get transactions whose inbound or outbound message matches the specified filters. Supply at least one of `msg_hash`, `body_hash`, or `opcode`. Message hash collisions can produce multiple transactions.
       tags:
         - Blockchain data
       summary: Get transactions by message
@@ -2969,9 +3193,14 @@ paths:
       parameters:
         - name: msg_hash
           in: query
-          description: Message hash in hex, base64, or base64url form.
+          description: Message hash in hex, base64, or base64url form. Repeat the parameter to supply multiple hashes.
+          explode: true
           schema:
-            type: string
+            anyOf:
+              - type: string
+              - type: array
+                items:
+                  type: string
         - name: body_hash
           in: query
           description: Hash of message body.
@@ -2979,7 +3208,17 @@ paths:
             type: string
         - name: opcode
           in: query
-          description: Opcode of message in hex or signed 32-bit decimal form.
+          description: Opcode of message in hex or signed 32-bit decimal form. An unprefixed value that parses as unsigned 32-bit hexadecimal is interpreted as hexadecimal. This filter matches inbound messages.
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: Source address of a matching message.
+          schema:
+            type: string
+        - name: destination
+          in: query
+          description: Destination address of a matching message.
           schema:
             type: string
         - name: direction
@@ -3007,6 +3246,15 @@ paths:
             format: int32
             default: 0
             minimum: 0
+        - name: sort
+          in: query
+          description: Sort transactions by logical time.
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
         "200":
           description: OK
@@ -3142,6 +3390,14 @@ paths:
             type: array
             items:
               type: string
+        - name: code_hash
+          in: query
+          description: Filter the requested addresses by contract code hash. Repeat the parameter to supply multiple hashes.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: OK
@@ -3268,13 +3524,94 @@ components:
     Action:
       type: object
       properties:
+        raw_action:
+          type: object
+          description: Raw action data, included when the indexer cannot decode the action type.
         accounts:
           type: array
           items:
             type: string
         action_id:
           type: string
-        details: {}
+        details:
+          description: Fields depend on the action type.
+          anyOf:
+          - $ref: '#/components/schemas/ActionDetailsTonTransfer'
+          - $ref: '#/components/schemas/ActionDetailsJettonTransfer'
+          - $ref: '#/components/schemas/ActionDetailsNftTransfer'
+          - $ref: '#/components/schemas/ActionDetailsAuctionBid'
+          - $ref: '#/components/schemas/ActionDetailsAuctionOutbid'
+          - $ref: '#/components/schemas/ActionDetailsCallContract'
+          - $ref: '#/components/schemas/ActionDetailsChangeDns'
+          - $ref: '#/components/schemas/ActionDetailsCocoonClientChangeSecretHash'
+          - $ref: '#/components/schemas/ActionDetailsCocoonClientIncreaseStake'
+          - $ref: '#/components/schemas/ActionDetailsCocoonClientRegister'
+          - $ref: '#/components/schemas/ActionDetailsCocoonClientRequestRefund'
+          - $ref: '#/components/schemas/ActionDetailsCocoonClientTopUp'
+          - $ref: '#/components/schemas/ActionDetailsCocoonClientWithdraw'
+          - $ref: '#/components/schemas/ActionDetailsCocoonGrantRefund'
+          - $ref: '#/components/schemas/ActionDetailsCocoonProxyCharge'
+          - $ref: '#/components/schemas/ActionDetailsCocoonProxyPayout'
+          - $ref: '#/components/schemas/ActionDetailsCocoonRegisterProxy'
+          - $ref: '#/components/schemas/ActionDetailsCocoonUnregisterProxy'
+          - $ref: '#/components/schemas/ActionDetailsCocoonWorkerPayout'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeCreatePool'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeCreatePoolCreator'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeCreateVault'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeMevProtectHoldFunds'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeStakingClaimRewards'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeStakingDeposit'
+          - $ref: '#/components/schemas/ActionDetailsCoffeeStakingWithdraw'
+          - $ref: '#/components/schemas/ActionDetailsContractDeploy'
+          - $ref: '#/components/schemas/ActionDetailsDeleteDns'
+          - $ref: '#/components/schemas/ActionDetailsDexDepositLiquidity'
+          - $ref: '#/components/schemas/ActionDetailsDexWithdrawLiquidity'
+          - $ref: '#/components/schemas/ActionDetailsDkgLogFallback'
+          - $ref: '#/components/schemas/ActionDetailsDnsPurchase'
+          - $ref: '#/components/schemas/ActionDetailsDnsRelease'
+          - $ref: '#/components/schemas/ActionDetailsElectionDeposit'
+          - $ref: '#/components/schemas/ActionDetailsElectionRecover'
+          - $ref: '#/components/schemas/ActionDetailsEvaaLiquidate'
+          - $ref: '#/components/schemas/ActionDetailsEvaaSupply'
+          - $ref: '#/components/schemas/ActionDetailsEvaaWithdraw'
+          - $ref: '#/components/schemas/ActionDetailsJettonBurn'
+          - $ref: '#/components/schemas/ActionDetailsJettonMint'
+          - $ref: '#/components/schemas/ActionDetailsJettonSwap'
+          - $ref: '#/components/schemas/ActionDetailsJvaultClaim'
+          - $ref: '#/components/schemas/ActionDetailsJvaultStake'
+          - $ref: '#/components/schemas/ActionDetailsJvaultUnstake'
+          - $ref: '#/components/schemas/ActionDetailsJvaultUnstakeRequest'
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroCommitPacket'
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroDvnVerify'
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroReceive'
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroSend'
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroSendTokens'
+          - $ref: '#/components/schemas/ActionDetailsMultisigApprove'
+          - $ref: '#/components/schemas/ActionDetailsMultisigCreateOrder'
+          - $ref: '#/components/schemas/ActionDetailsMultisigExecute'
+          - $ref: '#/components/schemas/ActionDetailsNftCancelAuction'
+          - $ref: '#/components/schemas/ActionDetailsNftCancelSale'
+          - $ref: '#/components/schemas/ActionDetailsNftDiscovery'
+          - $ref: '#/components/schemas/ActionDetailsNftFinishAuction'
+          - $ref: '#/components/schemas/ActionDetailsNftMint'
+          - $ref: '#/components/schemas/ActionDetailsNftPutOnAuction'
+          - $ref: '#/components/schemas/ActionDetailsNftPutOnSale'
+          - $ref: '#/components/schemas/ActionDetailsNftUpdateSale'
+          - $ref: '#/components/schemas/ActionDetailsRenewDns'
+          - $ref: '#/components/schemas/ActionDetailsStakeDeposit'
+          - $ref: '#/components/schemas/ActionDetailsSubscribe'
+          - $ref: '#/components/schemas/ActionDetailsTgbtcBurn'
+          - $ref: '#/components/schemas/ActionDetailsTgbtcMint'
+          - $ref: '#/components/schemas/ActionDetailsTgbtcNewKey'
+          - $ref: '#/components/schemas/ActionDetailsTickTock'
+          - $ref: '#/components/schemas/ActionDetailsToncoDeployPool'
+          - $ref: '#/components/schemas/ActionDetailsToncoJettonSwap'
+          - $ref: '#/components/schemas/ActionDetailsUnsubscribe'
+          - $ref: '#/components/schemas/ActionDetailsVestingAddWhitelist'
+          - $ref: '#/components/schemas/ActionDetailsVestingSendMessage'
+          - $ref: '#/components/schemas/ActionDetailsWithdrawStake'
+          - $ref: '#/components/schemas/ActionDetailsWithdrawStakeRequest'
+          - description: Other or unrecognized details.
         end_lt:
           type: string
           example: "0"
@@ -3608,10 +3945,13 @@ components:
       properties:
         bodies:
           type: array
+          maxItems: 1000
           items:
             type: string
         opcodes:
           type: array
+          maxItems: 1000
+          description: An unprefixed value that parses as unsigned 32-bit hexadecimal is interpreted as hexadecimal.
           items:
             type: string
     DecodeResponse:
@@ -4557,7 +4897,13 @@ components:
           type: integer
         data_hash:
           type: string
-        details: {}
+        details:
+          description: Fields depend on the sale type.
+          anyOf:
+          - $ref: '#/components/schemas/NFTSaleDetailsGetgemsSale'
+          - $ref: '#/components/schemas/NFTSaleDetailsGetgemsAuction'
+          - $ref: '#/components/schemas/NFTSaleDetailsTeleitem'
+          - description: Other or unrecognized details.
         last_transaction_lt:
           type: string
           example: "0"
@@ -5025,16 +5371,41 @@ components:
       type: object
       properties:
         body_raw:
-          type: array
-          items:
-            type: integer
+          description: Base64-encoded message body.
+          anyOf:
+            - type: string
+              format: byte
+              nullable: true
+            - type: array
+              items:
+                type: integer
         destination:
           type: string
         error:
           type: string
         parsed:
           type: boolean
-        parsed_body: {}
+        parsed_body:
+          description: Decoded message body. Fields depend on `parsed_body_type`.
+          anyOf:
+          - $ref: '#/components/schemas/TonTransferMessage'
+          - $ref: '#/components/schemas/JettonTransferBody'
+          - $ref: '#/components/schemas/NFTTransferBody'
+          - $ref: '#/components/schemas/JettonBurnBody'
+          - $ref: '#/components/schemas/JettonCallToBody'
+          - $ref: '#/components/schemas/JettonChangeAdminBody'
+          - $ref: '#/components/schemas/JettonChangeContentBody'
+          - $ref: '#/components/schemas/JettonClaimAdminBody'
+          - $ref: '#/components/schemas/JettonMintBody'
+          - $ref: '#/components/schemas/JettonMinterBody'
+          - $ref: '#/components/schemas/JettonSetStatusBody'
+          - $ref: '#/components/schemas/JettonTopUpBody'
+          - $ref: '#/components/schemas/MultisigUpdateParamsBody'
+          - $ref: '#/components/schemas/SingleNominatorChangeValidatorBody'
+          - $ref: '#/components/schemas/SingleNominatorWithdrawBody'
+          - $ref: '#/components/schemas/UnknownMessage'
+          - $ref: '#/components/schemas/VestingInternalTransferBody'
+          - description: Other or unrecognized details.
         parsed_body_type:
           type: string
         send_mode:
@@ -5064,6 +5435,2394 @@ components:
           type: array
           items:
             type: string
+    ActionDetailsAuctionBid:
+      type: object
+      description: Details for `auction_bid` actions.
+      properties:
+        amount:
+          type: string
+          nullable: true
+        bidder:
+          type: string
+          nullable: true
+        auction:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+    ActionDetailsAuctionOutbid:
+      type: object
+      description: Details for `auction_outbid` actions.
+      properties:
+        auction_address:
+          type: string
+          nullable: true
+        bidder:
+          type: string
+          nullable: true
+        new_bidder:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+    ActionDetailsCallContract:
+      type: object
+      description: Details for `call_contract`, `extra_currency_transfer` actions.
+      properties:
+        opcode:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+        extra_currencies:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+    ActionDetailsChangeDns:
+      type: object
+      description: Details for `change_dns` actions.
+      properties:
+        key:
+          type: string
+          nullable: true
+        value:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsChangeDnsValue'
+        source:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+    ActionDetailsChangeDnsValue:
+      type: object
+      properties:
+        sum_type:
+          type: string
+          nullable: true
+        dns_smc_address:
+          type: string
+          nullable: true
+        dns_adnl_address:
+          type: string
+          nullable: true
+        dns_text:
+          type: string
+          nullable: true
+        dns_next_resolver_address:
+          type: string
+          nullable: true
+        dns_storage_address:
+          type: string
+          nullable: true
+        flags:
+          type: integer
+          format: int64
+          nullable: true
+    ActionDetailsCocoonClientChangeSecretHash:
+      type: object
+      description: Details for `cocoon_client_change_secret_hash` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        new_secret_hash:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonClientIncreaseStake:
+      type: object
+      description: Details for `cocoon_client_increase_stake` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        new_stake:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCocoonClientRegister:
+      type: object
+      description: Details for `cocoon_client_register` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        nonce:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonClientRequestRefund:
+      type: object
+      description: Details for `cocoon_client_request_refund` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        via_wallet:
+          type: boolean
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonClientTopUp:
+      type: object
+      description: Details for `cocoon_client_top_up` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCocoonClientWithdraw:
+      type: object
+      description: Details for `cocoon_client_withdraw` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        withdraw_amount:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCocoonGrantRefund:
+      type: object
+      description: Details for `cocoon_grant_refund` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        new_tokens_used:
+          type: string
+          nullable: true
+        expected_address:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCocoonProxyCharge:
+      type: object
+      description: Details for `cocoon_proxy_charge` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        new_tokens_used:
+          type: string
+          nullable: true
+        expected_address:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonProxyPayout:
+      type: object
+      description: Details for `cocoon_proxy_payout` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonRegisterProxy:
+      type: object
+      description: Details for `cocoon_register_proxy` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonUnregisterProxy:
+      type: object
+      description: Details for `cocoon_unregister_proxy` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        seqno:
+          type: integer
+          format: int64
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsCocoonWorkerPayout:
+      type: object
+      description: Details for `cocoon_worker_payout` actions.
+      properties:
+        payout_type:
+          type: string
+          nullable: true
+        query_id:
+          type: string
+          nullable: true
+        new_tokens:
+          type: string
+          nullable: true
+        worker_state:
+          type: integer
+          format: int64
+          nullable: true
+        worker_tokens:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeCreatePool:
+      type: object
+      description: Details for `coffee_create_pool` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        initiator_1:
+          type: string
+          nullable: true
+        initiator_2:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        pool_creator_contract:
+          type: string
+          nullable: true
+        provided_asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        asset_1:
+          type: string
+          nullable: true
+        asset_2:
+          type: string
+          nullable: true
+        amount_1:
+          type: string
+          nullable: true
+        amount_2:
+          type: string
+          nullable: true
+        lp_tokens_minted:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeCreatePoolCreator:
+      type: object
+      description: Details for `coffee_create_pool_creator` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        deposit_recipient:
+          type: string
+          nullable: true
+        pool_creator_contract:
+          type: string
+          nullable: true
+        provided_asset:
+          type: string
+          nullable: true
+        asset_1:
+          type: string
+          nullable: true
+        asset_2:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeCreateVault:
+      type: object
+      description: Details for `coffee_create_vault` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        vault:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeMevProtectHoldFunds:
+      type: object
+      description: Details for `coffee_mev_protect_hold_funds` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        mev_contract:
+          type: string
+          nullable: true
+        mev_contract_jetton_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeStakingClaimRewards:
+      type: object
+      description: Details for `coffee_staking_claim_rewards` actions.
+      properties:
+        pool:
+          type: string
+          nullable: true
+        pool_jetton_wallet:
+          type: string
+          nullable: true
+        recipient:
+          type: string
+          nullable: true
+        recipient_jetton_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeStakingDeposit:
+      type: object
+      description: Details for `coffee_staking_deposit` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        pool_jetton_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        minted_item_address:
+          type: string
+          nullable: true
+        minted_item_index:
+          type: string
+          nullable: true
+    ActionDetailsCoffeeStakingWithdraw:
+      type: object
+      description: Details for `coffee_staking_withdraw` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        pool_jetton_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        nft_address:
+          type: string
+          nullable: true
+        nft_index:
+          type: string
+          nullable: true
+        points:
+          type: string
+          nullable: true
+    ActionDetailsContractDeploy:
+      type: object
+      description: Details for `contract_deploy` actions.
+      properties:
+        opcode:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+    ActionDetailsDeleteDns:
+      type: object
+      description: Details for `delete_dns` actions.
+      properties:
+        hash:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+    ActionDetailsDexDepositLiquidity:
+      type: object
+      description: Details for `dex_deposit_liquidity` actions.
+      properties:
+        dex:
+          type: string
+          nullable: true
+        amount_1:
+          type: string
+          nullable: true
+        amount_2:
+          type: string
+          nullable: true
+        asset_1:
+          type: string
+          nullable: true
+        asset_2:
+          type: string
+          nullable: true
+        user_jetton_wallet_1:
+          type: string
+          nullable: true
+        user_jetton_wallet_2:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        destination_liquidity:
+          type: string
+          nullable: true
+        lp_tokens_minted:
+          type: string
+          nullable: true
+        target_asset_1:
+          type: string
+          nullable: true
+        target_asset_2:
+          type: string
+          nullable: true
+        target_amount_1:
+          type: string
+          nullable: true
+        target_amount_2:
+          type: string
+          nullable: true
+        vault_excesses:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ActionDetailsLiquidityVaultExcess'
+          nullable: true
+        tick_lower:
+          type: string
+          nullable: true
+        tick_upper:
+          type: string
+          nullable: true
+        nft_index:
+          type: string
+          nullable: true
+        nft_address:
+          type: string
+          nullable: true
+    ActionDetailsDexWithdrawLiquidity:
+      type: object
+      description: Details for `dex_withdraw_liquidity` actions.
+      properties:
+        dex:
+          type: string
+          nullable: true
+        amount_1:
+          type: string
+          nullable: true
+        amount_2:
+          type: string
+          nullable: true
+        asset_1:
+          type: string
+          nullable: true
+        asset_2:
+          type: string
+          nullable: true
+        user_jetton_wallet_1:
+          type: string
+          nullable: true
+        user_jetton_wallet_2:
+          type: string
+          nullable: true
+        lp_tokens_burnt:
+          type: string
+          nullable: true
+        is_refund:
+          type: boolean
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        destination_liquidity:
+          type: string
+          nullable: true
+        burnt_nft_index:
+          type: string
+          nullable: true
+        burnt_nft_address:
+          type: string
+          nullable: true
+        tick_lower:
+          type: string
+          nullable: true
+        tick_upper:
+          type: string
+          nullable: true
+    ActionDetailsDkgLogFallback:
+      type: object
+      description: Details for `tgbtc_dkg_log_fallback` actions.
+      properties:
+        coordinator:
+          type: string
+          nullable: true
+        pubkey:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          nullable: true
+    ActionDetailsDnsPurchase:
+      type: object
+      description: Details for `dns_purchase` actions.
+      properties:
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        new_owner:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        query_id:
+          type: string
+          nullable: true
+        payout_amount:
+          type: string
+          nullable: true
+    ActionDetailsDnsRelease:
+      type: object
+      description: Details for `dns_release` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+    ActionDetailsElectionDeposit:
+      type: object
+      description: Details for `election_deposit` actions.
+      properties:
+        stake_holder:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsElectionRecover:
+      type: object
+      description: Details for `election_recover` actions.
+      properties:
+        stake_holder:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsEvaaLiquidate:
+      type: object
+      description: Details for `evaa_liquidate` actions.
+      properties:
+        fail_reason:
+          type: string
+          nullable: true
+        debt_amount:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        borrower:
+          type: string
+          nullable: true
+        borrower_contract:
+          type: string
+          nullable: true
+        collateral:
+          type: string
+          nullable: true
+        asset_id:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        is_known_asset:
+          type: boolean
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsEvaaSupply:
+      type: object
+      description: Details for `evaa_supply` actions.
+      properties:
+        sender_jetton_wallet:
+          type: string
+          nullable: true
+        recipient_jetton_wallet:
+          type: string
+          nullable: true
+        master_jetton_wallet:
+          type: string
+          nullable: true
+        master:
+          type: string
+          nullable: true
+        asset_id:
+          type: string
+          nullable: true
+        is_ton:
+          type: boolean
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        source_wallet:
+          type: string
+          nullable: true
+        recipient:
+          type: string
+          nullable: true
+        recipient_contract:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsEvaaWithdraw:
+      type: object
+      description: Details for `evaa_withdraw` actions.
+      properties:
+        recipient_jetton_wallet:
+          type: string
+          nullable: true
+        master_jetton_wallet:
+          type: string
+          nullable: true
+        master:
+          type: string
+          nullable: true
+        fail_reason:
+          type: string
+          nullable: true
+        asset_id:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        recipient:
+          type: string
+          nullable: true
+        owner_contract:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsJettonBurn:
+      type: object
+      description: Details for `jetton_burn` actions.
+      properties:
+        owner:
+          type: string
+          nullable: true
+        owner_jetton_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsJettonMint:
+      type: object
+      description: Details for `jetton_mint` actions.
+      properties:
+        asset:
+          type: string
+          nullable: true
+        receiver:
+          type: string
+          nullable: true
+        receiver_jetton_wallet:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        ton_amount:
+          type: string
+          nullable: true
+    ActionDetailsJettonSwap:
+      type: object
+      description: Details for `jetton_swap` actions.
+      properties:
+        dex:
+          type: string
+          nullable: true
+        sender:
+          type: string
+          nullable: true
+        asset_in:
+          type: string
+          nullable: true
+        asset_out:
+          type: string
+          nullable: true
+        dex_incoming_transfer:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsJettonSwapTransfer'
+          type: object
+          nullable: true
+        dex_outgoing_transfer:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsJettonSwapTransfer'
+          type: object
+          nullable: true
+        peer_swaps:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ActionDetailsJettonSwapPeerSwap'
+          nullable: true
+    ActionDetailsJettonSwapPeerSwap:
+      type: object
+      properties:
+        asset_in:
+          type: string
+          nullable: true
+        amount_in:
+          type: string
+          nullable: true
+        asset_out:
+          type: string
+          nullable: true
+        amount_out:
+          type: string
+          nullable: true
+    ActionDetailsJettonSwapTransfer:
+      type: object
+      properties:
+        asset:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        destination_jetton_wallet:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsJettonTransfer:
+      type: object
+      description: Details for `jetton_transfer` actions.
+      properties:
+        asset:
+          type: string
+          nullable: true
+        sender:
+          type: string
+          nullable: true
+        receiver:
+          type: string
+          nullable: true
+        sender_jetton_wallet:
+          type: string
+          nullable: true
+        receiver_jetton_wallet:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        is_encrypted_comment:
+          type: boolean
+          nullable: true
+        query_id:
+          type: string
+          nullable: true
+        response_destination:
+          type: string
+          nullable: true
+        custom_payload:
+          type: string
+          nullable: true
+        forward_payload:
+          type: string
+          nullable: true
+        forward_amount:
+          type: string
+          nullable: true
+    ActionDetailsJvaultClaim:
+      type: object
+      description: Details for `jvault_claim` actions.
+      properties:
+        claimed_rewards:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/JettonAmountPair'
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        stake_wallet:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+    ActionDetailsJvaultStake:
+      type: object
+      description: Details for `jvault_stake` actions.
+      properties:
+        period:
+          type: integer
+          format: int64
+          nullable: true
+        minted_stake_jettons:
+          type: string
+          nullable: true
+        stake_wallet:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        source_jetton_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsJvaultUnstake:
+      type: object
+      description: Details for `jvault_unstake` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        stake_wallet:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        exit_code:
+          type: integer
+          format: int64
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        staking_asset:
+          type: string
+          nullable: true
+    ActionDetailsJvaultUnstakeRequest:
+      type: object
+      description: Details for `jvault_unstake_request` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        stake_wallet:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        exit_code:
+          type: integer
+          format: int64
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        staking_asset:
+          type: string
+          nullable: true
+    ActionDetailsLayerZeroCommitPacket:
+      type: object
+      description: Details for `layerzero_commit_packet` actions.
+      properties:
+        sender:
+          type: string
+          nullable: true
+        endpoint:
+          type: string
+          nullable: true
+        uln:
+          type: string
+          nullable: true
+        uln_connection:
+          type: string
+          nullable: true
+        channel:
+          type: string
+          nullable: true
+        msglib_connection:
+          type: string
+          nullable: true
+        layerzero_packet_data:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroPacket'
+    ActionDetailsLayerZeroDvnVerify:
+      type: object
+      description: Details for `layerzero_dvn_verify` actions.
+      properties:
+        initiator:
+          type: string
+          nullable: true
+        nonce:
+          type: integer
+          format: int64
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        dvn:
+          type: string
+          nullable: true
+        proxy:
+          type: string
+          nullable: true
+        uln:
+          type: string
+          nullable: true
+        uln_connection:
+          type: string
+          nullable: true
+    ActionDetailsLayerZeroPacket:
+      type: object
+      properties:
+        src_oapp:
+          type: string
+          nullable: true
+        dst_oapp:
+          type: string
+          nullable: true
+        src_eid:
+          type: integer
+          format: int32
+          nullable: true
+        dst_eid:
+          type: integer
+          format: int32
+          nullable: true
+        nonce:
+          type: integer
+          format: int64
+          nullable: true
+        guid:
+          type: string
+          nullable: true
+        message:
+          type: string
+          nullable: true
+    ActionDetailsLayerZeroReceive:
+      type: object
+      description: Details for `layerzero_receive` actions.
+      properties:
+        sender:
+          type: string
+          nullable: true
+        oapp:
+          type: string
+          nullable: true
+        channel:
+          type: string
+          nullable: true
+        layerzero_packet_data:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroPacket'
+    ActionDetailsLayerZeroSendTokens:
+      type: object
+      description: Details for `layerzero_send_tokens` actions.
+      properties:
+        sender:
+          type: string
+          nullable: true
+        sender_wallet:
+          type: string
+          nullable: true
+        oapp:
+          type: string
+          nullable: true
+        oapp_wallet:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        layerzero_send_data:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroSendDetails'
+        layerzero_packet_data:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroPacket'
+    ActionDetailsLayerZeroSend:
+      type: object
+      description: Details for `layerzero_send` actions.
+      properties:
+        initiator:
+          type: string
+          nullable: true
+        layerzero_send_data:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroSendDetails'
+        layerzero_packet_data:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsLayerZeroPacket'
+    ActionDetailsLayerZeroSendDetails:
+      type: object
+      properties:
+        send_request_id:
+          type: integer
+          minimum: 0
+          nullable: true
+        msglib_manager:
+          type: string
+          nullable: true
+        msglib:
+          type: string
+          nullable: true
+        uln:
+          type: string
+          nullable: true
+        native_fee:
+          type: integer
+          minimum: 0
+          nullable: true
+        zro_fee:
+          type: integer
+          minimum: 0
+          nullable: true
+        endpoint:
+          type: string
+          nullable: true
+        channel:
+          type: string
+          nullable: true
+    ActionDetailsLiquidityVaultExcess:
+      type: object
+      properties:
+        asset:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsMultisigApprove:
+      type: object
+      description: Details for `multisig_approve` actions.
+      properties:
+        signer_index:
+          type: integer
+          format: int64
+          nullable: true
+        exit_code:
+          type: integer
+          format: int32
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsMultisigCreateOrder:
+      type: object
+      description: Details for `multisig_create_order` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        order_seqno:
+          type: string
+          nullable: true
+        is_created_by_signer:
+          type: boolean
+          nullable: true
+        is_signed_by_creator:
+          type: boolean
+          nullable: true
+        creator_index:
+          type: integer
+          format: int64
+          nullable: true
+        expiration_date:
+          type: integer
+          format: int64
+          nullable: true
+        order_boc:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        destination_order:
+          type: string
+          nullable: true
+    ActionDetailsMultisigExecute:
+      type: object
+      description: Details for `multisig_execute` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        order_seqno:
+          type: string
+          nullable: true
+        expiration_date:
+          type: integer
+          format: int64
+          nullable: true
+        approvals_num:
+          type: integer
+          format: int64
+          nullable: true
+        signers_hash:
+          type: string
+          nullable: true
+        order_boc:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+    ActionDetailsNftCancelAuction:
+      type: object
+      description: Details for `nft_cancel_auction`, `teleitem_cancel_auction` actions.
+      properties:
+        owner:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        auction_address:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+    ActionDetailsNftCancelSale:
+      type: object
+      description: Details for `nft_cancel_sale` actions.
+      properties:
+        owner:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        sale_address:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+    ActionDetailsNftDiscovery:
+      type: object
+      description: Details for `nft_discovery` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+    ActionDetailsNftFinishAuction:
+      type: object
+      description: Details for `nft_finish_auction` actions.
+      properties:
+        owner:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        auction_address:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+    ActionDetailsNftMint:
+      type: object
+      description: Details for `nft_mint` actions.
+      properties:
+        owner:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+    ActionDetailsNftPutOnAuction:
+      type: object
+      description: Details for `nft_put_on_auction`, `teleitem_start_auction` actions.
+      properties:
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        owner:
+          type: string
+          nullable: true
+        listing_address:
+          type: string
+          nullable: true
+        auction_address:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        marketplace_fee_factor:
+          type: string
+          nullable: true
+        marketplace_fee_base:
+          type: string
+          nullable: true
+        royalty_fee_base:
+          type: string
+          nullable: true
+        max_bid:
+          type: string
+          nullable: true
+        min_bid:
+          type: string
+          nullable: true
+        marketplace_fee_address:
+          type: string
+          nullable: true
+        royalty_address:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+    ActionDetailsNftPutOnSale:
+      type: object
+      description: Details for `nft_put_on_sale` actions.
+      properties:
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        owner:
+          type: string
+          nullable: true
+        listing_address:
+          type: string
+          nullable: true
+        sale_address:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        full_price:
+          type: string
+          nullable: true
+        marketplace_fee:
+          type: string
+          nullable: true
+        royalty_amount:
+          type: string
+          nullable: true
+        marketplace_fee_address:
+          type: string
+          nullable: true
+        royalty_address:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+    ActionDetailsNftTransfer:
+      type: object
+      description: Details for `nft_purchase`, `nft_transfer` actions.
+      properties:
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        old_owner:
+          type: string
+          nullable: true
+        new_owner:
+          type: string
+          nullable: true
+        is_purchase:
+          type: boolean
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        query_id:
+          type: string
+          nullable: true
+        response_destination:
+          type: string
+          nullable: true
+        custom_payload:
+          type: string
+          nullable: true
+        forward_payload:
+          type: string
+          nullable: true
+        forward_amount:
+          type: string
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        is_encrypted_comment:
+          type: boolean
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+        real_old_owner:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        payout_amount:
+          type: string
+          nullable: true
+        payout_address:
+          type: string
+          nullable: true
+        payout_comment:
+          type: string
+          nullable: true
+        payout_comment_encrypted:
+          type: boolean
+          nullable: true
+        payout_comment_encoded:
+          type: boolean
+          nullable: true
+        royalty_amount:
+          type: string
+          nullable: true
+        royalty_address:
+          type: string
+          nullable: true
+    ActionDetailsNftUpdateSale:
+      type: object
+      description: Details for `nft_update_sale` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        sale_contract:
+          type: string
+          nullable: true
+        nft_address:
+          type: string
+          nullable: true
+        marketplace_address:
+          type: string
+          nullable: true
+        marketplace:
+          type: string
+          nullable: true
+        full_price:
+          type: string
+          nullable: true
+        marketplace_fee:
+          type: string
+          nullable: true
+        royalty_amount:
+          type: string
+          nullable: true
+    ActionDetailsRenewDns:
+      type: object
+      description: Details for `renew_dns` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+    ActionDetailsStakeDeposit:
+      type: object
+      description: Details for `stake_deposit` actions.
+      properties:
+        provider:
+          type: string
+          nullable: true
+        stake_holder:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        tokens_minted:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        source_asset:
+          type: string
+          nullable: true
+    ActionDetailsSubscribe:
+      type: object
+      description: Details for `subscribe` actions.
+      properties:
+        subscriber:
+          type: string
+          nullable: true
+        beneficiary:
+          type: string
+          nullable: true
+        subscription:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsTgbtcBurn:
+      type: object
+      description: Details for `tgbtc_burn`, `tgbtc_burn_fallback` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        source_wallet:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+    ActionDetailsTgbtcMint:
+      type: object
+      description: Details for `tgbtc_mint`, `tgbtc_mint_fallback` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        bitcoin_tx_id:
+          type: string
+          nullable: true
+        destination_wallet:
+          type: string
+          nullable: true
+    ActionDetailsTgbtcNewKey:
+      type: object
+      description: Details for `tgbtc_new_key`, `tgbtc_new_key_fallback` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        pubkey:
+          type: string
+          nullable: true
+        coordinator:
+          type: string
+          nullable: true
+        pegout:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+    ActionDetailsTickTock:
+      type: object
+      description: Details for `tick_tock` actions.
+      properties:
+        account:
+          type: string
+          nullable: true
+    ActionDetailsTonTransfer:
+      type: object
+      description: Details for `extra_currency_transfer`, `ton_transfer` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+        value_extra_currencies:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        encrypted:
+          type: boolean
+          nullable: true
+    ActionDetailsToncoDeployPool:
+      type: object
+      description: Details for `tonco_deploy_pool` actions.
+      properties:
+        source:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        router:
+          type: string
+          nullable: true
+        router_jetton_wallet_1:
+          type: string
+          nullable: true
+        router_jetton_wallet_2:
+          type: string
+          nullable: true
+        jetton_minter_1:
+          type: string
+          nullable: true
+        jetton_minter_2:
+          type: string
+          nullable: true
+        tick_spacing:
+          type: string
+          nullable: true
+        initial_price_x96:
+          type: string
+          nullable: true
+        protocol_fee:
+          type: string
+          nullable: true
+        lp_fee_base:
+          type: string
+          nullable: true
+        lp_fee_current:
+          type: string
+          nullable: true
+        pool_active:
+          type: boolean
+          nullable: true
+    ActionDetailsToncoJettonSwap:
+      type: object
+      description: Details for `jetton_swap` actions.
+      properties:
+        dex:
+          type: string
+          nullable: true
+        sender:
+          type: string
+          nullable: true
+        asset_in:
+          type: string
+          nullable: true
+        asset_out:
+          type: string
+          nullable: true
+        dex_incoming_transfer:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsJettonSwapTransfer'
+          type: object
+          nullable: true
+        dex_outgoing_transfer:
+          allOf:
+          - $ref: '#/components/schemas/ActionDetailsJettonSwapTransfer'
+          type: object
+          nullable: true
+        peer_swaps:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ActionDetailsJettonSwapPeerSwap'
+          nullable: true
+        min_out_amount:
+          type: string
+          nullable: true
+    ActionDetailsUnsubscribe:
+      type: object
+      description: Details for `unsubscribe` actions.
+      properties:
+        subscriber:
+          type: string
+          nullable: true
+        beneficiary:
+          type: string
+          nullable: true
+        subscription:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsVestingAddWhitelist:
+      type: object
+      description: Details for `vesting_add_whitelist` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        accounts_added:
+          type: array
+          items:
+            type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        vesting:
+          type: string
+          nullable: true
+    ActionDetailsVestingSendMessage:
+      type: object
+      description: Details for `vesting_send_message` actions.
+      properties:
+        query_id:
+          type: string
+          nullable: true
+        message_boc:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        vesting:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    ActionDetailsWithdrawStake:
+      type: object
+      description: Details for `stake_withdrawal` actions.
+      properties:
+        provider:
+          type: string
+          nullable: true
+        stake_holder:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        payout_nft:
+          type: string
+          nullable: true
+        tokens_burnt:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+    ActionDetailsWithdrawStakeRequest:
+      type: object
+      description: Details for `stake_withdrawal_request` actions.
+      properties:
+        provider:
+          type: string
+          nullable: true
+        stake_holder:
+          type: string
+          nullable: true
+        pool:
+          type: string
+          nullable: true
+        payout_nft:
+          type: string
+          nullable: true
+        asset:
+          type: string
+          nullable: true
+        tokens_burnt:
+          type: string
+          nullable: true
+        tokens_minted:
+          type: string
+          nullable: true
+    JettonAmountPair:
+      type: object
+      properties:
+        jetton:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+    JettonBurnBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        amount:
+          type: string
+          nullable: true
+        response_destination:
+          type: string
+          nullable: true
+    JettonCallToBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        to_address:
+          type: string
+          nullable: true
+        ton_amount:
+          type: string
+          nullable: true
+        action_type:
+          type: string
+        action_data:
+          type: string
+          format: byte
+          nullable: true
+    JettonChangeAdminBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        new_admin_address:
+          type: string
+          nullable: true
+    JettonChangeContentBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        new_metadata_url:
+          type: string
+    JettonClaimAdminBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+    JettonMintBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        to_address:
+          type: string
+          nullable: true
+        ton_amount:
+          type: string
+          nullable: true
+        jetton_amount:
+          type: string
+          nullable: true
+    JettonMinterBody:
+      type: object
+      properties:
+        opcode:
+          type: integer
+          format: int64
+          minimum: 0
+        query_id:
+          type: integer
+          minimum: 0
+        to_address:
+          type: string
+          nullable: true
+        ton_amount:
+          type: string
+          nullable: true
+        master_msg_query_id:
+          type: integer
+          minimum: 0
+        master_msg_jetton_amount:
+          type: string
+          nullable: true
+    JettonSetStatusBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        new_status:
+          type: integer
+          minimum: 0
+          maximum: 255
+    JettonTopUpBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+    JettonTransferBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        amount:
+          type: string
+          nullable: true
+        destination:
+          type: string
+          nullable: true
+        response:
+          type: string
+          nullable: true
+        custom_payload:
+          type: string
+          format: byte
+          nullable: true
+        forward_amount:
+          type: string
+          nullable: true
+        comment:
+          type: string
+        encrypted_comment:
+          type: boolean
+        forward_payload:
+          type: string
+          format: byte
+          nullable: true
+        payload_sum_type:
+          type: string
+        stonfi_swap_body:
+          type: object
+          additionalProperties: true
+          nullable: true
+    MultisigUpdateParamsBody:
+      type: object
+      properties:
+        new_threshold:
+          type: integer
+          minimum: 0
+          maximum: 255
+        new_signers:
+          type: array
+          items:
+            type: string
+            nullable: true
+          nullable: true
+        new_proposers:
+          type: array
+          items:
+            type: string
+            nullable: true
+          nullable: true
+    NFTSaleDetailsGetgemsAuction:
+      type: object
+      description: Details for `getgems_auction` sales or auctions.
+      properties:
+        end_flag:
+          type: boolean
+          nullable: true
+        end_time:
+          type: integer
+          format: int64
+          nullable: true
+        last_bid:
+          type: string
+          nullable: true
+        last_member:
+          type: string
+          nullable: true
+        min_step:
+          type: integer
+          format: int64
+          nullable: true
+        mp_fee_address:
+          type: string
+          nullable: true
+        mp_fee_factor:
+          type: integer
+          format: int64
+          nullable: true
+        mp_fee_base:
+          type: integer
+          format: int64
+          nullable: true
+        royalty_fee_address:
+          type: string
+          nullable: true
+        royalty_fee_factor:
+          type: integer
+          format: int64
+          nullable: true
+        royalty_fee_base:
+          type: integer
+          format: int64
+          nullable: true
+        max_bid:
+          type: string
+          nullable: true
+        min_bid:
+          type: string
+          nullable: true
+        last_bid_at:
+          type: integer
+          format: int64
+          nullable: true
+        is_canceled:
+          type: boolean
+          nullable: true
+    NFTSaleDetailsGetgemsSale:
+      type: object
+      description: Details for `getgems_sale` sales or auctions.
+      properties:
+        is_complete:
+          type: boolean
+          nullable: true
+        full_price:
+          type: string
+          nullable: true
+        marketplace_fee_address:
+          type: string
+          nullable: true
+        marketplace_fee:
+          type: string
+          nullable: true
+        royalty_address:
+          type: string
+          nullable: true
+        royalty_amount:
+          type: string
+          nullable: true
+    NFTSaleDetailsTeleitem:
+      type: object
+      description: Details for `telemint` sales or auctions.
+      properties:
+        token_name:
+          type: string
+          nullable: true
+        bidder_address:
+          type: string
+          nullable: true
+        bid:
+          type: string
+          nullable: true
+        bid_ts:
+          type: string
+          nullable: true
+        min_bid:
+          type: string
+          nullable: true
+        end_time:
+          type: integer
+          format: int32
+          nullable: true
+        beneficiary_address:
+          type: string
+          nullable: true
+        initial_min_bid:
+          type: string
+          nullable: true
+        max_bid:
+          type: string
+          nullable: true
+        min_bid_step:
+          type: string
+          nullable: true
+        min_extend_time:
+          type: string
+          nullable: true
+        duration:
+          type: string
+          nullable: true
+        royalty_numerator:
+          type: integer
+          format: int32
+          nullable: true
+        royalty_denominator:
+          type: integer
+          format: int32
+          nullable: true
+        royalty_destination:
+          type: string
+          nullable: true
+    NFTTransferBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        new_owner:
+          type: string
+          nullable: true
+        response_destination:
+          type: string
+          nullable: true
+        custom_payload:
+          type: string
+          format: byte
+          nullable: true
+        forward_amount:
+          type: string
+          nullable: true
+        forward_payload:
+          type: string
+          format: byte
+          nullable: true
+    SingleNominatorChangeValidatorBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        validator_address:
+          type: string
+          nullable: true
+    SingleNominatorWithdrawBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        coins:
+          type: string
+          nullable: true
+    TonTransferMessage:
+      type: object
+      properties:
+        comment:
+          type: string
+        encrypted:
+          type: boolean
+    UnknownMessage:
+      type: object
+      properties:
+        opcode:
+          type: integer
+          format: int64
+          minimum: 0
+        data:
+          type: string
+          format: byte
+          nullable: true
+    VestingInternalTransferBody:
+      type: object
+      properties:
+        query_id:
+          type: integer
+          minimum: 0
+        send_mode:
+          type: integer
+          minimum: 0
+          maximum: 255
+        destination:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+        message_body:
+          type: string
+          format: byte
+          nullable: true
+        comment:
+          type: string
+    BalanceChangesResult:
+      type: object
+      properties:
+        changes:
+          type: object
+          nullable: true
+          description: Net Gram balance changes in nanograms by account address, including fees.
+          additionalProperties:
+            type: integer
+            format: int64
+        fees:
+          type: object
+          nullable: true
+          description: Fees in nanograms by account address. These amounts are already deducted from `changes`.
+          additionalProperties:
+            type: integer
+            format: int64
+        jettons:
+          type: object
+          nullable: true
+          description: "Signed Jetton balance changes, keyed by owner address and then Jetton master address. Amounts are decimal strings in smallest units, e.g., with `decimals: 6`, a -1250000 string represents a decrease of 1.25 jettons."
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
   securitySchemes:
     APIKeyHeader:
       type: apiKey

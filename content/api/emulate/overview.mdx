@@ -48,7 +48,7 @@ curl "https://testnet.toncenter.com/api/emulate/v1/emulateTonConnect" \
 
 The response includes the masterchain block sequence number, a transaction tree in `trace`, a `transactions` map keyed by hash, and the random seed used for emulation. The boolean `is_incomplete` field indicates whether the trace exceeded the emulation depth limit.
 
-- Set `with_actions` to classify the trace into actions. Use `X-Actions-Version` to select the supported actions version.
+- Set `with_actions` to classify the trace into actions. Use `X-Actions-Version` to select the [supported action types](/api/v3/action-types#classification-presets).
 - Set `include_code_data` to include contract code and data cells.
 - Set `include_address_book` or `include_metadata` to include address book entries or account metadata. These options require server support.
 - Set `mc_block_seqno` to select the masterchain state for emulation. If omitted or null, the server uses the latest available state.

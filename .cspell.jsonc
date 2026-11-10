@@ -90,7 +90,33 @@
     },
     {
       "filename": "**/api/**/*.{json,yml,yaml}",
-      "ignoreWords": ["multisigs", "smc", "Uninited", "vset_id"],
+      "ignoreWords": [
+        "multisigs",
+        "smc",
+        "Uninited",
+        "vset_id",
+        "jvault",
+        "layerzero",
+        "layerzero_dvn",
+        "teleitem",
+        "tgbtc",
+        "tgbtc_dkg",
+        "tonco",
+        "stonfi",
+        "msglib",
+        "rungetmethod",
+        "varnames",
+        "approvals_num",
+        "pegout",
+        "pfx",
+        "zro_fee",
+      ],
+      "ignoreRegExpList": [
+        "\\bActionDetails.+\\b",
+        "\\bNFTSaleDetails.+\\b",
+        "\\boapp(?:_wallet)?:",
+        "\\buln(?:_connection)?:",
+      ],
       "dictionaries": [
         "!deny-list", // turns off the dictionary
         "!2lw-deny-list", // turns off the dictionary

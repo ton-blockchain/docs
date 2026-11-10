@@ -1,0 +1,350 @@
+---
+title: "Action types classification in TON Center API v3"
+sidebarTitle: "Action classification"
+---
+
+An _action_ describes an activity in a trace, such as a transfer, contract call, or NFT purchase. The `type` field identifies the activity, `details` contains type-specific fields, and `success` specifies the outcome.
+
+## Query action types
+
+Use `action_type` on [`GET /actions`](/api/v3/actions-and-traces/get-actions) to select types and `exclude_action_type` to omit types. Repeat the parameter to match each target type.
+
+For example, to query for jetton transfer and burn actions for an account, replace `<ACCOUNT_ADDRESS>` with an account address in the following request:
+
+```bash
+curl --get "https://toncenter.com/api/v3/actions" \
+  --data-urlencode "account=<ACCOUNT_ADDRESS>" \
+  --data-urlencode "action_type=jetton_transfer" \
+  --data-urlencode "action_type=jetton_burn"
+```
+
+To retrieve actions for a trace, use the `trace_id` parameter. To do the opposite, and include certain actions in a trace response, set `include_actions=true` on [`GET /traces`](/api/v3/actions-and-traces/get-traces).
+
+By default, higher-level actions replace their component actions. For example, `nft_purchase` replaces its `nft_transfer` component, even when filtering for `nft_transfer`. Include both types to find purchases **and** standalone transfers.
+
+## Action types
+
+Use these type names with `action_type` or `exclude_action_type`. Refer to the [actions response schema](/api/v3/actions-and-traces/get-actions) for the fields in `details`.
+
+<Callout
+  type="note"
+  title="Response-only type">
+  `extra_currency_transfer` identifies a message carrying extra currencies. Query `call_contract` or `ton_transfer`, then select actions with this response type.
+</Callout>
+
+### Contracts and currency
+
+- `call_contract`: Send a message that calls a smart contract.
+- `contract_deploy`: Deploy a smart contract to an account.
+- `gasless_request`: Submit a [gasless transaction](/contracts/standard/wallets/gasless) request.
+- `tick_tock`: Execute a [system](/foundations/system)-triggered tick or tock transaction.
+- `ton_transfer`: Transfer Gram between accounts.
+
+### Jettons
+
+- `jetton_burn`: Burn [jettons](/contracts/standard/tokens/jettons/overview) held by an owner.
+- `jetton_mint`: Mint jettons to a [wallet](/contracts/standard/wallets/comparison).
+- `jetton_swap`: Asset swap through a decentralized exchange.
+- `jetton_transfer`: Transfer jettons between owners.
+
+### NFTs and auctions
+
+- `auction_bid`: Place a bid at an auction.
+- `auction_outbid`: Refund a previous bidder after a higher bid.
+- `nft_cancel_auction`: Cancel an NFT auction.
+- `nft_cancel_sale`: Cancel an NFT sale.
+- `nft_discovery`: Report an NFT's collection and item index.
+- `nft_finish_auction`: Finish an NFT auction.
+- `nft_mint`: Mint an NFT.
+- `nft_purchase`: Purchase an NFT.
+- `nft_put_on_auction`: List an NFT for auction.
+- `nft_put_on_sale`: List an NFT for sale at a fixed price.
+- `nft_transfer`: Transfer ownership of an NFT.
+- `nft_update_sale`: Update a sale's price or fees.
+- `teleitem_cancel_auction`: Cancel a collectible auction on Fragment.
+- `teleitem_start_auction`: Start a collectible auction on Fragment.
+
+### DNS
+
+- `change_dns`: Set a DNS record value.
+- `delete_dns`: Delete a DNS record.
+- `dns_purchase`: Purchase a DNS name.
+- `dns_release`: Release the balance of a DNS name contract.
+- `renew_dns`: Renew a DNS name.
+
+### Liquidity, staking, and elections
+
+- `dex_deposit_liquidity`: Deposit assets into a liquidity pool.
+- `dex_withdraw_liquidity`: Withdraw assets from a liquidity pool.
+- `tonco_deploy_pool`: Deploy a concentrated liquidity pool.
+- `stake_deposit`: Deposit stake.
+- `stake_withdrawal`: Withdraw stake.
+- `stake_withdrawal_request`: Request a stake withdrawal.
+- `election_deposit`: Deposit stake for a validator election.
+- `election_recover`: Recover stake from a validator election.
+
+### Subscriptions
+
+- `subscribe`: Create a subscription.
+- `unsubscribe`: Cancel a subscription.
+
+### Multisig and vesting
+
+- `multisig_create_order`: Create a multisig order.
+- `multisig_approve`: Approve a multisig order.
+- `multisig_execute`: Execute a multisig order.
+- `vesting_add_whitelist`: Add accounts to a vesting contract allowlist.
+- `vesting_send_message`: Send a message from a vesting contract.
+
+### Cocoon
+
+- `cocoon_client_change_secret_hash`: Change a client's secret hash.
+- `cocoon_client_increase_stake`: Increase a client's stake.
+- `cocoon_client_register`: Register a client.
+- `cocoon_client_request_refund`: Request a client refund.
+- `cocoon_client_top_up`: Top up a client's balance.
+- `cocoon_client_withdraw`: Withdraw funds from a client.
+- `cocoon_grant_refund`: Grant a client refund.
+- `cocoon_proxy_charge`: Charge a client through a proxy.
+- `cocoon_proxy_payout`: Pay the proxy's owner.
+- `cocoon_register_proxy`: Register a proxy.
+- `cocoon_unregister_proxy`: Unregister a proxy.
+- `cocoon_worker_payout`: Pay the worker's owner.
+
+### Bitcoin bridge
+
+- `tgbtc_burn`: Burn bridge tokens.
+- `tgbtc_burn_fallback`: Burn with partial details.
+- `tgbtc_dkg_log_fallback`: Completion of distributed key generation.
+- `tgbtc_mint`: Mint bridge tokens.
+- `tgbtc_mint_fallback`: Mint with partial details.
+- `tgbtc_new_key`: Create a bridge key.
+- `tgbtc_new_key_fallback`: Bridge key creation with partial details.
+
+### EVAA
+
+- `evaa_supply`: Supply assets.
+- `evaa_withdraw`: Withdraw assets.
+- `evaa_liquidate`: Liquidate a position.
+
+### JVault
+
+- `jvault_claim`: Claim staking rewards.
+- `jvault_stake`: Deposit into staking.
+- `jvault_unstake_request`: Request to withdraw from staking.
+- `jvault_unstake`: Withdrawal from staking.
+
+### SwapCoffee
+
+- `coffee_create_pool`: Create a liquidity pool.
+- `coffee_create_pool_creator`: Create a pool creator contract.
+- `coffee_create_vault`: Create a vault.
+- `coffee_mev_protect_failed_swap`: Record a failed swap under maximal extractable value (MEV) protection.
+- `coffee_mev_protect_hold_funds`: Hold funds under MEV protection.
+- `coffee_staking_claim_rewards`: Claim staking rewards.
+- `coffee_staking_deposit`: Deposit into staking.
+- `coffee_staking_withdraw`: Withdraw from staking.
+
+### LayerZero
+
+- `layerzero_receive`: Receive a packet.
+- `layerzero_commit_packet`: Commit a packet.
+- `layerzero_dvn_verify`: Verify a packet through a verifier.
+- `layerzero_send`: Send a packet.
+- `layerzero_send_tokens`: Send tokens.
+
+### Other
+
+- `unknown`: Unclassified activity in a trace.
+
+## Classification presets
+
+The `supported_action_types` field works with either version presets or broad category shortcuts, not with specific action types. If neither the `supported_action_types` field nor the `X-Actions-Version` header is supplied, the following endpoints that support both default to `latest`: [`GET /actions`](/api/v3/actions-and-traces/get-actions), [`GET /traces`](/api/v3/actions-and-traces/get-traces), [`GET /pendingActions`](/api/v3/actions-and-traces/get-pending-actions), and [`GET /pendingTraces`](/api/v3/actions-and-traces/get-pending-traces). The header takes priority over the field.
+
+The `v1` version presets are always included in the list, even when an explicit `supported_action_types` value is provided and replaces `latest`. Category shortcuts extend that baseline and do not filter results to the category. For example, `supported_action_types=jettons` also supports the other `v1` types.
+
+Repeat `supported_action_types` to combine selections. For instance, `supported_action_types=latest&supported_action_types=tgbtc` includes the default set and the `tgbtc` types. Unlike `GET /traces`, the `action_type` field in `GET /actions` selects matching types independently of the `supported_action_types` list. Yet, supported parent actions still suppress their components.
+
+<Accordions>
+  <Accordion
+    title="Version presets"
+  >
+    Each preset includes the preceding version.
+
+    - `v1`:
+      - `call_contract`,
+      - `contract_deploy`,
+      - `ton_transfer`,
+      - `jetton_transfer`,
+      - `jetton_burn`,
+      - `jetton_mint`,
+      - `jetton_swap`,
+      - `nft_transfer`,
+      - `nft_mint`,
+      - `change_dns`,
+      - `delete_dns`,
+      - `renew_dns`,
+      - `stake_deposit`,
+      - `stake_withdrawal`,
+      - `stake_withdrawal_request`,
+      - `dex_deposit_liquidity`,
+      - `dex_withdraw_liquidity`,
+      - `subscribe`,
+      - `unsubscribe`,
+      - `election_deposit`,
+      - `election_recover`,
+      - `auction_bid`,
+      - `tick_tock`.
+    - `v2` adds:
+      - `multisig_create_order`,
+      - `multisig_approve`,
+      - `multisig_execute`,
+      - `vesting_send_message`,
+      - `vesting_add_whitelist`,
+      - `evaa_supply`,
+      - `evaa_withdraw`,
+      - `evaa_liquidate`,
+      - `jvault_stake`,
+      - `jvault_unstake`,
+      - `jvault_claim`,
+      - `jvault_unstake_request`,
+      - `nft_discovery`,
+      - `tonco_deploy_pool`,
+      - `coffee_create_vault`,
+      - `coffee_create_pool_creator`,
+      - `coffee_create_pool`,
+      - `coffee_mev_protect_hold_funds`,
+      - `coffee_mev_protect_failed_swap`,
+      - `coffee_staking_claim_rewards`,
+      - `coffee_staking_deposit`,
+      - `coffee_staking_withdraw`,
+      - `unknown`.
+    - `v3` adds:
+      - `nft_put_on_sale`,
+      - `nft_put_on_auction`,
+      - `auction_outbid`,
+      - `nft_cancel_sale`,
+      - `nft_purchase`,
+      - `nft_update_sale`,
+      - `nft_cancel_auction`,
+      - `nft_finish_auction`,
+      - `teleitem_start_auction`,
+      - `teleitem_cancel_auction`,
+      - `dns_purchase`,
+      - `dns_release`,
+      - `layerzero_send`,
+      - `layerzero_send_tokens`,
+      - `layerzero_receive`,
+      - `layerzero_commit_packet`,
+      - `layerzero_dvn_verify`.
+    - `v4` adds:
+      - `cocoon_worker_payout`,
+      - `cocoon_proxy_payout`,
+      - `cocoon_proxy_charge`,
+      - `cocoon_client_top_up`,
+      - `cocoon_register_proxy`,
+      - `cocoon_unregister_proxy`,
+      - `cocoon_client_register`,
+      - `cocoon_client_change_secret_hash`,
+      - `cocoon_client_request_refund`,
+      - `cocoon_grant_refund`,
+      - `cocoon_client_increase_stake`,
+      - `cocoon_client_withdraw`.
+  </Accordion>
+
+  <Accordion
+    title="Category shortcuts"
+  >
+    Category shortcuts expand to the listed values in addition to `v1`. A value can be another shortcut.
+
+    - `staking`:
+      - `stake_deposit`,
+      - `stake_withdrawal`,
+      - `stake_withdrawal_request`.
+    - `jettons`:
+      - `jetton_transfer`,
+      - `jetton_burn`,
+      - `jetton_mint`.
+    - `nft`:
+      - `nft_transfer`,
+      - `nft_mint`,
+      - `auction_bid`.
+    - `nft.v3`:
+      - `nft`,
+      - `nft_put_on_sale`,
+      - `nft_put_on_auction`,
+      - `auction_outbid`,
+      - `nft_cancel_sale`,
+      - `nft_purchase`,
+      - `nft_cancel_auction`,
+      - `nft_finish_auction`,
+      - `teleitem_start_auction`,
+      - `teleitem_cancel_auction`,
+      - `nft_update_sale`,
+      - `dns_purchase`,
+      - `dns_release`.
+    - `dns`:
+      - `change_dns`,
+      - `delete_dns`,
+      - `renew_dns`,
+      - `dns_purchase`,
+      - `dns_release`.
+    - `dns.v2`:
+      - `dns`,
+      - `dns_purchase`,
+      - `dns_release`.
+    - `multisig`:
+      - `multisig_create_order`,
+      - `multisig_approve`,
+      - `multisig_execute`.
+    - `vesting`:
+      - `vesting_send_message`,
+      - `vesting_add_whitelist`.
+    - `evaa`:
+      - `evaa_supply`,
+      - `evaa_withdraw`,
+      - `evaa_liquidate`.
+    - `jvault`:
+      - `jvault_stake`,
+      - `jvault_unstake`,
+      - `jvault_claim`,
+      - `jvault_unstake_request`.
+    - `coffee`:
+      - `coffee_create_vault`,
+      - `coffee_create_pool_creator`,
+      - `coffee_create_pool`,
+      - `coffee_mev_protect_hold_funds`,
+      - `coffee_staking_claim_rewards`,
+      - `coffee_staking_deposit`,
+      - `coffee_staking_withdraw`.
+    - `tgbtc`:
+      - `tgbtc_dkg_log_fallback`,
+      - `tgbtc_new_key`,
+      - `tgbtc_new_key_fallback`,
+      - `tgbtc_burn`,
+      - `tgbtc_burn_fallback`,
+      - `tgbtc_mint`,
+      - `tgbtc_mint_fallback`.
+    - `layerzero`:
+      - `layerzero_send`,
+      - `layerzero_send_tokens`,
+      - `layerzero_receive`,
+      - `layerzero_commit_packet`,
+      - `layerzero_dvn_verify`.
+    - `cocoon`:
+      - `cocoon_worker_payout`,
+      - `cocoon_proxy_payout`,
+      - `cocoon_proxy_charge`,
+      - `cocoon_client_top_up`,
+      - `cocoon_register_proxy`,
+      - `cocoon_unregister_proxy`,
+      - `cocoon_client_register`,
+      - `cocoon_client_change_secret_hash`,
+      - `cocoon_client_request_refund`,
+      - `cocoon_grant_refund`,
+      - `cocoon_client_increase_stake`,
+      - `cocoon_client_withdraw`.
+
+    For example, `supported_action_types=v3&supported_action_types=tgbtc` supports the `v3` set and the `tgbtc` types. In query strings, repeat the parameter to add new values.
+  </Accordion>
+</Accordions>
