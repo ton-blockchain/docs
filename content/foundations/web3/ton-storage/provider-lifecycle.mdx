@@ -1,0 +1,68 @@
+---
+title: "Storage provider lifecycle"
+sidebarTitle: "Provider lifecycle"
+description: "Storage agreements, activation, proofs, payments, and closure"
+---
+
+A storage provider retains and serves a bag in exchange for payment. The client funds an on-chain agreement, while the provider daemon stores the files and submits proofs. The storage contract verifies those proofs and accounts for payments.
+
+## Participants and contracts
+
+The client supplies the bag and funds its storage. The provider operator runs the daemon and sets the storage terms.
+
+Two types of contract manage the agreement:
+
+- The main provider contract exposes the operator's terms, deploys storage contracts, and receives withdrawn provider earnings.
+- A storage contract records one agreement between the client and provider, identifying the bag, agreed terms, and unpaid client balance.
+
+The provider daemon monitors these agreements, manages local files, and sends activation, proof, withdrawal, and closure messages through the main provider contract.
+
+The files remain off-chain. Their distribution and download verification are described in [TON Storage overview](/foundations/web3/ton-storage#bag-contents-and-identity).
+
+## Request and activation
+
+The client [requests storage](/foundations/web3/ton-storage/reference#contract-messages) for a published bag at the provider's advertised rate and proof interval. The provider contract checks whether requests are enabled, whether the bag size is within its limits, and whether the expected terms match its current terms. It then deploys an inactive storage contract funded by the request.
+
+The daemon separately applies its local limits on contract count and total bag size. If those limits are exceeded, it starts closing the new agreement. Deployment therefore does not guarantee acceptance by the daemon.
+
+For an accepted agreement, the daemon downloads the complete bag and verifies it against the storage-proof root supplied in the request. After this check, it enables uploads and requests activation. The storage contract accepts activation only from the provider address and only while inactive.
+
+The full-download and root checks belong to the daemon. The activation message itself does not prove to the contract that a complete download occurred. [Store with a provider](/foundations/web3/ton-storage/store-with-provider) covers the client procedure and activation checks.
+
+## Storage challenges and proofs
+
+Before activation, the daemon builds a Merkle tree from 64-byte microchunks of the bag's data stream, including its header. This tree is used for storage proofs and is distinct from the piece-hash tree used to verify downloads.
+
+The contract records a byte position to challenge. The daemon builds a Merkle proof revealing the corresponding microchunk and submits it through the provider contract. The storage contract checks that the agreement is active, that the sender is the provider, and that the proof matches its stored root and requested position.
+
+An accepted proof updates the client balance and proof timestamp and selects a new challenge position at random.
+
+A proof verifies the challenged data against the committed root. It does not verify that the provider answers peer download requests or achieves a particular download speed.
+
+## Payments and balances
+
+The unpaid client balance is an accounting value inside the storage contract, separate from the contract's actual coin balance. A valid proof reduces that accounting balance according to the bag size, agreed rate, and elapsed time, capped by `max_span`. The exact calculation and units are defined in [Payment accounting](/foundations/web3/ton-storage/reference#payment-accounting).
+
+A late proof can still be accepted, but time beyond `max_span` is not paid.
+
+Accepting a proof does not immediately transfer the earned amount to the provider. Earnings remain in the storage contract until withdrawn or distributed at closure. Withdrawals send the available earnings to the main provider contract. The operator can transfer funds from there to a wallet. The reserve calculation and the effect of a withdrawal with no remaining client balance are described in [Payment accounting](/foundations/web3/ton-storage/reference#payment-accounting).
+
+The client balance can be topped up to fund further storage. The contract's actual balance also covers transaction costs, so subtracting the client balance from it does not give the exact withdrawable earnings. For payment units and withdrawal commands, see the [Storage reference](/foundations/web3/ton-storage/reference#storage-providers) and [Run a storage provider](/foundations/web3/ton-storage/run-provider#operate-active-contracts).
+
+## Closure and data retention
+
+The [client](/foundations/web3/ton-storage/store-with-provider#close-the-agreement) or [provider](/foundations/web3/ton-storage/run-provider#close-a-storage-contract) can request closure. When the daemon observes a zero client balance on an active agreement, it starts the closure procedure; the contract does not close spontaneously when that balance reaches zero.
+
+For an inactive agreement, closure sends the remaining contract funds to the client. For an active agreement, the contract sends a refund message for the unpaid client balance and sends the remaining funds to the provider. These transfers incur blockchain fees; closure does not calculate an additional payment for time since the last accepted proof.
+
+After detecting that the storage contract has been deleted, the daemon removes it from its records. If no other tracked contract references the same BagID, it also requests removal of the local bag and its files. Other peers' copies are unaffected.
+
+## Sources
+
+- [Agreement creation and request validation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-provider.fc#L20)
+- [Client balance, activation, closure, withdrawals, and proof processing](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-contract.fc)
+- [Request preparation from a complete bag](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/storage-daemon.cpp#L562)
+- [Microchunk size](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/MicrochunkTree.h#L34) and [tree construction](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/MicrochunkTree.cpp#L200)
+- [Daemon acceptance, download checks, and activation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/StorageProvider.cpp#L315)
+- [Daemon closure, file removal, and proof scheduling](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/StorageProvider.cpp#L543)
+- [Provider withdrawals and wallet transfers](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/StorageProvider.cpp#L812)

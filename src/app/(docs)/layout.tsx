@@ -22,7 +22,16 @@ const tabUrls: Record<string, Set<string>> = {
   Contracts: new Set(pagePaths.filter((it) => it.startsWith('/contracts/'))),
   Tolk: new Set(pagePaths.filter((it) => it.startsWith('/tolk/'))),
   TVM: new Set(pagePaths.filter((it) => it.startsWith('/tvm/'))),
-  Foundations: new Set(pagePaths.filter((it) => it.startsWith('/foundations/'))),
+  Foundations: new Set(
+    pagePaths.filter(
+      (it) => it.startsWith('/foundations/') && !it.startsWith('/foundations/web3/'),
+    ),
+  ),
+  Web3: new Set(
+    pagePaths
+      .filter((it) => it.startsWith('/foundations/web3/'))
+      .map((it) => it.replace(/\/index$/, '')),
+  ),
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -92,6 +101,16 @@ export default function Layout({ children }: { children: ReactNode }) {
           ),
           url: '/foundations/overview',
           urls: tabUrls.Foundations,
+        },
+        {
+          title: (
+            <>
+              <span className="style-tab-normal">Web3</span>
+              <span className="style-tab-wide">Web3 services</span>
+            </>
+          ),
+          url: '/foundations/web3/overview',
+          urls: tabUrls.Web3,
         },
       ]}
       tabMode="top"

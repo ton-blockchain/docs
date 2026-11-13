@@ -1,0 +1,71 @@
+---
+title: "How to publish a TON Site with a web server"
+sidebarTitle: "Publish with a web server"
+description: "Connect an HTTP application to TON and verify access"
+---
+
+Publish an existing HTTP application through a TON reverse proxy over the [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl). The application continues to run on its HTTP server.
+
+## Prerequisites
+
+- A running HTTP application accessible from the reverse proxy host
+- The [tonutils-reverse-proxy v0.6.0 or C++ TON v2026.08 binaries and network configuration](/foundations/web3/ton-proxy/reverse-proxy)
+- [Tonutils-Proxy v1.8.3](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy) or [C++ `rldp-http-proxy` from TON v2026.08](/foundations/web3/ton-proxy/forward-proxy#use-rldp-http-proxy) running at `127.0.0.1:8080` on the machine used to verify the site
+- For a `.ton` domain: a domain controlled by the publishing wallet on mainnet and funds for its record-update transaction
+
+<Callout
+  type="caution"
+  title="Proxy keys and domain updates"
+>
+  Protect and back up the reverse proxy's private key to retain its ADNL identity. Linking a domain sends a mainnet transaction; check the domain and destination before confirming. Confirmed transactions cannot be rolled back.
+</Callout>
+
+## Check the application
+
+From the reverse proxy host, request a page from the application. Replace `<BACKEND_URL>` with its HTTP origin, including the port but no trailing slash. Use `<PAGE_PATH>` for the path to check, starting with `/` (for example, `/` or `/about.html`):
+
+```bash
+curl --noproxy '*' --fail "<BACKEND_URL><PAGE_PATH>"
+```
+
+Confirm that the response contains the expected page. Keep the application running throughout publication.
+
+## Connect the reverse proxy
+
+Follow [Run a reverse proxy](/foundations/web3/ton-proxy/reverse-proxy), choosing one implementation. Configure its backend to match the application URL. The guide's defaults use port `80`; for another address, use the C++ [`-R` option](/foundations/web3/ton-proxy/reference#reverse-proxy-options) or the Go implementation's [`proxy_pass` setting](/foundations/web3/ton-proxy/reference#go-reverse-proxy-configuration).
+
+For the initial direct-access check, start `tonutils-reverse-proxy` without [`--domain`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-options). When supplied, that option can wait for a domain update before the server starts. Domain linking is an optional later step in this guide.
+
+Record the proxy's user-friendly ADNL address as `<ADNL_ADDRESS>` for direct access, and retain its hexadecimal form for manual domain linking. The C++ key-generation command prints both forms; the Go proxy logs them as `ADNL_address` and `hex_address`. This identity is independent of the server's IP address. Preserve the private key to keep the same identity when moving the proxy to another host.
+
+## Verify direct access
+
+If the application restricts allowed hostnames, allow `<ADNL_ADDRESS>.adnl` for this check and the `.ton` domain if one will be used.
+
+On the machine running the forward proxy, request the same `<PAGE_PATH>`:
+
+```bash
+curl --noproxy '' --proxy http://127.0.0.1:8080 --fail "http://<ADNL_ADDRESS>.adnl<PAGE_PATH>"
+```
+
+Confirm that the expected application page is returned. Then open the same URL in the proxy-configured browser and check its assets and application requests.
+
+## Link a domain
+
+To use a `.ton` name, follow [Manage records](/foundations/web3/ton-dns/manage-domains#manage-records) and set the domain's [`site` record](/foundations/web3/ton-dns/reference#record-categories) to the reverse proxy's ADNL address. For manual entry on dns.ton.org, use the recorded hexadecimal form.
+
+Open `http://<DOMAIN><PAGE_PATH>` through the forward proxy, replacing `<DOMAIN>` with the full domain name. Confirm that the same application loads.
+
+## Publish updates
+
+Updating the website does not require changing its DNS record if the reverse proxy's ADNL address stays the same.
+
+## Troubleshoot
+
+| Problem                                  | Check                                                                              |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| The backend check fails                  | Check the application address, port, and process before investigating TON routing. |
+| The backend works but the ADNL URL fails | Check the reverse proxy logs, routing configuration, and ADNL connectivity.        |
+| The ADNL URL works but the domain fails  | Check the domain's `site` record and the application's hostname configuration.     |
+
+The [TON Proxy reference](/foundations/web3/ton-proxy/reference) lists proxy options and transport behavior.

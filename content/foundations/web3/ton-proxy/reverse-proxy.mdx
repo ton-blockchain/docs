@@ -1,0 +1,203 @@
+---
+title: "How to run a TON reverse proxy"
+sidebarTitle: "Run a reverse proxy"
+description: "Forward requests from the TON network to an HTTP server"
+---
+
+Connect an HTTP server to the TON network using either `tonutils-reverse-proxy` or the official C++ `rldp-http-proxy`. This guide uses direct connections over the [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) on mainnet. Verify access through the proxy before optionally linking a domain.
+
+## Prerequisites
+
+- A running HTTP server accessible from the reverse proxy host; the examples use `http://127.0.0.1:80/`
+- A public IP address and an inbound UDP port reachable through the host firewall and any intervening NAT
+- Outbound UDP access to TON peers and TCP access to the liteservers in the network configuration
+- [Tonutils-Proxy v1.8.3](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy) or [C++ `rldp-http-proxy` from TON v2026.08](/foundations/web3/ton-proxy/forward-proxy#use-rldp-http-proxy) running at `127.0.0.1:8080` on the machine used for verification
+- For domain linking only: a `.ton` domain controlled by the connected mainnet wallet and funds for the record-update transaction
+
+From the reverse proxy host, confirm that the HTTP server returns the expected page:
+
+```bash
+curl --noproxy '*' --fail http://127.0.0.1/
+```
+
+For another backend address, check that URL instead and configure the chosen proxy to match it.
+
+<Callout
+  type="danger"
+  title="Private keys and domain updates"
+>
+  Protect and back up generated private keys to preserve the site's ADNL identity. Linking a domain sends a mainnet transaction. Check the domain and record before confirming; confirmed transactions cannot be rolled back.
+</Callout>
+
+## Use tonutils-reverse-proxy
+
+Version 0.6.0 generates a persistent identity and configuration on first launch.
+
+### Install
+
+On Linux (x86-64), create a working directory and download the published binary:
+
+```bash
+mkdir -p ton-reverse-proxy
+cd ton-reverse-proxy
+wget https://github.com/tonutils/reverse-proxy/releases/download/v0.6.0/tonutils-reverse-proxy-linux-amd64
+chmod +x tonutils-reverse-proxy-linux-amd64
+```
+
+For another platform, use the corresponding binary from the [same release](https://github.com/tonutils/reverse-proxy/releases/tag/v0.6.0).
+
+<details>
+  <summary>Build from source instead</summary>
+
+  Building requires [Go 1.26.0](https://go.dev/dl/#go1.26.0) and Git:
+
+  ```bash
+  git clone --branch v0.6.0 https://github.com/tonutils/reverse-proxy
+  cd reverse-proxy
+  go build -ldflags "-w -s -X main.GitCommit=$(git describe --tags --always --dirty)" -o build/tonutils-reverse-proxy cmd/proxy/main.go
+  ```
+
+  Use `./build/tonutils-reverse-proxy` in place of `./tonutils-reverse-proxy-linux-amd64` in the start commands. Keep using the repository directory as the working directory.
+</details>
+
+### Initialize the configuration
+
+Run the proxy without a domain:
+
+```bash
+./tonutils-reverse-proxy-linux-amd64
+```
+
+The first launch creates `config.json` in the working directory and attempts to start the proxy.
+
+Once `config.json` has been created, stop the process with <kbd>Ctrl</kbd>+<kbd>C</kbd> before editing it. Keep and back up this file; subsequent launches reuse its identity and settings.
+
+### Configure the backend and network
+
+Edit the generated `config.json`, preserving [`private_key`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-configuration):
+
+- Set [`proxy_pass`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-configuration) to the HTTP backend URL if it differs from `http://127.0.0.1:80/`.
+- Check that [`external_ip`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-configuration) is the public IP address through which peers can reach the proxy.
+- Keep [`listen_ip`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-configuration) as `0.0.0.0` to listen on all local interfaces, or select the local interface to bind.
+- Read [`port`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-configuration), the UDP port selected on first launch from the detected public IP address. Change it if necessary.
+
+Allow inbound UDP traffic on this port and outbound UDP traffic to TON peers. If behind NAT, forward the same UDP port to the proxy host. Update these rules whenever the port changes.
+
+Existing configuration values are reused on restart; an IP address change requires updating `external_ip`.
+
+### Start the proxy
+
+From the same working directory, start the proxy again:
+
+```bash
+./tonutils-reverse-proxy-linux-amd64
+```
+
+Record `ADNL_address` from the startup log as `<ADNL_ADDRESS>`, the user-friendly identity used for direct access. Retain `hex_address`, its hexadecimal form, for manual domain linking.
+
+Keep the process running and continue to [Verify direct access](#verify-direct-access).
+
+## Use rldp-http-proxy
+
+The official C++ implementation uses a separately generated ADNL identity.
+
+### Prepare the binaries
+
+Extract `rldp-http-proxy` and `generate-random-id` from the archive for the target platform in [TON v2026.08](https://github.com/ton-blockchain/ton/releases/tag/v2026.08) into a working directory. Save the [mainnet configuration](https://ton-blockchain.github.io/global.config.json) there as `global.config.json`.
+
+Run the following commands from that directory. By default, the proxy reads private keys from its [database directory](/foundations/web3/ton-proxy/reference#data-directory-and-daemon-mode) under `keyring/`.
+
+### Generate an ADNL identity
+
+Generate a persistent ADNL address:
+
+```bash
+chmod +x rldp-http-proxy generate-random-id
+mkdir keyring
+./generate-random-id -m adnlid
+```
+
+The command prints a hexadecimal key identifier followed by a user-friendly ADNL address. It writes the private key to a file named after the hexadecimal identifier.
+
+Record the user-friendly address as `<ADNL_ADDRESS>`. Replace `<KEY_ID_HEX>` below with the hexadecimal identifier and move the private key into the keyring:
+
+```bash
+mv "<KEY_ID_HEX>" keyring/
+```
+
+Retain both address forms and back up the private key. On restart, reuse the same working directory, keyring, and ADNL address; do not generate a new identity.
+
+### Configure and start the proxy
+
+<span
+  id="start-the-c-proxy"
+/>
+
+Allow inbound UDP traffic on port `3333` and outbound UDP traffic to TON peers. If behind NAT, forward UDP port `3333` to the proxy host.
+
+Replace `<PUBLIC_IP>` with the reachable public IP address and `<ADNL_ADDRESS>` with the generated user-friendly address:
+
+```bash
+./rldp-http-proxy -a <PUBLIC_IP>:3333 -L '*:80' -C global.config.json -A <ADNL_ADDRESS> -l tonsite.log
+```
+
+[`-a`](/foundations/web3/ton-proxy/reference#reverse-proxy-options) sets the public endpoint and UDP port. [`-A`](/foundations/web3/ton-proxy/reference#reverse-proxy-options) selects the identity loaded from the keyring. [`-L '*:80'`](/foundations/web3/ton-proxy/reference#reverse-proxy-options) routes requests for any hostname on HTTP port `80` to `127.0.0.1:80`.
+
+For another backend, use [`-R`](/foundations/web3/ton-proxy/reference#routing) to configure its address and accepted hostnames and ports.
+
+The process stays in the foreground and writes logs to `tonsite.log`. Keep it running, then continue to [Verify direct access](#verify-direct-access).
+
+## Verify direct access
+
+<span id="verify" />
+
+On the machine running the forward proxy, replace `<ADNL_ADDRESS>` with the user-friendly address recorded during setup:
+
+```bash
+curl --noproxy '' --proxy http://127.0.0.1:8080 --fail "http://<ADNL_ADDRESS>.adnl/"
+```
+
+Confirm that the response contains the same page returned by the backend check. If the application restricts allowed hostnames, allow `<ADNL_ADDRESS>.adnl` for this request.
+
+## Link a domain (optional)
+
+<span
+  id="domain-assignment"
+/>
+
+Link the domain after direct access works, using one of the following methods.
+
+For `tonutils-reverse-proxy`, stop the process and restart it from the same directory with [`--domain`](/foundations/web3/ton-proxy/reference#go-reverse-proxy-options), using the full `.ton` name as `<DOMAIN>`:
+
+```bash
+./tonutils-reverse-proxy-linux-amd64 --domain <DOMAIN>
+```
+
+If the domain's [`site` record](/foundations/web3/ton-dns/reference#record-categories) differs from the proxy's identity, a QR code appears. Scan it with a compatible TON wallet and confirm the update from the domain owner's wallet. The proxy waits for the record to update before starting its server. No transaction is requested if the record already matches.
+
+For either implementation, manual linking is also available through [Manage records](/foundations/web3/ton-dns/manage-domains#manage-records). Use the hexadecimal address from the C++ key-generation output or the Go `hex_address` log field as the domain's `site` record.
+
+Open `http://<DOMAIN>/` through the forward proxy and confirm that the same backend page loads. Allow that hostname in the application's configuration if required. Domain linking does not need to be repeated while the record points to the same ADNL identity.
+
+## Troubleshoot
+
+| Problem                                          | Check                                                                                                                                                |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend check fails                              | Check the HTTP server's address, port, and process before investigating TON routing.                                                                 |
+| Go configuration is not created                  | Check the working directory's write permissions and outbound HTTPS access for public-IP detection.                                                   |
+| Go startup fails while connecting to liteservers | Check outbound TCP access to the liteservers in the network configuration and inspect the startup error.                                             |
+| Go proxy waits for a domain update               | Complete the wallet-confirmed update, or restart without `--domain` to verify direct access first.                                                   |
+| Process starts but direct access fails           | Check the advertised IP, UDP port, firewall, NAT forwarding, and proxy logs.                                                                         |
+| C++ proxy cannot load the ADNL key               | Run it from the directory containing `keyring`, or set the [database path](/foundations/web3/ton-proxy/reference#reverse-proxy-options) accordingly. |
+| Direct URL returns HTTP `502`                    | Check the backend's availability and the reverse proxy's hostname and port mapping.                                                                  |
+| Direct URL works but the domain fails            | Check the domain's `site` record and the application's allowed hostnames.                                                                            |
+
+## Sources
+
+- [Go version requirement](https://github.com/tonutils/reverse-proxy/blob/300fc0ced8eab48ff5879ce822419d42b8e3a43e/go.mod#L3)
+- [Go build command](https://github.com/tonutils/reverse-proxy/blob/300fc0ced8eab48ff5879ce822419d42b8e3a43e/Makefile#L3-L6)
+- [Go startup and domain setup](https://github.com/tonutils/reverse-proxy/blob/300fc0ced8eab48ff5879ce822419d42b8e3a43e/cmd/proxy/main.go#L134-L368)
+- [Go configuration creation and loading](https://github.com/tonutils/reverse-proxy/blob/300fc0ced8eab48ff5879ce822419d42b8e3a43e/cmd/proxy/main.go#L415-L572)
+- [C++ key generation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/utils/generate-random-id.cpp#L171-L176)
+- [C++ identity loading and network startup](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/rldp-http-proxy.cpp#L845-L982)
+- [C++ routing options](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/rldp-http-proxy.cpp#L1519-L1632)

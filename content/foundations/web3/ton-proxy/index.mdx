@@ -1,0 +1,64 @@
+---
+title: "TON Proxy overview"
+sidebarTitle: "Overview"
+description: "Access and host TON Sites through an HTTP proxy"
+---
+
+TON Proxy connects HTTP clients to [TON Sites](/foundations/web3/ton-sites). It carries HTTP requests and responses over the TON network, while the client and web server use their existing HTTP interfaces.
+
+## Forward and reverse proxies
+
+- A **forward proxy** accepts requests from an HTTP client, such as a browser or command-line tool, and sends them to the TON Site.
+- A **reverse proxy** receives requests from the TON network and forwards them to the site's HTTP server. The server can run on the same machine or another host.
+
+The official C++ implementation, `rldp-http-proxy`, supports both roles. The community implementations [Tonutils-Proxy](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy) and [tonutils-reverse-proxy](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy) provide the forward and reverse roles, respectively.
+
+## Request flow
+
+<span
+  id="how-ton-proxy-works"
+/>
+
+For a request to `http://example.ton/page`, where the domain points to a reverse proxy:
+
+1. The HTTP client sends the request to its configured forward proxy.
+1. The forward proxy resolves the domain's `site` record through [TON DNS](/foundations/web3/ton-dns/reference#resolve-a-record). The record contains the reverse proxy's [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) address. TON's [distributed hash table (DHT)](/foundations/network/dht) provides the corresponding IP address and UDP port for reaching that proxy.
+1. The forward proxy sends the HTTP request over the [Reliable Large Datagram Protocol (RLDP)](/foundations/network/rldp), which runs over the [ADNL](/foundations/network/adnl). The reverse proxy forwards the request to its configured HTTP server.
+1. The HTTP server processes the request. Its response returns through the reverse proxy and forward proxy to the client.
+
+The [HTTP over RLDP specification](/foundations/network/rldp#rldp-http) describes the request, response, and body transfers.
+
+## Name resolution
+
+A `.ton` domain gives a TON Site a readable name. Direct access through `<ADNL_ADDRESS>.adnl` uses the reverse proxy's ADNL address without a DNS lookup.
+
+The `site` record can also contain a [TON Storage BagID](/foundations/web3/ton-storage#bag-contents-and-identity). In that case, the requested path identifies a file within the bag. The same files are [accessible directly through `<BAG_ID>.bag`](/foundations/web3/ton-proxy/forward-proxy#access-files-over-http), using the hexadecimal BagID.
+
+Storage access depends on the forward proxy implementation:
+
+- The C++ proxy forwards requests to a configured TON Storage HTTP gateway.
+- Tonutils-Proxy includes a Storage client and retrieves files from the bag's peers.
+
+## Privacy and relays
+
+<span
+  id="security-and-privacy"
+/>
+
+ADNL encrypts traffic between the forward and reverse proxies. This encryption does not cover the HTTP connection from the client to the forward proxy or from the reverse proxy to its HTTP server.
+
+A direct connection exposes the peers' network addresses to each other. [TON Tunnel](/foundations/web3/ton-tunnel) provides relays for ADNL traffic in compatible applications.
+
+## Next steps
+
+- [Run a forward proxy](/foundations/web3/ton-proxy/forward-proxy) to access TON Sites and Storage files.
+- [Run a reverse proxy](/foundations/web3/ton-proxy/reverse-proxy) to connect an HTTP server to the TON network.
+- [Reference](/foundations/web3/ton-proxy/reference) for implementation-specific options, routing, and headers.
+
+## Sources
+
+- [C++ HTTP request handling and reverse routing](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/rldp-http-proxy.cpp#L1061-L1212)
+- [DNS site records](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/DNSResolver.cpp#L68-L94)
+- [ADNL peer discovery](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/adnl/adnl-peer.cpp#L107-L149)
+- [C++ destination resolution and request transport](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/rldp-http-proxy/rldp-http-proxy.cpp#L1354-L1443)
+- [Tonutils-Proxy Storage retrieval](https://github.com/xssnick/Tonutils-Proxy/blob/526ece06e3c6e7398df09039a5ad0e3c144fc6ec/proxy/transport/client.go#L713-L737)

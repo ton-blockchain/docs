@@ -1,0 +1,41 @@
+---
+title: "TON Payment Network overview"
+sidebarTitle: "Overview"
+description: "Off-chain payments through interconnected payment channels on TON"
+---
+
+TON Payment Network enables participants to exchange payments off-chain through interconnected payment channels. [Smart contracts](/foundations/glossary#smart-contract) on TON secure the funds and provide mechanisms for on-chain settlement.
+
+## Payment channels
+
+A payment channel connects two participants. They exchange signed state updates to account for payments without submitting each payment as a separate blockchain transaction.
+
+Funding and settlement involve on-chain operations. Participants can withdraw funds or close channels through the supported contract procedures. When the parties cannot cooperate, settlement follows the contract's dispute process and deadlines.
+
+A node's wallet balance is separate from the funds available in its payment channels.
+
+## Routed payments
+
+Participants can pay through intermediate nodes instead of opening a direct channel with every recipient. Virtual channels connect the participants across a route of existing channels.
+
+A route needs sufficient available capacity for the selected asset. Intermediaries can charge fees for providing this capacity and forwarding payments.
+
+## Assets and fees
+
+The implementation supports the native currency, [jettons](/contracts/standard/tokens/jettons/overview), and extra-currencies. Each node configures the assets it accepts and their associated fees and limits. Support for an asset does not guarantee that a suitable funded route is available.
+
+Off-chain payments avoid a blockchain transaction for each payment, but are not necessarily free. Node fees and on-chain transaction fees are separate costs.
+
+## Applications
+
+The implementation provides a standalone Go node, an HTTP API, and a WebAssembly client that can run in a browser.
+
+[TON Tunnel](/foundations/web3/ton-tunnel) uses Payment Network to pay relays for traffic. Channel operations are covered in this section; relay pricing and configuration are covered in [Run a relay](/foundations/web3/ton-tunnel/run-relay#configure-prices).
+
+[Payment processing](/applications/payments/overview) covers monitoring ordinary blockchain deposits and withdrawals.
+
+## Next steps
+
+- [Run a payment node](/foundations/web3/payment-network/run-node) to connect to Payment Network.
+- [Use payment channels](/foundations/web3/payment-network/use-channels) to fund channels, send payments, and withdraw funds.
+- [Run in a browser](/foundations/web3/payment-network/browser) to use the WebAssembly implementation.

@@ -1,0 +1,98 @@
+---
+title: "How to run a TON forward proxy"
+sidebarTitle: "Run a forward proxy"
+description: "Connect a browser to TON Sites and TON Storage files through a local proxy"
+---
+
+Run a local forward proxy to access TON Sites and TON Storage files from a browser. Choose either Tonutils-Proxy or the C++ `rldp-http-proxy`.
+
+## Prerequisites
+
+- For C++: extract `rldp-http-proxy` from the archive for the target platform in [TON v2026.08](https://github.com/ton-blockchain/ton/releases/tag/v2026.08) into the working directory. The separate `http-proxy` download is a different program.
+- For C++: save the [mainnet global configuration](https://ton-blockchain.github.io/global.config.json) as `global.config.json` in the same directory.
+
+## Use Tonutils-Proxy
+
+[Tonutils-Proxy](https://github.com/xssnick/Tonutils-Proxy) is a community-developed open-source forward proxy.
+
+<Callout
+  type="caution"
+  title="Proxy private key"
+>
+  Tonutils-Proxy creates `config.json` in its working directory and stores the [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) private-key seed in [`ADNLKey`](/foundations/web3/ton-proxy/reference#tonutils-proxy-configuration). Keep this file confidential.
+</Callout>
+
+On Linux (x86-64), download and run version 1.8.3:
+
+```bash
+wget https://github.com/xssnick/Tonutils-Proxy/releases/download/v1.8.3/tonutils-proxy-cli-linux-amd64
+chmod +x tonutils-proxy-cli-linux-amd64
+./tonutils-proxy-cli-linux-amd64
+```
+
+For other platforms, use the corresponding CLI binary from the [same release](https://github.com/xssnick/Tonutils-Proxy/releases/tag/v1.8.3).
+
+The proxy listens on [`127.0.0.1:8080`](/foundations/web3/ton-proxy/reference#tonutils-proxy-options) and loads the mainnet configuration automatically. It also forwards ordinary HTTP requests.
+
+## Use rldp-http-proxy
+
+<Callout
+  type="caution"
+  title="HTTP listener exposure"
+>
+  The C++ proxy listens on all network interfaces. For local use, block inbound TCP connections to port `8080` on non-loopback interfaces with the host firewall. Configuring the browser to use localhost does not restrict the listener.
+</Callout>
+
+Run the extracted C++ binary:
+
+```bash
+chmod +x rldp-http-proxy
+./rldp-http-proxy -p 8080 -c 3333 -C global.config.json
+```
+
+The proxy uses UDP port [`3333`](/foundations/web3/ton-proxy/reference#forward-proxy-options) for ADNL traffic.
+
+## Connect the browser
+
+Keep the chosen proxy running and configure the browser's HTTP proxy to use `127.0.0.1` on port `8080`. Run only one of these proxies on that port at a time.
+
+## Verify
+
+Open `http://<DOMAIN>` in the configured browser, replacing `<DOMAIN>` with the full `.ton` name of a running TON Site. Confirm that the expected page loads.
+
+For direct access without DNS, open `http://<ADNL_ADDRESS>.adnl`, replacing `<ADNL_ADDRESS>` with the site's user-friendly ADNL address.
+
+## Access files over HTTP
+
+To access a file in a Storage bag, obtain its BagID and the path of the file within the bag. Keep the browser configured to use the forward proxy.
+
+With Tonutils-Proxy, continue to [Verify file access](#verify-file-access). For C++, [configure the gateway](#configure-the-gateway).
+
+### Configure the gateway
+
+For C++, obtain the user-friendly ADNL address of an existing TON Storage HTTP gateway. Stop the forward proxy and restart it with [`-S`](/foundations/web3/ton-proxy/reference#forward-proxy-options), replacing `<GATEWAY_ADNL_ADDRESS>` with that address:
+
+```bash
+./rldp-http-proxy -p 8080 -c 3333 -C global.config.json -S <GATEWAY_ADNL_ADDRESS>
+```
+
+The [HTTP listener restrictions](#use-rldp-http-proxy) also apply to this command.
+
+### Verify file access
+
+Open `http://<BAG_ID>.bag/<FILE_PATH>` in the configured browser. Replace `<BAG_ID>` with the bag's hexadecimal identifier and `<FILE_PATH>` with the path within the bag. Confirm that the expected file is returned.
+
+Both implementations also accept a `.ton` domain whose [`site` record contains the BagID](/foundations/web3/ton-dns/reference#record-categories): open `http://<DOMAIN>/<FILE_PATH>`, using the full domain name as `<DOMAIN>`.
+
+[Create and share a bag](/foundations/web3/ton-storage/get-started#create-and-share-a-bag) to publish files for HTTP access.
+
+## Troubleshoot
+
+| Problem                                 | Check                                                                                                                                                                                                      |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Browser cannot connect to the proxy     | Check that the process is running and the browser uses port `8080`.                                                                                                                                        |
+| A `.ton` site cannot be reached         | Check the domain's `site` record and whether its destination is online.                                                                                                                                    |
+| An ordinary Internet domain is rejected | The C++ proxy accepts only `.ton`, `.adnl`, and `.bag` destinations by default. With Tonutils-Proxy, check whether [`--no-http`](/foundations/web3/ton-proxy/reference#tonutils-proxy-options) is enabled. |
+| “storage gateway is not set”            | For the C++ proxy, [configure a Storage gateway](#configure-the-gateway) for a destination that resolves to a BagID.                                                                                       |
+| File is unavailable                     | Check the BagID and file path. Peers must serve the bag; with C++, the gateway must also be reachable.                                                                                                     |
+| Domain routes to the wrong resource     | Check the domain's `site` record.                                                                                                                                                                          |

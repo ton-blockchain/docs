@@ -1,0 +1,331 @@
+---
+title: "TON Storage reference"
+sidebarTitle: "Reference"
+description: "Bag formats, daemon commands, and storage provider behavior"
+---
+
+## Daemon and CLI options
+
+<span
+  id="daemon-options"
+/>
+
+`storage-daemon` options used in the guides:
+
+| Option                       | Meaning                                                                                                      |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `-v <LEVEL>`                 | Log verbosity; `3` selects INFO.                                                                             |
+| `-C <GLOBAL_CONFIG_PATH>`    | Path to the target network's global configuration file.                                                      |
+| `-I <PUBLIC_IP>:<ADNL_PORT>` | Public [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) address and UDP port.             |
+| `-p <CONTROL_PORT>`          | TCP port for the CLI control interface.                                                                      |
+| `-D <STORAGE_DB_DIR>`        | Persistent daemon database directory. CLI keys are generated in its `cli-keys/` subdirectory on first start. |
+| `-P`                         | Enable storage provider mode.                                                                                |
+
+For `storage-daemon-cli`, `-I <CONTROL_ADDRESS>` is the control endpoint, `-k <CLIENT_KEY_PATH>` is the client private key, and `-p <SERVER_KEY_PATH>` is the server public key. The CLI `-p` option is a key path, not a port. [Connect the CLI](/foundations/web3/ton-storage/get-started#connect-the-cli) shows the connection command.
+
+## Bag commands
+
+<span
+  id="manage-bags"
+/>
+
+Run these commands inside a connected `storage-daemon-cli`. `<BAG_ID>` is the bag's 64-character hexadecimal identifier; `<DOWNLOAD_DIR>` is an absolute destination directory.
+
+| Command                                         | Description                                                 |
+| ----------------------------------------------- | ----------------------------------------------------------- |
+| `create <SOURCE_PATH>`                          | Create a new bag from a file or directory                   |
+| `add-by-hash <BAG_ID> -d <DOWNLOAD_DIR>`        | Add a bag by its `BagID`                                    |
+| `add-by-meta <METAFILE_PATH> -d <DOWNLOAD_DIR>` | Add a bag from a metafile                                   |
+| `list`                                          | List all bags                                               |
+| `list --hashes`                                 | List bags with their `BagID`s                               |
+| `get <BAG_ID>`                                  | Show full bag information                                   |
+| `get-peers <BAG_ID>`                            | Show peers connected for a bag                              |
+| `get-meta <BAG_ID> <METAFILE_PATH>`             | Export the bag metafile                                     |
+| `download-pause <BAG_ID>`                       | Pause a download                                            |
+| `download-resume <BAG_ID>`                      | Resume a download                                           |
+| `priority-name <BAG_ID> <FILE_PATH> <PRIORITY>` | Set download priority for a file (0 = skip, 255 = highest)  |
+| `upload-pause <BAG_ID>`                         | Pause sharing a bag with peers                              |
+| `upload-resume <BAG_ID>`                        | Resume sharing a bag with peers                             |
+| `priority-all <BAG_ID> <PRIORITY>`              | Set the priority of every file (0 to 255; 0 excludes files) |
+
+### Bag command options
+
+| Option                  | Commands                               | Behavior                                                                                              |
+| ----------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--copy`                | `create`                               | Copy source files into the daemon's storage directory; without it, serve the original files in place. |
+| `--no-upload`           | `create`, `add-by-hash`, `add-by-meta` | Disable sharing when adding the bag. Sharing is enabled by default.                                   |
+| `-d <DESCRIPTION>`      | `create`                               | Store a description in the torrent info.                                                              |
+| `-d <DOWNLOAD_DIR>`     | `add-by-hash`, `add-by-meta`           | Set the download root directory; defaults to the daemon's internal storage.                           |
+| `--paused`              | `add-by-hash`, `add-by-meta`           | Add the bag without starting its download.                                                            |
+| `--partial <FILE_PATH>` | `add-by-hash`, `add-by-meta`           | Download only the named files. All arguments after this flag are file names.                          |
+
+Paths passed to `create` must be accessible to both the CLI and daemon. The CLI reads and writes metafile data. When the CLI and daemon run on different hosts, download paths must also exist on the daemon host; the CLI creates and resolves the destination directory locally before sending the request.
+
+The [bag operations guide](/foundations/web3/ton-storage/get-started#additional-bag-operations) provides usage examples.
+
+## Bag formats
+
+<span id="bags" />
+
+The BagID is the 256-bit hash of the `TorrentInfo` cell. Its fields are serialized in this order:
+
+| Field         | Encoding   | Meaning                                                       |
+| ------------- | ---------- | ------------------------------------------------------------- |
+| `piece_size`  | `uint32`   | Piece size in bytes; `storage-daemon` creates 128 KiB pieces. |
+| `file_size`   | `uint64`   | Total stream size in bytes, including the header.             |
+| `root_hash`   | `bits256`  | Root hash of the piece-hash Merkle tree.                      |
+| `header_size` | `uint64`   | Serialized header size in bytes.                              |
+| `header_hash` | `bits256`  | SHA-256 hash of the serialized header.                        |
+| `description` | `CellText` | Bag description.                                              |
+
+The [TON Storage overview](/foundations/web3/ton-storage#bag-contents-and-identity) explains stream layout and verification.
+
+### Metafiles
+
+A metafile serializes `TorrentInfo` as a [bag of cells (BoC)](/foundations/serialization/boc) and can include a root proof and the serialized header. It starts with a 32-bit flags field: bit `0` indicates a root proof, and bit `1` indicates a header. These are followed by the 32-bit size of the info BoC and, if present, the root-proof BoC size, then the info BoC, optional proof BoC, and optional header. File contents are not included.
+
+## Provider commands
+
+<span
+  id="storage-providers"
+/>
+
+[Storage provider lifecycle](/foundations/web3/ton-storage/provider-lifecycle) explains contract roles, proofs, payments, and closure.
+
+Run these commands inside `storage-daemon-cli`. `<PROVIDER_ADDRESS>` is the main provider contract; `<STORAGE_CONTRACT_ADDRESS>` is a per-bag storage contract.
+
+The following entries cover the commands used in the provider guides. `get-provider-params` and `new-contract-message` are client commands. The remaining commands require provider mode (`-P`); except for `deploy-provider`, they also require an initialized provider.
+
+| Command                                                                           | Purpose                                                                                                                                        |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `get-provider-params <PROVIDER_ADDRESS>`                                          | Read a provider's on-chain terms.                                                                                                              |
+| `new-contract-message <BAG_ID> <MESSAGE_BODY_PATH> --provider <PROVIDER_ADDRESS>` | Write a storage request body as a BoC file on the CLI host.                                                                                    |
+| `deploy-provider`                                                                 | Prepare the provider contract and print its [initialization address](/foundations/web3/ton-storage/run-provider#deploy-the-provider-contract). |
+| `get-provider-info`                                                               | Show the local provider's address, contract count, and capacity.                                                                               |
+| `set-provider-config`                                                             | Update local capacity limits using the options below.                                                                                          |
+| `set-provider-params`                                                             | Update on-chain terms using the options below.                                                                                                 |
+| `withdraw <STORAGE_CONTRACT_ADDRESS>`                                             | Request withdrawal from one provider-managed storage contract.                                                                                 |
+| `withdraw-all`                                                                    | Request withdrawals from eligible active contracts.                                                                                            |
+| `close-contract <STORAGE_CONTRACT_ADDRESS>`                                       | Request closure of a provider-managed storage contract.                                                                                        |
+| `send-coins <DESTINATION_ADDRESS> <AMOUNT_NANOGRAM>`                              | Transfer the specified nanogram amount from the main provider contract to the destination account.                                             |
+
+`withdraw-all` selects active contracts where `Contract$ - Client$` is at least 1 GRAM. This threshold does not subtract reserves or transaction fees.
+
+<Callout
+  type="danger"
+  title="Provider transactions"
+>
+  Provider updates, withdrawals, closures, and transfers send blockchain messages and incur fees. Verify the network and destination before sending; mainnet transactions cannot be rolled back. Keep independent backups because closure can also remove local bag files; see [Protect provider data](/foundations/web3/ton-storage/run-provider#protect-provider-data).
+</Callout>
+
+### Command options
+
+| Command                                    | Option                  | Meaning                                                                           |
+| ------------------------------------------ | ----------------------- | --------------------------------------------------------------------------------- |
+| `get-provider-params`, `get-provider-info` | `--json`                | Return JSON output.                                                               |
+| `get-provider-info`                        | `--contracts`           | Include individual storage contracts and their states.                            |
+| `get-provider-info`                        | `--balances`            | Include the main contract balance and, with `--contracts`, per-contract balances. |
+| `new-contract-message`                     | `--query-id <QUERY_ID>` | Unsigned 64-bit request identifier; defaults to `0`.                              |
+| `send-coins`                               | `--message "<MESSAGE>"` | Attach the specified text comment to the transfer.                                |
+
+`Client$` is the unpaid client balance; `Contract$` is the storage contract's actual coin balance. Their difference is not the exact withdrawable earnings.
+
+`new-contract-message` reads the rate and proof interval from `--provider`. `<MESSAGE_BODY_PATH>` is an output file path, not a destination address. Generating the body does not send it; see [Send a storage request](#send-a-storage-request).
+
+### Provider parameters
+
+`set-provider-config` changes daemon limits. `set-provider-params` changes the main contract's terms for new agreements. Both commands require at least one option and retain omitted values.
+
+| Command               | Option                                    | Meaning                                                                              |
+| --------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| `set-provider-config` | `--max-contracts <MAX_CONTRACTS>`         | Maximum number of tracked storage contracts.                                         |
+| `set-provider-config` | `--max-total-size <MAX_TOTAL_SIZE_BYTES>` | Maximum combined bag size in bytes.                                                  |
+| `set-provider-params` | `--accept <ACCEPT>`                       | Accept new requests when `<ACCEPT>` is `1`; reject them when it is `0`.              |
+| `set-provider-params` | `--rate <RATE_NANOGRAM_PER_MB_DAY>`       | Price in nanograms per 1,048,576 bytes per day.                                      |
+| `set-provider-params` | `--max-span <MAX_PROOF_SPAN_SECONDS>`     | Maximum elapsed time paid per accepted proof, in seconds. Later proofs remain valid. |
+| `set-provider-params` | `--min-file-size <MIN_BAG_SIZE_BYTES>`    | Minimum accepted bag stream size in bytes, including the header.                     |
+| `set-provider-params` | `--max-file-size <MAX_BAG_SIZE_BYTES>`    | Maximum accepted bag stream size in bytes, including the header.                     |
+
+## Storage contracts
+
+### Contract messages
+
+Operation codes occupy the first 32 bits of the message body. `uint64` and `bits256` below denote fixed-width fields; `Coins` uses TON coin serialization.
+
+| Message                 | Opcode       | Fields after the opcode                                                                                                     | Route                                                                |
+| ----------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Storage request         | `0x107c49ef` | `query_id:uint64`, reference to `TorrentInfo`, microchunk root `bits256`, expected rate `Coins`, expected `max_span:uint32` | Client wallet to main provider contract.                             |
+| Close agreement         | `0x79f937ea` | `query_id:uint64`                                                                                                           | Client or main provider contract to storage contract.                |
+| Deployment notification | `0xbf7bd0c1` | Original `query_id:uint64`, BagID `bits256`                                                                                 | Storage contract to client.                                          |
+| Activation notification | `0xd4caedcd` | Current logical time `uint64`, BagID `bits256`                                                                              | Storage contract to client.                                          |
+| Closure notification    | `0xb6236d63` | Current logical time `uint64`, BagID `bits256`                                                                              | Storage contract to client and, when active, main provider contract. |
+
+A non-bounced transfer with an empty body or opcode `0` adds the received value to the storage contract's client balance, regardless of the sender. Opcode `0` permits a text-comment body and requires no query ID.
+
+### Storage contract data
+
+`get_storage_contract_data` returns these values in order:
+
+| Position | Field             | Stored type  | Meaning                                                                       |
+| -------: | ----------------- | ------------ | ----------------------------------------------------------------------------- |
+|        1 | `active`          | `int1`       | Agreement active flag.                                                        |
+|        2 | `balance`         | `Coins`      | Unpaid client balance in nanograms.                                           |
+|        3 | `provider`        | `MsgAddress` | Main provider contract address.                                               |
+|        4 | `merkle_hash`     | `uint256`    | Storage-proof microchunk-tree root.                                           |
+|        5 | `file_size`       | `uint64`     | Bag stream size in bytes, including the header.                               |
+|        6 | `next_proof`      | `uint64`     | Challenged byte position; initialized to zero.                                |
+|        7 | `rate_per_mb_day` | `Coins`      | Nanograms per 1,048,576 bytes per day.                                        |
+|        8 | `max_span`        | `uint32`     | Maximum elapsed time paid per proof, in seconds.                              |
+|        9 | `last_proof_time` | `uint32`     | Proof accounting timestamp in Unix seconds; initialized at contract creation. |
+|       10 | `client`          | `MsgAddress` | Client wallet address.                                                        |
+|       11 | `torrent_hash`    | `uint256`    | BagID.                                                                        |
+
+### Payment accounting
+
+At deployment, the storage contract credits the received value minus 2 notification allowances of 20,000,000 nanograms each. Blockchain fees reduce the amount forwarded by the main provider contract.
+
+For each accepted proof, the contract computes:
+
+```text
+elapsed = min(now - last_proof_time, max_span)
+bounty = floor(file_size * rate_per_mb_day * elapsed / (86400 * 1048576))
+balance = max(0, balance - bounty)
+```
+
+`file_size` is the bag stream size in bytes, `elapsed` is in seconds, and `bounty` and `balance` are in nanograms. The initial `last_proof_time` is set when the storage contract's initial state is built; activation does not reset it. Each accepted proof sets it to the current Unix time.
+
+A withdrawal while `balance` is positive requests a reserve of that balance plus 10,000,000 nanograms before forwarding the remaining funds to the main provider contract. The reserve uses the amount available if the requested amount exceeds it. [Payments and balances](/foundations/web3/ton-storage/provider-lifecycle#payments-and-balances) distinguishes accounting balance from earnings.
+
+When `balance` is zero, a successful withdrawal transfers the remaining funds to the main provider contract and deletes the storage contract.
+
+### Contract errors
+
+| Code   | Meaning                                                                 |
+| ------ | ----------------------------------------------------------------------- |
+| `401`  | Sender is not authorized for the requested storage contract operation.  |
+| `1001` | Storage request attaches less than 60,000,000 nanograms.                |
+| `1002` | Storage proof does not match the committed root and challenge.          |
+| `1003` | Withdrawal or proof submission requires an active storage contract.     |
+| `1004` | Requested bag size is below the provider's minimum.                     |
+| `1005` | Requested bag size exceeds the provider's maximum.                      |
+| `1006` | Provider does not accept new storage contracts.                         |
+| `1007` | Activation requested for an already active storage contract.            |
+| `1009` | Expected rate or `max_span` differs from the provider's on-chain terms. |
+
+## Integration examples
+
+<Callout
+  type="danger"
+  title="Mainnet storage transactions"
+>
+  The request example transfers funds to a mainnet provider. The closure example deletes a storage agreement and distributes its remaining funds. Verify the network, destination, and amount before confirming; mainnet transactions cannot be rolled back. Keep an independent copy of required files before closing an agreement.
+</Callout>
+
+### Send a storage request
+
+The following helper uses `@ton/core` 0.63.1 with an existing [TON Connect application](/applications/ton-connect/how-to/connect). It builds a mainnet request with 1 GRAM attached. The provider contract requires at least 0.06 GRAM for a deployment request; fees and notification messages reduce the balance available for storage.
+
+```typescript
+import { Address, Cell, toNano } from '@ton/core';
+
+export function storageRequest(provider: Address, sender: Address, body: Cell) {
+  return {
+    validUntil: Math.floor(Date.now() / 1000) + 300,
+    network: '-239' as const,
+    from: sender.toRawString(),
+    messages: [{
+      address: provider.toString({ bounceable: true }),
+      amount: toNano('1').toString(),
+      payload: body.toBoc().toString('base64'),
+    }],
+  };
+}
+```
+
+Integration excerpt, not a standalone application: `tonConnectUi` is the connected TON Connect UI instance, `provider` and `sender` are `Address` values, and `BODY_BASE64` is the base64-encoded contents of the BoC file generated by `new-contract-message`.
+
+```typescript
+// Not runnable: requires storageRequest and a connected TON Connect application.
+const body = Cell.fromBase64(BODY_BASE64);
+const request = storageRequest(provider, sender, body);
+await tonConnectUi.sendTransaction(request);
+```
+
+The response from TON Connect is not confirmation that the storage contract is deployed or active. Verify the on-chain result.
+
+### Read a storage contract
+
+This helper returns a subset of [the getter fields](#storage-contract-data), naming `client` as `owner`, `rate_per_mb_day` as `rate`, and `torrent_hash` as `bagId`.
+
+Use `@ton/ton` 16.3.0 with `@ton/core` 0.63.1. Supply a `TonClient` configured for mainnet using [TON Center API v2](/api/v2/rpc/json-rpc-endpoint) and the storage contract address obtained from the deployment notification.
+
+```typescript
+import { Address } from '@ton/core';
+import { TonClient } from '@ton/ton';
+
+export async function readStorageContract(client: TonClient, address: Address) {
+  const { stack } = await client.runMethod(address, 'get_storage_contract_data');
+  const active = stack.readBoolean();
+  const balance = stack.readBigNumber();
+  const provider = stack.readAddress();
+  stack.readBigNumber();
+  stack.readBigNumber();
+  stack.readBigNumber();
+  const rate = stack.readBigNumber();
+  const maxSpan = stack.readNumber();
+  stack.readNumber();
+  const owner = stack.readAddress();
+  const bagId = stack.readBigNumber().toString(16).padStart(64, '0');
+  return { active, balance, provider, rate, maxSpan, owner, bagId };
+}
+
+```
+
+Call `readStorageContract(client, address)`. The returned `bagId` is a 64-character hexadecimal string; `active: false` means the provider has not activated the agreement. Units are listed in [Storage contract data](#storage-contract-data).
+
+### Close a storage contract
+
+Use `@ton/core` 0.63.1 with a connected mainnet TON Connect wallet. `contract` is the per-bag storage contract, `sender` is its client wallet, `amount` is the attached value in nanograms to cover transaction fees, and `queryId` is an unsigned 64-bit integer.
+
+```typescript
+import { Address, beginCell } from '@ton/core';
+
+export function storageCloseRequest(
+  contract: Address,
+  sender: Address,
+  amount: bigint,
+  queryId: bigint,
+) {
+  const body = beginCell()
+    .storeUint(0x79f937ea, 32)
+    .storeUint(queryId, 64)
+    .endCell();
+  return {
+    validUntil: Math.floor(Date.now() / 1000) + 300,
+    network: '-239' as const,
+    from: sender.toRawString(),
+    messages: [{
+      address: contract.toString({ bounceable: true }),
+      amount: amount.toString(),
+      payload: body.toBoc().toString('base64'),
+    }],
+  };
+}
+```
+
+Pass the returned request to the connected `tonConnectUi.sendTransaction` instance. Verify that `sender` is the contract's client and review the attached amount before sending. Closure distributes the remaining funds and deletes the contract; see [Closure and data retention](/foundations/web3/ton-storage/provider-lifecycle#closure-and-data-retention).
+
+## Sources
+
+- [Daemon startup options](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/storage-daemon.cpp#L982)
+- [Contract opcodes and error codes](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/constants.fc)
+- [CLI command parsing and options](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/storage-daemon-cli.cpp#L322)
+- [CLI command execution and output](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/storage-daemon-cli.cpp#L995)
+- [Bag completion and file selection](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/Torrent.cpp#L444)
+- [Copying bag files](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/Torrent.cpp#L708)
+- [Storage contract messages, payments, and getters](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-contract.fc)
+- [Provider deployment and request validation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/smartcont/storage-provider.fc)
+- [Provider daemon lifecycle](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/storage-daemon/StorageProvider.cpp#L650)
+- [Torrent info serialization and BagID](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentInfo.cpp#L27)
+- [Merkle proof validation](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/MerkleTree.cpp#L104)
+- [Metafile serialization](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentMeta.cpp#L56)

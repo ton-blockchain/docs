@@ -447,9 +447,11 @@ const checkUpstream = async (localConfig) => {
   };
 
   const upstreamNavLinks = Object.freeze(new Set(findUnignoredMdxUpstream()));
-  const localNavLinks = getNavLinksSet();
+  const localNavLinks = new Set([...getNavLinksSet()].map((it) => it.replace(/\/index$/, '')));
 
-  const upstreamOnlyLinks = [...upstreamNavLinks].filter((it) => !localNavLinks.has(it));
+  const upstreamOnlyLinks = [...upstreamNavLinks].filter(
+    (it) => !localNavLinks.has(it.replace(/\/index$/, '')),
+  );
   if (upstreamOnlyLinks.length === 0) {
     return { ok: true };
   }

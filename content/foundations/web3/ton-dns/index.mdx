@@ -1,0 +1,67 @@
+---
+title: "TON DNS overview"
+sidebarTitle: "Overview"
+description: "Human-readable names for addresses and services on TON"
+---
+
+TON DNS (Domain Name System) associates human-readable domain names with addresses and services on TON. Applications use names such as `example.ton` to find payment recipients, websites, and stored files.
+
+Smart contracts store domain records and expose a common interface for looking them up.
+
+## Domain registration and ownership
+
+<span
+  id="ton-domains"
+/>
+
+Names directly under `.ton`, such as `example.ton`, are registered through auctions. Each registered domain is a [non-fungible token (NFT)](/foundations/glossary#non-fungible-token-nft). Its owner controls the domain’s DNS records and can transfer ownership.
+
+Domain ownership requires renewal. If a domain remains unrenewed beyond its renewal period, another participant can start a new auction. The [.ton domain rules](/foundations/web3/ton-dns/domains) cover registration, auctions, renewal, and expiration.
+
+Owning a domain and receiving payments through it are separate roles. The owner configures the payment address, which can belong to a different account.
+
+## DNS records
+
+<span
+  id="what-ton-dns-resolves"
+/>
+
+TON DNS records associate a domain name with addresses, content identifiers, or another resolver. A domain can contain several records:
+
+- **Wallet addresses:** wallet or other smart contract addresses stored under the `wallet` category, allowing compatible applications to use a domain name as a payment recipient.
+- **ADNL addresses:** [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) addresses that identify network services such as TON Sites.
+- **TON Storage BagIDs:** identifiers of files or directories shared through [TON Storage](/foundations/web3/ton-storage).
+- **Next resolver references:** smart contract addresses that delegate subdomain resolution to another DNS resolver.
+- **Text records:** UTF-8 text associated with a domain, using a category and encoding understood by the application.
+
+Applications request the category corresponding to their purpose. The [record reference](/foundations/web3/ton-dns/reference#dns-record-types) defines the record types and categories.
+
+## Subdomains and delegation
+
+<span id="subdomains" />
+
+A domain owner can delegate resolution of names such as `app.example.ton` to another smart contract, called a _resolver_. The parent domain stores a record pointing to that resolver.
+
+The delegated resolver defines how subdomains are created and managed. Subdomains do not automatically inherit the `.ton` collection’s NFT ownership, auction, or renewal rules.
+
+## Name resolution
+
+<span
+  id="how-resolution-works"
+/>
+
+Resolution is the process of finding a domain’s requested record. Applications follow a hierarchy of resolver contracts, starting with the root resolver.
+
+For `example.ton`, the root resolver points to the `.ton` resolver, which points to the domain’s contract. The domain contract returns the requested record, if one exists. For a delegated subdomain, the application continues to the designated resolver.
+
+The official root resolver supports the `.ton` and `.t.me` namespaces.
+
+Applications read records through the [`dnsresolve` get-method](/foundations/web3/ton-dns/reference#dns-protocol). Reading requires no wallet signature or on-chain transaction. Registering a domain, changing its records, and transferring ownership require transactions.
+
+After resolution, the application uses the returned destination to send a payment, connect to a site, or retrieve files.
+
+## Next steps
+
+- [.ton domains](/foundations/web3/ton-dns/domains): names, minimum bids, auctions, and renewal rules.
+- [Manage domains](/foundations/web3/ton-dns/manage-domains): register, configure, and renew `.ton` domains.
+- [TON DNS reference](/foundations/web3/ton-dns/reference): resolver interfaces, record formats, getters, and contract messages.

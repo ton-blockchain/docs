@@ -1,0 +1,90 @@
+---
+title: "How to publish a TON Site on TON Storage"
+sidebarTitle: "Publish on TON Storage"
+description: "Publish static site files as an immutable bag and update the domain"
+---
+
+Publish static website files as a TON Storage bag, then optionally associate the bag with a `.ton` domain.
+
+## Prerequisites
+
+- A [TON Storage daemon and connected CLI](/foundations/web3/ton-storage/get-started#start-the-daemon) using TON v2026.08
+- [Tonutils-Proxy v1.8.3](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy) running at `127.0.0.1:8080` on the machine used to verify the site
+- For a `.ton` domain: a domain controlled by the publishing wallet on mainnet and funds for its record-update transaction
+
+This guide uses Tonutils-Proxy's integrated Storage client for verification. For the C++ proxy, follow [Configure the gateway](/foundations/web3/ton-proxy/forward-proxy#configure-the-gateway).
+
+## Prepare the site files
+
+Use the application's static build output, not its source directory or backend code. For a minimal example, save the following as `index.html` in a new directory named `site`:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TON Storage site</title>
+  </head>
+  <body>
+    <h1>Hello from TON Storage</h1>
+  </body>
+</html>
+```
+
+Place `index.html` at the root of the directory to share. Include the HTML, CSS, JavaScript, images, and other assets needed by the site. Exclude private files and build-time credentials.
+
+Tonutils-Proxy serves `index.html` for the root URL. Other paths must match files in the bag; missing paths return `404`, without automatically falling back to `index.html`. Check direct links to nested pages when preparing a client-side application.
+
+## Create and share the bag
+
+Follow [Create and share a bag](/foundations/web3/ton-storage/get-started#create-and-share-a-bag), using the absolute path to the `site` directory as `<SOURCE_PATH>`. Share the directory itself so `index.html` is at the bag's root.
+
+Record the returned BagID as `<BAG_ID>`. Check the bag's file list and keep the daemon online with uploads enabled. Creating a bag does not automatically replicate it to a paid provider.
+
+## Verify the site
+
+Through the running forward proxy, request the entry page:
+
+```bash
+curl --noproxy '' --proxy http://127.0.0.1:8080 --fail "http://<BAG_ID>.bag/index.html"
+```
+
+For the sample site, the response contains `<h1>Hello from TON Storage</h1>`. Open `http://<BAG_ID>.bag/` in the proxy-configured browser and verify that the page and its assets load.
+
+## Link a domain
+
+<Callout
+  type="caution"
+  title="Domain update"
+>
+  Linking a domain sends a mainnet transaction. Check the domain and BagID before confirming; confirmed transactions cannot be rolled back.
+</Callout>
+
+Follow [Manage records](/foundations/web3/ton-dns/manage-domains#manage-records) to set the domain's [`site` record](/foundations/web3/ton-dns/reference#record-categories) to the BagID with <kbd>Hosting in TON Storage</kbd> enabled. Use the site record, not the separate <kbd>TON Storage</kbd> field.
+
+Open `http://<DOMAIN>/`, replacing `<DOMAIN>` with the full `.ton` domain name, and confirm that the same site loads.
+
+## Publish a new version
+
+1. Update the static files and create a new bag using the same sharing procedure.
+1. Verify the new bag through its `.bag` URL before changing the domain.
+1. If using a domain, update its `site` record to the new BagID and verify the domain again. Otherwise, share the new `.bag` URL.
+
+Changing the source files does not modify the previous bag. Keep earlier bags available to preserve their direct URLs or point the domain back to an earlier version.
+
+[Store with a provider](/foundations/web3/ton-storage/store-with-provider) to keep another copy beyond the publishing daemon.
+
+## Troubleshoot
+
+| Problem                        | Check                                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------------------- |
+| Root page returns `404`        | Check that `index.html` is at the bag's root.                                                 |
+| A nested page returns `404`    | Check the exact file path; Tonutils-Proxy does not provide an automatic application fallback. |
+| Files cannot be downloaded     | Keep a peer online with the complete bag and uploads enabled.                                 |
+| Domain shows the wrong version | Resolve its `site` record and compare the BagID with the published version.                   |
+
+## Sources
+
+- [Tonutils-Proxy file paths and root page](https://github.com/xssnick/Tonutils-Proxy/blob/526ece06e3c6e7398df09039a5ad0e3c144fc6ec/proxy/transport/client.go#L360)
+- [Bag identity and metadata](https://github.com/ton-blockchain/ton/blob/ed629c416f7a03cd3838697fcee9f8cd0097700b/storage/TorrentInfo.cpp#L27)

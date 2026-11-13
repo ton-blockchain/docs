@@ -1,0 +1,172 @@
+---
+title: "How to run an ADNL tunnel relay"
+sidebarTitle: "Run a relay"
+description: "Build and configure a relay with optional traffic payments"
+---
+
+Run an [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl-udp) Tunnel v0.2.2 relay, optionally enable traffic payments, and share its public configuration with clients. The commands require a POSIX shell.
+
+## Prerequisites
+
+- [Go 1.26 or later](https://go.dev/dl/) (tested with Go 1.26.1)
+- A public IPv4 address and UDP connectivity for the relay listener and [gateway ports](/foundations/web3/ton-tunnel/reference#network-endpoints)
+
+## Build the relay
+
+```bash
+git clone --branch v0.2.2 https://github.com/ton-blockchain/adnl-tunnel
+cd adnl-tunnel
+go build -ldflags "-w -s -X main.GitCommit=$(git describe --tags --always --dirty)" -o build/tunnel-node cmd/node/main.go
+```
+
+The executable is `build/tunnel-node`. The examples below run from this repository directory.
+
+## Generate configuration
+
+<Callout
+  type="caution"
+  title="Private configuration"
+>
+  `relay.json` contains private keys, including a payment wallet key even when payments are disabled. Keep it private and backed up. Share only the exported `nodes.json` file.
+</Callout>
+
+Generate the private configuration and public pool with [`-config` and `-gen-shared-config`](/foundations/web3/ton-tunnel/reference#relay-cli):
+
+```bash
+./build/tunnel-node -config relay.json -gen-shared-config nodes.json
+```
+
+On first use, this creates `relay.json` and exports `nodes.json`, then exits without starting the relay. The configuration generator also attempts to detect a reachable public IP address.
+
+Open `relay.json` and check these [relay configuration fields](/foundations/web3/ton-tunnel/reference#relay-configuration) without replacing the generated keys:
+
+- Set `ExternalIP` to the relay's public IPv4 address.
+- Set `TunnelListenAddr` to the address and UDP port to listen on, for example `0.0.0.0:17330`.
+- Keep `PaymentsEnabled` set to `false`.
+- Keep `NetworkConfigUrl` set to the generated mainnet configuration URL.
+
+## Configure prices (optional)
+
+<span
+  id="configure-prices"
+/>
+
+In `relay.json`, enable `PaymentsEnabled` and set the two prices under `Payments`.
+
+The following is a partial fragment to merge into the existing configuration. Preserve all generated keys and channel settings. The values are example prices, in nanograms per packet:
+
+```jsonc
+// Not runnable: merge into relay.json, preserving its generated keys and settings.
+{
+  "PaymentsEnabled": true,
+  "Payments": {
+    "MinPricePerPacketRoute": 1,
+    "MinPricePerPacketInOut": 1
+  }
+}
+```
+
+The first [price](/foundations/web3/ton-tunnel/reference#payment-settings) applies to relay forwarding; the second applies to the gateway's inbound and outbound traffic.
+
+<Callout
+  type="caution"
+  title="Payment wallet and channels"
+>
+  Enabling payments can deploy an on-chain channel and spend funds from the wallet configured in `relay.json`. Verify the peer and network first. Preserve the private configuration and payment database; restarting with new keys does not restore the old channels.
+</Callout>
+
+Paid mode also requires a mainnet Payment Network peer, its payment-node public key, incoming channel capacity, and funds for deployment and transaction fees.
+
+## Start the relay
+
+For a free relay, run:
+
+```bash
+./build/tunnel-node -config relay.json
+```
+
+For a paid relay, use the command below instead. In either mode, wait for “Tunnel started, listening on” followed by the listener address and relay public key. Keep the process running. Use <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop it before editing its configuration.
+
+### Connect to the payment peer (paid mode)
+
+<span
+  id="connect-to-the-payment-peer"
+/>
+
+Start the relay with [`-payment-node`](/foundations/web3/ton-tunnel/reference#relay-cli), replacing `<PAYMENT_NODE_KEY_HEX>` with the peer's 32-byte payment-node public key encoded as 64 hexadecimal characters:
+
+```bash
+./build/tunnel-node -config relay.json -payment-node <PAYMENT_NODE_KEY_HEX>
+```
+
+This is the payment-node key, not its wallet address or tunnel relay key.
+
+The startup logs include “wallet initialized” with the relay wallet address. If channel deployment fails because the wallet has insufficient funds, fund that address on mainnet and restart with the same configuration and database. There is no fixed funding amount in this guide; fees and required reserves depend on the channel settings.
+
+The relay reuses an active channel with the specified peer or attempts to open one. Wait for the message “prioritized channel for payments is active”.
+
+### Obtain incoming capacity
+
+Coordinate with the payment peer's operator to [fund its side of the channel](/foundations/web3/payment-network/use-channels#fund-the-local-side). Funding only the relay wallet does not provide incoming channel capacity.
+
+In the relay console, run:
+
+```text
+capacity
+```
+
+“Capacity left” sums the available incoming capacity across all active channels, not the relay wallet balance. A positive total does not establish capacity for the published route. Ask the payment peer's operator to confirm that route's channel capacity.
+
+## Publish the pool
+
+Export an updated pool file from another terminal in the repository directory:
+
+```bash
+./build/tunnel-node -config relay.json -gen-shared-config nodes.json
+```
+
+For paid mode, include any agreed [payment intermediaries and their terms](/foundations/web3/ton-tunnel/reference#payment-routes) before distributing the pool. The export contains only the relay's own payment-node key; `-payment-node` does not add the selected peer.
+
+Share the final `nodes.json` with clients. Paid entries require clients with payments enabled and funded Payment Network connectivity.
+
+## Connect a client and verify
+
+Follow [Use a tunnel](/foundations/web3/ton-tunnel/use). The exported pool contains one relay; clients need a larger pool for routes with more sections.
+
+After the client establishes a tunnel and sends traffic, enter this command in the relay's console:
+
+```text
+stats
+```
+
+Check that the relevant `routed`, `sent`, or `received` counters increase. A newly started relay with no active sections may print no counters.
+
+To toggle continuous per-second statistics, enter:
+
+```text
+speed
+```
+
+Run `speed` again to stop the continuous output.
+
+### Verify payments
+
+<span id="verify" />
+
+After a funded client sends traffic, check [`stats`, `balance`, and `capacity`](/foundations/web3/ton-tunnel/reference#console-commands) in the relay console.
+
+Record `balance` and `capacity` before and after a controlled traffic test. These values aggregate all active payment channels; they are not tunnel-specific revenue counters. Account for deposits, withdrawals, and other channel activity when interpreting changes. Packet counters alone do not prove that payment was received.
+
+## Troubleshoot
+
+| Problem                                | Check                                                                                        |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| “Invalid external IP address”          | Set `ExternalIP` to the public IPv4 address, without a port.                                 |
+| Client cannot establish a route        | Check the relay's public reachability, UDP rules, and the public key in the shared pool.     |
+| Tunnel starts but return traffic fails | Check the dynamically allocated gateway UDP ports as well as the fixed listener.             |
+| “payments are not enabled”             | `balance` and `capacity` require paid mode; use `stats` for a free relay.                    |
+| Invalid payment-node key               | The CLI option expects hexadecimal; the interactive prompt, if used instead, expects base64. |
+| Channel deployment fails               | Check wallet funds, peer reachability, and whether both nodes use mainnet.                   |
+| “Capacity left” is zero                | Ask the peer operator to provide incoming capacity.                                          |
+| Clients cannot select the relay        | Distribute the updated pool and check client payment settings.                               |
+| Payment database cannot be opened      | Do not run multiple paid relay processes against the same database.                          |
