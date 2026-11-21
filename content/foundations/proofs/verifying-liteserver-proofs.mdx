@@ -711,10 +711,9 @@ block_tr: Cell = block_trs.get(tr['lt'])
 assert block_tr.get_hash(0) == tr['hash']
 ```
 
-:::note
-In this example, checking the `ids` field was optional — we could have retrieved all transactions directly from the account blocks.
-However, verifying the transaction proofs becomes essential when using the [liteServer.listBlockTransactionsExt](https://github.com/ton-blockchain/ton/blob/v2025.03/tl/generate/scheme/lite_api.tl#L48) method, and you must compare transaction hashes.
-:::
+<Callout type="note">
+  In this example, checking the `ids` field was optional — we could have retrieved all transactions directly from the account blocks. However, verifying the transaction proofs becomes essential when using the [liteServer.listBlockTransactionsExt](https://github.com/ton-blockchain/ton/blob/v2025.03/tl/generate/scheme/lite_api.tl#L48) method, and you must compare transaction hashes.
+</Callout>
 
 ## Config
 
