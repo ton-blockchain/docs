@@ -194,7 +194,7 @@ Besides `W5InnerRequest` field that contains actual actions that will be perform
 
 ## Examples
 
-Here we will take a look at code examples in Typescript using low level serialization library _@ton/core_.
+Here we will take a look at code examples in Typescript using low level serialization library _\@ton/core_.
 
 ### How to create Inner Request
 
@@ -441,7 +441,7 @@ export function createWalletTransferV5R1<T extends WalletV5SendArgs>(
 
 Now what is left is sending the message. The way we send created message is dependent on the message type.
 
-#### Sending external\_signed message
+#### Sending external_signed message
 
 Submit the signed body in an [external-in message](/foundations/messages/external-in).
 
@@ -483,7 +483,7 @@ const boc = beginCell()
 
 You can send this BoC to the network in any convenient way, e.g. with API provider like [TON Center /message](https://toncenter.com/api/v3/index.html#/api%2Fv2/api_v3_post_v2_message) or with your own [liteserver](/nodes/overview).
 
-#### Sending internal\_extension and internal\_signed
+#### Sending internal_extension and internal_signed
 
 These message types are [internal messages](/foundations/messages/internal), so another contract must send them. This example uses a V4 wallet as the sender. Sign `internal_signed` with the V5 owner's key; `internal_extension` instead requires an installed extension. The V4 key authorizes only the outer message. `internal_signed` cannot change signature authentication.
 

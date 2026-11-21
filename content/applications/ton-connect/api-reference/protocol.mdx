@@ -127,10 +127,10 @@ interface TonAddressItem {
 }
 ```
 
-| Field     | Type         | Description                                                                                                                                                                                    |
-| --------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`    | `'ton_addr'` | —                                                                                                                                                                                              |
-| `network` | `ChainId`    | _Optional_. Desired TON network global\_id the dApp wants to connect on. A hint only; the network-mismatch alert is enforced at request time (`sendTransaction` / `signData`), not at connect. |
+| Field     | Type         | Description                                                                                                                                                                                   |
+| --------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | `'ton_addr'` | —                                                                                                                                                                                             |
+| `network` | `ChainId`    | _Optional_. Desired TON network global_id the dApp wants to connect on. A hint only; the network-mismatch alert is enforced at request time (`sendTransaction` / `signData`), not at connect. |
 
 ### `TonProofItem`
 
@@ -296,7 +296,7 @@ interface WireSendTransaction {
 | `m`   | `'st'`          | Method discriminator: `sendTransaction`                                     |
 | `f`   | `string`        | _Optional_. From — sender address (optional; defaults to connected account) |
 | `n`   | `string`        | _Optional_. Network — TON chain ID (e.g. `"-239"` for mainnet)              |
-| `vu`  | `number`        | _Optional_. valid\_until — unix epoch seconds                               |
+| `vu`  | `number`        | _Optional_. valid_until — unix epoch seconds                                |
 | `ms`  | `WireMessage[]` | _Optional_. Raw messages (mutually exclusive with `i`)                      |
 | `i`   | `WireItem[]`    | _Optional_. Structured items (mutually exclusive with `ms`)                 |
 
@@ -321,7 +321,7 @@ interface WireSignMessage {
 | `m`   | `'sm'`          | Method discriminator: `signMessage`                         |
 | `f`   | `string`        | _Optional_. From — sender address                           |
 | `n`   | `string`        | _Optional_. Network — TON chain ID                          |
-| `vu`  | `number`        | _Optional_. valid\_until — unix epoch seconds               |
+| `vu`  | `number`        | _Optional_. valid_until — unix epoch seconds                |
 | `ms`  | `WireMessage[]` | _Optional_. Raw messages (mutually exclusive with `i`)      |
 | `i`   | `WireItem[]`    | _Optional_. Structured items (mutually exclusive with `ms`) |
 
@@ -450,10 +450,10 @@ interface WireJettonItem {
 | `am`  | `string`   | Jetton amount in elementary units                                 |
 | `aa`  | `string`   | _Optional_. GRAM to attach for fees (wallet estimates if omitted) |
 | `rd`  | `string`   | _Optional_. Where to send excess GRAM (defaults to sender)        |
-| `cp`  | `string`   | _Optional_. Optional custom\_payload cell BoC, base64             |
-| `fa`  | `string`   | _Optional_. forward\_ton\_amount in nanograms                     |
-| `fp`  | `string`   | _Optional_. Optional forward\_payload cell BoC, base64            |
-| `qi`  | `string`   | _Optional_. Optional query\_id                                    |
+| `cp`  | `string`   | _Optional_. Optional custom_payload cell BoC, base64              |
+| `fa`  | `string`   | _Optional_. forward_ton_amount in nanograms                       |
+| `fp`  | `string`   | _Optional_. Optional forward_payload cell BoC, base64             |
+| `qi`  | `string`   | _Optional_. Optional query_id                                     |
 
 ### `WireNftItem`
 
@@ -480,10 +480,10 @@ interface WireNftItem {
 | `no`  | `string` | New owner address                                          |
 | `aa`  | `string` | _Optional_. GRAM to attach for fees                        |
 | `rd`  | `string` | _Optional_. Where to send excess GRAM (defaults to sender) |
-| `cp`  | `string` | _Optional_. Optional custom\_payload cell BoC, base64      |
-| `fa`  | `string` | _Optional_. forward\_ton\_amount in nanograms              |
-| `fp`  | `string` | _Optional_. Optional forward\_payload cell BoC, base64     |
-| `qi`  | `string` | _Optional_. Optional query\_id                             |
+| `cp`  | `string` | _Optional_. Optional custom_payload cell BoC, base64       |
+| `fa`  | `string` | _Optional_. forward_ton_amount in nanograms                |
+| `fp`  | `string` | _Optional_. Optional forward_payload cell BoC, base64      |
+| `qi`  | `string` | _Optional_. Optional query_id                              |
 
 ### `RpcTonItem`
 
@@ -1015,7 +1015,7 @@ type RpcMethod = 'disconnect' | 'sendTransaction' | 'signData' | 'signMessage';
 
 Wire-format structured items used inside JSON-RPC payloads and embedded-request
 expansion. These match the shape that travels over the bridge / URL — field
-casing follows the protocol (e.g. `extra_currency` snake\_case).
+casing follows the protocol (e.g. `extra_currency` snake_case).
 
 The rich, user-facing counterparts (with camelCase fields and SDK-level
 conveniences) live in `@tonconnect/sdk` as `StructuredItem`.

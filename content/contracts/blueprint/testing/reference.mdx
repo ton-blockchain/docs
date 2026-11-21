@@ -206,7 +206,7 @@ Creates a treasury wallet contract. This wallet is used as an alternative to the
 - `params` — optional treasury parameters
   - `workchain` — the workchain ID of the treasury (default: 0)
   - `predeploy` — if set, the treasury will be deployed at the moment of creation
-  - `balance` — initial balance of the treasury (default: 1\_000\_000 GRAM if omitted)
+  - `balance` — initial balance of the treasury (default: 1_000_000 GRAM if omitted)
   - `resetBalanceIfZero` — if set and the treasury balance is zero at the moment of calling the method, it resets the balance to `balance`
 
 **Returns:** promise resolving to treasury contract wrapper
@@ -450,7 +450,7 @@ Runs a get method on the contract.
 - `params` — optional [`GetMethodParams`](#getmethodparams)
   - `now` — override blockchain time for this call
   - `randomSeed` — random seed for deterministic execution
-  - `gasLimit` — overrides TVM emulator `gas_limit`, defaults to 10\_000\_000
+  - `gasLimit` — overrides TVM emulator `gas_limit`, defaults to 10_000_000
 
 **Returns:** promise resolving to [`GetMethodResult`](#getmethodresult) with stackReader and other execution details
 

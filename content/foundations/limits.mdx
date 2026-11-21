@@ -39,17 +39,17 @@ There are two sources of network parameter definitions:
 
 ## Gas and fee parameters
 
-| Name                | Description                                                             | Value    | Units         | Type        | Defined in                                                                            |
-| ------------------- | ----------------------------------------------------------------------- | -------- | ------------- | ----------- | ------------------------------------------------------------------------------------- |
-| `free_stack_depth`  | Stack depth without gas consumption                                     | 32       | stack entries | enum\_value | [`vm.h`:122](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/vm/vm.h#L122) |
-| `runvm_gas_price`   | VM start gas consumption                                                | 40       | gas units     | enum\_value | [`vm.h`:124](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/vm/vm.h#L124) |
-| `flat_gas_limit`    | Gas below `flat_gas_limit` is provided at the price of `flat_gas_price` | 100      | gas units     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
-| `flat_gas_price`    | Costs of launching the TON Virtual Machine                              | 40000    | nanograms     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
-| `gas_price`         | Price of gas in the network in nanograms per 65536 gas units            | 26214400 | nanograms     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
-| `special_gas_limit` | Limit on gas for special (system) contract transactions                 | 1000000  | gas units     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
-| `gas_limit`         | Maximum amount of gas per transaction                                   | 1000000  | gas units     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
-| `gas_credit`        | Gas credit for checking external messages                               | 10000    | gas units     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
-| `block_gas_limit`   | Maximum gas per block                                                   | 10000000 | gas units     | uint64      | [param 21](/foundations/config#20-and-21)                                             |
+| Name                | Description                                                             | Value    | Units         | Type       | Defined in                                                                            |
+| ------------------- | ----------------------------------------------------------------------- | -------- | ------------- | ---------- | ------------------------------------------------------------------------------------- |
+| `free_stack_depth`  | Stack depth without gas consumption                                     | 32       | stack entries | enum_value | [`vm.h`:122](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/vm/vm.h#L122) |
+| `runvm_gas_price`   | VM start gas consumption                                                | 40       | gas units     | enum_value | [`vm.h`:124](https://github.com/ton-blockchain/ton/blob/v2026.10/crypto/vm/vm.h#L124) |
+| `flat_gas_limit`    | Gas below `flat_gas_limit` is provided at the price of `flat_gas_price` | 100      | gas units     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
+| `flat_gas_price`    | Costs of launching the TON Virtual Machine                              | 40000    | nanograms     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
+| `gas_price`         | Price of gas in the network in nanograms per 65536 gas units            | 26214400 | nanograms     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
+| `special_gas_limit` | Limit on gas for special (system) contract transactions                 | 1000000  | gas units     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
+| `gas_limit`         | Maximum amount of gas per transaction                                   | 1000000  | gas units     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
+| `gas_credit`        | Gas credit for checking external messages                               | 10000    | gas units     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
+| `block_gas_limit`   | Maximum gas per block                                                   | 10000000 | gas units     | uint64     | [param 21](/foundations/config#20-and-21)                                             |
 
 ## Storage fees and limits
 

@@ -9,7 +9,7 @@ description: "Sets up a custom overlay to speed up synchronization for a group o
 - Keep ADNL IDs in the configuration consistent with the node’s current validator keys. The helper refuses to deploy static overlays when the node lacks the necessary IDs.
 - Dynamic overlays are re-evaluated each election. MyTonCtrl automatically removes stale overlays tied to old election IDs and creates new ones as rounds roll over.
 
-## add\_custom\_overlay
+## add_custom_overlay
 
 **Purpose:** Register a custom overlay configuration and deploy it to the validator console.
 
@@ -47,7 +47,7 @@ add_custom_overlay telemetry-overlay /etc/mytonctrl/overlays/telemetry.json
 - For `msg_sender` entries, set `msg_sender` to `true` and optionally include `msg_sender_priority` (higher numbers mean higher priority).
 - Include `@validators` only when you want the overlay to track the current validator set automatically.
 
-## list\_custom\_overlays
+## list_custom_overlays
 
 **Purpose:** Inspect every overlay definition stored by MyTonCtrl.
 
@@ -63,7 +63,7 @@ list_custom_overlays
 - Highlights whether an overlay is dynamic (`@validators` present) or static.
 - Helpful for auditing definitions before deploying them on another node.
 
-## delete\_custom\_overlay
+## delete_custom_overlay
 
 **Purpose:** Remove a stored overlay and, when possible, detach it from the validator console.
 

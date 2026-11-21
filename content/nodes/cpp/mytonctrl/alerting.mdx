@@ -49,7 +49,7 @@ In case of a successful setup, the bot sends a welcome message listing all avail
 - The bot requires network access to the Telegram API. Ensure outbound HTTPS is permitted from the server.
 - When validator mode is enabled, the alert bot automatically includes wallet and ADNL context in messages. In collator-only or other modes, some alerts may be skipped because prerequisites are missing.
 
-## setup\_alert\_bot
+## setup_alert_bot
 
 **Purpose:** Configure the alert bot with the Telegram bot token and chat ID, then start sending events.
 
@@ -65,7 +65,7 @@ setup_alert_bot <bot_token> <chat_id>
 - Immediately attempts to send the welcome message that lists every alert. Success proves the bot has permission to write to the chat.
 - On success, saves `BotToken` and `ChatId` in the local database (`myLocal.db`) so the scheduler can emit alerts. On failure, logs the Telegram error (and hints if the bot is missing from the chat).
 
-## list\_alerts
+## list_alerts
 
 **Purpose:** Show all predefined alerts and whether they are currently enabled.
 
@@ -80,7 +80,7 @@ list_alerts
 - Lists every alert key (for example: `low_wallet_balance`, `db_usage_80`, `out_of_sync`) along with the enabled flag and the UNIX timestamp when it was last sent.
 - Helps you audit which alerts are muted and whether recent warnings have fired.
 
-## enable\_alert
+## enable_alert
 
 **Purpose:** Re-enable a previously muted alert.
 
@@ -101,7 +101,7 @@ enable_alert <alert_name>
 enable_alert low_wallet_balance
 ```
 
-## disable\_alert
+## disable_alert
 
 **Purpose:** Temporarily suppress a specific alert.
 
@@ -122,7 +122,7 @@ disable_alert <alert_name>
 disable_alert service_down
 ```
 
-## test\_alert
+## test_alert
 
 **Purpose:** Send a simple message through the configured alert channel to verify connectivity.
 

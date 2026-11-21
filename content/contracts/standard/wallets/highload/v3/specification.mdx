@@ -158,7 +158,7 @@ The contract stores processed `query_id` values in two hashmaps:
 **`old_queries` (HashmapE 13 ^Cell):**
 
 - Hashmap with 13-bit keys
-- Each key corresponds to `shift` (13 bits from query\_id)
+- Each key corresponds to `shift` (13 bits from query_id)
 - Each value is a cell containing a bitmap of processed `bit_number` values
 - Stores previously processed query IDs from the last rotation cycle
 - Provides extended protection during rotation
@@ -379,7 +379,7 @@ Exit code `38`.
 **Purpose:**\
 Specifies the [send mode](/foundations/messages/modes) for the internal message.
 
-**Link:** [send\_raw\_message modes](/languages/func/stdlib#send_raw_message)
+**Link:** [send_raw_message modes](/languages/func/stdlib#send_raw_message)
 
 ### `message_to_send` (reference cell)
 
@@ -408,7 +408,7 @@ The contract validates `message_to_send` **after committing storage** to prevent
 </Callout>
 
 **Critical limitation:**\
-Highload v3 can send **only ONE internal message** per external message. For batch transfers, use the [internal\_transfer pattern](#single-message-per-external) with an action list (up to 254 messages).
+Highload v3 can send **only ONE internal message** per external message. For batch transfers, use the [internal_transfer pattern](#single-message-per-external) with an action list (up to 254 messages).
 
 ## Message sending flow
 
@@ -437,7 +437,7 @@ See [Single message per external](#single-message-per-external) for details on t
 | `0`       | Success                | Message processed successfully                                             | —                                                                               |
 | `33`      | Invalid signature      | Ed25519 signature verification failed                                      | Check that the private key is correct and the message hash is computed properly |
 | `34`      | Subwallet ID mismatch  | The `subwallet_id` in the message does not match storage                   | Verify you are using the correct `subwallet_id` for this wallet                 |
-| `35`      | Invalid created\_at    | Message timestamp is invalid (too old or from the future)                  | Ensure `created_at > now() - timeout` and `created_at <= now()`                 |
+| `35`      | Invalid created_at     | Message timestamp is invalid (too old or from the future)                  | Ensure `created_at > now() - timeout` and `created_at <= now()`                 |
 | `36`      | Query already executed | The `query_id` was already processed (found in `queries` or `old_queries`) | Use a new, unique `query_id`                                                    |
 | `37`      | Invalid message        | The `message_to_send` structure is invalid or cannot be processed          | Verify the message cell structure and contents                                  |
 | `38`      | Invalid timeout        | The `timeout` in the message does not match storage timeout                | Verify you are using the correct `timeout` value for this wallet                |
