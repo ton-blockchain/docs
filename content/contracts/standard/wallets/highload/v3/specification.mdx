@@ -158,7 +158,7 @@ The contract stores processed `query_id` values in two hashmaps:
 **`old_queries` (HashmapE 13 ^Cell):**
 
 - Hashmap with 13-bit keys
-- Each key corresponds to `shift` (13 bits from query_id)
+- Each key corresponds to `shift` (13 bits from `query_id`)
 - Each value is a cell containing a bitmap of processed `bit_number` values
 - Stores previously processed query IDs from the last rotation cycle
 - Provides extended protection during rotation

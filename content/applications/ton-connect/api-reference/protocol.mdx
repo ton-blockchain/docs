@@ -127,10 +127,10 @@ interface TonAddressItem {
 }
 ```
 
-| Field     | Type         | Description                                                                                                                                                                                   |
-| --------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`    | `'ton_addr'` | —                                                                                                                                                                                             |
-| `network` | `ChainId`    | _Optional_. Desired TON network global_id the dApp wants to connect on. A hint only; the network-mismatch alert is enforced at request time (`sendTransaction` / `signData`), not at connect. |
+| Field     | Type         | Description                                                                                                                                                                                     |
+| --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | `'ton_addr'` | —                                                                                                                                                                                               |
+| `network` | `ChainId`    | _Optional_. Desired TON network `global_id` the dApp wants to connect on. A hint only; the network-mismatch alert is enforced at request time (`sendTransaction` / `signData`), not at connect. |
 
 ### `TonProofItem`
 
@@ -453,7 +453,7 @@ interface WireJettonItem {
 | `cp`  | `string`   | _Optional_. Optional custom_payload cell BoC, base64              |
 | `fa`  | `string`   | _Optional_. forward_ton_amount in nanograms                       |
 | `fp`  | `string`   | _Optional_. Optional forward_payload cell BoC, base64             |
-| `qi`  | `string`   | _Optional_. Optional query_id                                     |
+| `qi`  | `string`   | _Optional_. Optional `query_id`                                   |
 
 ### `WireNftItem`
 
@@ -483,7 +483,7 @@ interface WireNftItem {
 | `cp`  | `string` | _Optional_. Optional custom_payload cell BoC, base64       |
 | `fa`  | `string` | _Optional_. forward_ton_amount in nanograms                |
 | `fp`  | `string` | _Optional_. Optional forward_payload cell BoC, base64      |
-| `qi`  | `string` | _Optional_. Optional query_id                              |
+| `qi`  | `string` | _Optional_. Optional `query_id`                            |
 
 ### `RpcTonItem`
 

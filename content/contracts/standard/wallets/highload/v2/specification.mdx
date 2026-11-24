@@ -189,7 +189,7 @@ Up to **254 messages**. The limit comes from TVM action list, not the 16-bit dic
 
 ### Validation sequence
 
-1. **Check query_id timestamp:** `query_id >= now() << 32` (exit code `35` if too old)
+1. **Check `query_id` timestamp:** `query_id >= now() << 32` (exit code `35` if too old)
 1. **Check replay:** `query_id` must not be in `queries` (exit code `32` if already processed)
 1. **Check subwallet:** `subwallet_id == stored_subwallet` (exit code `34` if mismatch)
 1. **Verify signature:** Ed25519 signature verification (exit code `35` if invalid)
@@ -205,12 +205,12 @@ Up to **254 messages**. The limit comes from TVM action list, not the 16-bit dic
 
 ## Exit codes
 
-| Exit code | Name                          | Description                                                     | How to fix                                                      |
-| --------- | ----------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
-| `0`       | Success                       | Message processed successfully                                  | —                                                               |
-| `32`      | Query already executed        | The `query_id` was already processed (found in `queries`)       | Use a new, unique `query_id`                                    |
-| `34`      | Subwallet ID mismatch         | The `subwallet_id` in the message does not match storage        | Verify you are using the correct `subwallet_id` for this wallet |
-| `35`      | Invalid signature or query_id | Ed25519 signature verification failed, or `query_id` is too old | Check the private key and ensure `query_id >= now() << 32`      |
+| Exit code | Name                            | Description                                                     | How to fix                                                      |
+| --------- | ------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| `0`       | Success                         | Message processed successfully                                  | —                                                               |
+| `32`      | Query already executed          | The `query_id` was already processed (found in `queries`)       | Use a new, unique `query_id`                                    |
+| `34`      | Subwallet ID mismatch           | The `subwallet_id` in the message does not match storage        | Verify you are using the correct `subwallet_id` for this wallet |
+| `35`      | Invalid signature or `query_id` | Ed25519 signature verification failed, or `query_id` is too old | Check the private key and ensure `query_id >= now() << 32`      |
 
 ## Limitations and constraints
 
