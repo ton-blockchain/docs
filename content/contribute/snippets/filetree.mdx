@@ -63,18 +63,24 @@ Specify the structure of files and directories inside the [`items` property](#it
 />
 ```
 
-<FileTree
-  items={["file-name-1", {
+export const files = [
+  "file-name-1",
+  {
     kind: "file",
     name: "file-name-2",
-    note: "very important file"
-  }, {
+    note: "very important file",
+  },
+  {
     kind: "folder",
     name: "best-folder",
     note: "not really",
     open: false,
-    items: ["file-name-3-within-subfolder"]
-  }]}
+    items: ["file-name-3-within-subfolder"],
+  },
+];
+
+<FileTree
+  items={files}
 />
 
 ### Specify folders and their state
@@ -90,17 +96,22 @@ Specify the structure of files and directories inside the [`items` property](#it
 />
 ```
 
-<FileTree
-  items={[{
+export const folders = [
+  {
     kind: "folder",
     name: "folder-1",
     open: true,
-    items: ["something1"]
-  }, {
+    items: ["something1"],
+  },
+  {
     kind: "folder",
     name: "folder-2",
-    items: ["something2"]
-  }]}
+    items: ["something2"],
+  },
+];
+
+<FileTree
+  items={folders}
   defaultOpen={false}
 />
 
