@@ -44,7 +44,6 @@ const guides = [
   { title: 'Walkthrough', href: `${docs}/walkthrough` },
   { title: 'Your first smart contract', href: `${docs}/tutorial/overview` },
   { title: 'Agent skills', href: `${docs}/agent-skills/overview` },
-  { title: 'Rest of the Acton docs', href: `${docs}/welcome` },
 ] as const;
 
 function FeatureVideo({ title, poster, src }: { title: string; poster: string; src: string }) {
@@ -167,7 +166,16 @@ export function ActonToolchain() {
         <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h3 className="text-base font-semibold text-fd-foreground">Ready to build?</h3>
           <p className="text-sm text-fd-muted-foreground">
-            Install Acton, then choose a guide below.
+            Install Acton, then choose a guide below or explore the{' '}
+            <a
+              href={`${docs}/welcome`}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2 hover:text-fd-primary"
+            >
+              rest of the Acton docs
+            </a>
+            .
           </p>
         </div>
         <CopyCommand command={installCommand} />
@@ -175,7 +183,7 @@ export function ActonToolchain() {
 
       <nav
         aria-label="Acton guides"
-        className="mt-4 flex flex-wrap justify-start gap-2 lg:justify-around lg:gap-3"
+        className="mt-4 grid auto-rows-fr grid-cols-1 gap-2 sm:grid-cols-2 md:gap-3 lg:grid-cols-[repeat(4,minmax(0,auto))]"
       >
         {guides.map(({ title, href }, index) => (
           <a
@@ -190,7 +198,7 @@ export function ActonToolchain() {
         ))}
       </nav>
 
-      <p className="mt-5 md:text-right text-sm leading-5 text-fd-muted-foreground lg:text-xs">
+      <p className="mt-5 text-sm leading-5 text-fd-muted-foreground lg:text-xs">
         Building a frontend? See the{' '}
         <a
           href={`${docs}/dapps`}
@@ -200,7 +208,7 @@ export function ActonToolchain() {
         >
           Acton dApp guide
         </a>
-        .<br className="md:hidden" /> Note that Telegram Mini Apps selling digital goods or services
+        .<br className="lg:hidden" /> Note that Telegram Mini Apps selling digital goods or services
         must use{' '}
         <a
           href="https://core.telegram.org/bots/payments-stars"
