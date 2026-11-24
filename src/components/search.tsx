@@ -248,7 +248,7 @@ export default function DefaultSearchDialog({
                   <button
                     type="button"
                     aria-label={`Remove ${saved.title} from saved results`}
-                    title="Remove from recents"
+                    title="Forget"
                     onClick={() => {
                       removeSaved(saved);
                       inputRef.current?.focus();
