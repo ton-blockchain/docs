@@ -3593,6 +3593,14 @@ components:
           - $ref: '#/components/schemas/ActionDetailsNftCancelSale'
           - $ref: '#/components/schemas/ActionDetailsNftDiscovery'
           - $ref: '#/components/schemas/ActionDetailsNftFinishAuction'
+          - $ref: '#/components/schemas/ActionDetailsNftFixedSaleCancel'
+          - $ref: '#/components/schemas/ActionDetailsNftFixedSaleCreate'
+          - $ref: '#/components/schemas/ActionDetailsNftFixedSaleListing'
+          - $ref: '#/components/schemas/ActionDetailsNftFixedSalePurchase'
+          - $ref: '#/components/schemas/ActionDetailsNftOfferAccept'
+          - $ref: '#/components/schemas/ActionDetailsNftOfferCancel'
+          - $ref: '#/components/schemas/ActionDetailsNftOfferCreate'
+          - $ref: '#/components/schemas/ActionDetailsNftOfferRefund'
           - $ref: '#/components/schemas/ActionDetailsNftMint'
           - $ref: '#/components/schemas/ActionDetailsNftPutOnAuction'
           - $ref: '#/components/schemas/ActionDetailsNftPutOnSale'
@@ -6871,6 +6879,239 @@ components:
           type: string
           nullable: true
         marketplace:
+          type: string
+          nullable: true
+    ActionDetailsNftFixedSaleCancel:
+      type: object
+      description: Details for `nft_fixed_sale_cancel` actions.
+      properties:
+        seller:
+          type: string
+          nullable: true
+        sale:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+    ActionDetailsNftFixedSaleCreate:
+      type: object
+      description: Details for `nft_fixed_sale_create` actions.
+      properties:
+        depositor:
+          type: string
+          nullable: true
+        seller:
+          type: string
+          nullable: true
+        sale:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        fee_amount:
+          type: string
+          nullable: true
+        fee_address:
+          type: string
+          nullable: true
+    ActionDetailsNftFixedSaleListing:
+      type: object
+      description: Details for `nft_fixed_sale_update` actions.
+      properties:
+        seller:
+          type: string
+          nullable: true
+        sale:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        fee_amount:
+          type: string
+          nullable: true
+        fee_address:
+          type: string
+          nullable: true
+    ActionDetailsNftFixedSalePurchase:
+      type: object
+      description: Details for `nft_fixed_sale_purchase` actions.
+      properties:
+        buyer:
+          type: string
+          nullable: true
+        seller:
+          type: string
+          nullable: true
+        recipient:
+          type: string
+          nullable: true
+        sale:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        query_id:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        fee_amount:
+          type: string
+          nullable: true
+        fee_address:
+          type: string
+          nullable: true
+    ActionDetailsNftOfferAccept:
+      type: object
+      description: Details for `nft_offer_accept` actions.
+      properties:
+        buyer:
+          type: string
+          nullable: true
+        seller:
+          type: string
+          nullable: true
+        recipient:
+          type: string
+          nullable: true
+        offer:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        query_id:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        fee_amount:
+          type: string
+          nullable: true
+        fee_address:
+          type: string
+          nullable: true
+    ActionDetailsNftOfferCancel:
+      type: object
+      description: Details for `nft_offer_cancel` actions.
+      properties:
+        buyer:
+          type: string
+          nullable: true
+        offer:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        refund_amount:
+          type: string
+          nullable: true
+        fee_amount:
+          type: string
+          nullable: true
+        fee_address:
+          type: string
+          nullable: true
+    ActionDetailsNftOfferCreate:
+      type: object
+      description: Details for `nft_offer_create` actions.
+      properties:
+        buyer:
+          type: string
+          nullable: true
+        offer:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+        fee_amount:
+          type: string
+          nullable: true
+        fee_address:
+          type: string
+          nullable: true
+    ActionDetailsNftOfferRefund:
+      type: object
+      description: Details for `nft_offer_expire` and `nft_offer_signed_cancel` actions.
+      properties:
+        buyer:
+          type: string
+          nullable: true
+        offer:
+          type: string
+          nullable: true
+        nft_item:
+          type: string
+          nullable: true
+        nft_collection:
+          type: string
+          nullable: true
+        nft_item_index:
+          type: string
+          nullable: true
+        refund_amount:
           type: string
           nullable: true
     ActionDetailsNftMint:

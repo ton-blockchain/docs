@@ -55,7 +55,16 @@ Use these type names with `action_type` or `exclude_action_type`. Refer to the [
 - `nft_cancel_sale`: Cancel an NFT sale.
 - `nft_discovery`: Report an NFT's collection and item index.
 - `nft_finish_auction`: Finish an NFT auction.
+- `nft_fixed_sale_cancel`: Cancel a fixed-price listing and return the NFT.
+- `nft_fixed_sale_create`: Create a fixed-price listing when the sale contract accepts the NFT.
+- `nft_fixed_sale_purchase`: Purchase an NFT from a fixed-price listing.
+- `nft_fixed_sale_update`: Update a fixed-price listing.
 - `nft_mint`: Mint an NFT.
+- `nft_offer_accept`: Accept an NFT offer.
+- `nft_offer_cancel`: Cancel an NFT offer as the buyer.
+- `nft_offer_create`: Deploy and fund an NFT offer.
+- `nft_offer_expire`: Cancel an NFT offer after expiration.
+- `nft_offer_signed_cancel`: Cancel an NFT offer with a signature before expiration.
 - `nft_purchase`: Purchase an NFT.
 - `nft_put_on_auction`: List an NFT for auction.
 - `nft_put_on_sale`: List an NFT for sale at a fixed price.
@@ -250,6 +259,21 @@ Repeat `supported_action_types` to combine selections. For instance, `supported_
       - `cocoon_grant_refund`,
       - `cocoon_client_increase_stake`,
       - `cocoon_client_withdraw`.
+    - `v5` adds:
+      - `dedust_v2_claim_fees`,
+      - `dedust_v2_claim_reward`,
+      - `change_wallet_key`,
+      - `gasless_request`.
+    - `v6` adds:
+      - `nft_offer_create`,
+      - `nft_offer_accept`,
+      - `nft_offer_cancel`,
+      - `nft_offer_signed_cancel`,
+      - `nft_offer_expire`,
+      - `nft_fixed_sale_create`,
+      - `nft_fixed_sale_update`,
+      - `nft_fixed_sale_purchase`,
+      - `nft_fixed_sale_cancel`.
   </Accordion>
 
   <Accordion
