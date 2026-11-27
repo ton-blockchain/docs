@@ -509,7 +509,7 @@ In `d~udict_set(256, 0, "hello")`, the function expects unsigned 256-bit integer
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 - [`new_dict`](/languages/func/stdlib#new_dict)
 - [`dict_set` primitives](/languages/func/stdlib#dict_set)
@@ -543,7 +543,7 @@ set_data(begin_cell().store_dict(dictionary_cell).end_cell());
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Slice primitives](/languages/func/stdlib#slice-primitives)
 - [`get_data`](/languages/func/stdlib#get_data)
 - [`set_data`](/languages/func/stdlib#set_data)
@@ -606,7 +606,7 @@ while (flag) {
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 - [`new_dict`](/languages/func/stdlib#new_dict)
 - [`dict_set` primitives](/languages/func/stdlib#dict_set)
@@ -644,7 +644,7 @@ names~udict_delete?(256, 27);
 
 - [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [`new_dict`](/languages/func/stdlib#new_dict)
 - [`dict_set` primitives](/languages/func/stdlib#dict_set)
 - [`dict_delete?` primitives](/languages/func/stdlib#dict_delete)
@@ -681,7 +681,7 @@ The `tpush` function appends an element to the tuple, so that it becomes the las
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [`empty_tuple`](/languages/func/stdlib#empty_tuple)
 - [`tpush`](/languages/func/stdlib#tpush)
@@ -736,7 +736,7 @@ it returns the mutated tuple and the detached element.
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [Polymorphic functions](/languages/func/functions#forall-declarator)
 - [`empty_tuple`](/languages/func/stdlib#empty_tuple)
@@ -887,7 +887,7 @@ to accept the input to `to_tuple` as a `tuple`, and the input to `to_int` as an 
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [Polymorphic functions](/languages/func/functions#forall-declarator)
 - [Global Variables](/languages/func/global-variables)
@@ -1023,7 +1023,7 @@ forall X -> int is_slice (X x) {
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [Polymorphic functions](/languages/func/functions#forall-declarator)
 - [`empty_tuple`](/languages/func/stdlib#empty_tuple)
@@ -1085,7 +1085,7 @@ to accept the input to `to_tuple` as a `tuple`.
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [Polymorphic functions](/languages/func/functions#forall-declarator)
 - [`empty_tuple`](/languages/func/stdlib#empty_tuple)
@@ -1141,7 +1141,7 @@ The `tlen` [assembler function](/languages/func/asm-functions) uses the [TVM ins
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [`empty_tuple`](/languages/func/stdlib#empty_tuple)
 - [`at`](/languages/func/built-ins/#at)
@@ -1276,7 +1276,7 @@ For explanation of the functions that check types, refer to the recipe ["Casting
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Assembler functions](/languages/func/asm-functions)
 - [Polymorphic functions](/languages/func/functions#forall-declarator)
 - [`tpush`](/languages/func/stdlib#tpush)
@@ -1363,7 +1363,7 @@ which returns the head of the list and the rest of the list. The following snipp
 
 - [Lisp-style lists](/languages/func/stdlib#lisp-style-lists)
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [`cons`](/languages/func/stdlib#cons)
 - [`null`](/languages/func/stdlib#null)
 - [`null?`](/languages/func/built-ins#null)
@@ -1458,7 +1458,7 @@ forall X -> (tuple, X) pop_back (tuple t) asm "UNCONS";
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Builder primitives](/languages/func/stdlib#builder-primitives)
 - [Slice primitives](/languages/func/stdlib#slice-primitives)
 - [`Lisp-style lists`](/languages/func/stdlib#lisp-style-lists)
@@ -1516,7 +1516,7 @@ It is important to handle all scenarios by checking if the state is empty and in
 **References:**
 
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [`recv_internal` method](/languages/func/special-functions#receive-internal)
 - [`get_data`](/languages/func/stdlib#get_data)
 - [`begin_parse`](/languages/func/stdlib#begin_parse)
@@ -2147,7 +2147,7 @@ Refer to the sending messages page for further details on sending modes in the `
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [load_uint](/languages/func/stdlib#load_uint)
 - [`load_msg_addr`](/languages/func/stdlib#load_msg_addr)
 - Sending messages page
@@ -2200,7 +2200,7 @@ cell end_cell(builder b) asm "ENDC";
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Standard library](/languages/func/stdlib)
 - [TVM instructions](/tvm/instructions)
 - [Assembler functions](/languages/func/asm-functions)
@@ -2258,7 +2258,7 @@ Refer to the [modifying notation page](/languages/func/expressions#modifying-not
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [`load_uint`](/languages/func/stdlib#load_uint)
 - [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
 
@@ -2416,7 +2416,7 @@ while (~ string_number.slice_empty?()) {
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
 - [`load_uint`](/languages/func/stdlib#load_uint)
 - [`"<ascii string>"` compile-time builtin](/languages/func/literals#string-without-suffix), where `<ascii string>` is an ASCII string.
@@ -2471,7 +2471,7 @@ slice result = string.end_cell().begin_parse();
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
 - [`begin_cell`](/languages/func/stdlib#begin_cell)
 - [`end_cell`](/languages/func/stdlib#end_cell)
@@ -2550,7 +2550,7 @@ Further information on workchain IDs are found in the [docs](/foundations/addres
 
 **References:**
 
-- [Modifying notation using \~](/languages/func/expressions#modifying-notation)
+- [Modifying notation using ~](/languages/func/expressions#modifying-notation)
 - [Non-modifying notation using .](/languages/func/expressions#non-modifying-notation)
 - [`begin_cell`](/languages/func/stdlib#begin_cell)
 - [`end_cell`](/languages/func/stdlib#end_cell)

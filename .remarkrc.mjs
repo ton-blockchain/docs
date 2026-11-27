@@ -18,6 +18,7 @@ const remarkConfig = {
     rule: '-',
     incrementListMarker: false,
     tightDefinitions: true,
+    singleTilde: false,
   },
   plugins: [
     remarkFrontmatter,

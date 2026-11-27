@@ -67,9 +67,10 @@ jobs:
               console.log(`- ${file}`);
             }
             try {
-              await exec.exec('npm', ['run', 'check:fmt:some', '--', ...files], {
-                silent: true, // >/dev/null 2>&1
-              });
+              // TODO(novusnota): re-enable with an alpha release of the new formatter.
+              // await exec.exec('npm', ['run', 'check:fmt:some', '--', ...files], {
+              //   silent: true, // >/dev/null 2>&1
+              // });
             } catch (_) {
               // Comment right in the actions output
               console.log('\n\x1b[31mError:\x1b[0m Some files are not properly formatted!');
