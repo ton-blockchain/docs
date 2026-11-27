@@ -220,7 +220,7 @@ Otherwise: reject with exit code 35
 ```
 
 <Callout type="caution">
-  **Time lag consideration:** When a lite-server receives an external message, the contract executes `now()` which returns the timestamp of the **last processed block**, not the current system time. Due to network latency and block processing time, this timestamp is typically \~1 seconds behind your system clock.
+  **Time lag consideration:** When a lite-server receives an external message, the contract executes `now()` which returns the timestamp of the **last processed block**, not the current system time. Due to network latency and block processing time, this timestamp is typically ~1 seconds behind your system clock.
 
   **Best practice:** Set `created_at` to 30-60 seconds **before** the current time to ensure the message passes validation:
 
@@ -284,7 +284,7 @@ signature:bits512
 The signature is in the **root cell** (512 bits); all other parameters are in a **reference cell** (`MsgInner`).
 
 <Callout type="tip">
-  **Gas optimization:** This structure saves \~500 gas units during signature verification. If the signature were in the same cell as the message body, the contract would need to use `slice_hash()` (which rebuilds the cell internally, costing extra gas) instead of simply taking `cell_hash()` of the reference.
+  **Gas optimization:** This structure saves ~500 gas units during signature verification. If the signature were in the same cell as the message body, the contract would need to use `slice_hash()` (which rebuilds the cell internally, costing extra gas) instead of simply taking `cell_hash()` of the reference.
 </Callout>
 
 ### `signature` (512 bits)

@@ -76,7 +76,7 @@ delete_custom_overlay <overlay-name>
 **Behavior**
 
 - Deletes `<overlay-name>` from the MyTonCtrl database.
-- If the overlay was dynamic (tracked via `@validators`), the validator console updates within \~1 minute to remove it automatically.
+- If the overlay was dynamic (tracked via `@validators`), the validator console updates within ~1 minute to remove it automatically.
 - For static overlays, MyTonCtrl issues `delcustomoverlay <overlay-name>` so the validator console stops broadcasting it immediately. If the console rejects the operation, the command reports an error so you can intervene manually.
 
 **Example**

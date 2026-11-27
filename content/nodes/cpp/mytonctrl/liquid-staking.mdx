@@ -115,7 +115,7 @@ withdraw_from_controller <controller-addr> [amount-gram]
 **Behavior**
 
 - Requests an immediate withdrawal when the controller state permits it; otherwise, it queues a pending withdrawal that is handled automatically later.
-- If `[amount-gram]` is omitted, MyTonCtrl withdraws nearly the entire balance (leaving \~10 GRAM to cover rent).
+- If `[amount-gram]` is omitted, MyTonCtrl withdraws nearly the entire balance (leaving ~10 GRAM to cover rent).
 
 **Examples**
 
@@ -157,7 +157,7 @@ stop_and_withdraw_controller <controller-addr> [amount-gram]
 **Behavior**
 
 - Flags the controller as stopped (same as `stop_controller`).
-- Triggers a withdrawal for `[amount-gram]` GRAM; when omitted, withdraws almost the full balance (balance minus \~10.1 GRAM to keep the contract alive).
+- Triggers a withdrawal for `[amount-gram]` GRAM; when omitted, withdraws almost the full balance (balance minus ~10.1 GRAM to keep the contract alive).
 
 **Example**
 

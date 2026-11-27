@@ -21,11 +21,11 @@ MyTonCtrl is highly recommended to install on the following distributions:
 
 ### Hardware sizing by role
 
-| Role               | CPU                                       | RAM    | Storage                                  | Network         | Traffic                              | Notes                                                            |
-| ------------------ | ----------------------------------------- | ------ | ---------------------------------------- | --------------- | ------------------------------------ | ---------------------------------------------------------------- |
-| Validator node     | 16 dedicated cores (32 threads preferred) | 128 GB | ≥1 TB NVMe SSD or provisioned 64k+ IOPS  | ≥1 Gbps up/down | 64 TB/month typical (peaks \~100 TB) | Leave headroom for elections and snapshots.                      |
-| Liteserver         | 16 cores                                  | 128 GB | ≥1 TB NVMe SSD                           | ≥1 Gbps         | \~16 TB/month peaks                  | Hetzner/OVH are acceptable for liteservers (not for validators). |
-| Archive liteserver | 16 cores                                  | 128 GB | ≥20 TB NVMe or ZFS pool with compression | ≥1 Gbps         | ≥16 TB/month                         | Plan for continuous growth; monitor ZFS capacity.                |
+| Role               | CPU                                       | RAM    | Storage                                  | Network         | Traffic                             | Notes                                                            |
+| ------------------ | ----------------------------------------- | ------ | ---------------------------------------- | --------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| Validator node     | 16 dedicated cores (32 threads preferred) | 128 GB | ≥1 TB NVMe SSD or provisioned 64k+ IOPS  | ≥1 Gbps up/down | 64 TB/month typical (peaks ~100 TB) | Leave headroom for elections and snapshots.                      |
+| Liteserver         | 16 cores                                  | 128 GB | ≥1 TB NVMe SSD                           | ≥1 Gbps         | \~16 TB/month peaks                 | Hetzner/OVH are acceptable for liteservers (not for validators). |
+| Archive liteserver | 16 cores                                  | 128 GB | ≥20 TB NVMe or ZFS pool with compression | ≥1 Gbps         | ≥16 TB/month                        | Plan for continuous growth; monitor ZFS capacity.                |
 
 > Disk latency is the common bottleneck. Benchmark storage before going live (`MyTonCtrl> benchmark`).
 

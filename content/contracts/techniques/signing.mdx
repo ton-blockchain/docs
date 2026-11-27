@@ -247,7 +247,7 @@ The signed data is loaded as a **cell** from the reference. To get its hash, the
 
 This is efficient because every cell in TON stores its hash as metadata. `cell.hash()` reads this precomputed value directly without rebuilding or copying the data.
 
-This approach adds one extra cell to the message, increasing the forward fee. However, the gas savings of \~500 gas outweigh the increase in forward fees.
+This approach adds one extra cell to the message, increasing the forward fee. However, the gas savings of ~500 gas outweigh the increase in forward fees.
 
 ### Optimization: Builder hashing
 
