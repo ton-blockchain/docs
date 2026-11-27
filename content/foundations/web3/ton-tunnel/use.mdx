@@ -1,0 +1,137 @@
+---
+title: "How to use an ADNL tunnel"
+sidebarTitle: "Use a tunnel"
+description: "Configure a relay pool in a compatible TON proxy application"
+---
+
+Route a compatible application's [Abstract Datagram Network Layer (ADNL) traffic](/foundations/network/adnl-udp) through relays. The commands require a POSIX shell. Use a free relay, or enable payments for relays that charge for traffic.
+
+## Prerequisites
+
+- One of these initialized applications, with its generated `config.json`:
+  - [Tonutils-Proxy v1.8.3](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy)
+  - [tonutils-reverse-proxy v0.6.0](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy)
+- A `nodes.json` file exported by a [relay operator](/foundations/web3/ton-tunnel/run-relay#generate-configuration), containing at least one reachable relay
+
+The two [client integrations](/foundations/web3/ton-tunnel/reference#client-integrations) use different tunnel-library versions and JSON field names. Follow the matching configuration below.
+
+## Configure the pool
+
+Stop the application before editing its `config.json`.
+
+<Callout
+  type="caution"
+  title="Private configuration"
+>
+  `config.json` contains private keys even when payments are disabled. Keep it private and backed up. Preserve the generated keys and other settings; share only the public pool file with the relay operator.
+</Callout>
+
+This is a partial configuration fragment, not a replacement file. Merge these [client configuration fields](/foundations/web3/ton-tunnel/reference#client-configuration-and-node-pools) into `TunnelConfig` for Tonutils-Proxy, or into `tunnel_config` for tonutils-reverse-proxy:
+
+```jsonc
+// Not runnable: merge into the existing tunnel configuration object.
+{
+  "NodesPoolConfigPath": "<NODES_POOL_PATH>",
+  "TunnelSectionsNum": 1,
+  "PaymentsEnabled": false
+}
+```
+
+Replace `<NODES_POOL_PATH>` with the absolute path to `nodes.json` on the application's host.
+
+One section is sufficient for the initial connection check. For multiple sections:
+
+1. Set `TunnelSectionsNum` to the desired number.
+1. Copy the entries from the relays' exported `NodesPool` arrays into one `NodesPool` array in a single JSON file.
+1. Preserve each entry's `Key` and `Payment` fields. Include each relay key only once, with at least `TunnelSectionsNum` eligible entries.
+
+## Enable payments (optional)
+
+<Callout
+  type="note"
+  title="Client compatibility"
+>
+  Tonutils-Proxy v1.8.3 is not compatible with paid ADNL Tunnel v0.2.2 relays. Select a compatible published client release before enabling payments.
+</Callout>
+
+Paid mode requires a compatible published client, a mainnet funding wallet, and a payment route with sufficient capacity supplied by the operator.
+
+### Review the pool
+
+Check the advertised packet prices and the [payment peers](/foundations/web3/ton-tunnel/reference#payment-routes) in `Payment.Chain`.
+
+The relay key identifies the traffic relay. The keys in `Payment.Chain` identify payment nodes; the first entry selects the client's payment peer. Ask the operator to confirm the route and terms before funding the client.
+
+Set `PaymentsEnabled` to `true` in the tunnel configuration above. Preserve the generated private keys and payment database path.
+
+<Callout
+  type="caution"
+  title="Automatic channel funding"
+>
+  The client's payment service can deposit wallet funds into channels automatically. Review its balance-control settings and the relay's prices before funding the wallet. Mainnet transfers cannot be rolled back. Keep the private configuration and payment database backed up.
+</Callout>
+
+Review [`Payments.ChannelsConfig.SupportedCoins.Ton.BalanceControl`](/foundations/web3/ton-tunnel/reference#client-funding) inside the application's tunnel configuration. The deposit target applies to each channel, not to total spending.
+
+## Start Tonutils-Proxy
+
+Restart the same executable used in the [forward proxy guide](/foundations/web3/ton-proxy/forward-proxy#use-tonutils-proxy). A nonempty `TunnelConfig.NodesPoolConfigPath` enables tunnel mode; there is no `--enable-tunnel` flag for this application.
+
+Keep the browser configured to use the local forward proxy.
+
+## Start tonutils-reverse-proxy
+
+Alternatively, append [`--enable-tunnel`](/foundations/web3/ton-tunnel/reference#client-integrations) to the startup command from [Run a reverse proxy](/foundations/web3/ton-proxy/reverse-proxy#use-tonutils-reverse-proxy). Preserve the existing backend and domain settings.
+
+The application uses the tunnel's external endpoint for its ADNL address list.
+
+## Fund the client wallet (paid mode)
+
+<span
+  id="fund-the-client-wallet"
+/>
+
+For paid mode, find “wallet initialized with address:” in the startup log and record that address as `<CLIENT_WALLET_ADDRESS>`.
+
+Transfer Gram from the funding wallet to `<CLIENT_WALLET_ADDRESS>`, allowing for the configured deposit target and on-chain fees. Keep the client's configuration and database unchanged if startup must be retried.
+
+The embedded payment service prepares the channel with the pool's first payment peer and manages funding according to `BalanceControl`.
+
+## Wait for the tunnel
+
+Wait for “tunnel updated” in Tonutils-Proxy, or “Tunnel updated” in tonutils-reverse-proxy, then for the application's HTTP listener or server to start.
+
+Channel initialization alone does not establish that the tunnel is ready or that the payment route has sufficient capacity.
+
+If the client cannot obtain capacity, ask the operator to check the payment route through to the relay. Funding the client wallet does not provide an intermediary's outgoing capacity.
+
+## Verify
+
+Request a known TON Site through the forward proxy, or the hosted site through the reverse proxy. In paid mode, record the relay's traffic counters, prepaid credit, and channel balances with the operator before sending the request.
+
+Replace `<ADNL_ADDRESS>` with the user-friendly address of a TON Site with known content. Through the local forward proxy, request that site:
+
+```bash
+curl --noproxy '' --proxy http://127.0.0.1:8080 --fail "http://<ADNL_ADDRESS>.adnl/"
+```
+
+Confirm the expected response and ask the relay operator to check its [traffic counters](/foundations/web3/ton-tunnel/run-relay#connect-a-client-and-verify). An ordinary Internet HTTP request through Tonutils-Proxy does not test the tunnel: it uses the regular HTTP client.
+
+### Verify traffic and payment
+
+For paid mode, compare the counters, prepaid credit, and channel balances recorded before the request with their values afterward using the [relay verification procedure](/foundations/web3/ton-tunnel/run-relay#verify).
+
+A successful HTTP response proves traffic forwarding. Packet counters alone do not establish that the relay received payment. Account for virtual-channel fees and prepaid credit when comparing balances.
+
+## Troubleshoot
+
+| Problem                                   | Check                                                                                       |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------- |
+| “failed to load tunnel nodes pool config” | Check the pool path and file permissions.                                                   |
+| “no nodes pool provided”                  | With payments disabled, the pool must include an entry with no payment requirement.         |
+| “not enough nodes”                        | Reduce `TunnelSectionsNum` or add eligible relays to the pool.                              |
+| No tunnel initialization message          | Check the application's field name and whether its tunnel mode is enabled.                  |
+| Tunnel is established but the site fails  | Check the destination and its DNS record separately from relay connectivity.                |
+| The payment peer cannot be found          | Confirm the first `Payment.Chain` key, its network, and its reachability with the operator. |
+| Channel funding fails                     | Check the client's payment-wallet balance, deposit policy, and on-chain transaction result. |
+| Insufficient route capacity               | Ask the operator to check capacity on the payment hops leading to the relay.                |

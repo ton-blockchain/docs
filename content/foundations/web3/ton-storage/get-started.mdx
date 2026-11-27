@@ -1,0 +1,174 @@
+---
+title: "Get started with TON Storage"
+sidebarTitle: "Get started"
+description: "Start a storage daemon, share a bag, and download files"
+---
+
+Start the official TON Storage daemon, create and share a bag, and download files from another peer.
+
+## Prerequisites
+
+- `storage-daemon` and `storage-daemon-cli` from the same [TON release](https://github.com/ton-blockchain/ton/releases/tag/v2026.08)
+- A global configuration file for the target network: [mainnet](https://ton-blockchain.github.io/global.config.json) or [testnet](https://ton-blockchain.github.io/testnet-global.config.json)
+- A public IP address and reachable [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) port
+- A file or directory to share, and disk space for the copied and downloaded files
+- A BagID supplied by another publisher, or a second daemon to download the bag created below
+
+## Start the daemon
+
+Start [`storage-daemon`](/foundations/web3/ton-storage/reference#daemon-and-cli-options):
+
+```bash
+storage-daemon -v 3 \
+  -C <GLOBAL_CONFIG_PATH> \
+  -I <PUBLIC_IP>:<ADNL_PORT> \
+  -p <CONTROL_PORT> \
+  -D <STORAGE_DB_DIR>
+```
+
+There,
+
+- `<GLOBAL_CONFIG_PATH>` is the target network's global configuration file.
+- `<PUBLIC_IP>` and `<ADNL_PORT>` identify the public ADNL endpoint.
+- `<CONTROL_PORT>` is the local CLI control port.
+- `<STORAGE_DB_DIR>` is the daemon's persistent data directory.
+
+On its first launch, the daemon creates CLI keys under `<STORAGE_DB_DIR>/cli-keys`.
+
+<Callout
+  type="danger"
+  title="CLI private key"
+>
+  `<STORAGE_DB_DIR>/cli-keys/client` is a private key that authorizes control of the daemon. Keep this file confidential and restrict access to it.
+</Callout>
+
+## Connect the CLI
+
+Connect [`storage-daemon-cli`](/foundations/web3/ton-storage/reference#daemon-and-cli-options) to the control interface:
+
+```bash
+storage-daemon-cli \
+  -I 127.0.0.1:<CONTROL_PORT> \
+  -k <STORAGE_DB_DIR>/cli-keys/client \
+  -p <STORAGE_DB_DIR>/cli-keys/server.pub
+```
+
+Run the remaining commands inside `storage-daemon-cli` on the same host as the daemon. Run `list` to check the connection; a new database has no bags.
+
+## Create and share a bag
+
+Replace `<SOURCE_PATH>` with the absolute path to the file or directory:
+
+```bash
+create --copy "<SOURCE_PATH>"
+```
+
+The CLI prints “Bag created” followed by the bag information, including `BagID =` and its 64-character hexadecimal identifier. Use this identifier as `<BAG_ID>` below.
+
+[`--copy`](/foundations/web3/ton-storage/reference#bag-command-options) copies the files into the daemon's storage directory. Allow enough disk space for this additional copy. Sharing is enabled by default.
+
+Keep the daemon running to serve the bag. Creating a bag does not automatically arrange paid storage with a provider.
+
+Inspect the bag:
+
+```bash
+get <BAG_ID>
+```
+
+Check that the file list matches the source and that `Downloaded:` shows “(completed)”. An `Upload speed:` line indicates that sharing is enabled; a speed of zero can mean that no peer is requesting data.
+
+Share the BagID with a recipient. A successful download on another daemon verifies that the bag is reachable. To publish changed files, create a new bag from the updated source and distribute its new BagID.
+
+## Download a bag
+
+Use a BagID from another publisher, or connect to a second daemon configured for the same network to download the bag created above. Do not add a bag that the daemon already manages.
+
+Replace `<BAG_ID>` with the bag's 64-character hexadecimal identifier and `<DOWNLOAD_DIR>` with an absolute destination directory:
+
+```bash
+add-by-hash <BAG_ID> -d "<DOWNLOAD_DIR>"
+```
+
+The CLI prints “Bag added” and the bag information; downloading starts in the background.
+
+Downloaded data is shared with other peers by default.
+
+## Verify
+
+Inspect download progress and the file list:
+
+```bash
+get <BAG_ID>
+```
+
+Wait for `Downloaded:` to show “(completed)”. The `Dir name:` field identifies the bag's directory under `<DOWNLOAD_DIR>`; the file list shows paths within it.
+
+Inspect connected peers if the download is not progressing:
+
+```bash
+get-peers <BAG_ID>
+```
+
+A BagID alone does not guarantee availability. Peers must be online and serving the required pieces.
+
+## Additional bag operations
+
+Run these commands inside the connected `storage-daemon-cli`. Importing a metafile or adding selected files requires a bag not already managed by that daemon.
+
+### Export a metafile
+
+Run `get-meta <BAG_ID> <METAFILE_PATH>` to export the bag metadata. `<METAFILE_PATH>` is an absolute output file path on the CLI host.
+
+The CLI prints “Saved meta” with the number of bytes written. A metafile does not replace the peers serving the file contents.
+
+### Import a metafile
+
+`<METAFILE_PATH>` is an absolute input file path on the CLI host:
+
+```bash
+add-by-meta "<METAFILE_PATH>" -d "<DOWNLOAD_DIR>"
+```
+
+The CLI prints “Bag added” and the BagID; downloading starts in the background. Use the returned BagID for subsequent commands.
+
+### Download selected files
+
+When adding a bag, use [`--partial`](/foundations/web3/ton-storage/reference#bag-command-options) followed by exact file names within the bag. Replace `<FILE_PATH>` with a path supplied by the publisher:
+
+```bash
+add-by-hash <BAG_ID> -d "<DOWNLOAD_DIR>" --partial "<FILE_PATH>"
+```
+
+List multiple file paths after `--partial`. Put all other options before it: every following argument is treated as a file name. Unlisted files receive priority `0` and are excluded from the download.
+
+For a bag already added to the daemon, use the [file priority commands](/foundations/web3/ton-storage/reference#manage-bags). Do not add the same bag again to change its selection.
+
+Use `get <BAG_ID>` to verify the selected files. “(completed)” refers to the selected download, not necessarily the entire bag.
+
+### Pause or resume sharing
+
+Run `upload-pause <BAG_ID>` to stop sharing the bag, or `upload-resume <BAG_ID>` to resume.
+
+Pausing uploads does not remove copies already downloaded by other peers.
+
+### Pause or resume downloads
+
+Run `download-pause <BAG_ID>` to pause the download, or `download-resume <BAG_ID>` to resume.
+
+These commands do not pause uploads. To stop sharing downloaded data, use [Pause or resume sharing](#pause-or-resume-sharing).
+
+## Troubleshoot
+
+| Problem                                | Check                                                                                                     |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| “Invalid path” when creating a bag     | Use an existing source path accessible to the CLI and daemon.                                             |
+| “Upload paused” in the bag information | Run `upload-resume <BAG_ID>`.                                                                             |
+| A recipient cannot download the bag    | Keep the daemon online, check its ADNL connectivity, and confirm that uploads are enabled.                |
+| “Invalid BagID”                        | Copy the complete hexadecimal BagID without a URL prefix or file path.                                    |
+| “Download paused”                      | Run `download-resume <BAG_ID>`.                                                                           |
+| No peers or no progress                | Check connectivity and ask the publisher to keep a complete copy online with sharing enabled.             |
+| “Failed to read meta”                  | Check the metafile path and read permissions on the CLI host.                                             |
+| “Failed to write meta”                 | Check that the output directory exists and the CLI can write to it.                                       |
+| A selected file does not download      | Compare its name with the file list from `get <BAG_ID>` once the header is available. Check its priority. |
+
+The [bag command reference](/foundations/web3/ton-storage/reference#bag-commands) lists syntax, options, and defaults.

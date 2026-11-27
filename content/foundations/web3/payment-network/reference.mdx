@@ -1,0 +1,143 @@
+---
+title: "TON Payment Network reference"
+sidebarTitle: "Reference"
+description: "Node settings, CLI commands, API routes, and contract versions"
+---
+
+This reference describes the standalone node and browser example in TON Payment Network v1.3.2. Amount formats and identifiers differ between console commands and API requests.
+
+## Identifiers
+
+| Identifier                   | Use                                                                              |
+| ---------------------------- | -------------------------------------------------------------------------------- |
+| Payment-node public key      | Base64-encoded 32-byte key used by console commands to select a peer or route    |
+| ADNL transport public key    | Network identity; first argument of the browser initializer                      |
+| Wallet address               | Receives on-chain funds for the node                                             |
+| Local channel address        | Address shown as `address` by `list`; use for local channel operations           |
+| Peer-side channel address    | Shown as `their_address`; not interchangeable with the local address             |
+| Virtual-channel private key  | Base64-encoded 32-byte signing seed returned by `open`; keep secret              |
+| Signed virtual-channel state | Console `signed_state`: base64-encoded payment state encrypted for the recipient |
+
+## Node configuration
+
+### Configuration fields
+
+| Field                          | Purpose and generated default                                |
+| ------------------------------ | ------------------------------------------------------------ |
+| `NetworkConfigUrl`             | Mainnet global configuration URL by default                  |
+| `NodeListenAddr`               | UDP listener; `0.0.0.0:17555`                                |
+| `ExternalIP`                   | Advertised IPv4 address; empty for outbound mode             |
+| `DBPath`                       | Persistent channel state; `./payment-node-db`                |
+| `PaymentNodePrivateKey`        | Payment identity's private seed                              |
+| `ADNLServerKey`                | Private seed for network transport                           |
+| `WalletPrivateKey`             | Private seed for the funding wallet                          |
+| `ChannelConfig.SupportedCoins` | Assets, fees, capacity policy, and automatic balance control |
+| `WebTransportListenAddr`       | HTTP transport for browser nodes; disabled when empty        |
+
+### CLI options
+
+| Option                        | Default                       | Purpose                                            |
+| ----------------------------- | ----------------------------- | -------------------------------------------------- |
+| `-config <FILE>`              | `payment-network-config.json` | Private configuration file                         |
+| `-web-conn-info`              | `false`                       | Print public browser initializer and exit          |
+| `-api <ADDRESS>`              | Disabled                      | Enable administration API at the specified address |
+| `-api-login`, `-api-password` | Empty                         | API authentication; supply both together           |
+| `-daemon`                     | `false`                       | Disable interactive console input                  |
+
+The generated native-currency `BalanceControl` can automatically top up or withdraw channel funds. Set it to `null` for manual management. Preserve configuration keys and the database across restarts.
+
+## Assets and amounts
+
+`ChannelConfig.SupportedCoins` contains `Ton`, `Jettons` keyed by master address, and `ExtraCurrencies` keyed by numeric currency ID. Each asset has an `Enabled` setting, symbol, decimals, and fee/capacity policy.
+
+Console commands resolve the configured symbol and parse amounts in whole-coin units. The native currency uses the symbol `TON` and 9 decimals. HTTP top-up and withdrawal requests use `amount_nano`, a decimal string in the selected asset's smallest units.
+
+HTTP conditional requests use `capacity`, `amount`, and per-node `fee` strings in whole-coin units. Do not reuse the `amount_nano` representation for those fields.
+
+## Channel console commands
+
+Enter the command name in the running node, then answer its prompts separately.
+
+| Command              | Inputs and behavior                                                                |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| `list`               | List active channels                                                               |
+| `list_all`           | Include closing and inactive channels                                              |
+| `show`               | Local channel address; detailed state, balances, and obligations                   |
+| `init`               | Peer payment-node key in base64; initialize signed channel configuration off-chain |
+| `topup`              | Local channel address, currency, amount; first top-up can activate contracts       |
+| `withdraw`           | Local channel address, destination address, currency, amount                       |
+| `destroy`            | Local channel address; request cooperative closure and schedule fallback           |
+| `kill`               | Local channel address; request non-cooperative closure                             |
+| `wallet-ton-balance` | Read the funding wallet's native balance                                           |
+
+A locally active channel and a deployed on-chain contract are different states. Inspect `our_onchain` and `their_onchain`, not only whether `list` includes the channel.
+
+## Virtual-channel commands
+
+| Command | Inputs and behavior                                                                              |
+| ------- | ------------------------------------------------------------------------------------------------ |
+| `send`  | Ordered route keys, currency, amount, fee; request a self-closing virtual transfer               |
+| `open`  | Route keys, currency, capacity, fee; return `private_key`, a base64-encoded 32-byte signing seed |
+| `sign`  | Signing seed, currency, cumulative amount; return the encrypted base64 `signed_state`            |
+| `close` | Recipient supplies the `signed_state` from `sign` to request virtual-channel settlement          |
+
+`close` concerns a virtual channel. `destroy` and `kill` concern the underlying payment channel. Keep the virtual signing key private; transfer the signed state to the recipient instead.
+
+The amount passed to `sign` is cumulative for that virtual channel, not an additional payment. For example, signing `0.1` and later `0.2` represents a total of `0.2` in the selected asset. The signed amount must not decrease or exceed the channel capacity.
+
+## Closure settings
+
+The following fields are under `ChannelConfig`:
+
+| Field                         | Purpose                                          | Unit    |
+| ----------------------------- | ------------------------------------------------ | ------- |
+| `QuarantineDurationSec`       | Period for challenging a submitted channel state | Seconds |
+| `ConditionalCloseDurationSec` | Conditional-settlement period                    | Seconds |
+| `ActionsDuration`             | Action-execution period                          | Seconds |
+| `BufferTimeToCommit`          | Node scheduling margin for committing state      | Seconds |
+
+`destroy` requires no pending on-chain transfers, no unexpired conditionals, and no actions that still require an on-chain commit. If these checks fail, the request is rejected before scheduling closure.
+
+An accepted request schedules cooperative closure and a non-cooperative fallback after five minutes. The fallback worker checks that the same channel remains active and both sides are active on-chain before proceeding. `kill` requests non-cooperative closure directly; settlement follows the contract's deadlines.
+
+## HTTP API
+
+The administration API exposes these core routes:
+
+POST inputs are JSON body fields; GET inputs are query parameters.
+
+| Method | Path                                   | Inputs                                               | Purpose                                                          |
+| ------ | -------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
+| POST   | `/api/v1/channel/onchain/open`         | `with_node`                                          | Initialize a channel; return its `address`                       |
+| POST   | `/api/v1/channel/onchain/topup`        | `address`, `currency`, `amount_nano`                 | Fund a channel                                                   |
+| POST   | `/api/v1/channel/onchain/withdraw`     | `address`, `to`, `currency`, `amount_nano`           | Request a withdrawal                                             |
+| POST   | `/api/v1/channel/onchain/close`        | `address`, `force`                                   | Request closure; `force: true` selects the non-cooperative path  |
+| GET    | `/api/v1/channel/onchain/list`         | Optional `status`, peer `key`                        | List channels                                                    |
+| GET    | `/api/v1/channel/onchain`              | `address`                                            | Read a local channel                                             |
+| POST   | `/api/v1/channel/conditional/open`     | `currency`, `capacity`, `ttl_seconds`, `nodes_chain` | Request a virtual channel; return its keys, status, and deadline |
+| POST   | `/api/v1/channel/conditional/transfer` | `currency`, `amount`, `ttl_seconds`, `nodes_chain`   | Request a virtual transfer                                       |
+| POST   | `/api/v1/channel/conditional/close`    | `key`, `state`                                       | Request virtual-channel settlement                               |
+| GET    | `/api/v1/channel/conditional/list`     | `address`                                            | List conditionals for a local channel                            |
+
+`nodes_chain` is an ordered array of payment nodes with `key`, `fee`, and `deadline_gap_seconds` fields. Amounts and fees use the formats in [Assets and amounts](#assets-and-amounts); `ttl_seconds` and `deadline_gap_seconds` are in seconds.
+
+The conditional-close API accepts a virtual-channel public `key` and a signed-state cell in `state`. It does not accept the encrypted `signed_state` string returned by the console's `sign` command.
+
+The node's API operates on its wallet and channel state. A successful request is not proof of completed on-chain settlement. Consult the versioned [channel handlers](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/tonpayments/api/channel.go#L39-L298) and [conditional handlers](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/tonpayments/api/virtual.go#L271-L497) for request and response fields.
+
+## Contract versions
+
+The node embeds supported contract bytecode in `pkg/payments/types.go`. Its first code entry matches the Universal contract compiled from `contracts/universal/payment-channel-contract.tolk` at the source revision below. The repository also contains a different `contracts/payment-channel-contract.tolk` variant; their layouts and wrappers are not interchangeable.
+
+## Sources
+
+- [Standalone node v1.3.2 and console commands](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/cmd/node/main.go#L461-L923)
+- [Channel operations and first top-up deployment](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/tonpayments/api.go#L2170-L2320)
+- [Node and asset configuration](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/tonpayments/config/config.go#L96-L242)
+- [Embedded contract code](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/pkg/payments/types.go#L101-L115)
+- [Universal contract](https://github.com/xssnick/payment-channel-contract/blob/9704af6a04b4dfedebb56f4261a07bd5578b667d/contracts/universal/payment-channel-contract.tolk#L32-L110)
+- [Browser node](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/cmd/web/main.go#L878-L990)
+- [Local payment-node tests](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/cmd/test-node/integration_test.go#L357-L506)
+- [Virtual-channel state layout](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/pkg/payments/conditionals/channel.go#L569-L623)
+- [Cooperative closure and five-minute fallback](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/tonpayments/api.go#L1054-L1096)
+- [Fallback worker conditions](https://github.com/xssnick/ton-payment-network/blob/b5187d050c1cac581708c919e783e378b15a78c4/tonpayments/worker.go#L763-L795)

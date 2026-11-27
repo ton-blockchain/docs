@@ -1,0 +1,210 @@
+---
+title: "How to manage domains on dns.ton.org"
+sidebarTitle: "Manage domains"
+---
+
+Register, configure, and renew `.ton` domains on [dns.ton.org](https://dns.ton.org/).
+
+## Prerequisites
+
+- A compatible non-custodial wallet on mainnet, with funds for bids and transaction fees.
+- Ownership of the domain for record changes, subdomain delegation, or renewal.
+
+<Callout
+  type="danger"
+  title="Mainnet transactions"
+>
+  Transactions on this site use mainnet and cannot be rolled back. Check the domain, amount, and values before confirming in the wallet. Changing a wallet record changes the payment recipient.
+</Callout>
+
+## Connect a wallet
+
+1. Open [dns.ton.org](https://dns.ton.org/).
+1. Select <kbd>Connect wallet</kbd> and approve the connection in the wallet.
+1. Search for the domain to manage. Check whether it is available, being auctioned, or already owned.
+
+<span
+  id="find-a-domain"
+/>
+
+<span
+  id="check-the-price"
+/>
+
+<span
+  id="place-a-bid"
+/>
+
+<span
+  id="follow-the-auction"
+/>
+
+<span
+  id="finalize-registration"
+/>
+
+<span
+  id="register-programmatically"
+/>
+
+## Register a domain
+
+1. Find an available name or an auction in progress. Check the [registration rules](/foundations/web3/ton-dns/domains#registration-rules) and [minimum first bid](/foundations/web3/ton-dns/domains#minimum-first-bids).
+1. Select <kbd>Place bid</kbd>, enter at least the displayed minimum, and confirm the transaction in the wallet.
+1. Wait for the page to display the accepted bid and bidder address. Follow the deadline and highest bidder.
+1. After the auction ends, check that the winning address matches the connected wallet. If it matches, open <kbd>Manage domain</kbd> and save the intended wallet address to configure the domain and finalize ownership.
+1. After the transaction succeeds, reload the page and check the owner and saved wallet address.
+
+When outbid, the contract returns the previous bid, subject to its available balance.
+
+Bids near the deadline can [extend the auction](/foundations/web3/ton-dns/domains#auctions). Saving the first record after winning also [finalizes ownership](/foundations/web3/ton-dns/domains#auctions).
+
+<span
+  id="choose-a-record"
+/>
+
+<span
+  id="update-a-record"
+/>
+
+<span
+  id="remove-a-record"
+/>
+
+<span
+  id="manage-records-programmatically"
+/>
+
+## Manage records
+
+| Field on dns.ton.org                         | Value                                                                                                  |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Wallet address                               | Wallet or smart contract address that should receive payments.                                         |
+| TON Site                                     | The site's [Abstract Datagram Network Layer (ADNL)](/foundations/network/adnl) address in hexadecimal. |
+| TON Site with Hosting in TON Storage enabled | The site's TON Storage Bag ID.                                                                         |
+| TON Storage                                  | A Bag ID for stored files, separate from the site record.                                              |
+| Subdomains                                   | The address of a DNS resolver contract.                                                                |
+
+1. Select <kbd>Manage domain</kbd> with the owner's wallet connected.
+1. Enter the value in the corresponding field. For a site stored in TON Storage, enable <kbd>Hosting in TON Storage</kbd> and enter the Bag ID in <kbd>TON Site</kbd>.
+1. Select <kbd>Save</kbd> for that field, check the transaction details, and confirm in the wallet.
+1. Reload the page and check the saved value.
+
+To remove a record, clear its field and select <kbd>Save</kbd>, then confirm in the wallet. This does not delete the domain. The <kbd>TON Site</kbd> and <kbd>TON Storage</kbd> fields store separate records; changing one does not update the other.
+
+<span
+  id="prepare-the-resolver"
+/>
+
+<span
+  id="delegate-the-subdomains"
+/>
+
+<span
+  id="verify-the-delegation"
+/>
+
+<span
+  id="change-or-remove-the-delegation"
+/>
+
+### Delegate subdomains
+
+Enter an existing [resolver contract's](/foundations/web3/ton-dns/reference#subdomain-resolvers) address in <kbd>Subdomains</kbd>, select <kbd>Save</kbd>, and confirm. The resolver must already contain the subdomain records; this field only delegates resolution.
+
+Test the full name, such as `app.example.ton`, in the application that uses it. Clear the field to remove delegation.
+
+<span
+  id="set-a-text-record"
+/>
+
+The site has no text-record field. Text records require a [contract message](/foundations/web3/ton-dns/reference#record-updates).
+
+<span
+  id="check-the-expiration-date"
+/>
+
+<span
+  id="renew-the-domain"
+/>
+
+<span
+  id="renew-through-other-operations"
+/>
+
+<span
+  id="renew-programmatically"
+/>
+
+## Renew a domain
+
+1. Search for the domain with the owner's wallet connected and check its expiration date. The site shows the renewal button within 180 days of expiration or after expiration.
+1. Select <kbd>Renew this domain</kbd>. Check the requested 0.015 GRAM payment and transaction fees before confirming in the wallet.
+1. Reload the page and verify that the expiration date has advanced.
+
+Renewal starts a new 366-day period from the transaction time. Record updates also [renew the domain](/foundations/web3/ton-dns/domains#renewal).
+
+<span
+  id="expired-domains"
+/>
+
+<span
+  id="check-an-expired-domain"
+/>
+
+<span
+  id="check-the-domain"
+/>
+
+<span
+  id="start-the-auction"
+/>
+
+## Start an auction for an expired domain
+
+A release starts a new auction after more than 366 days without renewal, provided no auction is active. Expiration alone does not release the domain: the current owner can still renew until the auction starts.
+
+1. Search for the domain and check its expiration date and auction status.
+1. Connect a wallet other than the current owner's. The site hides the release action from the owner.
+1. Select <kbd>Place a bid to start the auction</kbd>.
+1. Enter at least the displayed minimum and confirm the transaction in the wallet. The amount sent becomes the opening bid.
+1. Reload the page and verify the accepted bid, bidder address, and auction deadline.
+
+Once the transaction succeeds:
+
+- The previous owner loses control of the domain.
+- The sending wallet becomes the first bidder, not the new owner.
+- A one-week auction begins. Bids in the final hour extend the deadline to one hour after that bid.
+- The domain address and existing DNS records remain unchanged.
+
+The contract attempts to return its previous balance above a 1 GRAM reserve to the previous owner. This excludes the opening bid; fees affect the amount received.
+
+Follow the auction and finalize ownership after winning, as described in [Register a domain](#register-a-domain).
+
+<span id="verify" />
+
+## Verify the changes
+
+Each procedure ends with a check on the domain page. If the transaction fails or its result is unclear, inspect it in a block explorer before retrying.
+
+<span
+  id="resolve-a-domain"
+/>
+
+After changing a wallet record, enter the domain in a compatible wallet and compare the recipient without sending funds. For a site record, open the domain through a compatible TON Proxy.
+
+<span
+  id="troubleshooting"
+/>
+
+## Troubleshoot
+
+| Issue                               | Check                                                                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Bid is too small                    | Refresh the domain page and check the updated minimum.                                                                     |
+| Management controls are unavailable | Check that the connected wallet owns the domain and the auction has ended.                                                 |
+| Invalid address or Bag ID           | Check the field, value format, and Hosting in TON Storage setting.                                                         |
+| Transaction or update fails         | Check the wallet result and current domain state before retrying.                                                          |
+| Renew this domain is absent         | Check ownership and the [website's renewal window](#renew-a-domain).                                                       |
+| Expired-domain auction is absent    | Check expiration, connected ownership, and whether an auction has already started. The site hides this action from owners. |
+| Subdomain does not resolve          | Check the delegation address and the records configured in that resolver.                                                  |
