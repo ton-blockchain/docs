@@ -1,3 +1,4 @@
+import { cpus } from 'node:os';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
@@ -54,6 +55,11 @@ function resolveBasePath() {
   return undefined;
 }
 
+function cpusBy(divisor: number) {
+  if (divisor <= 0) return 1;
+  return Math.max(Math.floor(Math.max(cpus().length, 1) / divisor), 1);
+}
+
 const config: NextConfig = {
   output: 'export',
   reactStrictMode: true,
@@ -89,7 +95,7 @@ const config: NextConfig = {
     turbopackRustReactCompiler: Boolean(process.env.TURBOPACK),
     // Despite browser console warnings, this is a great RAM usage optimization
     serverSourceMaps: process.env.ENABLE_SERVER_SOURCE_MAPS === '1',
-    cpus: 2,
+    cpus: cpusBy(2), // 6 on a 6-core machine, because cpus() reports logical cores
     webpackMemoryOptimizations: true,
     webpackBuildWorker: true,
     ...(isCloudflarePagesBuild && {
@@ -98,7 +104,7 @@ const config: NextConfig = {
       serverMinification: false,
     }),
     ...(isLocalBuild && {
-      cpus: 4,
+      cpus: cpusBy(4), // 3 on a 6-core machine,
       preloadEntriesOnStart: false,
       memoryBasedWorkersCount: true,
     }),
