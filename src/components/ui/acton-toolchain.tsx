@@ -1,8 +1,16 @@
 'use client';
 
-import { ArrowUpRight, Play } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Bug,
+  Cable,
+  FlaskConical,
+  Play,
+  Rocket,
+  type LucideIcon,
+} from 'lucide-react';
 import NextImage from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CopyCommand } from '@/components/ui/copy-command';
 import themeStyles from '@/components/ui/theme.module.css';
 
@@ -14,24 +22,28 @@ const media = 'https://strapi-images-data.s3.eu-central-1.amazonaws.com/tolk';
 
 const features = [
   {
+    icon: FlaskConical,
     title: 'Test contract behavior',
     description: 'Run tests that follow transaction flows between contracts.',
     poster: `${media}/01-tolk-tests-poster.png`,
     video: `${media}/01-tolk-tests-no-outro.mp4`,
   },
   {
+    icon: Bug,
     title: 'Debug failures',
     description: 'Pause at a failure and inspect the code, call stack, and local values.',
     poster: `${media}/04-debugger-poster.png`,
     video: `${media}/04-debugger-no-outro.mp4`,
   },
   {
+    icon: Cable,
     title: 'Connect contracts to apps',
     description: 'Generate typed interfaces for web apps that connect to TON wallets.',
     poster: `${media}/02-dApp-ready-poster.png`,
     video: `${media}/02-dApp-ready-no-outro.mp4`,
   },
   {
+    icon: Rocket,
     title: 'Deploy and verify',
     description: 'Manage wallets, get testnet funds, deploy and verify contracts.',
     poster: `${media}/05-faucet-poster.png`,
@@ -46,9 +58,31 @@ const guides = [
   { title: 'Agent skills', href: `${docs}/agent-skills/overview` },
 ] as const;
 
-function FeatureVideo({ title, poster, src }: { title: string; poster: string; src: string }) {
+function FeatureVideo({
+  title,
+  poster,
+  src,
+  icon: Icon,
+}: {
+  title: string;
+  poster: string;
+  src: string;
+  icon: LucideIcon;
+}) {
   const video = useRef<HTMLVideoElement>(null);
+  const posterImage = useRef<HTMLImageElement>(null);
   const [started, setStarted] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
+
+  useEffect(() => {
+    if (video.current?.error) setVideoFailed(true);
+    else if (video.current && video.current.readyState >= 3) setVideoReady(true);
+    if (posterImage.current?.complete && posterImage.current.naturalWidth > 0) {
+      setPosterLoaded(true);
+    }
+  }, []);
 
   function play() {
     const player = video.current;
@@ -66,25 +100,41 @@ function FeatureVideo({ title, poster, src }: { title: string; poster: string; s
 
   return (
     <div className="relative aspect-video min-w-0 overflow-hidden rounded-lg border border-fd-border bg-fd-card sm:col-span-2">
-      <video
-        ref={video}
-        aria-label={`${title} video`}
-        className="size-full object-cover"
-        controls={started}
-        controlsList="nodownload noplaybackrate"
-        playsInline
-        poster={poster}
-        preload="none"
-        src={src}
-      >
-        Your browser does not support video playback.
-      </video>
-      {!started && (
+      <div className="absolute inset-0 flex items-center justify-center text-fd-primary">
+        <Icon className="size-12" aria-hidden="true" />
+      </div>
+      {!videoFailed && (
+        <video
+          ref={video}
+          aria-label={`${title} video`}
+          className={`absolute inset-0 size-full object-cover ${started ? '' : 'invisible'}`}
+          controls={started}
+          controlsList="nodownload noplaybackrate"
+          onCanPlay={() => setVideoReady(true)}
+          onError={() => setVideoFailed(true)}
+          playsInline
+          preload="auto"
+          src={src}
+        >
+          Your browser does not support video playback.
+        </video>
+      )}
+      {!videoFailed && !started && (
+        <img
+          ref={posterImage}
+          src={poster}
+          alt=""
+          className={`absolute inset-0 size-full object-cover ${posterLoaded ? '' : 'invisible'}`}
+          onLoad={() => setPosterLoaded(true)}
+          onError={() => setPosterLoaded(false)}
+        />
+      )}
+      {!videoFailed && videoReady && !started && (
         <button
           type="button"
           aria-label={`Play ${title} video in fullscreen`}
           onClick={play}
-          className="absolute inset-0 flex cursor-pointer items-center justify-center focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-primary"
+          className={`absolute inset-0 flex cursor-pointer focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-primary ${posterLoaded ? 'items-center justify-center' : 'items-end justify-end p-3'}`}
         >
           <span className="flex size-12 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
             <Play className="size-5 fill-current" aria-hidden="true" />
@@ -148,7 +198,7 @@ export function ActonToolchain() {
       </div>
 
       <div className="mt-7 grid gap-3 lg:grid-cols-2">
-        {features.map(({ title, description, poster, video }) => (
+        {features.map(({ title, description, poster, video, icon }) => (
           <article
             key={title}
             className="grid min-w-0 gap-4 rounded-xl border border-fd-border bg-fd-background p-4 sm:grid-cols-5 sm:items-center"
@@ -157,7 +207,7 @@ export function ActonToolchain() {
               <h3 className="text-sm font-semibold">{title}</h3>
               <p className="mt-2 text-sm leading-5 text-fd-muted-foreground">{description}</p>
             </div>
-            <FeatureVideo title={title} poster={poster} src={video} />
+            <FeatureVideo title={title} poster={poster} src={video} icon={icon} />
           </article>
         ))}
       </div>
