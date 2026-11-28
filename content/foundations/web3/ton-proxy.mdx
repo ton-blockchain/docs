@@ -32,6 +32,10 @@ Configure the browser to use `127.0.0.1:8080` as an HTTP proxy. TON Sites are th
 | `-d`           | `--daemonize`       | Daemonize the process                                                    |
 | `-l <file>`    | `--logname`         | Log file path                                                            |
 
+### Without installing anything
+
+Public HTTPS gateways run a forward proxy on a server and serve TON Sites at ordinary web addresses. For example, [ton.website](https://ton.website) opens `<name>.ton` at `https://<name>.ton.website`. A gateway sees every request it forwards; for anything sensitive, run a local forward proxy as described above.
+
 ## Reverse proxy mode
 
 `rldp-http-proxy` also operates as a reverse proxy for servers hosting TON Sites. In this mode it accepts inbound ADNL connections and forwards HTTP requests to a local or remote web server. Two implementations are available.
